@@ -1,0 +1,90 @@
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
+import { Image } from 'react-native-animatable';
+import IMAGES from '../../assets/images';
+import { COLORS, LABLE } from '../../utils/constants';
+import { useNavigation } from '@react-navigation/native';
+
+const EmailInput = forwardRef((_, ref) => {
+    const [emailAddress, setEmailAddress] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const navigation = useNavigation()
+
+    // Expose handleNextPress to the parent
+    useImperativeHandle(ref, () => ({
+        handleNextPress,
+    }));
+
+    // Validate email format
+    const validateEmailAddress = () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(emailAddress)) {
+            setErrorMessage(LABLE.EROOR_ENTER_EMAIL);
+            return false;
+        }
+        setErrorMessage('');
+        return true;
+    };
+
+    // Handle the "Next" button press
+    const handleNextPress = () => {
+        if (validateEmailAddress()) {
+            navigation.navigate('VerifyOtpScreen', { email: emailAddress , isEmail: true})
+        }
+    };
+
+    return (
+        <View style={styles.container}>
+            <View style={[styles.inputWrapper, errorMessage && styles.errorInputWrapper]}>
+                <Image source={IMAGES.email} style={styles.icon} />
+                <TextInput
+                    style={styles.input}
+                    placeholder="example@gmail.com"
+                    keyboardType="email-address"
+                    value={emailAddress}
+                    onChangeText={(text) => {
+                        setEmailAddress(text);
+                        setErrorMessage(''); // Clear error on text change
+                    }}
+                    onBlur={validateEmailAddress}
+                />
+            </View>
+            {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+        </View>
+    );
+});
+
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'column',
+    },
+    inputWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 60,
+        borderWidth: 1,
+        borderColor: COLORS.borderGray,
+        borderRadius: 10,
+        backgroundColor: COLORS.white,
+        paddingHorizontal: 20,
+    },
+    errorInputWrapper: {
+        borderColor: COLORS.borderRed,
+        backgroundColor: COLORS.bgRed,
+    },
+    icon: {
+        marginRight: 10,
+    },
+    input: {
+        flex: 1,
+        fontSize: 16,
+        color: COLORS.black,
+    },
+    errorText: {
+        fontSize: 12,
+        marginTop: 5,
+        color: COLORS.errorText,
+    },
+});
+
+export default EmailInput;

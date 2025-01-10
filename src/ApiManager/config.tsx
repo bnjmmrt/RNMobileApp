@@ -1,0 +1,61 @@
+interface ApiConfig {
+  [key: string]: {
+    api: string;
+  };
+}
+
+const apiConfig: ApiConfig = {
+  production: {
+    api: 'https://dev.api.therumor.com/v1',
+  },
+};
+
+const apiSetup: keyof ApiConfig = 'production';
+
+export const settings = {
+  apiUrl: apiConfig[apiSetup].api,
+  version: '1.0',
+  build: '0',
+};
+
+export const apiMethod = {
+  get: 'get',
+  post: 'post',
+  delete: 'delete',
+  update: 'update',
+  put: 'put',
+} as const;
+
+export type ApiMethod = keyof typeof apiMethod;
+
+export const statusCode = {
+  BadRequest: 400, // (Bad Request)
+  Unauthorized: 401, // (Unauthorized)
+  Successful: 201, // (OK)
+  Undefined: 422,
+} as const;
+
+export type StatusCode = keyof typeof statusCode;
+
+// https://dev.api.therumor.com/v1/communication/send-verification-code
+
+export const EndPoint = {
+  signUp: '/program-management/api/auth/signup',
+  signUp2FaVerify: '/program-management/api/auth/2fa/verify',
+  signUpProfileSetUp:'/program-management/api/auth/signup/profile-setup',
+  login:'/program-management/api/auth/app/login',
+  login2FaVerify:'/program-management/api/auth/login/2fa/verify',
+  resendOtp:'/communication/send-verification-code',
+  verifyOtp:'/program-management/api/auth/resend-otp',
+  forgetPassword:'/program-management/api/auth/forgot-password',
+  resetPassword:'/program-management/api/auth/reset-password',
+  socialLogin:'/program-management/api/auth/social-sign-up'
+} as const;
+
+export type EndPointKey = keyof typeof EndPoint;
+
+export const TagKey = {
+  IsBearerToken: 'IsBearerToken',
+}
+
+export default settings;
