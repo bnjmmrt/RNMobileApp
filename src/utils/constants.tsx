@@ -17,8 +17,18 @@
     ENTER_YOUR_VERIFICATION_CODE:'Enter your verification code',
     SEND_TO:'Sent to ',
     DONT_GET_CODE:"Didn’t get a code?",
+    ENTER_YOUR_NAME:'Let’s start with your name.',
+    FIRST_NAME:'First Name',
+    LAST_NAME:'Last Name',
+    WHATS_YOUR_EMAIL_ADDRESS:'What’s your email address?',
+    WHATS_YOUR_EMAIL_SUBTITLE:"We'll contact you for membership and event updates.",
+    EMAIL_ADDRESS:'Email Address',
   }
 
+  export const ERROR_MESSAGE ={
+    FIRST_NAME:'Please enter your first name',
+    LAST_NAME:'Please enter your last name',
+  }
   export const COLORS={
     black:'#1F1F1F',
     white:'#FFFFFF',
