@@ -1,17 +1,17 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {View, Text} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {LABLE, BUTTON_LABLE, ERROR_MESSAGE} from '../../../utils/constants';
+import React, { useRef } from 'react';
+import { View } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants';
 import EmailPhoneStyles from './MyDetailsStyles';
-import BackButton from '../../../component/BackButton/BackButton';
 import Button from '../../../component/Button';
-import Header from '../../../component/Header/Header';
+import Title from '../../../component/Title/Title';
 import Input from '../../../component/Input/Input';
+import Header from '../../../component/Header/Header';
 
-interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
-const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({navigation}) => {
+const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   const styles = EmailPhoneStyles();
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
@@ -26,10 +26,10 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BackButton onPress={handleBackPress} />
+      <Header headerTitle={LABLE.MY_DETAILS} onPress={handleBackPress} />
 
       <View style={styles.contentContainer}>
-        <Header title={LABLE.ENTER_YOUR_NAME} />
+        <Title title={LABLE.ENTER_YOUR_NAME} />
         <Input
           ref={firstNameRef}
           label={LABLE.FIRST_NAME}

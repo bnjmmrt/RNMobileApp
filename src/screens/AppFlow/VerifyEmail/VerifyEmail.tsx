@@ -1,11 +1,11 @@
-import React, {useRef, useState } from 'react';
-import { View, Text } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
 import EmailPhoneStyles from './VerifyEmailStyles';
-import BackButton from '../../../component/BackButton/BackButton';
 import Button from '../../../component/Button';
+import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
 import OTPComponent from '../../../component/OTPComponent/OTPComponent';
 import { useRoute, RouteProp } from '@react-navigation/native';
@@ -29,13 +29,13 @@ const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({ navigation }) => 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onNextClick = () => {
+    navigation.navigate('GenderScreen')
   };
 
   const handleBackPress = () => navigation.goBack();
 
 
   const verifyCode = async (code: string) => {
-
     const requestParam = {
       ...(route.params.isEmail ? { email: route.params.email } : { phoneNumber: route.params.phone }),
       requestCode: code,
@@ -70,10 +70,10 @@ const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({ navigation }) => 
 
   return (
     <SafeAreaView style={styles.container}>
-      <BackButton onPress={handleBackPress} />
+      <Header headerTitle={LABLE.VERIFY_EMAIL} onPress={handleBackPress} />
 
       <View style={styles.contentContainer}>
-        <Header title={LABLE.ENTER_YOUR_VERIFICATION_CODE} subTitle={`${LABLE.SEND_TO}${sendToId}`} />
+        <Title title={LABLE.ENTER_YOUR_VERIFICATION_CODE} subTitle={`${LABLE.SEND_TO}${sendToId}`} />
         <OTPComponent
           ref={otpInputRef}
           performCodeVerification={verifyCode}

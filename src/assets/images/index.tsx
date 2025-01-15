@@ -6,6 +6,8 @@ const IMAGES = {
   plus: require('./plus.png'),
   email: require('./email.png'),
   leftArrow: require('./chevron-left.png'),
+  calender: require('./calender.png'),
+  downArrow: require('./chevron-down.png'),
   search: require('./search-md.png'),
   introVideo: require('./intro_video.mp4'),
 };

@@ -12,17 +12,15 @@ import { AppContext } from './src/context/AppContext';
 // import { NetInfoProvider, useAuth } from './src/context/NetInfoContext';
 import NoInternetScreen from './src/component/NoInternetScreen';
 import { useNetInfo } from "@react-native-community/netinfo";
-import NetInfo from '@react-native-community/netinfo';
-import store from './src/redux/store';
+import { store, persistor } from './src/redux/store';
 import FlashMessage from 'react-native-flash-message';
+import { PersistGate } from 'redux-persist/integration/react';
 
 
 const AppContent: React.FC = () => {
-  
   // const { isInternetConnected } = useAuth();
   const { isConnected } = useNetInfo();
   LogBox.ignoreAllLogs();
-  
   useEffect(() => {
     console.log('Internet status:', isConnected);
   }, [isConnected]);
@@ -31,7 +29,7 @@ const AppContent: React.FC = () => {
 
   // console.log("isInternetConnected",isInternetConnected)
 
-  if (!isConnected && isConnected!== null) {
+  if (!isConnected && isConnected !== null) {
     return <NoInternetScreen />;
   }
 
@@ -65,23 +63,25 @@ const App: React.FC = () => {
   //   const unsubscribe = NetInfo.addEventListener(state => {
   //     console.log('Network status changed:', state.isConnected);
   //   });
-  
   //   return () => unsubscribe(); // Cleanup the listener on component unmount
   // }, []);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <Provider store={store}>
-      <NavigationContainer theme={isDarkTheme ? DarkTheme : DefaultTheme}>
-        <AppContext.Provider value={appContext}>
-            <SafeAreaProvider style={styles.container}>
-              <AppContent />
-              <FlashMessage position="top" />
-            </SafeAreaProvider>
-        </AppContext.Provider>
-      </NavigationContainer>
-      </Provider>
-    </GestureHandlerRootView>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <NavigationContainer theme={isDarkTheme ? DarkTheme : DefaultTheme}>
+            <AppContext.Provider value={appContext}>
+              <SafeAreaProvider style={styles.container}>
+                <AppContent />
+                <FlashMessage position="top" />
+              </SafeAreaProvider>
+            </AppContext.Provider>
+          </NavigationContainer>
+        </GestureHandlerRootView>
+      </PersistGate>
+    </Provider>
   );
 };
 
