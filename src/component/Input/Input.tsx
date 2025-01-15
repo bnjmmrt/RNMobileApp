@@ -9,7 +9,8 @@ interface InputProps {
   placeholder?: string; // Optional placeholder for input
   leftImage?: any;
   rightImage?: any;
-  onPressImage?:()=>void
+  onPressImage?:()=>void;
+  defaultValue?: string; 
 }
 
 const Input = forwardRef((props: InputProps, ref) => {
@@ -19,21 +20,23 @@ const Input = forwardRef((props: InputProps, ref) => {
     placeholder = '',
     leftImage,
     rightImage,
-    onPressImage
+    onPressImage,
+    defaultValue=''
   } = props;
 
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState(defaultValue);
   const [errorMessage, setErrorMessage] = useState('');
   const navigation = useNavigation();
 
   // Expose handleNextPress to the parent
   useImperativeHandle(ref, () => ({
     handleNextPress,
+    inputText
   }));
 
   // Validate inputs
   const validateInputs = () => {
-    console.log('clickeddddddddd');
+
     if (!inputText) {
       setErrorMessage(initialErrorMessage);
       return false;

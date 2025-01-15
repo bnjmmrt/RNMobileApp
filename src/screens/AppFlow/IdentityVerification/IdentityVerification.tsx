@@ -7,14 +7,21 @@ import IdentityVerificationStyles from './IdentityVerificationStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
+import { persistStore } from 'redux-persist';
+import {store} from '../../../redux/store';  // Your store
+import { useDispatch } from 'react-redux';
+import { resetAppFlowDetails } from '../../../redux/slices/appFlowSlice';
 
 interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
 
 const IdentityVerification: React.FC<IdentityVerificationProps> = ({ navigation }) => {
   const styles = IdentityVerificationStyles();
+  const dispatch = useDispatch();
 
   const onNextClick = () => {
-    navigation.navigate('IdentityVerification');
+    dispatch(resetAppFlowDetails());
+  // persistStore(store).purge(); // This clears the persisted state
+    navigation.navigate('MyDetailsScreen');
   };
 
   const handleBackPress = () => navigation.goBack();

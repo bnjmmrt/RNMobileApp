@@ -10,6 +10,7 @@ const IMAGES = {
   downArrow: require('./chevron-down.png'),
   search: require('./search-md.png'),
   introVideo: require('./intro_video.mp4'),
+  pencil: require('./pencil-01.png'),
 };
 
 export default IMAGES;

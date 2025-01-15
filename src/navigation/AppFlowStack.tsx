@@ -10,20 +10,46 @@ import CreativeFocusScreen from '../screens/AppFlow/CreativeFocusScreen/Creative
 import SelectInterestScreen from '../screens/AppFlow/SelectInterestScreen/SelectInterestScreen';
 import ProfilePhotoScreen from '../screens/AppFlow/ProfilePhotoScreen/ProfilePhotoScreen';
 import IdentityVerification from '../screens/AppFlow/IdentityVerification/IdentityVerification';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/slices';
 
 
 // Define the param list for the stack navigator
 export type AppFlowStackParamList = {
   MyDetailsScreen: undefined;
-  EnterEmail: undefined
+  EnterEmail: undefined;
+  GenderScreen: undefined;
+  BirthdayScreen: undefined;
+  BaseCityScreen: undefined;
+  CreativeFocusScreen: undefined;
+  SelectInterestScreen: undefined;
+  ProfilePhotoScreen: undefined;
+  IdentityVerification: undefined;
+  
 };
 
 const Stack = createStackNavigator<AppFlowStackParamList>();
 
 export const AppFlowStack: React.FC = () => {
+  const pageProgress = useSelector((state: RootState) => state.appFlow.pageProgress);
+
+  const getInitialPage=()=>{
+     switch(pageProgress){
+      case 1: return "MyDetailsScreen";
+      case 2 : return "EnterEmail";
+      case 3 : return "GenderScreen";
+      case 4 : return "BirthdayScreen";
+      case 5 : return "BaseCityScreen";
+      case 6 : return "CreativeFocusScreen";
+      case 7 : return "SelectInterestScreen";
+      case 8 : return "ProfilePhotoScreen";
+      case 9 : return "IdentityVerification";
+      default : return "MyDetailsScreen"
+     }
+  }
   return (
     <Stack.Navigator
-      initialRouteName="MyDetailsScreen"
+      initialRouteName={getInitialPage()}
       screenOptions={({ route, navigation }) => ({})}>
 
       <Stack.Screen

@@ -8,15 +8,21 @@ import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Input from '../../../component/Input/Input';
 import Header from '../../../component/Header/Header';
+import { useDispatch, useSelector } from 'react-redux';
+import { setEmail, setPageProgress } from '../../../redux/slices/appFlowSlice';
+import { RootState } from '../../../redux/slices';
 
 interface EnterEmailScreenProps extends NativeStackScreenProps<any, any> { }
 
 const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const email = useSelector((state: RootState) => state.appFlow.email);
   const styles = EmailPhoneStyles();
   const emailRef = useRef<any>(null);
 
   const onNextClick = () => {
     emailRef.current && emailRef.current.handleNextPress();
+    dispatch(setEmail(emailRef.current.inputText));
     navigation.navigate('VerifyEmail');
   };
 
@@ -31,7 +37,8 @@ const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
         <Input
           ref={emailRef}
           label={LABLE.EMAIL_ADDRESS}
-          errorMessage={ERROR_MESSAGE.FIRST_NAME}
+          errorMessage={ERROR_MESSAGE.PLEASE_ENTER_A_VALID_EMAIL_ADDRESS}
+          defaultValue={email}
         />
       </View>
 

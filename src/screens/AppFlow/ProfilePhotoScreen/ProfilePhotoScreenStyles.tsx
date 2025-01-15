@@ -41,6 +41,29 @@ const ProfilePhotoScreenStyles = () => {
     selectedGenderText: {
       color: COLORS.white,
     },
+    profilePhotoContainer: {
+      height: 100,
+      width: 100,
+      borderRadius: 50,
+      backgroundColor: COLORS.tabBorderColor,
+      alignSelf: 'center',
+    },
+    iconContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: COLORS.black,
+      borderRadius: 50,
+      width: 32,
+      height: 32,
+      position: 'absolute',
+      right: 0,
+      bottom: 0,
+    },
+    ic_pencil: {
+      height: 16,
+      width: 16,
+      tintColor: COLORS.white,
+    }
   });
 };
 

@@ -7,12 +7,17 @@ import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
 import Header from '../../../component/Header/Header';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/slices';
+import { setCreativeFocus, setPageProgress } from '../../../redux/slices/appFlowSlice';
 
 interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> { }
 
 const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const creativeFocus = useSelector((state: RootState) => state.appFlow.creativeFocus);
   const styles = CreativeFocusScreenStyles();
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(creativeFocus);
 
   const categories = [
     'Actor', 'Athlete', 'Artist', 'Comedian', 'Content Creator',
@@ -34,6 +39,8 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({ navigation })
   const onNextClick = () => {
     if (selectedCategories.length > 0) {
       console.log('Selected Categories:', selectedCategories);
+      dispatch(setCreativeFocus(selectedCategories));
+      dispatch(setPageProgress(7));
       navigation.navigate('SelectInterestScreen');
     } else {
       //   alert('Please select at least one category.');

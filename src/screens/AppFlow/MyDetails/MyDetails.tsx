@@ -8,10 +8,20 @@ import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Input from '../../../component/Input/Input';
 import Header from '../../../component/Header/Header';
+import { useGetPostsQuery } from '../../../redux/slices/apiSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/slices';
+import { setFirstName, setLastName, setPageProgress } from '../../../redux/slices/appFlowSlice';
 
 interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
+  const { data: posts, error, isLoading } = useGetPostsQuery();
+
+  const dispatch = useDispatch();
+  const userDetails = useSelector((state: RootState) => state.appFlow);
+  // console.log("postsssss",posts);
+  // console.log("userDetails",userDetails);
   const styles = EmailPhoneStyles();
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
@@ -19,6 +29,9 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   const onNextClick = () => {
     firstNameRef.current && firstNameRef.current.handleNextPress();
     lastNameRef.current && lastNameRef.current.handleNextPress();
+    dispatch(setFirstName(firstNameRef.current.inputText));
+    dispatch(setLastName(lastNameRef.current.inputText));
+    dispatch(setPageProgress(2));
     navigation.navigate('EnterEmail');
   };
 
@@ -34,11 +47,13 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
           ref={firstNameRef}
           label={LABLE.FIRST_NAME}
           errorMessage={ERROR_MESSAGE.FIRST_NAME}
+          defaultValue={userDetails.firstName}
         />
         <Input
           ref={lastNameRef}
           label={LABLE.LAST_NAME}
           errorMessage={ERROR_MESSAGE.LAST_NAME}
+          defaultValue={userDetails.lastName}
         />
       </View>
 

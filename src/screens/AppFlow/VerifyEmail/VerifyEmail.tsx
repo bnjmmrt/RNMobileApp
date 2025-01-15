@@ -10,6 +10,8 @@ import Header from '../../../component/Header/Header';
 import OTPComponent from '../../../component/OTPComponent/OTPComponent';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { FlashMessageComponent } from '../../../component/FlashMessageComponent/FlashMessageComponent';
+import { useDispatch } from 'react-redux';
+import { setPageProgress } from '../../../redux/slices/appFlowSlice';
 
 interface VerifyEmailScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -22,6 +24,7 @@ type RouteParams = {
 };
 
 const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({ navigation }) => {
+  const dispatch = useDispatch();
   const styles = EmailPhoneStyles();
   const otpInputRef = useRef<{ handleNextPress: () => void, showInvalidCodeError: (message: string) => void }>(null);
   const route = useRoute<RouteProp<RouteParams>>();
@@ -29,7 +32,8 @@ const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({ navigation }) => 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onNextClick = () => {
-    navigation.navigate('GenderScreen')
+    dispatch(setPageProgress(3));
+    navigation.navigate('GenderScreen');
   };
 
   const handleBackPress = () => navigation.goBack();
@@ -70,7 +74,7 @@ const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({ navigation }) => 
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header headerTitle={LABLE.VERIFY_EMAIL} onPress={handleBackPress} />
+      <Header headerTitle={LABLE.VERIFY_EMAIL} onPress={handleBackPress} showProgressBar={false} />
 
       <View style={styles.contentContainer}>
         <Title title={LABLE.ENTER_YOUR_VERIFICATION_CODE} subTitle={`${LABLE.SEND_TO}${sendToId}`} />

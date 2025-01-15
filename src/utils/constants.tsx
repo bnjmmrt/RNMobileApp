@@ -1,4 +1,4 @@
-  export const BUTTON_LABLE ={
+  export const BUTTON_LABLE = {
     ENTER: 'Enter',
     NEXT: 'Next',
     APPLY_TO_BE_HOST: 'Apply to be a Host',
@@ -6,7 +6,7 @@
     RESEND:'Resend',
     SUBMTI_APPLICATION:'Submit Application',
   }
-  export const LABLE ={
+  export const LABLE = {
     ENTER_YOUR_PHONE_NUMBER: 'Enter your phone number',
     ENTER_YOUR_EMAIL: 'Enter your email',
     RUMOR_WILL_SEND_YOU_A_EMAIL_WITH_A_VERIFICATION_CODE: 'Rumor will send you an email with a verification code.',
@@ -52,17 +52,18 @@
     IDENTITY_VERIFICATION:'Identity Verification',
     IDENTITY_VERIFICATION_TITLE:'Last step, what’s your Instagram?',
     IDENTITY_VERIFICATION_SUBTITLE:'This helps us verify your online identity.',
-    CHOOSE_YOUR_INTERESTS: "Choose your interests",
-    CHOOSE_YOUR_INTERESTS_SUBTITLE: "Select topics of interests so we can curate experiences you’ll want to attend.",
-    ADD_A_PHOTO: "Add a photo",
-    ADD_A_PHOTO_SUBTITLE: "Upload a profile photo to complete your profile.",
+    CHOOSE_YOUR_INTERESTS: 'Choose your interests',
+    CHOOSE_YOUR_INTERESTS_SUBTITLE: 'Select topics of interests so we can curate experiences you’ll want to attend.',
+    ADD_A_PHOTO: 'Add a photo',
+    ADD_A_PHOTO_SUBTITLE: 'Upload a profile photo to complete your profile.',
   }
 
-  export const ERROR_MESSAGE ={
+  export const ERROR_MESSAGE = {
     FIRST_NAME:'Please enter your first name',
     LAST_NAME:'Please enter your last name',
-    PLEASE_ENTER_YOUR_BASE_CITY:"Please enter your base city",
-    PLEASE_ENTER_YOUR_BIRTHDAY:"Please enter your birthday"
+    PLEASE_ENTER_YOUR_BASE_CITY: 'Please enter your base city',
+    PLEASE_ENTER_YOUR_BIRTHDAY: 'Please enter your birthday',
+    PLEASE_ENTER_A_VALID_EMAIL_ADDRESS: 'Please enter a valid email address'
   }
   export const COLORS={
     black:'#1F1F1F',

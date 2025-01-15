@@ -9,13 +9,13 @@ import {fontFamily} from '../..//utils/functions';
 interface HeaderProps {
   onPress: () => void;
   headerTitle?: string;
-  // progress?:number
+   showProgressBar?:boolean
 }
 
 const Header: React.FC<HeaderProps> = ({
   onPress,
   headerTitle,
-  //   progress
+  showProgressBar=true
 }) => {
   return (
     <View style={{}}>
@@ -30,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({
         {/* Header Title */}
        { headerTitle &&  <Text style={styles.headerTitle}>{headerTitle}</Text>}
       </View>
-      <ProgressBar />
+     { showProgressBar &&  <ProgressBar />}
     </View>
   );
 };

@@ -9,16 +9,23 @@ import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
 import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants';
 import Input from '../../../component/Input/Input';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/slices';
+import { setBirthday, setPageProgress } from '../../../redux/slices/appFlowSlice';
 
 interface BirthdayScreenProps extends NativeStackScreenProps<any, any> { }
 
 const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const birthday = useSelector((state: RootState) => state.appFlow.birthday);
   const styles = BirthdayScreenStyles();
   // const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const dateRef = useRef<any>(null);
+  const birthdayRef = useRef<any>(null);
 
   const onNextClick = () => {
-    dateRef.current && dateRef.current.handleNextPress();
+    birthdayRef.current && birthdayRef.current.handleNextPress();
+     dispatch(setBirthday(birthdayRef.current.inputText));
+     dispatch(setPageProgress(5));
     navigation.navigate('BaseCityScreen');
   };
 
@@ -35,14 +42,15 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
           }
         />
         <Input
-          ref={dateRef}
-          placeholder={LABLE.SEARCH_FOR_A_LOCATION}
+          ref={birthdayRef}
+          placeholder={LABLE.DATE_PLACEHOLDER}
           leftImage={IMAGES.calender}
           rightImage={IMAGES.downArrow}
           errorMessage={ERROR_MESSAGE.PLEASE_ENTER_YOUR_BIRTHDAY}
           onPressImage={() => {
             console.log('handle datepicker click');
           }}
+          defaultValue={birthday}
         />
       </View>
 

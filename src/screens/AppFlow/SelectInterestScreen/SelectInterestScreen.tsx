@@ -7,12 +7,17 @@ import Button from '../../../component/Button';
 import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/slices';
+import { setInterest, setPageProgress } from '../../../redux/slices/appFlowSlice';
 
 interface SelectInterestScreenProps extends NativeStackScreenProps<any, any> { }
 
 const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const interest = useSelector((state: RootState) => state.appFlow.interest);
   const styles = SelectInterestScreenStyles();
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(interest);
 
   const categories = [
     'Art', 'Automotive', 'Beauty', 'Business', 'Fashion',
@@ -34,6 +39,8 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({ navigation 
   const onNextClick = () => {
     if (selectedCategories.length > 0) {
       console.log('Selected Categories:', selectedCategories);
+       dispatch(setInterest(selectedCategories));
+       dispatch(setPageProgress(8));
       navigation.navigate('ProfilePhotoScreen');
     } else {
       //   alert('Please select at least one category.');

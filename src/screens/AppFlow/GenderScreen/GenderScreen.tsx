@@ -7,12 +7,17 @@ import GenderScreenStyles from './GenderScreenStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/slices';
+import { setGender, setPageProgress } from '../../../redux/slices/appFlowSlice';
 
 interface GenderScreenProps extends NativeStackScreenProps<any, any> {}
 
 const GenderScreen: React.FC<GenderScreenProps> = ({navigation}) => {
+  const dispatch = useDispatch();
+  const gender = useSelector((state: RootState) => state.appFlow.gender);
   const styles = GenderScreenStyles();
-  const [selectedGender, setSelectedGender] = useState<string | null>(null);
+  const [selectedGender, setSelectedGender] = useState<string | null>(gender);
 
   const handleGenderSelect = (gender: string) => {
     setSelectedGender(gender);
@@ -20,6 +25,8 @@ const GenderScreen: React.FC<GenderScreenProps> = ({navigation}) => {
 
   const onNextClick = () => {
     if (selectedGender) {
+      dispatch(setGender(selectedGender));
+      dispatch(setPageProgress(4));
       navigation.navigate('BirthdayScreen');
     } else {
       // alert('Please select a gender.');
