@@ -32,6 +32,7 @@ interface ContactItem {
 const appMembers: AppMember[] = [
   { name: 'Leslie Alexander', phone: '2195550114' },
   { name: 'David Taylor', phone: '5556106679' },
+  { name: 'Orson Plante', phone: '23244402' },
 ];
 
 const InviteReferralBottomSheet = forwardRef((props, ref) => {
