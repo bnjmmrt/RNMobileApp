@@ -83,7 +83,7 @@ export const LABLE = {
   SEND_DIRECT_MSG_CODE: "Send direct message with the code:",
   WE_WILL_REVIEW_APP: "We’ll review your application after we receive your message.",
   EMAIL_THE_CODE: "Email the code to:",
-  DONT_USE_INSTAGRAM: "Don't use Instagram",
+  DONT_USE_INSTAGRAM: "Don't use Instagram?",
 }
 
 export const ERROR_MESSAGE = {

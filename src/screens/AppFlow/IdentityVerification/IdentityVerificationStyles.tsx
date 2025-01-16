@@ -15,6 +15,7 @@ const ProfilePhotoScreenStyles = () => {
     },
     btnSmallStyle: {
       width: 'auto',
+      height: 40,
       borderRadius: 100,
       alignSelf: 'center',
       backgroundColor: COLORS.tabBorderColor,
@@ -66,7 +67,7 @@ const ProfilePhotoScreenStyles = () => {
       color: COLORS.light_gray,
       fontSize: 14,
       fontFamily: fontFamily.ABCDiatype_Regular,
-      marginVertical: Hp(0.25),
+      marginVertical: Hp(0.15),
       textAlign: 'center',
     },
     numberContainer: {
@@ -75,7 +76,7 @@ const ProfilePhotoScreenStyles = () => {
       borderRadius: 10,
       backgroundColor: COLORS.surfaceSecondary,
       fontSize: 14,
-      marginVertical: Hp(1),
+      marginTop: Hp(1),
       alignItems: 'center',
       justifyContent: 'center',
       alignSelf: 'center'
@@ -88,7 +89,23 @@ const ProfilePhotoScreenStyles = () => {
     },
     btnRumor: {
       color: COLORS.black,
-      backgroundColor: COLORS.tabBorderColor
+      backgroundColor: COLORS.tabBorderColor,
+      fontSize: 11,
+    },
+    iconStyle: {
+      height: 20,
+      width: 20,
+      resizeMode: 'contain',
+    },
+    emailStyle: {
+      color: COLORS.black,
+      fontWeight: 'bold'
+    },
+    divider: {
+      height: 0.5,
+      backgroundColor: COLORS.tabBorderColor,
+      width: 200,
+      marginTop: 20
     }
   });
 };

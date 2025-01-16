@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants';
@@ -13,7 +13,6 @@ import { useDispatch } from 'react-redux';
 import { resetAppFlowDetails, setPageProgress } from '../../../redux/slices/appFlowSlice';
 import Input from '../../../component/Input/Input';
 import IMAGES from '../../../assets/images';
-import { COLORS } from '../../../utils/constants';
 
 interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
 
@@ -37,7 +36,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({ navigation 
     <SafeAreaView style={styles.container}>
       <Header headerTitle={LABLE.IDENTITY_VERIFICATION} onPress={handleBackPress} />
 
-      <View style={styles.contentContainer}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 50 }} style={styles.contentContainer}>
         <Title
           title={LABLE.IDENTITY_VERIFICATION_TITLE}
           subTitle={LABLE.IDENTITY_VERIFICATION_SUBTITLE}
@@ -46,7 +45,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({ navigation 
           ref={usernameRef}
           placeholder={"@username"}
           leftImage={IMAGES.instagramLogo}
-          iconStyle={{ height: 20, width: 20, resizeMode: 'contain' }}
+          iconStyle={styles.iconStyle}
           errorMessage={ERROR_MESSAGE.PLEASE_ENTER_YOUR_BASE_CITY}
           defaultValue={""}
         />
@@ -60,7 +59,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({ navigation 
             <Text style={styles.btnRumor}>{LABLE.RUMORAPP}
             </Text>
             {" to "}
-            <Text style={{ color: COLORS.black }}>
+            <Text style={styles.emailStyle}>
               @therumor
             </Text>
           </Text>
@@ -77,14 +76,14 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({ navigation 
             colorTheme="light"
             onPress={onNextClick}
           />
-
-          <Text style={styles.title}>{LABLE.DONT_USE_INSTAGRAM}</Text>
+          <View style={styles.divider} />
+          <Text style={[styles.title, { marginVertical: 20 }]}>{LABLE.DONT_USE_INSTAGRAM}</Text>
           <Text style={styles.subTitle}>{LABLE.EMAIL_THE_CODE}</Text>
           <Text style={styles.subTitle}>
             <Text style={styles.btnRumor}>{LABLE.RUMORAPP}
             </Text>
             {" to "}
-            <Text style={{ color: COLORS.black }}>
+            <Text style={styles.emailStyle}>
               {BUTTON_LABLE.SUPPORT_EMAIL_ID}
             </Text>
           </Text>
@@ -95,9 +94,8 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({ navigation 
             colorTheme="light"
             onPress={onNextClick}
           />
-
         </View>
-      </View>
+      </ScrollView>
 
       <Button
         disabled={false}

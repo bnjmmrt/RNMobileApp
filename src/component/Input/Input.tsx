@@ -92,7 +92,7 @@ const Input = forwardRef((props: InputProps, ref) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    marginTop: 24,
+    marginTop: 20,
   },
   label: {
     paddingVertical: 2,
