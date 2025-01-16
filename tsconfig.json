@@ -2,11 +2,13 @@
   "extends": "@react-native/typescript-config/tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./",
+    
     "paths": {
-      "@images": ["src/assets/images"],
-      "@button": ["src/component/Button"],
-      "@dimensions": ["src/utils/dimensions"],
-      "string-constants": ["src/utils/constants"],
+      // "@images": ["src/assets/images"],
+      // "@button": ["src/component/Button"],
+      // "@dimensions": ["src/utils/dimensions"],
+      // "string-constants": ["src/utils/constants"],
+      // "src/*": ["src/*"]
     }
   }
 }

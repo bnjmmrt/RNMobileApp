@@ -13,7 +13,7 @@ import { AppContext } from './src/context/AppContext';
 import NoInternetScreen from './src/component/NoInternetScreen';
 import { useNetInfo } from "@react-native-community/netinfo";
 import NetInfo from '@react-native-community/netinfo';
-import store from './src/redux/store';
+import {store} from './src/redux/store';
 import FlashMessage from 'react-native-flash-message';
 
 

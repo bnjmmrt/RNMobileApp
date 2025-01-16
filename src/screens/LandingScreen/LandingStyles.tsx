@@ -20,7 +20,7 @@ const LandingStyles = () => {
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor:'red'
+            backgroundColor:COLORS.black
         },
         contentContainer:{
             flex: 1,
