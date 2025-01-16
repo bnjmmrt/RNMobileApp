@@ -45,7 +45,9 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
     }
   };
 
-  const handleBackPress = () => {};
+  const handleBackPress = () => {
+    navigation.navigate('BottomTabBar')
+  };
 
   return (
     <SafeAreaView style={styles.container}>

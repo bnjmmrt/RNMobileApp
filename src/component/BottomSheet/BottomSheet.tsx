@@ -9,6 +9,8 @@ interface BottomSheetComponentProps {
     snapPoints?: string[]; // Allows customizable snap points
     onChange?: (index: number) => void;
     onClose?: () => void;
+    ref: any;
+    backColor?: string
 }
 
 const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(({
