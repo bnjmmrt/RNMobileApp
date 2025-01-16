@@ -11,8 +11,12 @@ export const BUTTON_LABLE = {
   PAST: 'Past',
   VIEW_EVENT: 'View Event',
   APPLY_FOR_MEMBERSHIP: 'Apply for Membership',
+  GO_TO_INSTAGRAM: 'Go to Instagram',
+  SEND_EMAIL: 'Send Email',
+  SUPPORT_EMAIL_ID: 'support@therumor.com'
 }
 export const LABLE = {
+  RUMORAPP: 'RUMORAPP',
   ENTER_YOUR_PHONE_NUMBER: 'Enter your phone number',
   ENTER_YOUR_EMAIL: 'Enter your email',
   RUMOR_WILL_SEND_YOU_A_EMAIL_WITH_A_VERIFICATION_CODE: 'Rumor will send you an email with a verification code.',
@@ -74,7 +78,12 @@ export const LABLE = {
   UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS: "Unlock access to exclusive events",
   GET_DISCOVERY_BY_THE_WORLD: "Get discovered by the world's top event organizers and receive invites to events that matter.",
   DISCOVER_EXPERIENCES_ACROSS_ART: "Discover experiences across art, fashion, music, and more — listed by renowned hosts.",
-  DISCOVER_EXPERIENCES_IN_ART: "Discover experiences in art, fashion, music, and more—curated by renowned hosts."
+  DISCOVER_EXPERIENCES_IN_ART: "Discover experiences in art, fashion, music, and more—curated by renowned hosts.",
+  COMPLETE_VERIFICATION: "Complete Verification",
+  SEND_DIRECT_MSG_CODE: "Send direct message with the code:",
+  WE_WILL_REVIEW_APP: "We’ll review your application after we receive your message.",
+  EMAIL_THE_CODE: "Email the code to:",
+  DONT_USE_INSTAGRAM: "Don't use Instagram",
 }
 
 export const ERROR_MESSAGE = {
@@ -98,5 +107,7 @@ export const COLORS = {
   errorText: '#9D0D11',
   bgBackArrow: '#f4f4f4',
   transperantBackground: 'rgba(0, 0, 0, 0.5)',
+  placeHodler: '#A2A1A1',
+  surfaceSecondary: '#CDBAB1'
 }
 

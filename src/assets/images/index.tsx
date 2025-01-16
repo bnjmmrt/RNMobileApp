@@ -26,6 +26,7 @@ const IMAGES = {
   rumorLogoDark: require('./monogram_dark.png'),
   eventCoverPlaceholders: require('./EventCoverPlaceholders.png'),
   eventCoverPlaceholders1: require('./EventCoverPlaceholders1.png'),
+  instagramLogo: require('./instagram.png'),
 }
 
 export default IMAGES;
