@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { View, StyleSheet, Image, Text } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Hp, Wp } from '../../utils/dimensions';
@@ -11,6 +11,8 @@ import { ScrollView } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import { useNavigation } from '@react-navigation/native';
 import HeaderComponent from '../HeaderComponent';
+import ReferralCodeBottomSheet from '../ReferralCodeBottomSheet/ReferralCodeBottomSheet';
+import InviteReferralBottomSheet from '../InviteReferralBottomSheet/InviteReferralBottomSheet';
 
 interface AfterAppStaticComponentProps {
   title: string;
@@ -23,9 +25,11 @@ const AfterAppStaticComponent: React.FC<AfterAppStaticComponentProps> = ({
 }) => {
 
   const navigation = useNavigation();
+  const bottomSheetRef=useRef(null);
 
   const onButtonClick = () => {
-    navigation.navigate('AppFlowStack');
+    // navigation.navigate('AppFlowStack');
+    bottomSheetRef.current.open();
   }
 
   return (
@@ -55,6 +59,8 @@ const AfterAppStaticComponent: React.FC<AfterAppStaticComponentProps> = ({
 
 
       </ScrollView>
+      <InviteReferralBottomSheet ref={bottomSheetRef}/>
+      {/* <ReferralCodeBottomSheet ref={bottomSheetRef}/> */}
 
     </View>
   );
