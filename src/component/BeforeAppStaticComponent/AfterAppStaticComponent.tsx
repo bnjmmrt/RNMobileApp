@@ -1,11 +1,8 @@
 import React, { useRef } from 'react';
-import { View, StyleSheet, Image, Text } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { View, StyleSheet } from 'react-native';
 import { Hp, Wp } from '../../utils/dimensions';
-import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
-import IMAGES from '../../assets/images/index';
+import { BUTTON_LABLE, COLORS } from '../../utils/constants';
 import Button from '../Button';
-import ImageCarousel from '../ImageCarosuel/ImageCarosuel';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
 import { ScrollView } from 'react-native';
 import { fontFamily } from '../../utils/functions';
@@ -13,6 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import HeaderComponent from '../HeaderComponent';
 import ReferralCodeBottomSheet from '../ReferralCodeBottomSheet/ReferralCodeBottomSheet';
 import InviteReferralBottomSheet from '../InviteReferralBottomSheet/InviteReferralBottomSheet';
+import MiddleStaticComponent from '../TitleSubTitleComponent/MiddleStaticComponent';
 
 interface AfterAppStaticComponentProps {
   title: string;
@@ -25,42 +23,62 @@ const AfterAppStaticComponent: React.FC<AfterAppStaticComponentProps> = ({
 }) => {
 
   const navigation = useNavigation();
-  const bottomSheetRef=useRef(null);
+  const bottomSheetRef = useRef(null);
+  const bottomSheetInviteRef = useRef(null);
 
-  const onButtonClick = () => {
-    // navigation.navigate('AppFlowStack');
+  const onAccessContactClick = () => {
+    bottomSheetInviteRef.current.open();
+  }
+  const onEnterReferralClick = () => {
     bottomSheetRef.current.open();
   }
 
   return (
 
     <View style={styles.container}>
-      <ScrollView style={styles.contentContainer}>
-      <HeaderComponent />
-      <ImageCarousel />
-        
-        <TitleSubtitle
-          style={{ paddingHorizontal: 20, marginTop: 20 }}
-          title={title}
-          subTitle={subTitle}
-          centerTextAlign={true}
-          isDarkTheme={true}
-        />
-        <View style={{ height: Hp(4) }} />
+      <ScrollView >
+        <View style={styles.contentContainer}>
 
-        <Button
-          disabled={false}
-          style={styles.btnStyle}
-          title={BUTTON_LABLE.APPLY_FOR_MEMBERSHIP}
-          colorTheme={'light'}
-          onPress={onButtonClick}
-        />
-        <Text style={styles.textBelowStyle}>{LABLE.TWO_MINUTES_TO_COMPLETE}</Text>
+          <HeaderComponent isDarkTheme={true} />
 
+          <View style={{ height: Hp(2) }} />
+
+
+          <TitleSubtitle
+            style={{ paddingHorizontal: 20, marginTop: 20 }}
+            title={title}
+            subTitle={subTitle}
+            centerTextAlign={true}
+            isDarkTheme={true}
+            titleFontSize={36}
+            subTitleTextstyle={{ color: COLORS.light_text }}
+          />
+
+          <MiddleStaticComponent style={{ marginTop: 20 }} />
+
+          <View style={{ height: Hp(4) }} />
+
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={BUTTON_LABLE.ACCESS_MY_CONTACTS}
+            colorTheme={'light'}
+            onPress={onAccessContactClick}
+          />
+          <View style={{ height: Hp(1) }} />
+
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={BUTTON_LABLE.ENTER_REFERRAL_CODE}
+            colorTheme={'light'}
+            onPress={onEnterReferralClick}
+          />
+        </View>
 
       </ScrollView>
-      <InviteReferralBottomSheet ref={bottomSheetRef}/>
-      {/* <ReferralCodeBottomSheet ref={bottomSheetRef}/> */}
+      <InviteReferralBottomSheet ref={bottomSheetInviteRef} />
+      <ReferralCodeBottomSheet ref={bottomSheetRef} />
 
     </View>
   );
@@ -77,6 +95,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+    flexDirection: 'column', alignItems: 'center'
   },
   btnStyle: {
     width: Wp(85),

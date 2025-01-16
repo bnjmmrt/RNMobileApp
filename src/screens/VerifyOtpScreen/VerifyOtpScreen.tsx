@@ -8,11 +8,13 @@ import BackButton from '../../component/BackButton/BackButton';
 import Button from '../../component/Button';
 import OTPComponent from '../../component/OTPComponent/OTPComponent';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { useCheckMemberLoginMutation, useMemberLoginMutation } from '../..//redux/actions/login';
+import { useCheckMemberLoginMutation, useMemberLoginMutation } from '../../redux/slices/apiSlice';
 import { FlashMessageComponent } from '../../component/FlashMessageComponent/FlashMessageComponent';
 import FullScreenLoader from '../../component/FullScreenLoader';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
 import { CommonActions } from '@react-navigation/native';
+import { setLoginData } from '../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -33,7 +35,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     const [isMemberExist, setMemberExist] = useState<boolean>(false);
     const [checkMemberLogin] = useCheckMemberLoginMutation();
     const [memberLogin] = useMemberLoginMutation();
-
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const sendTo = route.params.isEmail ? route.params.email : route.params.phone;
@@ -48,8 +50,6 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     const handleBackPress = () => {
         navigation.goBack();
     };
-
-
 
     const sendOtp = async (isResend: boolean) => {
         try {
@@ -81,8 +81,12 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
             }
             setIsLoading(true)
             const response = await memberLogin(requestParam).unwrap();
-            if(response.status == 200){
-                redirectToHome()
+            if (response.status == 200) {
+                const data ={
+                    ...response.data,
+                    varifyStatus: route.params.isEmail ? 1 : 2
+                }
+                redirectToHome(data)
             }
 
             setIsLoading(false)
@@ -96,15 +100,16 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     };
 
 
-    const redirectToHome = () => {
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: 'BottomTabBar' }],
-          })
-        );
-      };
-
+    const redirectToHome = (data: any) => {
+        dispatch(setLoginData(data))
+        navigation.navigate("AppStack")
+        // navigation.dispatch(
+        //     CommonActions.reset({
+        //         index: 0,
+        //         routes: [{ name: 'AppStack' }],
+        //     })
+        // );
+    };
 
     return (
         <KeyboardAvoidingView

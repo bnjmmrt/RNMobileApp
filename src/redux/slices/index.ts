@@ -8,7 +8,7 @@ import { baseApi } from '../../ApiManager/baseApi';
 export const rootReducer = combineReducers({
   auth: authReducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
-  [baseApi.reducerPath]: baseApi.reducer,
+  // [baseApi.reducerPath]: baseApi.reducer,
   appFlow:appFlowSlice,
 });
 

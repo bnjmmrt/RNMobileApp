@@ -11,7 +11,7 @@ const ProfileScreenStyle = () => {
             flex: 1,
             alignItems: 'center',
             // justifyContent: 'center',
-            backgroundColor: COLORS.black
+            backgroundColor: COLORS.white
         },
         contentContainer: {
             flex: 1,
@@ -30,10 +30,10 @@ const ProfileScreenStyle = () => {
         },
         textBelowStyle: {
             color: COLORS.light_gray,
-            fontSize: 12,
+            fontSize: 14,
             textAlign:'center',
             fontFamily: fontFamily.ABCDiatype_Regular,
-            marginVertical: Hp(1),
+            marginBottom: 100
         },
     });
 };

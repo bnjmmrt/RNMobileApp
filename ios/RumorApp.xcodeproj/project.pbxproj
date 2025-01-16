@@ -50,7 +50,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* RumorAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RumorAppTests.m; sourceTree = "<group>"; };
 		0963F3B52D2D579B0069369B /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
-		0CFFD819FD8749E482C8308F /* ABCDiatype-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-Bold.ttf"; path = "../src/assets/fonts/ABCDiatype-Bold.ttf"; sourceTree = "<group>"; };
+		0CFFD819FD8749E482C8308F /* ABCDiatype-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-Bold.ttf"; path = "../src/assets/fonts/ABCDiatype-Bold.ttf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* RumorApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RumorApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = RumorApp/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = RumorApp/AppDelegate.mm; sourceTree = "<group>"; };
@@ -58,32 +58,32 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = RumorApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = RumorApp/main.m; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = RumorApp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		186FD540EB524E67B7BD07BD /* RomieTrial-Heavy.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Heavy.otf"; path = "../src/assets/fonts/RomieTrial-Heavy.otf"; sourceTree = "<group>"; };
+		186FD540EB524E67B7BD07BD /* RomieTrial-Heavy.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Heavy.otf"; path = "../src/assets/fonts/RomieTrial-Heavy.otf"; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-RumorApp-RumorAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RumorApp-RumorAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1D10291175C146BEB79D3415 /* RomieTrial-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Bold.otf"; path = "../src/assets/fonts/RomieTrial-Bold.otf"; sourceTree = "<group>"; };
-		2225DA7E12CA44CB9987A28A /* ABCDiatype-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-ThinItalic.ttf"; path = "../src/assets/fonts/ABCDiatype-ThinItalic.ttf"; sourceTree = "<group>"; };
+		1D10291175C146BEB79D3415 /* RomieTrial-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Bold.otf"; path = "../src/assets/fonts/RomieTrial-Bold.otf"; sourceTree = "<group>"; };
+		2225DA7E12CA44CB9987A28A /* ABCDiatype-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-ThinItalic.ttf"; path = "../src/assets/fonts/ABCDiatype-ThinItalic.ttf"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-RumorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RumorApp.debug.xcconfig"; path = "Target Support Files/Pods-RumorApp/Pods-RumorApp.debug.xcconfig"; sourceTree = "<group>"; };
-		48342414648D45939C7833EB /* ABCDiatype-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-Medium.ttf"; path = "../src/assets/fonts/ABCDiatype-Medium.ttf"; sourceTree = "<group>"; };
+		48342414648D45939C7833EB /* ABCDiatype-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-Medium.ttf"; path = "../src/assets/fonts/ABCDiatype-Medium.ttf"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-RumorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RumorApp.release.xcconfig"; path = "Target Support Files/Pods-RumorApp/Pods-RumorApp.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-RumorApp-RumorAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RumorApp-RumorAppTests.debug.xcconfig"; path = "Target Support Files/Pods-RumorApp-RumorAppTests/Pods-RumorApp-RumorAppTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-RumorApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RumorApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		793D2D537A0B453F925D3EA6 /* RomieTrial-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Black.otf"; path = "../src/assets/fonts/RomieTrial-Black.otf"; sourceTree = "<group>"; };
+		793D2D537A0B453F925D3EA6 /* RomieTrial-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Black.otf"; path = "../src/assets/fonts/RomieTrial-Black.otf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = RumorApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-RumorApp-RumorAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RumorApp-RumorAppTests.release.xcconfig"; path = "Target Support Files/Pods-RumorApp-RumorAppTests/Pods-RumorApp-RumorAppTests.release.xcconfig"; sourceTree = "<group>"; };
-		8BC50AD5F9C4455B8314CEDE /* ABCDiatype-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-Regular.ttf"; path = "../src/assets/fonts/ABCDiatype-Regular.ttf"; sourceTree = "<group>"; };
-		999129012E3E4B74A3F7EE50 /* ABCDiatype-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-LightItalic.ttf"; path = "../src/assets/fonts/ABCDiatype-LightItalic.ttf"; sourceTree = "<group>"; };
-		A69C22DE75D74736B2A3AE4A /* ABCDiatype-RegularItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-RegularItalic.ttf"; path = "../src/assets/fonts/ABCDiatype-RegularItalic.ttf"; sourceTree = "<group>"; };
-		A9859D5623E140B1BD9AAF28 /* RomieTrial-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Light.otf"; path = "../src/assets/fonts/RomieTrial-Light.otf"; sourceTree = "<group>"; };
-		BA26B92868CB4D78ACDD52D9 /* RomieTrial-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Regular.otf"; path = "../src/assets/fonts/RomieTrial-Regular.otf"; sourceTree = "<group>"; };
-		BF49A30032ED4A579F18027C /* RomieTrial-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Medium.otf"; path = "../src/assets/fonts/RomieTrial-Medium.otf"; sourceTree = "<group>"; };
-		C7388A0F4CCA49FC94EF7685 /* RomieTrial-Regular-Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Regular-Italic.otf"; path = "../src/assets/fonts/RomieTrial-Regular-Italic.otf"; sourceTree = "<group>"; };
-		D52DCAA07A4C429C98C154F8 /* ABCDiatype-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-BoldItalic.ttf"; path = "../src/assets/fonts/ABCDiatype-BoldItalic.ttf"; sourceTree = "<group>"; };
+		8BC50AD5F9C4455B8314CEDE /* ABCDiatype-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-Regular.ttf"; path = "../src/assets/fonts/ABCDiatype-Regular.ttf"; sourceTree = "<group>"; };
+		999129012E3E4B74A3F7EE50 /* ABCDiatype-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-LightItalic.ttf"; path = "../src/assets/fonts/ABCDiatype-LightItalic.ttf"; sourceTree = "<group>"; };
+		A69C22DE75D74736B2A3AE4A /* ABCDiatype-RegularItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-RegularItalic.ttf"; path = "../src/assets/fonts/ABCDiatype-RegularItalic.ttf"; sourceTree = "<group>"; };
+		A9859D5623E140B1BD9AAF28 /* RomieTrial-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Light.otf"; path = "../src/assets/fonts/RomieTrial-Light.otf"; sourceTree = "<group>"; };
+		BA26B92868CB4D78ACDD52D9 /* RomieTrial-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Regular.otf"; path = "../src/assets/fonts/RomieTrial-Regular.otf"; sourceTree = "<group>"; };
+		BF49A30032ED4A579F18027C /* RomieTrial-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Medium.otf"; path = "../src/assets/fonts/RomieTrial-Medium.otf"; sourceTree = "<group>"; };
+		C7388A0F4CCA49FC94EF7685 /* RomieTrial-Regular-Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Regular-Italic.otf"; path = "../src/assets/fonts/RomieTrial-Regular-Italic.otf"; sourceTree = "<group>"; };
+		D52DCAA07A4C429C98C154F8 /* ABCDiatype-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-BoldItalic.ttf"; path = "../src/assets/fonts/ABCDiatype-BoldItalic.ttf"; sourceTree = "<group>"; };
 		E1DEDC0E8AE8A1B0EBF6C621 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = RumorApp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		EFCE934A610F48D9ADA08397 /* RomieTrial.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = RomieTrial.otf; path = ../src/assets/fonts/RomieTrial.otf; sourceTree = "<group>"; };
-		F05CB2613ADB4894AFE4C073 /* ABCDiatype-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-MediumItalic.ttf"; path = "../src/assets/fonts/ABCDiatype-MediumItalic.ttf"; sourceTree = "<group>"; };
-		F0DA1002D45F49149BA805FC /* ABCDiatype-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-Light.ttf"; path = "../src/assets/fonts/ABCDiatype-Light.ttf"; sourceTree = "<group>"; };
-		F94602C75C57417586F59987 /* ABCDiatype-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-Thin.ttf"; path = "../src/assets/fonts/ABCDiatype-Thin.ttf"; sourceTree = "<group>"; };
+		EFCE934A610F48D9ADA08397 /* RomieTrial.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = RomieTrial.otf; path = ../src/assets/fonts/RomieTrial.otf; sourceTree = "<group>"; };
+		F05CB2613ADB4894AFE4C073 /* ABCDiatype-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-MediumItalic.ttf"; path = "../src/assets/fonts/ABCDiatype-MediumItalic.ttf"; sourceTree = "<group>"; };
+		F0DA1002D45F49149BA805FC /* ABCDiatype-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-Light.ttf"; path = "../src/assets/fonts/ABCDiatype-Light.ttf"; sourceTree = "<group>"; };
+		F94602C75C57417586F59987 /* ABCDiatype-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-Thin.ttf"; path = "../src/assets/fonts/ABCDiatype-Thin.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,7 +171,6 @@
 				EFCE934A610F48D9ADA08397 /* RomieTrial.otf */,
 			);
 			name = Resources;
-			path = "";
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -557,6 +556,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = RumorApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -588,6 +588,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = RumorApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -683,11 +684,7 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-Wl",
-					"-ld_classic",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -760,11 +757,7 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-Wl",
-					"-ld_classic",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;

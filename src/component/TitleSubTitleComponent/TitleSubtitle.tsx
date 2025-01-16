@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, View, ViewStyle } from 'react-native';
+import { Text, StyleSheet, View, ViewStyle, TextStyle } from 'react-native';
 import { Hp, Wp } from '../../utils/dimensions';
 import { fontFamily } from '../../utils/functions';
 import { COLORS } from '../../utils/constants';
@@ -8,16 +8,24 @@ interface TitleSubtitleProps {
     title: string;
     subTitle?: string; // Made optional
     centerTextAlign?: boolean; // Made optional
+    titleFontSize?: number,
+    subTitleMargin?: number,
     isDarkTheme?: boolean; // Made optional
     style?: ViewStyle; // Added style prop
+    titleTextstyle?: TextStyle; // Added style prop
+    subTitleTextstyle?: TextStyle; // Added style prop
 }
 
 const TitleSubtitle: React.FC<TitleSubtitleProps> = ({
     title,
     subTitle = '', // Default to empty string
     centerTextAlign = false, // Default value set
-    isDarkTheme = false, // Default value set
+    isDarkTheme = false, // Default value 
+    titleFontSize = 32,
+    subTitleMargin = Hp(2),
     style, // Destructure style prop
+    titleTextstyle,
+    subTitleTextstyle
 
 }) => {
     return (
@@ -28,8 +36,9 @@ const TitleSubtitle: React.FC<TitleSubtitleProps> = ({
                     {
                         textAlign: centerTextAlign ? 'center' : 'left',
                         color: isDarkTheme ? COLORS.white : COLORS.black,
-                        fontSize: centerTextAlign ? 28 : 32
+                        fontSize: titleFontSize 
                     },
+                    titleTextstyle
                 ]}
             >
                 {title}
@@ -40,9 +49,10 @@ const TitleSubtitle: React.FC<TitleSubtitleProps> = ({
                         styles.subtitle,
                         {
                              textAlign: centerTextAlign ? 'center' : 'left' ,
-                             marginVertical: centerTextAlign ? Hp(1) : Hp(2)
+                             marginVertical: subTitleMargin
 
                         },
+                        subTitleTextstyle
                     ]}
                 >
                     {subTitle}

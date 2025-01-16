@@ -8,7 +8,6 @@ import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Input from '../../../component/Input/Input';
 import Header from '../../../component/Header/Header';
-import { useGetPostsQuery } from '../../../redux/slices/apiSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/slices';
 import { setFirstName, setIsEmailVerified, setLastName, setPageProgress } from '../../../redux/slices/appFlowSlice';
@@ -16,8 +15,6 @@ import { setFirstName, setIsEmailVerified, setLastName, setPageProgress } from '
 interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
-  const { data: posts, error, isLoading } = useGetPostsQuery();
-
   const dispatch = useDispatch();
   const userDetails = useSelector((state: RootState) => state.appFlow);
   const isEmailPhoneBothVerified = useSelector((state: RootState) => state.appFlow.isEmailPhoneBothVerified
@@ -45,7 +42,9 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
     }
   };
 
-  const handleBackPress = () => {};
+  const handleBackPress = () => {
+    navigation.goBack()
+  };
 
   return (
     <SafeAreaView style={styles.container}>

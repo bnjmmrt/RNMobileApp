@@ -26,7 +26,20 @@ const IMAGES = {
   rumorLogoDark: require('./monogram_dark.png'),
   eventCoverPlaceholders: require('./EventCoverPlaceholders.png'),
   eventCoverPlaceholders1: require('./EventCoverPlaceholders1.png'),
-  check:require('./check.png')
+  edit: require('./pencil.png'),
+  notification: require('./notification.png'),
+  feedback: require('./feedback.png'),
+  contact: require('./contact.png'),
+  arrowRight: require('./arrowRight.png'),
+
+  instagramLogo: require('./instagram.png'),
+  heart:require('./heart.png'),
+  check:require('./check.png'),
+  following:require('./following.png'),
+  thumbsUp:require('./thumbs-up.png'),
+  connectedAccount:require('./connectedAccount.png'),
+  checkCircleFilled:require('./check-circle-filled.png'),
+
 }
 
 export default IMAGES;

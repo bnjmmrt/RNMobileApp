@@ -9,7 +9,9 @@ import HeaderComponent from '../../component/HeaderComponent';
 import SearchInput from '../../component/SearchInput';
 import DynamicTabBar from '../../component/ActiveTabBar/DynamicTabBar';
 import EventItem from './EventItem';
-import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/AfterAppStaticComponent';
+import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/slices';
 // Define the type for navigation props
 interface EventScreenProps extends NativeStackScreenProps<any, any> { }
 interface TabItem {
@@ -28,7 +30,8 @@ interface EventItem {
 }
 const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const styles = EventScreenStyle();
-  const [isInvited, setInvited] = useState<boolean>(false)
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const [isInvited, setInvited] = useState<boolean>(loginData?.isInvited || false)
   const tabsData: TabItem[] = [
     { id: '1', label: BUTTON_LABLE.UPCOMING },
     { id: '2', label: BUTTON_LABLE.INVITED },
@@ -39,9 +42,9 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
 
   const events: EventItem[] = [
     { id: '1', title: 'Revolve Festival', date: 'Fri, Apr 13, 9:00PM – 11:00PM EST', type: 'RSVP to See Location', location: 'Los Angeles, California', image: IMAGES.eventCoverPlaceholders },
-    { id: '1', title: 'Revolve Festival', date: 'Fri, Apr 13, 9:00PM – 11:00PM EST', type: 'RSVP to See Location', location: 'Los Angeles, California', image: IMAGES.eventCoverPlaceholders1 },
-    { id: '1', title: 'Revolve Festival', date: 'Fri, Apr 13, 9:00PM – 11:00PM EST', type: 'RSVP to See Location', location: 'Los Angeles, California', image: IMAGES.eventCoverPlaceholders },
-    { id: '1', title: 'Revolve Festival', date: 'Fri, Apr 13, 9:00PM – 11:00PM EST', type: 'RSVP to See Location', location: 'Los Angeles, California', image: IMAGES.eventCoverPlaceholders1 },
+    { id: '2', title: 'Revolve Festival', date: 'Fri, Apr 13, 9:00PM – 11:00PM EST', type: 'RSVP to See Location', location: 'Los Angeles, California', image: IMAGES.eventCoverPlaceholders1 },
+    { id: '3', title: 'Revolve Festival', date: 'Fri, Apr 13, 9:00PM – 11:00PM EST', type: 'RSVP to See Location', location: 'Los Angeles, California', image: IMAGES.eventCoverPlaceholders },
+    { id: '4', title: 'Revolve Festival', date: 'Fri, Apr 13, 9:00PM – 11:00PM EST', type: 'RSVP to See Location', location: 'Los Angeles, California', image: IMAGES.eventCoverPlaceholders1 },
   ];
 
   const handleTabChange = (tab: TabItem) => {
