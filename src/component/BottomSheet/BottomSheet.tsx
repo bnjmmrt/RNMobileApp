@@ -9,6 +9,8 @@ interface BottomSheetComponentProps {
     snapPoints?: string[]; // Allows customizable snap points
     onChange?: (index: number) => void;
     onClose?: () => void;
+    ref: any;
+    backColor?: string
 }
 
 const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
@@ -16,6 +18,7 @@ const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
     snapPoints = ['40%'], // Default snap point
     onChange,
     onClose,
+    backColor = "black"
 }) => {
     const sheetRef = useRef<BottomSheet>(null);
     const handleSheetChange = useCallback(
@@ -47,7 +50,7 @@ const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
                 }]}
                 onClose={handleClosePress}
                 onChange={handleSheetChange}
-                backgroundStyle={{ backgroundColor: COLORS.black }}
+                backgroundStyle={{ backgroundColor: backColor }}
             >
                 <BottomSheetScrollView nestedScrollEnabled>{children}</BottomSheetScrollView>
             </BottomSheet>

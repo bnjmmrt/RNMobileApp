@@ -11,6 +11,7 @@ interface InputProps {
   rightImage?: any;
   onPressImage?:()=>void;
   defaultValue?: string; 
+  iconStyle?: any;
 }
 
 const Input = forwardRef((props: InputProps, ref) => {
@@ -21,7 +22,8 @@ const Input = forwardRef((props: InputProps, ref) => {
     leftImage,
     rightImage,
     onPressImage,
-    defaultValue=''
+    defaultValue = '',
+    iconStyle = {},
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -63,13 +65,13 @@ const Input = forwardRef((props: InputProps, ref) => {
           styles.inputContainer,
           errorMessage ? styles.errorInputWrapper : null,
         ]}>
-        {leftImage && <Image source={leftImage} style={styles.leftImage} />}
+        {leftImage && <Image source={leftImage} style={[iconStyle, styles.leftImage]} />}
         <TextInput
           {...props}
           style={styles.input}
           value={inputText}
           placeholder={placeholder}
-          // placeholderTextColor={COLORS.placeholderGray}
+          placeholderTextColor={COLORS.placeHodler}
           onChangeText={text => {
             setInputText(text);
             setErrorMessage(''); // Clear error on text change

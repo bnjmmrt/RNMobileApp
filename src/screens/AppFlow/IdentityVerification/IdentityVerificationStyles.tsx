@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { Wp, Hp } from '../../../utils/dimensions';
 import { COLORS } from '../../../utils/constants';
+import { fontFamily } from '../../../utils/functions';
 
 const ProfilePhotoScreenStyles = () => {
   return StyleSheet.create({
@@ -11,6 +12,13 @@ const ProfilePhotoScreenStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: 100,
+    },
+    btnSmallStyle: {
+      width: 'auto',
+      borderRadius: 100,
+      alignSelf: 'center',
+      backgroundColor: COLORS.tabBorderColor,
+      marginTop: Hp(1),
     },
     contentContainer: {
       flex: 1,
@@ -41,6 +49,47 @@ const ProfilePhotoScreenStyles = () => {
     selectedGenderText: {
       color: COLORS.white,
     },
+    mainContainer: {
+      borderWidth: 1,
+      borderColor: COLORS.borderGray,
+      borderRadius: 8,
+      alignItems: 'center',
+      padding: 15,
+      marginTop: 20,
+    },
+    title: {
+      color: COLORS.black,
+      fontSize: 20,
+      fontFamily: fontFamily.RomieTrial_Bold,
+    },
+    subTitle: {
+      color: COLORS.light_gray,
+      fontSize: 14,
+      fontFamily: fontFamily.ABCDiatype_Regular,
+      marginVertical: Hp(0.25),
+      textAlign: 'center',
+    },
+    numberContainer: {
+      height: 20,
+      width: 20,
+      borderRadius: 10,
+      backgroundColor: COLORS.surfaceSecondary,
+      fontSize: 14,
+      marginVertical: Hp(1),
+      alignItems: 'center',
+      justifyContent: 'center',
+      alignSelf: 'center'
+    },
+    numberText: {
+      color: COLORS.black,
+      fontSize: 14,
+      fontFamily: fontFamily.ABCDiatype_Regular,
+      textAlign: 'center',
+    },
+    btnRumor: {
+      color: COLORS.black,
+      backgroundColor: COLORS.tabBorderColor
+    }
   });
 };
 
