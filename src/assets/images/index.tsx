@@ -32,6 +32,7 @@ const IMAGES = {
   contact: require('./contact.png'),
   arrowRight: require('./arrowRight.png'),
 
+  check:require('./check.png')
 }
 
 export default IMAGES;
