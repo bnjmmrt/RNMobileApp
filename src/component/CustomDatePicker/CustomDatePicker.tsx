@@ -14,6 +14,7 @@ const DatePickerComponent: React.FC<Props> = ({date, setOpen, setDate}) => {
       <DatePicker
         title={LABLE.BIRTHDAY}
         modal
+        mode="date"
         open={true}
         date={date}
         onConfirm={(date: any) => {
