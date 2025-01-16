@@ -11,7 +11,7 @@ import OTPComponent from '../../../component/OTPComponent/OTPComponent';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { FlashMessageComponent } from '../../../component/FlashMessageComponent/FlashMessageComponent';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPageProgress } from '../../../redux/slices/appFlowSlice';
+import { setIsEmailPhoneBothVerified, setPageProgress } from '../../../redux/slices/appFlowSlice';
 import { RootState } from '../../../redux/slices';
 
 interface VerifyOtpScreenProps extends NativeStackScreenProps<any, any> { }
@@ -35,6 +35,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
 
   const onNextClick = () => {
     dispatch(setPageProgress(3));
+    dispatch(setIsEmailPhoneBothVerified(true));
     navigation.navigate('GenderScreen');
   };
 

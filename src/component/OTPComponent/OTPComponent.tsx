@@ -11,7 +11,7 @@ import { fontFamily } from '../../utils/functions';
 
 type OTPComponentProps = {
     performCodeVerification: (code: string) => void;
-    resendVerificationCode: () => void;
+    resendVerificationCode: (isResend: boolean) => void;
 };
 
 type OTPComponentHandle = {
@@ -44,7 +44,7 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>((props, r
     };
 
     const onResendPress = (): void => {
-        props.resendVerificationCode();
+        props.resendVerificationCode(true);
     };
 
 

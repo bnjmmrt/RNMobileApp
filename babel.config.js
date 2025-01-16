@@ -4,7 +4,7 @@ module.exports = {
     [
       'module-resolver',
       {
-        root: ['./src'],
+        root: ['./'],
         extensions: [
           '.ios.ts',
           '.android.ts',
@@ -16,12 +16,15 @@ module.exports = {
           '.js',
           '.json',
         ],
-        alias: {
-          '@images': './src/assets/images',
-          '@button': './src/component/Button',
-          '@dimensions': './src/utils/dimensions',
-          "string-constants": '.src/utils/constants', 
-        },
+        // alias: {
+        //   src: './src',
+        // },
+        // alias: {
+        //   '@images': './src/assets/images',
+        //   '@button': './src/component/Button',
+        //   '@dimensions': './src/utils/dimensions',
+        //   "string-constants": '.src/utils/constants', 
+        // },
       },
     ],
   ],

@@ -20,6 +20,8 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
 
   const dispatch = useDispatch();
   const userDetails = useSelector((state: RootState) => state.appFlow);
+  const isEmailPhoneBothVerified = useSelector((state: RootState) => state.appFlow.isEmailPhoneBothVerified
+);
   // console.log("postsssss",posts);
   // console.log("userDetails",userDetails);
   const styles = EmailPhoneStyles();
@@ -33,8 +35,13 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
       dispatch(setFirstName(firstNameRef.current.inputText));
       dispatch(setLastName(lastNameRef.current.inputText));
       dispatch(setIsEmailVerified(false));
-      dispatch(setPageProgress(2));
-      navigation.navigate('EnterEmail');
+      if(isEmailPhoneBothVerified) {
+        dispatch(setPageProgress(3));
+        navigation.navigate('GenderScreen');
+      } else {
+        dispatch(setPageProgress(2));
+        navigation.navigate('EnterEmail');
+      }
     }
   };
 

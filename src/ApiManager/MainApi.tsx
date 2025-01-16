@@ -1,10 +1,9 @@
 import axios, { AxiosHeaders } from 'axios';
-import store from '../redux/store';
 import { ForceLogout, getApiBaseUrl, getItem, printLog } from '../utils/functions';
 import { TagKey } from './config';
 import { statusCode } from './config';
 
-const { dispatch, getState } = store;
+// const { dispatch, getState } = store;
 
 // Helper function to get headers
 export async function getHeaders(): Promise<{ headers: AxiosHeaders }> {

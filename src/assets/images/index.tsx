@@ -11,6 +11,21 @@ const IMAGES = {
   search: require('./search-md.png'),
   introVideo: require('./intro_video.mp4'),
   pencil: require('./pencil-01.png'),
-};
+  rumorLogo: require('./Wordmark.png'),
+  carousuelImage1: require('./CarousuelImage1.png'),
+  homeTab: require('./homeTab.png'),
+  eventTab: require('./eventTab.png'),
+  chatTab: require('./chatTab.png'),
+  bell: require('./bell.png'),
+  profileTab: require('./profileTab.png'),
+  frame1: require('./Frame1.png'),
+  frame2: require('./Frame2.png'),
+  frame3: require('./Frame3.png'),
+  frame4: require('./Frame4.png'),
+  imageText: require('./WW.png'),
+  rumorLogoDark: require('./monogram_dark.png'),
+  eventCoverPlaceholders: require('./EventCoverPlaceholders.png'),
+  eventCoverPlaceholders1: require('./EventCoverPlaceholders1.png'),
+}
 
 export default IMAGES;

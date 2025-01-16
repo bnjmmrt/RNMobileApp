@@ -13,6 +13,7 @@ interface UserDetailsState {
   profilePic:any;
   pageProgress: number;
   isEmailVerified: boolean;
+  isEmailPhoneBothVerified: boolean;
 }
 
 const initialState: UserDetailsState = {
@@ -28,6 +29,7 @@ const initialState: UserDetailsState = {
   profilePic:'',
   pageProgress: 1,
   isEmailVerified: false,
+  isEmailPhoneBothVerified: false,
 };
 
 const appFlowSlice = createSlice({
@@ -70,6 +72,9 @@ const appFlowSlice = createSlice({
     setIsEmailVerified(state, action: PayloadAction<any>) {
       state.isEmailVerified = action.payload;
     },
+    setIsEmailPhoneBothVerified(state, action: PayloadAction<any>) {
+      state.isEmailPhoneBothVerified = action.payload;
+    },
     resetAppFlowDetails(state) {
       // Reset state to initial values
       Object.assign(state, initialState);
@@ -90,6 +95,7 @@ export const {
   setPageProgress,
   setProfilePic,
   setIsEmailVerified,
+  setIsEmailPhoneBothVerified,
   resetAppFlowDetails,
 } = appFlowSlice.actions;
 

@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { persistStore, persistReducer } from 'redux-persist';
 import {rootReducer} from './slices';
 import { apiSlice } from './slices/apiSlice';
+import { baseApi } from '../ApiManager/baseApi';
 
 // Middleware: Redux Persist Config
 const persistConfig = {
@@ -37,3 +38,14 @@ export const persistor = persistStore(store);
 export type AppDispatch = typeof store.dispatch;
 
 export default { store, persistor };
+
+
+// import { baseApi } from '../ApiManager/baseApi'; // Base API slice
+
+// export const store = configureStore({
+//   reducer: {
+//     [baseApi.reducerPath]: baseApi.reducer,
+//   },
+//   middleware: (getDefaultMiddleware) =>
+//     getDefaultMiddleware().concat(baseApi.middleware),
+// });
