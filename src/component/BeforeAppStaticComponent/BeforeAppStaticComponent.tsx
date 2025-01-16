@@ -42,6 +42,8 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           style={{ paddingHorizontal: 20, marginTop: 20 }}
           title={title}
           subTitle={subTitle}
+          titleFontSize={28}
+          subTitleMargin={Hp(1)}
           centerTextAlign={true}
           isDarkTheme={true}
         />

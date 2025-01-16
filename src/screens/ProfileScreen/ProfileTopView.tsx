@@ -1,5 +1,5 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
@@ -7,18 +7,12 @@ import { fontFamily } from '../../utils/functions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Wp, Hp } from '../../utils/dimensions';
 import ButtonSmall from '../../component/ButtonSmall';
+import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
 
 interface ProfileTopViewProps {
-    item: {
-        id: string;
-        title: string;
-        date: string;
-        type: string;
-        location: string;
-        image: string;
-    };
+
 }
-const ProfileTopView: React.FC<ProfileTopViewProps> = ({ item }) => {
+const ProfileTopView: React.FC<ProfileTopViewProps> = ({ }) => {
 
 
     // Handle the "Next" button press
@@ -28,13 +22,29 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({ item }) => {
 
     return (
         <View style={styles.container}>
-            <View style={[styles.imageContainer]}>
-                <Image source={IMAGES.rumorLogoDark} style={styles.icon} />
+
+            <View style={styles.profilePhotoContainer}>
+                <Image
+                    style={styles.profilePhotoContainer}
+                    source={IMAGES.backgroundLogin}
+                    resizeMode="cover"
+                />
+                <TouchableOpacity style={styles.iconContainer}>
+                    <Image
+                        resizeMode="contain"
+                        source={IMAGES.pencil}
+                        style={styles.ic_pencil}
+                    />
+                </TouchableOpacity>
             </View>
-            <View style={styles.contentContainer}>
-                <Text style={styles.titleStyle}>{item.title}</Text>
-                <Text style={styles.subtitle}>{item.date}</Text>
-            </View>
+            <TitleSubtitle
+                title='Bessie Cooper'
+                subTitle='Non-Member'
+                centerTextAlign={true}
+                titleFontSize={38}
+                subTitleMargin={5}
+                style={{ margin: 20 }} />
+
         </View>
     );
 };
@@ -47,16 +57,12 @@ const styles = StyleSheet.create({
         paddingVertical: 7
     },
     container: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         padding: 10,
-        flex: 1,
-        width: Wp(90),
-        // height: Hp(25),
+        marginTop:10,
+        width: Wp(100),
         backgroundColor: COLORS.white,
-        borderColor: COLORS.borderGray,
-        borderRadius: 10,
-        borderWidth: 1,
-        marginBottom: 10,
+
     },
     imageContainer: {
         alignItems: 'center',
@@ -93,6 +99,30 @@ const styles = StyleSheet.create({
         marginTop: 5,
         color: COLORS.errorText,
     },
+    profilePhotoContainer: {
+        height: 100,
+        width: 100,
+        borderRadius: 50,
+        backgroundColor: COLORS.white,
+        alignSelf: 'center',
+    },
+    iconContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: COLORS.black,
+        borderRadius: 50,
+        width: 32,
+        height: 32,
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+    },
+    ic_pencil: {
+        height: 16,
+        width: 16,
+        tintColor: COLORS.white,
+    },
+
 });
 
 export default ProfileTopView;

@@ -63,7 +63,8 @@ const ProfilePhotoScreenStyles = () => {
       height: 16,
       width: 16,
       tintColor: COLORS.white,
-    }
+    },
+    
   });
 };
 

@@ -8,6 +8,8 @@ interface TitleSubtitleProps {
     title: string;
     subTitle?: string; // Made optional
     centerTextAlign?: boolean; // Made optional
+    titleFontSize?: number,
+    subTitleMargin?: number,
     isDarkTheme?: boolean; // Made optional
     style?: ViewStyle; // Added style prop
 }
@@ -16,7 +18,9 @@ const TitleSubtitle: React.FC<TitleSubtitleProps> = ({
     title,
     subTitle = '', // Default to empty string
     centerTextAlign = false, // Default value set
-    isDarkTheme = false, // Default value set
+    isDarkTheme = false, // Default value 
+    titleFontSize = 32,
+    subTitleMargin = Hp(2),
     style, // Destructure style prop
 
 }) => {
@@ -28,7 +32,7 @@ const TitleSubtitle: React.FC<TitleSubtitleProps> = ({
                     {
                         textAlign: centerTextAlign ? 'center' : 'left',
                         color: isDarkTheme ? COLORS.white : COLORS.black,
-                        fontSize: centerTextAlign ? 28 : 32
+                        fontSize: titleFontSize 
                     },
                 ]}
             >
@@ -40,7 +44,7 @@ const TitleSubtitle: React.FC<TitleSubtitleProps> = ({
                         styles.subtitle,
                         {
                              textAlign: centerTextAlign ? 'center' : 'left' ,
-                             marginVertical: centerTextAlign ? Hp(1) : Hp(2)
+                             marginVertical: subTitleMargin
 
                         },
                     ]}

@@ -1,35 +1,23 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AuthState {
-  userData: object;
-  biometricType: string;
-  isBiometricEnabled: boolean;
-  biometricAuthTimestamp: string;
+  loginData: object;
 }
 
 const initialState: AuthState = {
-  userData: {},
-  biometricType: "",
-  isBiometricEnabled: false,
-  biometricAuthTimestamp: "",
+  loginData: {},
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setBiometricType(state, action: PayloadAction<any>) {
-      state.biometricType = action.payload;
-    },
-    setIsBiometricEnabled(state, action: PayloadAction<any>) {
-      state.isBiometricEnabled = action.payload;
-    },
-    setBiometricAuthTimestamp(state, action: PayloadAction<any>) {
-      state.biometricAuthTimestamp = action.payload;
+    setLoginData(state, action: PayloadAction<any>) {
+      state.loginData = action.payload;
     },
   },
 });
 
-export const { setBiometricType, setIsBiometricEnabled, setBiometricAuthTimestamp } = authSlice.actions;
+export const { setLoginData } = authSlice.actions;
 
 export default authSlice.reducer;

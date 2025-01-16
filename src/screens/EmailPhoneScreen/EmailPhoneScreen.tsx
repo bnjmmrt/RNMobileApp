@@ -64,7 +64,7 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
                     <EmailInput ref={emailInputRef} />}
 
                 <View style={styles.spacer} />
-                <TermsAndPolicy setUrl={setWebUrl} />
+                <TermsAndPolicy setUrl={setWebUrl} type='large'showMessage ={true} />
                 <Button
                     disabled={false}
                     style={styles.btnStyle}
