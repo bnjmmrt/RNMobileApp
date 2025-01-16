@@ -2,7 +2,7 @@ import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
-import { COLORS } from '../../utils/constants';
+import { COLORS, PROFILE } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
 
 interface ListItemProps {
@@ -16,14 +16,62 @@ interface ListItemProps {
 
 const ProfileListItem: React.FC<ListItemProps> = ({ item }) => {
 
-    // Handle the "Next" button press
-    const handleNextPress = () => {
-
-    };
-
+    const handleItemClick = (item: ListItem) => {
+        switch (item.title) {
+          case PROFILE.EDIT_PROFILE:
+            console.log('Redirecting to Edit Profile...');
+            // Example: navigate('/edit-profile');
+            break;
+      
+          case PROFILE.FOLLOWING:
+            console.log('Redirecting to Following...');
+            // Example: navigate('/following');
+            break;
+      
+          case PROFILE.REFERRALS:
+            console.log('Redirecting to Referrals...');
+            // Example: navigate('/referrals');
+            break;
+      
+          case PROFILE.CONNECTED_ACCOUNTS:
+            console.log('Redirecting to Connected Accounts...');
+            // Example: navigate('/connected-accounts');
+            break;
+      
+          case PROFILE.MY_INTERESTS:
+            console.log('Redirecting to My Interests...');
+            // Example: navigate('/my-interests');
+            break;
+      
+          case PROFILE.NOTIFICATION:
+            console.log('Redirecting to Notifications...');
+            // Example: navigate('/notifications');
+            break;
+      
+          case PROFILE.FEEDBACK:
+            console.log('Redirecting to Feedback...');
+            // Example: navigate('/feedback');
+            break;
+      
+          case PROFILE.CONTACT_SUPPORT:
+            console.log('Redirecting to Contact Support...');
+            // Example: navigate('/contact-support');
+            break;
+      
+          case PROFILE.DELETE_ACCOUNT:
+            console.log('Redirecting to Delete Account...');
+            // Example: navigate('/delete-account');
+            break;
+      
+          default:
+            console.log('Unknown item clicked');
+            break;
+        }
+      };
+      
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={[styles.inputWrapper]}>
+            <TouchableOpacity style={[styles.inputWrapper]} onPress= {handleItemClick(item)}>
                 <Image source={item.image} style={styles.icon} />
                 <Text style={[styles.input, {color: item.image ? COLORS.black : COLORS.errorText }]}>{item.title}</Text>
                 {item.image && <Image source={IMAGES.arrowRight} />}

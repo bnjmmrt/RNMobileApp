@@ -18,7 +18,9 @@ export const BUTTON_LABLE = {
   INVITE_CONTACTS_VIA:'Invite Contacts via Link',
   INVITE:"Invite",
   SENT:'Sent',
-  REQUREST:'Request'
+  REQUREST:'Request',
+  ACCESS_MY_CONTACTS:'Access My Contacts',
+  ENTER_REFERRAL_CODE:"Enter Referral Code",
 }
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',
@@ -98,6 +100,11 @@ export const LABLE = {
   REQUEST_A_REFERRAL:'Request a referral from a Rumor member to boost your application.',
   CONTACTS:"Contacts",
   INVITE_FRIENDS_TO:"Invite friends to fast track your membership approval.",
+  YOU_ARE_ON_WAITLIST : "You’re on\nthe waitlist.",
+  FULL_ACCESS_UNLOCK:"Full access will be unlocked once your application is approved.",
+  FASTRACK_YOUR_APPLICATION: "Want to fast-track your application?",
+  REQUEST_REFERRAL_FROM_RUMOR:"Request referrals from Rumor members.",
+  INVITE_YOUR_FRIEND:"Invite your friends to join Rumor.",
 
 }
 
@@ -108,6 +115,10 @@ export const PROFILE ={
   CONTACT_SUPPORT:'Contact Support',
   DELETE_ACCOUNT:'Delete Account',
   LOGOUT:'Log Out',
+  FOLLOWING:'Following',
+  REFERRALS:'Referrals',
+  CONNECTED_ACCOUNTS:'Connected Accounts',
+  MY_INTERESTS:'My Interests',
 }
 
 export const ERROR_MESSAGE = {
@@ -122,6 +133,8 @@ export const COLORS = {
   black: '#1F1F1F',
   white: '#FFFFFF',
   light_gray: '#838282',
+  light_text:'#B5B5B5',
+  dark_gray: '#494949',
   lighter_gray: '#EEEEEE',
   disable: '#D7D3D0',
   borderGray: '#E1E1E1',
@@ -133,6 +146,7 @@ export const COLORS = {
   bgBackArrow: '#f4f4f4',
   transperantBackground: 'rgba(0, 0, 0, 0.5)',
   placeHodler: '#A2A1A1',
-  surfaceSecondary: '#CDBAB1'
+  surfaceSecondary: '#CDBAB1',
+  nearBlack:'#676767'
 }
 

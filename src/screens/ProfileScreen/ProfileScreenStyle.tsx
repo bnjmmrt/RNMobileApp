@@ -33,6 +33,7 @@ const ProfileScreenStyle = () => {
             fontSize: 14,
             textAlign:'center',
             fontFamily: fontFamily.ABCDiatype_Regular,
+            marginBottom: 100
         },
     });
 };

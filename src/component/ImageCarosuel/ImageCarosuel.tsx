@@ -71,16 +71,16 @@ const ImageCarousel: React.FC = ({ }) => {
 const styles = StyleSheet.create({
     container: {
         width: Wp(80),
-        paddingVertical: 20,
+        // paddingVertical: 20,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'black',
+        backgroundColor: COLORS.black,
         marginHorizontal: 30,
         borderRadius: 20,
     },
     image: {
         width: Wp(80),
-        height: Hp(30),
+        height: Hp(35),
         resizeMode: 'contain',
     },
     carouselContainer: {

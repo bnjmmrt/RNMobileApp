@@ -33,7 +33,13 @@ const IMAGES = {
   arrowRight: require('./arrowRight.png'),
 
   instagramLogo: require('./instagram.png'),
+  heart:require('./heart.png'),
   check:require('./check.png'),
+  following:require('./following.png'),
+  thumbsUp:require('./thumbs-up.png'),
+  connectedAccount:require('./connectedAccount.png'),
+  checkCircleFilled:require('./check-circle-filled.png'),
+
 }
 
 export default IMAGES;

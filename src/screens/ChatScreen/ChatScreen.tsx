@@ -1,16 +1,12 @@
-import React, { useRef, useState } from 'react';
-import { View, StyleSheet, Linking, Image, Text } from 'react-native';
+import React, { useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Hp } from '../../utils/dimensions';
-import { BUTTON_LABLE, LABLE } from '../../utils/constants';
-import IMAGES from '../../assets/images/index';
-import Button from '../../component/Button';
+import { LABLE } from '../../utils/constants';
 import ChatScreenStyle from './ChatScreenStyle';
-import ImageCarousel from '../../component/ImageCarosuel/ImageCarosuel';
 import { SafeAreaView } from 'react-native';
-import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
-import { ScrollView } from 'react-native';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
+import AfterAppStaticComponent from '../../component/BeforeAppStaticComponent/AfterAppStaticComponent';
+import { useSelector } from 'react-redux';
+import { RootState } from '@reduxjs/toolkit/query';
 // Define the type for navigation props
 interface ChatScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -18,16 +14,20 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
   const styles = ChatScreenStyle();
 
 
-  const onButtonClick = () => {
-    navigation.navigate('EmailPhoneScreen')
-  }
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const [isInvited, setInvited] = useState<boolean>(loginData?.isInvited || false)
 
   return (
     <SafeAreaView style={styles.container}>
-    <BeforeAppStaticComponent
-      title={LABLE.CHAT_WITH_HOST}
-      subTitle={LABLE.CONNECT_DIRECTLY_WITH_PEOPLE} />
-  </SafeAreaView>
+      {loginData.isSignUpCompleted ?
+        <AfterAppStaticComponent
+          title={LABLE.YOU_ARE_ON_WAITLIST}
+          subTitle={LABLE.FULL_ACCESS_UNLOCK} />
+        :
+        <BeforeAppStaticComponent
+          title={LABLE.CHAT_WITH_HOST}
+          subTitle={LABLE.CONNECT_DIRECTLY_WITH_PEOPLE} />}
+    </SafeAreaView>
   );
 };
 
