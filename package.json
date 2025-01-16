@@ -30,6 +30,7 @@
     "react-native-animatable": "^1.4.0",
     "react-native-bootsplash": "^6.3.2",
     "react-native-config": "^1.5.3",
+    "react-native-contacts": "^8.0.4",
     "react-native-country-codes-picker": "^2.3.5",
     "react-native-date-picker": "^5.0.8",
     "react-native-flash-message": "^0.4.2",

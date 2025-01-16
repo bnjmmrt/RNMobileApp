@@ -13,7 +13,12 @@ export const BUTTON_LABLE = {
   APPLY_FOR_MEMBERSHIP: 'Apply for Membership',
   GO_TO_INSTAGRAM: 'Go to Instagram',
   SEND_EMAIL: 'Send Email',
-  SUPPORT_EMAIL_ID: 'support@therumor.com'
+  SUPPORT_EMAIL_ID: 'support@therumor.com',
+  SUBMIT:'Submit',
+  INVITE_CONTACTS_VIA:'Invite Contacts via Link',
+  INVITE:"Invite",
+  SENT:'Sent',
+  REQUREST:'Request'
 }
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',
@@ -84,6 +89,16 @@ export const LABLE = {
   WE_WILL_REVIEW_APP: "We’ll review your application after we receive your message.",
   EMAIL_THE_CODE: "Email the code to:",
   DONT_USE_INSTAGRAM: "Don't use Instagram?",
+  REFERRAL_CODE:"Referral Code",
+  IF_YOU_HAVE_ANY_REFERRAL_CODE:'If you have a referral code, enter it below.',
+  ENTER_CODE:'Enter Code',
+  SELECT_A_REFERRAL:'Select a Referral',
+  SEARCH_FRIENDS:"Search friends..",
+  FRIENDS_WHO_ARE_MEMBERS:'Friends who are members',
+  REQUEST_A_REFERRAL:'Request a referral from a Rumor member to boost your application.',
+  CONTACTS:"Contacts",
+  INVITE_FRIENDS_TO:"Invite friends to fast track your membership approval.",
+
 }
 
 export const ERROR_MESSAGE = {
@@ -91,7 +106,8 @@ export const ERROR_MESSAGE = {
   LAST_NAME: 'Please enter your last name',
   PLEASE_ENTER_YOUR_BASE_CITY: 'Please enter your base city',
   PLEASE_ENTER_YOUR_BIRTHDAY: 'Please enter your birthday',
-  PLEASE_ENTER_A_VALID_EMAIL_ADDRESS: 'Please enter a valid email address'
+  PLEASE_ENTER_A_VALID_EMAIL_ADDRESS: 'Please enter a valid email address',
+  PLEASE_ENTER_A_VALID_REFERRAL_CODE:"Please enter a valid referral code"
 }
 export const COLORS = {
   black: '#1F1F1F',

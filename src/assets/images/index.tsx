@@ -27,6 +27,7 @@ const IMAGES = {
   eventCoverPlaceholders: require('./EventCoverPlaceholders.png'),
   eventCoverPlaceholders1: require('./EventCoverPlaceholders1.png'),
   instagramLogo: require('./instagram.png'),
+  check:require('./check.png'),
 }
 
 export default IMAGES;
