@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, View, ViewStyle } from 'react-native';
+import { Text, StyleSheet, View, ViewStyle, TextStyle } from 'react-native';
 import { Hp, Wp } from '../../utils/dimensions';
 import { fontFamily } from '../../utils/functions';
 import { COLORS } from '../../utils/constants';
@@ -12,6 +12,8 @@ interface TitleSubtitleProps {
     subTitleMargin?: number,
     isDarkTheme?: boolean; // Made optional
     style?: ViewStyle; // Added style prop
+    titleTextstyle?: TextStyle; // Added style prop
+    subTitleTextstyle?: TextStyle; // Added style prop
 }
 
 const TitleSubtitle: React.FC<TitleSubtitleProps> = ({
@@ -22,6 +24,8 @@ const TitleSubtitle: React.FC<TitleSubtitleProps> = ({
     titleFontSize = 32,
     subTitleMargin = Hp(2),
     style, // Destructure style prop
+    titleTextstyle,
+    subTitleTextstyle
 
 }) => {
     return (
@@ -34,6 +38,7 @@ const TitleSubtitle: React.FC<TitleSubtitleProps> = ({
                         color: isDarkTheme ? COLORS.white : COLORS.black,
                         fontSize: titleFontSize 
                     },
+                    titleTextstyle
                 ]}
             >
                 {title}
@@ -47,6 +52,7 @@ const TitleSubtitle: React.FC<TitleSubtitleProps> = ({
                              marginVertical: subTitleMargin
 
                         },
+                        subTitleTextstyle
                     ]}
                 >
                     {subTitle}

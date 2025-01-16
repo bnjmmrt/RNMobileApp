@@ -31,24 +31,24 @@ const Button: React.FC<ButtonProps> = ({
   disabled
 }) => {
 
-  const colorbackground =  colorTheme == 'dark' ? COLORS.black: COLORS.white;
-  const textColor =  colorTheme == 'dark' ? COLORS.white: COLORS.black;
+  const colorbackground = colorTheme == 'dark' ? COLORS.black : COLORS.white;
+  const textColor = colorTheme == 'dark' ? COLORS.white : COLORS.black;
   return (
     <TouchableOpacity
       disabled={disabled}
-      style={[styles.button,{backgroundColor: disabled ? COLORS.disable : colorbackground} ,style]} // Merge default and custom styles
+      style={[styles.button, { backgroundColor: disabled ? COLORS.disable : colorbackground }, style]} // Merge default and custom styles
       onPress={onPress}
     >
       {imageSource && <Image source={imageSource} style={[styles.image, leftImageStyle]} />}
-      <Text style={[styles.text,{color: textColor}, textStyle]}>{title}</Text>
-      {rightImageSource && <Image source={rightImageSource} style={[styles.image,rightImageStyle]} />}
+      <Text style={[styles.text, { color: textColor }, textStyle]}>{title}</Text>
+      {rightImageSource && <Image source={rightImageSource} style={[styles.image, rightImageStyle]} />}
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
-    height: Platform.OS === 'ios' ? Hp(6) : Hp(6.5),
+    height: Hp(5),
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 14,
     marginHorizontal: 10,
-    fontFamily:fontFamily.ABCDiatype_Bold
+    fontFamily: fontFamily.ABCDiatype_Regular
   },
   image: {
     width: Hp(3),

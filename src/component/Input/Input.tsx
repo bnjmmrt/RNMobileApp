@@ -8,8 +8,8 @@ interface InputProps {
   placeholder?: string;
   leftImage?: any;
   rightImage?: any;
-  onPressImage?:()=>void;
-  defaultValue?: string; 
+  onPressImage?: () => void;
+  defaultValue?: string;
   iconStyle?: any;
   onChangeText?: (text: string) => void; // Added onChangeText to props
 }
@@ -57,7 +57,7 @@ const Input = forwardRef((props: InputProps, ref) => {
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
       <View style={[styles.inputContainer, errorMessage ? styles.errorInputWrapper : null]}>
-        {leftImage && <Image source={leftImage} style={[styles.leftImage, ...iconStyle]} />}
+        {leftImage && <Image source={leftImage} style={[styles.leftImage, iconStyle]} />}
         <TextInput
           style={styles.input}
           value={inputText}

@@ -97,8 +97,7 @@ const styles = StyleSheet.create({
     tabStyle: {
         height: 60,
         width: Wp(90),
-        backgroundColor: 'black',
-        opacity:0.75,
+        backgroundColor: 'rgba(0, 0, 0, 0.75)',
         borderRadius: 40,
         flexDirection: 'row',
         justifyContent: 'space-between',
