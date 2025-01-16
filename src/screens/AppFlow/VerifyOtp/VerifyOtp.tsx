@@ -3,17 +3,18 @@ import { View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
-import EmailPhoneStyles from './VerifyEmailStyles';
+import VerifyOtpStyles from './VerifyOtpStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
 import OTPComponent from '../../../component/OTPComponent/OTPComponent';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { FlashMessageComponent } from '../../../component/FlashMessageComponent/FlashMessageComponent';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setPageProgress } from '../../../redux/slices/appFlowSlice';
+import { RootState } from '../../../redux/slices';
 
-interface VerifyEmailScreenProps extends NativeStackScreenProps<any, any> { }
+interface VerifyOtpScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: {
@@ -23,12 +24,13 @@ type RouteParams = {
   };
 };
 
-const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({ navigation }) => {
+const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
-  const styles = EmailPhoneStyles();
+  const styles = VerifyOtpStyles();
+  const isEmailVerified = useSelector((state: RootState) => state.appFlow.phone);
   const otpInputRef = useRef<{ handleNextPress: () => void, showInvalidCodeError: (message: string) => void }>(null);
   const route = useRoute<RouteProp<RouteParams>>();
-  const [sendToId, setSendToId] = useState<string>('');
+  const sendToId = useSelector((state: RootState) => isEmailVerified ? state.appFlow.phone : state.appFlow.email);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onNextClick = () => {
@@ -74,7 +76,11 @@ const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({ navigation }) => 
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header headerTitle={LABLE.VERIFY_EMAIL} onPress={handleBackPress} showProgressBar={false} />
+      <Header
+        headerTitle={isEmailVerified ? LABLE.VERIFY_PHONE : LABLE.VERIFY_EMAIL}
+        onPress={handleBackPress}
+        showProgressBar={false}
+      />
 
       <View style={styles.contentContainer}>
         <Title title={LABLE.ENTER_YOUR_VERIFICATION_CODE} subTitle={`${LABLE.SEND_TO}${sendToId}`} />
@@ -97,4 +103,4 @@ const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({ navigation }) => 
   );
 };
 
-export default VerifyEmailScreen;
+export default VerifyOtpScreen;

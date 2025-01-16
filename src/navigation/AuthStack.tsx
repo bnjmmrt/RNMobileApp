@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LandingScreen from '../screens/LandingScreen/LandingScreen';
 import EmailPhoneScreen from '../screens/EmailPhoneScreen/EmailPhoneScreen';
 import VerifyOtpScreen from '../screens/VerifyOtpScreen/VerifyOtpScreen';
+import {AppFlowStack} from './AppFlowStack';
 
 
 // Define the param list for the stack navigator
@@ -34,6 +35,12 @@ export const AuthStack: React.FC = () => {
     <Stack.Screen
         name="VerifyOtpScreen"
         component={VerifyOtpScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="AppFlowStack"
+        component={AppFlowStack}
         options={{ headerShown: false }}
       />
 

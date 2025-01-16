@@ -47,7 +47,10 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({ navigation 
     }
   };
 
-  const handleBackPress = () => navigation.goBack();
+  const handleBackPress = () => {
+    dispatch(setPageProgress(6));
+    navigation.navigate('CreativeFocusScreen');
+  };
 
   return (
     <SafeAreaView style={styles.container}>

@@ -1,8 +1,8 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import MyDetailsScreen from '../screens/AppFlow/MyDetails/MyDetails';
-import EnterEmail from '../screens/AppFlow/EnterEmail/EnterEmail';
-import VerifyEmail from '../screens/AppFlow/VerifyEmail/VerifyEmail';
+import EnterEmail from '../screens/AppFlow/EnterEmailPhone/EnterEmailPhone';
+import VerifyEmail from '../screens/AppFlow/VerifyOtp/VerifyOtp';
 import GenderScreen from '../screens/AppFlow/GenderScreen/GenderScreen';
 import BirthdayScreen from '../screens/AppFlow/BirthdayScreen/BirthdayScreen';
 import BaseCityScreen from '../screens/AppFlow/BaseCityScreen/BaseCityScreen';

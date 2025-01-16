@@ -29,7 +29,10 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
     navigation.navigate('BaseCityScreen');
   };
 
-  const handleBackPress = () => navigation.goBack();
+  const handleBackPress = () => {
+    dispatch(setPageProgress(3));
+    navigation.navigate('GenderScreen');
+  };
 
   return (
     <SafeAreaView style={styles.container}>

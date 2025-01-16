@@ -11,7 +11,7 @@ import Header from '../../../component/Header/Header';
 import { useGetPostsQuery } from '../../../redux/slices/apiSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/slices';
-import { setFirstName, setLastName, setPageProgress } from '../../../redux/slices/appFlowSlice';
+import { setFirstName, setIsEmailVerified, setLastName, setPageProgress } from '../../../redux/slices/appFlowSlice';
 
 interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -29,13 +29,16 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   const onNextClick = () => {
     firstNameRef.current && firstNameRef.current.handleNextPress();
     lastNameRef.current && lastNameRef.current.handleNextPress();
-    dispatch(setFirstName(firstNameRef.current.inputText));
-    dispatch(setLastName(lastNameRef.current.inputText));
-    dispatch(setPageProgress(2));
-    navigation.navigate('EnterEmail');
+    if (firstNameRef.current.inputText.length > 2 && lastNameRef.current.inputText.length > 2) {
+      dispatch(setFirstName(firstNameRef.current.inputText));
+      dispatch(setLastName(lastNameRef.current.inputText));
+      dispatch(setIsEmailVerified(false));
+      dispatch(setPageProgress(2));
+      navigation.navigate('EnterEmail');
+    }
   };
 
-  const handleBackPress = () => navigation.goBack();
+  const handleBackPress = () => {};
 
   return (
     <SafeAreaView style={styles.container}>

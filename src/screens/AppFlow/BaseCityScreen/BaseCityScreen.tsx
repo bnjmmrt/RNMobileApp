@@ -28,7 +28,10 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({ navigation }) => {
     navigation.navigate('CreativeFocusScreen');
   };
 
-  const handleBackPress = () => navigation.goBack();
+  const handleBackPress = () => {
+    dispatch(setPageProgress(4));
+    navigation.navigate('BirthdayScreen');
+  };
 
   return (
     <SafeAreaView style={styles.container}>

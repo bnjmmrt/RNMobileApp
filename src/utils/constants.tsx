@@ -22,6 +22,8 @@
     FIRST_NAME:'First Name',
     LAST_NAME:'Last Name',
     WHATS_YOUR_EMAIL_ADDRESS:'What’s your email address?',
+    WHATS_YOUR_PHONE_NUMBER:'What’s your phone number?',
+    WHATS_YOUR_PHONE_NUMBER_SUBTITLE:'We’ll contact you for membership and event updates.',
     WHATS_YOUR_EMAIL_SUBTITLE:"We'll contact you for membership and event updates.",
     EMAIL_ADDRESS:'Email Address',
     WHATS_YOUR_GENDER:"What’s your gender?",

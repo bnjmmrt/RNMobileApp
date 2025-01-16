@@ -8,10 +8,11 @@ interface UserDetailsState {
   birthday: string;
   email: string;
   phone: string;
-  creativeFocus: string[]; 
-  interest: string[]; 
+  creativeFocus: string[];
+  interest: string[];
   profilePic:any;
-  pageProgress: number; // Current page progress
+  pageProgress: number;
+  isEmailVerified: boolean;
 }
 
 const initialState: UserDetailsState = {
@@ -26,6 +27,7 @@ const initialState: UserDetailsState = {
   interest: [],
   profilePic:'',
   pageProgress: 1,
+  isEmailVerified: false,
 };
 
 const appFlowSlice = createSlice({
@@ -65,6 +67,9 @@ const appFlowSlice = createSlice({
     setProfilePic(state, action: PayloadAction<any>) {
       state.profilePic = action.payload;
     },
+    setIsEmailVerified(state, action: PayloadAction<any>) {
+      state.isEmailVerified = action.payload;
+    },
     resetAppFlowDetails(state) {
       // Reset state to initial values
       Object.assign(state, initialState);
@@ -84,6 +89,7 @@ export const {
   setInterest,
   setPageProgress,
   setProfilePic,
+  setIsEmailVerified,
   resetAppFlowDetails,
 } = appFlowSlice.actions;
 

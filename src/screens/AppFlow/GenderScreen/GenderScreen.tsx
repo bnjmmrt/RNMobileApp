@@ -33,7 +33,10 @@ const GenderScreen: React.FC<GenderScreenProps> = ({navigation}) => {
     }
   };
 
-  const handleBackPress = () => navigation.goBack();
+  const handleBackPress = () => {
+    dispatch(setPageProgress(1));
+    navigation.navigate('MyDetailsScreen');
+  };
 
   return (
     <SafeAreaView style={styles.container}>

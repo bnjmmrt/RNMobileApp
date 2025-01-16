@@ -25,7 +25,10 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({ navigation }) =
     navigation.navigate('IdentityVerification');
   };
 
-  const handleBackPress = () => navigation.goBack();
+  const handleBackPress = () => {
+    dispatch(setPageProgress(7));
+    navigation.navigate('SelectInterestScreen');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
