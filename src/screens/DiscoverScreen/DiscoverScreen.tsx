@@ -10,7 +10,7 @@ import ImageCarousel from '../../component/ImageCarosuel/ImageCarosuel';
 import { SafeAreaView } from 'react-native';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
 import { ScrollView } from 'react-native';
-import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/AfterAppStaticComponent';
+import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 // Define the type for navigation props
 interface DiscoverScreenProps extends NativeStackScreenProps<any, any> { }
 

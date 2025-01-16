@@ -3,7 +3,7 @@ import { createLogger } from 'redux-logger';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { persistStore, persistReducer } from 'redux-persist';
 import {rootReducer} from './slices';
-import { apiSlice } from './slices/apiSlice';
+// import { apiSlice } from './slices/apiSlice';
 import { baseApi } from '../ApiManager/baseApi';
 
 // Middleware: Redux Persist Config
@@ -20,7 +20,7 @@ const loggerMiddleware: Middleware = createLogger({
 });
 
 // Array of middlewares
-const middlewares: Middleware[] = [loggerMiddleware,apiSlice.middleware];
+const middlewares: Middleware[] = [loggerMiddleware,baseApi.middleware];
 
 // Persisted Reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);

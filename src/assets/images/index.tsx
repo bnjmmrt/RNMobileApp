@@ -26,6 +26,12 @@ const IMAGES = {
   rumorLogoDark: require('./monogram_dark.png'),
   eventCoverPlaceholders: require('./EventCoverPlaceholders.png'),
   eventCoverPlaceholders1: require('./EventCoverPlaceholders1.png'),
+  edit: require('./pencil.png'),
+  notification: require('./notification.png'),
+  feedback: require('./feedback.png'),
+  contact: require('./contact.png'),
+  arrowRight: require('./arrowRight.png'),
+
   instagramLogo: require('./instagram.png'),
   check:require('./check.png'),
 }

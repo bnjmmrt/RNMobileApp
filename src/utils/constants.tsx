@@ -101,6 +101,15 @@ export const LABLE = {
 
 }
 
+export const PROFILE ={
+  EDIT_PROFILE :'Edit Profile',
+  NOTIFICATION:'Notifications',
+  FEEDBACK:'Feedback',
+  CONTACT_SUPPORT:'Contact Support',
+  DELETE_ACCOUNT:'Delete Account',
+  LOGOUT:'Log Out',
+}
+
 export const ERROR_MESSAGE = {
   FIRST_NAME: 'Please enter your first name',
   LAST_NAME: 'Please enter your last name',
