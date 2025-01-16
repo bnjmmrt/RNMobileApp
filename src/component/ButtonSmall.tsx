@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, StyleProp, ViewStyle, TextStyle, ImageSourcePropType, Image, Platform, ImageStyle } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, StyleProp, ViewStyle, TextStyle, ImageSourcePropType, Image, ImageStyle } from 'react-native';
 import { Hp, Wp } from '../utils/dimensions';
 import { fontFamily } from '../utils/functions';
 import { COLORS } from '../utils/constants';
@@ -16,6 +16,9 @@ interface ButtonSmallProps {
   leftImageStyle?: StyleProp<ImageStyle>;
   disabled?: boolean;
   colorTheme?: string;
+  borderType?: 'SOLID' | 'STRIPE'; // Optional border type, default is 'SOLID'
+  leftIcon?: ImageSourcePropType; // Optional left icon
+  leftIconStyle?: StyleProp<ImageStyle>; // Optional custom style for left icon
 }
 
 const ButtonSmall: React.FC<ButtonSmallProps> = ({
@@ -24,18 +27,35 @@ const ButtonSmall: React.FC<ButtonSmallProps> = ({
   style,
   textStyle,
   colorTheme,
-  disabled
+  disabled,
+  borderType = 'SOLID', // Default to 'SOLID'
+  leftIcon,
+  leftIconStyle,
 }) => {
 
-  const colorbackground =  colorTheme == 'dark' ? COLORS.black: COLORS.white;
-  const textColor =  colorTheme == 'dark' ? COLORS.white: COLORS.black;
+  const colorbackground = colorTheme == 'dark' ? COLORS.black : COLORS.white;
+  const textColor = colorTheme == 'dark' ? COLORS.white : COLORS.black;
+
+  // Determine the styles for the background and border
+  const buttonBackground = borderType === 'SOLID' ? { backgroundColor: disabled ? COLORS.disable : colorbackground } : {};
+  const borderStyle = borderType === 'STRIPE' ? { borderWidth: 2, borderColor: colorbackground } : {};
+
   return (
     <TouchableOpacity
       disabled={disabled}
-      style={[styles.button,{backgroundColor: disabled ? COLORS.disable : colorbackground} ,style]} // Merge default and custom styles
+      style={[
+        styles.button,
+        buttonBackground, // Apply background color if SOLID
+        borderStyle, // Apply border if STRIPE
+        style,
+      ]}
       onPress={onPress}
     >
-      <Text style={[styles.text,{color: textColor}, textStyle]}>{title}</Text>
+      {/* Conditionally render the left icon if available */}
+      {leftIcon && (
+        <Image source={leftIcon} style={[styles.icon, leftIconStyle]} />
+      )}
+      <Text style={[styles.text, { color:borderType==='STRIPE'?colorbackground:textColor }, textStyle]}>{title}</Text>
     </TouchableOpacity>
   );
 };
@@ -46,13 +66,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   text: {
     fontSize: 14,
-    fontFamily:fontFamily.ABCDiatype_Bold
+    fontFamily: fontFamily.ABCDiatype_Bold,
   },
-
+  icon: {
+    marginRight: 8, // Add space between icon and text
+    width: 16, // Default icon size, can be customized
+    height: 16, // Default icon size, can be customized
+  },
 });
 
 export default ButtonSmall;
