@@ -11,6 +11,11 @@ export const BUTTON_LABLE = {
   PAST: 'Past',
   VIEW_EVENT: 'View Event',
   APPLY_FOR_MEMBERSHIP: 'Apply for Membership',
+  SUBMIT:'Submit',
+  INVITE_CONTACTS_VIA:'Invite Contacts via Link',
+  INVITE:"Invite",
+  SENT:'Sent',
+  REQUREST:'Request'
 }
 export const LABLE = {
   ENTER_YOUR_PHONE_NUMBER: 'Enter your phone number',
@@ -74,7 +79,17 @@ export const LABLE = {
   UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS: "Unlock access to exclusive events",
   GET_DISCOVERY_BY_THE_WORLD: "Get discovered by the world's top event organizers and receive invites to events that matter.",
   DISCOVER_EXPERIENCES_ACROSS_ART: "Discover experiences across art, fashion, music, and more — listed by renowned hosts.",
-  DISCOVER_EXPERIENCES_IN_ART: "Discover experiences in art, fashion, music, and more—curated by renowned hosts."
+  DISCOVER_EXPERIENCES_IN_ART: "Discover experiences in art, fashion, music, and more—curated by renowned hosts.",
+  REFERRAL_CODE:"Referral Code",
+  IF_YOU_HAVE_ANY_REFERRAL_CODE:'If you have a referral code, enter it below.',
+  ENTER_CODE:'Enter Code',
+  SELECT_A_REFERRAL:'Select a Referral',
+  SEARCH_FRIENDS:"Search friends..",
+  FRIENDS_WHO_ARE_MEMBERS:'Friends who are members',
+  REQUEST_A_REFERRAL:'Request a referral from a Rumor member to boost your application.',
+  CONTACTS:"Contacts",
+  INVITE_FRIENDS_TO:"Invite friends to fast track your membership approval.",
+
 }
 
 export const ERROR_MESSAGE = {
@@ -82,7 +97,8 @@ export const ERROR_MESSAGE = {
   LAST_NAME: 'Please enter your last name',
   PLEASE_ENTER_YOUR_BASE_CITY: 'Please enter your base city',
   PLEASE_ENTER_YOUR_BIRTHDAY: 'Please enter your birthday',
-  PLEASE_ENTER_A_VALID_EMAIL_ADDRESS: 'Please enter a valid email address'
+  PLEASE_ENTER_A_VALID_EMAIL_ADDRESS: 'Please enter a valid email address',
+  PLEASE_ENTER_A_VALID_REFERRAL_CODE:"Please enter a valid referral code"
 }
 export const COLORS = {
   black: '#1F1F1F',
