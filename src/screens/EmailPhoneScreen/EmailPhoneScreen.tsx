@@ -11,6 +11,7 @@ import Button from '../../component/Button';
 import TermsAndPolicy from '../../component/TermsAndPlolicy/TermsAndPolicy';
 import EmailInput from '../../component/EmailComponent/EmailInput';
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
+import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
 
 interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -55,8 +56,7 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
             <BackButton onPress={handleBackPress} />
             <TabBar onTabChange={handleTabChange} tabOneLabel="Phone" tabTwoLabel="Email" />
             <View style={styles.contentContainer}>
-                <Text style={styles.title}>{title}</Text>
-                <Text style={styles.subtitle}>{subTitle}</Text>
+                <TitleSubtitle title={title} subTitle={subTitle}/>
 
                 {currentTab == '01' ?
                     <PhoneNumberInput ref={phoneNumberInputRef} />

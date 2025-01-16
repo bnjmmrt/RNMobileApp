@@ -8,9 +8,11 @@ import BackButton from '../../component/BackButton/BackButton';
 import Button from '../../component/Button';
 import OTPComponent from '../../component/OTPComponent/OTPComponent';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { resendOTP, verifyOTP } from '../..//redux/actions/login';
+import { useCheckMemberLoginMutation, useMemberLoginMutation } from '../..//redux/actions/login';
 import { FlashMessageComponent } from '../../component/FlashMessageComponent/FlashMessageComponent';
 import FullScreenLoader from '../../component/FullScreenLoader';
+import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
+import { CommonActions } from '@react-navigation/native';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -24,17 +26,19 @@ type RouteParams = {
 
 const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     const styles = VerifyOtpStyles();
-    const otpInputRef = useRef<{ handleNextPress: () => void , showInvalidCodeError: (message: string) => void }>(null);
+    const otpInputRef = useRef<{ handleNextPress: () => void, showInvalidCodeError: (message: string) => void }>(null);
     const route = useRoute<RouteProp<RouteParams>>();
     const [sendToId, setSendToId] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isMemberExist, setMemberExist] = useState<boolean>(false);
+    const [checkMemberLogin] = useCheckMemberLoginMutation();
+    const [memberLogin] = useMemberLoginMutation();
+
 
     useEffect(() => {
         const sendTo = route.params.isEmail ? route.params.email : route.params.phone;
         setSendToId(sendTo || '');
-        if(sendTo){
-            // resendVerificationCode()
-        }
+        sendTo && sendOtp(false)
     }, [route.params]);
 
     const onNextClick = () => {
@@ -45,63 +49,62 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         navigation.goBack();
     };
 
-    const verifyCode = async (code: string) => {
 
-        const requestParam = {
-            ...(route.params.isEmail ? { email: route.params.email } : { phoneNumber: route.params.phone }),
-            requestCode: code,
-        };
-        console.log("sayyed params:",requestParam)
-        
+
+    const sendOtp = async (isResend: boolean) => {
         try {
-            setIsLoading(true)
-            setTimeout(()=>{
-                setIsLoading(false)
-                otpInputRef.current?.showInvalidCodeError(LABLE.ERROR_VERIFY_CODE);
-            },1000)
-            // const response = await verifyOTP({ code });
-            // if (response) {
-            //     console.log('OTP Verified Successfully:', response);
-            // } else {
-            //      otpInputRef.current?.showInvalidCodeError("OTP verification failed");
-            //     console.error('No response received or OTP verification failed.');
-            // }
-        } catch (error) {
-            console.error('Error verifying OTP:', error);
-        } finally{
-            // setIsLoading(false)
-        }
-    };
-
-    const resendVerificationCode = async () => {
-        const requestParam = route.params.isEmail ?{email : route.params.email } : {phoneNumber : route.params.phone } ; 
-        FlashMessageComponent.show('success', 'OTP resent successfully!');
-
-        // try {
-        //     const response = await resendOTP({requestParam});
-        //     if (response) {
-        //         FlashMessageComponent.show('success', 'OTP resent successfully!');
-        //     } else {
-        //         FlashMessageComponent.show('error', 'Failed to resend OTP.');
-        //     }
-        // } catch (error) {
-        //     console.error('Error resending OTP:', error);
-        // }
-    };
-    
-    const checkMember = async () => {
-        const requestParam = route.params.isEmail ?{email : route.params.email } : {phoneNumber : route.params.phone } ; 
-        try {
-            const response = await resendOTP({requestParam});
-            if (response) {
-                FlashMessageComponent.show('success', 'OTP resent successfully!');
-            } else {
-                FlashMessageComponent.show('error', 'Failed to resend OTP.');
+            const requestParam = {
+                email: route.params.email,
+                phoneNumber: route.params.phone
             }
+            const response = await checkMemberLogin(requestParam).unwrap();
+            if (response.status == 200) {
+                console.log("sayyed isExist:", response?.data?.isValid)
+                setMemberExist(response?.data?.isValid)
+            }
+            isResend && FlashMessageComponent.show('success', 'OTP resent successfully!');
+
         } catch (error) {
-            console.error('Error resending OTP:', error);
+            FlashMessageComponent.show('error', "Something went wrong, please try again!!");
+            console.error('Error creating resource:', error);
         }
     };
+
+    const verifyOtp = async (code: string) => {
+        try {
+
+            const requestParam = {
+                email: route.params.email,
+                phoneNumber: route.params.phone,
+                code: code,
+                isExist: isMemberExist
+            }
+            setIsLoading(true)
+            const response = await memberLogin(requestParam).unwrap();
+            if(response.status == 200){
+                redirectToHome()
+            }
+
+            setIsLoading(false)
+
+
+        } catch (error) {
+            setIsLoading(false)
+            FlashMessageComponent.show('error', "Something went wrong, please try again!!");
+            console.error('Error creating resource:', error);
+        }
+    };
+
+
+    const redirectToHome = () => {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'BottomTabBar' }],
+          })
+        );
+      };
+
 
     return (
         <KeyboardAvoidingView
@@ -111,12 +114,11 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
                 <SafeAreaView style={styles.container}>
                     <BackButton onPress={handleBackPress} />
                     <View style={styles.contentContainer}>
-                        <Text style={styles.title}>{LABLE.ENTER_YOUR_VERIFICATION_CODE}</Text>
-                        <Text style={styles.subtitle}>{`${LABLE.SEND_TO}${sendToId}`}</Text>
+                        <TitleSubtitle title={LABLE.ENTER_YOUR_VERIFICATION_CODE} subTitle={`${LABLE.SEND_TO}${sendToId}`} />
                         <OTPComponent
                             ref={otpInputRef}
-                            performCodeVerification={verifyCode}
-                            resendVerificationCode={resendVerificationCode}
+                            performCodeVerification={verifyOtp}
+                            resendVerificationCode={sendOtp}
                         />
                         <View style={styles.spacer} />
                         <Button

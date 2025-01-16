@@ -1,32 +1,27 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, StyleProp, ViewStyle, TextStyle, ImageSourcePropType, Image, Platform, ImageStyle, View } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, StyleProp, Image, ImageStyle, View } from 'react-native';
 import { Hp, Wp } from '../utils/dimensions';
-import UserAvatar from 'react-native-user-avatar';
-import { Images } from '../utils/Images';
+import IMAGES from '../assets/images';
+import { COLORS } from '../utils/constants';
 
 interface HeaderComponentProps {
-    title: string;
-    rightImageSource?: ImageSourcePropType; // Optional image source
     rightImageStyle?: StyleProp<ImageStyle>;
 }
 
 const HeaderComponent: React.FC<HeaderComponentProps> = ({
-    title,
-    rightImageSource,
     rightImageStyle
 }) => {
     return (
         <View style={styles.container}>
             <View style={styles.rowCenterStyle}>
-                <UserAvatar size={45} name={title} />
-                <View style={{ marginLeft: 10 }}>
-                    <Text style={styles.helloTextStyle}>Hello,</Text>
-                    <Text style={styles.nameTextStyle}>{title}</Text>
-                </View>
+                <Image style={[styles.imgStyle, rightImageStyle]} source={IMAGES.rumorLogoDark}></Image>
             </View>
 
             <TouchableOpacity style={styles.iconsContainer}>
-                <Image style={[styles.notiImg, rightImageStyle]} source={Images.notificationImg}></Image>
+                <Image style={[styles.imgStyle, rightImageStyle]} source={IMAGES.bell}></Image>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconsContainerProfile}>
+                <Image style={[styles.imgStyle, rightImageStyle]} source={IMAGES.imageText}></Image>
             </TouchableOpacity>
         </View>
     );
@@ -38,33 +33,35 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: '#F9F4EC',
+        backgroundColor: COLORS.white,
         paddingVertical: 15,
         paddingHorizontal: 20,
     },
-    helloTextStyle: {
-        color: '#1B1C34',
-        fontWeight: '700',
-        fontSize: 15
-    },
-    nameTextStyle: {
-        color: '#1B1C34',
-        fontWeight: '700',
-        fontSize: 18
-    },
     iconsContainer: {
-        width: '15%',
-        alignItems: 'center'
+        width: 44,
+        height: 44,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 22,
+        marginHorizontal: 5,
+        backgroundColor: COLORS.tabBorderColor
     },
-    notiImg: {
-        width: 25,
-        height: 25,
+    iconsContainerProfile: {
+        width: 48,
+        height: 48,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 24,
+        marginHorizontal: 5,
+        backgroundColor: COLORS.tabBorderColor
+    },
+    imgStyle: {
         resizeMode: 'contain'
     },
-    rowCenterStyle:{
-        flexDirection: 'row', 
-        alignItems: 'center'
+    rowCenterStyle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1
     }
 });
 
