@@ -32,7 +32,8 @@ const IMAGES = {
   contact: require('./contact.png'),
   arrowRight: require('./arrowRight.png'),
 
-  check:require('./check.png')
+  instagramLogo: require('./instagram.png'),
+  check:require('./check.png'),
 }
 
 export default IMAGES;

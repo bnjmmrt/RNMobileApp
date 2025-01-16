@@ -31,6 +31,10 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>Give Rumor app  access to your photos</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Give Rumor app  access to your camera</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSContactsUsageDescription</key>

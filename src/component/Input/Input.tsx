@@ -8,8 +8,9 @@ interface InputProps {
   placeholder?: string;
   leftImage?: any;
   rightImage?: any;
-  onPressImage?: () => void;
-  defaultValue?: string;
+  onPressImage?:()=>void;
+  defaultValue?: string; 
+  iconStyle?: any;
   onChangeText?: (text: string) => void; // Added onChangeText to props
 }
 
@@ -22,6 +23,7 @@ const Input = forwardRef((props: InputProps, ref) => {
     rightImage,
     onPressImage,
     defaultValue = '',
+    iconStyle = {},
     onChangeText, // Extract onChangeText from props
   } = props;
 
@@ -55,11 +57,13 @@ const Input = forwardRef((props: InputProps, ref) => {
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
       <View style={[styles.inputContainer, errorMessage ? styles.errorInputWrapper : null]}>
-        {leftImage && <Image source={leftImage} style={styles.leftImage} />}
+        {leftImage && <Image source={leftImage} style={[styles.leftImage, ...iconStyle]} />}
         <TextInput
           style={styles.input}
           value={inputText}
           placeholder={placeholder}
+          placeholderTextColor={COLORS.placeHodler}
+          // onBlur={validateInputs}
           onChangeText={handleTextChange} // Use the updated handler
         />
         {rightImage && (
@@ -76,6 +80,7 @@ const Input = forwardRef((props: InputProps, ref) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
+    marginTop: 20,
   },
   label: {
     paddingVertical: 2,
