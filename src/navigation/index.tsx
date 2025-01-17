@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/slices';
 import BottomTabBar from '../component/Tabbar/BottomTabBar';
 import { AppStack } from './AppStack';
+import { AppFlowStack } from './AppFlowStack';
 
 const MainNavigation: React.FC = () => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);

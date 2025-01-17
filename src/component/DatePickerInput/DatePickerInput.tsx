@@ -11,7 +11,8 @@ import {COLORS} from '../../utils/constants';
 
 interface InputProps {
   label?: string;
-  errorMessage: string;
+  errorMessage: string |null;
+  // setErrorMessage:(isError:boolean)=>void;
   placeholder?: string; // Optional placeholder for input
   leftImage?: any;
   rightImage?: any;
@@ -21,7 +22,8 @@ interface InputProps {
 
 const DatePickerInput: React.FC<InputProps> = ({
   label,
-  errorMessage: initialErrorMessage,
+  errorMessage,
+  // setErrorMessage,
   placeholder = '',
   leftImage,
   rightImage,
@@ -29,7 +31,7 @@ const DatePickerInput: React.FC<InputProps> = ({
   defaultValue = '',
 }) => {
  
-  const [errorMessage, setErrorMessage] = useState('');
+  // const [errorMessage, setErrorMessage] = useState('');
 
   return (
     <View style={styles.container}>
@@ -50,7 +52,7 @@ const DatePickerInput: React.FC<InputProps> = ({
           placeholder={placeholder}
           // placeholderTextColor={COLORS.placeholderGray}
           onChangeText={text => {
-            setErrorMessage(''); // Clear error on text change
+            // setErrorMessage(false); // Clear error on text change
           }}
         />
         {rightImage && (

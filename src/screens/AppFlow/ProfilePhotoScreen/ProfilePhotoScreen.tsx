@@ -1,22 +1,23 @@
-import React, { useState } from 'react';
-import { Image, TouchableOpacity, View } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
-import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
+import React, {useState} from 'react';
+import {Image, TouchableOpacity, View} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker';
+import {LABLE, BUTTON_LABLE} from '../../../utils/constants';
 import ProfilePhotoScreenStyles from './ProfilePhotoScreenStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../redux/slices';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../redux/slices';
 import {
   setPageProgress,
   setProfilePic,
 } from '../../../redux/slices/appFlowSlice';
 import IMAGES from '../../../assets/images';
+import Toast from '../../../component/Toast/Toast';
 
-interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> { }
+interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> {}
 
 const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   navigation,
@@ -27,16 +28,24 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   );
   const styles = ProfilePhotoScreenStyles();
   const [image, setImage] = useState<string>(profilePic);
+  const [isToastShown,setIsToastShown]=useState(false)
+
+
 
   const onNextClick = () => {
-    dispatch(setProfilePic(image));
-    dispatch(setPageProgress(9));
-    navigation.navigate('IdentityVerification');
+    if(image){
+      setIsToastShown(false)
+      dispatch(setProfilePic(image));
+      dispatch(setPageProgress(9));
+      navigation.navigate('IdentityVerification');
+    }{
+      setIsToastShown(true)
+    }
   };
 
   const handleBackPress = () => {
     dispatch(setPageProgress(7));
-    navigation.navigate('SelectInterestScreen');
+    navigation.navigate("SelectInterestScreen");
   };
 
   const openPicker = () => {
@@ -48,6 +57,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
       cropperCircleOverlay: true,
     }).then((image: ImageOrVideo) => {
       setImage(image.path);
+      setIsToastShown(false)
     });
   };
   return (
@@ -62,7 +72,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
         <View style={styles.profilePhotoContainer}>
           <Image
             style={styles.profilePhotoContainer}
-            source={{ uri: image }}
+            source={{uri: image}}
             resizeMode="cover"
           />
           <TouchableOpacity style={styles.iconContainer} onPress={openPicker}>
@@ -74,6 +84,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
           </TouchableOpacity>
         </View>
         {/* Render profile photo */}
+        {isToastShown && <Toast message={'Please upload a Profile Photo'} onClose={() => setIsToastShown(false)} />}
       </View>
 
       <Button
