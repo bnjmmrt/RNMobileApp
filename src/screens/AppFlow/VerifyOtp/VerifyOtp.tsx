@@ -1,20 +1,23 @@
-import React, { useRef, useState } from 'react';
-import { View } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
+import React, {useRef, useState} from 'react';
+import {View} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {LABLE, BUTTON_LABLE} from '../../../utils/constants';
 import VerifyOtpStyles from './VerifyOtpStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
 import OTPComponent from '../../../component/OTPComponent/OTPComponent';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import { FlashMessageComponent } from '../../../component/FlashMessageComponent/FlashMessageComponent';
-import { useDispatch, useSelector } from 'react-redux';
-import { setIsEmailPhoneBothVerified, setPageProgress } from '../../../redux/slices/appFlowSlice';
-import { RootState } from '../../../redux/slices';
+import {useRoute, RouteProp} from '@react-navigation/native';
+import {FlashMessageComponent} from '../../../component/FlashMessageComponent/FlashMessageComponent';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  setIsEmailPhoneBothVerified,
+  setPageProgress,
+} from '../../../redux/slices/appFlowSlice';
+import {RootState} from '../../../redux/slices';
 
-interface VerifyOtpScreenProps extends NativeStackScreenProps<any, any> { }
+interface VerifyOtpScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: {
@@ -24,37 +27,51 @@ type RouteParams = {
   };
 };
 
-const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
+const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
   const dispatch = useDispatch();
   const styles = VerifyOtpStyles();
-  const isEmailVerified = useSelector((state: RootState) => state.appFlow.phone);
-  const otpInputRef = useRef<{ handleNextPress: () => void, showInvalidCodeError: (message: string) => void }>(null);
+  const isEmailVerified = useSelector(
+    (state: RootState) => state.appFlow.phone,
+  );
+  const otpInputRef = useRef<{
+    handleNextPress: () => void;
+    showInvalidCodeError: (message: string) => void;
+  }>(null);
   const route = useRoute<RouteProp<RouteParams>>();
-  const sendToId = useSelector((state: RootState) => isEmailVerified ? state.appFlow.phone : state.appFlow.email);
+  const sendToId = useSelector((state: RootState) =>
+    isEmailVerified ? state.appFlow.phone : state.appFlow.email,
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onNextClick = () => {
-    dispatch(setPageProgress(3));
-    dispatch(setIsEmailPhoneBothVerified(true));
-    navigation.navigate('GenderScreen');
+    otpInputRef.current && otpInputRef.current.handleNextPress();
+    if (true) {
+      // on success
+      dispatch(setPageProgress(3));
+      dispatch(setIsEmailPhoneBothVerified(true));
+      navigation.navigate('GenderScreen');
+    } else {
+      // send error message
+    }
   };
 
   const handleBackPress = () => navigation.goBack();
 
-
   const verifyCode = async (code: string) => {
     const requestParam = {
-      ...(route.params.isEmail ? { email: route.params.email } : { phoneNumber: route.params.phone }),
+      ...(route.params.isEmail
+        ? {email: route.params.email}
+        : {phoneNumber: route.params.phone}),
       requestCode: code,
     };
-    console.log("sayyed params:", requestParam)
+    console.log('sayyed params:', requestParam);
 
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       setTimeout(() => {
-        setIsLoading(false)
+        setIsLoading(false);
         otpInputRef.current?.showInvalidCodeError(LABLE.ERROR_VERIFY_CODE);
-      }, 1000)
+      }, 1000);
       // const response = await verifyOTP({ code });
       // if (response) {
       //     console.log('OTP Verified Successfully:', response);
@@ -70,9 +87,10 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   };
 
   const resendVerificationCode = async () => {
-    const requestParam = route.params.isEmail ? { email: route.params.email } : { phoneNumber: route.params.phone };
+    const requestParam = route.params.isEmail
+      ? {email: route.params.email}
+      : {phoneNumber: route.params.phone};
     FlashMessageComponent.show('success', 'OTP resent successfully!');
-
   };
 
   return (
@@ -84,7 +102,10 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
       />
 
       <View style={styles.contentContainer}>
-        <Title title={LABLE.ENTER_YOUR_VERIFICATION_CODE} subTitle={`${LABLE.SEND_TO}${sendToId}`} />
+        <Title
+          title={LABLE.ENTER_YOUR_VERIFICATION_CODE}
+          subTitle={`${LABLE.SEND_TO}${sendToId}`}
+        />
         <OTPComponent
           ref={otpInputRef}
           performCodeVerification={verifyCode}

@@ -7,9 +7,10 @@ import GenderScreenStyles from './GenderScreenStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../redux/slices';
-import { setGender, setPageProgress } from '../../../redux/slices/appFlowSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../redux/slices';
+import {setGender, setPageProgress} from '../../../redux/slices/appFlowSlice';
+import Toast from '../../../component/Toast/Toast';
 
 interface GenderScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -18,18 +19,22 @@ const GenderScreen: React.FC<GenderScreenProps> = ({navigation}) => {
   const gender = useSelector((state: RootState) => state.appFlow.gender);
   const styles = GenderScreenStyles();
   const [selectedGender, setSelectedGender] = useState<string | null>(gender);
+  const [isToastShown,setIsToastShown]=useState(false)
+
 
   const handleGenderSelect = (gender: string) => {
+    setIsToastShown(false)
     setSelectedGender(gender);
   };
 
   const onNextClick = () => {
     if (selectedGender) {
+      setIsToastShown(false)
       dispatch(setGender(selectedGender));
       dispatch(setPageProgress(4));
       navigation.navigate('BirthdayScreen');
     } else {
-      // alert('Please select a gender.');
+      setIsToastShown(true)
     }
   };
 
@@ -40,31 +45,33 @@ const GenderScreen: React.FC<GenderScreenProps> = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-     <Header headerTitle={LABLE.GENDER} onPress={handleBackPress}/>
+      <Header headerTitle={LABLE.GENDER} onPress={handleBackPress} />
       <View style={styles.contentContainer}>
-        <Title title={LABLE.WHATS_YOUR_GENDER} subTitle={LABLE.SELECT_THE_OPTION_THAT_BEST_DESCRIBES_YOU} />
+        <Title
+          title={LABLE.WHATS_YOUR_GENDER}
+          subTitle={LABLE.SELECT_THE_OPTION_THAT_BEST_DESCRIBES_YOU}
+        />
 
         <View style={styles.genderContainer}>
-          {['Male', 'Female', 'Non-binary', 'Prefer not to say'].map(
-            (gender) => (
-              <TouchableOpacity
-                key={gender}
+          {['Male', 'Female', 'Non-binary', 'Prefer not to say'].map(gender => (
+            <TouchableOpacity
+              key={gender}
+              style={[
+                styles.genderButton,
+                selectedGender === gender && styles.selectedGenderButton,
+              ]}
+              onPress={() => handleGenderSelect(gender)}>
+              <Text
                 style={[
-                  styles.genderButton,
-                  selectedGender === gender && styles.selectedGenderButton,
-                ]}
-                onPress={() => handleGenderSelect(gender)}>
-                <Text
-                  style={[
-                    styles.genderText,
-                    selectedGender === gender && styles.selectedGenderText,
-                  ]}>
-                  {gender}
-                </Text>
-              </TouchableOpacity>
-            ),
-          )}
+                  styles.genderText,
+                  selectedGender === gender && styles.selectedGenderText,
+                ]}>
+                {gender}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
+        {isToastShown && <Toast message={'Please select at least one'} onClose={() => setIsToastShown(false)} />}
       </View>
 
       <Button

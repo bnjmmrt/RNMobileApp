@@ -39,6 +39,7 @@ const IMAGES = {
   thumbsUp:require('./thumbs-up.png'),
   connectedAccount:require('./connectedAccount.png'),
   checkCircleFilled:require('./check-circle-filled.png'),
+  close:require('./close.png'),
 
 }
 
