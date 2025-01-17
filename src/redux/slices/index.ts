@@ -1,15 +1,16 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import authReducer from './authSlice';
-import { apiSlice } from './apiSlice';
+
 import appFlowSlice from './appFlowSlice';
 import { baseApi } from '../../ApiManager/baseApi';
 import { referralSlice } from './referralSlice';
+import { createBaseApi } from '../../ApiManager/createBaseApiWithoutFecthBaseQuery';
+
 
 // Combine all reducers into a single root reducer
 export const rootReducer = combineReducers({
   auth: authReducer,
-  [apiSlice.reducerPath]: apiSlice.reducer,
-  // [baseApi.reducerPath]: baseApi.reducer,
+  [createBaseApi.reducerPath]: createBaseApi.reducer,
   appFlow:appFlowSlice,
   referralSlice
 });

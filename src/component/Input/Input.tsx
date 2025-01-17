@@ -33,7 +33,7 @@ const Input = forwardRef((props: InputProps, ref) => {
     handleNextPress,
     inputText,
     validateInputs,
-    setErrorMessage
+    setErrorMessage,
   }));
 
   // Validate inputs
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 15,
   },
-  leftImage: {marginRight: 6},
+  leftImage: {marginRight: 6,width:20,height:20},
   input: {
     width: '90%',
     fontSize: 16,

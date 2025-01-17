@@ -1,24 +1,33 @@
-import React, { useRef } from 'react';
-import { View } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants';
+import React, {useRef} from 'react';
+import {View} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {LABLE, BUTTON_LABLE, ERROR_MESSAGE} from '../../../utils/constants';
 import EmailPhoneStyles from './MyDetailsStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Input from '../../../component/Input/Input';
 import Header from '../../../component/Header/Header';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../redux/slices';
-import { setFirstName, setIsEmailVerified, setLastName, setPageProgress } from '../../../redux/slices/appFlowSlice';
+// import {useGetPostsQuery} from '../../../redux/slices/apiSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../redux/slices';
+import {
+  setFirstName,
+  setIsEmailVerified,
+  setLastName,
+  setPageProgress,
+} from '../../../redux/slices/appFlowSlice';
 
-interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
-const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
+const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({navigation}) => {
+  // const {data: posts, error, isLoading} = useGetPostsQuery();
+
   const dispatch = useDispatch();
   const userDetails = useSelector((state: RootState) => state.appFlow);
-  const isEmailPhoneBothVerified = useSelector((state: RootState) => state.appFlow.isEmailPhoneBothVerified
-);
+  const isEmailPhoneBothVerified = useSelector(
+    (state: RootState) => state.appFlow.isEmailPhoneBothVerified,
+  );
   // console.log("postsssss",posts);
   // console.log("userDetails",userDetails);
   const styles = EmailPhoneStyles();
@@ -26,13 +35,16 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   const lastNameRef = useRef<any>(null);
 
   const onNextClick = () => {
-    firstNameRef.current && firstNameRef.current.handleNextPress();
-    lastNameRef.current && lastNameRef.current.handleNextPress();
-    if (firstNameRef.current.inputText.length > 2 && lastNameRef.current.inputText.length > 2) {
+    if (
+      firstNameRef.current.validateInputs() &&
+      // firstNameRef.current.inputText.length > 2 &&
+      lastNameRef.current.validateInputs()
+      //  && lastNameRef.current.inputText.length > 2
+    ) {
       dispatch(setFirstName(firstNameRef.current.inputText));
       dispatch(setLastName(lastNameRef.current.inputText));
       dispatch(setIsEmailVerified(false));
-      if(isEmailPhoneBothVerified) {
+      if (isEmailPhoneBothVerified) {
         dispatch(setPageProgress(3));
         navigation.navigate('GenderScreen');
       } else {

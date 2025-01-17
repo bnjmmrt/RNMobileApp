@@ -1,49 +1,76 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, {useState} from 'react';
+import {View, Text, TouchableOpacity} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import CreativeFocusScreenStyles from './CreativeFocusScreenStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
-import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
+import {LABLE, BUTTON_LABLE} from '../../../utils/constants';
 import Header from '../../../component/Header/Header';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../redux/slices';
-import { setCreativeFocus, setPageProgress } from '../../../redux/slices/appFlowSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../redux/slices';
+import {
+  setCreativeFocus,
+  setPageProgress,
+} from '../../../redux/slices/appFlowSlice';
+import Toast from '../../../component/Toast/Toast';
 
-interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> { }
+interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> {}
 
-const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({ navigation }) => {
+const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
+  navigation,
+}) => {
   const dispatch = useDispatch();
-  const creativeFocus = useSelector((state: RootState) => state.appFlow.creativeFocus);
+  const creativeFocus = useSelector(
+    (state: RootState) => state.appFlow.creativeFocus,
+  );
   const styles = CreativeFocusScreenStyles();
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(creativeFocus);
+  const [selectedCategories, setSelectedCategories] =
+    useState<string[]>(creativeFocus);
+  const [isToastShown, setIsToastShown] = useState(false);
 
   const categories = [
-    'Actor', 'Athlete', 'Artist', 'Comedian', 'Content Creator',
-    'Designer', 'Entertainment', 'Entrepreneur', 'Filmmaker',
-    'Hospitality', 'Investor', 'Model', 'Musician',
-    'Philanthropist', 'Technology', 'Wellness', 'Writer',
+    'Actor',
+    'Athlete',
+    'Artist',
+    'Comedian',
+    'Content Creator',
+    'Designer',
+    'Entertainment',
+    'Entrepreneur',
+    'Filmmaker',
+    'Hospitality',
+    'Investor',
+    'Model',
+    'Musician',
+    'Philanthropist',
+    'Technology',
+    'Wellness',
+    'Writer',
   ];
 
   const handleCategorySelect = (category: string) => {
     if (selectedCategories.includes(category)) {
       // Remove category if already selected
-      setSelectedCategories(selectedCategories.filter((item) => item !== category));
+      setSelectedCategories(
+        selectedCategories.filter(item => item !== category),
+      );
     } else if (selectedCategories.length < 3) {
       // Add category if less than 3 are selected
+
       setSelectedCategories([...selectedCategories, category]);
     }
   };
 
   const onNextClick = () => {
     if (selectedCategories.length > 0) {
+      setIsToastShown(false);
       console.log('Selected Categories:', selectedCategories);
       dispatch(setCreativeFocus(selectedCategories));
       dispatch(setPageProgress(7));
       navigation.navigate('SelectInterestScreen');
     } else {
-      //   alert('Please select at least one category.');
+      setIsToastShown(true);
     }
   };
 
@@ -63,26 +90,32 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({ navigation })
         />
 
         <View style={styles.categoryContainer}>
-          {categories.map((category) => (
+          {categories.map(category => (
             <TouchableOpacity
               key={category}
               style={[
                 styles.categoryButton,
-                selectedCategories.includes(category) && styles.selectedCategoryButton,
+                selectedCategories.includes(category) &&
+                  styles.selectedCategoryButton,
               ]}
-              onPress={() => handleCategorySelect(category)}
-            >
+              onPress={() => handleCategorySelect(category)}>
               <Text
                 style={[
                   styles.categoryText,
-                  selectedCategories.includes(category) && styles.selectedCategoryText,
-                ]}
-              >
+                  selectedCategories.includes(category) &&
+                    styles.selectedCategoryText,
+                ]}>
                 {category}
               </Text>
             </TouchableOpacity>
           ))}
         </View>
+        {isToastShown && (
+          <Toast
+            message={'Please select at least one'}
+            onClose={() => setIsToastShown(false)}
+          />
+        )}
       </View>
 
       <Button
