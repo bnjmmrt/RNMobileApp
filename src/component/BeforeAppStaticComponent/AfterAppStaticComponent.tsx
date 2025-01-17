@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Hp, Wp } from '../../utils/dimensions';
 import { BUTTON_LABLE, COLORS } from '../../utils/constants';
@@ -25,9 +25,13 @@ const AfterAppStaticComponent: React.FC<AfterAppStaticComponentProps> = ({
   const navigation = useNavigation();
   const bottomSheetRef = useRef(null);
   const bottomSheetInviteRef = useRef(null);
+  const [inviteReferral,setInviteReferral]=useState(false);
 
   const onAccessContactClick = () => {
-    bottomSheetInviteRef.current.open();
+    setInviteReferral(true);
+    setTimeout(() => {
+      bottomSheetInviteRef.current.open();
+    }, 1000);
   }
   const onEnterReferralClick = () => {
     bottomSheetRef.current.open();
@@ -77,7 +81,7 @@ const AfterAppStaticComponent: React.FC<AfterAppStaticComponentProps> = ({
         </View>
 
       </ScrollView>
-      <InviteReferralBottomSheet ref={bottomSheetInviteRef} />
+      {inviteReferral && <InviteReferralBottomSheet ref={bottomSheetInviteRef} />}
       <ReferralCodeBottomSheet ref={bottomSheetRef} />
 
     </View>
