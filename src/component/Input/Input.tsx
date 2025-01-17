@@ -10,8 +10,6 @@ interface InputProps {
   rightImage?: any;
   onPressImage?: () => void;
   defaultValue?: string;
-  iconStyle?: any;
-  onChangeText?: (text: string) => void; // Added onChangeText to props
 }
 
 const Input = forwardRef((props: InputProps, ref) => {
@@ -23,17 +21,14 @@ const Input = forwardRef((props: InputProps, ref) => {
     rightImage,
     onPressImage,
     defaultValue = '',
-    iconStyle = {},
-    onChangeText, // Extract onChangeText from props
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
   const [errorMessage, setErrorMessage] = useState('');
 
   useImperativeHandle(ref, () => ({
-    validateInputs,
     inputText,
-    setErrorMessage,
+    handleNextPress,
   }));
 
   const validateInputs = () => {
@@ -45,26 +40,28 @@ const Input = forwardRef((props: InputProps, ref) => {
     return true;
   };
 
-  const handleTextChange = (text: string) => {
-    setInputText(text);
-    setErrorMessage(''); // Clear error on input
-    if (onChangeText) {
-      onChangeText(text); // Call the parent-provided onChangeText if it exists
-    }
+  const handleNextPress = () => {
+    if (!validateInputs()) return;
   };
 
   return (
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
-      <View style={[styles.inputContainer, errorMessage ? styles.errorInputWrapper : null]}>
-        {leftImage && <Image source={leftImage} style={[styles.leftImage, iconStyle]} />}
+      <View
+        style={[
+          styles.inputContainer,
+          errorMessage ? styles.errorInputWrapper : null,
+        ]}
+      >
+        {leftImage && <Image source={leftImage} style={styles.leftImage} />}
         <TextInput
           style={styles.input}
           value={inputText}
           placeholder={placeholder}
-          placeholderTextColor={COLORS.placeHodler}
-          // onBlur={validateInputs}
-          onChangeText={handleTextChange} // Use the updated handler
+          onChangeText={(text) => {
+            setInputText(text);
+            setErrorMessage(''); // Clear error on text change
+          }}
         />
         {rightImage && (
           <TouchableOpacity onPress={onPressImage}>
@@ -72,7 +69,7 @@ const Input = forwardRef((props: InputProps, ref) => {
           </TouchableOpacity>
         )}
       </View>
-      {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+      {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
     </View>
   );
 });
@@ -80,7 +77,6 @@ const Input = forwardRef((props: InputProps, ref) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    marginTop: 20,
   },
   label: {
     paddingVertical: 2,
@@ -90,12 +86,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 8,
-    height: 48,
+    height: 50,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,
   },
-  leftImage: { marginRight: 6 },
+  leftImage: {
+    marginRight: 6,
+  },
   input: {
     width: '90%',
     fontSize: 16,
