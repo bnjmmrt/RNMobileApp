@@ -127,7 +127,8 @@ export const ERROR_MESSAGE = {
   PLEASE_ENTER_YOUR_BASE_CITY: 'Please enter your base city',
   PLEASE_ENTER_YOUR_BIRTHDAY: 'Please enter your birthday',
   PLEASE_ENTER_A_VALID_EMAIL_ADDRESS: 'Please enter a valid email address',
-  PLEASE_ENTER_A_VALID_REFERRAL_CODE:"Please enter a valid referral code"
+  PLEASE_ENTER_A_VALID_REFERRAL_CODE:"Please enter a valid referral code",
+  AGE_REQUIREMENT_NOT_MET:"Age requirement not met"
 }
 export const COLORS = {
   black: '#1F1F1F',

@@ -13,6 +13,7 @@ const EmailInput = forwardRef((_, ref) => {
     // Expose handleNextPress to the parent
     useImperativeHandle(ref, () => ({
         handleNextPress,
+        validateEmailAddress
     }));
 
     // Validate email format
