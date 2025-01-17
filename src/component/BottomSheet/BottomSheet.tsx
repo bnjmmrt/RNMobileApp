@@ -1,6 +1,6 @@
 import React, { useRef, useCallback, useMemo, forwardRef, useImperativeHandle, useState } from 'react';
 import { StyleSheet, Modal, View } from 'react-native';
-import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetFooter, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Hp, Wp } from '../../utils/dimensions';
 import { COLORS } from '../../utils/constants';
 
@@ -10,7 +10,8 @@ interface BottomSheetComponentProps {
     onChange?: (index: number) => void;
     onClose?: () => void;
     ref: any;
-    backColor?: string
+    backColor?: string;
+    footer?:any;
 }
 
 const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(({
@@ -18,6 +19,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
     snapPoints = ['40%'], // Default snap point
     onChange,
     onClose,
+    footer
 }, ref) => {
     const [isVisible, setIsVisible] = useState(false);
     const sheetRef = useRef<BottomSheet>(null);
@@ -45,6 +47,14 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
     }, [onClose]);
 
     const snapPointsMemo = useMemo(() => snapPoints, [snapPoints]);
+    const renderFooter = useCallback(
+        (props) => (
+            <BottomSheetFooter {...props} bottomInset={24}>
+                {typeof footer === 'function' ? footer() : footer}
+            </BottomSheetFooter>
+        ),
+        [footer]
+    );
 
     return (
         <Modal
@@ -57,6 +67,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
                 <BottomSheet
                     ref={sheetRef}
                     snapPoints={snapPointsMemo}
+                    footerComponent={renderFooter}
                     enableDynamicSizing={false}
                     enableContentPanningGesture={false}
                     enablePanDownToClose
