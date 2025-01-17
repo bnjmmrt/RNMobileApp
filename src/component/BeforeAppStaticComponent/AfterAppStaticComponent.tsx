@@ -30,11 +30,11 @@ const AfterAppStaticComponent: React.FC<AfterAppStaticComponentProps> = ({
   const onAccessContactClick = () => {
     setInviteReferral(true);
     setTimeout(() => {
-      bottomSheetInviteRef.current.open();
+      bottomSheetInviteRef?.current?.open();
     }, 1000);
   }
   const onEnterReferralClick = () => {
-    bottomSheetRef.current.open();
+    bottomSheetRef?.current?.open();
   }
 
   return (

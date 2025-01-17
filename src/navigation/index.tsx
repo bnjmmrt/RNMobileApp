@@ -12,7 +12,7 @@ const MainNavigation: React.FC = () => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   console.log("sayyed logg:",loginData)
 
-  const [isLoggedIn, setIsLoggedIn] = useState<number>(loginData?.varifyStatus || 0);
+  const [isLoggedIn, setIsLoggedIn] = useState<number>(loginData?.varifyStatus || 1);
 
   return isLoggedIn == 0 ? <AuthStack /> : <AppStack />;
 };
