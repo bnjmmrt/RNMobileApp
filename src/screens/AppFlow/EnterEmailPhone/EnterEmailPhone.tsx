@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants';
+import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
 import EmailPhoneStyles from './EnterEmailPhoneStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
@@ -24,15 +24,15 @@ const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
 
   const onNextClick = () => {
     if (isEmailVerified) {
-      console.log('phoneNumberInputRef.current.inputText', phoneNumberInputRef.current)
-      phoneNumberInputRef.current && phoneNumberInputRef.current.handleNextPress();
+      if(phoneNumberInputRef.current.validatePhoneNumber()){
       dispatch(setPhone(phoneNumberInputRef.current.inputText));
       navigation.navigate('VerifyEmail');
+      }
     } else {
-      console.log('emailInputRef.current.inputText', emailInputRef.current.inputText)
-      emailInputRef.current && emailInputRef.current.handleNextPress();
+      if(emailInputRef.current.validateEmailAddress()){
       dispatch(setEmail(emailInputRef.current.inputText));
       navigation.navigate('VerifyEmail');
+      }
     }
   };
 

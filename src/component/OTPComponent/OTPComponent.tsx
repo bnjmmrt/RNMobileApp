@@ -22,7 +22,7 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>((props, r
     const [code, setCode] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string>('');
 
-    useImperativeHandle(ref, () => ({ handleNextPress, showInvalidCodeError }));
+    useImperativeHandle(ref, () => ({ handleNextPress,validateCode, showInvalidCodeError }));
 
     const validateCode = (): boolean => {
         if (code.length < 4) {

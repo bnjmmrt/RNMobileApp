@@ -1,5 +1,5 @@
-import React, { useRef, useCallback, useMemo, forwardRef, useImperativeHandle, useState } from 'react';
-import { StyleSheet, Modal, View } from 'react-native';
+import React, { useRef, useCallback, useMemo } from 'react';
+import { StyleSheet, View } from 'react-native';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Hp, Wp } from '../../utils/dimensions';
 import { COLORS } from '../../utils/constants';
@@ -9,29 +9,20 @@ interface BottomSheetComponentProps {
     snapPoints?: string[]; // Allows customizable snap points
     onChange?: (index: number) => void;
     onClose?: () => void;
-    ref: any;
-    backColor?: string
+    ref:any;
+    backgroundColor?:string
+    indicatorColor?:string
 }
 
-const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(({
+const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
     children,
     snapPoints = ['40%'], // Default snap point
     onChange,
     onClose,
-}, ref) => {
-    const [isVisible, setIsVisible] = useState(false);
+    backgroundColor="black" ,
+    indicatorColor="white"
+}) => {
     const sheetRef = useRef<BottomSheet>(null);
-
-    useImperativeHandle(ref, () => ({
-        open: () => {
-            setIsVisible(true);
-        },
-        close: () => {
-            sheetRef.current?.close();
-            setIsVisible(false);
-        },
-    }));
-
     const handleSheetChange = useCallback(
         (index: number) => {
             onChange?.(index);
@@ -40,50 +31,49 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
     );
 
     const handleClosePress = useCallback(() => {
-        setIsVisible(false);
+        sheetRef.current?.close();
         onClose?.();
     }, [onClose]);
 
     const snapPointsMemo = useMemo(() => snapPoints, [snapPoints]);
 
     return (
-        <Modal
-            transparent
-            visible={isVisible}
-            animationType="fade"
-            onRequestClose={handleClosePress}
-        >
-            <View style={styles.modalContainer}>
-                <BottomSheet
-                    ref={sheetRef}
-                    snapPoints={snapPointsMemo}
-                    enableDynamicSizing={false}
-                    enableContentPanningGesture={false}
-                    enablePanDownToClose
-                    handleIndicatorStyle={[styles.indicatorStyle, {
-                        backgroundColor: COLORS.tabBorderColor
-                    }]}
-                    onClose={handleClosePress}
-                    onChange={handleSheetChange}
-                    backgroundStyle={{ backgroundColor: COLORS.white }}
-                >
-                    <BottomSheetScrollView nestedScrollEnabled>{children}</BottomSheetScrollView>
-                </BottomSheet>
-            </View>
-        </Modal>
+        <>
+            {/* <View style={styles.bottomSheetBlurView} /> */}
+            <BottomSheet
+                ref={sheetRef}
+                // index={-1}
+                snapPoints={snapPointsMemo}
+                enableDynamicSizing={false}
+                enableContentPanningGesture={false}
+                enablePanDownToClose
+                handleIndicatorStyle={[styles.indicatorStyle, {
+                    backgroundColor: indicatorColor
+                }]}
+                onClose={handleClosePress}
+                onChange={handleSheetChange}
+                backgroundStyle={{ backgroundColor: backgroundColor }}
+            >
+                <BottomSheetScrollView nestedScrollEnabled>{children}</BottomSheetScrollView>
+            </BottomSheet>
+        </>
     );
-});
+};
 
 const styles = StyleSheet.create({
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Optional: Dimmed background
-    },
     indicatorStyle: {
         width: Wp(13),
         height: 5,
         borderRadius: 10,
+    },
+    bottomSheetBlurView: {
+        height: Hp(100),
+        width: Wp(100),
+        backgroundColor: '#00000060',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        zIndex: 0
     },
 });
 

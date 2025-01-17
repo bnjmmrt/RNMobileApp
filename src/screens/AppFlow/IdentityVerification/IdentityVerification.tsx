@@ -53,7 +53,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({ navigation 
           ref={usernameRef}
           placeholder={"@username"}
           leftImage={IMAGES.instagramLogo}
-          iconStyle={styles.iconStyle}
+          // iconStyle={styles.iconStyle}
           errorMessage={ERROR_MESSAGE.PLEASE_ENTER_YOUR_BASE_CITY}
           defaultValue={""}
         />
