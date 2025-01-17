@@ -34,7 +34,13 @@ const Input = forwardRef((props: InputProps, ref) => {
     validateInputs,
     inputText,
     setErrorMessage,
+    handleNextPress,
   }));
+
+  const handleNextPress = () => {
+    if (validateInputs()) {
+    }
+};
 
   const validateInputs = () => {
     if (!inputText) {
