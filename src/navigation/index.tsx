@@ -14,7 +14,7 @@ const MainNavigation: React.FC = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState<number>(loginData?.varifyStatus || 0);
 
-  return isLoggedIn == 0 ? <AppFlowStack /> : <AppStack />;
+  return isLoggedIn == 0 ? <AuthStack /> : <AppStack />;
 };
 
 export default MainNavigation;
