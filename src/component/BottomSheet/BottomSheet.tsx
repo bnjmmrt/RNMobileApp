@@ -1,6 +1,6 @@
-import React, { useRef, useCallback, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
-import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import React, { useRef, useCallback, useMemo, forwardRef, useImperativeHandle, useState } from 'react';
+import { StyleSheet, Modal, View } from 'react-native';
+import BottomSheet, { BottomSheetFooter, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Hp, Wp } from '../../utils/dimensions';
 import { COLORS } from '../../utils/constants';
 
@@ -9,7 +9,9 @@ interface BottomSheetComponentProps {
     snapPoints?: string[]; // Allows customizable snap points
     onChange?: (index: number) => void;
     onClose?: () => void;
-    // ref:any;
+    ref: any;
+    backColor?: string;
+    footer?:any;
     backgroundColor?:string
     indicatorColor?:string
 }
@@ -19,9 +21,9 @@ const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
     snapPoints = ['40%'], // Default snap point
     onChange,
     onClose,
-    backgroundColor="black" ,
-    indicatorColor="white"
-}) => {
+    footer
+}, ref) => {
+    const [isVisible, setIsVisible] = useState(false);
     const sheetRef = useRef<BottomSheet>(null);
     const handleSheetChange = useCallback(
         (index: number) => {
@@ -36,27 +38,41 @@ const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
     }, [onClose]);
 
     const snapPointsMemo = useMemo(() => snapPoints, [snapPoints]);
+    const renderFooter = useCallback(
+        (props) => (
+            <BottomSheetFooter {...props} bottomInset={24}>
+                {typeof footer === 'function' ? footer() : footer}
+            </BottomSheetFooter>
+        ),
+        [footer]
+    );
 
     return (
-        <>
-            {/* <View style={styles.bottomSheetBlurView} /> */}
-            <BottomSheet
-                ref={sheetRef}
-                // index={-1}
-                snapPoints={snapPointsMemo}
-                enableDynamicSizing={false}
-                enableContentPanningGesture={false}
-                enablePanDownToClose
-                handleIndicatorStyle={[styles.indicatorStyle, {
-                    backgroundColor: indicatorColor
-                }]}
-                onClose={handleClosePress}
-                onChange={handleSheetChange}
-                backgroundStyle={{ backgroundColor: backgroundColor }}
-            >
-                <BottomSheetScrollView nestedScrollEnabled>{children}</BottomSheetScrollView>
-            </BottomSheet>
-        </>
+        <Modal
+            transparent
+            visible={isVisible}
+            animationType="fade"
+            onRequestClose={handleClosePress}
+        >
+            <View style={styles.modalContainer}>
+                <BottomSheet
+                    ref={sheetRef}
+                    snapPoints={snapPointsMemo}
+                    footerComponent={renderFooter}
+                    enableDynamicSizing={false}
+                    enableContentPanningGesture={false}
+                    enablePanDownToClose
+                    handleIndicatorStyle={[styles.indicatorStyle, {
+                        backgroundColor: COLORS.tabBorderColor
+                    }]}
+                    onClose={handleClosePress}
+                    onChange={handleSheetChange}
+                    backgroundStyle={{ backgroundColor: COLORS.white }}
+                >
+                    <BottomSheetScrollView nestedScrollEnabled>{children}</BottomSheetScrollView>
+                </BottomSheet>
+            </View>
+        </Modal>
     );
 };
 
