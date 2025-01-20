@@ -18,13 +18,13 @@ import { RootState } from '../../../redux/slices';
 import { setBirthday, setPageProgress } from '../../../redux/slices/appFlowSlice';
 import BottomSheetComponent from '../../../component/BottomSheet/BottomSheet';
 import DatePickerComponent from '../../../component/CustomDatePicker/CustomDatePicker';
-import DatePickerInput from '../../../component/DatePickerInput/DatePickerInput';
+import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
 
 interface BirthdayScreenProps extends NativeStackScreenProps<any, any> {}
 
 const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
-  const bottomSheetRef = useRef<any>(null);
+  // const bottomSheetRef = useRef<any>(null);
   const birthday = useSelector((state: RootState) => state.appFlow.birthday);
   const styles = BirthdayScreenStyles();
   const [selectedDate, setSelectedDate] = useState<string>(birthday); // Initialize with birthday from state
@@ -101,14 +101,13 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
             LABLE.WE_WILL_USE_THIS_INFORMATION_TO_TAILOR_YOUR_EXPERIENCE
           }
         />
-        <DatePickerInput
+        <CustomSelectableText
           placeholder={LABLE.DATE_PLACEHOLDER}
           leftImage={IMAGES.calender}
           rightImage={IMAGES.downArrow}
-          // setErrorMessage={setError}
           errorMessage={ errorMessage}
           defaultValue={selectedDate} // Display the selected date
-          onPressImage={() => openDatePicker()} // Open date picker
+          onPress={() => openDatePicker()} // Open date picker
         />
       </View>
 
@@ -121,7 +120,7 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
 
       {isShown && (
         <BottomSheetComponent
-          ref={bottomSheetRef}
+          // ref={bottomSheetRef}
           snapPoints={['50%']} // Adjustable snap points
           onClose={() => setIsShown(false)}
           backgroundColor={COLORS.white}

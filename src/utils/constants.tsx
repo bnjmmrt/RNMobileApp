@@ -105,6 +105,7 @@ export const LABLE = {
   FASTRACK_YOUR_APPLICATION: "Want to fast-track your application?",
   REQUEST_REFERRAL_FROM_RUMOR:"Request referrals from Rumor members.",
   INVITE_YOUR_FRIEND:"Invite your friends to join Rumor.",
+  SELECT_YOUR_BIRTHDAY_BELOW:"Select your birthday below"
 
 }
 

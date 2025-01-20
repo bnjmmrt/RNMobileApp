@@ -14,21 +14,13 @@ import Button from '../Button';
 import {BUTTON_LABLE} from '../../utils/constants';
 import {Wp} from '../../utils/dimensions';
 
-const LocationPickerModal = () => {
+interface LocationPickerModalProps{
+  setLocation:(location:string)=>void
+}
+const LocationPickerModal:React.FC<LocationPickerModalProps> = ({setLocation}) => {
+  console.log("LocationPickerModal")
   const [modalVisible, setModalVisible] = useState(true);
-  const [location, setLocation] = useState('');
-
-  //   const locations = [
-  //     { id: "1", flag: "🇺🇸", name: "Los Angeles, California, USA" },
-  //     { id: "2", flag: "🇺🇸", name: "Los Gatos, California, USA" },
-  //     { id: "3", flag: "🇲🇽", name: "Los Mochis, Sinaloa, Mexico" },
-  //     { id: "4", flag: "🇪🇸", name: "Los Realejos, Tenerife, Spain" },
-  //   ];
-
-  //   const filteredLocations = locations.filter((location) =>
-  //     location.name.toLowerCase().includes(search.toLowerCase())
-  //   );
-
+ 
   return (
     <Modal
       animationType="slide"
