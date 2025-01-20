@@ -12,6 +12,8 @@ interface BottomSheetComponentProps {
     ref: any;
     backColor?: string;
     footer?:any;
+    backgroundColor?:string
+    indicatorColor?:string
 }
 
 const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
