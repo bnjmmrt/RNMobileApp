@@ -1,10 +1,10 @@
-import { baseApi } from "../../ApiManager/baseApi";
+import { createBaseApi } from "../../ApiManager/createBaseApiWithoutFecthBaseQuery";
 
-export const referralSlice = baseApi.injectEndpoints({
+export const referralSlice = createBaseApi.injectEndpoints({
   endpoints: (builder) => ({
     submitReferralCode: builder.mutation({
       query: (requestParam) => ({
-        url: '/v1/platform/referred-users',
+        url: 'v1/platform/referred-users',
         method: 'POST',
         body: requestParam,
       }),

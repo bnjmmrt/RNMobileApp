@@ -12,11 +12,9 @@ interface BottomSheetComponentProps {
     ref: any;
     backColor?: string;
     footer?:any;
-    backgroundColor?:string
-    indicatorColor?:string
 }
 
-const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
+const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(({
     children,
     snapPoints = ['40%'], // Default snap point
     onChange,
@@ -25,6 +23,17 @@ const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
 }, ref) => {
     const [isVisible, setIsVisible] = useState(false);
     const sheetRef = useRef<BottomSheet>(null);
+
+    useImperativeHandle(ref, () => ({
+        open: () => {
+            setIsVisible(true);
+        },
+        close: () => {
+            sheetRef.current?.close();
+            setIsVisible(false);
+        },
+    }));
+
     const handleSheetChange = useCallback(
         (index: number) => {
             onChange?.(index);
@@ -33,7 +42,7 @@ const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
     );
 
     const handleClosePress = useCallback(() => {
-        sheetRef.current?.close();
+        setIsVisible(false);
         onClose?.();
     }, [onClose]);
 
@@ -74,22 +83,18 @@ const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
             </View>
         </Modal>
     );
-};
+});
 
 const styles = StyleSheet.create({
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Optional: Dimmed background
+    },
     indicatorStyle: {
         width: Wp(13),
         height: 5,
         borderRadius: 10,
-    },
-    bottomSheetBlurView: {
-        height: Hp(100),
-        width: Wp(100),
-        backgroundColor: '#00000060',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        zIndex: 0
     },
 });
 

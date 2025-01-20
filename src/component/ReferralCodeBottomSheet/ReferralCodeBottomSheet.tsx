@@ -13,6 +13,10 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   const inputRef = useRef(null);
   const [submitReferralCode, { isLoading }] = useSubmitReferralCodeMutation();
 
+  console.log(ref)
+
+
+
   const handleSubmit = async () => {
     const { inputText, validateInputs } = inputRef.current;
 
