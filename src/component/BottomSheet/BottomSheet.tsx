@@ -9,7 +9,7 @@ interface BottomSheetComponentProps {
     snapPoints?: string[]; // Allows customizable snap points
     onChange?: (index: number) => void;
     onClose?: () => void;
-    ref:any;
+    // ref:any;
     backgroundColor?:string
     indicatorColor?:string
 }

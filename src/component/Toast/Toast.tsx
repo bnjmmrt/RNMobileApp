@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
   message: {
     fontSize: 16,
     flex: 1,
+    color:COLORS.black
   },
   closeButton: {
     fontSize: 20,

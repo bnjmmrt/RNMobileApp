@@ -46,11 +46,15 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
 
   const handleCategorySelect = (category: string) => {
     if (selectedCategories.includes(category)) {
+      if(selectedCategories.length===1){
+        setIsToastShown(true)
+      }
       // Remove category if already selected
       setSelectedCategories(
         selectedCategories.filter(item => item !== category),
       );
     } else {
+      setIsToastShown(false);
       setSelectedCategories([...selectedCategories, category]);
     }
   };

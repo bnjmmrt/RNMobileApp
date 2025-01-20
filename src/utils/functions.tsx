@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import { Alert, Image, Platform, StyleSheet, Text, View } from 'react-native';
 import settings from '../ApiManager/config';
+import { parse, format } from 'date-fns';
 
 // ErrorText component with TypeScript props
 interface ErrorTextProps {
@@ -243,6 +244,8 @@ export const handleFormatDate = (selectedDay:string, selectedMonth:string, selec
     console.error('Invalid month name');
     return;
   }
+
+  
   const monthNumber = (monthIndex + 1).toString().padStart(2, '0'); // Convert to two-digit month
   const dateString = `${selectedDay}/${monthNumber}/${selectedYear}`;
   const formattedDate = moment(dateString, 'DD/MM/YYYY').format('DD/MM/YYYY');
@@ -250,6 +253,91 @@ export const handleFormatDate = (selectedDay:string, selectedMonth:string, selec
   return formattedDate
 };
 
+
+
+export const  formatEventDates = (startDate: string, endDate: string) => {
+  // Helper function to parse the date
+  function parseDate(dateString) {
+    const [datePart, timePart] = dateString.split(" ");
+    const [month, day, year] = datePart.split("/").map(Number);
+    const [hours, minutes] = timePart.split(":").map(Number);
+    return new Date(year, month - 1, day, hours, minutes);
+  }
+
+  // Parse input strings into Date objects
+  const start = parseDate(startDate);
+  const end = parseDate(endDate);
+
+  // Format options
+  const optionsDate = { weekday: "short", month: "short", day: "numeric" };
+  const optionsTime = { hour: "numeric", minute: "numeric", hour12: true };
+  const optionsTimeZone = { timeZoneName: "short" };
+
+  // Format components
+  const formattedStartDate = new Intl.DateTimeFormat("en-US", optionsDate).format(start);
+  const formattedStartTime = new Intl.DateTimeFormat("en-US", optionsTime).format(start);
+  const formattedEndDate = new Intl.DateTimeFormat("en-US", optionsDate).format(end);
+  const formattedEndTime = new Intl.DateTimeFormat("en-US", optionsTime).format(end);
+  const timeZone = new Intl.DateTimeFormat("en-US", optionsTimeZone).format(start).split(" ")[1];
+
+  // Check if start and end are on the same day
+  if (
+    start.getFullYear() === end.getFullYear() &&
+    start.getMonth() === end.getMonth() &&
+    start.getDate() === end.getDate()
+  ) {
+    // Same day: Include time range only
+    return `${formattedStartDate}, ${formattedStartTime} – ${formattedEndTime} ${timeZone}`;
+  } else {
+    // Different days: Include full date and time range
+    return `${formattedStartDate}, ${formattedStartTime} —\n${formattedEndDate}, ${formattedEndTime} ${timeZone}`;
+  }
+}
+
+// Example usage
+const start1 = "11/21/2024 13:00";
+const end1 = "11/21/2024 15:00";
+console.log(formatEventDates(start1, end1)); // Thu, Nov 21, 1:00PM – 3:00PM EST
+
+const start2 = "11/21/2024 20:00";
+const end2 = "11/23/2024 12:00";
+console.log(formatEventDates(start2, end2)); // Thu, Nov 21, 8:00PM — Sat, Nov 23, 12:00PM EST
+
+
+
+
+
+// export const  formatEventDates = (startDate: string, endDate: string) => {
+
+//   // Convert input strings into Date objects
+//   const start = new Date(startDate);
+//   const end = new Date(endDate);
+
+//   // Format options
+//   const optionsDate = { weekday: "short", month: "short", day: "numeric" };
+//   const optionsTime = { hour: "numeric", minute: "numeric", hour12: true };
+//   const optionsTimeZone = { timeZoneName: "short" };
+
+//   // Format components
+//   const formattedStartDate = new Intl.DateTimeFormat("en-US", optionsDate).format(start);
+//   const formattedStartTime = new Intl.DateTimeFormat("en-US", optionsTime).format(start);
+//   const formattedEndDate = new Intl.DateTimeFormat("en-US", optionsDate).format(end);
+//   const formattedEndTime = new Intl.DateTimeFormat("en-US", optionsTime).format(end);
+//   const timeZone = new Intl.DateTimeFormat("en-US", optionsTimeZone).format(start).split(" ")[1];
+
+//   // Check if start and end are on the same day
+//   if (
+//     start.getFullYear() === end.getFullYear() &&
+//     start.getMonth() === end.getMonth() &&
+//     start.getDate() === end.getDate()
+//   ) {
+//     // Same day: Include time range only
+//     return `${formattedStartDate}, ${formattedStartTime} – ${formattedEndTime} ${timeZone}`;
+//   } else {
+//     // Different days: Include full date and time range
+//     return `${formattedStartDate}, ${formattedStartTime} —\n${formattedEndDate}, ${formattedEndTime} ${timeZone}`;
+//   }
+// }
 // Platform utilities
 export const platform = Platform.OS;
 
