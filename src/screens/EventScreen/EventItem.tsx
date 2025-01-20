@@ -1,25 +1,15 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
-import { Image } from 'react-native-animatable';
-import IMAGES from '../../assets/images';
+import React from 'react';
+import { View, Text, StyleSheet} from 'react-native';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
-import { fontFamily } from '../../utils/functions';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { fontFamily, formatEventDates } from '../../utils/functions';
 import { Wp, Hp } from '../../utils/dimensions';
 import ButtonSmall from '../../component/ButtonSmall';
+import FastImage from 'react-native-fast-image'
 
 interface EventItemProps {
-    item: {
-        id: string;
-        title: string;
-        date: string;
-        type: string;
-        location: string;
-        image: string;
-    };
+    item: {}
 }
 const EventItem: React.FC<EventItemProps> = ({ item }) => {
-
 
     // Handle the "Next" button press
     const handlEventPress = () => {
@@ -29,13 +19,12 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
     return (
         <View style={styles.container}>
             <View style={[styles.imageContainer]}>
-                <Image source={item.image} style={styles.icon} />
+                <FastImage source={{uri:item.imageCover}} resizeMode={FastImage.resizeMode.cover} style={styles.icon} />
             </View>
             <View style={styles.contentContainer}>
-                <Text style={styles.titleStyle}>{item.title}</Text>
-                <Text style={styles.subtitle}>{item.date}</Text>
-                <Text style={styles.subtitle}>{item.type}</Text>
-                <Text style={styles.subtitle}>{item.location}</Text>
+                <Text style={styles.titleStyle}>{item.name}</Text>
+                <Text style={styles.subtitle} numberOfLines={2}>{formatEventDates(item.startDate, item.endDate)}</Text>
+                <Text style={styles.subtitle} numberOfLines={2}>{item.location.location}</Text>
                 <View style={{alignItems:'flex-start', flexDirection:'row'}}>
                 <ButtonSmall
                     disabled={false}
@@ -45,8 +34,6 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
                     onPress={handlEventPress}
                 />
                 </View>
-              
-
             </View>
         </View>
     );
@@ -56,17 +43,18 @@ const styles = StyleSheet.create({
     btnStyle: {
         borderRadius: 100,
         paddingHorizontal:10,
-        marginTop: 20,
+        marginTop: 10,
         paddingVertical: 7
     },
     container: {
         flexDirection: 'row',
         padding: 10,
         flex: 1,
-        width: Wp(90),
-        // height: Hp(25),
+        // width: Wp(90),
+        height: Hp(24),
         backgroundColor: COLORS.white,
         borderColor: COLORS.borderGray,
+        alignItems:'center',
         borderRadius: 10,
         borderWidth: 1,
         marginBottom: 10,
@@ -77,7 +65,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flexDirection: 'column',
-        padding: 10,
+        paddingHorizontal: 10,
         flex: 1,
         backgroundColor: COLORS.white,
     },
@@ -87,7 +75,8 @@ const styles = StyleSheet.create({
     },
     icon: {
         // marginRight: 10,
-        height: Hp(20),
+        borderRadius:10,
+        height: Hp(21),
         width: Wp(30),
     },
     titleStyle: {
