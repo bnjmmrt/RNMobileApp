@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, forwardRef, useEffect } from 'react';
 import {
   StyleSheet,
@@ -9,7 +10,7 @@ import {
   Platform,
   Linking,
 } from 'react-native';
-import Contacts, { Contact } from 'react-native-contacts';
+import Contacts from 'react-native-contacts';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import Title from '../Title/Title';
@@ -20,7 +21,7 @@ import IMAGES from '../../../src/assets/images';
 import ButtonSmall from '../ButtonSmall';
 import Button from '../Button';
 import { Hp } from '../../../src/utils/dimensions';
-
+import TabBar from '../ActiveTabBar/TabBar';
 
 interface AppMember {
   name: string;
@@ -31,6 +32,8 @@ interface ContactItem {
   name: string;
   phone: string;
 }
+
+const PAGE_SIZE = 30;
 
 const appMembers: AppMember[] = [
   { name: 'Leslie Alexander', phone: '2195550114' },
@@ -46,37 +49,46 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   const [requestSent, setRequestSent] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const searchInputRef = useRef(null);
-  const [permissionGranted,setPermissionGranted]=useState(true);
+  const [permissionGranted, setPermissionGranted] = useState(true);
+  const [selectedTab, setSelectedTab] = useState('01');
+  const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const requestAndroidPermissions = ()=>{
+  const requestAndroidPermissions = () => {
     PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
-        title: 'Contacts',
-        message: 'This app would like to view your contacts.',
-        buttonPositive: 'Please accept bare mortal',
+      title: 'Contacts',
+      message: 'This app would like to view your contacts.',
+      buttonPositive: 'Please accept bare mortal',
     })
-        .then((res) => {
-            console.log('Permission: ', res);
-            setPermissionGranted(true)
-            fetchContacts();
-        })
-        .catch((error) => {
-          setPermissionGranted(false)
-            console.error('Permission error: ', error);
-        });
+      .then((res) => {
+        console.log('Permission: ', res);
+        setPermissionGranted(true);
+        fetchContacts();
+      })
+      .catch((error) => {
+        setPermissionGranted(false);
+        console.error('Permission error: ', error);
+      });
   };
- 
+
   useEffect(() => {
     Platform.OS == 'ios' ? fetchContacts() : requestAndroidPermissions();
   }, []);
 
   const fetchContacts = async () => {
     try {
-      const deviceContacts = await Contacts.getAll().catch(err=>setPermissionGranted(false));
+      const deviceContacts = await Contacts.getAll().catch((err) =>
+        setPermissionGranted(false)
+      );
 
-      const formattedContacts = deviceContacts.map((contact: Contact) => ({
-        name: `${contact.givenName} ${contact.familyName}`.trim(),
-        phone: contact.phoneNumbers[0]?.number.replace(/\D/g, '') || '',
-      })).filter(contact => contact.phone);
+      const formattedContacts = deviceContacts
+        .map((contact: any) => ({
+          name: `${contact.givenName} ${contact.familyName}`.trim(),
+          phone: contact.phoneNumbers[0]?.number.replace(/\D/g, '') || '',
+        }))
+        .filter((contact) => contact.phone);
+
+        console.log("formattedContacts",formattedContacts.length)
 
       const appMemberPhones = appMembers.map((member) => member.phone);
       const membersList = formattedContacts.filter((contact) =>
@@ -87,8 +99,8 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       );
 
       setContacts(nonMembersList);
+      setFilteredContacts(nonMembersList.slice(0, PAGE_SIZE));
       setMembers(membersList);
-      setFilteredContacts(nonMembersList);
       setFilteredMembers(membersList);
     } catch (error) {
       console.error('Error fetching contacts:', error);
@@ -96,20 +108,38 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   };
 
   const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    const lowercasedQuery = query.toLowerCase();
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+    }
+    debounceTimeoutRef.current = setTimeout(() => {
+      const lowercasedQuery = query.toLowerCase();
 
-    setFilteredMembers(
-      members.filter((member) =>
-        member.name.toLowerCase().includes(lowercasedQuery)
-      )
-    );
+      setFilteredMembers(
+        members.filter((member) =>
+          member.name.toLowerCase().includes(lowercasedQuery)
+        )
+      );
 
-    setFilteredContacts(
-      contacts.filter((contact) =>
-        contact.name.toLowerCase().includes(lowercasedQuery)
-      )
-    );
+      setFilteredContacts(
+        contacts
+          .filter((contact) =>
+            contact.name.toLowerCase().includes(lowercasedQuery)
+          )
+          .slice(0, PAGE_SIZE)
+      );
+    }, 300); 
+  };
+
+  const handleLoadMore = () => {
+    const nextPage = currentPage + 1;
+    const startIndex = currentPage * PAGE_SIZE;
+    const endIndex = startIndex + PAGE_SIZE;
+
+    const newContacts = contacts.slice(startIndex, endIndex);
+    if (newContacts.length > 0) {
+      setFilteredContacts((prev) => [...prev, ...newContacts]);
+      setCurrentPage(nextPage);
+    }
   };
 
   const handleInviteLink = async () => {
@@ -126,20 +156,18 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   const handleInvite = (contact: ContactItem) => {
     const message =
       'Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: [Rumor App Link]';
-  
+
     const url = `sms:${contact.phone}?body=${encodeURIComponent(message)}`;
-  
+
     Linking.openURL(url)
       .then(() => {
         setRequestSent((prev) => [...prev, contact.phone]);
-        // Optionally show a success message
         console.log(`Invitation sent to ${contact.name}.`);
       })
       .catch((error) => {
         console.error('Error opening messaging app:', error);
       });
   };
-  
 
   const renderListItem = (
     item: ContactItem,
@@ -166,6 +194,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       />
     </View>
   );
+
   const footerComponent = () => (
     <Button
       disabled={false}
@@ -175,7 +204,6 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       onPress={handleInviteLink}
     />
   );
-      
 
   return (
     <BottomSheetComponent
@@ -184,7 +212,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       footer={footerComponent()}
       onClose={() => console.log('Bottom sheet closed')}
     >
-      <View style={{ paddingHorizontal: 20,paddingBottom:100 }}>
+      <View style={{ paddingHorizontal: 20,flex:1 }}>
         <Title title={LABLE.SELECT_A_REFERRAL} align="center" />
         <View style={{ height: 16 }} />
 
@@ -192,11 +220,19 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
           ref={searchInputRef}
           placeholder={LABLE.SEARCH_FRIENDS}
           leftImage={IMAGES.search}
-          onChangeText={handleSearch}
+          onChangeText={(query) => {
+            setSearchQuery(query);
+            handleSearch(query);
+          }}
           defaultValue={searchQuery}
         />
+        <TabBar
+          onTabChange={(tab) => setSelectedTab(tab)}
+          tabOneLabel="Contacts"
+          tabTwoLabel="Members"
+        />
 
-        {filteredMembers.length > 0 && (
+        {selectedTab === '02' && filteredMembers.length > 0 && (
           <>
             <Text style={styles.sectionTitle}>{LABLE.FRIENDS_WHO_ARE_MEMBERS}</Text>
             <Text style={styles.sectionSubtitle}>{LABLE.REQUEST_A_REFERRAL}</Text>
@@ -217,15 +253,14 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
           </>
         )}
 
-        {filteredContacts.length > 0 && (
-          <>
+        {selectedTab === '01' && filteredContacts.length > 0 && (
+          <View style={{flex:1}}>
             <Text style={styles.sectionTitle}>{LABLE.CONTACTS}</Text>
             <Text style={styles.sectionSubtitle}>{LABLE.INVITE_FRIENDS_TO}</Text>
             <FlatList
               data={filteredContacts}
-              scrollEnabled={false}
-              keyExtractor={(item) => item.phone}
-              contentContainerStyle={{ gap: 4 }}
+              keyExtractor={(item, index) => '' + item.phone + index}
+              contentContainerStyle={{ gap: 4,flexGrow:1,paddingBottom:100 }}
               renderItem={({ item }) =>
                 renderListItem(
                   item,
@@ -234,17 +269,26 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
                   requestSent.includes(item.phone)
                 )
               }
+              onEndReached={handleLoadMore}
+              onEndReachedThreshold={0.5}
+            />
+          </View>
+        )}
+
+        {!permissionGranted && (
+          <>
+            <Text style={styles.sectionTitle}>
+              Allow permission to send invite to contacts
+            </Text>
+            <ButtonSmall
+              colorTheme="dark"
+              style={styles.settingsButton}
+              title="Go to Settings"
+              onPress={() => Linking.openURL('app-settings:')}
             />
           </>
         )}
-          {!permissionGranted && <>
-      <Text style={styles.sectionTitle}>Allow permission to send invite to contacts</Text>
-            <ButtonSmall colorTheme='dark' style={styles.settingsButton}  title='Go to Settings' onPress={()=>Linking.openURL('app-settings:')}/>
-            </>}
-           
       </View>
-    
-    
     </BottomSheetComponent>
   );
 });
@@ -262,7 +306,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    marginTop: 16,
+    marginTop: 0,
     textAlign: 'center',
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
