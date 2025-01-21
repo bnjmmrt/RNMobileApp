@@ -21,6 +21,7 @@ export const BUTTON_LABLE = {
   REQUREST:'Request',
   ACCESS_MY_CONTACTS:'Access My Contacts',
   ENTER_REFERRAL_CODE:"Enter Referral Code",
+  CONFIRM: "Confirm",
 }
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',
