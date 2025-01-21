@@ -54,6 +54,8 @@ export const EndPoint = {
   get_focuses: 'platform/get-focuses',
   interests: 'platform/interests',
   member_signUp: 'auth/member-sign-up',
+  file_upload:'files/upload',
+  check_member_logiin:'auth/check-member-login'
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

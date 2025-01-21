@@ -36,35 +36,44 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   const dispatch = useDispatch();
   const usernameRef = useRef<any>(null);
 
+const email = BUTTON_LABLE.SUPPORT_EMAIL_ID;
+const subject = 'Rumor app';
+const body = 'Rumor app';
+const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+
   const onNextClick = async () => {
+    usernameRef.current && usernameRef.current.validateInputs()
 
-
-    const requestParams: any = {
-      address: {
-        address: userDetails.baseCity.address,
-        placeId: userDetails.baseCity.placeId,
-      },
-      dateOfBirth: userDetails.birthday,
-      email: userDetails.email,
-      firstName: userDetails.firstName,
-      focusIds: userDetails.creativeFocus.map((item: any) => item.id),
-      gender: userDetails.gender,
-      lastName: userDetails.lastName,
-      phoneNumber: userDetails.phone,
-      instagramAccessToken: 'string',
-      instagramUserName: usernameRef.current.inputText,
-      linkedInAccessToken: 'string',
-      facebookAccessToken: 'string',
-      platform: 'string',
-      socialUrl: 'string',
-    };
-     console.log('requestParams', requestParams);
-    // const response = await apiRequest('post', EndPoint.member_signUp,requestParams);
-    console.log("response",error)
-    //if not error then 
-    dispatch(resetAppFlowDetails());
-    // persistStore(store).purge(); // This clears the persisted state
-    navigation.navigate('MyDetailsScreen');
+    if(usernameRef.current.validateInputs()){
+      const requestParams: any = {
+        address: {
+          address: userDetails.baseCity.address,
+          placeId: userDetails.baseCity.placeId,
+        },
+        dateOfBirth: userDetails.birthday,
+        email: userDetails.email,
+        firstName: userDetails.firstName,
+        focusIds: userDetails.creativeFocus.map((item: any) => item.id),
+        gender: userDetails.gender,
+        lastName: userDetails.lastName,
+        phoneNumber: userDetails.phone,
+        instagramAccessToken: 'string',
+        instagramUserName: usernameRef.current.inputText,
+        linkedInAccessToken: 'string',
+        facebookAccessToken: 'string',
+        platform: 'string',
+        socialUrl: 'string',
+      };
+       console.log('requestParams', requestParams);
+      // const response = await apiRequest('post', EndPoint.member_signUp,requestParams);
+      console.log("response",error)
+      //if not error then 
+      dispatch(resetAppFlowDetails());
+      // persistStore(store).purge(); // This clears the persisted state
+      navigation.navigate('MyDetailsScreen');
+    }
+    
   };
 
   const handleBackPress = () => {
@@ -77,7 +86,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   };
 
   const goToEmail = () => {
-    Linking.openURL(`mailto:${BUTTON_LABLE.SUPPORT_EMAIL_ID}`);
+    Linking.openURL(mailtoURL);
   };
 
   return (
@@ -99,7 +108,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
           placeholder={'@username'}
           leftImage={IMAGES.instagramLogo}
           // iconStyle={styles.iconStyle}
-          errorMessage={ERROR_MESSAGE.PLEASE_ENTER_YOUR_BASE_CITY}
+          errorMessage={"Please enter username"}
           defaultValue={''}
         />
         <View style={styles.mainContainer}>

@@ -1,13 +1,17 @@
 import { useState, useCallback } from 'react';
 import { axiosController } from './axiosController'; // Import your API controller
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosRequestConfig } from 'axios';
 
-// Define the return type for the hook
-
-type MethodType= 'get' | 'post' | 'put' | 'delete'
+type MethodType = 'get' | 'post' | 'put' | 'delete';
 
 interface UseApiReturn<T> {
-  apiRequest: (method: MethodType, url: string, data?: Record<string, unknown> | null, params?: Record<string, unknown> | null) => Promise<T>;
+  apiRequest: (
+    method: MethodType,
+    url: string,
+    data?: Record<string, unknown> | FormData | null,
+    params?: Record<string, unknown> | null,
+    headers?: Record<string, string> // Optional headers parameter
+  ) => Promise<T>;
   loading: boolean;
   error: AxiosError | null;
 }
@@ -16,20 +20,34 @@ const useApi = <T>(): UseApiReturn<T> => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<AxiosError | null>(null);
 
-  const apiRequest = useCallback(async (method: string, url: string, data:any , params: Record<string, unknown> | null = null): Promise<T> => {
-    setLoading(true);
-    setError(null);
+  const apiRequest = useCallback(
+    async (
+      method: MethodType,
+      url: string,
+      data: Record<string, unknown> | FormData | null = null,
+      params: Record<string, unknown> | null = null,
+      headers: Record<string, string> = {}
+    ): Promise<T> => {
+      setLoading(true);
+      setError(null);
 
-    try {
-      const response = await axiosController[method](url, data || params);
-      return response; // Return the response to the caller
-    } catch (err) {
-      setError(err as AxiosError);
-      throw err; // Rethrow error for specific handling if needed
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      try {
+        const config: AxiosRequestConfig = {
+          params,
+          headers
+        };
+
+        const response = await axiosController[method](url, data, config);
+        return response; // Return the response to the caller
+      } catch (err) {
+        setError(err as AxiosError);
+        throw err; // Rethrow error for specific handling if needed
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
 
   return { apiRequest, loading, error };
 };
