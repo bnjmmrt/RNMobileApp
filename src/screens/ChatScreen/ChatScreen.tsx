@@ -25,8 +25,8 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
           subTitle={LABLE.FULL_ACCESS_UNLOCK} />
         :
         <BeforeAppStaticComponent
-          title={LABLE.CHAT_WITH_HOST}
-          subTitle={LABLE.CONNECT_DIRECTLY_WITH_PEOPLE} />}
+          isChatScreen={true}/>
+      }
     </SafeAreaView>
   );
 };

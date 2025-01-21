@@ -40,6 +40,7 @@ const IMAGES = {
   connectedAccount:require('./connectedAccount.png'),
   checkCircleFilled:require('./check-circle-filled.png'),
   close:require('./close.png'),
+  noRecord:require('./noRecord.png'),
 
 }
 

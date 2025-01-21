@@ -24,7 +24,7 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {!loginData.isSignUpCompleted ?
+      {loginData.isSignUpCompleted ?
         <AfterAppStaticComponent
           title={LABLE.YOU_ARE_ON_WAITLIST}
           subTitle={LABLE.FULL_ACCESS_UNLOCK} />
