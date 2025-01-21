@@ -9,19 +9,48 @@ import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
 import { persistStore } from 'redux-persist';
 import { store } from '../../../redux/store';  // Your store
-import { useDispatch } from 'react-redux';
-import { resetAppFlowDetails, setPageProgress } from '../../../redux/slices/appFlowSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { resetAppFlowDetails, setPageProgress, UserDetailsState } from '../../../redux/slices/appFlowSlice';
 import Input from '../../../component/Input/Input';
 import IMAGES from '../../../assets/images';
+import { useMemberSignUp } from '../../../redux/hooks/useMemberSignUp';
+import {UserProfile} from "../../../redux/hooks/useMemberSignUp"
+
 
 interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
 
 const IdentityVerification: React.FC<IdentityVerificationProps> = ({ navigation }) => {
+  const {signUp}= useMemberSignUp();
+  const userDetails = useSelector(
+    (state: UserDetailsState) => state,
+  );
   const styles = IdentityVerificationStyles();
   const dispatch = useDispatch();
   const usernameRef = useRef<any>(null);
 
-  const onNextClick = () => {
+  const onNextClick = async() => {
+    const requestParams:UserProfile={
+      address: {
+        address:userDetails.baseCity.address,
+        placeId: userDetails.baseCity.placeId
+      },
+      dateOfBirth: userDetails.birthday,
+      email: userDetails.email,
+      firstName: userDetails.firstName,
+      focusIds: userDetails.creativeFocus,
+      gender: userDetails.gender,
+      lastName: userDetails.lastName,
+      phoneNumber: userDetails.phone,
+      instagramAccessToken: "string",
+      instagramUserName: "string",
+      linkedInAccessToken: "string",
+      facebookAccessToken: "string",
+      platform: "string",
+      socialUrl: "string"
+    }
+
+    await signUp(requestParams)
+
     dispatch(resetAppFlowDetails());
     // persistStore(store).purge(); // This clears the persisted state
     navigation.navigate('MyDetailsScreen');

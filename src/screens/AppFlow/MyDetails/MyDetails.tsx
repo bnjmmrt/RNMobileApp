@@ -17,19 +17,30 @@ import {
   setLastName,
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
+import {
+  setCreativeFocus,
+  setInterests
+} from '../../../redux/slices/appFlowApiDataSlice';
+import { useGetFocusesQuery, useGetInterestsQuery } from '../../../redux/actions/appFlowApiAction';
 
 interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({navigation}) => {
-  // const {data: posts, error, isLoading} = useGetPostsQuery();
+   const {data: focuses, } = useGetFocusesQuery('');
+   const {data: interests,} = useGetInterestsQuery('');
 
   const dispatch = useDispatch();
   const userDetails = useSelector((state: RootState) => state.appFlow);
   const isEmailPhoneBothVerified = useSelector(
     (state: RootState) => state.appFlow.isEmailPhoneBothVerified,
   );
-  // console.log("postsssss",posts);
-  // console.log("userDetails",userDetails);
+  
+  console.log("postsssss",focuses);
+  console.log("userDetails",interests);
+
+  dispatch(setCreativeFocus(focuses))
+  dispatch(setInterests(interests))
+  
   const styles = EmailPhoneStyles();
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);

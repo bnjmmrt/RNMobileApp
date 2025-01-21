@@ -13,9 +13,10 @@ import GooglePlacesInput from '../GooglePlacesInput/GooglePlacesInput';
 import Button from '../Button';
 import {BUTTON_LABLE} from '../../utils/constants';
 import {Wp} from '../../utils/dimensions';
+import { Address } from '../../redux/slices/appFlowSlice';
 
 interface LocationPickerModalProps{
-  setLocation:(location:string)=>void
+  setLocation:(location:Address)=>void
 }
 const LocationPickerModal:React.FC<LocationPickerModalProps> = ({setLocation}) => {
   console.log("LocationPickerModal")

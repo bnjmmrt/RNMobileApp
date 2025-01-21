@@ -9,7 +9,7 @@ import { createBaseApi } from '../ApiManager/createBaseApiWithoutFecthBaseQuery'
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['auth','appFlow'],
+  whitelist: ['auth','appFlow','appFlowApiData'],
 };
 // AsyncStorage.clear()
 const loggerMiddleware: Middleware = createLogger({

@@ -14,12 +14,15 @@ import {
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
 import Toast from '../../../component/Toast/Toast';
+import {useGetFocusesQuery} from '../../../redux/actions/appFlowApiAction';
 
 interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> {}
 
 const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
   navigation,
 }) => {
+  const {data, error, isLoading} = useGetFocusesQuery('');
+  
   const dispatch = useDispatch();
   const creativeFocus = useSelector(
     (state: RootState) => state.appFlow.creativeFocus,
@@ -50,10 +53,9 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
   ];
 
   const handleCategorySelect = (category: string) => {
-    
     if (selectedCategories.includes(category)) {
-      if(selectedCategories.length===1){
-        setIsToastShown(true)
+      if (selectedCategories.length === 1) {
+        setIsToastShown(true);
       }
       // Remove category if already selected
       setSelectedCategories(
@@ -61,10 +63,9 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
       );
     } else if (selectedCategories.length < 3) {
       // Add category if less than 3 are selected
-      setIsToastShown(false)
+      setIsToastShown(false);
       setSelectedCategories([...selectedCategories, category]);
     }
-    
   };
 
   const onNextClick = () => {

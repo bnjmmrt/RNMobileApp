@@ -15,7 +15,7 @@ import IMAGES from '../../../assets/images';
 import Header from '../../../component/Header/Header';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../redux/slices';
-import {setBaseCity, setPageProgress} from '../../../redux/slices/appFlowSlice';
+import {Address, setBaseCity, setPageProgress} from '../../../redux/slices/appFlowSlice';
 import BottomSheetComponent from '../../../component/BottomSheet/BottomSheet';
 import LocationPickerModal from '../../../component/BottomSheet/Modal';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
@@ -25,7 +25,7 @@ interface BaseCityScreenProps extends NativeStackScreenProps<any, any> {}
 const BaseCityScreen: React.FC<BaseCityScreenProps> = ({navigation}) => {
   const dispatch = useDispatch();
   const baseCity = useSelector((state: RootState) => state.appFlow.baseCity);
-  const [selectedCity, setSelectedCity] = useState<string>(baseCity);
+  const [selectedCity, setSelectedCity] = useState<Address>(baseCity);
  
   const styles = BaseCityScreenStyles();
   const [isShown, setIsShown] = useState(false);
@@ -72,7 +72,7 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({navigation}) => {
             placeholder={LABLE.SEARCH_FOR_A_LOCATION}
             leftImage={IMAGES.search}
             errorMessage={errorMessage}
-            defaultValue={selectedCity}
+            defaultValue={selectedCity.address}
             onPress={openLocationPicker}
           />
         </TouchableOpacity>

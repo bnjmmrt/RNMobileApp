@@ -16,6 +16,7 @@ import {
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
 import {RootState} from '../../../redux/slices';
+import { useSendOtp } from 'src/redux/hooks/useSendOtp';
 
 interface VerifyOtpScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -38,10 +39,12 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
     showInvalidCodeError: (message: string) => void;
   }>(null);
   const route = useRoute<RouteProp<RouteParams>>();
+  const { sendOtp, isMemberExist } = useSendOtp(route.params.email, route.params.phone);
+      // const { verifyOtp,isLoading } = useVerifyOtp(isMemberExist, route.params.email, route.params.phone, route.params.isEmail);
   const sendToId = useSelector((state: RootState) =>
     isEmailVerified ? state.appFlow.phone : state.appFlow.email,
   );
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [_isLoading, setIsLoading] = useState<boolean>(false);
 
   const onNextClick = () => {
     otpInputRef.current && otpInputRef.current.handleNextPress();

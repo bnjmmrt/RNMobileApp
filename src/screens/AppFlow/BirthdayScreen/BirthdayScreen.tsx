@@ -34,7 +34,6 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
   const [date, setDate] = useState<Date>(new Date()); // Initialize with birthday from state
  
  
- 
   const onNextClick = () => {
     if(validateInputs()){
     dispatch(setBirthday(selectedDate)); // Save the selected date to Redux

@@ -15,7 +15,7 @@ export const createBaseApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ['Login','Event'], // Accept tagTypes as a parameter
+  tagTypes: ['Login', 'Event', 'Focuses', 'Interests'], // Accept tagTypes as a parameter
   endpoints: () => ({}),
   keepUnusedDataFor: 60, // Optional: Adjust cache duration
   refetchOnFocus: true, // Optional: Refetch data when the app is focused
