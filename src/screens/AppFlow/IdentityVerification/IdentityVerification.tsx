@@ -31,21 +31,22 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   const {apiRequest, loading, error} = useApi();
   const userDetails = useSelector((state: any) => state.appFlow);
 
-  console.log('persist data', userDetails);
+  // console.log('persist data', userDetails);
   const styles = IdentityVerificationStyles();
   const dispatch = useDispatch();
   const usernameRef = useRef<any>(null);
 
-const email = BUTTON_LABLE.SUPPORT_EMAIL_ID;
-const subject = 'Rumor app';
-const body = 'Rumor app';
-const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
+  const email = BUTTON_LABLE.SUPPORT_EMAIL_ID;
+  const subject = 'Rumor app';
+  const body = 'Rumor app';
+  const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(
+    subject,
+  )}&body=${encodeURIComponent(body)}`;
 
   const onNextClick = async () => {
-    usernameRef.current && usernameRef.current.validateInputs()
+    usernameRef.current && usernameRef.current.validateInputs();
 
-    if(usernameRef.current.validateInputs()){
+    if (usernameRef.current.validateInputs()) {
       const requestParams: any = {
         address: {
           address: userDetails.baseCity.address,
@@ -65,15 +66,19 @@ const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=$
         platform: 'string',
         socialUrl: 'string',
       };
-       console.log('requestParams', requestParams);
-      // const response = await apiRequest('post', EndPoint.member_signUp,requestParams);
-      console.log("response",error)
-      //if not error then 
-      dispatch(resetAppFlowDetails());
-      // persistStore(store).purge(); // This clears the persisted state
-      navigation.navigate('MyDetailsScreen');
+      //  console.log('requestParams', requestParams);
+      const response: any = await apiRequest(
+        'post',
+        EndPoint.member_signUp,
+        requestParams,
+      );
+
+      if (response.data) {
+        dispatch(resetAppFlowDetails());
+        // persistStore(store).purge(); // This clears the persisted state
+        navigation.navigate('MyDetailsScreen');
+      }
     }
-    
   };
 
   const handleBackPress = () => {
@@ -108,7 +113,7 @@ const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=$
           placeholder={'@username'}
           leftImage={IMAGES.instagramLogo}
           // iconStyle={styles.iconStyle}
-          errorMessage={"Please enter username"}
+          errorMessage={'Please enter username'}
           defaultValue={''}
         />
         <View style={styles.mainContainer}>

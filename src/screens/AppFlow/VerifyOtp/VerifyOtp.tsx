@@ -103,10 +103,10 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
 
   const onNextClick =async () => {
     otpInputRef.current && otpInputRef.current.handleNextPress();
-    dispatch(setPageProgress(3));
-    dispatch(setIsEmailPhoneBothVerified(true));
-    navigation.navigate('GenderScreen');
-  //  await verifyCode()
+    // dispatch(setPageProgress(3));
+    // dispatch(setIsEmailPhoneBothVerified(true));
+    // navigation.navigate('GenderScreen');
+    await verifyCode()
     // if (true) {
     //   // on success
     //   // dispatch(setPageProgress(3));

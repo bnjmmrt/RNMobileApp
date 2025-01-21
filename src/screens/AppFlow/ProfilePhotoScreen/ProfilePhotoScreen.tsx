@@ -36,45 +36,36 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   const [isToastShown, setIsToastShown] = useState(false);
 
   const uploadFile = async () => {
-    console.log('File uploaded');
-    const formData = new FormData();
-    formData.append('file', image);
+    const mimeType = `images/${image.split('.').pop()}`;
+    const fileName = image.split('/').pop();
 
-    try {
-      const response = await apiRequest(
-        'post',
-        EndPoint.file_upload,
-        formData,
-        null, 
-        {'Content-Type': 'multipart/form-data'},
-      );
-      console.log('File uploaded successfully:', response);
-    } catch (err) {
-      console.error('Error uploading file:', err);
-    }
+    const formData = new FormData();
+    formData.append('file', {
+      uri: image,
+      type: mimeType,
+      name: fileName,
+    });
+
+    return await apiRequest('post', EndPoint.file_upload, formData, null, {
+      'Content-Type': 'multipart/form-data',
+    });
   };
 
   const onNextClick = async () => {
     if (image) {
-      //API call
-      // uploadFile()
-      
-      setIsToastShown(false);
-      // dispatch(setProfilePic(response.data.pathFileUrl));
-      dispatch(setPageProgress(9));
-       navigation.navigate('IdentityVerification');
+      const response:any = await uploadFile();
 
-      // if (!error) {
-      //   setIsToastShown(false);
-      //   // dispatch(setProfilePic(response.data.pathFileUrl));
-      //   dispatch(setPageProgress(9));
-      //   // navigation.navigate('IdentityVerification');
-      // } else {
-      //   //display error
-      // }
+      if (response.data) {
+        setIsToastShown(false);
+         dispatch(setProfilePic(response.data.pathFileUrl));
+        dispatch(setPageProgress(9));
+        navigation.navigate('IdentityVerification');
+      } else {
+        //display error
+      }
     }
     {
-      setIsToastShown(true);
+      // setIsToastShown(true);
     }
   };
 
@@ -106,12 +97,18 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
         />
         {/* {loading && <Text>Loading...</Text>} */}
         <View style={styles.profilePhotoContainer}>
-       {image ?  <Image
-            style={styles.profilePhotoContainer}
-            source={{uri: image}}
-            resizeMode="cover"
-          /> : (<View style={{alignSelf:"center"}}><AvatarInitials name={"Bessie Cooper"} size={48} /></View>)}
-         
+          {image ? (
+            <Image
+              style={styles.profilePhotoContainer}
+              source={{uri: image}}
+              resizeMode="cover"
+            />
+          ) : (
+            <View style={{alignSelf: 'center'}}>
+              <AvatarInitials name={'Bessie Cooper'} size={48} />
+            </View>
+          )}
+
           <TouchableOpacity style={styles.iconContainer} onPress={openPicker}>
             <Image
               resizeMode="contain"
