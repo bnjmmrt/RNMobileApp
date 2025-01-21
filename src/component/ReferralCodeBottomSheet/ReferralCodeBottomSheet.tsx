@@ -1,5 +1,5 @@
 import React, { useRef, forwardRef } from 'react';
-import { KeyboardAvoidingView, Platform, View, StyleSheet } from 'react-native';
+import { Platform, View, StyleSheet } from 'react-native';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
 import { Hp } from '../../utils/dimensions';
 import { BUTTON_LABLE, COLORS, ERROR_MESSAGE, LABLE } from '../../utils/constants';
@@ -7,18 +7,29 @@ import Title from '../Title/Title';
 import Input from '../Input/Input';
 import Button from '../Button';
 import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
+import { useSubmitReferralCodeMutation } from '../../../src/redux/slices/referralSlice';
 
 const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   const inputRef = useRef(null);
+  const [submitReferralCode, { isLoading }] = useSubmitReferralCodeMutation();
 
-  const handleSubmit = () => {
+  console.log(ref)
+
+
+
+  const handleSubmit = async () => {
     const { inputText, validateInputs } = inputRef.current;
 
     if (validateInputs()) {
-      if (inputText === 'ONE40') {
+      try {
+        const response = await submitReferralCode({
+          referralCode: inputText,
+          userId: 'userId', 
+        }).unwrap();
+
         FlashMessageComponent.show('success', 'Code submitted successfully!');
-        ref.current?.close(); // Assuming the BottomSheet has a `close` method.
-      } else {
+        ref.current?.close(); 
+      } catch (error) {
         inputRef.current.setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_A_VALID_REFERRAL_CODE);
       }
     }
@@ -44,7 +55,7 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
           <Button
             disabled={false}
             style={styles.btnStyle}
-            title={BUTTON_LABLE.SUBMIT}
+            title={isLoading ? 'Loading...' : BUTTON_LABLE.SUBMIT}
             colorTheme="dark"
             onPress={handleSubmit}
           />

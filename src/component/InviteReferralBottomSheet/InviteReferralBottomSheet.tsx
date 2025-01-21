@@ -7,6 +7,7 @@ import {
   Share,
   PermissionsAndroid,
   Platform,
+  Linking,
 } from 'react-native';
 import Contacts, { Contact } from 'react-native-contacts';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
@@ -18,6 +19,8 @@ import Input from '../Input/Input';
 import IMAGES from '../../../src/assets/images';
 import ButtonSmall from '../ButtonSmall';
 import Button from '../Button';
+import { Hp } from '../../../src/utils/dimensions';
+
 
 interface AppMember {
   name: string;
@@ -43,6 +46,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   const [requestSent, setRequestSent] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const searchInputRef = useRef(null);
+  const [permissionGranted,setPermissionGranted]=useState(true);
 
   const requestAndroidPermissions = ()=>{
     PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
@@ -52,20 +56,22 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
     })
         .then((res) => {
             console.log('Permission: ', res);
+            setPermissionGranted(true)
             fetchContacts();
         })
         .catch((error) => {
+          setPermissionGranted(false)
             console.error('Permission error: ', error);
         });
   };
-
+ 
   useEffect(() => {
     Platform.OS == 'ios' ? fetchContacts() : requestAndroidPermissions();
   }, []);
 
   const fetchContacts = async () => {
     try {
-      const deviceContacts = await Contacts.getAll();
+      const deviceContacts = await Contacts.getAll().catch(err=>setPermissionGranted(false));
 
       const formattedContacts = deviceContacts.map((contact: Contact) => ({
         name: `${contact.givenName} ${contact.familyName}`.trim(),
@@ -118,9 +124,22 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   };
 
   const handleInvite = (contact: ContactItem) => {
-    setRequestSent((prev) => [...prev, contact.phone]);
-    // FlashMessageComponent.show('success', `Invitation sent to ${contact.name}.`);
+    const message =
+      'Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: [Rumor App Link]';
+  
+    const url = `sms:${contact.phone}?body=${encodeURIComponent(message)}`;
+  
+    Linking.openURL(url)
+      .then(() => {
+        setRequestSent((prev) => [...prev, contact.phone]);
+        // Optionally show a success message
+        console.log(`Invitation sent to ${contact.name}.`);
+      })
+      .catch((error) => {
+        console.error('Error opening messaging app:', error);
+      });
   };
+  
 
   const renderListItem = (
     item: ContactItem,
@@ -147,14 +166,25 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       />
     </View>
   );
+  const footerComponent = () => (
+    <Button
+      disabled={false}
+      style={styles.btnStyle}
+      title={BUTTON_LABLE.INVITE_CONTACTS_VIA}
+      colorTheme="dark"
+      onPress={handleInviteLink}
+    />
+  );
+      
 
   return (
     <BottomSheetComponent
       ref={ref}
       snapPoints={['90%']}
+      footer={footerComponent()}
       onClose={() => console.log('Bottom sheet closed')}
     >
-      <View style={{ paddingHorizontal: 20, flex: 1 }}>
+      <View style={{ paddingHorizontal: 20,paddingBottom:100 }}>
         <Title title={LABLE.SELECT_A_REFERRAL} align="center" />
         <View style={{ height: 16 }} />
 
@@ -207,14 +237,14 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
             />
           </>
         )}
+          {!permissionGranted && <>
+      <Text style={styles.sectionTitle}>Allow permission to send invite to contacts</Text>
+            <ButtonSmall colorTheme='dark' style={styles.settingsButton}  title='Go to Settings' onPress={()=>Linking.openURL('app-settings:')}/>
+            </>}
+           
       </View>
-      <Button
-        disabled={false}
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.INVITE_CONTACTS_VIA}
-        colorTheme="dark"
-        onPress={handleInviteLink}
-      />
+    
+    
     </BottomSheetComponent>
   );
 });
@@ -225,10 +255,10 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 100,
   },
+  settingsButton:{marginTop:12,paddingHorizontal:12,paddingVertical:8,borderRadius:100},
   btnStyle: {
     borderRadius: 100,
     marginTop: 20,
-    marginBottom: 40,
   },
   sectionTitle: {
     fontSize: 18,
