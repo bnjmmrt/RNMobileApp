@@ -31,7 +31,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
   const [isToastShown, setIsToastShown] = useState(false);
  
   const handleCategorySelect = (category: any) => {
-    if (selectedCategories.includes(category.id)) {
+    if (selectedCategories.find(item=> item.id===category.id)) {
       if (selectedCategories.length === 1) {
         setIsToastShown(true);
       }

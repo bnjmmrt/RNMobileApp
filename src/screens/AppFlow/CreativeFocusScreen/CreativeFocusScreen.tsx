@@ -38,7 +38,7 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
 
   const handleCategorySelect = (category: any) => {
      console.log(selectedCategories.length)
-    if (selectedCategories.includes(category.id)) {
+    if (selectedCategories.find(item=> item.id===category.id)) {
       console.log(category)
       if (selectedCategories.length === 1) {
         setIsToastShown(true);
