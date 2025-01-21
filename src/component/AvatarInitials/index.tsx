@@ -23,7 +23,7 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
     const nameParts = name.trim().split(' ');
     const initials = nameParts
       .slice(0, 2) // Get the first two parts (e.g., first and last name)
-      .map((part) => part[0].toUpperCase())
+      .map((part) => part[0]?.toUpperCase())
       .join('');
 
     return initials;
