@@ -15,13 +15,12 @@ import BottomSheetComponent from '../BottomSheet/BottomSheet';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import Title from '../Title/Title';
 import AvatarInitials from '../AvatarInitials';
-import { fontFamily } from '../../../src/utils/functions';
 import Input from '../Input/Input';
-import IMAGES from '../../../src/assets/images';
 import ButtonSmall from '../ButtonSmall';
 import Button from '../Button';
-import { Hp } from '../../../src/utils/dimensions';
+import IMAGES from '@images/index';
 import TabBar from '../ActiveTabBar/TabBar';
+import { fontFamily } from 'src/utils/functions';
 
 interface AppMember {
   name: string;
@@ -112,11 +111,11 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       clearTimeout(debounceTimeoutRef.current);
     }
     debounceTimeoutRef.current = setTimeout(() => {
-      const lowercasedQuery = query.toLowerCase();
+      const lowercasedQuery = query?.toLowerCase();
 
       setFilteredMembers(
         members.filter((member) =>
-          member.name.toLowerCase().includes(lowercasedQuery)
+          member?.name?.toLowerCase().includes(lowercasedQuery)
         )
       );
 
@@ -214,9 +213,22 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
     >
       <View style={{ paddingHorizontal: 20,flex:1 }}>
         <Title title={LABLE.SELECT_A_REFERRAL} align="center" />
-        <View style={{ height: 16 }} />
 
-        <Input
+     
+        <TabBar
+          onTabChange={(tab) => {setSelectedTab(tab)
+            setSearchQuery('');
+            handleSearch('');
+          }}
+          tabOneLabel="Contacts"
+          tabTwoLabel="Members"
+          width='100%'
+        />
+
+        {selectedTab === '02'  && (
+          <>
+        <Text style={styles.sectionSubtitle}>{LABLE.REQUEST_A_REFERRAL}</Text>
+             <Input
           ref={searchInputRef}
           placeholder={LABLE.SEARCH_FRIENDS}
           leftImage={IMAGES.search}
@@ -226,21 +238,11 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
           }}
           defaultValue={searchQuery}
         />
-        <TabBar
-          onTabChange={(tab) => setSelectedTab(tab)}
-          tabOneLabel="Contacts"
-          tabTwoLabel="Members"
-        />
-
-        {selectedTab === '02' && filteredMembers.length > 0 && (
-          <>
-            <Text style={styles.sectionTitle}>{LABLE.FRIENDS_WHO_ARE_MEMBERS}</Text>
-            <Text style={styles.sectionSubtitle}>{LABLE.REQUEST_A_REFERRAL}</Text>
             <FlatList
               data={filteredMembers}
               scrollEnabled={false}
-              contentContainerStyle={{ gap: 4 }}
-              keyExtractor={(item) => item.phone}
+              contentContainerStyle={{ gap: 4,marginTop:20 }}
+              keyExtractor={(item, index) => '' + item.phone + index}
               renderItem={({ item }) =>
                 renderListItem(
                   item,
@@ -253,14 +255,23 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
           </>
         )}
 
-        {selectedTab === '01' && filteredContacts.length > 0 && (
+        {selectedTab === '01' && (
           <View style={{flex:1}}>
-            <Text style={styles.sectionTitle}>{LABLE.CONTACTS}</Text>
-            <Text style={styles.sectionSubtitle}>{LABLE.INVITE_FRIENDS_TO}</Text>
+                        <Text style={styles.sectionSubtitle}>{LABLE.INVITE_FRIENDS_TO}</Text>
+               <Input
+          ref={searchInputRef}
+          placeholder={LABLE.SEARCH_FRIENDS}
+          leftImage={IMAGES.search}
+          onChangeText={(query) => {
+            setSearchQuery(query);
+            handleSearch(query);
+          }}
+          defaultValue={searchQuery}
+        />
             <FlatList
               data={filteredContacts}
               keyExtractor={(item, index) => '' + item.phone + index}
-              contentContainerStyle={{ gap: 4,flexGrow:1,paddingBottom:100 }}
+              contentContainerStyle={{ gap: 4,flexGrow:1,paddingBottom:100,marginTop:16 }}
               renderItem={({ item }) =>
                 renderListItem(
                   item,
@@ -314,7 +325,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.light_gray,
     fontFamily: fontFamily.ABCDiatype_Regular,
-    marginBottom: 16,
     textAlign: 'center',
   },
   listItem: {
