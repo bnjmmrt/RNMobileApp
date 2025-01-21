@@ -24,17 +24,18 @@ const MiddleStaticComponent: React.FC<MiddleStaticComponentProps> = ({
         <View style={[styles.contentContainer, style]}>
             <Text style={[styles.title, titleTextstyle]}>{LABLE.FASTRACK_YOUR_APPLICATION}</Text>
             {
-                listItem.map((item) => {
-                    return <View style={styles.listContainer}>
-                        <Image source={IMAGES.checkCircleFilled} style={styles.icon} />
-                        <Text style={[styles.subtitle, subTitleTextstyle]}>{item}</Text>
-                    </View>
+                listItem.map((item, index) => {
+                    return (
+                        <View key={index} style={styles.listContainer}>
+                            <Image source={IMAGES.checkCircleFilled} style={styles.icon} />
+                            <Text style={[styles.subtitle, subTitleTextstyle]}>{item}</Text>
+                        </View>
+                    );
                 })
             }
-
-
         </View>
     );
+    
 };
 //  paddingHorizontal: 20, marginTop: 20 
 const styles = StyleSheet.create({

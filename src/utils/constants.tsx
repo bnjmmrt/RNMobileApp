@@ -105,6 +105,7 @@ export const LABLE = {
   FASTRACK_YOUR_APPLICATION: "Want to fast-track your application?",
   REQUEST_REFERRAL_FROM_RUMOR:"Request referrals from Rumor members.",
   INVITE_YOUR_FRIEND:"Invite your friends to join Rumor.",
+  SELECT_YOUR_BIRTHDAY_BELOW:"Select your birthday below"
 
 }
 
@@ -127,7 +128,8 @@ export const ERROR_MESSAGE = {
   PLEASE_ENTER_YOUR_BASE_CITY: 'Please enter your base city',
   PLEASE_ENTER_YOUR_BIRTHDAY: 'Please enter your birthday',
   PLEASE_ENTER_A_VALID_EMAIL_ADDRESS: 'Please enter a valid email address',
-  PLEASE_ENTER_A_VALID_REFERRAL_CODE:"Please enter a valid referral code"
+  PLEASE_ENTER_A_VALID_REFERRAL_CODE:"Please enter a valid referral code",
+  AGE_REQUIREMENT_NOT_MET:"Age requirement not met"
 }
 export const COLORS = {
   black: '#1F1F1F',

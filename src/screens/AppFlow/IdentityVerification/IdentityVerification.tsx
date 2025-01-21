@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View, Linking } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants';
@@ -32,6 +32,14 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({ navigation 
     navigation.navigate('ProfilePhotoScreen');
   };
 
+  const goToInstagram = () => {
+    Linking.openURL('https://www.instagram.com/therumor/');
+  };
+
+  const goToEmail = () => {
+    Linking.openURL(`mailto:${BUTTON_LABLE.SUPPORT_EMAIL_ID}`);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Header headerTitle={LABLE.IDENTITY_VERIFICATION} onPress={handleBackPress} />
@@ -45,7 +53,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({ navigation 
           ref={usernameRef}
           placeholder={"@username"}
           leftImage={IMAGES.instagramLogo}
-          iconStyle={styles.iconStyle}
+          // iconStyle={styles.iconStyle}
           errorMessage={ERROR_MESSAGE.PLEASE_ENTER_YOUR_BASE_CITY}
           defaultValue={""}
         />
@@ -74,7 +82,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({ navigation 
             style={styles.btnSmallStyle}
             title={BUTTON_LABLE.GO_TO_INSTAGRAM}
             colorTheme="light"
-            onPress={onNextClick}
+            onPress={goToInstagram}
           />
           <View style={styles.divider} />
           <Text style={[styles.title, { marginVertical: 20 }]}>{LABLE.DONT_USE_INSTAGRAM}</Text>
@@ -92,7 +100,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({ navigation 
             style={styles.btnSmallStyle}
             title={BUTTON_LABLE.SEND_EMAIL}
             colorTheme="light"
-            onPress={onNextClick}
+            onPress={goToEmail}
           />
         </View>
       </ScrollView>

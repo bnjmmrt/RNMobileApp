@@ -7,29 +7,30 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {COLORS} from '../../utils/constants';
+import {COLORS, LABLE} from '../../utils/constants';
 
-interface InputProps {
+interface CustomSelectableTextProps {
   label?: string;
-  errorMessage: string;
+  errorMessage: string | null;
+  // setErrorMessage:(isError:boolean)=>void;
   placeholder?: string; // Optional placeholder for input
   leftImage?: any;
   rightImage?: any;
-  onPressImage?: () => void;
+  onPress?: () => void;
   defaultValue?: string;
 }
 
-const DatePickerInput: React.FC<InputProps> = ({
+const CustomSelectableText: React.FC<CustomSelectableTextProps> = ({
   label,
-  errorMessage: initialErrorMessage,
+  errorMessage,
+  // setErrorMessage,
   placeholder = '',
   leftImage,
   rightImage,
-  onPressImage,
+  onPress,
   defaultValue = '',
 }) => {
- 
-  const [errorMessage, setErrorMessage] = useState('');
+  // const [errorMessage, setErrorMessage] = useState('');
 
   return (
     <View style={styles.container}>
@@ -37,28 +38,18 @@ const DatePickerInput: React.FC<InputProps> = ({
       {label && <Text style={[styles.label]}>{label}</Text>}
 
       {/* Input Field */}
-      <View
+      <TouchableOpacity
+        onPress={onPress}
         style={[
           styles.inputContainer,
           errorMessage ? styles.errorInputWrapper : null,
         ]}>
         {leftImage && <Image source={leftImage} style={styles.leftImage} />}
-        <TextInput
-          //   {...props}
-          style={styles.input}
-          value={defaultValue}
-          placeholder={placeholder}
-          // placeholderTextColor={COLORS.placeholderGray}
-          onChangeText={text => {
-            setErrorMessage(''); // Clear error on text change
-          }}
-        />
-        {rightImage && (
-          <TouchableOpacity onPress={onPressImage}>
-            <Image source={rightImage} style={styles.leftImage} />
-          </TouchableOpacity>
-        )}
-      </View>
+        
+          {defaultValue ? <Text style={styles.inputText}>{defaultValue}</Text> : <Text style={styles.inputTextPlaceholder}>{placeholder}</Text>}
+        
+        {rightImage && <Image source={rightImage} style={styles.leftImage} />}
+      </TouchableOpacity>
 
       {/* Dynamic Error Message */}
       {errorMessage ? (
@@ -88,10 +79,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   leftImage: {marginRight: 6},
-  input: {
+  inputText: {
     width: '90%',
-    fontSize: 16,
+    fontSize: 14,
     color: COLORS.black,
+  },
+  inputTextPlaceholder: {
+    width: '90%',
+    fontSize: 14,
+    color: COLORS.light_gray,
   },
 
   inputWrapper: {
@@ -108,11 +104,6 @@ const styles = StyleSheet.create({
     borderColor: COLORS.borderRed,
     backgroundColor: COLORS.bgRed,
   },
-  // input: {
-  //     flex: 1,
-  //     fontSize: 16,
-  //     color: COLORS.black,
-  // },
   errorText: {
     fontSize: 12,
     marginTop: 5,
@@ -120,4 +111,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DatePickerInput;
+export default CustomSelectableText;
