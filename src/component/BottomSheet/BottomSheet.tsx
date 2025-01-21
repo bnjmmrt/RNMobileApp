@@ -78,7 +78,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
                     onChange={handleSheetChange}
                     backgroundStyle={{ backgroundColor: COLORS.white }}
                 >
-                    <BottomSheetScrollView nestedScrollEnabled>{children}</BottomSheetScrollView>
+                    {children}
                 </BottomSheet>
             </View>
         </Modal>

@@ -7,9 +7,10 @@ type TabBarProps = {
     onTabChange?: (tab: string) => void;
     tabOneLabel: string;
     tabTwoLabel: string;
+    width?:string
 };
 
-const TabBar: React.FC<TabBarProps> = ({ onTabChange, tabOneLabel, tabTwoLabel }) => {
+const TabBar: React.FC<TabBarProps> = ({ onTabChange, tabOneLabel, tabTwoLabel,width='90%' }) => {
     const [activeTab, setActiveTab] = useState('01');
 
     const handleTabPress = (tab: string) => {
@@ -28,7 +29,7 @@ const TabBar: React.FC<TabBarProps> = ({ onTabChange, tabOneLabel, tabTwoLabel }
     );
 
     return (
-        <View style={styles.container}>
+        <View style={[{...styles.container,width}]}>
             {renderTab(tabOneLabel, '01')}
             {renderTab(tabTwoLabel, '02')}
         </View>
@@ -44,7 +45,6 @@ const styles = StyleSheet.create({
         borderColor: COLORS.tabBorderColor,
         padding: 4,
         alignSelf: 'center',
-        width: '90%',
         marginVertical: 20,
     },
     tab: {
