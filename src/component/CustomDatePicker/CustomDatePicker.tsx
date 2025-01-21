@@ -32,6 +32,7 @@ const DatePickerComponent: React.FC<Props> = ({date, setOpen, setDate}) => {
       <DatePicker
         title={''}
         //  modal
+        theme='light'
         mode="date"
         open={true}
         date={date}

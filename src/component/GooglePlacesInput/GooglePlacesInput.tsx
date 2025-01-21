@@ -3,6 +3,7 @@ import {StyleSheet} from 'react-native';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import {COLORS} from '../../utils/constants';
 import {Address} from '../../redux/slices/appFlowSlice';
+import { environment } from '../../../environments/environment';
 
 interface GooglePlacesInputProps {
   setLocation: (location: Address) => void;
@@ -28,7 +29,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({setLocation}) => {
         setLocation(address);
       }}
       query={{
-        key: 'AIzaSyAVGqg6utoXhEejF1ZFo-hvKEInA8KbcO8',
+        key: environment.PLACES_API_KEY,
         language: 'en',
       }}
     />
