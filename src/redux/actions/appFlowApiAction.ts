@@ -1,14 +1,16 @@
-import {createBaseApi} from '../../ApiManager/createBaseApi';
+import {baseApi} from '../../ApiManager/createBaseApi';
+import { environment } from '../../../environments/environment';
 
 import {EndPoint} from '../../ApiManager/config';
-
-export const appFlowApiAction = createBaseApi.injectEndpoints({
+console.log("EndPoint.get_focuses",environment.DEV_URL+EndPoint.get_focuses)
+export const appFlowApiAction = baseApi.injectEndpoints({
   endpoints: builder => ({
+
     getFocuses: builder.query({
       query: () => ({
         url: EndPoint.get_focuses,
         method: 'GET',
-        providesTags: ['Focuses'],
+        // providesTags: ['Focuses'],
       }),
     }),
 
@@ -16,7 +18,7 @@ export const appFlowApiAction = createBaseApi.injectEndpoints({
       query: () => ({
         url: EndPoint.interests,
         method: 'GET',
-        providesTags: ['Interests'],
+        // providesTags: ['Interests'],
       }),
     }),
 

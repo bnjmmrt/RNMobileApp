@@ -50,10 +50,10 @@ export const EndPoint = {
   forgetPassword: '/program-management/api/auth/forgot-password',
   resetPassword: '/program-management/api/auth/reset-password',
   socialLogin: '/program-management/api/auth/social-sign-up',
-  verify_code: '/communication/verify-code',
-  get_focuses: '/platform/get-focuses',
-  interests: '/platform/interests',
-  member_signUp: '/auth/member-sign-up',
+  verify_code: 'communication/verify-code',
+  get_focuses: 'platform/get-focuses',
+  interests: 'platform/interests',
+  member_signUp: 'auth/member-sign-up',
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

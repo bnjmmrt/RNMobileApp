@@ -4,12 +4,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { persistStore, persistReducer } from 'redux-persist';
 import {rootReducer} from './slices';
 // import { apiSlice } from './slices/apiSlice';
-import { createBaseApi } from '../ApiManager/createBaseApiWithoutFecthBaseQuery';
+import { baseApi } from '../ApiManager/createBaseApi';
+
 // Middleware: Redux Persist Config
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
   whitelist: ['auth','appFlow','appFlowApiData'],
+  serializableCheck: false
 };
 // AsyncStorage.clear()
 const loggerMiddleware: Middleware = createLogger({
@@ -19,7 +21,7 @@ const loggerMiddleware: Middleware = createLogger({
 });
 
 // Array of middlewares
-const middlewares: Middleware[] = [loggerMiddleware,createBaseApi.middleware];
+const middlewares: Middleware[] = [loggerMiddleware,baseApi.middleware];
 
 // Persisted Reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);

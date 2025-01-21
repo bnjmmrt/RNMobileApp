@@ -25,13 +25,13 @@ const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
   const onNextClick = () => {
     if (isEmailVerified) {
       if(phoneNumberInputRef.current.validatePhoneNumber()){
-      dispatch(setPhone(phoneNumberInputRef.current.inputText));
-      navigation.navigate('VerifyEmail');
+      dispatch(setPhone(phoneNumberInputRef.current.phoneNumber));
+      navigation.navigate('VerifyEmail',{email:phoneNumberInputRef.current.phoneNumber});
       }
     } else {
       if(emailInputRef.current.validateEmailAddress()){
-      dispatch(setEmail(emailInputRef.current.inputText));
-      navigation.navigate('VerifyEmail');
+      dispatch(setEmail(emailInputRef.current.emailAddress));
+      navigation.navigate('VerifyEmail',{email:emailInputRef.current.emailAddress});
       }
     }
   };

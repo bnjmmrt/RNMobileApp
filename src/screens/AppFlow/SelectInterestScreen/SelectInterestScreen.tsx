@@ -18,40 +18,26 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
   navigation,
 }) => {
   const dispatch = useDispatch();
-  const interest = useSelector((state: RootState) => state.appFlow.interest);
+  const interest = useSelector(
+    (state: RootState) => state.appFlowApiData.interests,
+  );
+  const selectedInterests = useSelector(
+    (state: RootState) => state.appFlow.interest,
+  );
   const styles = SelectInterestScreenStyles();
   const [selectedCategories, setSelectedCategories] =
-    useState<string[]>(interest);
+    useState<any[]>(selectedInterests);
+
   const [isToastShown, setIsToastShown] = useState(false);
-
-  const categories = [
-    'Art',
-    'Automotive',
-    'Beauty',
-    'Business',
-    'Fashion',
-    'Fitness',
-    'Food',
-    'Hospitality',
-    'Humor',
-    'Luxury',
-    'Lifestyle',
-    'Music',
-    'Personal Growth',
-    'Philanthropy',
-    'Sports',
-    'Technology',
-    'Wellness',
-  ];
-
-  const handleCategorySelect = (category: string) => {
-    if (selectedCategories.includes(category)) {
-      if(selectedCategories.length===1){
-        setIsToastShown(true)
+ 
+  const handleCategorySelect = (category: any) => {
+    if (selectedCategories.includes(category.id)) {
+      if (selectedCategories.length === 1) {
+        setIsToastShown(true);
       }
       // Remove category if already selected
       setSelectedCategories(
-        selectedCategories.filter(item => item !== category),
+        selectedCategories.filter((item: any) => item.id !== category.id),
       );
     } else {
       setIsToastShown(false);
@@ -86,27 +72,27 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
           subTitle={LABLE.CHOOSE_YOUR_INTERESTS_SUBTITLE}
         />
 
-        <View style={styles.categoryContainer}>
-          {categories.map(category => (
-            <TouchableOpacity
-              key={category}
-              style={[
-                styles.categoryButton,
-                selectedCategories.includes(category) &&
-                  styles.selectedCategoryButton,
-              ]}
-              onPress={() => handleCategorySelect(category)}>
-              <Text
-                style={[
-                  styles.categoryText,
-                  selectedCategories.includes(category) &&
-                    styles.selectedCategoryText,
-                ]}>
-                {category}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+       <View style={styles.categoryContainer}>
+                 {interest?.map(item => (
+                   <TouchableOpacity
+                     key={item.id}
+                     style={[
+                       styles.categoryButton,
+                       selectedCategories.some(selected => selected.id === item.id) &&
+                         styles.selectedCategoryButton,
+                     ]}
+                     onPress={() => handleCategorySelect(item)}>
+                     <Text
+                       style={[
+                         styles.categoryText,
+                         selectedCategories.some(selected => selected.id === item.id) &&
+                           styles.selectedCategoryText,
+                       ]}>
+                       {item.name}
+                     </Text>
+                   </TouchableOpacity>
+                 ))}
+               </View>
         {isToastShown && (
           <Toast
             message={'Please select at least one'}

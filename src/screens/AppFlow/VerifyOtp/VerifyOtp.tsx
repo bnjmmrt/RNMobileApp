@@ -16,7 +16,7 @@ import {
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
 import {RootState} from '../../../redux/slices';
-import { useSendOtp } from 'src/redux/hooks/useSendOtp';
+import { useSendOtp } from '../../../redux/hooks/useSendOtp';
 
 interface VerifyOtpScreenProps extends NativeStackScreenProps<any, any> {}
 

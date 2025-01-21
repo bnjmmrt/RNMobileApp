@@ -20,10 +20,10 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({setLocation}) => {
       placeholder="Search Location"
       onPress={(data: any, details = null) => {
         // 'details' is provided when fetchDetails = true
-        console.log(data, details);
+        console.log("data.placeId",data, data.place_id);
         const address: Address = {
           address: data.description,
-          placeId: data.placeId,
+          placeId: data.place_id,
         };
         setLocation(address);
       }}

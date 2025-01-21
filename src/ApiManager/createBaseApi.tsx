@@ -2,7 +2,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { environment } from '../../environments/environment';
 
 // Create Base API with Logging
-export const createBaseApi = createApi({
+export const baseApi = createApi({
+  reducerPath:'baseApi',
   baseQuery: fetchBaseQuery({
     baseUrl: environment.DEV_URL,
     prepareHeaders: (headers, { getState }) => {
@@ -15,7 +16,7 @@ export const createBaseApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ['Login', 'Event', 'Focuses', 'Interests'], // Accept tagTypes as a parameter
+  tagTypes: ['Login','Event'], // Accept tagTypes as a parameter
   endpoints: () => ({}),
   keepUnusedDataFor: 60, // Optional: Adjust cache duration
   refetchOnFocus: true, // Optional: Refetch data when the app is focused

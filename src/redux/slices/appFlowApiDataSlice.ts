@@ -1,8 +1,8 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 interface AppFlowApiDataState {
-  creativeFocus: string[];
-  interests: string[];
+  creativeFocus: any[];
+  interests: any[];
 }
 
 const initialState: AppFlowApiDataState = {
@@ -14,10 +14,10 @@ const appFlowApiDataSlice = createSlice({
   name: 'appFlowApiData',
   initialState,
   reducers: {
-    setCreativeFocus(state, action: PayloadAction<string[]>) {
+    setCreativeFocus(state, action: PayloadAction<any[]>) {
       state.creativeFocus = action.payload;
     },
-    setInterests(state, action: PayloadAction<string[]>) {
+    setInterests(state, action: PayloadAction<any[]>) {
       state.interests = action.payload;
     },
     resetAppFlowDetails(state) {

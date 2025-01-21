@@ -32,6 +32,8 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({navigation}) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const onNextClick = () => {
+
+    console.log("selectedCity",selectedCity)
     if (validateInputs()) {
       dispatch(setBaseCity(selectedCity));
       dispatch(setPageProgress(6));
