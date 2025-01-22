@@ -10,16 +10,21 @@ import {
 import Button from '../Button';
 import DatePicker from 'react-native-date-picker';
 import {fontFamily} from '../../utils/functions';
+
 interface Props {
   setSelectedDate:(date:Date)=>void,
   date:Date,
   setDate:(date:Date)=>void
 }
 const DatepickerBottomSheet = forwardRef((props:Props, ref) => {
-  // const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const hundredYearsAgo = new Date();
+  hundredYearsAgo.setFullYear(hundredYearsAgo.getFullYear() - 100);
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   const onNextClick = () => {
-    ref.current?.close(); // Close the bottom sheet
+    ref.current?.close(); 
   };
 
   return (
@@ -39,8 +44,9 @@ const DatepickerBottomSheet = forwardRef((props:Props, ref) => {
           onDateChange={(date: any) => {
             props?.setSelectedDate(date);
             props.setDate(date)
-            console.log('Selected Date:', date);
           }}
+          minimumDate={hundredYearsAgo}
+          maximumDate={today}
         />
         <Button
           style={styles.btnStyle}

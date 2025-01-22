@@ -13,10 +13,10 @@ import {setGender, setPageProgress} from '../../../redux/slices/appFlowSlice';
 import Toast from '../../../component/Toast/Toast';
 
 const genderList = [
-  {id: 1, gender: 'Male'},
-  {id: 2, gender: 'Female'},
-  {id: 3, gender: 'Non-binary'},
-  {id: 4, gender: 'Prefer not to say'},
+  {id: 0, gender: 'Male'},
+  {id: 1, gender: 'Female'},
+  {id: 2, gender: 'Non-binary'},
+  {id: 3, gender: 'Prefer not to say'},
 ];
 interface GenderScreenProps extends NativeStackScreenProps<any, any> {}
 

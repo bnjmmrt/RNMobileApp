@@ -19,6 +19,7 @@ import Toast from '../../../component/Toast/Toast';
 import useApi from '../../../axios/useApi';
 import {EndPoint} from '../../../ApiManager/config';
 import AvatarInitials from '../../../component/AvatarInitials';
+import { environment } from '../../../../environments/environment';
 
 interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -53,11 +54,12 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
 
   const onNextClick = async () => {
     if (image) {
+      setIsToastShown(false);
       const response:any = await uploadFile();
 
       if (response.data) {
         setIsToastShown(false);
-         dispatch(setProfilePic('https://dev.api.therumor.com/v1/files/view/' + response.data.fileKeyId));
+         dispatch(setProfilePic(environment.IMAGE_URL + response.data.fileKeyId));
         dispatch(setPageProgress(9));
         navigation.navigate('IdentityVerification');
       } else {
@@ -65,7 +67,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
       }
     }
     {
-      // setIsToastShown(true);
+      setIsToastShown(true);
     }
   };
 
