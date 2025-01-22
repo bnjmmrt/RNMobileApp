@@ -8,6 +8,7 @@ import {
   Share,
   PermissionsAndroid,
   Platform,
+  Linking,
 } from 'react-native';
 import Contacts from 'react-native-contacts';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
@@ -207,6 +208,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
     <BottomSheetComponent
       ref={ref}
       snapPoints={['90%']}
+      footer={footerComponent()}
       onClose={() => console.log('Bottom sheet closed')}
     >
       <View style={{ paddingHorizontal: 20,flex:1 }}>
@@ -308,10 +310,10 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 100,
   },
+  settingsButton:{marginTop:12,paddingHorizontal:12,paddingVertical:8,borderRadius:100},
   btnStyle: {
     borderRadius: 100,
     marginTop: 20,
-    marginBottom: 40,
   },
   sectionTitle: {
     fontSize: 18,
