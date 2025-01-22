@@ -16,17 +16,14 @@ module.exports = {
           '.js',
           '.json',
         ],
-        // alias: {
-        //   src: './src',
-        // },
-        // alias: {
-        //   '@images': './src/assets/images',
-        //   '@button': './src/component/Button',
-        //   '@dimensions': './src/utils/dimensions',
-        //   "string-constants": '.src/utils/constants', 
-        // },
+        alias: {
+          '@images': './src/assets/images',
+          '@button': './src/component/Button',
+          '@dimensions': './src/utils/dimensions',
+          'string-constants': './src/utils/constants',
+        },
       },
     ],
+    'react-native-reanimated/plugin',
   ],
-  plugins: ['react-native-reanimated/plugin']
 };
