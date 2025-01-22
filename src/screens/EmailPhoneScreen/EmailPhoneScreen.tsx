@@ -20,21 +20,17 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
     const [currentTab, setCurrentTab] = useState('01');
     const phoneNumberInputRef = useRef<any>(null);
     const emailInputRef = useRef<any>(null);
-    const [showBottomSheet, setShowBottomSheet] = useState(false);
     const [URL, setURL] = useState('');
+    const bottomSheetRef = useRef(null);
 
     useEffect(() => {
-        URL.length > 0 && setShowBottomSheet(true)
+        URL.length > 0 && bottomSheetRef?.current?.open();
+
     }, [URL])
 
     const setWebUrl = (url: string) => {
         setURL(url)
     };
-    const onChangeBottomSheet = (index: number) => {
-        if (index === -1) {
-            setShowBottomSheet(false);
-        }
-    }
 
     const onNextClick = () => {
         if (currentTab == '01') {
@@ -56,7 +52,7 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
             <BackButton onPress={handleBackPress} />
             <TabBar onTabChange={handleTabChange} tabOneLabel="Phone" tabTwoLabel="Email" />
             <View style={styles.contentContainer}>
-                <TitleSubtitle title={title} subTitle={subTitle}/>
+                <TitleSubtitle title={title} subTitle={subTitle} />
 
                 {currentTab == '01' ?
                     <PhoneNumberInput ref={phoneNumberInputRef} />
@@ -64,7 +60,7 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
                     <EmailInput ref={emailInputRef} />}
 
                 <View style={styles.spacer} />
-                <TermsAndPolicy setUrl={setWebUrl} type='large'showMessage ={true} />
+                <TermsAndPolicy setUrl={setWebUrl} type='large' showMessage={true} />
                 <Button
                     disabled={false}
                     style={styles.btnStyle}
@@ -73,7 +69,7 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
                     onPress={onNextClick}
                 />
             </View>
-            {showBottomSheet && <WebViewBottomSheet url={URL} onChange={onChangeBottomSheet} />}
+            <WebViewBottomSheet url={URL} ref={bottomSheetRef} />
 
         </SafeAreaView>
     );

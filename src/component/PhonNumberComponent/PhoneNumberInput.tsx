@@ -55,7 +55,7 @@ const PhoneNumberInput = forwardRef((_, ref) => {
 
     const handleNextPress = () => {
         if (validatePhoneNumber()) {
-            // navigation.navigate('VerifyOtpScreen', { phone: `${callingCode}${phoneNumber}` , isEmail: false})
+            navigation.navigate('VerifyOtpScreen', { phone: `${callingCode}${phoneNumber}` , isEmail: false})
             // Alert.alert("Success!!", `Phone Number: ${callingCode} ${phoneNumber}`);
         }
     };

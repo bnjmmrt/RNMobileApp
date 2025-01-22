@@ -68,10 +68,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   ];
 
 
-  useEffect(()=>{
+  useEffect(() => {
     const listItems = loginData.isSignUpCompleted ? itemsExtras : items
     setListItems(listItems)
-  },[loginData])
+  }, [loginData])
 
   const handleLogoutPress = () => {
 
@@ -87,10 +87,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         :
         <View style={{ backgroundColor: COLORS.white }}>
 
-          <HeaderComponent 
-          isDarkTheme = {false }
+          <HeaderComponent
+            isDarkTheme={false}
           />
-          
+
           <ScrollView>
 
             <ProfileTopView />

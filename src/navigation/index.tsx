@@ -10,11 +10,13 @@ import { AppFlowStack } from './AppFlowStack';
 
 const MainNavigation: React.FC = () => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  console.log("sayyed logg:",loginData)
+  console.log("Login Data:",loginData)
 
-  const [isLoggedIn, setIsLoggedIn] = useState<number>(loginData?.varifyStatus || 1);
+  const [isVerified, setVerified] = useState<number>(loginData?.varifyStatus || 0);
+  const [isInvited, setInvited] = useState<number>(loginData?.isInvited);
 
-  return isLoggedIn == 0 ? <AuthStack /> : <AppStack />;
+
+  return isVerified == 0 ? <AuthStack /> : isInvited ? <OnboardingStack /> : <AppStack />;
 };
 
 export default MainNavigation;

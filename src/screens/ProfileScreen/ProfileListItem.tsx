@@ -71,7 +71,7 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item }) => {
       
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={[styles.inputWrapper]} onPress= {handleItemClick(item)}>
+            <TouchableOpacity style={[styles.inputWrapper]} onPress= {()=>handleItemClick(item)}>
                 <Image source={item.image} style={styles.icon} />
                 <Text style={[styles.input, {color: item.image ? COLORS.black : COLORS.errorText }]}>{item.title}</Text>
                 {item.image && <Image source={IMAGES.arrowRight} />}

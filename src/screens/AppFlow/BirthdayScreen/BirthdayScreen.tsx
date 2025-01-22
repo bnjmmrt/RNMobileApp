@@ -19,7 +19,7 @@ import { setBirthday, setPageProgress } from '../../../redux/slices/appFlowSlice
 import DateBottomSheet from '../../../component/BottomSheet/DateBottomSheet';
 import DatePickerComponent from '../../../component/CustomDatePicker/CustomDatePicker';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
-import { BlurView } from "@react-native-community/blur";
+// import { BlurView } from "@react-native-community/blur";
 
 interface BirthdayScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -93,13 +93,13 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {isShown && <BlurView
+      {/* {isShown && <BlurView
         style={{...StyleSheet.absoluteFillObject}}
         blurType="dark"
         blurAmount={10}
         blurRadius={10}
         reducedTransparencyFallbackColor="white"
-      />}
+      />} */}
       <Header headerTitle={LABLE.BIRTHDAY} onPress={handleBackPress} />
       <View style={styles.contentContainer}>
         <Title

@@ -1,12 +1,13 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import WelcomeScreen from '../screens/DiscoverScreen/DiscoverScreen';
-import HomeTabs from '../component/Tabbar/BottomTabBar';
+import { AppFlowStack } from './AppFlowStack';
+import BottomTabBar from '../component/Tabbar/BottomTabBar';
 
 
 // Define the param list for the stack navigator
 export type OnboardingStackkParamList = {
-  Home: undefined;
+  BottomTabBar: undefined;
+  AppFlowStack: undefined;
 };
 
 const Stack = createStackNavigator<OnboardingStackkParamList>();
@@ -14,15 +15,22 @@ const Stack = createStackNavigator<OnboardingStackkParamList>();
 export const OnboardingStack: React.FC = () => {
   return (
     <Stack.Navigator
-      initialRouteName="Home"
+      initialRouteName="BottomTabBar"
       screenOptions={({ route, navigation }) => ({})}>
 
-     <Stack.Screen
-        name="Home"
-        component={HomeTabs}
+      <Stack.Screen
+        name="AppFlowStack"
+        component={AppFlowStack}
         options={{ headerShown: false }}
-      /> 
-    
+      />
+
+      <Stack.Screen
+        name="BottomTabBar"
+        component={BottomTabBar}
+        options={{ headerShown: false }}
+      />
+
+
     </Stack.Navigator>
   );
 };
