@@ -79,7 +79,7 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({navigation}) => {
   };
 
   const handleBackPress = () => {
-    navigation.goBack();
+    navigation.navigate('AppStack');
   };
 
   return (

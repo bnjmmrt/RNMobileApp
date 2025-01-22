@@ -25,7 +25,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
           subTitle={LABLE.FULL_ACCESS_UNLOCK} />
         :
         <BeforeAppStaticComponent
-          isChatScreen={true}/>
+          isChatScreen={true} showLogout={false}/>
       }
     </SafeAreaView>
   );
