@@ -11,6 +11,7 @@ interface InputProps {
   rightImage?: any;
   onPressImage?:()=>void;
   defaultValue?: string; 
+  onChangeText?: (text: string) => void;
 }
 
 const Input = forwardRef((props: InputProps, ref) => {
@@ -21,7 +22,8 @@ const Input = forwardRef((props: InputProps, ref) => {
     leftImage,
     rightImage,
     onPressImage,
-    defaultValue=''
+    defaultValue='',
+    onChangeText
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -32,7 +34,8 @@ const Input = forwardRef((props: InputProps, ref) => {
   useImperativeHandle(ref, () => ({
     handleNextPress,
     validateInputs,
-    inputText
+    inputText,
+    setErrorMessage
   }));
 
   // Validate inputs
@@ -74,6 +77,9 @@ const Input = forwardRef((props: InputProps, ref) => {
           onChangeText={text => {
             setInputText(text);
             setErrorMessage(''); // Clear error on text change
+            if (onChangeText) {
+              onChangeText(text); // Call the parent-provided onChangeText if it exists
+            }
           }}
           // onBlur={validateInputs}
         />
