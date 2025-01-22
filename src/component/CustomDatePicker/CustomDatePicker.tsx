@@ -1,6 +1,6 @@
 import React, {Dispatch, SetStateAction, useState} from 'react';
 import DatePicker from 'react-native-date-picker';
-import {BUTTON_LABLE, LABLE} from '../../utils/constants';
+import {BUTTON_LABLE, COLORS, LABLE} from '../../utils/constants';
 import Button from '../Button';
 import {StyleSheet, Text} from 'react-native';
 import {Wp} from '../../utils/dimensions';
@@ -32,6 +32,7 @@ const DatePickerComponent: React.FC<Props> = ({date, setOpen, setDate}) => {
       <DatePicker
         title={''}
         //  modal
+        theme='light'
         mode="date"
         open={true}
         date={date}
@@ -51,7 +52,7 @@ const DatePickerComponent: React.FC<Props> = ({date, setOpen, setDate}) => {
       />
       <Button
         style={styles.btnStyle}
-        title={BUTTON_LABLE.SUBMIT}
+        title={BUTTON_LABLE.CONFIRM}
         colorTheme="dark"
         onPress={onNextClick}
       />
@@ -72,6 +73,7 @@ const styles = StyleSheet.create({
   subTitle: {
     marginVertical: 10,
     fontSize: 14,
+    color: COLORS.light_gray,
   },
   btnStyle: {
     width: Wp(85),

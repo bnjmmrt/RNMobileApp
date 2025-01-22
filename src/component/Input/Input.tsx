@@ -33,9 +33,9 @@ const Input = forwardRef((props: InputProps, ref) => {
   // Expose handleNextPress to the parent
   useImperativeHandle(ref, () => ({
     handleNextPress,
-    inputText,
     validateInputs,
-    setErrorMessage,
+    inputText,
+    setErrorMessage
   }));
 
   // Validate inputs
