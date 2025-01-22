@@ -12,6 +12,7 @@ interface BottomSheetComponentProps {
     ref: any;
     backColor?: string;
     footer?:any;
+    backgroundColor?:string
 }
 
 const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(({
@@ -19,7 +20,8 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
     snapPoints = ['40%'], // Default snap point
     onChange,
     onClose,
-    footer
+    footer,
+    backgroundColor
 }, ref) => {
     const [isVisible, setIsVisible] = useState(false);
     const sheetRef = useRef<BottomSheet>(null);
@@ -76,7 +78,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
                     }]}
                     onClose={handleClosePress}
                     onChange={handleSheetChange}
-                    backgroundStyle={{ backgroundColor: COLORS.white }}
+                    backgroundStyle={{ backgroundColor: backgroundColor?backgroundColor:COLORS.white }}
                 >
                     {children}
                 </BottomSheet>
