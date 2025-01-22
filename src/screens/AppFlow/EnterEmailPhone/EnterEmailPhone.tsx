@@ -18,22 +18,28 @@ interface EnterEmailScreenProps extends NativeStackScreenProps<any, any> { }
 const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
   const isEmailVerified = useSelector((state: RootState) => state.appFlow.isEmailVerified);
+    const loginData = useSelector((state: RootState) => state.auth.loginData);
+    console.log("sayyed logg:",loginData)
+
   const styles = EmailPhoneStyles();
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
 
+
   const onNextClick = () => {
-    if (isEmailVerified) {
+    if (loginData?.varifyStatus===1) {
       if(phoneNumberInputRef.current.validatePhoneNumber()){
-      dispatch(setPhone(phoneNumberInputRef.current.inputText));
-      navigation.navigate('VerifyEmail');
+      dispatch(setPhone(phoneNumberInputRef.current.phoneNumber));
+      navigation.navigate('VerifyEmail',{phone:phoneNumberInputRef.current.phoneNumber,isEmail:false});
       }
     } else {
       if(emailInputRef.current.validateEmailAddress()){
-      dispatch(setEmail(emailInputRef.current.inputText));
-      navigation.navigate('VerifyEmail');
+      dispatch(setEmail(emailInputRef.current.emailAddress));
+      navigation.navigate('VerifyEmail',{email:emailInputRef.current.emailAddress,isEmail:true});
       }
     }
+
+
   };
 
   const handleBackPress = () => {
@@ -53,7 +59,7 @@ const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
           title={isEmailVerified ? LABLE.ENTER_YOUR_PHONE_NUMBER : LABLE.WHATS_YOUR_EMAIL_ADDRESS}
           subTitle={isEmailVerified ? LABLE.ENTER_YOUR_PHONE_NUMBER : LABLE.WHATS_YOUR_EMAIL_SUBTITLE}
         />
-        {isEmailVerified ?
+        {loginData?.varifyStatus===1 ?
           <PhoneNumberInput ref={phoneNumberInputRef} />
           :
           <EmailInput ref={emailInputRef} />}

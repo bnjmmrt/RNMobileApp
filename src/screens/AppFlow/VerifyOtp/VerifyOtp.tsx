@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -16,6 +16,9 @@ import {
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
 import {RootState} from '../../../redux/slices';
+import {useSendOtp} from '../../../redux/hooks/useSendOtp';
+import useApi from '../../../axios/useApi';
+import {EndPoint} from '../../../ApiManager/config';
 
 interface VerifyOtpScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -37,60 +40,116 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
     handleNextPress: () => void;
     showInvalidCodeError: (message: string) => void;
   }>(null);
+  const {apiRequest, loading, error} = useApi();
+
   const route = useRoute<RouteProp<RouteParams>>();
+  // const { sendOtp, isMemberExist } = useSendOtp(route.params.email, route.params.phone);
+  //  const { verifyOtp,isLoading } = useVerifyOtp(isMemberExist, route.params.email, route.params.phone, route.params.isEmail);
   const sendToId = useSelector((state: RootState) =>
     isEmailVerified ? state.appFlow.phone : state.appFlow.email,
   );
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [_isLoading, setIsLoading] = useState<boolean>(false);
 
-  const onNextClick = () => {
-    otpInputRef.current && otpInputRef.current.handleNextPress();
-    if (true) {
-      // on success
+  const sendOtp = async () => {
+    const response = await apiRequest('post', EndPoint.check_member_logiin, {
+      email: route.params.email,
+      phoneNumber: route.params.phone,
+    });
+    if (!error) {
+      FlashMessageComponent.show('success', 'OTP resent successfully!');
+    } else {
+      FlashMessageComponent.show(
+        'error',
+        'Something went wrong, please try again!',
+      );
+    }
+  };
+
+  useEffect(() => {
+    sendOtp();
+  }, [route.params]);
+
+  const verifyCode = async () => {
+    let params;
+
+    if (route.params.isEmail) {
+      params = {
+        email: route.params.email,
+        verificationCode: otpInputRef.current && otpInputRef.current.code,
+      };
+    }else{
+      params = {
+        phoneNumber: route.params.phone,
+        verificationCode: otpInputRef.current && otpInputRef.current.code,
+      };
+    }
+
+    console.log("paramssssss",params)
+    const response = await apiRequest('post', EndPoint.verify_code, params);
+    console.log("verify_code",response);
+
+    if (!error) {
+      FlashMessageComponent.show('success', 'OTP verified successfully!');
       dispatch(setPageProgress(3));
       dispatch(setIsEmailPhoneBothVerified(true));
       navigation.navigate('GenderScreen');
     } else {
-      // send error message
+      FlashMessageComponent.show(
+        'error',
+        'Something went wrong, please try again!',
+      );
     }
+  };
+
+  const onNextClick =async () => {
+    otpInputRef.current && otpInputRef.current.handleNextPress();
+    // dispatch(setPageProgress(3));
+    // dispatch(setIsEmailPhoneBothVerified(true));
+    // navigation.navigate('GenderScreen');
+    await verifyCode()
+    // if (true) {
+    //   // on success
+    //   // dispatch(setPageProgress(3));
+    //   // dispatch(setIsEmailPhoneBothVerified(true));
+    //   // navigation.navigate('GenderScreen');
+    // } else {
+    //   // send error message
+    // }
   };
 
   const handleBackPress = () => navigation.goBack();
 
-  const verifyCode = async (code: string) => {
-    const requestParam = {
-      ...(route.params.isEmail
-        ? {email: route.params.email}
-        : {phoneNumber: route.params.phone}),
-      requestCode: code,
-    };
-    console.log('sayyed params:', requestParam);
+  // const verifyCode = async (code: string) => {
+  //   const requestParam = {
+  //     ...(route.params.isEmail
+  //       ? {email: route.params.email}
+  //       : {phoneNumber: route.params.phone}),
+  //     requestCode: code,
+  //   };
+  //   console.log('sayyed params:', requestParam);
 
-    try {
-      setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-        otpInputRef.current?.showInvalidCodeError(LABLE.ERROR_VERIFY_CODE);
-      }, 1000);
-      // const response = await verifyOTP({ code });
-      // if (response) {
-      //     console.log('OTP Verified Successfully:', response);
-      // } else {
-      //      otpInputRef.current?.showInvalidCodeError("OTP verification failed");
-      //     console.error('No response received or OTP verification failed.');
-      // }
-    } catch (error) {
-      console.error('Error verifying OTP:', error);
-    } finally {
-      // setIsLoading(false)
-    }
-  };
+  //   try {
+  //     setIsLoading(true);
+  //     setTimeout(() => {
+  //       setIsLoading(false);
+  //       otpInputRef.current?.showInvalidCodeError(LABLE.ERROR_VERIFY_CODE);
+  //     }, 1000);
+  //     // const response = await verifyOTP({ code });
+  //     // if (response) {
+  //     //     console.log('OTP Verified Successfully:', response);
+  //     // } else {
+  //     //      otpInputRef.current?.showInvalidCodeError("OTP verification failed");
+  //     //     console.error('No response received or OTP verification failed.');
+  //     // }
+  //   } catch (error) {
+  //     console.error('Error verifying OTP:', error);
+  //   } finally {
+  //     // setIsLoading(false)
+  //   }
+  // };
 
   const resendVerificationCode = async () => {
-    const requestParam = route.params.isEmail
-      ? {email: route.params.email}
-      : {phoneNumber: route.params.phone};
-    FlashMessageComponent.show('success', 'OTP resent successfully!');
+    sendOtp();
   };
 
   return (

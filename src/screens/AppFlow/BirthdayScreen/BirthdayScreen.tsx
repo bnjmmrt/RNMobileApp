@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import IMAGES from '../../../assets/images';
@@ -16,9 +16,10 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/slices';
 import { setBirthday, setPageProgress } from '../../../redux/slices/appFlowSlice';
-import BottomSheetComponent from '../../../component/BottomSheet/BottomSheet';
+import DateBottomSheet from '../../../component/BottomSheet/DateBottomSheet';
 import DatePickerComponent from '../../../component/CustomDatePicker/CustomDatePicker';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
+import { BlurView } from "@react-native-community/blur";
 
 interface BirthdayScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -32,7 +33,6 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
   // const [isError, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string|null>(null);
   const [date, setDate] = useState<Date>(new Date()); // Initialize with birthday from state
- 
  
  
   const onNextClick = () => {
@@ -93,6 +93,13 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {isShown && <BlurView
+        style={{...StyleSheet.absoluteFillObject}}
+        blurType="dark"
+        blurAmount={10}
+        blurRadius={10}
+        reducedTransparencyFallbackColor="white"
+      />}
       <Header headerTitle={LABLE.BIRTHDAY} onPress={handleBackPress} />
       <View style={styles.contentContainer}>
         <Title
@@ -119,7 +126,7 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
       />
 
       {isShown && (
-        <BottomSheetComponent
+        <DateBottomSheet
           // ref={bottomSheetRef}
           snapPoints={['50%']} // Adjustable snap points
           onClose={() => setIsShown(false)}
