@@ -7,20 +7,16 @@ import IdentityVerificationStyles from './IdentityVerificationStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
-import {persistStore} from 'redux-persist';
-import {store} from '../../../redux/store'; // Your store
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  resetAppFlowDetails,
-  setPageProgress,
-  UserDetailsState,
-} from '../../../redux/slices/appFlowSlice';
+import {setPageProgress} from '../../../redux/slices/appFlowSlice';
 import Input from '../../../component/Input/Input';
 import IMAGES from '../../../assets/images';
 import {useMemberSignUp} from '../../../redux/hooks/useMemberSignUp';
-import {UserProfile} from '../../../redux/hooks/useMemberSignUp';
 import useApi from '../../../axios/useApi';
 import {EndPoint} from '../../../ApiManager/config';
+import MainNavigation from '../../../navigation';
+import { AppStack } from '../../../navigation/AppStack';
+import { convertDateFormat } from '../../../utils/functions';
 
 interface IdentityVerificationProps extends NativeStackScreenProps<any, any> {}
 
@@ -30,7 +26,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   const {signUp} = useMemberSignUp();
   const {apiRequest, loading, error} = useApi();
   const userDetails = useSelector((state: any) => state.appFlow);
-
+ const loginData = useSelector((state: any) => state.auth.loginData);
   // console.log('persist data', userDetails);
   const styles = IdentityVerificationStyles();
   const dispatch = useDispatch();
@@ -43,6 +39,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     subject,
   )}&body=${encodeURIComponent(body)}`;
 
+  
   const onNextClick = async () => {
     usernameRef.current && usernameRef.current.validateInputs();
 
@@ -52,23 +49,25 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
           address: userDetails.baseCity.address,
           placeId: userDetails.baseCity.placeId,
         },
-        dateOfBirth: userDetails.birthday,
-        email: userDetails.email,
+        dateOfBirth: convertDateFormat(userDetails.birthday),
+        email: userDetails.email
+          ? userDetails.email
+          : loginData.email,
         firstName: userDetails.firstName,
         focusIds: userDetails.creativeFocus.map((item: any) => item.id),
         interestsIds: userDetails.interest.map((item: any) => item.id),
         gender: userDetails.gender,
         lastName: userDetails.lastName,
-        phoneNumber: userDetails.phone,
+        phoneNumber: userDetails.phone ? userDetails.phone : loginData.phone,
         instagramAccessToken: '',
         instagramUserName: usernameRef.current.inputText,
         linkedInAccessToken: '',
         facebookAccessToken: '',
         platform: Platform.OS,
         socialUrl: '',
-        profilePicture:userDetails.profilePic,
+        profilePicture: userDetails.profilePic,
       };
-       console.log('requestParams', requestParams);
+      console.log('requestParams', requestParams);
       const response: any = await apiRequest(
         'post',
         EndPoint.member_signUp,
@@ -76,10 +75,15 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       );
 
       if (response.data) {
-        // dispatch(resetAppFlowDetails());
         dispatch(setPageProgress(1));
+         navigation.navigate('AuthStack', {
+        screen: 'AppStack',
+        params: {
+          screen: 'BeforeAppStaticScreen', // Nested screen
+        },
+      });
+        // dispatch(resetAppFlowDetails());
         // persistStore(store).purge(); // This clears the persisted state
-        navigation.navigate('MyDetailsScreen');
       }
     }
   };
