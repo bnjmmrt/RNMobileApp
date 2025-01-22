@@ -7,7 +7,7 @@ import Title from '../Title/Title';
 import Input from '../Input/Input';
 import Button from '../Button';
 import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
-import { useSubmitReferralCodeMutation } from '../../../src/redux/slices/referralSlice';
+import { useSubmitReferralCodeMutation } from 'src/redux/actions/referralApiAction';
 
 const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   const inputRef = useRef(null);
