@@ -2,26 +2,25 @@ import React, {useState} from 'react';
 import {
   Modal,
   View,
-  Text,
-  TextInput,
-  FlatList,
-  TouchableOpacity,
   StyleSheet,
-  Image,
 } from 'react-native';
 import GooglePlacesInput from '../GooglePlacesInput/GooglePlacesInput';
-import Button from '../Button';
-import {BUTTON_LABLE} from '../../utils/constants';
 import {Wp} from '../../utils/dimensions';
 import { Address } from '../../redux/slices/appFlowSlice';
 
 interface LocationPickerModalProps{
-  setLocation:(location:Address)=>void
+  setLocation:(location:Address)=>void,
+  setIsShown:(ishown:boolean)=>void
 }
-const LocationPickerModal:React.FC<LocationPickerModalProps> = ({setLocation}) => {
+const LocationPickerModal:React.FC<LocationPickerModalProps> = ({setLocation,setIsShown}) => {
   console.log("LocationPickerModal")
   const [modalVisible, setModalVisible] = useState(true);
- 
+
+  const submit=()=>{
+    setModalVisible(false);
+    setIsShown(false);
+  };
+
   return (
     <Modal
       animationType="slide"
@@ -30,14 +29,14 @@ const LocationPickerModal:React.FC<LocationPickerModalProps> = ({setLocation}) =
       onRequestClose={() => setModalVisible(false)}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <GooglePlacesInput setLocation={setLocation} />
-          <Button
+          <GooglePlacesInput submit={submit} setLocation={setLocation} />
+          {/* <Button
             disabled={false}
             style={styles.btnStyle}
             title={BUTTON_LABLE.SUBMIT}
             colorTheme="dark"
-            onPress={() => setModalVisible(false)}
-          />
+            onPress={submit}
+          /> */}
         </View>
       </View>
     </Modal>

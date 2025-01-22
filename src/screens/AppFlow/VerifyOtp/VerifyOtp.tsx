@@ -16,7 +16,6 @@ import {
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
 import {RootState} from '../../../redux/slices';
-import {useSendOtp} from '../../../redux/hooks/useSendOtp';
 import useApi from '../../../axios/useApi';
 import {EndPoint} from '../../../ApiManager/config';
 
@@ -83,38 +82,24 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
         verificationCode: otpInputRef.current && otpInputRef.current.code,
       };
     }
+    const response:any = await apiRequest('post', EndPoint.verify_code, params);
 
-    console.log("paramssssss",params)
-    const response = await apiRequest('post', EndPoint.verify_code, params);
-    console.log("verify_code",response);
-
-    if (!error) {
-      FlashMessageComponent.show('success', 'OTP verified successfully!');
+    if (response.data.verified) {
+      FlashMessageComponent.show('success', LABLE.OTP_VERIFIED_SUCCESSFULLY);
       dispatch(setPageProgress(3));
       dispatch(setIsEmailPhoneBothVerified(true));
       navigation.navigate('GenderScreen');
     } else {
       FlashMessageComponent.show(
         'error',
-        'Something went wrong, please try again!',
+        LABLE.SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN,
       );
     }
   };
 
   const onNextClick =async () => {
     otpInputRef.current && otpInputRef.current.handleNextPress();
-    // dispatch(setPageProgress(3));
-    // dispatch(setIsEmailPhoneBothVerified(true));
-    // navigation.navigate('GenderScreen');
     await verifyCode()
-    // if (true) {
-    //   // on success
-    //   // dispatch(setPageProgress(3));
-    //   // dispatch(setIsEmailPhoneBothVerified(true));
-    //   // navigation.navigate('GenderScreen');
-    // } else {
-    //   // send error message
-    // }
   };
 
   const handleBackPress = () => navigation.goBack();
