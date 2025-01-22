@@ -16,7 +16,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/slices';
 import { setBirthday, setPageProgress } from '../../../redux/slices/appFlowSlice';
-import BottomSheetComponent from '../../../component/BottomSheet/BottomSheet';
+import DateBottomSheet from '../../../component/BottomSheet/DateBottomSheet';
 import DatePickerComponent from '../../../component/CustomDatePicker/CustomDatePicker';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
 import { BlurView } from "@react-native-community/blur";
@@ -126,7 +126,7 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
       />
 
       {isShown && (
-        <BottomSheetComponent
+        <DateBottomSheet
           // ref={bottomSheetRef}
           snapPoints={['50%']} // Adjustable snap points
           onClose={() => setIsShown(false)}
