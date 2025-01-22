@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface UserDetailsState {
+export type Address={address:string,placeId:string}
+export interface UserDetailsState {
   firstName: string;
   lastName: string;
-  gender: string | null;
-  baseCity: string;
+  gender: number;
+  baseCity:Address ;
   birthday: string;
   email: string;
   phone: string;
@@ -19,8 +20,8 @@ interface UserDetailsState {
 const initialState: UserDetailsState = {
   firstName: '',
   lastName: '',
-  gender: null,
-  baseCity: '',
+  gender: 0,
+  baseCity: {address:'',placeId:''},
   birthday: '',
   email: '',
   phone: '',
@@ -42,11 +43,12 @@ const appFlowSlice = createSlice({
     setLastName(state, action: PayloadAction<string>) {
       state.lastName = action.payload;
     },
-    setGender(state, action: PayloadAction<string | null>) {
+    setGender(state, action: PayloadAction<number>) {
       state.gender = action.payload;
     },
-    setBaseCity(state, action: PayloadAction<string>) {
-      state.baseCity = action.payload;
+    setBaseCity(state, action: PayloadAction<{address:string,placeId:string}>) {
+      state.baseCity.address = action.payload.address;
+      state.baseCity.placeId = action.payload.placeId;
     },
     setBirthday(state, action: PayloadAction<string>) {
       state.birthday = action.payload;
@@ -75,6 +77,11 @@ const appFlowSlice = createSlice({
     setIsEmailPhoneBothVerified(state, action: PayloadAction<any>) {
       state.isEmailPhoneBothVerified = action.payload;
     },
+
+    getAppFlowDetails(state) {
+      // return state object
+    return state
+    },
     resetAppFlowDetails(state) {
       // Reset state to initial values
       Object.assign(state, initialState);
@@ -96,6 +103,7 @@ export const {
   setProfilePic,
   setIsEmailVerified,
   setIsEmailPhoneBothVerified,
+  getAppFlowDetails,
   resetAppFlowDetails,
 } = appFlowSlice.actions;
 

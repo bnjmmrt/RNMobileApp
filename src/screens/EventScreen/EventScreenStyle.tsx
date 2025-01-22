@@ -30,11 +30,11 @@ const EventScreenStyle = () => {
             resizeMode: 'center',
         },
         textBelowStyle: {
-            color: COLORS.light_gray,
-            fontSize: 12,
+            color: COLORS.black,
+            fontSize: 14,
             textAlign:'center',
             fontFamily: fontFamily.ABCDiatype_Regular,
-            marginVertical: Hp(1),
+            marginHorizontal: 5
         },
     });
 };

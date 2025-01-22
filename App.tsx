@@ -24,11 +24,7 @@ const AppContent: React.FC = () => {
   useEffect(() => {
     console.log('Internet status:', isConnected);
   }, [isConnected]);
-
-  // console.log("isConnected",isConnected)
-
-  // console.log("isInternetConnected",isInternetConnected)
-
+  
   if (!isConnected && isConnected !== null) {
     return <NoInternetScreen />;
   }

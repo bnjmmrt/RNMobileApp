@@ -42,20 +42,26 @@ export type StatusCode = keyof typeof statusCode;
 export const EndPoint = {
   signUp: '/program-management/api/auth/signup',
   signUp2FaVerify: '/program-management/api/auth/2fa/verify',
-  signUpProfileSetUp:'/program-management/api/auth/signup/profile-setup',
-  login:'/program-management/api/auth/app/login',
-  login2FaVerify:'/program-management/api/auth/login/2fa/verify',
-  resendOtp:'/communication/send-verification-code',
-  verifyOtp:'/program-management/api/auth/resend-otp',
-  forgetPassword:'/program-management/api/auth/forgot-password',
-  resetPassword:'/program-management/api/auth/reset-password',
-  socialLogin:'/program-management/api/auth/social-sign-up'
+  signUpProfileSetUp: '/program-management/api/auth/signup/profile-setup',
+  login: '/program-management/api/auth/app/login',
+  login2FaVerify: '/program-management/api/auth/login/2fa/verify',
+  resendOtp: 'v1/communication/send-verification-code',
+  verifyOtp: 'v1/program-management/api/auth/resend-otp',
+  forgetPassword: '/program-management/api/auth/forgot-password',
+  resetPassword: '/program-management/api/auth/reset-password',
+  socialLogin: '/program-management/api/auth/social-sign-up',
+  verify_code: 'v1/communication/verify-code',
+  get_focuses: 'v1/platform/get-focuses',
+  interests: 'v1/platform/interests',
+  member_signUp: 'v1/auth/member-sign-up',
+  file_upload:'v1/files/upload',
+  check_member_logiin:'v1/auth/check-member-login'
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;
 
 export const TagKey = {
   IsBearerToken: 'IsBearerToken',
-}
+};
 
 export default settings;

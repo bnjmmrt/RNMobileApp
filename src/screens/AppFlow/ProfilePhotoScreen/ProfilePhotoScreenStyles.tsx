@@ -47,6 +47,8 @@ const ProfilePhotoScreenStyles = () => {
       borderRadius: 50,
       backgroundColor: COLORS.tabBorderColor,
       alignSelf: 'center',
+      justifyContent:"center",
+      alignItems:"center"
     },
     iconContainer: {
       justifyContent: 'center',

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Image, TouchableOpacity, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker';
@@ -16,36 +16,62 @@ import {
 } from '../../../redux/slices/appFlowSlice';
 import IMAGES from '../../../assets/images';
 import Toast from '../../../component/Toast/Toast';
+import useApi from '../../../axios/useApi';
+import {EndPoint} from '../../../ApiManager/config';
+import AvatarInitials from '../../../component/AvatarInitials';
 
 interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> {}
 
 const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   navigation,
 }) => {
+  const {apiRequest, loading, error} = useApi();
   const dispatch = useDispatch();
   const profilePic = useSelector(
     (state: RootState) => state.appFlow.profilePic,
   );
+
   const styles = ProfilePhotoScreenStyles();
   const [image, setImage] = useState<string>(profilePic);
-  const [isToastShown,setIsToastShown]=useState(false)
+  const [isToastShown, setIsToastShown] = useState(false);
 
+  const uploadFile = async () => {
+    const mimeType = `images/${image.split('.').pop()}`;
+    const fileName = image.split('/').pop();
 
+    const formData = new FormData();
+    formData.append('file', {
+      uri: image,
+      type: mimeType,
+      name: fileName,
+    });
 
-  const onNextClick = () => {
-    if(image){
-      setIsToastShown(false)
-      dispatch(setProfilePic(image));
-      dispatch(setPageProgress(9));
-      navigation.navigate('IdentityVerification');
-    }{
-      setIsToastShown(true)
+    return await apiRequest('post', EndPoint.file_upload, formData, null, {
+      'Content-Type': 'multipart/form-data',
+    });
+  };
+
+  const onNextClick = async () => {
+    if (image) {
+      const response:any = await uploadFile();
+
+      if (response.data) {
+        setIsToastShown(false);
+         dispatch(setProfilePic(response.data.pathFileUrl));
+        dispatch(setPageProgress(9));
+        navigation.navigate('IdentityVerification');
+      } else {
+        //display error
+      }
+    }
+    {
+      // setIsToastShown(true);
     }
   };
 
   const handleBackPress = () => {
     dispatch(setPageProgress(7));
-    navigation.navigate("SelectInterestScreen");
+    navigation.navigate('SelectInterestScreen');
   };
 
   const openPicker = () => {
@@ -57,7 +83,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
       cropperCircleOverlay: true,
     }).then((image: ImageOrVideo) => {
       setImage(image.path);
-      setIsToastShown(false)
+      setIsToastShown(false);
     });
   };
   return (
@@ -69,12 +95,20 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
           title={LABLE.ADD_A_PHOTO}
           subTitle={LABLE.ADD_A_PHOTO_SUBTITLE}
         />
+        {/* {loading && <Text>Loading...</Text>} */}
         <View style={styles.profilePhotoContainer}>
-          <Image
-            style={styles.profilePhotoContainer}
-            source={{uri: image}}
-            resizeMode="cover"
-          />
+          {image ? (
+            <Image
+              style={styles.profilePhotoContainer}
+              source={{uri: image}}
+              resizeMode="cover"
+            />
+          ) : (
+            <View style={{alignSelf: 'center'}}>
+              <AvatarInitials name={'Bessie Cooper'} size={48} />
+            </View>
+          )}
+
           <TouchableOpacity style={styles.iconContainer} onPress={openPicker}>
             <Image
               resizeMode="contain"
@@ -84,7 +118,12 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
           </TouchableOpacity>
         </View>
         {/* Render profile photo */}
-        {isToastShown && <Toast message={'Please upload a Profile Photo'} onClose={() => setIsToastShown(false)} />}
+        {isToastShown && (
+          <Toast
+            message={'Please upload a Profile Photo'}
+            onClose={() => setIsToastShown(false)}
+          />
+        )}
       </View>
 
       <Button

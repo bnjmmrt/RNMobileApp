@@ -21,6 +21,7 @@ export const BUTTON_LABLE = {
   REQUREST:'Request',
   ACCESS_MY_CONTACTS:'Access My Contacts',
   ENTER_REFERRAL_CODE:"Enter Referral Code",
+  CONFIRM: "Confirm",
 }
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',
@@ -81,6 +82,7 @@ export const LABLE = {
   TWO_MINUTES_TO_COMPLETE: "~2 min to Complete",
   STREAMLINE_YOUR_LIFESTYLE: "Streamline your lifestyle.",
   MANAGE_YOUR_EVENTS: "Manage your events, chats, and passes—all in one place.",
+  CONNECT_WITH_WORLD: "Connect with the world's top event organizers. Get discovered and invited to events that matter.",
   CONNECT_DIRECTLY_WITH_PEOPLE: "Connect directly with the people behind the events. Request invites and confirm details seamlessly.",
   UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS: "Unlock access to exclusive events",
   GET_DISCOVERY_BY_THE_WORLD: "Get discovered by the world's top event organizers and receive invites to events that matter.",
@@ -105,7 +107,9 @@ export const LABLE = {
   FASTRACK_YOUR_APPLICATION: "Want to fast-track your application?",
   REQUEST_REFERRAL_FROM_RUMOR:"Request referrals from Rumor members.",
   INVITE_YOUR_FRIEND:"Invite your friends to join Rumor.",
-  SELECT_YOUR_BIRTHDAY_BELOW:"Select your birthday below"
+  SELECT_YOUR_BIRTHDAY_BELOW:"Select your birthday below",
+  LOGOUT:'Log Out',
+  COMING_SOON:"Coming Soon…"
 
 }
 
@@ -133,6 +137,7 @@ export const ERROR_MESSAGE = {
 }
 export const COLORS = {
   black: '#1F1F1F',
+  black2: '#0F0F0F',
   white: '#FFFFFF',
   light_gray: '#838282',
   light_text:'#B5B5B5',

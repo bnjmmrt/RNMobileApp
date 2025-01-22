@@ -2,7 +2,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { environment } from '../../environments/environment';
 
 // Create Base API with Logging
-export const createBaseApi = createApi({
+export const baseApi = createApi({
+  reducerPath:'baseApi',
   baseQuery: fetchBaseQuery({
     baseUrl: environment.DEV_URL,
     prepareHeaders: (headers, { getState }) => {

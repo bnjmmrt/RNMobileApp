@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import { COLORS } from '../../utils/constants';
@@ -7,6 +7,8 @@ import { COLORS } from '../../utils/constants';
 interface TabItem {
     id: string;
     label: any;
+    title: string;
+    subTitle: string;
   }
   
 
@@ -16,8 +18,13 @@ type DynamicTabBarProps = {
 };
 
 const DynamicTabBar: React.FC<DynamicTabBarProps> = ({ onTabChange, tabs }) => {
-    const [activeTab, setActiveTab] = useState<TabItem>(tabs[0]);
+    const [activeTab, setActiveTab] = useState<TabItem>(tabs[1]);
 
+
+    useEffect(()=>{
+        setActiveTab(activeTab);
+        onTabChange?.(activeTab); // Notify parent component if callback is provided
+    },[activeTab])
     const handleTabPress = (tab: TabItem) => {
         setActiveTab(tab);
         onTabChange?.(tab); // Notify parent component if callback is provided
@@ -55,7 +62,7 @@ const styles = StyleSheet.create({
         padding: 4,
         alignSelf: 'center',
         width: '90%',
-        marginVertical: 20,
+        marginVertical: 10,
     },
     tab: {
         flex: 1,

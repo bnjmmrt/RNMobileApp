@@ -10,7 +10,7 @@ const DiscoverScreenStyle = () => {
         container: {
             flex: 1,
             alignItems: 'center',
-            backgroundColor: COLORS.black
+            backgroundColor: COLORS.black2
         },
         contentContainer: {
             flex: 1,

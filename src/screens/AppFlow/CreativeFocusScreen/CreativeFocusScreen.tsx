@@ -14,57 +14,45 @@ import {
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
 import Toast from '../../../component/Toast/Toast';
+import {useGetFocusesQuery} from '../../../redux/actions/appFlowApiAction';
 
 interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> {}
 
 const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
   navigation,
 }) => {
+  const {data, error, isLoading} = useGetFocusesQuery('');
+  
   const dispatch = useDispatch();
-  const creativeFocus = useSelector(
+  const selectedCreativeFocus = useSelector(
     (state: RootState) => state.appFlow.creativeFocus,
+  );
+  const creativeFocus = useSelector(
+    (state: RootState) => state.appFlowApiData.creativeFocus,
   );
   const styles = CreativeFocusScreenStyles();
   const [selectedCategories, setSelectedCategories] =
-    useState<string[]>(creativeFocus);
+    useState<any[]>(selectedCreativeFocus);
+
   const [isToastShown, setIsToastShown] = useState(false);
 
-  const categories = [
-    'Actor',
-    'Athlete',
-    'Artist',
-    'Comedian',
-    'Content Creator',
-    'Designer',
-    'Entertainment',
-    'Entrepreneur',
-    'Filmmaker',
-    'Hospitality',
-    'Investor',
-    'Model',
-    'Musician',
-    'Philanthropist',
-    'Technology',
-    'Wellness',
-    'Writer',
-  ];
-
-  const handleCategorySelect = (category: string) => {
-    
-    if (selectedCategories.includes(category)) {
-      if(selectedCategories.length===1){
-        setIsToastShown(true)
+  const handleCategorySelect = (category: any) => {
+     console.log(selectedCategories.length)
+    if (selectedCategories.find(item=> item.id===category.id)) {
+      console.log(category)
+      if (selectedCategories.length === 1) {
+        setIsToastShown(true);
       }
       // Remove category if already selected
       setSelectedCategories(
-        selectedCategories.filter(item => item !== category),
+        selectedCategories.filter((item:any) => item.id !== category.id),
       );
     } else if (selectedCategories.length < 3) {
       // Add category if less than 3 are selected
-      setIsToastShown(false)
+      console.log(category)
+      setIsToastShown(false);
       setSelectedCategories([...selectedCategories, category]);
     }
-    
   };
 
   const onNextClick = () => {
@@ -95,22 +83,22 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
         />
 
         <View style={styles.categoryContainer}>
-          {categories.map(category => (
+          {creativeFocus?.map(item => (
             <TouchableOpacity
-              key={category}
+              key={item.id}
               style={[
                 styles.categoryButton,
-                selectedCategories.includes(category) &&
+                selectedCategories.some(selected => selected.id === item.id) &&
                   styles.selectedCategoryButton,
               ]}
-              onPress={() => handleCategorySelect(category)}>
+              onPress={() => handleCategorySelect(item)}>
               <Text
                 style={[
                   styles.categoryText,
-                  selectedCategories.includes(category) &&
+                  selectedCategories.some(selected => selected.id === item.id) &&
                     styles.selectedCategoryText,
                 ]}>
-                {category}
+                {item.name}
               </Text>
             </TouchableOpacity>
           ))}

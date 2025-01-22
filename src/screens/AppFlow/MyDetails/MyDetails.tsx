@@ -1,5 +1,5 @@
-import React, {useRef} from 'react';
-import {View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Text, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {LABLE, BUTTON_LABLE, ERROR_MESSAGE} from '../../../utils/constants';
@@ -17,19 +17,43 @@ import {
   setLastName,
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
+import {
+  setCreativeFocus,
+  setInterests,
+} from '../../../redux/slices/appFlowApiDataSlice';
+import {
+  useGetFocusesQuery,
+  useGetInterestsQuery,
+} from '../../../redux/actions/appFlowApiAction';
+import useApi from '../../../axios/useApi';
+import {EndPoint} from '../../../ApiManager/config';
 
 interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({navigation}) => {
-  // const {data: posts, error, isLoading} = useGetPostsQuery();
+  //  const {data: focuses,} = useGetFocusesQuery('');
+  //  const {data: interests,} = useGetInterestsQuery('');
+
+  const {apiRequest, loading, error} = useApi();
 
   const dispatch = useDispatch();
   const userDetails = useSelector((state: RootState) => state.appFlow);
   const isEmailPhoneBothVerified = useSelector(
     (state: RootState) => state.appFlow.isEmailPhoneBothVerified,
   );
-  // console.log("postsssss",posts);
-  // console.log("userDetails",userDetails);
+
+  const fetch = async () => {
+    const focusResponse = await apiRequest('get', EndPoint.get_focuses);
+    dispatch(setCreativeFocus(focusResponse.data));
+    
+    const interestResponse = await apiRequest('get', EndPoint.interests);
+    dispatch(setInterests(interestResponse.data));
+  };
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
   const styles = EmailPhoneStyles();
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
@@ -55,7 +79,7 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({navigation}) => {
   };
 
   const handleBackPress = () => {
-    navigation.goBack()
+    navigation.navigate('AppStack');
   };
 
   return (

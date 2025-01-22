@@ -15,13 +15,14 @@ interface LandingScreenProps extends NativeStackScreenProps<any, any> { }
 const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
   const styles = LandingStyles();
   const [showBottomSheet, setShowBottomSheet] = useState(false);
+  const bottomSheetRef = useRef(null);
 
   const onEnterClick = () => {
     navigation.navigate('EmailPhoneScreen')
   }
 
   const handleOpenWebView = () => {
-    setShowBottomSheet(true);
+    bottomSheetRef?.current?.open();
   };
 
   const onChangeBottomSheet = (index: number) => {
@@ -69,9 +70,9 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
           />
 
         </View>
-        {
-          showBottomSheet && <WebViewBottomSheet url={LINKS.APPLY_FOR_HOST} onChange={onChangeBottomSheet} />
-        }
+        
+        <WebViewBottomSheet  url={LINKS.APPLY_FOR_HOST} ref={bottomSheetRef} />
+        
 
       </View>
 

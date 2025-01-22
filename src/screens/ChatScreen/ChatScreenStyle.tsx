@@ -11,7 +11,7 @@ const ChatScreenStyle = () => {
             flex: 1,
             alignItems: 'center',
             // justifyContent: 'center',
-            backgroundColor: COLORS.black
+            backgroundColor: COLORS.black2
         },
         contentContainer: {
             flex: 1,

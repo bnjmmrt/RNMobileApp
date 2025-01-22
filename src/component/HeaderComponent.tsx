@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 15,
+        paddingVertical: 10,
         paddingHorizontal: 20,
     },
     logoContainer: {
