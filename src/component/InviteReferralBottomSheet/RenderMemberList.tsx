@@ -40,13 +40,14 @@ export const RenderMemberList = (data: any) => {
                 </View>
             </View>
             <ButtonSmall
-                disabled={isSent || isLoading}
+                disabled={isSent}
                 style={styles.smallBtnStyle}
-                title={isSent ? "Sent" : isLoading ? "Sending..." : "Request"}
+                title={isSent ? "Sent" : "Request"}
                 colorTheme={isSent ? "dark" : "dark"}
                 borderType={isSent ? "STRIPE" : "SOLID"}
                 leftIcon={isSent ? IMAGES.check : null}
                 onPress={handleRequestSent}
+                loading={isLoading}
             />
         </View>
     );

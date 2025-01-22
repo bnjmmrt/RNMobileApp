@@ -13,7 +13,6 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   const inputRef = useRef(null);
   const [submitReferralCode, { isLoading }] = useSubmitReferralCodeMutation();
 
-  console.log(ref)
 
 
 
@@ -40,6 +39,14 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
       ref={ref}
       snapPoints={[Platform.OS=="android"?'45%':'40%']}
       onClose={() =>console.log(ref)}
+      footer={<Button
+        disabled={false}
+        style={styles.btnStyle}
+        title={BUTTON_LABLE.SUBMIT}
+        colorTheme="dark"
+        loading={isLoading}
+        onPress={handleSubmit}
+      />}
     >
         <View style={styles.container}>
           <Title
@@ -51,13 +58,6 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
             ref={inputRef}
             label={LABLE.ENTER_CODE}
             errorMessage={ERROR_MESSAGE.PLEASE_ENTER_A_VALID_REFERRAL_CODE}
-          />
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={isLoading ? 'Loading...' : BUTTON_LABLE.SUBMIT}
-            colorTheme="dark"
-            onPress={handleSubmit}
           />
         </View>
     </BottomSheetComponent>

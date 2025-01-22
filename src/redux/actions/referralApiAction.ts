@@ -1,6 +1,6 @@
-import { createBaseApi } from "src/ApiManager/createBaseApiWithoutFecthBaseQuery";
+import { baseApi } from "src/ApiManager/createBaseApi";
 
-export const referralApiAction = createBaseApi.injectEndpoints({
+export const referralApiAction = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     submitReferralCode: builder.mutation({
       query: (requestParam) => ({
@@ -18,7 +18,7 @@ export const referralApiAction = createBaseApi.injectEndpoints({
       }),
       fetchMembers: builder.query({
         query: () => ({
-          url: 'v1/platform/members', // Replace with the actual endpoint for fetching members
+          url: 'v1/platform/members', 
           method: 'GET',
         }),
       }),
