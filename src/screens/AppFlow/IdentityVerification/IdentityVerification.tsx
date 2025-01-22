@@ -1,8 +1,8 @@
 import React, {useRef} from 'react';
-import {ScrollView, Text, View, Linking} from 'react-native';
+import {ScrollView, Text, View, Linking, Platform} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {LABLE, BUTTON_LABLE, ERROR_MESSAGE} from '../../../utils/constants';
+import {LABLE, BUTTON_LABLE} from '../../../utils/constants';
 import IdentityVerificationStyles from './IdentityVerificationStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
@@ -56,17 +56,19 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         email: userDetails.email,
         firstName: userDetails.firstName,
         focusIds: userDetails.creativeFocus.map((item: any) => item.id),
+        interestsIds: userDetails.interest.map((item: any) => item.id),
         gender: userDetails.gender,
         lastName: userDetails.lastName,
         phoneNumber: userDetails.phone,
-        instagramAccessToken: 'string',
+        instagramAccessToken: '',
         instagramUserName: usernameRef.current.inputText,
-        linkedInAccessToken: 'string',
-        facebookAccessToken: 'string',
-        platform: 'string',
-        socialUrl: 'string',
+        linkedInAccessToken: '',
+        facebookAccessToken: '',
+        platform: Platform.OS,
+        socialUrl: '',
+        profilePicture:userDetails.profilePic,
       };
-      //  console.log('requestParams', requestParams);
+       console.log('requestParams', requestParams);
       const response: any = await apiRequest(
         'post',
         EndPoint.member_signUp,
@@ -74,7 +76,8 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       );
 
       if (response.data) {
-        dispatch(resetAppFlowDetails());
+        // dispatch(resetAppFlowDetails());
+        dispatch(setPageProgress(1));
         // persistStore(store).purge(); // This clears the persisted state
         navigation.navigate('MyDetailsScreen');
       }

@@ -57,7 +57,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
 
       if (response.data) {
         setIsToastShown(false);
-         dispatch(setProfilePic(response.data.pathFileUrl));
+         dispatch(setProfilePic('https://dev.api.therumor.com/v1/files/view/' + response.data.fileKeyId));
         dispatch(setPageProgress(9));
         navigation.navigate('IdentityVerification');
       } else {

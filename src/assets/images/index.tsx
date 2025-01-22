@@ -41,7 +41,7 @@ const IMAGES = {
   checkCircleFilled:require('./check-circle-filled.png'),
   close:require('./close.png'),
   noRecord:require('./noRecord.png'),
-
+  location:require('./location.png'),
 }
 
 export default IMAGES;

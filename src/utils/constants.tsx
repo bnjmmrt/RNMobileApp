@@ -109,8 +109,9 @@ export const LABLE = {
   INVITE_YOUR_FRIEND:"Invite your friends to join Rumor.",
   SELECT_YOUR_BIRTHDAY_BELOW:"Select your birthday below",
   LOGOUT:'Log Out',
-  COMING_SOON:"Coming Soon…"
-
+  COMING_SOON:"Coming Soon…",
+  OTP_VERIFIED_SUCCESSFULLY:'OTP verified successfully!',
+  SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:'Something went wrong, please try again'
 }
 
 export const PROFILE ={
