@@ -18,6 +18,7 @@ import { RootState } from '../../redux/slices';
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
+
 interface ListItem {
   id: string;
   title: string;
