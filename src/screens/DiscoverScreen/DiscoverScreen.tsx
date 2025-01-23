@@ -13,6 +13,7 @@ import { ScrollView } from 'react-native';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 import AfterAppStaticComponent from '../../component/BeforeAppStaticComponent/AfterAppStaticComponent';
 import { useSelector } from 'react-redux';
+import EventsFeed from '../../component/EventsFeed/EventsFeed';
 import { RootState } from '../../redux/slices';
 // Define the type for navigation props
 interface DiscoverScreenProps extends NativeStackScreenProps<any, any> { }
@@ -24,15 +25,13 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {loginData.isSignUpCompleted ?
+      {!loginData.isInvited ?
+        <EventsFeed />
+        :
         <AfterAppStaticComponent
           title={LABLE.YOU_ARE_ON_WAITLIST}
           subTitle={LABLE.FULL_ACCESS_UNLOCK} />
-        : 
-        <BeforeAppStaticComponent
-         isChatScreen ={false} />
       }
-
     </SafeAreaView>
   );
 };

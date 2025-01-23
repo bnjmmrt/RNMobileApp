@@ -31,6 +31,7 @@ const IMAGES = {
   feedback: require('./feedback.png'),
   contact: require('./contact.png'),
   arrowRight: require('./arrowRight.png'),
+  iconRumor: require('./icon_rumor.png'),
 
   instagramLogo: require('./instagram.png'),
   heart:require('./heart.png'),
