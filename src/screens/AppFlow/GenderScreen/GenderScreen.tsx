@@ -33,7 +33,7 @@ const GenderScreen: React.FC<GenderScreenProps> = ({navigation}) => {
   };
 
   const onNextClick = () => {
-    if (selectedGender) {
+    if (selectedGender>=0) {
       setIsToastShown(false);
       dispatch(setGender(selectedGender));
       dispatch(setPageProgress(4));
