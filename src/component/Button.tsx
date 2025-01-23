@@ -16,7 +16,8 @@ interface ButtonProps {
   leftImageStyle?: StyleProp<ImageStyle>;
   disabled?: boolean;
   colorTheme?: string;
-  loading?: boolean
+  loading?: boolean;
+  clearButtonStyle?:StyleProp<ViewStyle>
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -30,7 +31,7 @@ const Button: React.FC<ButtonProps> = ({
   rightImageSource,
   rightImageStyle,
   disabled,
-  loading
+  loading,clearButtonStyle
 }) => {
 
   const colorbackground = colorTheme == 'dark' ? COLORS.black : COLORS.white;
@@ -38,7 +39,7 @@ const Button: React.FC<ButtonProps> = ({
   return (
     <TouchableOpacity
       disabled={disabled}
-      style={[styles.button, { backgroundColor: disabled ? COLORS.disable : colorbackground }, style]} // Merge default and custom styles
+      style={[styles.button, { backgroundColor: disabled ? COLORS.disable : colorbackground }, style,clearButtonStyle]} // Merge default and custom styles
       onPress={onPress}
     >
       {loading ? <ActivityIndicator /> :

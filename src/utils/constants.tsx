@@ -22,6 +22,10 @@ export const BUTTON_LABLE = {
   ACCESS_MY_CONTACTS:'Access My Contacts',
   ENTER_REFERRAL_CODE:"Enter Referral Code",
   CONFIRM: "Confirm",
+  REPLACE_PHOTO: "Replace Photo",
+  CANCEL: "Cancel",
+  DELETE_MY_ACCOUNT:'Delete My Account'
+  
 }
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',
@@ -111,7 +115,8 @@ export const LABLE = {
   LOGOUT:'Log Out',
   COMING_SOON:"Coming Soon…",
   OTP_VERIFIED_SUCCESSFULLY:'OTP verified successfully!',
-  SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:'Something went wrong, please try again'
+  SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:'Something went wrong, please try again',
+  EDIT_PROFILE:'Edit Profile'
 }
 
 export const PROFILE ={
