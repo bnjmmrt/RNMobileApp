@@ -1,42 +1,48 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
-import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
+import { COLORS, } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Wp, Hp } from '../../utils/dimensions';
-import ButtonSmall from '../../component/ButtonSmall';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
+import AvatarInitials from '../../component/AvatarInitials';
 
 interface ProfileTopViewProps {
-
+    editPhotoClick:()=>void;
+    profilePic:any
 }
-const ProfileTopView: React.FC<ProfileTopViewProps> = ({ }) => {
-
+const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick,profilePic}) => {
 
     // Handle the "Next" button press
     const handlEventPress = () => {
 
     };
-
+console.log("profilePic",profilePic)
     return (
         <View style={styles.container}>
 
-            <View style={styles.profilePhotoContainer}>
-                <Image
-                    style={styles.profilePhotoContainer}
-                    source={IMAGES.backgroundLogin}
-                    resizeMode="cover"
-                />
-                <TouchableOpacity style={styles.iconContainer}>
-                    <Image
-                        resizeMode="contain"
-                        source={IMAGES.pencil}
-                        style={styles.ic_pencil}
-                    />
-                </TouchableOpacity>
+<View style={styles.profilePhotoContainer}>
+          {profilePic ? (
+            <Image
+              style={styles.profilePhotoContainer}
+              source={{uri: profilePic}}
+              resizeMode="cover"
+            />
+          ) : (
+            <View style={{alignSelf: 'center'}}>
+              <AvatarInitials name={'Bessie Cooper'} size={48} />
             </View>
+          )}
+
+          <TouchableOpacity style={styles.iconContainer} onPress={editPhotoClick}>
+            <Image
+              resizeMode="contain"
+              source={IMAGES.pencil}
+              style={styles.ic_pencil}
+            />
+          </TouchableOpacity>
+        </View>
             <TitleSubtitle
                 title='Bessie Cooper'
                 subTitle='Non-Member'
@@ -103,9 +109,11 @@ const styles = StyleSheet.create({
         height: 100,
         width: 100,
         borderRadius: 50,
-        backgroundColor: COLORS.white,
+        backgroundColor: COLORS.tabBorderColor,
         alignSelf: 'center',
-    },
+        justifyContent:"center",
+        alignItems:"center"
+      },
     iconContainer: {
         justifyContent: 'center',
         alignItems: 'center',

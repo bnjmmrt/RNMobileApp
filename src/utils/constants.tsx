@@ -22,6 +22,10 @@ export const BUTTON_LABLE = {
   ACCESS_MY_CONTACTS:'Access My Contacts',
   ENTER_REFERRAL_CODE:"Enter Referral Code",
   CONFIRM: "Confirm",
+  REPLACE_PHOTO: "Replace Photo",
+  CANCEL: "Cancel",
+  DELETE_MY_ACCOUNT:'Delete My Account'
+  
 }
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',

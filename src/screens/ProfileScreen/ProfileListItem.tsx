@@ -9,14 +9,21 @@ interface ListItemProps {
     item: {
         id: string;
         title: string;
-        image: string
+        image: string;
+        onPress?:any
     };
+    onPress:()=>void
 }
 
 
-const ProfileListItem: React.FC<ListItemProps> = ({ item }) => {
+const ProfileListItem: React.FC<ListItemProps> = ({ item ,onPress}) => {
 
-    const handleItemClick = (item: ListItem) => {
+
+const handlePress=()=>{
+  onPress()
+}
+
+    const handleItemClick = (item: any) => {
         switch (item.title) {
           case PROFILE.EDIT_PROFILE:
             console.log('Redirecting to Edit Profile...');
@@ -61,6 +68,7 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item }) => {
           case PROFILE.DELETE_ACCOUNT:
             console.log('Redirecting to Delete Account...');
             // Example: navigate('/delete-account');
+            onPress()
             break;
       
           default:
