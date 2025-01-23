@@ -115,7 +115,8 @@ export const LABLE = {
   LOGOUT:'Log Out',
   COMING_SOON:"Coming Soon…",
   OTP_VERIFIED_SUCCESSFULLY:'OTP verified successfully!',
-  SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:'Something went wrong, please try again'
+  SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:'Something went wrong, please try again',
+  EDIT_PROFILE:'Edit Profile'
 }
 
 export const PROFILE ={

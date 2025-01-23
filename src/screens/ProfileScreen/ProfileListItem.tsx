@@ -4,6 +4,8 @@ import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
 import { COLORS, PROFILE } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { ROUTES } from '../../navigation/Route';
 
 interface ListItemProps {
     item: {
@@ -17,17 +19,13 @@ interface ListItemProps {
 
 
 const ProfileListItem: React.FC<ListItemProps> = ({ item ,onPress}) => {
-
-
-const handlePress=()=>{
-  onPress()
-}
+const navigation=useNavigation<NavigationProp>()
 
     const handleItemClick = (item: any) => {
         switch (item.title) {
           case PROFILE.EDIT_PROFILE:
             console.log('Redirecting to Edit Profile...');
-            // Example: navigate('/edit-profile');
+            navigation.navigate(ROUTES.EditProfileScreen);
             break;
       
           case PROFILE.FOLLOWING:

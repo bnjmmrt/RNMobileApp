@@ -5,7 +5,7 @@ import DiscoverScreen from '../../screens/DiscoverScreen/DiscoverScreen';
 import IMAGES from '../../assets/images';
 import EventScreen from '../../screens/EventScreen/EventScreen';
 import ChatScreen from '../../screens/ChatScreen/ChatScreen';
-import ProfileScreen from '../../screens/ProfileScreen/ProfileScreen';
+import { ProfileStack } from '../../navigation/ProfileStack';
 
 
 const Tab = createBottomTabNavigator();
@@ -32,11 +32,10 @@ const BottomTabBar = () => (
             options={{ tabBarLabel: 'Chat', tabBarIcon: IMAGES.chatTab }}
         />
         <Tab.Screen
-            name="ProfileScreen"
-            component={ProfileScreen}
-            options={{ tabBarLabel: 'Profile', tabBarIcon: IMAGES.profileTab }}
+            name="ProfileStack"
+            component={ProfileStack}
+            options={{ tabBarLabel: 'Profile', tabBarIcon: IMAGES.profileTab}}
         />
-        
     </Tab.Navigator>
 )
 
