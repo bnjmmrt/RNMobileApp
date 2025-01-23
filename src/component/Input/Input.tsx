@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     height: 50,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 15,
+    paddingHorizontal: 16,
   },
   leftImage: {marginRight: 6,width:20,height:20},
   input: {
