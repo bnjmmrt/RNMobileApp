@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, StyleProp, ViewStyle, TextStyle, ImageSourcePropType, Image, ImageStyle } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, StyleProp, ViewStyle, TextStyle, ImageSourcePropType, Image, ImageStyle, ActivityIndicator } from 'react-native';
 import { Hp, Wp } from '../utils/dimensions';
 import { fontFamily } from '../utils/functions';
 import { COLORS } from '../utils/constants';
@@ -19,6 +19,7 @@ interface ButtonSmallProps {
   borderType?: 'SOLID' | 'STRIPE'; // Optional border type, default is 'SOLID'
   leftIcon?: ImageSourcePropType; // Optional left icon
   leftIconStyle?: StyleProp<ImageStyle>; // Optional custom style for left icon
+  loading?:boolean
 }
 
 const ButtonSmall: React.FC<ButtonSmallProps> = ({
@@ -31,6 +32,7 @@ const ButtonSmall: React.FC<ButtonSmallProps> = ({
   borderType = 'SOLID', // Default to 'SOLID'
   leftIcon,
   leftIconStyle,
+  loading
 }) => {
 
   const colorbackground = colorTheme == 'dark' ? COLORS.black : COLORS.white;
@@ -51,11 +53,12 @@ const ButtonSmall: React.FC<ButtonSmallProps> = ({
       ]}
       onPress={onPress}
     >
-      {/* Conditionally render the left icon if available */}
+     {loading?<ActivityIndicator/>:<>
       {leftIcon && (
         <Image source={leftIcon} style={[styles.icon, leftIconStyle]} />
       )}
       <Text style={[styles.text, { color:borderType==='STRIPE'?colorbackground:textColor }, textStyle]}>{title}</Text>
+      </>}
     </TouchableOpacity>
   );
 };
@@ -67,6 +70,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     flexDirection: 'row',
+    minWidth:80,
   },
   text: {
     fontSize: 14,
