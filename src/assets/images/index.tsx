@@ -42,6 +42,7 @@ const IMAGES = {
   close:require('./close.png'),
   noRecord:require('./noRecord.png'),
   location:require('./location.png'),
+  // upDown:require('./upDown.png'),
 }
 
 export default IMAGES;

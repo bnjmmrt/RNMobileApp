@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
@@ -29,6 +29,10 @@ import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumber
 import EmailInput from '../../../component/EmailComponent/EmailInput';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
 import IMAGES from '../../../assets/images';
+import DatePickerComponent from './DatePickerComponent';
+import BaseCityComponent from './BaseCityComponent';
+import CreativeFocusComponent from './CreativeFocusComponent';
+import GenderComponent from './GenderComponent';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -47,7 +51,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const emailInputRef = useRef<any>(null);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [selectedDate, setSelectedDate] = useState<string>();
+  const [selectedDate, setSelectedDate] = useState<string>();
 
   const fetch = async () => {
     // const focusResponse = await apiRequest('get', EndPoint.get_focuses);
@@ -84,10 +88,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
     navigation.navigate('AppStack');
   };
 
-  const openDatePicker = () => {
-    bottomSheetRef.current?.open(); // Open the date picker
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -96,44 +96,46 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
         showProgressBar={false}
       />
 
-      <View style={styles.contentContainer}>
-        <Input
-          ref={firstNameRef}
-          label={LABLE.FIRST_NAME}
-          errorMessage={ERROR_MESSAGE.FIRST_NAME}
-          defaultValue={userDetails.firstName}
-        />
-        <Input
-          ref={lastNameRef}
-          label={LABLE.LAST_NAME}
-          errorMessage={ERROR_MESSAGE.LAST_NAME}
-          defaultValue={userDetails.lastName}
-        />
-        <Text style={[styles.label]}>Email Address</Text>
-        <PhoneNumberInput ref={phoneNumberInputRef}  />
+      <ScrollView>
+        <View style={styles.contentContainer}>
+          <Input
+            ref={firstNameRef}
+            label={LABLE.FIRST_NAME}
+            errorMessage={ERROR_MESSAGE.FIRST_NAME}
+            defaultValue={userDetails.firstName}
+          />
+          <Input
+            ref={lastNameRef}
+            label={LABLE.LAST_NAME}
+            errorMessage={ERROR_MESSAGE.LAST_NAME}
+            defaultValue={userDetails.lastName}
+          />
+          <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
+          <PhoneNumberInput ref={phoneNumberInputRef} />
 
-        <Text style={[styles.label]}>Phone Number</Text>
-        <EmailInput ref={emailInputRef} />
+          <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
+          <EmailInput ref={emailInputRef} />
 
+          <Text style={[styles.label]}>{LABLE.GENDER}</Text>
+          <GenderComponent />
 
-        <CustomSelectableText
-          placeholder={LABLE.DATE_PLACEHOLDER}
-          leftImage={IMAGES.calender}
-          rightImage={IMAGES.downArrow}
-          errorMessage={errorMessage}
-          defaultValue={selectedDate} // Display the selected date
-          onPress={openDatePicker} // Open the date picker when pressed
-        />
-      </View>
+          <Text style={[styles.label]}>{LABLE.BIRTHDAY}</Text>
+          <DatePickerComponent />
 
+          <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
+          <BaseCityComponent />
+
+          <Text style={[styles.label]}>{LABLE.CREATIVE_FOCUS}</Text>
+          <CreativeFocusComponent />
+        </View>
+      </ScrollView>
       <Button
         disabled={false}
         style={styles.btnStyle}
-        title={BUTTON_LABLE.NEXT}
+        title={BUTTON_LABLE.CONFIRM}
         colorTheme="dark"
         onPress={onNextClick}
       />
-       {/* <DatepickerBottomSheet ref={bottomSheetRef} setSelectedDate={handleDateChange} date={date} setDate={setDate} /> */}
     </SafeAreaView>
   );
 };

@@ -351,3 +351,9 @@ export const convertDateFormat = (dateString: string): string => {
   const [day, month, year] = dateString.split('/');
   return `${year}-${month}-${day}`;
 };
+
+export const formatDate=(date:Date)=>{
+  return  date
+  .toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' }) // Format to DD/MM/YYYY
+  .replace(/\//g, '/');
+}
