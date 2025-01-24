@@ -65,7 +65,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
       };
     }
     await apiRequest('post', endPoint, params);
-    if (!error) {
+    if (!error && message ==='resent') {
       FlashMessageComponent.show('success', `OTP ${message} successfully!`);
     } else {
       FlashMessageComponent.show(
@@ -98,7 +98,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
     const response: any = await apiRequest('post', endPoint, params);
 
     if (response.data.verified) {
-      FlashMessageComponent.show('success', LABLE.OTP_VERIFIED_SUCCESSFULLY);
+      // FlashMessageComponent.show('success', LABLE.OTP_VERIFIED_SUCCESSFULLY);
       dispatch(setPageProgress(3));
       dispatch(setIsEmailPhoneBothVerified(true));
       navigation.navigate('GenderScreen');
