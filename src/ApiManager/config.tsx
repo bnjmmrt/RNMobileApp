@@ -50,12 +50,15 @@ export const EndPoint = {
   forgetPassword: '/program-management/api/auth/forgot-password',
   resetPassword: '/program-management/api/auth/reset-password',
   socialLogin: '/program-management/api/auth/social-sign-up',
-  verify_code: 'v1/communication/verify-code',
   get_focuses: 'v1/platform/get-focuses',
   interests: 'v1/platform/interests',
   member_signUp: 'v1/auth/member-sign-up',
   file_upload:'v1/files/upload',
-  check_member_logiin:'v1/auth/check-member-login'
+  check_member_logiin:'v1/auth/check-member-login',
+  email_send_verification_code:'v1/auth/send-verification-code-by-email',
+  email_verify_code:'v1//auth/verify-code-by-email',
+  phone_send_verification_code:'v1/communication/send-verification-code',
+  phone_verify_code: 'v1/communication/verify-code',
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;
