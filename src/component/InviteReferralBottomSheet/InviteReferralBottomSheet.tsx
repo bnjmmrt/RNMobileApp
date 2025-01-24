@@ -21,6 +21,8 @@ import Button from '../Button';
 import IMAGES from '@images/index';
 import TabBar from '../ActiveTabBar/TabBar';
 import { fontFamily } from 'src/utils/functions';
+import { useFetchMembersQuery, useRequestMemberMutation } from 'src/redux/actions/referralApiAction';
+import { RenderMemberList } from './RenderMemberList';
 
 interface AppMember {
   name: string;
@@ -34,15 +36,48 @@ interface ContactItem {
 
 const PAGE_SIZE = 30;
 
-const appMembers: AppMember[] = [
-  { name: 'Leslie Alexander', phone: '2195550114' },
-  { name: 'David Taylor', phone: '5556106679' },
-  { name: 'Orson Plante', phone: '23244402' },
+const membersData = [
+  {
+    age: 31,
+    categories: ["Food", "Music", "Technology"],
+    phoneNumber: "5556106679",
+    city: "Los Angeles",
+    email: "wwvvo@uoi.com",
+    followerCount: "72816",
+    gender: 1,
+    id: "ilxmjswjgt",
+    instagramUsername: "ylttxhrjrjfi",
+    isFavourite: false,
+    name: "John Wick",
+    profilePicture: "https://example.com/aorodlsmgw.jpg",
+    role: "Admin",
+    status: 0,
+    types: ["Influencer", "Blogger"],
+  },
+  {
+    age: 43,
+    categories: ["Technology"],
+    phoneNumber: "+17690348141",
+    city: "Philadelphia",
+    email: "etobp@wzu.com",
+    followerCount: "96524",
+    gender: 1,
+    id: "hukknzeemj",
+    instagramUsername: "jfgphchevata",
+    isFavourite: false,
+    name: "Endeidx",
+    profilePicture: "https://example.com/kwgmpsvahl.jpg",
+    role: "Moderator",
+    status: 1,
+    types: ["Blogger", "Content Creator"],
+  },
+  // Add more mocked data here
 ];
 
 const InviteReferralBottomSheet = forwardRef((props, ref) => {
   const [contacts, setContacts] = useState<ContactItem[]>([]);
   const [members, setMembers] = useState<ContactItem[]>([]);
+  // const { data: membersData, isMembersLoading, isError } = useFetchMembersQuery();
   const [filteredContacts, setFilteredContacts] = useState<ContactItem[]>([]);
   const [filteredMembers, setFilteredMembers] = useState<ContactItem[]>([]);
   const [requestSent, setRequestSent] = useState<string[]>([]);
@@ -74,6 +109,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
     Platform.OS == 'ios' ? fetchContacts() : requestAndroidPermissions();
   }, []);
 
+
   const fetchContacts = async () => {
     try {
       const deviceContacts = await Contacts.getAll().catch((err) =>
@@ -83,24 +119,36 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       const formattedContacts = deviceContacts
         .map((contact: any) => ({
           name: `${contact.givenName} ${contact.familyName}`.trim(),
-          phone: contact.phoneNumbers[0]?.number.replace(/\D/g, '') || '',
+          phoneNumber: contact.phoneNumbers[0]?.number.replace(/\D/g, '') || '',
         }))
-        .filter((contact) => contact.phone);
+        .filter((contact) => contact.phoneNumber);
 
-        console.log("formattedContacts",formattedContacts.length)
-
-      const appMemberPhones = appMembers.map((member) => member.phone);
-      const membersList = formattedContacts.filter((contact) =>
-        appMemberPhones.includes(contact.phone)
-      );
-      const nonMembersList = formattedContacts.filter(
-        (contact) => !appMemberPhones.includes(contact.phone)
+      const memberPhoneNumbers = new Set(
+        membersData.map((member) =>
+          member.phoneNumber.replace(/\s|-/g, "")
+        )
       );
 
-      setContacts(nonMembersList);
-      setFilteredContacts(nonMembersList.slice(0, PAGE_SIZE));
-      setMembers(membersList);
-      setFilteredMembers(membersList);
+      const membersResult: string[] = [];
+      const nonMembersResult: string[] = [];
+
+      formattedContacts.forEach((contact) => {
+        if (memberPhoneNumbers.has(contact.phoneNumber)) {
+          const matchedMember = membersData.find(
+            (member) => member.phoneNumber.replace(/\s|-/g, "") === contact.phoneNumber
+          );
+          if (matchedMember) {
+            membersResult.push(matchedMember);
+          }
+        } else {
+          nonMembersResult.push(contact);
+        }
+      });
+
+      setContacts(nonMembersResult);
+      setFilteredContacts(nonMembersResult.slice(0, PAGE_SIZE));
+      setMembers(membersResult);
+      setFilteredMembers(membersResult);
     } catch (error) {
       console.error('Error fetching contacts:', error);
     }
@@ -110,15 +158,26 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
     if (debounceTimeoutRef.current) {
       clearTimeout(debounceTimeoutRef.current);
     }
-    debounceTimeoutRef.current = setTimeout(() => {
-      const lowercasedQuery = query?.toLowerCase();
 
+    debounceTimeoutRef.current = setTimeout(() => {
+      const lowercasedQuery = query.toLowerCase();
+
+      if (query.length === 0) {
+        setFilteredMembers(members.slice(0, PAGE_SIZE));
+        setFilteredContacts(contacts.slice(0, PAGE_SIZE));
+        return;
+      }
+
+      if (query.length < 2) {
+        setFilteredMembers([]);
+        setFilteredContacts([]);
+        return;
+      }
       setFilteredMembers(
         members.filter((member) =>
           member?.name?.toLowerCase().includes(lowercasedQuery)
         )
       );
-
       setFilteredContacts(
         contacts
           .filter((contact) =>
@@ -126,8 +185,9 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
           )
           .slice(0, PAGE_SIZE)
       );
-    }, 300); 
+    }, 500);
   };
+
 
   const handleLoadMore = () => {
     const nextPage = currentPage + 1;
@@ -156,11 +216,11 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
     const message =
       'Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: [Rumor App Link]';
 
-    const url = `sms:${contact.phone}?body=${encodeURIComponent(message)}`;
+    const url = `sms:${contact.phoneNumber}?body=${encodeURIComponent(message)}`;
 
     Linking.openURL(url)
       .then(() => {
-        setRequestSent((prev) => [...prev, contact.phone]);
+        setRequestSent((prev) => [...prev, contact.phoneNumber]);
         console.log(`Invitation sent to ${contact.name}.`);
       })
       .catch((error) => {
@@ -179,7 +239,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
         <AvatarInitials name={item.name} size={48} />
         <View>
           <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.phone}>{item.phone}</Text>
+          <Text style={styles.phone}>{item.phoneNumber}</Text>
         </View>
       </View>
       <ButtonSmall
@@ -209,14 +269,17 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       ref={ref}
       snapPoints={['90%']}
       footer={footerComponent()}
-      onClose={() => console.log('Bottom sheet closed')}
+      onClose={() => {setSelectedTab('01')
+        setSearchQuery('');
+        handleSearch('')}}
     >
-      <View style={{ paddingHorizontal: 20,flex:1 }}>
+      <View style={{ paddingHorizontal: 20, flex: 1 }}>
         <Title title={LABLE.SELECT_A_REFERRAL} align="center" />
 
-     
+
         <TabBar
-          onTabChange={(tab) => {setSelectedTab(tab)
+          onTabChange={(tab) => {
+            setSelectedTab(tab)
             setSearchQuery('');
             handleSearch('');
           }}
@@ -225,59 +288,54 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
           width='100%'
         />
 
-        {selectedTab === '02'  && (
+        {selectedTab === '02' && (
           <>
-        <Text style={styles.sectionSubtitle}>{LABLE.REQUEST_A_REFERRAL}</Text>
-             <Input
-          ref={searchInputRef}
-          placeholder={LABLE.SEARCH_FRIENDS}
-          leftImage={IMAGES.search}
-          onChangeText={(query) => {
-            setSearchQuery(query);
-            handleSearch(query);
-          }}
-          defaultValue={searchQuery}
-        />
+            <Text style={styles.sectionSubtitle}>{LABLE.REQUEST_A_REFERRAL}</Text>
+            <Input
+              ref={searchInputRef}
+              placeholder={LABLE.SEARCH_FRIENDS}
+              leftImage={IMAGES.search}
+              onChangeText={(query) => {
+                setSearchQuery(query);
+                handleSearch(query);
+              }}
+              defaultValue={searchQuery}
+            />
             <FlatList
               data={filteredMembers}
               scrollEnabled={false}
-              contentContainerStyle={{ gap: 4,marginTop:20 }}
-              keyExtractor={(item, index) => '' + item.phone + index}
+              contentContainerStyle={{ gap: 4, marginTop: 20 }}
+              keyExtractor={(item, index) => '' + item.phoneNumber + index}
               renderItem={({ item }) =>
-                renderListItem(
-                  item,
-                  'Request',
-                  () => handleInvite(item),
-                  requestSent.includes(item.phone)
-                )
+                <RenderMemberList item={item} />
               }
             />
           </>
         )}
 
         {selectedTab === '01' && (
-          <View style={{flex:1}}>
-                        <Text style={styles.sectionSubtitle}>{LABLE.INVITE_FRIENDS_TO}</Text>
-               <Input
-          ref={searchInputRef}
-          placeholder={LABLE.SEARCH_FRIENDS}
-          leftImage={IMAGES.search}
-          onChangeText={(query) => {
-            setSearchQuery(query);
-            handleSearch(query);
-          }}
-          defaultValue={searchQuery}
-        />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.sectionSubtitle}>{LABLE.INVITE_FRIENDS_TO}</Text>
+            <Input
+              ref={searchInputRef}
+              placeholder={LABLE.SEARCH_FRIENDS}
+              leftImage={IMAGES.search}
+              onChangeText={(query) => {
+                setSearchQuery(query);
+                handleSearch(query);
+              }}
+              defaultValue={searchQuery}
+            />
             <FlatList
               data={filteredContacts}
-              keyExtractor={(item, index) => '' + item.phone + index}
-              contentContainerStyle={{ gap: 4,flexGrow:1,paddingBottom:100,marginTop:16 }}
+              keyExtractor={(item, index) => '' + item.phoneNumber + index}
+              contentContainerStyle={{ gap: 4, flexGrow: 1, paddingBottom: 100, marginTop: 16 }}
               renderItem={({ item }) =>
                 renderListItem(
                   item,
                   'Invite',
                   () => handleInvite(item),
-                  requestSent.includes(item.phone)
+                  requestSent.includes(item.phoneNumber)
                 )
               }
               onEndReached={handleLoadMore}
@@ -310,7 +368,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 100,
   },
-  settingsButton:{marginTop:12,paddingHorizontal:12,paddingVertical:8,borderRadius:100},
+  settingsButton: { marginTop: 12, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 100 },
   btnStyle: {
     borderRadius: 100,
     marginTop: 20,

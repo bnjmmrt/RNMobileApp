@@ -3,16 +3,14 @@ import authReducer from './authSlice';
 
 import appFlowSlice from './appFlowSlice';
 import appFlowApiDataSlice from './appFlowApiDataSlice';
-import { baseApi } from '../../ApiManager/createBaseApi';
-import { referralSlice } from './referralSlice';
+import { createBaseApi } from '../../ApiManager/createBaseApi';
 
 // Combine all reducers into a single root reducer
 export const rootReducer = combineReducers({
   auth: authReducer,
-  [baseApi.reducerPath]: baseApi.reducer,
+  [createBaseApi.reducerPath]: createBaseApi.reducer,
   appFlow:appFlowSlice,
   appFlowApiData:appFlowApiDataSlice,
-  referralSlice
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

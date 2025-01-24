@@ -19,6 +19,7 @@ import Toast from '../../../component/Toast/Toast';
 import useApi from '../../../axios/useApi';
 import {EndPoint} from '../../../ApiManager/config';
 import AvatarInitials from '../../../component/AvatarInitials';
+import { environment } from '../../../../environments/environment';
 
 interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -30,10 +31,10 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   const profilePic = useSelector(
     (state: RootState) => state.appFlow.profilePic,
   );
-
   const styles = ProfilePhotoScreenStyles();
   const [image, setImage] = useState<string>(profilePic);
   const [isToastShown, setIsToastShown] = useState(false);
+  const userDetails = useSelector((state: any) => state.appFlow);
 
   const uploadFile = async () => {
     const mimeType = `images/${image.split('.').pop()}`;
@@ -53,11 +54,12 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
 
   const onNextClick = async () => {
     if (image) {
+      setIsToastShown(false);
       const response:any = await uploadFile();
 
       if (response.data) {
         setIsToastShown(false);
-         dispatch(setProfilePic(response.data.pathFileUrl));
+         dispatch(setProfilePic(environment.IMAGE_URL + response.data.fileKeyId));
         dispatch(setPageProgress(9));
         navigation.navigate('IdentityVerification');
       } else {
@@ -65,7 +67,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
       }
     }
     {
-      // setIsToastShown(true);
+      setIsToastShown(true);
     }
   };
 
@@ -105,7 +107,10 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
             />
           ) : (
             <View style={{alignSelf: 'center'}}>
-              <AvatarInitials name={'Bessie Cooper'} size={48} />
+              <AvatarInitials
+              name={userDetails?.firstName + ' ' + userDetails?.lastName}
+              size={48}
+            />
             </View>
           )}
 

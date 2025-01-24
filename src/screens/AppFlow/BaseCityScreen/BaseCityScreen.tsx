@@ -1,39 +1,39 @@
-import React, {useRef, useState} from 'react';
-import {TouchableOpacity, View} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, { useState } from 'react';
+import { TouchableOpacity, View } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   LABLE,
   BUTTON_LABLE,
   ERROR_MESSAGE,
-  COLORS,
 } from '../../../utils/constants';
 import BaseCityScreenStyles from './BaseCityScreenStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import IMAGES from '../../../assets/images';
 import Header from '../../../component/Header/Header';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../redux/slices';
-import {Address, setBaseCity, setPageProgress} from '../../../redux/slices/appFlowSlice';
-import BottomSheetComponent from '../../../component/BottomSheet/BottomSheet';
-import LocationPickerModal from '../../../component/BottomSheet/Modal';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/slices';
+import {
+  Address,
+  setBaseCity,
+  setPageProgress,
+} from '../../../redux/slices/appFlowSlice';
+import LocationPickerModal from '../../../component/BottomSheet/LocationPickerModal';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
 
-interface BaseCityScreenProps extends NativeStackScreenProps<any, any> {}
+interface BaseCityScreenProps extends NativeStackScreenProps<any, any> { }
 
-const BaseCityScreen: React.FC<BaseCityScreenProps> = ({navigation}) => {
+const BaseCityScreen: React.FC<BaseCityScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
   const baseCity = useSelector((state: RootState) => state.appFlow.baseCity);
   const [selectedCity, setSelectedCity] = useState<Address>(baseCity);
- 
+
   const styles = BaseCityScreenStyles();
   const [isShown, setIsShown] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const onNextClick = () => {
-
-    console.log("selectedCity",selectedCity)
     if (validateInputs()) {
       dispatch(setBaseCity(selectedCity));
       dispatch(setPageProgress(6));
@@ -42,7 +42,7 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({navigation}) => {
   };
   // Validate inputs
   const validateInputs = () => {
-    if (!selectedCity) {
+    if (!selectedCity.address) {
       setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_YOUR_BASE_CITY);
       return false;
     }
@@ -56,8 +56,8 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({navigation}) => {
   };
 
   const openLocationPicker = () => {
-    console.log("clicked")
-    setIsShown(true);
+    console.log('clicked');
+    setIsShown(!isShown);
   };
 
   return (
@@ -79,17 +79,11 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({navigation}) => {
           />
         </TouchableOpacity>
 
-        {isShown && (  <LocationPickerModal setLocation={setSelectedCity}  />
-          // <BottomSheetComponent
-          //   ref={bottomSheetRef}
-          //   snapPoints={['100%']} // Adjustable snap points
-          //   onClose={() => setIsShown(false)}
-          //   backColor={COLORS.white}
-          //   children={
-          //     <GooglePlacesInput/>
-          //   }
-          // />
-         
+        {isShown && (
+          <LocationPickerModal
+            setLocation={setSelectedCity}
+            setIsShown={setIsShown}
+          />
         )}
       </View>
 

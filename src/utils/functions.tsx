@@ -347,3 +347,7 @@ export const isIos = (): boolean => platform === 'ios';
 
 export const isAndroid = (): boolean => platform === 'android';
 
+export const convertDateFormat = (dateString: string): string => {
+  const [day, month, year] = dateString.split('/');
+  return `${year}-${month}-${day}`;
+};

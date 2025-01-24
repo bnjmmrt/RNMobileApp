@@ -16,7 +16,6 @@ import {
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
 import {RootState} from '../../../redux/slices';
-import {useSendOtp} from '../../../redux/hooks/useSendOtp';
 import useApi from '../../../axios/useApi';
 import {EndPoint} from '../../../ApiManager/config';
 
@@ -45,18 +44,29 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
   const route = useRoute<RouteProp<RouteParams>>();
   // const { sendOtp, isMemberExist } = useSendOtp(route.params.email, route.params.phone);
   //  const { verifyOtp,isLoading } = useVerifyOtp(isMemberExist, route.params.email, route.params.phone, route.params.isEmail);
+
   const sendToId = useSelector((state: RootState) =>
     isEmailVerified ? state.appFlow.phone : state.appFlow.email,
   );
   const [_isLoading, setIsLoading] = useState<boolean>(false);
 
-  const sendOtp = async () => {
-    const response = await apiRequest('post', EndPoint.check_member_logiin, {
-      email: route.params.email,
-      phoneNumber: route.params.phone,
-    });
+  const sendOtp = async (message: string) => {
+    let params;
+    let endPoint;
+    if (route.params.isEmail) {
+      endPoint = EndPoint.email_send_verification_code;
+      params = {
+        email: route.params.email,
+      };
+    } else {
+      endPoint = EndPoint.phone_send_verification_code;
+      params = {
+        phoneNumber: route.params.phone,
+      };
+    }
+    await apiRequest('post', endPoint, params);
     if (!error) {
-      FlashMessageComponent.show('success', 'OTP resent successfully!');
+      FlashMessageComponent.show('success', `OTP ${message} successfully!`);
     } else {
       FlashMessageComponent.show(
         'error',
@@ -66,55 +76,43 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
   };
 
   useEffect(() => {
-    sendOtp();
+    sendOtp('sent');
   }, [route.params]);
 
   const verifyCode = async () => {
     let params;
-
+    let endPoint;
     if (route.params.isEmail) {
+      endPoint = EndPoint.email_verify_code;
       params = {
         email: route.params.email,
         verificationCode: otpInputRef.current && otpInputRef.current.code,
       };
-    }else{
+    } else {
+      endPoint = EndPoint.phone_verify_code;
       params = {
         phoneNumber: route.params.phone,
         verificationCode: otpInputRef.current && otpInputRef.current.code,
       };
     }
+    const response: any = await apiRequest('post', endPoint, params);
 
-    console.log("paramssssss",params)
-    const response = await apiRequest('post', EndPoint.verify_code, params);
-    console.log("verify_code",response);
-
-    if (!error) {
-      FlashMessageComponent.show('success', 'OTP verified successfully!');
+    if (response.data.verified) {
+      FlashMessageComponent.show('success', LABLE.OTP_VERIFIED_SUCCESSFULLY);
       dispatch(setPageProgress(3));
       dispatch(setIsEmailPhoneBothVerified(true));
       navigation.navigate('GenderScreen');
     } else {
       FlashMessageComponent.show(
         'error',
-        'Something went wrong, please try again!',
+        LABLE.SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN,
       );
     }
   };
 
-  const onNextClick =async () => {
+  const onNextClick = async () => {
     otpInputRef.current && otpInputRef.current.handleNextPress();
-    // dispatch(setPageProgress(3));
-    // dispatch(setIsEmailPhoneBothVerified(true));
-    // navigation.navigate('GenderScreen');
-    await verifyCode()
-    // if (true) {
-    //   // on success
-    //   // dispatch(setPageProgress(3));
-    //   // dispatch(setIsEmailPhoneBothVerified(true));
-    //   // navigation.navigate('GenderScreen');
-    // } else {
-    //   // send error message
-    // }
+    await verifyCode();
   };
 
   const handleBackPress = () => navigation.goBack();
@@ -149,7 +147,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
   // };
 
   const resendVerificationCode = async () => {
-    sendOtp();
+    sendOtp('resent');
   };
 
   return (

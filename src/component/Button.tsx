@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, StyleProp, ViewStyle, TextStyle, ImageSourcePropType, Image, Platform, ImageStyle } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, StyleProp, ViewStyle, TextStyle, ImageSourcePropType, Image, Platform, ImageStyle, ActivityIndicator } from 'react-native';
 import { Hp, Wp } from '../utils/dimensions';
 import { fontFamily } from '../utils/functions';
 import { COLORS } from '../utils/constants';
@@ -16,6 +16,7 @@ interface ButtonProps {
   leftImageStyle?: StyleProp<ImageStyle>;
   disabled?: boolean;
   colorTheme?: string;
+  loading?: boolean
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -28,7 +29,8 @@ const Button: React.FC<ButtonProps> = ({
   colorTheme,
   rightImageSource,
   rightImageStyle,
-  disabled
+  disabled,
+  loading
 }) => {
 
   const colorbackground = colorTheme == 'dark' ? COLORS.black : COLORS.white;
@@ -39,9 +41,13 @@ const Button: React.FC<ButtonProps> = ({
       style={[styles.button, { backgroundColor: disabled ? COLORS.disable : colorbackground }, style]} // Merge default and custom styles
       onPress={onPress}
     >
-      {imageSource && <Image source={imageSource} style={[styles.image, leftImageStyle]} />}
-      <Text style={[styles.text, { color: textColor }, textStyle]}>{title}</Text>
-      {rightImageSource && <Image source={rightImageSource} style={[styles.image, rightImageStyle]} />}
+      {loading ? <ActivityIndicator /> :
+        <>
+          {imageSource && <Image source={imageSource} style={[styles.image, leftImageStyle]} />}
+          <Text style={[styles.text, { color: textColor }, textStyle]}>{title}</Text>
+          {rightImageSource && <Image source={rightImageSource} style={[styles.image, rightImageStyle]} />}
+        </>}
+
     </TouchableOpacity>
   );
 };

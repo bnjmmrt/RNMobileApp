@@ -1,4 +1,4 @@
-import { createBaseApi } from "../../ApiManager/createBaseApiWithoutFecthBaseQuery";
+import { createBaseApi } from "../../ApiManager/createBaseApi";
 
 export const loginApiAction = createBaseApi.injectEndpoints({
   endpoints: (builder) => ({
