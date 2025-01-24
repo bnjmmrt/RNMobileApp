@@ -82,7 +82,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   ];
 
   useEffect(() => {
-    const listItems = !loginData.isSignUpCompleted ? itemsExtras : items;
+    const listItems = loginData.isSignUpCompleted ? itemsExtras : items;
     setListItems(listItems);
   }, [loginData]);
 
