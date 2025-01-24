@@ -28,10 +28,9 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = ({ navigation }) => {
         <AfterAppStaticComponent
           title={LABLE.YOU_ARE_ON_WAITLIST}
           subTitle={LABLE.FULL_ACCESS_UNLOCK} />
-        :
+        : 
         <BeforeAppStaticComponent
-          title={LABLE.ACCESS_THE_MOST_VALUABLE_CALENDAR}
-          subTitle={LABLE.DISCOVER_EXPERIENCES_IN_ART} />
+         isChatScreen ={false} />
       }
 
     </SafeAreaView>

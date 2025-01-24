@@ -11,8 +11,8 @@ interface HeaderComponentProps {
 }
 
 const HeaderComponent: React.FC<HeaderComponentProps> = ({ rightImageStyle, isDarkTheme }) => {
-    const backgroundColor = isDarkTheme ? COLORS.black : COLORS.white;
-    const tintColor = isDarkTheme ? COLORS.white : COLORS.black;
+    const backgroundColor = isDarkTheme ? COLORS.black2 : COLORS.white;
+    const tintColor = isDarkTheme ? COLORS.white : COLORS.black2;
     const backgroundColorNotification = isDarkTheme ? COLORS.dark_gray : COLORS.tabBorderColor;
 
 

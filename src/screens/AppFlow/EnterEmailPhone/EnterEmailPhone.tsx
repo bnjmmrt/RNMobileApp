@@ -17,25 +17,24 @@ interface EnterEmailScreenProps extends NativeStackScreenProps<any, any> { }
 
 const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
-  const isEmailVerified = useSelector((state: RootState) => state.appFlow.isEmailVerified);
-    const loginData = useSelector((state: RootState) => state.auth.loginData);
-    console.log("sayyed logg:",loginData)
-
+  // const isEmailVerified = useSelector((state: RootState) => state.appFlow.isEmailVerified);
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const isEmailVerified = loginData?.varifyStatus === 2;
   const styles = EmailPhoneStyles();
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
 
 
   const onNextClick = () => {
-    if (loginData?.varifyStatus===1) {
-      if(phoneNumberInputRef.current.validatePhoneNumber()){
-      dispatch(setPhone(phoneNumberInputRef.current.phoneNumber));
-      navigation.navigate('VerifyEmail',{phone:phoneNumberInputRef.current.phoneNumber,isEmail:false});
+    if (loginData?.varifyStatus === 1) {
+      if (phoneNumberInputRef.current.validatePhoneNumber()) {
+        dispatch(setPhone(phoneNumberInputRef.current.phoneNumber));
+        navigation.navigate('VerifyEmail', { phone: phoneNumberInputRef.current.phoneNumber, isEmail: false });
       }
     } else {
-      if(emailInputRef.current.validateEmailAddress()){
-      dispatch(setEmail(emailInputRef.current.emailAddress));
-      navigation.navigate('VerifyEmail',{email:emailInputRef.current.emailAddress,isEmail:true});
+      if (emailInputRef.current.validateEmailAddress()) {
+        dispatch(setEmail(emailInputRef.current.emailAddress));
+        navigation.navigate('VerifyEmail', { email: emailInputRef.current.emailAddress, isEmail: true });
       }
     }
 
@@ -56,10 +55,10 @@ const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
 
       <View style={styles.contentContainer}>
         <Title
-          title={isEmailVerified ? LABLE.ENTER_YOUR_PHONE_NUMBER : LABLE.WHATS_YOUR_EMAIL_ADDRESS}
-          subTitle={isEmailVerified ? LABLE.ENTER_YOUR_PHONE_NUMBER : LABLE.WHATS_YOUR_EMAIL_SUBTITLE}
+          title={isEmailVerified ? LABLE.WHATS_YOUR_PHONE_NUMBER : LABLE.WHATS_YOUR_EMAIL_ADDRESS}
+          subTitle={isEmailVerified ? LABLE.WHATS_YOUR_PHONE_NUMBER_SUBTITLE : LABLE.WHATS_YOUR_EMAIL_SUBTITLE}
         />
-        {loginData?.varifyStatus===1 ?
+        {isEmailVerified ?
           <PhoneNumberInput ref={phoneNumberInputRef} />
           :
           <EmailInput ref={emailInputRef} />}
