@@ -17,7 +17,7 @@ import { EndPoint } from '../../../ApiManager/config';
 import MainNavigation from '../../../navigation';
 import { AppStack } from '../../../navigation/AppStack';
 import { convertDateFormat } from '../../../utils/functions';
-import { setLoginData } from 'src/redux/slices/authSlice';
+import { setAuthToken, setLoginData } from 'src/redux/slices/authSlice';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
@@ -52,9 +52,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
           placeId: userDetails.baseCity.placeId,
         },
         dateOfBirth: convertDateFormat(userDetails.birthday),
-        email: userDetails.email
-          ? userDetails.email
-          : loginData.email,
+        email: userDetails.email,
         firstName: userDetails.firstName,
         focusIds: userDetails.creativeFocus.map((item: any) => item.id),
         interestsIds: userDetails.interest.map((item: any) => item.id),
@@ -80,13 +78,9 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         const data = { ...loginData, isSignUpCompleted: true };
         dispatch(setLoginData(data))
         dispatch(setPageProgress(1));
+        dispatch(setAuthToken(response.data))
+        navigation.navigate('BottomTabBar');
 
-        navigation.navigate('AuthStack', {
-          screen: 'AppStack',
-          params: {
-            screen: 'BottomTabBar', // Nested screen
-          },
-        });
         // dispatch(resetAppFlowDetails());
         // persistStore(store).purge(); // This clears the persisted state
       } else {
@@ -182,6 +176,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         style={styles.btnStyle}
         title={BUTTON_LABLE.SUBMTI_APPLICATION}
         colorTheme="dark"
+        loading={loading}
         onPress={onNextClick}
       />
     </SafeAreaView>
