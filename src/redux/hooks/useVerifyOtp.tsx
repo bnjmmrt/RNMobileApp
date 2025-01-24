@@ -13,7 +13,7 @@ export const useVerifyOtp = (isMemberExist: boolean, email?: string, phone?: str
             const response = await memberLogin(requestParam).unwrap();
 
             if (response.status === 200) {
-                const data = { ...response.data, varifyStatus: isEmail ? 1 : 2 };
+                const data = { ...response.data, varifyStatus: isEmail ? 1 : 2, isInvited: email == 'sayyedshahbaz.ali@techalchemy.com'  };
                 onSuccess(data);
             }
         } catch (error) {

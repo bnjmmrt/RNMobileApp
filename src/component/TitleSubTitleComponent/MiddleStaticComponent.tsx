@@ -45,10 +45,9 @@ const styles = StyleSheet.create({
         color: COLORS.white,
         textAlign: 'center',
         marginBottom: 15
-
     },
     icon: {
-        marginRight: 10
+        marginRight: 5
     },
     subtitle: {
         color: COLORS.light_text,
@@ -61,7 +60,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         width: Wp(80),
         alignItems: 'center',
-        borderRadius: 10,
+        borderRadius: 20,
         padding: 10,
         borderWidth: 1,
         borderColor: COLORS.dark_gray
@@ -69,7 +68,8 @@ const styles = StyleSheet.create({
     listContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
-        marginVertical: 5
+        marginStart: 10,
+        marginBottom:10
     }
 });
 
