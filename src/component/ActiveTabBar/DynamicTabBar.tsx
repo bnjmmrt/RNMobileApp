@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         borderWidth: 1,
         borderColor: COLORS.tabBorderColor,
-        padding: 4,
+        padding: 2,
         alignSelf: 'center',
         width: '90%',
         marginVertical: 10,

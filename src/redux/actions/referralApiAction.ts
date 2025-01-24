@@ -1,6 +1,6 @@
-import { baseApi } from "src/ApiManager/createBaseApi";
+import { createBaseApi } from "src/ApiManager/createBaseApi";
 
-export const referralApiAction = baseApi.injectEndpoints({
+export const referralApiAction = createBaseApi.injectEndpoints({
   endpoints: (builder) => ({
     submitReferralCode: builder.mutation({
       query: (requestParam) => ({
