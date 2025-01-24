@@ -75,7 +75,7 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({navigation}) => {
         navigation.navigate('GenderScreen');
       } else {
         dispatch(setPageProgress(2));
-        navigation.navigate('EnterEmail');
+        navigation.navigate('EnterEmailPhone');
       }
     }
   };

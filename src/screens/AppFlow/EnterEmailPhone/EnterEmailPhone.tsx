@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
-import EmailPhoneStyles from './EnterEmailPhoneStyles';
+import EnterEmailPhoneStyles from './EnterEmailPhoneStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
@@ -13,14 +13,14 @@ import { RootState } from '../../../redux/slices';
 import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
 import EmailInput from '../../../component/EmailComponent/EmailInput';
 
-interface EnterEmailScreenProps extends NativeStackScreenProps<any, any> { }
+interface EnterEmailPhoneProps extends NativeStackScreenProps<any, any> { }
 
-const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
+const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
   const dispatch = useDispatch();
   // const isEmailVerified = useSelector((state: RootState) => state.appFlow.isEmailVerified);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const isEmailVerified = loginData?.varifyStatus;
-  const styles = EmailPhoneStyles();
+  const styles = EnterEmailPhoneStyles();
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
 
@@ -78,4 +78,4 @@ const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
   );
 };
 
-export default EnterEmailScreen;
+export default EnterEmailPhone;
