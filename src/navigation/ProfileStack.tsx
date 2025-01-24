@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
 import EditProfileScreen from '../screens/ProfileScreen/EditProfile/EditProfileScreen';
+import ConnectedAccountsScreen from '../screens/ProfileScreen/EditProfile/ConnectedAccountsScreen';
+import SelectInterestScreen from '../screens/AppFlow/SelectInterestScreen/SelectInterestScreen';
 
 
 // Define the param list for the stack navigator
 export type AppStackParamList = {
   EditProfileScreen: undefined;
   ProfileScreen: undefined;
-  // AppFlowStack: undefined;
+  ConnectedAccountsScreen: undefined;
+  SelectInterestScreen:undefined
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -31,7 +34,17 @@ export const ProfileStack: React.FC = () => {
         component={EditProfileScreen}
         options={{ headerShown: false}}
       />
+      <Stack.Screen
+        name="ConnectedAccountsScreen"
+        component={ConnectedAccountsScreen}
+        options={{ headerShown: false}}
+      />
 
+<Stack.Screen
+        name="SelectInterestScreen"
+        component={SelectInterestScreen}
+        options={{ headerShown: false}}
+      />
     </Stack.Navigator>
   );
 };

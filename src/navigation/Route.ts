@@ -1,4 +1,6 @@
 export const ROUTES = {
     ProfileScreen:'ProfileScreen',
-    EditProfileScreen:'EditProfileScreen'
+    EditProfileScreen:'EditProfileScreen',
+    ConnectedAccountsScreen:'ConnectedAccountsScreen',
+    SelectInterestScreen:'SelectInterestScreen'
 }

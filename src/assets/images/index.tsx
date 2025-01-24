@@ -43,6 +43,13 @@ const IMAGES = {
   noRecord:require('./noRecord.png'),
   location:require('./location.png'),
   // upDown:require('./upDown.png'),
+  profileFacebook:require('./profile_facebook.png'),
+  profileInsta:require('./profile_insta.png'),
+  profileYoutube:require('./profile_youtube.png'),
+  profileSnapchat:require('./profile_snapchat.png'),
+  profileTiktok:require('./profile_tiktok.png'),
+  profileX:require('./profile_x.png'),
+  profileLinkedIn:require('./profile_linkedIn.png'),
 }
 
 export default IMAGES;

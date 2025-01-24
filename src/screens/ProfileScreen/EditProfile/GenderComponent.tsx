@@ -23,16 +23,14 @@ const GenderComponent: React.FC<GenderComponentProps> = () => {
   const dispatch = useDispatch();
   const genderSheetRef = useRef<any>(null);
   const birthday = useSelector((state: RootState) => state.appFlow.birthday);
-  const [selectedDate, setSelectedDate] = useState<string>(birthday); // Initialize with birthday from Redux
+  const [gender, setGender] = useState<string>('Female'); // Initialize with birthday from Redux
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
- ;
-
   const openDatePicker = () => {
     genderSheetRef.current?.open(); // Open the date picker
   };
 
   const validateInputs = () => {
-    if (!selectedDate) {
+    if (!gender) {
       setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_YOUR_BIRTHDAY);
       return false;
     }
@@ -40,30 +38,36 @@ const GenderComponent: React.FC<GenderComponentProps> = () => {
     return true;
   };
 
-  const handlePress=()=>{}
+  const handlePress = () => {
+    genderSheetRef.current?.close();
+  };
 
   return (
     <>
       <CustomSelectableText
         placeholder={LABLE.GENDER}
-        leftImage={IMAGES.calender}
         rightImage={IMAGES.upDownArrow}
         errorMessage={errorMessage}
-        defaultValue={selectedDate}
+        defaultValue={gender}
         onPress={openDatePicker}
         style={styles.container}
       />
 
       <BottomSheetComponent
         ref={genderSheetRef}
-        snapPoints={[Platform.OS === 'android' ? '35%' : '30%']}
+        snapPoints={[Platform.OS === 'android' ? '40%' : '35%']}
         onClose={() => console.log(genderSheetRef)}>
-        <View style={styles.container}>
-        {genderList.map(item => {
-              return (<TouchableOpacity  key={item.id.toString()} style={styles.button} onPress={handlePress}>
+        <View style={styles.genderContainer}>
+          {genderList.map(item => {
+            return (
+              <TouchableOpacity
+                key={item.id.toString()}
+                style={styles.button}
+                onPress={handlePress}>
                 <Text style={styles.buttonText}>{item.gender}</Text>
-              </TouchableOpacity>);
-            })}
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </BottomSheetComponent>
     </>
@@ -73,24 +77,27 @@ const GenderComponent: React.FC<GenderComponentProps> = () => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 0,
-    height: 60,
+  },
+  genderContainer: {
+    paddingHorizontal: 12,
   },
   calenderImage: {marginRight: 6, width: 16, height: 16},
   iconContainer: {},
 
   button: {
-    borderWidth: 1, 
-    borderColor: COLORS.lighter_gray, 
-    borderRadius: 25, 
-    paddingVertical: 10, 
-    paddingHorizontal: 40,
+    borderWidth: 1,
+    borderColor: COLORS.lighter_gray,
+    borderRadius: 25,
+    // paddingVertical: 10,
+    // paddingHorizontal: 40,
     backgroundColor: COLORS.white,
-    
+    marginTop: 5,
   },
   buttonText: {
     fontSize: 16,
-    color: COLORS.black, 
+    color: COLORS.black,
     textAlign: 'center',
+    padding: 14,
   },
 });
 export default GenderComponent;

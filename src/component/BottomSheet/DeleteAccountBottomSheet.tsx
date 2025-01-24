@@ -1,7 +1,7 @@
 import React, {useRef, forwardRef} from 'react';
 import {View, StyleSheet, Text, Platform} from 'react-native';
 import BottomSheetComponent from './BottomSheet';
-import {BUTTON_LABLE, COLORS} from '../../utils/constants';
+import {BUTTON_LABLE, COLORS, PROFILE} from '../../utils/constants';
 import Button from '../Button';
 import {fontFamily} from '../../utils/functions';
 
@@ -29,7 +29,7 @@ const DeleteAccountBottomSheet = forwardRef(
         snapPoints={[Platform.OS == 'android' ? '65%' : '60%']}
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
-          <Text style={styles.title}>Delete Account</Text>
+          <Text style={styles.title}>{PROFILE.DELETE_ACCOUNT}</Text>
           <Text style={styles.description}>
             Deleting your account will immediately:
           </Text>
