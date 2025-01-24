@@ -56,7 +56,7 @@ export const EndPoint = {
   file_upload:'v1/files/upload',
   check_member_logiin:'v1/auth/check-member-login',
   email_send_verification_code:'v1/auth/send-verification-code-by-email',
-  email_verify_code:'v1//auth/verify-code-by-email',
+  email_verify_code:'v1/auth/verify-code-by-email',
   phone_send_verification_code:'v1/communication/send-verification-code',
   phone_verify_code: 'v1/communication/verify-code',
 } as const;
