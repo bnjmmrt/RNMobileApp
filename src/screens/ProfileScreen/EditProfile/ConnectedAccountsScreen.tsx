@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View, ViewStyle} from 'react-native';
+import {Platform, ScrollView, StyleSheet, Text, View, ViewStyle} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../redux/slices';
@@ -33,50 +33,103 @@ const items: any = [
   {id: '7', title: PROFILE.SNAPCHAT, image: IMAGES.profileSnapchat},
 ];
 
-interface ConfigData{
-    logo:string;
-    title:string;
-    subTitle:string;
-    connectButtonText:string;
-    connectBtnBackground:string;
-} 
+interface ConfigData {
+  logo: string;
+  title: string;
+  subTitle: string;
+  connectBtnBackground: string;
+  snapPoints?:any
+}
 
 const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const instaBottomSheetRef = useRef<any>(null);
   const socialMediaBottomSheetRef = useRef<any>(null);
   //   const birthday = useSelector((state: RootState) => state.appFlow.birthday);
   const [selectedItem, setSelectedItem] = useState<any>(); // Initialize with birthday from Redux
-  const [configData, setConfigData] = useState<ConfigData>({logo:'',
-    title:'',
-    subTitle:'',
-    connectButtonText:'',
-    connectBtnBackground:''});
+  const [configData, setConfigData] = useState<ConfigData>({
+    logo: '',
+    title: '',
+    subTitle: '',
+    connectBtnBackground: '',
+  });
   const handleBackPress = () => {
     dispatch(setPageProgress(3));
     navigation.goBack();
   };
 
+  const getSubTitle = (mediaType: string) => {
+    return `By clicking on the button below you’ll be redirected to ${mediaType} – log in with your details to authorize this connection`;
+  };
   const getSelectedItem = (item: any) => {
     setSelectedItem(item);
     console.log('itemseleted', item);
-    switch(item.title){
-       case PROFILE.INSTAGRAM :socialMediaBottomSheetRef.current.open();
-         setConfigData({
-            logo:IMAGES.profileInsta,
-            title:PROFILE.INSTAGRAM,
-            subTitle:'',
-            connectButtonText:PROFILE.CONNECT_INSTAGRAM,
-            connectBtnBackground:COLORS.pink
-         })
-    //    break;
-    //    case PROFILE.TIKTOK :socialMediaBottomSheetRef?.current?.open();
-    //    break;
-    //    case PROFILE.INSTAGRAM :instaBottomSheetRef.current.open();
-    //    break;
+    switch (item.title) {
+      case PROFILE.INSTAGRAM:
+        socialMediaBottomSheetRef.current.open();
+        setConfigData({
+          logo: IMAGES.instagramLogo,
+          title: PROFILE.CONNECT_INSTAGRAM,
+          subTitle: 'Please enter your Instagram Handle below',
+          connectBtnBackground: COLORS.pink,
+          snapPoints:[Platform.OS === 'android' ? '85%' : '80%']
+        });
+        break;
+      case PROFILE.TIKTOK:
+        socialMediaBottomSheetRef?.current?.open();
+        setConfigData({
+          logo: IMAGES.tiktok,
+          title: PROFILE.CONNECT_TIKTOK,
+          subTitle: getSubTitle(PROFILE.TIKTOK),
+          connectBtnBackground: COLORS.black,
+        });
+        break;
+      case PROFILE.FACEBOOK:
+        socialMediaBottomSheetRef?.current?.open();
+        setConfigData({
+          logo: IMAGES.facebook,
+          title: PROFILE.CONNECT_FACEBOOK,
+          subTitle: getSubTitle(PROFILE.FACEBOOK),
+          connectBtnBackground: COLORS.blue,
+        });
+        break;
+      case PROFILE.LINKEDIN:
+        socialMediaBottomSheetRef?.current?.open();
+        setConfigData({
+          logo: IMAGES.linkedIn,
+          title: PROFILE.CONNECT_LINKEDIN,
+          subTitle: getSubTitle(PROFILE.LINKEDIN),
+          connectBtnBackground: COLORS.darkBlue,
+        });
+        break;
+      case PROFILE.X:
+        socialMediaBottomSheetRef?.current?.open();
+        setConfigData({
+          logo: IMAGES.x,
+          title: PROFILE.CONNECT_X,
+          subTitle: getSubTitle(PROFILE.X),
+          connectBtnBackground: COLORS.black,
+        });
+        break;
+      case PROFILE.YOUTUBE:
+        socialMediaBottomSheetRef?.current?.open();
+        setConfigData({
+          logo: IMAGES.youtube,
+          title: PROFILE.CONNECT_YOUTUBE,
+          subTitle: getSubTitle(PROFILE.YOUTUBE),
+          connectBtnBackground: COLORS.red,
+        });
+        break;
+      case PROFILE.SNAPCHAT:
+        socialMediaBottomSheetRef?.current?.open();
+        setConfigData({
+          logo: IMAGES.snapchat,
+          title: PROFILE.CONNECT_SNAPCHAT,
+          subTitle: getSubTitle(PROFILE.SNAPCHAT),
+          connectBtnBackground: COLORS.yellow,
+        });
+        break;
     }
-    
   };
 
   const onConfirm = () => {};
@@ -106,10 +159,11 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
           </View>
           <SocialMediaBottomSheet
             ref={socialMediaBottomSheetRef}
+            logo={configData.logo}
             title={configData.title}
-            submitButtonText={configData.connectButtonText}
-            
-            buttonStyle={{backgroundColor: COLORS.black}}
+            subTitle={configData.subTitle}
+            snapPoints={configData.snapPoints}
+            connectBtnBackground={configData.connectBtnBackground}
             onPress={() => {}}
           />
         </View>

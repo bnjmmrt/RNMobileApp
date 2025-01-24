@@ -8,20 +8,28 @@ import {RootState} from '../../../redux/slices';
 import Toast from '../../../component/Toast/Toast';
 import {Wp} from '../../../utils/dimensions';
 
-interface CreativeFocusComponentProps {}
+interface CreativeFocusComponentProps {
+  list?:any[]
+}
 
-const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = () => {
+const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list}) => {
   const dispatch = useDispatch();
+  if(list){
+    
+  }
+
   const selectedCreativeFocus = useSelector(
     (state: RootState) => state.appFlow.creativeFocus,
   );
   const creativeFocus = useSelector(
     (state: RootState) => state.appFlowApiData.creativeFocus,
   );
-
+console.log(list)
   const [selectedCategories, setSelectedCategories] = useState<any[]>(
-    selectedCreativeFocus,
+   list ? [] : selectedCreativeFocus,
   );
+
+  const [itemList,setItemLiist]=useState(list ? list : creativeFocus)
 
   const [isToastShown, setIsToastShown] = useState(false);
 
@@ -47,7 +55,7 @@ const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = () => {
   return (
     <>
       <View style={styles.categoryContainer}>
-        {creativeFocus?.map(item => (
+        {itemList?.map(item => (
           <TouchableOpacity
             key={item.id}
             style={[
@@ -95,7 +103,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 15,
-    margin: 5,
+    margin: 2,
     backgroundColor: COLORS.lighter_gray,
   },
   selectedCategoryButton: {

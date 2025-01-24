@@ -50,6 +50,12 @@ const IMAGES = {
   profileTiktok:require('./profile_tiktok.png'),
   profileX:require('./profile_x.png'),
   profileLinkedIn:require('./profile_linkedIn.png'),
+  facebook:require('./facebook.png'),
+  youtube:require('./youtube.png'),
+  snapchat:require('./snapchat.png'),
+  tiktok:require('./tiktok.png'),
+  x:require('./x.png'),
+  linkedIn:require('./linkedin.png'),
 }
 
 export default IMAGES;

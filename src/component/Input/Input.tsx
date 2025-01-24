@@ -1,5 +1,5 @@
 import React, {useState, forwardRef, useImperativeHandle} from 'react';
-import {View, Text, StyleSheet, TextInput, Image, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TextInput, Image, TouchableOpacity, ViewStyle} from 'react-native';
 import {COLORS} from '../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
 
@@ -12,6 +12,7 @@ interface InputProps {
   onPressImage?:()=>void;
   defaultValue?: string; 
   onChangeText?: (text: string) => void;
+  otherStyle?:ViewStyle
 }
 
 const Input = forwardRef((props: InputProps, ref) => {
@@ -23,7 +24,8 @@ const Input = forwardRef((props: InputProps, ref) => {
     rightImage,
     onPressImage,
     defaultValue='',
-    onChangeText
+    onChangeText,
+    otherStyle
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -57,7 +59,7 @@ const Input = forwardRef((props: InputProps, ref) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,otherStyle]}>
       {/* Dynamic Label */}
       {label && <Text style={[styles.label]}>{label}</Text>}
 
@@ -70,7 +72,7 @@ const Input = forwardRef((props: InputProps, ref) => {
         {leftImage && <Image source={leftImage} style={styles.leftImage} />}
         <TextInput
           {...props}
-          style={styles.input}
+          style={[styles.input,]}
           value={inputText}
           placeholder={placeholder}
           // placeholderTextColor={COLORS.placeholderGray}
