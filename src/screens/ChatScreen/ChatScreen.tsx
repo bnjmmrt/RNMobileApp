@@ -15,7 +15,6 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
 
 
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const [isInvited, setInvited] = useState<boolean>(loginData?.isInvited || false)
 
   return (
     <SafeAreaView style={styles.container}>
@@ -25,7 +24,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
           subTitle={LABLE.FULL_ACCESS_UNLOCK} />
         :
         <BeforeAppStaticComponent
-          isChatScreen={true} showLogout={false}/>
+          isChatScreen={true}/>
       }
     </SafeAreaView>
   );

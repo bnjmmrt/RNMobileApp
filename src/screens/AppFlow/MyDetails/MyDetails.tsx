@@ -31,7 +31,9 @@ import {EndPoint} from '../../../ApiManager/config';
 interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({navigation}) => {
-  //  const {data: focuses,} = useGetFocusesQuery('');
+    const loginData = useSelector((state: RootState) => state.auth.loginData);
+    console.log("Login Data:",loginData)
+    //  const {data: focuses,} = useGetFocusesQuery('');
   //  const {data: interests,} = useGetInterestsQuery('');
 
   const {apiRequest, loading, error} = useApi();
@@ -79,7 +81,11 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({navigation}) => {
   };
 
   const handleBackPress = () => {
-    navigation.navigate('AppStack');
+    if(loginData?.isInvited){
+      navigation.navigate('BottomTabBar');
+    }else{
+      navigation.navigate('BeforeAppStaticScreen');
+    }
   };
 
   return (

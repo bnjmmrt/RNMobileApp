@@ -16,7 +16,7 @@ const MainNavigation: React.FC = () => {
   const [isInvited, setInvited] = useState<number>(loginData?.isInvited);
 
 
-  return isVerified == 0 ? <OnboardingStack /> : isInvited ? <OnboardingStack /> : <OnboardingStack />;
+  return isVerified == 0 ? <AuthStack /> : isInvited ? <OnboardingStack /> : <AppStack />;
 };
 
 export default MainNavigation;

@@ -1,32 +1,34 @@
-import React, {useRef} from 'react';
-import {ScrollView, Text, View, Linking, Platform} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {LABLE, BUTTON_LABLE} from '../../../utils/constants';
+import React, { useRef } from 'react';
+import { ScrollView, Text, View, Linking, Platform } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
 import IdentityVerificationStyles from './IdentityVerificationStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
-import {useDispatch, useSelector} from 'react-redux';
-import {setPageProgress} from '../../../redux/slices/appFlowSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPageProgress } from '../../../redux/slices/appFlowSlice';
 import Input from '../../../component/Input/Input';
 import IMAGES from '../../../assets/images';
-import {useMemberSignUp} from '../../../redux/hooks/useMemberSignUp';
+import { useMemberSignUp } from '../../../redux/hooks/useMemberSignUp';
 import useApi from '../../../axios/useApi';
-import {EndPoint} from '../../../ApiManager/config';
+import { EndPoint } from '../../../ApiManager/config';
 import MainNavigation from '../../../navigation';
 import { AppStack } from '../../../navigation/AppStack';
 import { convertDateFormat } from '../../../utils/functions';
+import { setLoginData } from 'src/redux/slices/authSlice';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
-interface IdentityVerificationProps extends NativeStackScreenProps<any, any> {}
+interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
 
 const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   navigation,
 }) => {
-  const {signUp} = useMemberSignUp();
-  const {apiRequest, loading, error} = useApi();
+  const { signUp } = useMemberSignUp();
+  const { apiRequest, loading, error } = useApi();
   const userDetails = useSelector((state: any) => state.appFlow);
- const loginData = useSelector((state: any) => state.auth.loginData);
+  const loginData = useSelector((state: any) => state.auth.loginData);
   // console.log('persist data', userDetails);
   const styles = IdentityVerificationStyles();
   const dispatch = useDispatch();
@@ -39,7 +41,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     subject,
   )}&body=${encodeURIComponent(body)}`;
 
-  
+
   const onNextClick = async () => {
     usernameRef.current && usernameRef.current.validateInputs();
 
@@ -74,16 +76,22 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         requestParams,
       );
 
-      if (response.data) {
+      if (response.status === 200) {
+        const data = { ...loginData, isSignUpCompleted: true };
+        dispatch(setLoginData(data))
         dispatch(setPageProgress(1));
-         navigation.navigate('AuthStack', {
-        screen: 'AppStack',
-        params: {
-          screen: 'BeforeAppStaticScreen', // Nested screen
-        },
-      });
+
+        navigation.navigate('AuthStack', {
+          screen: 'AppStack',
+          params: {
+            screen: 'BottomTabBar', // Nested screen
+          },
+        });
         // dispatch(resetAppFlowDetails());
         // persistStore(store).purge(); // This clears the persisted state
+      } else {
+        FlashMessageComponent.show('error', 'Something went wrong, please try again!');
+        // console.error('Error verifying OTP:', error);
       }
     }
   };
@@ -109,7 +117,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       />
 
       <ScrollView
-        contentContainerStyle={{paddingBottom: 50}}
+        contentContainerStyle={{ paddingBottom: 50 }}
         style={styles.contentContainer}>
         <Title
           title={LABLE.IDENTITY_VERIFICATION_TITLE}
@@ -148,7 +156,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
             onPress={goToInstagram}
           />
           <View style={styles.divider} />
-          <Text style={[styles.title, {marginVertical: 20}]}>
+          <Text style={[styles.title, { marginVertical: 20 }]}>
             {LABLE.DONT_USE_INSTAGRAM}
           </Text>
           <Text style={styles.subTitle}>{LABLE.EMAIL_THE_CODE}</Text>

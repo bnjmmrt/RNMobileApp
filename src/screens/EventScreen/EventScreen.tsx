@@ -30,13 +30,13 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const [searchText, setSearchText] = useState('');
   // const changeTextDebouncer = useCallback(debounce(handleSearchTextChange, 500), []);
 
-    const tabsData: TabItem[] = [
-      { id: '1', label: BUTTON_LABLE.UPCOMING , title:'No Events Here', subTitle:'No upcoming events.' },
-      { id: '2', label: BUTTON_LABLE.INVITED,  title:'No Events Here', subTitle:'No invitations yet.' },
-      { id: '3', label: BUTTON_LABLE.APPLIED,  title:'No Events Here', subTitle:'You haven’t applied to any events yet.' },
-      { id: '4', label: BUTTON_LABLE.PAST,  title:'No Events Here', subTitle:'No past events.' },
-    ];
-    const [currentTab, setCurrentTab] = useState<TabItem>(tabsData[1]);
+  const tabsData: TabItem[] = [
+    { id: '1', label: BUTTON_LABLE.UPCOMING, title: 'No Events Here', subTitle: 'No upcoming events.' },
+    { id: '2', label: BUTTON_LABLE.INVITED, title: 'No Events Here', subTitle: 'No invitations yet.' },
+    { id: '3', label: BUTTON_LABLE.APPLIED, title: 'No Events Here', subTitle: 'You haven’t applied to any events yet.' },
+    { id: '4', label: BUTTON_LABLE.PAST, title: 'No Events Here', subTitle: 'No past events.' },
+  ];
+  const [currentTab, setCurrentTab] = useState<TabItem>(tabsData[1]);
 
 
   const handleSearchTextChange = (text: string) => {
@@ -63,22 +63,13 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView
-      style={[
-        styles.container,
-        { backgroundColor: loginData?.isInvited ? COLORS.black : COLORS.white },
-      ]}
-    >
-      {loginData?.isInvited ? (
-        <BeforeAppStaticComponent isChatScreen={false} showLogout={false} />
-      ) : (
-        <View>
-          <HeaderComponent isDarkTheme={false} />
-          <SearchInput ref={searchInputRef} onSearchTextChange={handleSearchTextChange} />
-          <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
-          <View style={styles.contentContainer}>{renderTabContent()}</View>
-        </View>
-      )}
+    <SafeAreaView style={{...styles.container, backgroundColor: COLORS.white }}>
+      <View>
+        <HeaderComponent isDarkTheme={false} />
+        <SearchInput ref={searchInputRef} onSearchTextChange={handleSearchTextChange} />
+        <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
+        <View style={styles.contentContainer}>{renderTabContent()}</View>
+      </View>
     </SafeAreaView>
   );
 };
