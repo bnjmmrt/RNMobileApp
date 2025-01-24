@@ -62,7 +62,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     {id: '2', title: PROFILE.NOTIFICATION, image: IMAGES.notification},
     {id: '3', title: PROFILE.FEEDBACK, image: IMAGES.feedback},
     {id: '4', title: PROFILE.CONTACT_SUPPORT, image: IMAGES.contact},
-    {id: '5', title: PROFILE.DELETE_ACCOUNT, image: '',onPrress:deleteAccount},
+    {id: '5', title: PROFILE.DELETE_ACCOUNT, image: ''},
   ];
 
   const itemsExtras: ListItem[] = [

@@ -131,6 +131,23 @@ export const PROFILE ={
   REFERRALS:'Referrals',
   CONNECTED_ACCOUNTS:'Connected Accounts',
   MY_INTERESTS:'My Interests',
+  CONNECTED_ACCOUNTS_SUB_TITLE:'Connect your social profiles to help hosts learn more about you and unlock more opportunities.',
+  INSTAGRAM:'Instagram',
+  FACEBOOK:'Facebook',
+  TIKTOK:'Tiktok',
+  LINKEDIN:'LinkedIn',
+  YOUTUBE:'Youtube',
+  X:'X',
+  SNAPCHAT:'Snapchat',
+  CONNECT_INSTAGRAM:'Connect Instagram',
+  CONNECT_TIKTOK:'Connect Tiktok',
+  CONNECT_FACEBOOK:'Connect Facebook',
+  CONNECT_LINKEDIN:'Connect LinkedIn',
+  CONNECT_X:'Connect X',
+  CONNECT_YOUTUBE:'Connect YouTube',
+  CONNECT_SNAPCHAT:'Connect Snapchat',
+  MY_INTERESTS_DESC:"Choosing interests helps Rumor curate and recommend experiences that you'll love."
+  
 }
 
 export const ERROR_MESSAGE = {
@@ -161,6 +178,7 @@ export const COLORS = {
   transperantBackground: 'rgba(0, 0, 0, 0.5)',
   placeHodler: '#A2A1A1',
   surfaceSecondary: '#CDBAB1',
-  nearBlack:'#676767'
+  nearBlack:'#676767',
+ pink:'#D93175'
 }
 

@@ -18,7 +18,6 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick,profileP
     const handlEventPress = () => {
 
     };
-console.log("profilePic",profilePic)
     return (
         <View style={styles.container}>
 

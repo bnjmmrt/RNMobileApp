@@ -31,7 +31,8 @@ const Button: React.FC<ButtonProps> = ({
   rightImageSource,
   rightImageStyle,
   disabled,
-  loading,clearButtonStyle
+  loading,
+  clearButtonStyle
 }) => {
 
   const colorbackground = colorTheme == 'dark' ? COLORS.black : COLORS.white;
@@ -39,7 +40,7 @@ const Button: React.FC<ButtonProps> = ({
   return (
     <TouchableOpacity
       disabled={disabled}
-      style={[styles.button, { backgroundColor: disabled ? COLORS.disable : colorbackground }, style,clearButtonStyle]} // Merge default and custom styles
+      style={[styles.button, { backgroundColor: disabled ? COLORS.disable : colorbackground }, style,clearButtonStyle]} 
       onPress={onPress}
     >
       {loading ? <ActivityIndicator /> :

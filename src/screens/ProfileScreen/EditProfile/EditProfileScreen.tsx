@@ -85,7 +85,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   };
 
   const handleBackPress = () => {
-    navigation.navigate('AppStack');
+    navigation.goBack();
   };
 
   return (
@@ -110,10 +110,10 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
             errorMessage={ERROR_MESSAGE.LAST_NAME}
             defaultValue={userDetails.lastName}
           />
-          <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
+          <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
           <PhoneNumberInput ref={phoneNumberInputRef} />
 
-          <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
+          <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
           <EmailInput ref={emailInputRef} />
 
           <Text style={[styles.label]}>{LABLE.GENDER}</Text>

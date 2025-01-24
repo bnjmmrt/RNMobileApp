@@ -15,9 +15,16 @@ import Toast from '../../../component/Toast/Toast';
 interface SelectInterestScreenProps extends NativeStackScreenProps<any, any> {}
 
 const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
-  navigation,
+  navigation,route
+  
 }) => {
   const dispatch = useDispatch();
+  const [configData, setConfigData] = useState(route.params ? route.params : {
+    headerTitle: null,
+    btnTitle: null,
+    subTitle: null,
+    fromProfile:false
+  });
   const interest = useSelector(
     (state: RootState) => state.appFlowApiData.interests,
   );
@@ -46,30 +53,40 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
   };
 
   const onNextClick = () => {
-    if (selectedCategories.length > 0) {
-      setIsToastShown(false);
-      console.log('Selected Categories:', selectedCategories);
-      dispatch(setInterest(selectedCategories));
-      dispatch(setPageProgress(8));
-      navigation.navigate('ProfilePhotoScreen');
-    } else {
-      setIsToastShown(true);
+    if(!configData.fromProfile){
+      if (selectedCategories.length > 0) {
+        setIsToastShown(false);
+        console.log('Selected Categories:', selectedCategories);
+        dispatch(setInterest(selectedCategories));
+        dispatch(setPageProgress(8));
+        navigation.navigate('ProfilePhotoScreen');
+      } else {
+        setIsToastShown(true);
+      }
+    }else{
+      //handle edit profile flow
     }
+   
   };
 
   const handleBackPress = () => {
+  
+   if(!configData.fromProfile){
     dispatch(setPageProgress(6));
     navigation.navigate('CreativeFocusScreen');
+   }else {
+    navigation.goBack()
+   }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header headerTitle={LABLE.INTERESTS} onPress={handleBackPress} />
+      <Header headerTitle={configData.headerTitle ? configData.headerTitle :LABLE.INTERESTS} onPress={handleBackPress} showProgressBar={!configData.fromProfile} />
 
       <View style={styles.contentContainer}>
         <Title
-          title={LABLE.CHOOSE_YOUR_INTERESTS}
-          subTitle={LABLE.CHOOSE_YOUR_INTERESTS_SUBTITLE}
+          title={!configData.fromProfile ? LABLE.CHOOSE_YOUR_INTERESTS:''}
+          subTitle={configData.subTitle ? configData.subTitle : LABLE.CHOOSE_YOUR_INTERESTS_SUBTITLE}
         />
 
        <View style={styles.categoryContainer}>
@@ -104,7 +121,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
       <Button
         disabled={false}
         style={styles.btnStyle}
-        title={BUTTON_LABLE.NEXT}
+        title={configData.btnTitle ? configData.btnTitle: BUTTON_LABLE.NEXT}
         colorTheme="dark"
         onPress={onNextClick}
       />
