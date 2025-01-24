@@ -19,7 +19,7 @@ const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
   // const isEmailVerified = useSelector((state: RootState) => state.appFlow.isEmailVerified);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const isEmailVerified = loginData?.varifyStatus === 2;
+  const isEmailVerified = loginData?.varifyStatus;
   const styles = EmailPhoneStyles();
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
@@ -28,8 +28,11 @@ const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
   const onNextClick = () => {
     if (loginData?.varifyStatus === 1) {
       if (phoneNumberInputRef.current.validatePhoneNumber()) {
-        dispatch(setPhone(phoneNumberInputRef.current.phoneNumber));
-        navigation.navigate('VerifyEmail', { phone: phoneNumberInputRef.current.phoneNumber, isEmail: false });
+        dispatch(setPhone(phoneNumberInputRef.current.callingCode + phoneNumberInputRef.current.phoneNumber));
+        navigation.navigate('VerifyEmail', { 
+          phone: phoneNumberInputRef.current.callingCode + phoneNumberInputRef.current.phoneNumber,
+          isEmail: false
+        });
       }
     } else {
       if (emailInputRef.current.validateEmailAddress()) {
@@ -49,16 +52,16 @@ const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Header
-        headerTitle={isEmailVerified ? LABLE.PHONE : LABLE.EMAIL}
+        headerTitle={isEmailVerified === 1 ? LABLE.PHONE : LABLE.EMAIL}
         onPress={handleBackPress}
       />
 
       <View style={styles.contentContainer}>
         <Title
-          title={isEmailVerified ? LABLE.WHATS_YOUR_PHONE_NUMBER : LABLE.WHATS_YOUR_EMAIL_ADDRESS}
-          subTitle={isEmailVerified ? LABLE.WHATS_YOUR_PHONE_NUMBER_SUBTITLE : LABLE.WHATS_YOUR_EMAIL_SUBTITLE}
+          title={isEmailVerified === 1 ? LABLE.WHATS_YOUR_PHONE_NUMBER : LABLE.WHATS_YOUR_EMAIL_ADDRESS}
+          subTitle={isEmailVerified === 1 ? LABLE.WHATS_YOUR_PHONE_NUMBER_SUBTITLE : LABLE.WHATS_YOUR_EMAIL_SUBTITLE}
         />
-        {isEmailVerified ?
+        {isEmailVerified === 1 ?
           <PhoneNumberInput ref={phoneNumberInputRef} />
           :
           <EmailInput ref={emailInputRef} />}
