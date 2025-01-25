@@ -9,6 +9,8 @@ const IMAGES = {
   calender: require('./calender.png'),
   downArrow: require('./chevron-down.png'),
   search: require('./search-md.png'),
+  clear: require('./clear.png'),
+  sort: require('./sort.png'),
   introVideo: require('./intro_video.mp4'),
   pencil: require('./pencil-01.png'),
   rumorLogo: require('./Wordmark.png'),

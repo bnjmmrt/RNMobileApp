@@ -1,10 +1,12 @@
 
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { Image } from 'react-native-animatable';
+import { format } from 'date-fns';
 import { COLORS } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
 import { Wp, Hp } from '../../utils/dimensions';
+import IMAGES from '../../assets/images';
 
 interface FeedItemProps {
     item: {
@@ -28,11 +30,20 @@ const FeedItem: React.FC<FeedItemProps> = ({ item, isFeatured }) => {
     return (
         <View style={styles.container} onTouchEnd={() => console.log("~~~~~touched~~~~")}>
             <View style={[styles.imageContainer]}>
-                <Image source={item.image} style={styles.icon} />
+                <Image source={item.image !== "" ? { uri: item.image } : IMAGES.eventCoverPlaceholders1} style={styles.icon} />
             </View>
             <View style={styles.contentContainer}>
-                <Text style={styles.titleStyle}>{item.title}</Text>
-                <Text style={styles.subtitle}>{item.date.split("–")[0]}</Text>
+                <Text numberOfLines={1} style={styles.titleStyle}>{item.title}</Text>
+                <Text numberOfLines={1} style={styles.subtitle}>
+                    {
+                        item.date === 'Invalid Date' 
+                            ? item.date 
+                            : format(
+                                new Date(`${item.date.slice(6, 10)}-${item.date.slice(0, 2)}-${item.date.slice(3, 5)}`), 
+                                'MMM d, p'
+                            )
+                    }
+                </Text>
             </View>
         </View>
     );
@@ -63,7 +74,7 @@ const styles = StyleSheet.create({
     },
     titleStyle: {
         fontSize: 18,
-        fontFamily: fontFamily.RomieTrial_Bold,
+        fontFamily: fontFamily.ABCDiatype_Medium,
         color: COLORS.black,
     },
     subtitle: {

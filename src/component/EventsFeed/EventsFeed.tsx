@@ -1,27 +1,23 @@
-import React, {useState} from 'react';
-import {View, FlatList, ScrollView} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {BUTTON_LABLE, COLORS, LABLE} from '../../utils/constants';
-import IMAGES from '../../assets/images/index';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  ScrollView,
+} from 'react-native';
+import {COLORS, LABLE} from '../../utils/constants';
 import {SafeAreaView} from 'react-native';
 import HeaderComponent from '../../component/HeaderComponent';
-import SearchInput from '../../component/SearchInput';
-import DynamicTabBar from '../../component/ActiveTabBar/DynamicTabBar';
 import EventItem from '../../screens/EventScreen/EventItem';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 import FeaturedEvents from './FeaturedEvents';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/slices';
-import {Platform, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {Wp, Hp} from '../../utils/dimensions';
 import {fontFamily} from '../../utils/functions';
 import FeedItem from './FeedItem';
 import NoResults from './NoResults';
-// Define the type for navigation props
-interface TabItem {
-  id: string;
-  label: string;
-}
+import {apiGet} from '../../ApiManager/MainApi';
+import FeedSearchInput from '../FeedSearchInput';
 
 interface EventItem {
   id: string;
@@ -31,64 +27,74 @@ interface EventItem {
   location: string;
   image: string;
 }
+
 const EventsFeed = () => {
   const styles = EventsFeedStyle();
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const [isInvited, setInvited] = useState<boolean>(
-    loginData?.isInvited || false,
-  );
-  const [searchTerm, setSearchTerm] = useState('');
+
+  const [allFilterEvents, setAllFilterEvents] = useState<EventItem[]>([]);
+  const [filterEvents, setFilterEvents] = useState<EventItem[]>([]);
+  const [featuredEvents, setFeaturedEvents] = useState<EventItem[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchEnter, setSearchEnter] = useState<boolean>(true);
+  const isInvited = loginData?.isInvited || false;
 
   const handleSearchChange = (text: string) => {
     setSearchTerm(text);
   };
 
-  const events: EventItem[] = [
-    {
-      id: '1',
-      title: 'Art Event',
-      date: 'Fri, Apr 13, 9:00PM – 11:00PM EST',
-      type: 'RSVP to See Location',
-      location: 'Los Angeles, California',
-      image: IMAGES.eventCoverPlaceholders,
-    },
-    {
-      id: '2',
-      title: 'Holiday Event',
-      date: 'Fri, Apr 13, 9:00PM – 11:00PM EST',
-      type: 'RSVP to See Location',
-      location: 'Los Angeles, California',
-      image: IMAGES.eventCoverPlaceholders1,
-    },
-    {
-      id: '3',
-      title: 'Revolve Festival',
-      date: 'Fri, Apr 13, 9:00PM – 11:00PM EST',
-      type: 'RSVP to See Location',
-      location: 'Los Angeles, California',
-      image: IMAGES.eventCoverPlaceholders,
-    },
-    {
-      id: '4',
-      title: 'Travel Event',
-      date: 'Fri, Apr 13, 9:00PM – 11:00PM EST',
-      type: 'RSVP to See Location',
-      location: 'Los Angeles, California',
-      image: IMAGES.eventCoverPlaceholders1,
-    },
-    {
-      id: '5',
-      title: 'Revolve Festival',
-      date: 'Fri, Apr 13, 9:00PM – 11:00PM EST',
-      type: 'RSVP to See Location',
-      location: 'Los Angeles, California',
-      image: IMAGES.eventCoverPlaceholders1,
-    },
-  ];
+  const handleSearch = () => {
+    setSearchEnter(searchTerm === '');
 
-  const filterEvents = events.filter(value =>
-    value.title.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+    setFilterEvents(
+      allFilterEvents.filter(value =>
+        value.title.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
+    );
+  };
+
+  const handleClear = () => {
+    setSearchEnter(true);
+    setFilterEvents(allFilterEvents);
+  };
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res: any = await apiGet('/events/feed');
+        const featuredRes: any = await apiGet('/events/feed/featured');
+
+        const eventsRes = res.data.map((item: any) => ({
+          id: item.id,
+          title: item.name,
+          date: item.startDate,
+          type: item.name,
+          location: item?.location?.location || '',
+          image: item.imageCover || item.imageFlyer,
+        }));
+
+        const featuredEventsRes = featuredRes.data[0].events.map(
+          (item: any) => ({
+            id: item.id,
+            title: item.name,
+            date: item.startDate,
+            type: item.name,
+            location: item?.location?.location || '',
+            image: item.imageCover || item.imagFlyer,
+          }),
+        );
+
+        setFeaturedEvents(featuredEventsRes);
+        setFilterEvents(eventsRes);
+        setAllFilterEvents(eventsRes);
+      } catch (error) {
+        console.error('Failed to fetch events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
   return (
     <SafeAreaView
       style={[
@@ -102,19 +108,23 @@ const EventsFeed = () => {
         />
       ) : (
         <View>
-          <HeaderComponent />
-          <SearchInput handleChange={handleSearchChange} />
+          <HeaderComponent isDarkTheme={false} />
+          <FeedSearchInput
+            handleChange={handleSearchChange}
+            handleSearch={handleSearch}
+            handleClear={handleClear}
+          />
           <ScrollView>
             {filterEvents.length === 0 ? (
               <NoResults />
             ) : (
               <>
-                {searchTerm === '' && <FeaturedEvents item={events} />}
+                {searchEnter && <FeaturedEvents item={featuredEvents} />}
                 {
                   <View style={styles.eventContainer}>
-                    {filterEvents.map((value, index) => {
-                      return <FeedItem item={value} key={index} />;
-                    })}
+                    {filterEvents.map((value, index) => (
+                      <FeedItem item={value} key={index} />
+                    ))}
                   </View>
                 }
               </>
@@ -142,6 +152,7 @@ const EventsFeedStyle = () => {
       marginLeft: 10,
       flexDirection: 'row',
       flexWrap: 'wrap',
+      paddingBottom: 100,
     },
     btnStyle: {
       width: Wp(85),
