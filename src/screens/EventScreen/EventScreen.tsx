@@ -13,6 +13,7 @@ import InvitedEvents from './Tabs/InvitedEvents';
 import AppliedEvents from './Tabs/AppliedEvents';
 import PastEvents from './Tabs/PastEvents';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import AfterAppStaticComponent from 'src/component/BeforeAppStaticComponent/AfterAppStaticComponent';
 interface EventScreenProps extends NativeStackScreenProps<any, any> { }
 
 interface TabItem {
@@ -63,13 +64,18 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{...styles.container, backgroundColor: COLORS.white }}>
-      <View>
-        <HeaderComponent isDarkTheme={false} />
-        <SearchInput ref={searchInputRef} onSearchTextChange={handleSearchTextChange} />
-        <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
-        <View style={styles.contentContainer}>{renderTabContent()}</View>
-      </View>
+    <SafeAreaView style={{ ...styles.container, backgroundColor: loginData?.isInvited ? COLORS.white : COLORS.black2 }}>
+      {loginData?.isInvited ?
+        <View>
+          <HeaderComponent isDarkTheme={false} />
+          <SearchInput ref={searchInputRef} onSearchTextChange={handleSearchTextChange} />
+          <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
+          <View style={styles.contentContainer}>{renderTabContent()}</View>
+        </View>
+        :
+        <AfterAppStaticComponent/>
+
+      }
     </SafeAreaView>
   );
 };

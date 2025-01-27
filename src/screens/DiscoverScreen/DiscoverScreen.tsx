@@ -23,10 +23,7 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
   return (
     <SafeAreaView style={styles.container}>
       {hasFullAccess ? (
-        <AfterAppStaticComponent
-          title={LABLE.YOU_ARE_ON_WAITLIST}
-          subTitle={LABLE.FULL_ACCESS_UNLOCK}
-        />
+        <AfterAppStaticComponent/>
       ) : (
         <BeforeAppStaticComponent isChatScreen={false} />
       )}

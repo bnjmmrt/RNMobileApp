@@ -46,15 +46,22 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         dispatch(setLoginData(data));
         dispatch(setEmail(route.params.email || ''));
         dispatch(setPhone(route.params.phone || ''));
+        const userRole = data.roles[0]?.roleName
+        console.log("Sayyed userRole:",userRole)
+        if (userRole == 'non_member') {
+            console.log("Sayyed userRole:","1")
 
-        if (data.roleName == 'non_member') {
-            if (data.isSignUpCompleted) {
+            if (data.isSignUpCompleted || data.token.length > 0) {
+                console.log("Sayyed userRole:","2")
+
                 navigation.navigate('BottomTabBar');
             } else {
                 data?.isInvited ? navigation.navigate('BottomTabBar') :
                     navigation.navigate('BeforeAppStaticScreen');
         }
         } else {
+            console.log("Sayyed userRole:","3")
+
             navigation.navigate('BottomTabBar');
         }
     };

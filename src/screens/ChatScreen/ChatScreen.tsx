@@ -13,15 +13,15 @@ interface ChatScreenProps extends NativeStackScreenProps<any, any> { }
 const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
   const styles = ChatScreenStyle();
 
+  const { isSignUpCompleted, token } = useSelector((state: RootState) => state.auth.loginData);
+  const hasFullAccess = isSignUpCompleted || token.length > 0;
 
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  // const loginData = useSelector((state: RootState) => state.auth.loginData);
 
   return (
     <SafeAreaView style={styles.container}>
-      {loginData.isSignUpCompleted ?
-        <AfterAppStaticComponent
-          title={LABLE.YOU_ARE_ON_WAITLIST}
-          subTitle={LABLE.FULL_ACCESS_UNLOCK} />
+      {hasFullAccess ?
+        <AfterAppStaticComponent/>
         :
         <BeforeAppStaticComponent
           isChatScreen={true}/>

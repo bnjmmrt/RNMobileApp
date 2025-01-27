@@ -67,7 +67,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
     await apiRequest('post', endPoint, params);
     if (!error && message ==='resent') {
       FlashMessageComponent.show('success', `OTP ${message} successfully!`);
-    } else {
+    } else if(error){
       FlashMessageComponent.show(
         'error',
         'Something went wrong, please try again!',
