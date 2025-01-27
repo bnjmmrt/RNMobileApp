@@ -45,7 +45,7 @@ const AfterAppStaticComponent: React.FC<AfterAppStaticComponentProps> = ({
 
           <HeaderComponent isDarkTheme={true} />
 
-          <View style={{ height: Hp(2) }} />
+          <View style={{ height: Hp(5) }} />
 
 
           <TitleSubtitle
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: COLORS.black
+    backgroundColor: COLORS.black2
   },
   contentContainer: {
     flex: 1,

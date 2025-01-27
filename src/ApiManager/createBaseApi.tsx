@@ -1,28 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { environment } from '../../environments/environment';
 
-// Create Base API with Logging
-export const baseApi = createApi({
-  reducerPath:'baseApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: environment.DEV_URL,
-    prepareHeaders: (headers, { getState }) => {
-      const token = ''; // Replace with your token logic
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
-      }
-      headers.set('Content-Type', 'application/json');
-      headers.set('Accept', 'application/json');
-      return headers;
-    },
-  }),
-  tagTypes: ['Login','Event'], // Accept tagTypes as a parameter
-  endpoints: () => ({}),
-  keepUnusedDataFor: 60, // Optional: Adjust cache duration
-  refetchOnFocus: true, // Optional: Refetch data when the app is focused
-});
-
-// Add Request and Response Logging Middleware
+// Middleware for logging requests and responses
 const logMiddleware = async (args, api, extraOptions, baseQuery) => {
   const { url, method = 'GET', body } = typeof args === 'string' ? { url: args } : args;
 
@@ -39,8 +18,27 @@ const logMiddleware = async (args, api, extraOptions, baseQuery) => {
   return result;
 };
 
-export const customBaseQuery = (args, api, extraOptions) => logMiddleware(args, api, extraOptions, fetchBaseQuery({
-  baseUrl: environment.BASE_URL,
-}));
+// Custom base query function
+export const customBaseQuery = (args, api, extraOptions) =>
+  logMiddleware(args, api, extraOptions, fetchBaseQuery({
+    baseUrl: environment.DEV_URL,
+    prepareHeaders: (headers, { getState }) => {
+      const token = ''; // Replace with your token logic
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+      headers.set('Content-Type', 'application/json');
+      headers.set('Accept', 'application/json');
+      return headers;
+    },
+  }));
 
-
+// Create API with custom base query
+export const createBaseApi = createApi({
+  reducerPath: 'api',
+  baseQuery: customBaseQuery,
+  tagTypes: ['Login', 'Event'], // Accept tagTypes as a parameter
+  endpoints: () => ({}),
+  keepUnusedDataFor: 60, // Optional: Adjust cache duration
+  refetchOnFocus: true, // Optional: Refetch data when the app is focused
+});

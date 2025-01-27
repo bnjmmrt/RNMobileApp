@@ -39,7 +39,8 @@ const PhoneNumberInput = forwardRef((_, ref) => {
     useImperativeHandle(ref, () => ({
         handleNextPress,
         validatePhoneNumber,
-        phoneNumber
+        phoneNumber,
+        callingCode,
     }));
 
     const validatePhoneNumber = () => {

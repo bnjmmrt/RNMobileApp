@@ -14,6 +14,7 @@ import FullScreenLoader from '../../component/FullScreenLoader';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
 import { useSendOtp } from '../../redux//hooks/useSendOtp';
 import { useVerifyOtp } from '../../redux/hooks/useVerifyOtp';
+import { setEmail, setPhone } from 'src/redux/slices/appFlowSlice';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -43,7 +44,10 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
 
     const redirectToHome = (data: any) => {
         dispatch(setLoginData(data));
-        navigation.navigate('AppStack');
+        dispatch(setEmail(route.params.email || ''));
+        dispatch(setPhone(route.params.phone || ''));
+        data?.isInvited ? navigation.navigate('OnboardingStack') :
+            navigation.navigate('AppStack');
     };
 
     return (

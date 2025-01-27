@@ -56,6 +56,7 @@ const IMAGES = {
   tiktok:require('./tiktok.png'),
   x:require('./x.png'),
   linkedIn:require('./linkedin.png'),
+  cross:require('./Shape.png'),
 }
 
 export default IMAGES;

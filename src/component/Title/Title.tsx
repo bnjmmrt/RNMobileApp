@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     color: COLORS.light_gray,
-    fontSize: 13,
+    fontSize: 14,
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginVertical: Hp(1),
     textAlign: 'center', // Default alignment
