@@ -61,12 +61,12 @@ const ProfileListItem: React.FC<ListItemProps> = ({item, onPress}) => {
 
       case PROFILE.NOTIFICATION:
         console.log('Redirecting to Notifications...');
-        // Example: navigate('/notifications');
+        navigation.navigate(ROUTES.NotificationsScreen);
         break;
 
       case PROFILE.FEEDBACK:
         console.log('Redirecting to Feedback...');
-        // Example: navigate('/feedback');
+        navigation.navigate(ROUTES.FeedbackScreen);
         break;
 
       case PROFILE.CONTACT_SUPPORT:

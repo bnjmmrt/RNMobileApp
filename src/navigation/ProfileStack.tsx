@@ -4,6 +4,8 @@ import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
 import EditProfileScreen from '../screens/ProfileScreen/EditProfile/EditProfileScreen';
 import ConnectedAccountsScreen from '../screens/ProfileScreen/EditProfile/ConnectedAccountsScreen';
 import SelectInterestScreen from '../screens/AppFlow/SelectInterestScreen/SelectInterestScreen';
+import NotificationsScreen from '../screens/ProfileScreen/EditProfile/Notifications';
+import FeedbackScreen from '../screens/ProfileScreen/EditProfile/FeedbackScreen';
 
 
 // Define the param list for the stack navigator
@@ -11,7 +13,9 @@ export type AppStackParamList = {
   EditProfileScreen: undefined;
   ProfileScreen: undefined;
   ConnectedAccountsScreen: undefined;
-  SelectInterestScreen:undefined
+  SelectInterestScreen:undefined;
+  NotificationsScreen:undefined;
+  FeedbackScreen:undefined
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -43,6 +47,16 @@ export const ProfileStack: React.FC = () => {
 <Stack.Screen
         name="SelectInterestScreen"
         component={SelectInterestScreen}
+        options={{ headerShown: false}}
+      />
+      <Stack.Screen
+        name="NotificationsScreen"
+        component={NotificationsScreen}
+        options={{ headerShown: false}}
+      />
+       <Stack.Screen
+        name="FeedbackScreen"
+        component={FeedbackScreen}
         options={{ headerShown: false}}
       />
     </Stack.Navigator>
