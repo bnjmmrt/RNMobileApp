@@ -41,6 +41,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
 
   const dispatch = useDispatch();
   const userDetails = useSelector((state: RootState) => state.appFlow);
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
   const isEmailPhoneBothVerified = useSelector(
     (state: RootState) => state.appFlow.isEmailPhoneBothVerified,
   );
@@ -52,6 +53,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>();
+    const [isToastShown, setIsToastShown] = useState(false);
+    const [selectedData, getSelectedData] = useState<any[]>();
 
   const fetch = async () => {
     // const focusResponse = await apiRequest('get', EndPoint.get_focuses);
@@ -110,23 +113,38 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
             errorMessage={ERROR_MESSAGE.LAST_NAME}
             defaultValue={userDetails.lastName}
           />
-          <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
-          <PhoneNumberInput ref={phoneNumberInputRef} />
 
-          <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
-          <EmailInput ref={emailInputRef} />
+          {loginData?.varifyStatus === 1 && (
+            <>
+         
+              <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
+              <PhoneNumberInput ref={phoneNumberInputRef} />
+            </>
+          )}
 
-          <Text style={[styles.label]}>{LABLE.GENDER}</Text>
-          <GenderComponent />
+          {loginData?.varifyStatus === 2 && (
+            <>
+              <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
+              <EmailInput ref={emailInputRef} />
+            </>
+          )}
 
-          <Text style={[styles.label]}>{LABLE.BIRTHDAY}</Text>
-          <DatePickerComponent />
+          {loginData?.isSignUpCompleted && (
+            <View>
+              <Text style={[styles.label]}>{LABLE.GENDER}</Text>
+              <GenderComponent />
 
-          <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
-          <BaseCityComponent />
+              <Text style={[styles.label]}>{LABLE.BIRTHDAY}</Text>
+              <DatePickerComponent />
 
-          <Text style={[styles.label]}>{LABLE.CREATIVE_FOCUS}</Text>
-          <CreativeFocusComponent />
+              <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
+              <BaseCityComponent />
+
+              <Text style={[styles.label]}>{LABLE.CREATIVE_FOCUS}</Text>
+              <CreativeFocusComponent setIsToastShown={setIsToastShown}
+          getSelectedData={getSelectedData} />
+            </View>
+          )}
         </View>
       </ScrollView>
       <Button
