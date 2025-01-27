@@ -45,12 +45,12 @@ const IMAGES = {
   cancel:require('./cancel.png'),
   tick:require('./tick.png'),
   dots:require('./dots.png'),
-  insta:require('./insta.png'),
+  instagram:require('./insta.png'),
   tiktok:require('./tiktok.png'),
   youtube:require('./youtube.png'),
   x:require('./x.png'),
   globe:require('./globe.png'),
-  linkdin:require('./linkindin.png'),
+  linkedin:require('./linkindin.png'),
   cross:require('./Shape.png'),
 }
 

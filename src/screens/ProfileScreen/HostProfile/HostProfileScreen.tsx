@@ -22,7 +22,8 @@ import { Wp } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
 import ReportHostView from './ReportHostView';
 import ReportAndBlockHostView from './ReportandBlockView';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { mockProfileDetails, useFetchProfileDetailsQuery } from 'src/redux/actions/profileListApiAction';
 
 type ViewType = 'options' | 'report' | 'block' | 'unblock' | 'reportAndBlock' | null;
 
@@ -33,8 +34,12 @@ type BottomSheetRef = {
 
 const HostProfileScreen: React.FC = () => {
   const bottomSheetRef = useRef<BottomSheetRef | null>(null);
+  const {params}=useRoute();
   const [activeView, setActiveView] = useState<ViewType>(null);
   const {goBack} = useNavigation();
+  // const { data, isLoading, error } = useFetchProfileDetailsQuery(params?.hostId); 
+  const data=mockProfileDetails;
+
 
   const handleOpenBottomSheet = (view: ViewType) => {
     setActiveView(view);
@@ -84,8 +89,11 @@ const HostProfileScreen: React.FC = () => {
     }
   };
 
+  const profile = data?.data;
+  const socialMediaLinks = profile?.socialMedia || {};
+
   return (
-    <SafeAreaView style={{ flex: 1,backgroundColor:COLORS.white }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <Header
         showProgressBar={false}
         rightIcon={IMAGES.dots}
@@ -97,33 +105,30 @@ const HostProfileScreen: React.FC = () => {
       <ScrollView nestedScrollEnabled>
         <View style={{ paddingHorizontal: 25 }}>
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <AvatarInitials imgUrl={'https://i.imgur.com/Lrupihs.png'} size={96} />
+            <AvatarInitials imgUrl={profile?.companyLogo || ''} size={96} />
             <Title
-              title={'Metropolitan Museum of Art'}
-              subTitle={'The greatest museum that ever existed in the heart of New York City'}
+              title={profile?.companyName || 'Company Name'}
+              subTitle={profile?.bio || 'Bio not available'}
               align="center"
             />
             <FlatList
               horizontal
               contentContainerStyle={{ gap: 16, marginVertical: 16 }}
-              data={[
-                { id: 1, icon: IMAGES.globe, url: 'www.google.com' },
-                { id: 2, icon: IMAGES.insta, url: 'www.google.com' },
-                { id: 3, icon: IMAGES.linkdin, url: 'www.google.com' },
-                { id: 4, icon: IMAGES.x, url: 'www.google.com' },
-                { id: 5, icon: IMAGES.tiktok, url: 'www.google.com' },
-                { id: 6, icon: IMAGES.youtube, url: 'www.google.com' },
-              ]}
+              data={Object.keys(socialMediaLinks).map((key) => ({
+                id: key,
+                icon: IMAGES[key],
+                url: socialMediaLinks[key],
+              }))}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => Linking.openURL(item?.url)}>
+                 item.icon && <TouchableOpacity onPress={() => Linking.openURL(item?.url)}>
                   <Image style={{ width: 20, height: 20 }} source={item.icon} />
                 </TouchableOpacity>
               )}
             />
             <ButtonSmall
               style={styles.smallBtnStyle}
-              title={false ? 'Unfollow' : 'Follow'}
-              colorTheme={true ? 'dark' : 'light'}
+              title={profile?.isMemberFollowingHost ? 'Following' : 'Follow'}
+              colorTheme={profile?.isMemberFollowingHost ? 'dark' : 'dark'}
               borderType="SOLID"
             />
           </View>
@@ -133,33 +138,33 @@ const HostProfileScreen: React.FC = () => {
             showsHorizontalScrollIndicator={false}
             ListEmptyComponent={<Text style={styles.dateText}>No upcoming events.</Text>}
             contentContainerStyle={{ gap: 16, marginVertical: 12 }}
-            data={[1, 2, 3]}
+            data={profile?.pendingEvents || []}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => { }}>
                 <Image
                   style={{ width: Wp('42%'), height: 245, borderRadius: 8 }}
-                  source={IMAGES.eventCoverPlaceholders}
+                  source={{ uri: item.imageCover }}
                 />
-                <Text style={styles.eventNameText}>Event Name</Text>
-                <Text style={styles.dateText}>Event Name</Text>
+                <Text style={styles.eventNameText}>{item.name}</Text>
+                <Text style={styles.dateText}>{item.startDate}</Text>
               </TouchableOpacity>
             )}
           />
           <Text style={styles.headerText}>Past Events</Text>
           <FlatList
             horizontal
-            ListEmptyComponent={<Text style={styles.dateText}>No upcoming events.</Text>}
+            ListEmptyComponent={<Text style={styles.dateText}>No past events.</Text>}
             contentContainerStyle={{ gap: 16, marginTop: 12 }}
-            data={[1, 2, 3]}
+            data={profile?.pastEvents || []}
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => { }}>
                 <Image
                   style={{ width: Wp('42%'), height: 245, borderRadius: 8 }}
-                  source={IMAGES.eventCoverPlaceholders}
+                  source={{ uri: item.imageCover }}
                 />
-                <Text style={styles.eventNameText}>Event Name</Text>
-                <Text style={styles.dateText}>Event Name</Text>
+                <Text style={styles.eventNameText}>{item.name}</Text>
+                <Text style={styles.dateText}>{item.startDate}</Text>
               </TouchableOpacity>
             )}
           />
