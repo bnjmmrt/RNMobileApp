@@ -1,22 +1,19 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {LABLE, BUTTON_LABLE, COLORS} from '../../../utils/constants';
-
+import {COLORS} from '../../../utils/constants';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../redux/slices';
-
-import Toast from '../../../component/Toast/Toast';
 import {Wp} from '../../../utils/dimensions';
+import { Tag } from './FeedbackScreen';
 
 interface CreativeFocusComponentProps {
-  list?:any[]
+  list?:any[];
+  setIsToastShown:(isShown:boolean)=>void;
+  getSelectedData:(data:Tag[])=>void;
 }
 
-const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list}) => {
+const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,setIsToastShown,getSelectedData}) => {
   const dispatch = useDispatch();
-  if(list){
-    
-  }
 
   const selectedCreativeFocus = useSelector(
     (state: RootState) => state.appFlow.creativeFocus,
@@ -24,31 +21,45 @@ const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list}) =
   const creativeFocus = useSelector(
     (state: RootState) => state.appFlowApiData.creativeFocus,
   );
-console.log(list)
+
   const [selectedCategories, setSelectedCategories] = useState<any[]>(
    list ? [] : selectedCreativeFocus,
   );
 
-  const [itemList,setItemLiist]=useState(list ? list : creativeFocus)
-
-  const [isToastShown, setIsToastShown] = useState(false);
+  const [itemList,_setItemLiist]=useState(list ? list : creativeFocus)
 
   const handleCategorySelect = (category: any) => {
-    console.log(selectedCategories.length);
-    if (selectedCategories.find(item => item.id === category.id)) {
-      console.log(category);
-      if (selectedCategories.length === 1) {
+    if (list?.length) {
+      // When list data is available, allow only one selection
+      if (selectedCategories.some(item => item.id === category.id)) {
+        // Deselect if already selected
+        setSelectedCategories([]);
+        getSelectedData([]);
         setIsToastShown(true);
+        
+      } else {
+        // Select the current category
+        setSelectedCategories([category]);
+        getSelectedData([category]);
+        setIsToastShown(false);
+       
       }
-      // Remove category if already selected
-      setSelectedCategories(
-        selectedCategories.filter((item: any) => item.id !== category.id),
-      );
-    } else if (selectedCategories.length < 3) {
-      // Add category if less than 3 are selected
-      console.log(category);
-      setIsToastShown(false);
-      setSelectedCategories([...selectedCategories, category]);
+    } else {
+      // Original logic for multiple selection
+      if (selectedCategories.find(item => item.id === category.id)) {
+        if (selectedCategories.length === 0) {
+          setIsToastShown(true);
+        }
+        // Remove category if already selected
+        setSelectedCategories(
+          selectedCategories.filter((item: any) => item.id !== category.id),
+        );
+        getSelectedData(selectedCategories);
+      } else if (selectedCategories.length < 3) {
+        getSelectedData(selectedCategories);
+        setIsToastShown(false);
+        setSelectedCategories([...selectedCategories, category]);
+      }
     }
   };
 
@@ -75,12 +86,6 @@ console.log(list)
           </TouchableOpacity>
         ))}
       </View>
-      {isToastShown && (
-        <Toast
-          message={'Please select at least one'}
-          onClose={() => setIsToastShown(false)}
-        />
-      )}
     </>
   );
 };

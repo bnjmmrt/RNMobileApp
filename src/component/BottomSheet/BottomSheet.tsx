@@ -96,6 +96,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
             onChange={handleSheetChange}
             backgroundStyle={{
               backgroundColor: backgroundColor ? backgroundColor : COLORS.white,
+              borderTopLeftRadius: 30,borderTopRightRadius: 30,
             }}>
             {children}
           </BottomSheet>

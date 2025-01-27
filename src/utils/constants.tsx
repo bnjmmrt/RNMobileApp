@@ -25,6 +25,7 @@ export const BUTTON_LABLE = {
   REPLACE_PHOTO: 'Replace Photo',
   CANCEL: 'Cancel',
   DELETE_MY_ACCOUNT: 'Delete My Account',
+  CLOSE: 'Close',
 };
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',
@@ -171,6 +172,8 @@ export const PROFILE = {
   SMS_NOTIFICATIONS:'SMS Notifications',
   PUSH_NOTIFICATIONS:'Push Notifications',
   EMAIL_NOTIFICATIONS:'Email Notifications',
+  FEEDBACK_MESSAGE:'Thank you for your feedback!',
+  FEEDBACK_CONFIRMATION_MESSAGE:'We truly appreciate your input and will use it to enhance our service.'
 };
 
 export const ERROR_MESSAGE = {
@@ -181,6 +184,7 @@ export const ERROR_MESSAGE = {
   PLEASE_ENTER_A_VALID_EMAIL_ADDRESS: 'Please enter a valid email address',
   PLEASE_ENTER_A_VALID_REFERRAL_CODE: 'Please enter a valid referral code',
   AGE_REQUIREMENT_NOT_MET: 'Age requirement not met',
+  FEEDBACK_ERROR:'Please enter your Feedback.'
 };
 export const COLORS = {
   black: '#1F1F1F',
