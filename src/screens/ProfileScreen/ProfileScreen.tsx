@@ -67,9 +67,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     { id: '19', title: PROFILE.DELETE_ACCOUNT, image: '' },
   ];
 
+  const hasFullAccess = loginData.isSignUpCompleted || loginData.token.length > 0;
 
   useEffect(() => {
-    const listItems = loginData.isSignUpCompleted ? itemsExtras : items
+    const listItems = hasFullAccess ? itemsExtras : items
     setListItems(listItems)
   }, [loginData])
 

@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { useMemberLoginMutation } from '../../redux/actions/loginApiAction';
 import { FlashMessageComponent } from '../../component/FlashMessageComponent/FlashMessageComponent';
 
-export const useVerifyOtp = (isMemberExist: boolean, email?: string, phone?: string, isEmail?: boolean) => {
+export const useVerifyOtp = (isMemberExist: boolean,isGuest: boolean, email?: string, phone?: string, isEmail?: boolean) => {
     const [isLoading, setIsLoading] = useState(false);
     const [memberLogin] = useMemberLoginMutation();
 
     const verifyOtp = async (code: string, onSuccess: (data: any) => void) => {
         try {
             setIsLoading(true);
-            const requestParam = { email, phoneNumber: phone, code, isExist: isMemberExist };
+            const requestParam = { email, phoneNumber: phone, code, isExist: isMemberExist, isGuest: isGuest };
             const response = await memberLogin(requestParam).unwrap();
 
             if (response.status === 200) {

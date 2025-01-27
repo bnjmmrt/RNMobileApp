@@ -23,9 +23,7 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({ navigatio
   }
   return (
     <SafeAreaView style={styles.container}>
-
-
-
+      
       <BeforeAppStaticComponent
         isChatScreen={false}
         showLogout={true} />
