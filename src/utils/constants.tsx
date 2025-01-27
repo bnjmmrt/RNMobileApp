@@ -22,6 +22,9 @@ export const BUTTON_LABLE = {
   ACCESS_MY_CONTACTS:'Access My Contacts',
   ENTER_REFERRAL_CODE:"Enter Referral Code",
   CONFIRM: "Confirm",
+  INVITE_FRIENDS:"Invite Friends to Join Rumor",
+  INVITES:'Invites',
+  INVITE_FREINDS:'Invite friends to join you on Rumor.'
 }
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',
@@ -125,6 +128,8 @@ export const PROFILE ={
   REFERRALS:'Referrals',
   CONNECTED_ACCOUNTS:'Connected Accounts',
   MY_INTERESTS:'My Interests',
+  REVIEW_REFERRAL_REQUESTS:'Review referral requests from friends who want to join Rumor. Your decision will remain private.'
+
 }
 
 export const ERROR_MESSAGE = {
@@ -136,6 +141,7 @@ export const ERROR_MESSAGE = {
   PLEASE_ENTER_A_VALID_REFERRAL_CODE:"Please enter a valid referral code",
   AGE_REQUIREMENT_NOT_MET:"Age requirement not met"
 }
+
 export const COLORS = {
   black: '#1F1F1F',
   black2: '#0F0F0F',
@@ -155,6 +161,9 @@ export const COLORS = {
   transperantBackground: 'rgba(0, 0, 0, 0.5)',
   placeHodler: '#A2A1A1',
   surfaceSecondary: '#CDBAB1',
-  nearBlack:'#676767'
+  nearBlack:'#676767',
+  successLight:'#E8F2EF',
+  success:'#167E60'
+
 }
 

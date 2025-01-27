@@ -1,17 +1,25 @@
-import React, {useState, forwardRef, useImperativeHandle} from 'react';
-import {View, Text, StyleSheet, TextInput, Image, TouchableOpacity} from 'react-native';
-import {COLORS} from '../../utils/constants';
-import {useNavigation} from '@react-navigation/native';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+import { COLORS } from '../../utils/constants';
+import { useNavigation } from '@react-navigation/native';
 
 interface InputProps {
   label?: string;
   errorMessage: string;
-  placeholder?: string; // Optional placeholder for input
+  placeholder?: string;
   leftImage?: any;
   rightImage?: any;
-  onPressImage?:()=>void;
-  defaultValue?: string; 
+  onPressImage?: () => void;
+  defaultValue?: string;
   onChangeText?: (text: string) => void;
+  multiline?: boolean;
 }
 
 const Input = forwardRef((props: InputProps, ref) => {
@@ -22,8 +30,9 @@ const Input = forwardRef((props: InputProps, ref) => {
     leftImage,
     rightImage,
     onPressImage,
-    defaultValue='',
-    onChangeText
+    defaultValue = '',
+    onChangeText,
+    multiline = false,
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -35,12 +44,11 @@ const Input = forwardRef((props: InputProps, ref) => {
     handleNextPress,
     validateInputs,
     inputText,
-    setErrorMessage
+    setErrorMessage,
   }));
 
   // Validate inputs
   const validateInputs = () => {
-
     if (!inputText) {
       setErrorMessage(initialErrorMessage);
       return false;
@@ -65,25 +73,33 @@ const Input = forwardRef((props: InputProps, ref) => {
       <View
         style={[
           styles.inputContainer,
+          multiline ? styles.multilineInputContainer : null,
           errorMessage ? styles.errorInputWrapper : null,
-        ]}>
+        ]}
+      >
         {leftImage && <Image source={leftImage} style={styles.leftImage} />}
         <TextInput
           {...props}
-          style={styles.input}
+          style={[
+            styles.input,
+            multiline ? styles.multilineInput : null,
+          ]}
           value={inputText}
           placeholder={placeholder}
-          // placeholderTextColor={COLORS.placeholderGray}
-          onChangeText={text => {
+          onChangeText={(text) => {
             setInputText(text);
             setErrorMessage(''); // Clear error on text change
             if (onChangeText) {
               onChangeText(text); // Call the parent-provided onChangeText if it exists
             }
           }}
-          // onBlur={validateInputs}
+          multiline={multiline}
         />
-        {rightImage &&   (<TouchableOpacity onPress={onPressImage}><Image source={rightImage} style={styles.leftImage} /></TouchableOpacity>)}
+        {rightImage && (
+          <TouchableOpacity onPress={onPressImage}>
+            <Image source={rightImage} style={styles.leftImage} />
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Dynamic Error Message */}
@@ -113,32 +129,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 15,
   },
-  leftImage: {marginRight: 6,width:20,height:20},
+  multilineInputContainer: {
+    height: 160, // Adjust height for multiline inputs
+    alignItems: 'flex-start',
+    paddingTop: 10,
+  },
+  leftImage: { marginRight: 6, width: 20, height: 20 },
   input: {
     width: '90%',
     fontSize: 16,
     color: COLORS.black,
   },
-
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 60,
-    borderWidth: 1,
-    borderColor: COLORS.borderGray,
-    borderRadius: 10,
-    backgroundColor: COLORS.white,
-    paddingHorizontal: 20,
+  multilineInput: {
+    height: '100%',
+    textAlignVertical: 'top', // Ensures text starts at the top for multiline
   },
   errorInputWrapper: {
     borderColor: COLORS.borderRed,
     backgroundColor: COLORS.bgRed,
   },
-  // input: {
-  //     flex: 1,
-  //     fontSize: 16,
-  //     color: COLORS.black,
-  // },
   errorText: {
     fontSize: 12,
     marginTop: 5,

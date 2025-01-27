@@ -4,6 +4,7 @@ import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
 import { COLORS, PROFILE } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
+import { useNavigation } from '@react-navigation/native';
 
 interface ListItemProps {
     item: {
@@ -15,6 +16,7 @@ interface ListItemProps {
 
 
 const ProfileListItem: React.FC<ListItemProps> = ({ item }) => {
+  const {navigate}=useNavigation();
 
     const handleItemClick = (item: ListItem) => {
         switch (item.title) {
@@ -25,11 +27,13 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item }) => {
       
           case PROFILE.FOLLOWING:
             console.log('Redirecting to Following...');
+            navigate('FollowingScreen');
             // Example: navigate('/following');
             break;
       
           case PROFILE.REFERRALS:
             console.log('Redirecting to Referrals...');
+            navigate('ReferralsScreen');
             // Example: navigate('/referrals');
             break;
       

@@ -13,8 +13,8 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ title, subTitle, align = 'left' }) => {
   return (
     <View style={[styles.container, { alignItems: align }]}>
-      <Text style={styles.title}>{title}</Text>
-      {subTitle && <Text style={styles.subTitle}>{subTitle}</Text>}
+      <Text style={[styles.title,{textAlign:align}]}>{title}</Text>
+      {subTitle && <Text style={[styles.subTitle,{textAlign:align}]}>{subTitle}</Text>}
     </View>
   );
 };

@@ -10,24 +10,46 @@ export const referralApiAction = baseApi.injectEndpoints({
       }),
     }),
     requestMember: builder.mutation({
-        query: (requestParam) => ({
-          url: 'v1/platform/referral-requests',
-          method: 'POST',
-          body: requestParam,
-        }),
+      query: (requestParam) => ({
+        url: 'v1/platform/referral-requests',
+        method: 'POST',
+        body: requestParam,
       }),
-      fetchMembers: builder.query({
-        query: () => ({
-          url: 'v1/platform/members', 
-          method: 'GET',
-        }),
+    }),
+    fetchMembers: builder.query({
+      query: () => ({
+        url: 'v1/platform/members', 
+        method: 'GET',
       }),
-
+    }),
+    fetchHostList: builder.query({
+      query: ({ id, take, skip }) => ({
+        url: `/auth/hosts-followed/${id}?take=${take}&skip=${skip}`,
+        method: 'GET',
+      }),
+    }),
+    followHost: builder.mutation({
+      query: ({ hostId, userId }) => ({
+        url: `/auth/host/${hostId}/follow`,
+        method: 'POST',
+        body: { userId },
+      }),
+    }),
+    unfollowHost: builder.mutation({
+      query: ({ hostId, userId }) => ({
+        url: `/auth/host/${hostId}/follow`,
+        method: 'DELETE',
+        body: { userId },
+      }),
+    }),
   }),
 });
 
 export const {
   useSubmitReferralCodeMutation,
   useRequestMemberMutation,
-  useFetchMembersQuery
+  useFetchMembersQuery,
+  useFetchHostListQuery,
+  useFollowHostMutation,
+  useUnfollowHostMutation,
 } = referralApiAction;

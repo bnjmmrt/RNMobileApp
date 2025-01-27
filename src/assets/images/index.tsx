@@ -42,6 +42,15 @@ const IMAGES = {
   close:require('./close.png'),
   noRecord:require('./noRecord.png'),
   location:require('./location.png'),
+  cancel:require('./cancel.png'),
+  tick:require('./tick.png'),
+  dots:require('./dots.png'),
+  insta:require('./insta.png'),
+  tiktok:require('./tiktok.png'),
+  youtube:require('./youtube.png'),
+  x:require('./x.png'),
+  globe:require('./globe.png'),
+  linkdin:require('./linkindin.png')
 }
 
 export default IMAGES;
