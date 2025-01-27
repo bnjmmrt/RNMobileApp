@@ -18,6 +18,18 @@ axiosController.interceptors.request.use(
         config.headers['Authorization'] = `Bearer ${token}`;
       }
     }
+
+    // Log the request URL and other details
+    const fullUrl = config.baseURL ? `${config.baseURL}${config.url}` : config.url;
+    console.log('Request URL:', fullUrl);
+    console.log('Request Method:', config.method);
+    console.log('Request Headers:', config.headers);
+    if (config.params) {
+      console.log('Request Params:', config.params);
+    }
+    if (config.data) {
+      console.log('Request Data:', config.data);
+    }
     return config;
   },
   (error: AxiosError) => Promise.reject(error)
@@ -26,8 +38,23 @@ axiosController.interceptors.request.use(
 // Response interceptor (e.g., handle global errors)
 // Response interceptor for global error handling
 axiosController.interceptors.response.use(
-  (response: AxiosResponse) => response.data, // Only return the data part of the response
+  (response: AxiosResponse) => {
+    // Log the response URL, status, and data
+    console.log('Response URL:', response.config.url);
+    console.log('Response Status:', response.status);
+    console.log('Response Data:', response.data);
+
+    return response.data; // Return only the data part of the response
+  },
+  // Only return the data part of the response
   (error: AxiosError) => {
+    console.log('API Error:', error);
+
+    // Log the request URL if available
+    const requestUrl = error.config?.url;
+    if (requestUrl) {
+      console.log('Request URL on error:', requestUrl);
+    }
     const status = error.response?.status;
     if (status === 400) {
       console.error('Bad request ----');

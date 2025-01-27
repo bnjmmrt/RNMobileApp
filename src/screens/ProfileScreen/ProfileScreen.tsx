@@ -79,12 +79,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
   return (
 
-    <SafeAreaView style={[styles.container, { backgroundColor: isInvited ? COLORS.black : COLORS.white }]}>
-      {isInvited ?
-        <BeforeAppStaticComponent
-          title={LABLE.STREAMLINE_YOUR_LIFESTYLE}
-          subTitle={LABLE.MANAGE_YOUR_EVENTS} />
-        :
+    <SafeAreaView style={[styles.container, { backgroundColor: COLORS.white }]}>
+  
         <View style={{ backgroundColor: COLORS.white }}>
 
           <HeaderComponent
@@ -111,7 +107,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           {showBottomSheet && <WebViewBottomSheet url={URL} onChange={onChangeBottomSheet} />}
 
         </View>
-      }
+      
 
     </SafeAreaView>
   );

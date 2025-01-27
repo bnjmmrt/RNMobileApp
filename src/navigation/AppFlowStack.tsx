@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import MyDetailsScreen from '../screens/AppFlow/MyDetails/MyDetails';
-import EnterEmail from '../screens/AppFlow/EnterEmailPhone/EnterEmailPhone';
+import EnterEmailPhone from '../screens/AppFlow/EnterEmailPhone/EnterEmailPhone';
 import VerifyEmail from '../screens/AppFlow/VerifyOtp/VerifyOtp';
 import GenderScreen from '../screens/AppFlow/GenderScreen/GenderScreen';
 import BirthdayScreen from '../screens/AppFlow/BirthdayScreen/BirthdayScreen';
@@ -18,7 +18,7 @@ import ReferralScreen from 'src/screens/ProfileScreen/ReferralsScreen/ReferralSc
 // Define the param list for the stack navigator
 export type AppFlowStackParamList = {
   MyDetailsScreen: undefined;
-  EnterEmail: undefined;
+  EnterEmailPhone: undefined;
   GenderScreen: undefined;
   BirthdayScreen: undefined;
   BaseCityScreen: undefined;
@@ -38,7 +38,7 @@ export const AppFlowStack: React.FC = () => {
   const getInitialPage=()=>{
      switch(pageProgress){
       case 1: return "MyDetailsScreen";
-      case 2 : return "EnterEmail";
+      case 2 : return "EnterEmailPhone";
       case 3 : return "GenderScreen";
       case 4 : return "BirthdayScreen";
       case 5 : return "BaseCityScreen";
@@ -61,8 +61,8 @@ export const AppFlowStack: React.FC = () => {
       />
 
       <Stack.Screen
-        name="EnterEmail"
-        component={EnterEmail}
+        name="EnterEmailPhone"
+        component={EnterEmailPhone}
         options={{ headerShown: false }}
       />
       <Stack.Screen

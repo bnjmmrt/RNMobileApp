@@ -8,6 +8,7 @@ import { RootState } from '../redux/slices';
 import ReferralScreen from 'src/screens/ProfileScreen/ReferralsScreen/ReferralScreen';
 import FollowingScreen from 'src/screens/ProfileScreen/FollowingScreen/FollowingScreen';
 import HostProfileScreen from 'src/screens/ProfileScreen/HostProfile/HostProfileScreen';
+import { AuthStack } from './AuthStack';
 
 
 // Define the param list for the stack navigator
@@ -15,6 +16,7 @@ export type AppStackParamList = {
   BeforeAppStaticScreen: undefined;
   BottomTabBar: undefined;
   AppFlowStack: undefined;
+  AuthStack: undefined;
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -23,7 +25,7 @@ const Stack = createStackNavigator<AppStackParamList>();
 export const AppStack: React.FC = () => {
   return (
     <Stack.Navigator
-      initialRouteName={ "BottomTabBar" }
+      initialRouteName={"BeforeAppStaticScreen"}
       screenOptions={({ route, navigation }) => ({})}>
 
       {/* <Stack.Screen
@@ -56,6 +58,12 @@ export const AppStack: React.FC = () => {
       <Stack.Screen
         name="BottomTabBar"
         component={BottomTabBar}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="AuthStack"
+        component={AuthStack}
         options={{ headerShown: false }}
       />
 

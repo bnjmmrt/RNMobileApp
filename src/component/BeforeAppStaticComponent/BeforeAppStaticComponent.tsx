@@ -11,12 +11,10 @@ import { useNavigation } from '@react-navigation/native';
 
 interface BeforeAppStaticComponentProps {
   isChatScreen: boolean;
-  showLogout: boolean;
 }
 
 const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
   isChatScreen = false,
-  showLogout = false
 }) => {
   const navigation = useNavigation();
 
@@ -76,18 +74,17 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           <View style={styles.dotContainer} />
         )}
 
-
         <TitleSubtitle
           style={styles.titleSubtitle}
           title={current.title}
           subTitle={current.subTitle}
-          titleFontSize={30}
+          titleFontSize={32}
           subTitleMargin={Hp(1)}
           centerTextAlign={true}
           isDarkTheme={true}
         />
 
-        <View style={{ height: Hp(5) }} />
+        <View style={{ height: Hp(2) }} />
 
         {!isChatScreen && <Button
           style={styles.btnStyle}
@@ -97,7 +94,6 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
         />}
         {!isChatScreen && <Text style={styles.textBelowStyle}>{LABLE.TWO_MINUTES_TO_COMPLETE}</Text>}
         {isChatScreen && <Text style={styles.textComingSoonStyle}>{LABLE.COMING_SOON}</Text>}
-        {showLogout && <Text style={styles.logoutTextStyle}>{LABLE.LOGOUT}</Text>}
 
       </ScrollView>
     </View>
@@ -121,11 +117,9 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   logoContainer: {
-    alignItems: 'center', marginTop: 10, marginBottom: 10
+    alignItems: 'center', marginTop: Hp(5), marginBottom: 30
   },
   logoImgStyle: {
-    width: 100,
-    height: 50,
     resizeMode: 'center',
   },
   textBelowStyle: {

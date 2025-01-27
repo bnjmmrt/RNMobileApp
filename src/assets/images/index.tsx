@@ -50,7 +50,8 @@ const IMAGES = {
   youtube:require('./youtube.png'),
   x:require('./x.png'),
   globe:require('./globe.png'),
-  linkdin:require('./linkindin.png')
+  linkdin:require('./linkindin.png'),
+  cross:require('./Shape.png'),
 }
 
 export default IMAGES;

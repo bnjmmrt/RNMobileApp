@@ -1,5 +1,5 @@
 {
-  "name": "RumorApp",
+  "name": "Rumor",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -12,6 +12,7 @@
     "env-prod": "node set-environment.js environment.prod"
   },
   "dependencies": {
+    "@d11/react-native-fast-image": "^8.9.1",
     "@gorhom/bottom-sheet": "^5.0.6",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-native-clipboard/clipboard": "^1.15.0",
@@ -26,6 +27,7 @@
     "axios": "^1.7.9",
     "libphonenumber-js": "^1.11.17",
     "lodash": "^4.17.21",
+    "lodash.debounce": "^4.0.8",
     "moment": "^2.30.1",
     "react": "18.3.1",
     "react-native": "0.75.2",
@@ -35,7 +37,6 @@
     "react-native-contacts": "^8.0.4",
     "react-native-country-codes-picker": "^2.3.5",
     "react-native-date-picker": "^5.0.8",
-    "react-native-fast-image": "^8.6.3",
     "react-native-flash-message": "^0.4.2",
     "react-native-gesture-handler": "^2.21.2",
     "react-native-get-random-values": "^1.11.0",
