@@ -21,6 +21,7 @@ import useApi from '../../axios/useApi';
 import {EndPoint} from '../../ApiManager/config';
 import {setProfilePic} from '../../redux/slices/appFlowSlice';
 import {environment} from '../../../environments/environment';
+import ContactSupporrtBottomSheet from 'src/component/BottomSheet/ContactSupporrtBottomSheet';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
@@ -42,9 +43,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const savePhotoBottomSheetRef = useRef<any>(null);
   const logoutBottomSheetRef = useRef<any>(null);
   const deleteAccountBottomSheetRef = useRef<any>(null);
+  const contactSupportBottomSheetRef = useRef<any>(null);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const profilePic = useSelector(
-    (state: RootState) => state.appFlow.profilePic,
+  const userDetails = useSelector(
+    (state: RootState) => state.appFlow,
   );
 
   useEffect(() => {
@@ -174,7 +176,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
           {loading && <Text> Uploading photo...</Text>}
             <ProfileTopView
               editPhotoClick={editPhotoClick}
-              profilePic={profilePic}
+              profilePic={userDetails?.profilePic}
+              name={`${userDetails.firstName} ${userDetails.lastName}`}
             />
             {listItems.map(item => {
               return (
@@ -201,6 +204,13 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
             <WebViewBottomSheet url={URL} onChange={onChangeBottomSheet} />
           )}
 
+{/* {isShown && (
+          <ContactSupporrtBottomSheet
+            setLocation={setSelectedCity}
+            setIsShown={setIsShown}
+          />
+        )} */}
+{/* <ContactSupporrtBottomSheet ref={contactSupportBottomSheetRef}/> */}
           <EditPictureBottomSheet
             ref={editPhotoBottomSheetRef}
             onPress={openCamera}
