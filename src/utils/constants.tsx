@@ -26,6 +26,7 @@ export const BUTTON_LABLE = {
   CANCEL: 'Cancel',
   DELETE_MY_ACCOUNT: 'Delete My Account',
   CLOSE: 'Close',
+  SAVE_PHOTO:'Save Photo'
 };
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',

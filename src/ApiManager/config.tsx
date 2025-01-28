@@ -60,6 +60,8 @@ export const EndPoint = {
   phone_send_verification_code:'v1/communication/send-verification-code',
   phone_verify_code: 'v1/communication/verify-code',
   host_feedback:'v1/auth/host-feedback',
+  user_profile_picture:'v1/auth/user-profile-picture/:id',
+  user_profile:'v1/auth/user-profile/:id'
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

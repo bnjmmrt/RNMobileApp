@@ -10,9 +10,10 @@ import AvatarInitials from '../../component/AvatarInitials';
 
 interface ProfileTopViewProps {
     editPhotoClick:()=>void;
-    profilePic:any
+    profilePic:any;
+    name:string;
 }
-const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick,profilePic}) => {
+const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick,profilePic,name}) => {
 
     // Handle the "Next" button press
     const handlEventPress = () => {
@@ -43,7 +44,7 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick,profileP
           </TouchableOpacity>
         </View>
             <TitleSubtitle
-                title='Bessie Cooper'
+                title={name}
                 subTitle='Non-Member'
                 centerTextAlign={true}
                 titleFontSize={38}

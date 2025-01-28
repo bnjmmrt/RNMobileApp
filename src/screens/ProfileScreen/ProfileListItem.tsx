@@ -71,7 +71,7 @@ const ProfileListItem: React.FC<ListItemProps> = ({item, onPress}) => {
 
       case PROFILE.CONTACT_SUPPORT:
         console.log('Redirecting to Contact Support...');
-        // Example: navigate('/contact-support');
+        onPress();
         break;
 
       case PROFILE.DELETE_ACCOUNT:

@@ -20,16 +20,22 @@ import {
   
 import { useNavigation } from '@react-navigation/native';
 import { Hp } from '../../utils/dimensions';
+import { useDispatch } from 'react-redux';
+import { setCountryCallingCode,setCountryCodeFlag } from '../../redux/slices/appFlowSlice';
 
 const PhoneNumberInput = forwardRef((_, ref) => {
+    const dispatch = useDispatch();
     const [phoneNumber, setPhoneNumber] = useState('');
     const [callingCode, setCallingCode] = useState('+1');
     const [code, setCode] = useState<CountryCode>('US');
     const [flag, setFlag] = useState('🇺🇸');
     const [isCountryPickerVisible, setCountryPickerVisible] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [disabled, setDisabled ]= useState(false);
     const navigation=useNavigation()
     const handleCountrySelect = (selectedCountry: any) => {
+        dispatch(setCountryCallingCode(selectedCountry.callingCode));
+        dispatch(setCountryCodeFlag(selectedCountry.flag))
         setFlag(selectedCountry.flag);
         setCode(selectedCountry.code);
         setCallingCode(selectedCountry.dial_code);
@@ -39,8 +45,12 @@ const PhoneNumberInput = forwardRef((_, ref) => {
     useImperativeHandle(ref, () => ({
         handleNextPress,
         validatePhoneNumber,
+        setPhoneNumber,
+        setCallingCode,
+        setFlag,
         phoneNumber,
         callingCode,
+        setDisabled
     }));
 
     const validatePhoneNumber = () => {
@@ -63,10 +73,11 @@ const PhoneNumberInput = forwardRef((_, ref) => {
 
     return (
         <View style={styles.container}>
-            <View style={errorMessage!== '' ? styles.errorInputWrapper : styles.inputWrapper}>
+            <View style={[errorMessage!== '' ? styles.errorInputWrapper : styles.inputWrapper,disabled && styles.disabledInput]}>
                 <TouchableOpacity
-                    style={styles.flagContainer}
+                    style={[styles.flagContainer]}
                     onPress={() => setCountryPickerVisible(true)}
+                    disabled={disabled}
                 >
                     <Text style={styles.flag}>{flag}</Text>
                     <Image source={IMAGES.upDownArrow} style={styles.arrowIcon} />
@@ -74,7 +85,7 @@ const PhoneNumberInput = forwardRef((_, ref) => {
                 </TouchableOpacity>
 
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input,disabled && {color:COLORS.light_gray}]}
                     placeholder="Enter phone number"
                     keyboardType="phone-pad"
                     value={phoneNumber}
@@ -84,6 +95,8 @@ const PhoneNumberInput = forwardRef((_, ref) => {
                         setErrorMessage('');
                     }}
                     onBlur={validatePhoneNumber}
+                    editable={!disabled}
+                    
                 />
             </View>
 
@@ -153,6 +166,10 @@ const styles = StyleSheet.create({
         marginTop: 5,
         color: COLORS.errorText,
         fontFamily:fontFamily.ABCDiatype_Regular,
+    },
+    disabledInput: {
+        backgroundColor: COLORS.lighter_gray,
+     
     },
     countryPicker: {
         modal: {

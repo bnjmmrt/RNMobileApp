@@ -9,26 +9,16 @@ import {
   COLORS,
 } from '../../../utils/constants';
 import Button from '../../../component/Button';
-import Title from '../../../component/Title/Title';
 import Input from '../../../component/Input/Input';
 import Header from '../../../component/Header/Header';
 // import {useGetPostsQuery} from '../../../redux/slices/apiSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../redux/slices';
-import {
-  setFirstName,
-  setIsEmailVerified,
-  setLastName,
-  setPageProgress,
-} from '../../../redux/slices/appFlowSlice';
-
 import useApi from '../../../axios/useApi';
 import {EndPoint} from '../../../ApiManager/config';
 import {Wp} from '../../../utils/dimensions';
 import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
 import EmailInput from '../../../component/EmailComponent/EmailInput';
-import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
-import IMAGES from '../../../assets/images';
 import DatePickerComponent from './DatePickerComponent';
 import BaseCityComponent from './BaseCityComponent';
 import CreativeFocusComponent from './CreativeFocusComponent';
@@ -42,9 +32,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const dispatch = useDispatch();
   const userDetails = useSelector((state: RootState) => state.appFlow);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const isEmailPhoneBothVerified = useSelector(
-    (state: RootState) => state.appFlow.isEmailPhoneBothVerified,
-  );
 
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
@@ -53,36 +40,84 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>();
-    const [isToastShown, setIsToastShown] = useState(false);
-    const [selectedData, getSelectedData] = useState<any[]>();
-
-  const fetch = async () => {
-    // const focusResponse = await apiRequest('get', EndPoint.get_focuses);
-    // dispatch(setCreativeFocus(focusResponse.data));
-    // const interestResponse = await apiRequest('get', EndPoint.interests);
-    // dispatch(setInterests(interestResponse.data));
-  };
+  const [isToastShown, setIsToastShown] = useState(false);
+  const [selectedData, getSelectedData] = useState<any[]>();
 
   useEffect(() => {
-    fetch();
+    if (loginData?.isSignUpCompleted) {
+      phoneNumberInputRef?.current.setDisabled(true);
+      phoneNumberInputRef?.current.setPhoneNumber(userDetails.phone);
+      phoneNumberInputRef?.current.setCallingCode(
+        userDetails.countryCallingCode,
+      );
+      // phoneNumberInputRef?.current.setCode(userDetails.countryCodeFlag);
+      phoneNumberInputRef?.current.setFlag(userDetails.countryCodeFlag || '🇺🇸');
+      emailInputRef?.current.setDisabled(true);
+      emailInputRef?.current.setEmailAddress(userDetails.email);
+    }
+
+    if (loginData?.varifyStatus === 2) {
+      phoneNumberInputRef?.current.setDisabled(true);
+      phoneNumberInputRef?.current.setPhoneNumber(userDetails.phone);
+      phoneNumberInputRef?.current.setCallingCode(
+        userDetails.countryCallingCode,
+      );
+      // phoneNumberInputRef?.current.setCode(userDetails.countryCodeFlag);
+      phoneNumberInputRef?.current.setFlag(userDetails.countryCodeFlag || '🇺🇸');
+    }
+
+    if (loginData?.varifyStatus === 1) {
+      emailInputRef?.current.setDisabled(true);
+      emailInputRef?.current.setEmailAddress(userDetails.email);
+    }
   }, []);
 
-  const onNextClick = () => {
+  const uploadFile = async () => {
+    return await apiRequest('post', EndPoint.user_profile_picture, {
+      profilePicture: userDetails.profilePic,
+    });
+  };
+
+  const onConfirmClick = async () => {
     if (
       firstNameRef.current.validateInputs() &&
       // firstNameRef.current.inputText.length > 2 &&
       lastNameRef.current.validateInputs()
       //  && lastNameRef.current.inputText.length > 2
     ) {
-      dispatch(setFirstName(firstNameRef.current.inputText));
-      dispatch(setLastName(lastNameRef.current.inputText));
-      dispatch(setIsEmailVerified(false));
-      if (isEmailPhoneBothVerified) {
-        dispatch(setPageProgress(3));
-        navigation.navigate('GenderScreen');
-      } else {
-        dispatch(setPageProgress(2));
-        navigation.navigate('EnterEmail');
+      const fileUploadResponse: any = await apiRequest(
+        'put',
+        EndPoint.user_profile_picture + loginData?.userId,
+        {profilePicture: userDetails.profilePic},
+      );
+      console.log('fileUploadResponse,fileUploadResponse');
+      if (fileUploadResponse.data) {
+        const requestObject: any = {
+          address: {
+            address: userDetails.baseCity.address,
+            city: '',
+            latitude: '',
+            longitude: '',
+            placeId:  userDetails.baseCity.placeId,
+            regionCode: '',
+          },
+          birthDate: userDetails.birthday,
+          email:userDetails.email,
+          firstName:  firstNameRef.current.inputText,
+          gender: userDetails.gender,
+          lastName: lastNameRef.current.inputText,
+          mobilePhone: userDetails.phone,
+        };
+
+        const response: any = await apiRequest(
+          'put',
+          EndPoint.user_profile + loginData?.userId,
+          requestObject,
+        );
+        console.log('response,response');
+        if(response.data){
+          //display success
+        }
       }
     }
   };
@@ -99,7 +134,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
         showProgressBar={false}
       />
 
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.contentContainer}>
           <Input
             ref={firstNameRef}
@@ -113,19 +148,26 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
             errorMessage={ERROR_MESSAGE.LAST_NAME}
             defaultValue={userDetails.lastName}
           />
-
-          {loginData?.varifyStatus === 1 && (
-            <>
-         
-              <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
-              <PhoneNumberInput ref={phoneNumberInputRef} />
-            </>
-          )}
-
-          {loginData?.varifyStatus === 2 && (
+          {loginData?.isSignUpCompleted ? (
             <>
               <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
               <EmailInput ref={emailInputRef} />
+              <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
+              <PhoneNumberInput ref={phoneNumberInputRef} />
+            </>
+          ) : (
+            <>
+              {loginData?.varifyStatus === 2 ? (
+                <>
+                  <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
+                  <PhoneNumberInput ref={phoneNumberInputRef} />
+                </>
+              ) : (
+                <>
+                  <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
+                  <EmailInput ref={emailInputRef} />
+                </>
+              )}
             </>
           )}
 
@@ -141,8 +183,10 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
               <BaseCityComponent />
 
               <Text style={[styles.label]}>{LABLE.CREATIVE_FOCUS}</Text>
-              <CreativeFocusComponent setIsToastShown={setIsToastShown}
-          getSelectedData={getSelectedData} />
+              <CreativeFocusComponent
+                setIsToastShown={setIsToastShown}
+                getSelectedData={getSelectedData}
+              />
             </View>
           )}
         </View>
@@ -152,7 +196,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
         style={styles.btnStyle}
         title={BUTTON_LABLE.CONFIRM}
         colorTheme="dark"
-        onPress={onNextClick}
+        onPress={onConfirmClick}
       />
     </SafeAreaView>
   );
@@ -172,6 +216,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
   },
+  scrollContainer: {paddingBottom: 200},
   label: {
     paddingVertical: 2,
     fontSize: 14,
