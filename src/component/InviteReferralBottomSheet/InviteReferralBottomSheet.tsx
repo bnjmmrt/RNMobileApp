@@ -18,10 +18,10 @@ import AvatarInitials from '../AvatarInitials';
 import Input from '../Input/Input';
 import ButtonSmall from '../ButtonSmall';
 import Button from '../Button';
-import IMAGES from '@images/index';
+import IMAGES from '../../assets/images';
 import TabBar from '../ActiveTabBar/TabBar';
-import { fontFamily } from 'src/utils/functions';
-import { useFetchMembersQuery, useRequestMemberMutation } from 'src/redux/actions/referralApiAction';
+import { fontFamily } from '../../utils/functions';
+import { useFetchMembersQuery, useRequestMemberMutation } from '../../redux/actions/referralApiAction';
 import { RenderMemberList } from './RenderMemberList';
 
 interface AppMember {

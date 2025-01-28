@@ -5,8 +5,8 @@ import { COLORS } from '../../utils/constants';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 import { View } from 'react-native';
-import IMAGES from '@images/index';
-import { Hp, Wp } from 'src/utils/dimensions';
+import IMAGES from '../../assets/images';
+import { Hp, Wp } from '../../utils/dimensions';
 import { CommonActions } from '@react-navigation/native';
 
 interface BeforeAppStaticScreenProps extends NativeStackScreenProps<any, any> { }

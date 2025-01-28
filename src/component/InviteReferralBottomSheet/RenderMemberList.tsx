@@ -3,10 +3,10 @@ import ButtonSmall from "../ButtonSmall";
 import { StyleSheet, Text } from "react-native";
 import AvatarInitials from "../AvatarInitials";
 import { View } from "react-native-animatable";
-import IMAGES from "@images/index";
-import { COLORS } from "src/utils/constants";
-import { fontFamily } from "src/utils/functions";
-import { useRequestMemberMutation } from "src/redux/actions/referralApiAction";
+import IMAGES from "../../assets/images";
+import { COLORS } from "../../utils/constants";
+import { fontFamily } from "../../utils/functions";
+import { useRequestMemberMutation } from "../../redux/actions/referralApiAction";
 
 export const RenderMemberList = (data: any) => {
     const { item } = data;
