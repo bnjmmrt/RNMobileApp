@@ -51,6 +51,17 @@ const IMAGES = {
   x:require('./x.png'),
   globe:require('./globe.png'),
   linkedin:require('./linkindin.png'),
+  // upDown:require('./upDown.png'),
+  profileFacebook:require('./profile_facebook.png'),
+  profileInsta:require('./profile_insta.png'),
+  profileYoutube:require('./profile_youtube.png'),
+  profileSnapchat:require('./profile_snapchat.png'),
+  profileTiktok:require('./profile_tiktok.png'),
+  profileX:require('./profile_x.png'),
+  profileLinkedIn:require('./profile_linkedIn.png'),
+  facebook:require('./facebook.png'),
+  snapchat:require('./snapchat.png'),
+  linkedIn:require('./linkedin.png'),
   cross:require('./Shape.png'),
 }
 

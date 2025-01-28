@@ -93,7 +93,7 @@ const HostProfileScreen: React.FC = () => {
   const socialMediaLinks = profile?.socialMedia || {};
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white}}>
       <Header
         showProgressBar={false}
         rightIcon={IMAGES.dots}
@@ -154,7 +154,7 @@ const HostProfileScreen: React.FC = () => {
           <FlatList
             horizontal
             ListEmptyComponent={<Text style={styles.dateText}>No past events.</Text>}
-            contentContainerStyle={{ gap: 16, marginTop: 12 }}
+            contentContainerStyle={{ gap: 16, marginTop: 12,marginBottom:100 }}
             data={profile?.pastEvents || []}
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (

@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     alignItems: 'center',
     justifyContent: 'center',
+    height:40
   },
   solidButton: {
     backgroundColor: COLORS.black,

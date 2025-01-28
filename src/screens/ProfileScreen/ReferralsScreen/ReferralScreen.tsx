@@ -33,14 +33,14 @@ const ReferralScreen: React.FC = () => {
     const subtitle =
       activeTab === 'referrals'
         ? PROFILE.REVIEW_REFERRAL_REQUESTS
-        : PROFILE.REVIEW_REFERRAL_REQUESTS;
+        : PROFILE.REVIEW_VOUCH_REQUESTS;
 
     return (
       <>
         <Text style={styles.sectionSubtitle}>{subtitle}</Text>
         <FlatList
           data={data}
-          ListEmptyComponent={ <View style={{ alignItems: 'center', justifyContent: 'center', height: Hp(50), flexDirection: 'row'}}>
+          ListEmptyComponent={ <View style={{ alignItems: 'center', justifyContent: 'center', height: Hp(40), flexDirection: 'row'}}>
           <EventEmptyRecord title= {"You have no referral requests at this time."}/>
           </View>}
           contentContainerStyle={{ gap: 12, marginTop: 24, paddingBottom: 60 }}
@@ -74,8 +74,10 @@ const ReferralScreen: React.FC = () => {
         onTabChange={(tab) => setActiveTab(tab === "01" ? 'referrals' : 'vouches')}
         tabOneLabel="Referral Requests"
         tabTwoLabel="Vouch Requests"
+        countOne={2}
+        countTwo={2}
       />
-      <View style={{ paddingHorizontal: 20, flex: 1 }}>{renderContent()}</View>
+      <View style={{ paddingHorizontal: 16, flex: 1 }}>{renderContent()}</View>
       <Button
         disabled={false}
         style={styles.btnStyle}

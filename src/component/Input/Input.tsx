@@ -6,6 +6,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  ViewStyle,
 } from 'react-native';
 import { COLORS } from '../../utils/constants';
 import { useNavigation } from '@react-navigation/native';
@@ -20,6 +21,7 @@ interface InputProps {
   defaultValue?: string;
   onChangeText?: (text: string) => void;
   multiline?: boolean;
+  otherStyle?:ViewStyle
 }
 
 const Input = forwardRef((props: InputProps, ref) => {
@@ -30,9 +32,10 @@ const Input = forwardRef((props: InputProps, ref) => {
     leftImage,
     rightImage,
     onPressImage,
-    defaultValue = '',
-    onChangeText,
     multiline = false,
+    defaultValue='',
+    onChangeText,
+    otherStyle
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -65,7 +68,7 @@ const Input = forwardRef((props: InputProps, ref) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,otherStyle]}>
       {/* Dynamic Label */}
       {label && <Text style={[styles.label]}>{label}</Text>}
 
@@ -124,10 +127,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 8,
-    height: 50,
+    height: 60,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 15,
+    paddingHorizontal: 16,
   },
   multilineInputContainer: {
     height: 160, // Adjust height for multiline inputs

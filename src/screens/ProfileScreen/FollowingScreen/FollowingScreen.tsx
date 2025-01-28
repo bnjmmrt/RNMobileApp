@@ -14,6 +14,8 @@ import AvatarInitials from 'src/component/AvatarInitials';
 import ButtonSmall from 'src/component/ButtonSmall';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import Header from 'src/component/Header/Header';
+import SearchInput from 'src/component/SearchInput';
+import { ROUTES } from 'src/navigation/Route';
 import {
   useFetchHostListQuery,
   useFollowHostMutation,
@@ -116,11 +118,10 @@ const FollowingScreen: React.FC = () => {
   return (
     <SafeAreaView style={{ flex: 1,backgroundColor:COLORS.white }}>
     <Header headerTitle={PROFILE.FOLLOWING} showProgressBar={false} onPress={goBack} />
-    <TextInput
-              style={styles.input}
-              placeholder="Search by host name"
+            <SearchInput
+            onSearchTextChange={handleSearch}
+            placeholder="Search Hosts.."
               value={searchQuery}
-              onChangeText={handleSearch}
             />
       <FlatList
         data={filteredHosts}
@@ -130,7 +131,7 @@ const FollowingScreen: React.FC = () => {
               style={{
                 alignItems: 'center',
                 justifyContent: 'center',
-                height: Hp(50),
+                height: Hp(60),
                 flexDirection: 'row',
               }}
             >
@@ -144,7 +145,7 @@ const FollowingScreen: React.FC = () => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.itemContainer}>
-            <AvatarInitials onPress={()=>navigate('HostProfileScreen',{hostId:'dsk'})} imgUrl={item.companyLogo} size={48} />
+            <AvatarInitials onPress={()=>navigate(ROUTES.HostProfileScreen,{hostId:'dsk'})} imgUrl={item.companyLogo} size={48} />
             <Text style={styles.itemName}>{item.companyName}</Text>
             <ButtonSmall
               style={styles.smallBtnStyle}
@@ -158,7 +159,7 @@ const FollowingScreen: React.FC = () => {
         )}
         refreshing={isRefreshing}
         onRefresh={handleRefresh}
-        contentContainerStyle={{paddingHorizontal:20}}
+        contentContainerStyle={{paddingHorizontal:20,marginTop:12}}
         // onEndReached={hasMore ? loadMoreHosts : null}
         onEndReachedThreshold={0.5}
         ListFooterComponent={
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
   },
   smallBtnStyle: {
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingVertical: 6,
     borderRadius: 100,
   },
   loader: {

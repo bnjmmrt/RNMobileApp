@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import AvatarInitials from 'src/component/AvatarInitials';
 import StatusButton from 'src/component/StatusButton/StatusButton';
 import { COLORS } from 'src/utils/constants';
+import { fontFamily } from 'src/utils/functions';
 
 interface ReferralRequestItemProps {
     name: string;
@@ -91,11 +92,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-end',
         gap: 12,
-        marginTop: 8,
+        marginTop: 2,
     },
     messageText: {
         fontSize: 14,
         color: COLORS.black,
+        fontFamily:fontFamily.ABCDiatype_Regular
     },
     requestText: {
         fontSize: 14,
