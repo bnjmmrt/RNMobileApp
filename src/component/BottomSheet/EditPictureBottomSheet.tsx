@@ -1,21 +1,24 @@
-import React, {useRef, forwardRef} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import React, {useRef, forwardRef, useState} from 'react';
+import {View, StyleSheet, Text, Image} from 'react-native';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
 import {COLORS} from '../../utils/constants';
 import Button from '../Button';
-import { fontFamily } from '../../utils/functions';
+import {fontFamily} from '../../utils/functions';
+import {EndPoint} from '../../ApiManager/config';
+import useApi from '../../axios/useApi';
 
 interface EditPictureBottomSheetProps {
   onPress: () => void;
   title?: string;
   submitButtonText: string;
   cancelButtonText: string;
-  snapPoints:any
+  snapPoints: any;
+  image: any | null;
 }
 const EditPictureBottomSheet = forwardRef(
   (props: EditPictureBottomSheetProps, ref) => {
     const inputRef = useRef(null);
-    //   const [submitReferralCode, { isLoading }] = useSubmitReferralCodeMutation();
+    // const [image, setImage] = useState<string>(image);
 
     const cancelClick = () => {
       ref.current?.close();
@@ -28,6 +31,17 @@ const EditPictureBottomSheet = forwardRef(
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
           {props.title && <Text style={styles.title}>{props.title}</Text>}
+
+          {props.image && (
+            <View style={styles.profilePhotoContainer}>
+              <Image
+                style={styles.profilePhotoContainer}
+                source={{uri: props.image}}
+                resizeMode="cover"
+              />
+            </View>
+          )}
+
           <Button
             disabled={false}
             style={styles.btnStyle}
@@ -65,8 +79,17 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontFamily:fontFamily.RomieTrial_Bold,
-    textAlign:"center"
+    fontFamily: fontFamily.RomieTrial_Bold,
+    textAlign: 'center',
+  },
+  profilePhotoContainer: {
+    height: 196,
+    width: 196,
+    borderRadius: 100,
+    backgroundColor: COLORS.tabBorderColor,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
