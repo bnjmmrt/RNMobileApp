@@ -10,13 +10,19 @@ import { AppFlowStack } from './AppFlowStack';
 
 const MainNavigation: React.FC = () => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  console.log("Login Data:",loginData)
+  console.log("Login Data:", loginData)
 
   const [isVerified, setVerified] = useState<number>(loginData?.varifyStatus || 0);
-  const [isInvited, setInvited] = useState<number>(loginData?.isInvited);
 
+  if (isVerified === 0) {
+    return <AuthStack />;
+  }
 
-  return isVerified == 0 ? <AuthStack /> : isInvited ? <OnboardingStack /> : <AppStack />;
+  if (loginData.isSignUpCompleted || loginData.isInvited || loginData.token.length > 0) {
+    return <OnboardingStack />;
+  }
+
+  return <AppStack />;
 };
 
 export default MainNavigation;

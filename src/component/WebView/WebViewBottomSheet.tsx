@@ -4,12 +4,7 @@ import WebView from 'react-native-webview';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
 import { Hp } from '../../utils/dimensions';
 import { COLORS } from '../../utils/constants';
-interface WebViewBottomSheetProps {
-    url: string; // URL to be passed from the parent
-    onChange?: (index: number) => void; // Callback function to be called when the bottom sheet changes
-}
 
-// const WebViewBottomSheet = ({ url, onChange }: WebViewBottomSheetProps) => {
 const WebViewBottomSheet = forwardRef((props, ref) => {
 
     // const bottomSheetRef = useRef(null);

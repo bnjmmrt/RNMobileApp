@@ -10,6 +10,7 @@ import {useSelector} from 'react-redux';
 import {RootState} from 'src/redux/slices';
 import UsersModule from 'src/screens/UsersModule';
 import {SCREENS} from 'src/utils/constants';
+import { ProfileStack } from 'src/navigation/ProfileStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,44 +32,45 @@ const memberTabs = [
   },
   {
     name: 'ProfileScreen',
-    component: ProfileScreen,
+    component: ProfileStack,
     options: {tabBarLabel: 'Profile', tabBarIcon: IMAGES.profileTab},
   },
 ];
 
-const hostTabs = [
-  {
-    name: 'EventScreen',
-    component: EventScreen,
-    options: {tabBarLabel: 'Events', tabBarIcon: IMAGES.eventTab},
-  },
-  {
-    name: SCREENS.USERS_BOTTOM_TAB,
-    component: UsersModule,
-    options: {tabBarLabel: 'Users', tabBarIcon: IMAGES.profileTab},
-  },
-  {
-    name: 'ChatScreen',
-    component: ChatScreen,
-    options: {tabBarLabel: 'Chat', tabBarIcon: IMAGES.chatTab},
-  },
-  {
-    name: 'ProfileScreen',
-    component: ProfileScreen,
-    options: {tabBarLabel: 'Profile', tabBarIcon: IMAGES.profileTab},
-  },
-];
+// const hostTabs = [
+//   {
+//     name: 'EventScreen',
+//     component: EventScreen,
+//     options: {tabBarLabel: 'Events', tabBarIcon: IMAGES.eventTab},
+//   },
+//   {
+//     name: SCREENS.USERS_BOTTOM_TAB,
+//     component: UsersModule,
+//     options: {tabBarLabel: 'Users', tabBarIcon: IMAGES.profileTab},
+//   },
+//   {
+//     name: 'ChatScreen',
+//     component: ChatScreen,
+//     options: {tabBarLabel: 'Chat', tabBarIcon: IMAGES.chatTab},
+//   },
+//   {
+//     name: 'ProfileScreen',
+//     component: ProfileScreen,
+//     options: {tabBarLabel: 'Profile', tabBarIcon: IMAGES.profileTab},
+//   },
+// ];
 
 const BottomTabBar = () => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
+
 
   return (
     <Tab.Navigator
       tabBar={props => <BottomTabBrComponent {...props} />}
       screenOptions={{headerShown: false}}
       backBehavior="history"
-      initialRouteName={SCREENS.USERS_BOTTOM_TAB}>
-      {hostTabs.map((item, index) => {
+      initialRouteName={loginData?.isInvited ? "EventScreen" : "DiscoverScreen"}>
+      {memberTabs.map((item, index) => {
         return (
           <Tab.Screen
             name={item.name}
