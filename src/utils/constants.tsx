@@ -14,19 +14,23 @@ export const BUTTON_LABLE = {
   GO_TO_INSTAGRAM: 'Go to Instagram',
   SEND_EMAIL: 'Send Email',
   SUPPORT_EMAIL_ID: 'support@therumor.com',
-  SUBMIT: 'Submit',
-  INVITE_CONTACTS_VIA: 'Invite Contacts via Link',
-  INVITE: 'Invite',
-  SENT: 'Sent',
-  REQUREST: 'Request',
-  ACCESS_MY_CONTACTS: 'Access My Contacts',
-  ENTER_REFERRAL_CODE: 'Enter Referral Code',
-  CONFIRM: 'Confirm',
+  SUBMIT:'Submit',
+  INVITE_CONTACTS_VIA:'Invite Contacts via Link',
+  INVITE:"Invite",
+  SENT:'Sent',
+  REQUREST:'Request',
+  ACCESS_MY_CONTACTS:'Access My Contacts',
+  ENTER_REFERRAL_CODE:"Enter Referral Code",
+  CONFIRM: "Confirm",
+  INVITE_FRIENDS:"Invite Friends to Join Rumor",
+  INVITES:'Invites',
+  INVITE_FREINDS:'Invite friends to join you on Rumor.',
   REPLACE_PHOTO: 'Replace Photo',
   CANCEL: 'Cancel',
   DELETE_MY_ACCOUNT: 'Delete My Account',
   CLOSE: 'Close',
   SAVE_PHOTO:'Save Photo'
+ 
 };
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',
@@ -174,7 +178,9 @@ export const PROFILE = {
   PUSH_NOTIFICATIONS:'Push Notifications',
   EMAIL_NOTIFICATIONS:'Email Notifications',
   FEEDBACK_MESSAGE:'Thank you for your feedback!',
-  FEEDBACK_CONFIRMATION_MESSAGE:'We truly appreciate your input and will use it to enhance our service.'
+  FEEDBACK_CONFIRMATION_MESSAGE:'We truly appreciate your input and will use it to enhance our service.',
+  REVIEW_REFERRAL_REQUESTS:'Review referral requests from friends who want to join Rumor. Your decision will remain private.',
+  REVIEW_VOUCH_REQUESTS:'Approve or decline requests from members seeking your vouch to join an experience. Your decision is private.'
 };
 
 export const ERROR_MESSAGE = {
@@ -183,8 +189,8 @@ export const ERROR_MESSAGE = {
   PLEASE_ENTER_YOUR_BASE_CITY: 'Please enter your base city',
   PLEASE_ENTER_YOUR_BIRTHDAY: 'Please enter your birthday',
   PLEASE_ENTER_A_VALID_EMAIL_ADDRESS: 'Please enter a valid email address',
-  PLEASE_ENTER_A_VALID_REFERRAL_CODE: 'Please enter a valid referral code',
-  AGE_REQUIREMENT_NOT_MET: 'Age requirement not met',
+  PLEASE_ENTER_A_VALID_REFERRAL_CODE:"Please enter a valid referral code",
+  AGE_REQUIREMENT_NOT_MET:"Age requirement not met",
   FEEDBACK_ERROR:'Please enter your Feedback.'
 };
 export const COLORS = {
@@ -206,7 +212,9 @@ export const COLORS = {
   transperantBackground: 'rgba(0, 0, 0, 0.5)',
   placeHodler: '#A2A1A1',
   surfaceSecondary: '#CDBAB1',
-  nearBlack: '#676767',
+  nearBlack:'#676767',
+  successLight:'#E8F2EF',
+  success:'#167E60',
   pink: '#D93175',
   blue: '#1877F2',
   darkBlue: '#0A66C2',

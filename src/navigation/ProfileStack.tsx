@@ -6,6 +6,9 @@ import ConnectedAccountsScreen from '../screens/ProfileScreen/EditProfile/Connec
 import SelectInterestScreen from '../screens/AppFlow/SelectInterestScreen/SelectInterestScreen';
 import NotificationsScreen from '../screens/ProfileScreen/EditProfile/Notifications';
 import FeedbackScreen from '../screens/ProfileScreen/EditProfile/FeedbackScreen';
+import HostProfileScreen from 'src/screens/ProfileScreen/HostProfile/HostProfileScreen';
+import ReferralScreen from 'src/screens/ProfileScreen/ReferralsScreen/ReferralScreen';
+import FollowingScreen from 'src/screens/ProfileScreen/FollowingScreen/FollowingScreen';
 
 
 // Define the param list for the stack navigator
@@ -15,7 +18,11 @@ export type AppStackParamList = {
   ConnectedAccountsScreen: undefined;
   SelectInterestScreen:undefined;
   NotificationsScreen:undefined;
-  FeedbackScreen:undefined
+  FeedbackScreen:undefined;
+  HostProfileScreen:undefined;
+  ReferralScreen:undefined;
+  FollowingScreen:undefined;
+
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -59,6 +66,22 @@ export const ProfileStack: React.FC = () => {
         component={FeedbackScreen}
         options={{ headerShown: false}}
       />
+        <Stack.Screen
+        name="HostProfileScreen"
+        component={HostProfileScreen}
+        options={{ headerShown: false }}
+      />
+            <Stack.Screen
+        name="ReferralScreen"
+        component={ReferralScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="FollowingScreen"
+        component={FollowingScreen}
+        options={{ headerShown: false }}
+      />
+
     </Stack.Navigator>
   );
 };

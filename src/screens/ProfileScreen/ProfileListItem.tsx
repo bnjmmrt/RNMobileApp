@@ -36,11 +36,13 @@ const ProfileListItem: React.FC<ListItemProps> = ({item, onPress}) => {
 
       case PROFILE.FOLLOWING:
         console.log('Redirecting to Following...');
+        navigation.navigate(ROUTES.FollowingScreen);
         // Example: navigate('/following');
         break;
 
       case PROFILE.REFERRALS:
         console.log('Redirecting to Referrals...');
+        navigation.navigate(ROUTES.ReferralScreen);
         // Example: navigate('/referrals');
         break;
 
