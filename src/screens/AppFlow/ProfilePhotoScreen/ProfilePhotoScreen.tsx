@@ -21,6 +21,7 @@ import {EndPoint} from '../../../ApiManager/config';
 import AvatarInitials from '../../../component/AvatarInitials';
 import {environment} from '../../../../environments/environment';
 import EditPictureBottomSheet from '../../../component/BottomSheet/EditPictureBottomSheet';
+import FullScreenLoader from 'src/component/FullScreenLoader';
 
 interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -107,6 +108,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   };
   return (
     <SafeAreaView style={styles.container}>
+       <FullScreenLoader loading={loading}>
       <Header headerTitle={LABLE.PROFILE_PHOTO} onPress={handleBackPress} />
 
       <View style={styles.contentContainer}>
@@ -164,6 +166,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
         colorTheme="dark"
         onPress={onNextClick}
       />
+      </FullScreenLoader>
     </SafeAreaView>
   );
 };

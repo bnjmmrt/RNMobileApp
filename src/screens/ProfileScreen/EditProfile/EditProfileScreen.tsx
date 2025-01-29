@@ -23,6 +23,7 @@ import DatePickerComponent from './DatePickerComponent';
 import BaseCityComponent from './BaseCityComponent';
 import CreativeFocusComponent from './CreativeFocusComponent';
 import GenderComponent from './GenderComponent';
+import Toast from 'src/component/Toast/Toast';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -37,12 +38,15 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const lastNameRef = useRef<any>(null);
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
+  const baseCityRef = useRef<any>(null);
+  const birthDayRef = useRef<any>(null);
+  const [gender, selectedGender] = useState(userDetails.gender);
+  const birthday = useSelector((state: RootState) => state.appFlow.birthday);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>();
+  const [selectedDate, setSelectedDate] = useState<string>(birthday);
   const [isToastShown, setIsToastShown] = useState(false);
-  const [selectedData, getSelectedData] = useState<any[]>();
-
+  const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>();
   useEffect(() => {
     if (loginData?.isSignUpCompleted) {
       phoneNumberInputRef?.current.setDisabled(true);
@@ -81,9 +85,10 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const onConfirmClick = async () => {
     if (
       firstNameRef.current.validateInputs() &&
-      // firstNameRef.current.inputText.length > 2 &&
-      lastNameRef.current.validateInputs()
-      //  && lastNameRef.current.inputText.length > 2
+      lastNameRef.current.validateInputs() &&
+      birthDayRef.current.validateBirthDate() &&
+      baseCityRef.current.validateBaseCity() &&
+      !isToastShown
     ) {
       const fileUploadResponse: any = await apiRequest(
         'put',
@@ -94,20 +99,24 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
       if (fileUploadResponse.data) {
         const requestObject: any = {
           address: {
-            address: userDetails.baseCity.address,
+            address: baseCityRef.current.selectedCity.address,
             city: '',
             latitude: '',
             longitude: '',
-            placeId:  userDetails.baseCity.placeId,
+            placeId: baseCityRef.current.selectedCity.placeId,
             regionCode: '',
           },
           birthDate: userDetails.birthday,
-          email:userDetails.email,
-          firstName:  firstNameRef.current.inputText,
-          gender: userDetails.gender,
+          email: userDetails.email,
+          firstName: firstNameRef.current.inputText,
+          gender: gender,
           lastName: lastNameRef.current.inputText,
           mobilePhone: userDetails.phone,
+          // creativeFocus: selectedCreativeFocus
+          //   ? selectedCreativeFocus.map((item: any) => item.id)
+          //   : userDetails.creativeFocus.map((item: any) => item.id),
         };
+        console.log('requestObject', requestObject);
 
         const response: any = await apiRequest(
           'put',
@@ -115,7 +124,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
           requestObject,
         );
         console.log('response,response');
-        if(response.data){
+        if (response.data) {
           //display success
         }
       }
@@ -174,22 +183,28 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
           {loginData?.isSignUpCompleted && (
             <View>
               <Text style={[styles.label]}>{LABLE.GENDER}</Text>
-              <GenderComponent />
+              <GenderComponent selectedGender={selectedGender} />
 
               <Text style={[styles.label]}>{LABLE.BIRTHDAY}</Text>
-              <DatePickerComponent />
+              <DatePickerComponent ref={birthDayRef} birthDate={selectedDate} />
 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
-              <BaseCityComponent />
+              <BaseCityComponent ref={baseCityRef} />
 
               <Text style={[styles.label]}>{LABLE.CREATIVE_FOCUS}</Text>
               <CreativeFocusComponent
                 setIsToastShown={setIsToastShown}
-                getSelectedData={getSelectedData}
+                getSelectedData={getSelectedCreativeFocus}
               />
             </View>
           )}
         </View>
+        {isToastShown && (
+          <Toast
+            message={'Please select at least one'}
+            onClose={() => setIsToastShown(false)}
+          />
+        )}
       </ScrollView>
       <Button
         disabled={false}
