@@ -14,9 +14,10 @@ import IMAGES from '../../assets/images';
 import {COLORS} from '../../utils/constants';
 import {Hp, Wp} from '../../utils/dimensions';
 import ProgressBar from '../ProgressBar/ProgressBar';
+import {useNavigation} from '@react-navigation/native';
 
 interface HeaderProps {
-  onPress: () => void;
+  onPress?: () => void;
   headerTitle?: string;
   showProgressBar?: boolean;
   showBackButton?: boolean;
@@ -34,12 +35,23 @@ const Header: React.FC<HeaderProps> = ({
   showBackButton = true,
   rightIconWrapperStyle = {},
 }) => {
+  const navigation = useNavigation();
+
+  const onPressBackIcon = () => {
+    if (onPress) {
+      onPress();
+    } else {
+      if (navigation.canGoBack()) navigation.goBack();
+    }
+  };
   return (
     <View style={{}}>
       <View style={styles.container}>
         {/* Back Arrow */}
         {showBackButton ? (
-          <TouchableOpacity onPress={onPress} style={styles.iconWrapper}>
+          <TouchableOpacity
+            onPress={onPressBackIcon}
+            style={styles.iconWrapper}>
             <Image source={IMAGES.leftArrow} style={styles.icon} />
           </TouchableOpacity>
         ) : (
@@ -62,7 +74,7 @@ const Header: React.FC<HeaderProps> = ({
           <View style={styles.emptyWrapper} />
         )}
       </View>
-      {showProgressBar && <ProgressBar />}
+      {showProgressBar ? <ProgressBar /> : null}
     </View>
   );
 };
