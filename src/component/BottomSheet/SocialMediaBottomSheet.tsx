@@ -37,7 +37,7 @@ const SocialMediaBottomSheet = forwardRef(
         snapPoints={
           props.snapPoints
             ? props.snapPoints
-            : [Platform.OS === 'android' ? '50%' : '45%']
+            : [Platform.OS === 'android' ? '45%' : '45%']
         }
         onClose={() => console.log(ref)}>
         <View style={styles.container}>

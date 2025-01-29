@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, Linking, Image } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Hp } from '../../utils/dimensions';
@@ -9,13 +9,36 @@ import IMAGES from '../../assets/images/index';
 import LandingStyles from './LandingStyles';
 import Button from '../../component/Button';
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
+import {
+  setCreativeFocus,
+  setInterests,
+} from '../../redux/slices/appFlowApiDataSlice';
+import useApi from 'src/axios/useApi';
+import { useDispatch } from 'react-redux';
+import { EndPoint } from 'src/ApiManager/config';
+
 // Define the type for navigation props
 interface LandingScreenProps extends NativeStackScreenProps<any, any> { }
 
 const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
+  const {apiRequest, loading, error} = useApi();
+  const dispatch = useDispatch();
   const styles = LandingStyles();
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const bottomSheetRef = useRef(null);
+
+    const fetch = async () => {
+      const focusResponse:any = await apiRequest('get', EndPoint.get_focuses);
+      dispatch(setCreativeFocus(focusResponse.data));
+      console.log("focusResponse")
+      const interestResponse:any = await apiRequest('get', EndPoint.interests);
+      dispatch(setInterests(interestResponse.data));
+      console.log("interestResponse",interestResponse)
+    };
+
+    useEffect(() => {
+        fetch();
+      }, []);
 
   const onEnterClick = () => {
     navigation.navigate('EmailPhoneScreen')
