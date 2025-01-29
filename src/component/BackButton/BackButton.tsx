@@ -3,12 +3,14 @@ import { TouchableOpacity, StyleSheet, View, Image } from 'react-native';
 import { Wp, Hp } from '../../utils/dimensions';
 import IMAGES from '../../assets/images';
 import { COLORS } from '../../utils/constants';
+import { useNavigation } from '@react-navigation/native';
 
 const BackButton = ({ onPress }: { onPress: () => void }) => {
+  const {goBack}=useNavigation();
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity style={styles.container} onPress={ goBack}>
       <View style={styles.iconWrapper}>
-        <Image source={IMAGES.leftArrow} />
+        {/* <Image source={IMAGES.leftArrow} /> */}
       </View>
     </TouchableOpacity>
   );

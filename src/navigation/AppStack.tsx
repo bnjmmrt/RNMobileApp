@@ -22,15 +22,15 @@ const Stack = createStackNavigator<AppStackParamList>();
 export const AppStack: React.FC = () => {
   return (
     <Stack.Navigator
-      initialRouteName={"BeforeAppStaticScreen"}
+      initialRouteName={"BottomTabBar"}
       screenOptions={({ route, navigation }) => ({})}>
 
-      <Stack.Screen
+      {/* <Stack.Screen
         name="BeforeAppStaticScreen"
         component={BeforeAppStaticScreen}
         options={{ headerShown: false }}
-      />
-
+      /> */}
+         
       <Stack.Screen
         name="AppFlowStack"
         component={AppFlowStack}

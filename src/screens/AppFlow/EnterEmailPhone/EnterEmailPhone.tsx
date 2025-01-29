@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
-import EmailPhoneStyles from './EnterEmailPhoneStyles';
+import EnterEmailPhoneStyles from './EnterEmailPhoneStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
@@ -13,14 +13,14 @@ import { RootState } from '../../../redux/slices';
 import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
 import EmailInput from '../../../component/EmailComponent/EmailInput';
 
-interface EnterEmailScreenProps extends NativeStackScreenProps<any, any> { }
+interface EnterEmailPhoneProps extends NativeStackScreenProps<any, any> { }
 
-const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
+const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
   const dispatch = useDispatch();
   // const isEmailVerified = useSelector((state: RootState) => state.appFlow.isEmailVerified);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const isEmailVerified = loginData?.varifyStatus === 2;
-  const styles = EmailPhoneStyles();
+  const isEmailVerified = loginData?.varifyStatus;
+  const styles = EnterEmailPhoneStyles();
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
 
@@ -28,8 +28,11 @@ const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
   const onNextClick = () => {
     if (loginData?.varifyStatus === 1) {
       if (phoneNumberInputRef.current.validatePhoneNumber()) {
-        dispatch(setPhone(phoneNumberInputRef.current.phoneNumber));
-        navigation.navigate('VerifyEmail', { phone: phoneNumberInputRef.current.phoneNumber, isEmail: false });
+        dispatch(setPhone(phoneNumberInputRef.current.callingCode + phoneNumberInputRef.current.phoneNumber));
+        navigation.navigate('VerifyEmail', { 
+          phone: phoneNumberInputRef.current.callingCode + phoneNumberInputRef.current.phoneNumber,
+          isEmail: false
+        });
       }
     } else {
       if (emailInputRef.current.validateEmailAddress()) {
@@ -49,16 +52,16 @@ const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Header
-        headerTitle={isEmailVerified ? LABLE.PHONE : LABLE.EMAIL}
+        headerTitle={isEmailVerified === 1 ? LABLE.PHONE : LABLE.EMAIL}
         onPress={handleBackPress}
       />
 
       <View style={styles.contentContainer}>
         <Title
-          title={isEmailVerified ? LABLE.WHATS_YOUR_PHONE_NUMBER : LABLE.WHATS_YOUR_EMAIL_ADDRESS}
-          subTitle={isEmailVerified ? LABLE.WHATS_YOUR_PHONE_NUMBER_SUBTITLE : LABLE.WHATS_YOUR_EMAIL_SUBTITLE}
+          title={isEmailVerified === 1 ? LABLE.WHATS_YOUR_PHONE_NUMBER : LABLE.WHATS_YOUR_EMAIL_ADDRESS}
+          subTitle={isEmailVerified === 1 ? LABLE.WHATS_YOUR_PHONE_NUMBER_SUBTITLE : LABLE.WHATS_YOUR_EMAIL_SUBTITLE}
         />
-        {isEmailVerified ?
+        {isEmailVerified === 1 ?
           <PhoneNumberInput ref={phoneNumberInputRef} />
           :
           <EmailInput ref={emailInputRef} />}
@@ -75,4 +78,4 @@ const EnterEmailScreen: React.FC<EnterEmailScreenProps> = ({ navigation }) => {
   );
 };
 
-export default EnterEmailScreen;
+export default EnterEmailPhone;
