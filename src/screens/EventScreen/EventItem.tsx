@@ -5,13 +5,18 @@ import {fontFamily, formatEventDates} from '../../utils/functions';
 import {Wp, Hp} from '../../utils/dimensions';
 import ButtonSmall from '../../component/ButtonSmall';
 import FastImage from '@d11/react-native-fast-image';
+import { useNavigation } from '@react-navigation/native';
 
 interface EventItemProps {
   item: {};
 }
 const EventItem: React.FC<EventItemProps> = ({item}) => {
   // Handle the "Next" button press
-  const handlEventPress = () => {};
+  const navigation = useNavigation();
+  // Handle the "Next" button press
+  const handlEventPress = () => {
+    navigation.navigate('EventDetailsScreen', {item});
+  };
 
   return (
     <View style={styles.container}>

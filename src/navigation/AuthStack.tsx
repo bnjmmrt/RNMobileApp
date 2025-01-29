@@ -8,6 +8,7 @@ import { OnboardingStack } from './OnboardingStack';
 import BeforeAppStaticScreen from 'src/screens/BeforeApplicationFlow/BeforeAppStaticScreen';
 import { AppFlowStack } from './AppFlowStack';
 import BottomTabBar from '../component/Tabbar/BottomTabBar';
+import EventDetailsScreen from 'src/screens/EventScreen/EventDetailsScreen';
 
 
 // Define the param list for the stack navigator
@@ -18,6 +19,7 @@ export type AuthStackParamList = {
   BottomTabBar: undefined;
   BeforeAppStaticScreen: undefined;
   AppFlowStack: undefined;
+  EventDetailsScreen: undefined;
 };
 
 const Stack = createStackNavigator<AuthStackParamList>();
@@ -63,6 +65,12 @@ export const AuthStack: React.FC = () => {
         options={{ headerShown: false }}
       />
 
+
+<Stack.Screen
+        name="EventDetailsScreen"
+        component={EventDetailsScreen}
+        options={{ headerShown: false }}
+      />
 
     </Stack.Navigator>
   );

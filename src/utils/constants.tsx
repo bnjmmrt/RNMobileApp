@@ -1,3 +1,5 @@
+import { BorderlessButton } from "react-native-gesture-handler"
+
 export const BUTTON_LABLE = {
   ENTER: 'Enter',
   NEXT: 'Next',
@@ -14,14 +16,15 @@ export const BUTTON_LABLE = {
   GO_TO_INSTAGRAM: 'Go to Instagram',
   SEND_EMAIL: 'Send Email',
   SUPPORT_EMAIL_ID: 'support@therumor.com',
-  SUBMIT:'Submit',
-  INVITE_CONTACTS_VIA:'Invite Contacts via Link',
-  INVITE:"Invite",
-  SENT:'Sent',
-  REQUREST:'Request',
-  ACCESS_MY_CONTACTS:'Access My Contacts',
-  ENTER_REFERRAL_CODE:"Enter Referral Code",
+  SUBMIT: 'Submit',
+  INVITE_CONTACTS_VIA: 'Invite Contacts via Link',
+  INVITE: "Invite",
+  SENT: 'Sent',
+  REQUREST: 'Request',
+  ACCESS_MY_CONTACTS: 'Access My Contacts',
+  ENTER_REFERRAL_CODE: "Enter Referral Code",
   CONFIRM: "Confirm",
+  FOLLOW: 'Follow'
 }
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',
@@ -93,39 +96,53 @@ export const LABLE = {
   WE_WILL_REVIEW_APP: "We’ll review your application after we receive your message.",
   EMAIL_THE_CODE: "Email the code to:",
   DONT_USE_INSTAGRAM: "Don't use Instagram?",
-  REFERRAL_CODE:"Referral Code",
-  IF_YOU_HAVE_ANY_REFERRAL_CODE:'If you have a referral code, enter it below.',
-  ENTER_CODE:'Enter Code',
-  SELECT_A_REFERRAL:'Select a Referral',
-  SEARCH_FRIENDS:"Search friends..",
-  FRIENDS_WHO_ARE_MEMBERS:'Friends who are members',
-  REQUEST_A_REFERRAL:'Request a referral from a Rumor member to boost your application.',
-  CONTACTS:"Contacts",
-  INVITE_FRIENDS_TO:"Invite friends to fast track your membership approval.",
-  YOU_ARE_ON_WAITLIST : "You’re on\nthe waitlist.",
-  FULL_ACCESS_UNLOCK:"Full access will be unlocked once your application is approved.",
+  REFERRAL_CODE: "Referral Code",
+  IF_YOU_HAVE_ANY_REFERRAL_CODE: 'If you have a referral code, enter it below.',
+  ENTER_CODE: 'Enter Code',
+  SELECT_A_REFERRAL: 'Select a Referral',
+  SEARCH_FRIENDS: "Search friends..",
+  FRIENDS_WHO_ARE_MEMBERS: 'Friends who are members',
+  REQUEST_A_REFERRAL: 'Request a referral from a Rumor member to boost your application.',
+  CONTACTS: "Contacts",
+  INVITE_FRIENDS_TO: "Invite friends to fast track your membership approval.",
+  YOU_ARE_ON_WAITLIST: "You’re on\nthe waitlist.",
+  FULL_ACCESS_UNLOCK: "Full access will be unlocked once your application is approved.",
   FASTRACK_YOUR_APPLICATION: "Want to fast-track your application?",
-  REQUEST_REFERRAL_FROM_RUMOR:"Request referrals from Rumor members.",
-  INVITE_YOUR_FRIEND:"Invite your friends to join Rumor.",
-  SELECT_YOUR_BIRTHDAY_BELOW:"Select your birthday below",
-  LOGOUT:'Log Out',
-  COMING_SOON:"Coming Soon…",
-  OTP_VERIFIED_SUCCESSFULLY:'OTP verified successfully!',
-  SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:'Something went wrong, please try again'
+  REQUEST_REFERRAL_FROM_RUMOR: "Request referrals from Rumor members.",
+  INVITE_YOUR_FRIEND: "Invite your friends to join Rumor.",
+  SELECT_YOUR_BIRTHDAY_BELOW: "Select your birthday below",
+  LOGOUT: 'Log Out',
+  COMING_SOON: "Coming Soon…",
+  OTP_VERIFIED_SUCCESSFULLY: 'OTP verified successfully!',
+  SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN: 'Something went wrong, please try again',
+  ABOUT_THE_EVENT: "About the Event",
+  READ_MORE: 'Read More',
+  FEATURED_TALENT: "Featured Talent",
+  DUMMY_TEXT: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent bland",
 }
 
-export const PROFILE ={
-  EDIT_PROFILE :'Edit Profile',
-  NOTIFICATION:'Notifications',
-  FEEDBACK:'Feedback',
-  CONTACT_SUPPORT:'Contact Support',
-  DELETE_ACCOUNT:'Delete Account',
-  LOGOUT:'Log Out',
-  FOLLOWING:'Following',
-  REFERRALS:'Referrals',
-  CONNECTED_ACCOUNTS:'Connected Accounts',
-  MY_INTERESTS:'My Interests',
+export const PROFILE = {
+  EDIT_PROFILE: 'Edit Profile',
+  NOTIFICATION: 'Notifications',
+  FEEDBACK: 'Feedback',
+  CONTACT_SUPPORT: 'Contact Support',
+  DELETE_ACCOUNT: 'Delete Account',
+  LOGOUT: 'Log Out',
+  FOLLOWING: 'Following',
+  REFERRALS: 'Referrals',
+  CONNECTED_ACCOUNTS: 'Connected Accounts',
+  MY_INTERESTS: 'My Interests',
 }
+
+export const EVENT_STATUS = {
+  AWAITING: 'Awaiting response from host',
+  INVITED: 'Invited by host',
+  DECLINED_BY_HOST: 'Request declined by host',
+  DECLINED_BY_YOU: 'You declined this invitation',
+  GOING: 'You are going',
+}
+
+
 
 export const ERROR_MESSAGE = {
   FIRST_NAME: 'Please enter your first name',
@@ -133,28 +150,35 @@ export const ERROR_MESSAGE = {
   PLEASE_ENTER_YOUR_BASE_CITY: 'Please enter your base city',
   PLEASE_ENTER_YOUR_BIRTHDAY: 'Please enter your birthday',
   PLEASE_ENTER_A_VALID_EMAIL_ADDRESS: 'Please enter a valid email address',
-  PLEASE_ENTER_A_VALID_REFERRAL_CODE:"Please enter a valid referral code",
-  AGE_REQUIREMENT_NOT_MET:"Age requirement not met"
+  PLEASE_ENTER_A_VALID_REFERRAL_CODE: "Please enter a valid referral code",
+  AGE_REQUIREMENT_NOT_MET: "Age requirement not met"
 }
 export const COLORS = {
   black: '#1F1F1F',
   black2: '#0F0F0F',
   white: '#FFFFFF',
   light_gray: '#838282',
-  light_text:'#B5B5B5',
+  light_text: '#B5B5B5',
   dark_gray: '#494949',
   lighter_gray: '#EEEEEE',
   disable: '#D7D3D0',
   borderGray: '#E1E1E1',
   tabBorderColor: '#D8D8D8',
-  borderRed: '#E2B6B8',
-  bgRed: '#F5E7E7',
   text: '#B5B5B5',
   errorText: '#9D0D11',
   bgBackArrow: '#f4f4f4',
   transperantBackground: 'rgba(0, 0, 0, 0.5)',
   placeHodler: '#A2A1A1',
   surfaceSecondary: '#CDBAB1',
-  nearBlack:'#676767'
+  nearBlack: '#676767',
+  borderYellow: '#FBE8BD',
+  bgYellow: '#FEF8E9',
+  borderBlue: '#B9D8CF',
+  bgBlue: '#E7F1F5',
+  borderRed: '#E2B6B8',
+  bgRed: '#F5E7E7',
+  borderGreen: '#B9D8CF',
+  bgGreen: '#E8F2EF',
+
 }
 

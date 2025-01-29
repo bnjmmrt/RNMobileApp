@@ -43,6 +43,10 @@ const IMAGES = {
   noRecord:require('./noRecord.png'),
   location:require('./location.png'),
   cross:require('./Shape.png'),
+  tickAwaiting:require('./tickAwaiting.png'),
+  tickInvited:require('./tickInvited.png'),
+  tickDeclined:require('./tickDeclined.png'),
+  tickGoing:require('./tickGoing.png'),
 }
 
 export default IMAGES;
