@@ -1,8 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  ScrollView,
-} from 'react-native';
+import {View, ScrollView} from 'react-native';
 import {COLORS, LABLE} from '../../utils/constants';
 import {SafeAreaView} from 'react-native';
 import HeaderComponent from '../../component/HeaderComponent';
@@ -17,7 +14,9 @@ import {fontFamily} from '../../utils/functions';
 import FeedItem from './FeedItem';
 import NoResults from './NoResults';
 import {apiGet} from '../../ApiManager/MainApi';
-import FeedSearchInput from '../FeedSearchInput';
+import FeedSearchInput from './FeedSearchInput';
+import FeedAccessLocation from './FeedAccessLocation';
+import FeedFilter from './FeedFilter';
 
 interface EventItem {
   id: string;
@@ -37,6 +36,10 @@ const EventsFeed = () => {
   const [featuredEvents, setFeaturedEvents] = useState<EventItem[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [searchEnter, setSearchEnter] = useState<boolean>(true);
+  const [allowAccess, setAllowAccess] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [filterVisible, setFilterVisible] = useState<boolean>(false);
+
   const isInvited = loginData?.isInvited || false;
 
   const handleSearchChange = (text: string) => {
@@ -56,6 +59,10 @@ const EventsFeed = () => {
   const handleClear = () => {
     setSearchEnter(true);
     setFilterEvents(allFilterEvents);
+  };
+
+  const handleFilter = () => {
+    setAllowAccess(true);
   };
 
   useEffect(() => {
@@ -87,6 +94,7 @@ const EventsFeed = () => {
         setFeaturedEvents(featuredEventsRes);
         setFilterEvents(eventsRes);
         setAllFilterEvents(eventsRes);
+        setLoading(false);
       } catch (error) {
         console.error('Failed to fetch events:', error);
       }
@@ -103,8 +111,9 @@ const EventsFeed = () => {
       ]}>
       {isInvited ? (
         <BeforeAppStaticComponent
-          title={LABLE.UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS}
-          subTitle={LABLE.GET_DISCOVERY_BY_THE_WORLD}
+          isChatScreen={false}
+          // title={LABLE.UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS}
+          // subTitle={LABLE.GET_DISCOVERY_BY_THE_WORLD}
         />
       ) : (
         <View>
@@ -113,10 +122,11 @@ const EventsFeed = () => {
             handleChange={handleSearchChange}
             handleSearch={handleSearch}
             handleClear={handleClear}
+            handleFilter={handleFilter}
           />
           <ScrollView>
             {filterEvents.length === 0 ? (
-              <NoResults />
+              <NoResults loading={loading} />
             ) : (
               <>
                 {searchEnter && <FeaturedEvents item={featuredEvents} />}
@@ -132,6 +142,14 @@ const EventsFeed = () => {
           </ScrollView>
         </View>
       )}
+
+      {allowAccess && (
+        <FeedAccessLocation setAllowAccess={setAllowAccess} setFilterVisible={setFilterVisible} />
+      )}
+      <FeedFilter
+        filterVisible={filterVisible}
+        setFilterVisible={setFilterVisible}
+      />
     </SafeAreaView>
   );
 };

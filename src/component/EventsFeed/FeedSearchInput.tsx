@@ -1,20 +1,22 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
 import {Image} from 'react-native-animatable';
-import IMAGES from '../assets/images';
-import {COLORS} from '../utils/constants';
-import {fontFamily} from '../utils/functions';
+import IMAGES from '../../assets/images';
+import {COLORS} from '../../utils/constants';
+import {fontFamily} from '../../utils/functions';
 
 interface FeedSearchInputProps {
   handleChange: (text: string) => void;
   handleSearch: () => void;
   handleClear: () => void;
+  handleFilter: () => void;
 }
 
 const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
   handleChange,
   handleSearch,
   handleClear,
+  handleFilter,
 }) => {
   const [searchText, setSearchText] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -49,9 +51,9 @@ const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
             <Image source={IMAGES.clear} style={styles.clearIcon} />
           </TouchableOpacity>
         )}
-        <View style={styles.sort}>
-          <Image source={IMAGES.sort} style={styles.sortIcon} />
-        </View>
+        <TouchableOpacity onPress={handleFilter} style={styles.filter}>
+            <Image source={IMAGES.filter} style={styles.filterIcon} />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
   },
-  sort: {
+  filter: {
     width: 30,
     height: 30,
     marginLeft: 6,
@@ -94,7 +96,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D8D8D8',
     borderRadius: 100,
   },
-  sortIcon: {
+  filterIcon: {
     width: 16,
     height: 16,
   },
