@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, {useState, forwardRef, useImperativeHandle} from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,8 @@ import {
   TouchableOpacity,
   ViewStyle,
 } from 'react-native';
-import { COLORS } from '../../utils/constants';
-import { useNavigation } from '@react-navigation/native';
+import {COLORS} from '../../utils/constants';
+import {useNavigation} from '@react-navigation/native';
 
 interface InputProps {
   label?: string;
@@ -21,7 +21,7 @@ interface InputProps {
   defaultValue?: string;
   onChangeText?: (text: string) => void;
   multiline?: boolean;
-  otherStyle?:ViewStyle
+  otherStyle?: ViewStyle;
 }
 
 const Input = forwardRef((props: InputProps, ref) => {
@@ -33,9 +33,9 @@ const Input = forwardRef((props: InputProps, ref) => {
     rightImage,
     onPressImage,
     multiline = false,
-    defaultValue='',
+    defaultValue = '',
     onChangeText,
-    otherStyle
+    otherStyle,
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -68,7 +68,7 @@ const Input = forwardRef((props: InputProps, ref) => {
   };
 
   return (
-    <View style={[styles.container,otherStyle]}>
+    <View style={[styles.container, otherStyle]}>
       {/* Dynamic Label */}
       {label && <Text style={[styles.label]}>{label}</Text>}
 
@@ -78,18 +78,14 @@ const Input = forwardRef((props: InputProps, ref) => {
           styles.inputContainer,
           multiline ? styles.multilineInputContainer : null,
           errorMessage ? styles.errorInputWrapper : null,
-        ]}
-      >
+        ]}>
         {leftImage && <Image source={leftImage} style={styles.leftImage} />}
         <TextInput
           {...props}
-          style={[
-            styles.input,
-            multiline ? styles.multilineInput : null,
-          ]}
+          style={[styles.input, multiline ? styles.multilineInput : null]}
           value={inputText}
           placeholder={placeholder}
-          onChangeText={(text) => {
+          onChangeText={text => {
             setInputText(text);
             setErrorMessage(''); // Clear error on text change
             if (onChangeText) {
@@ -137,7 +133,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingTop: 10,
   },
-  leftImage: { marginRight: 6, width: 20, height: 20 },
+  leftImage: {marginRight: 6, width: 20, height: 20},
   input: {
     width: '90%',
     fontSize: 16,
