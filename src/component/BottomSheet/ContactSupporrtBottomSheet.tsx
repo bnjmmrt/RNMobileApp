@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   Modal,
 } from 'react-native';
-import {COLORS} from 'src/utils/constants';
+import {COLORS} from '../../utils/constants';
+import LinearGradient from 'react-native-linear-gradient';
 
 interface ContactSupporrtBottomSheetProps {
   setIsShown: (ishown: boolean) => void;
@@ -29,35 +30,41 @@ const ContactSupporrtBottomSheet: React.FC<ContactSupporrtBottomSheetProps> = ({
       visible={modalVisible}
       onRequestClose={() => setModalVisible(false)}>
       <View style={styles.container}>
-        <View style={styles.modalContent}>
-          <View>
-            <View style={styles.headerContainer}>
-              <View style={styles.header}>
-                <Text style={styles.logo}>rumor</Text>
-                <TouchableOpacity onPress={submit}>
-                  <Text style={styles.closeIcon}>x</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.textContainer}>
-                <Text style={styles.greeting}>
-                  Hi Sarah <Text style={styles.wave}>👋</Text>
-                </Text>
-                <Text style={styles.helpText}>How can we help?</Text>
-              </View>
-            </View>
-            <View style={styles.contentContainer}>
-              <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Messages</Text>
-                <Text style={styles.icon}>💬</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Send us a message</Text>
-                <Text style={styles.icon}>➤</Text>
-              </TouchableOpacity>
-            </View>
+        <LinearGradient
+          colors={
+            Platform.OS === 'android'
+              ? ['#000', '#000', '#fff', '#fff', '#fff']
+              : ['#000', '#000', '#303030', '#fff', '#fff', '#fff', '#fff', '#fff']
+          }
+          style={styles.modalContent}>
+          <View style={styles.header}>
+            <Text style={styles.logo}>rumor</Text>
+            <TouchableOpacity onPress={submit}>
+              <Text style={styles.closeIcon}>x</Text>
+            </TouchableOpacity>
           </View>
-        </View>
+
+          {/* Greeting */}
+          <View style={styles.textContainer}>
+            <Text style={styles.greeting}>
+              Hi Sarah <Text style={styles.wave}>👋</Text>
+            </Text>
+            <Text style={styles.helpText}>How can we help?</Text>
+          </View>
+
+          {/* Buttons */}
+          <View style={{padding: 10, bottom: 30}}>
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText}>Messages</Text>
+              <Text style={styles.icon}>💬</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText}>Send us a message</Text>
+              <Text style={styles.icon}>➤</Text>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
       </View>
     </Modal>
   );
@@ -66,7 +73,7 @@ const ContactSupporrtBottomSheet: React.FC<ContactSupporrtBottomSheetProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.72)',
+    backgroundColor: 'rgba(0, 0, 0, 0.71)',
   },
   modalContent: {
     width: '100%',
@@ -76,10 +83,10 @@ const styles = StyleSheet.create({
     top: '5%',
     height: '98%',
   },
-  textContainer: {flex: 1, justifyContent: 'flex-end',padding:20},
+  textContainer: {padding: 20},
   headerContainer: {
     backgroundColor: COLORS.black,
-    
+
     height: 200,
     // iOS Shadow
     shadowColor: COLORS.black,
@@ -97,7 +104,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   logo: {
-    color:COLORS.white,
+    color: COLORS.white,
     fontSize: 22,
     fontWeight: 'bold',
   },
@@ -115,14 +122,14 @@ const styles = StyleSheet.create({
     fontSize: 26,
   },
   helpText: {
-    color:COLORS.white,
+    color: COLORS.white,
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 20,
   },
   contentContainer: {
-   bottom:30,
-   padding:10
+    bottom: 30,
+    padding: 10,
   },
   button: {
     backgroundColor: COLORS.white,

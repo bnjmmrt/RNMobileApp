@@ -10,6 +10,7 @@ import {useSelector} from 'react-redux';
 import {RootState} from 'src/redux/slices';
 import UsersModule from 'src/screens/UsersModule';
 import {SCREENS} from 'src/utils/constants';
+import { ProfileStack } from '../../navigation/ProfileStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -54,7 +55,7 @@ const hostTabs = [
   },
   {
     name: 'ProfileScreen',
-    component: ProfileScreen,
+    component: ProfileStack,
     options: {tabBarLabel: 'Profile', tabBarIcon: IMAGES.profileTab},
   },
 ];
