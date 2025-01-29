@@ -69,7 +69,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
         <View>
           <HeaderComponent isDarkTheme={false} />
           <SearchInput ref={searchInputRef} onSearchTextChange={handleSearchTextChange} />
-          <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
+          <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} activeTabIndex={loginData?.isInvited ? 1 : 0} />
           <View style={styles.contentContainer}>{renderTabContent()}</View>
         </View>
         :

@@ -46,18 +46,14 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const profilePic = useSelector(
     (state: RootState) => state.appFlow.profilePic,
   );
+    const bottomSheetRef = useRef(null);
 
   useEffect(() => {
-    URL.length > 0 && setShowBottomSheet(true);
+    URL.length > 0 && bottomSheetRef?.current?.open();
   }, [URL]);
 
   const setWebUrl = (url: string) => {
     setURL(url);
-  };
-  const onChangeBottomSheet = (index: number) => {
-    if (index === -1) {
-      setShowBottomSheet(false);
-    }
   };
 
   const [isInvited, setInvited] = useState<boolean>(
@@ -161,14 +157,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     <SafeAreaView
       style={[
         styles.container,
-        {backgroundColor: isInvited ? COLORS.black : COLORS.white},
+        {backgroundColor: !isInvited ? COLORS.black2 : COLORS.white},
       ]}>
-      {isInvited ? (
-        <BeforeAppStaticComponent
-          title={LABLE.STREAMLINE_YOUR_LIFESTYLE}
-          subTitle={LABLE.MANAGE_YOUR_EVENTS}
-        />
-      ) : (
+     
         <View style={{backgroundColor: COLORS.white}}>
           <HeaderComponent isDarkTheme={false} />
 
@@ -200,7 +191,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
           </ScrollView>
 
           {showBottomSheet && (
-            <WebViewBottomSheet url={URL} onChange={onChangeBottomSheet} />
+            <WebViewBottomSheet url={URL} ref={bottomSheetRef} />
           )}
 
           <EditPictureBottomSheet
@@ -235,7 +226,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
             onPress={deleteAccount}
           />
         </View>
-      )}
+    
     </SafeAreaView>
   );
 };
