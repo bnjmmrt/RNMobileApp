@@ -1,13 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { COLORS } from '../../../src/utils/constants';
 import { fontFamily } from '../../../src/utils/functions';
 
 type AvatarInitialsProps = {
-  name: string;
+  name?: string;
   size?: number;
   backgroundColor?: string;
   textColor?: string;
+  imgUrl?: string;
+  onPress?:any
 };
 
 const AvatarInitials: React.FC<AvatarInitialsProps> = ({
@@ -15,14 +17,15 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
   size = 48,
   backgroundColor = COLORS.tabBorderColor,
   textColor = COLORS.black,
+  imgUrl,
+  onPress
 }) => {
-  // Function to extract initials from the name
   const getInitials = (name: string): string => {
     if (!name) return '';
 
     const nameParts = name.trim().split(' ');
     const initials = nameParts
-      .slice(0, 2) // Get the first two parts (e.g., first and last name)
+      .slice(0, 2)
       .map((part) => part[0]?.toUpperCase())
       .join('');
 
@@ -31,8 +34,23 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
 
   const initials = getInitials(name);
 
-  return (
-    <View
+  return imgUrl ? (
+   <TouchableOpacity onPress={onPress}>
+    <Image
+      source={{ uri: imgUrl }}
+      style={[
+        styles.avatar,
+        {
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+        },
+      ]}
+    />
+    </TouchableOpacity>
+  ) : (
+    <TouchableOpacity
+    onPress={onPress}
       style={[
         styles.avatar,
         {
@@ -46,7 +64,7 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
       <Text style={[styles.text, { color: textColor, fontSize: size / 2.5 }]}>
         {initials}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -56,7 +74,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    fontFamily:fontFamily.ABCDiatype_Regular
+    fontFamily: fontFamily.ABCDiatype_Regular,
   },
 });
 

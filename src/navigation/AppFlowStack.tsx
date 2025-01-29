@@ -12,6 +12,7 @@ import ProfilePhotoScreen from '../screens/AppFlow/ProfilePhotoScreen/ProfilePho
 import IdentityVerification from '../screens/AppFlow/IdentityVerification/IdentityVerification';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/slices';
+import ReferralScreen from 'src/screens/ProfileScreen/ReferralsScreen/ReferralScreen';
 
 
 // Define the param list for the stack navigator
@@ -25,6 +26,7 @@ export type AppFlowStackParamList = {
   SelectInterestScreen: undefined;
   ProfilePhotoScreen: undefined;
   IdentityVerification: undefined;
+  ReferralsScreen:undefined
   
 };
 
@@ -102,6 +104,11 @@ export const AppFlowStack: React.FC = () => {
       <Stack.Screen
         name="IdentityVerification"
         component={IdentityVerification}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ReferralsScreen"
+        component={ReferralScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

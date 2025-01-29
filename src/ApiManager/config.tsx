@@ -59,6 +59,7 @@ export const EndPoint = {
   email_verify_code:'v1/auth/verify-code-by-email',
   phone_send_verification_code:'v1/communication/send-verification-code',
   phone_verify_code: 'v1/communication/verify-code',
+  host_feedback:'v1/auth/host-feedback',
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

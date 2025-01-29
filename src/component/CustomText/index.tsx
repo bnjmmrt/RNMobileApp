@@ -1,0 +1,44 @@
+import React, {ReactNode} from 'react';
+import {StyleProp, StyleSheet, Text, TextProps, TextStyle} from 'react-native';
+import {fontFamily} from 'src/utils/functions';
+import {styles} from './style';
+
+interface CustomTextProps {
+  textProps?: TextProps;
+  style?: TextStyle | Array<StyleProp<TextStyle>>;
+  children?: ReactNode;
+  onPress?: () => void;
+  defaultFontFamily?: 'abcd' | 'romie';
+}
+
+export const CustomText = ({
+  textProps,
+  style,
+  children,
+  onPress,
+  defaultFontFamily = 'abcd',
+}: CustomTextProps): React.JSX.Element => {
+  const flattenedStyle = StyleSheet.flatten(style);
+
+  return (
+    <Text
+      {...textProps}
+      style={[
+        styles?.customText,
+        {
+          fontSize:
+            flattenedStyle && flattenedStyle?.fontSize
+              ? flattenedStyle?.fontSize
+              : 14,
+          fontFamily:
+            defaultFontFamily === 'abcd'
+              ? fontFamily.ABCDiatype_Regular
+              : fontFamily.RomieTrial_Regular,
+        },
+        style,
+      ]}
+      onPress={onPress}>
+      {children}
+    </Text>
+  );
+};
