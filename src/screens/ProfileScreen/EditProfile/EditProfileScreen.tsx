@@ -23,6 +23,7 @@ import DatePickerComponent from './DatePickerComponent';
 import BaseCityComponent from './BaseCityComponent';
 import CreativeFocusComponent from './CreativeFocusComponent';
 import GenderComponent from './GenderComponent';
+import Toast from 'src/component/Toast/Toast';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -38,10 +39,12 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
   const baseCityRef = useRef<any>(null);
-  const [gender, selectedGender] = useState();
+  const birthDayRef = useRef<any>(null);
+  const [gender, selectedGender] = useState(userDetails.gender);
+  const birthday = useSelector((state: RootState) => state.appFlow.birthday);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>();
+  const [selectedDate, setSelectedDate] = useState<string>(birthday);
   const [isToastShown, setIsToastShown] = useState(false);
   const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>();
   useEffect(() => {
@@ -83,7 +86,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
     if (
       firstNameRef.current.validateInputs() &&
       lastNameRef.current.validateInputs() &&
-      baseCityRef.current.validateBaseCity()
+      birthDayRef.current.validateBirthDate() &&
+      baseCityRef.current.validateBaseCity() &&
+      !isToastShown
     ) {
       const fileUploadResponse: any = await apiRequest(
         'put',
@@ -107,9 +112,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
           gender: gender,
           lastName: lastNameRef.current.inputText,
           mobilePhone: userDetails.phone,
-          creativeFocus: selectedCreativeFocus
-            ? selectedCreativeFocus.map((item: any) => item.id)
-            : userDetails.creativeFocus,
+          // creativeFocus: selectedCreativeFocus
+          //   ? selectedCreativeFocus.map((item: any) => item.id)
+          //   : userDetails.creativeFocus.map((item: any) => item.id),
         };
         console.log('requestObject', requestObject);
 
@@ -175,13 +180,13 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
             </>
           )}
 
-          {!loginData?.isSignUpCompleted && (
+          {loginData?.isSignUpCompleted && (
             <View>
               <Text style={[styles.label]}>{LABLE.GENDER}</Text>
               <GenderComponent selectedGender={selectedGender} />
 
               <Text style={[styles.label]}>{LABLE.BIRTHDAY}</Text>
-              <DatePickerComponent />
+              <DatePickerComponent ref={birthDayRef} birthDate={selectedDate} />
 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
               <BaseCityComponent ref={baseCityRef} />
@@ -194,14 +199,20 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
             </View>
           )}
         </View>
-        <Button
-          disabled={false}
-          style={styles.btnStyle}
-          title={BUTTON_LABLE.CONFIRM}
-          colorTheme="dark"
-          onPress={onConfirmClick}
-        />
+        {isToastShown && (
+          <Toast
+            message={'Please select at least one'}
+            onClose={() => setIsToastShown(false)}
+          />
+        )}
       </ScrollView>
+      <Button
+        disabled={false}
+        style={styles.btnStyle}
+        title={BUTTON_LABLE.CONFIRM}
+        colorTheme="dark"
+        onPress={onConfirmClick}
+      />
     </SafeAreaView>
   );
 };

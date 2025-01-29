@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {forwardRef, useImperativeHandle, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../redux/slices';
@@ -7,39 +7,44 @@ import IMAGES from '../../../assets/images';
 import {LABLE, ERROR_MESSAGE, COLORS} from '../../../utils/constants';
 import DatepickerBottomSheet from '../../../component/BottomSheet/DatepickerBottomSheet';
 import {formatDate} from '../../../utils/functions';
-import { setBirthday } from 'src/redux/slices/appFlowSlice';
+import {setBirthday} from 'src/redux/slices/appFlowSlice';
 
-interface DatePickerComponentProps {}
+interface DatePickerComponentProps {
+  birthDate:string
+}
 
-const DatePickerComponent: React.FC<DatePickerComponentProps> = () => {
+const DatePickerComponent = forwardRef((props:DatePickerComponentProps, ref) => {
   const dispatch = useDispatch();
   const bottomSheetRef = useRef<any>(null);
-  const birthday = useSelector((state: RootState) => state.appFlow.birthday);
-  const [selectedDate, setSelectedDate] = useState<string>(birthday); // Initialize with birthday from Redux
+  // const birthday = useSelector((state: RootState) => state.appFlow.birthday);
+  const [selectedDate, setSelectedDate] = useState<string>(props.birthDate); // Initialize with birthday from Redux
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [date, setDate] = useState<any>(new Date());
 
   const openDatePicker = () => {
-    bottomSheetRef.current?.open(); 
+    bottomSheetRef.current?.open();
   };
-
+  useImperativeHandle(ref, () => ({
+    validateBirthDate,selectedDate
+  }));
   const handleDateChange = (date: Date) => {
-    setErrorMessage(null); 
+
+    setErrorMessage(null);
     const formattedDate = formatDate(date);
-    setSelectedDate(formattedDate); 
-    dispatch(setBirthday(formattedDate))
+    setSelectedDate(formattedDate);
+   
   };
 
   const isUnder18 = (selectedDate: string) => {
-    const [day, month, year] = selectedDate.split('/').map(Number); 
-    const selectedDateObj = new Date(year, month - 1, day); 
+    const [day, month, year] = selectedDate.split('/').map(Number);
+    const selectedDateObj = new Date(year, month - 1, day);
     const today = new Date();
     const eighteenYearsAgo = new Date();
     eighteenYearsAgo.setFullYear(today.getFullYear() - 18);
-    return selectedDateObj > eighteenYearsAgo; 
+    return selectedDateObj > eighteenYearsAgo;
   };
 
-  const validateInputs = () => {
+  const validateBirthDate = () => {
     if (!selectedDate) {
       setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_YOUR_BIRTHDAY);
       return false;
@@ -70,7 +75,7 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = () => {
       />
     </>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
