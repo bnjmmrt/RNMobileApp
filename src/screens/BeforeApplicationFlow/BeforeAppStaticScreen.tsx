@@ -16,16 +16,14 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({ navigatio
   const redirectToHome = () => {
     const resetAction = CommonActions.reset({
       index: 0,
-      routes: [{ name: 'AuthStack' }],
+      routes: [{ name: 'LandingScreen' }],
     });
     navigation.dispatch(resetAction);
 
   }
   return (
     <SafeAreaView style={styles.container}>
-
-
-
+      
       <BeforeAppStaticComponent
         isChatScreen={false}
         showLogout={true} />

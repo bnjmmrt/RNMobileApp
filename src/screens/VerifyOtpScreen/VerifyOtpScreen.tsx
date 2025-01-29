@@ -30,8 +30,8 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     const styles = VerifyOtpStyles();
     const otpInputRef = useRef<{ handleNextPress: () => void }>(null);
     const route = useRoute<RouteProp<RouteParams>>();
-    const { sendOtp, isMemberExist } = useSendOtp(route.params.email, route.params.phone);
-    const { verifyOtp, isLoading } = useVerifyOtp(isMemberExist, route.params.email, route.params.phone, route.params.isEmail);
+    const { sendOtp, isMemberExist, isGuest } = useSendOtp(route.params.email, route.params.phone);
+    const { verifyOtp, isLoading } = useVerifyOtp(isMemberExist,isGuest, route.params.email, route.params.phone, route.params.isEmail);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -46,8 +46,24 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         dispatch(setLoginData(data));
         dispatch(setEmail(route.params.email || ''));
         dispatch(setPhone(route.params.phone || ''));
-        data?.isInvited ? navigation.navigate('OnboardingStack') :
-            navigation.navigate('AppStack');
+        const userRole = data.roles[0]?.roleName
+        console.log("Sayyed userRole:",userRole)
+        if (userRole == 'non_member') {
+            console.log("Sayyed userRole:","1")
+
+            if (data.isSignUpCompleted || data.token.length > 0) {
+                console.log("Sayyed userRole:","2")
+
+                navigation.navigate('BottomTabBar');
+            } else {
+                data?.isInvited ? navigation.navigate('BottomTabBar') :
+                    navigation.navigate('BeforeAppStaticScreen');
+        }
+        } else {
+            console.log("Sayyed userRole:","3")
+
+            navigation.navigate('BottomTabBar');
+        }
     };
 
     return (
