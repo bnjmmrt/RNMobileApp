@@ -6,11 +6,11 @@ import { COLORS } from '../../utils/constants';
 import { useNavigation } from '@react-navigation/native';
 
 const BackButton = ({ onPress }: { onPress: () => void }) => {
-  const {goBack}=useNavigation();
+  const { goBack } = useNavigation();
   return (
-    <TouchableOpacity style={styles.container} onPress={ goBack}>
+    <TouchableOpacity style={styles.container} onPress={goBack}>
       <View style={styles.iconWrapper}>
-        {/* <Image source={IMAGES.leftArrow} /> */}
+        <Image source={IMAGES.leftArrow} />
       </View>
     </TouchableOpacity>
   );
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   iconWrapper: {
     width: 40,
-    height:40,
+    height: 40,
     borderRadius: 20,
     backgroundColor: COLORS.bgBackArrow, // Light gray background
     justifyContent: 'center',

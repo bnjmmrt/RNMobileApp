@@ -23,7 +23,8 @@ export const customBaseQuery = (args, api, extraOptions) =>
   logMiddleware(args, api, extraOptions, fetchBaseQuery({
     baseUrl: environment.DEV_URL,
     prepareHeaders: (headers, { getState }) => {
-      const token = ''; // Replace with your token logic
+      const token = getState().auth?.token; // Replace with your token logic
+      console.log('Token:', token);
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
       }
