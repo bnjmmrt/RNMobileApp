@@ -30,6 +30,7 @@ interface ListItem {
   id: string;
   title: string;
   image: string;
+  onPress?:any
 }
 const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const {apiRequest, loading, error} = useApi();
@@ -48,6 +49,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const userDetails = useSelector(
     (state: RootState) => state.appFlow,
   );
+  const [isShown, setIsShown] = useState(false);
 
   useEffect(() => {
     URL.length > 0 && setShowBottomSheet(true);
@@ -65,13 +67,20 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const [isInvited, setInvited] = useState<boolean>(
     loginData?.isInvited || false,
   );
+  const deleteAccount = () => {
+    deleteAccountBottomSheetRef.current?.open();
+  };
+
+  const contactSupportModal = () => {
+    setIsShown(true)
+  };
 
   const items: ListItem[] = [
     {id: '1', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit},
     {id: '2', title: PROFILE.NOTIFICATION, image: IMAGES.notification},
     {id: '3', title: PROFILE.FEEDBACK, image: IMAGES.feedback},
-    {id: '4', title: PROFILE.CONTACT_SUPPORT, image: IMAGES.contact},
-    {id: '5', title: PROFILE.DELETE_ACCOUNT, image: ''},
+    {id: '4', title: PROFILE.CONTACT_SUPPORT, image: IMAGES.contact,onPress:contactSupportModal},
+    {id: '5', title: PROFILE.DELETE_ACCOUNT, image: '',onPress:deleteAccount},
   ];
 
   const itemsExtras: ListItem[] = [
@@ -86,8 +95,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     {id: '15', title: PROFILE.MY_INTERESTS, image: IMAGES.heart},
     {id: '16', title: PROFILE.NOTIFICATION, image: IMAGES.notification},
     {id: '17', title: PROFILE.FEEDBACK, image: IMAGES.feedback},
-    {id: '18', title: PROFILE.CONTACT_SUPPORT, image: IMAGES.contact},
-    {id: '19', title: PROFILE.DELETE_ACCOUNT, image: ''},
+    {id: '18', title: PROFILE.CONTACT_SUPPORT, image: IMAGES.contact,onPress:contactSupportModal},
+    {id: '19', title: PROFILE.DELETE_ACCOUNT, image: '',onPress:deleteAccount},
   ];
 
   useEffect(() => {
@@ -153,9 +162,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     logoutBottomSheetRef.current?.close();
   };
 
-  const deleteAccount = () => {
-    deleteAccountBottomSheetRef.current?.open();
-  };
+
 
   return (
     <SafeAreaView
@@ -184,7 +191,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                 <ProfileListItem
                   key={item.id}
                   item={item}
-                  onPress={deleteAccount}
+                  onPress={item.onPress}
                 />
               );
             })}
@@ -204,12 +211,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
             <WebViewBottomSheet url={URL} onChange={onChangeBottomSheet} />
           )}
 
-{/* {isShown && (
+{isShown && (
           <ContactSupporrtBottomSheet
-            setLocation={setSelectedCity}
+            // setLocation={setSelectedCity}
             setIsShown={setIsShown}
           />
-        )} */}
+        )}
 {/* <ContactSupporrtBottomSheet ref={contactSupportBottomSheetRef}/> */}
           <EditPictureBottomSheet
             ref={editPhotoBottomSheetRef}

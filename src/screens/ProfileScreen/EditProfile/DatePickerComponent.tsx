@@ -7,6 +7,7 @@ import IMAGES from '../../../assets/images';
 import {LABLE, ERROR_MESSAGE, COLORS} from '../../../utils/constants';
 import DatepickerBottomSheet from '../../../component/BottomSheet/DatepickerBottomSheet';
 import {formatDate} from '../../../utils/functions';
+import { setBirthday } from 'src/redux/slices/appFlowSlice';
 
 interface DatePickerComponentProps {}
 
@@ -19,22 +20,23 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = () => {
   const [date, setDate] = useState<any>(new Date());
 
   const openDatePicker = () => {
-    bottomSheetRef.current?.open(); // Open the date picker
+    bottomSheetRef.current?.open(); 
   };
 
   const handleDateChange = (date: Date) => {
-    setErrorMessage(null); // Clear any error message
+    setErrorMessage(null); 
     const formattedDate = formatDate(date);
-    setSelectedDate(formattedDate); // Update the selected date
+    setSelectedDate(formattedDate); 
+    dispatch(setBirthday(formattedDate))
   };
 
   const isUnder18 = (selectedDate: string) => {
-    const [day, month, year] = selectedDate.split('/').map(Number); // Parse the date
-    const selectedDateObj = new Date(year, month - 1, day); // Create a date object
+    const [day, month, year] = selectedDate.split('/').map(Number); 
+    const selectedDateObj = new Date(year, month - 1, day); 
     const today = new Date();
     const eighteenYearsAgo = new Date();
     eighteenYearsAgo.setFullYear(today.getFullYear() - 18);
-    return selectedDateObj > eighteenYearsAgo; // Check if under 18
+    return selectedDateObj > eighteenYearsAgo; 
   };
 
   const validateInputs = () => {

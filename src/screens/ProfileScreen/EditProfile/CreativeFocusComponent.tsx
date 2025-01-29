@@ -9,7 +9,7 @@ import { Tag } from './FeedbackScreen';
 interface CreativeFocusComponentProps {
   list?:any[];
   setIsToastShown:(isShown:boolean)=>void;
-  getSelectedData:(data:Tag[])=>void;
+  getSelectedData:(data:any[])=>void;
 }
 
 const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,setIsToastShown,getSelectedData}) => {
@@ -54,7 +54,7 @@ const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,set
         setSelectedCategories(
           selectedCategories.filter((item: any) => item.id !== category.id),
         );
-        getSelectedData(selectedCategories);
+        getSelectedData( selectedCategories.filter((item: any) => item.id !== category.id));
       } else if (selectedCategories.length < 3) {
         getSelectedData(selectedCategories);
         setIsToastShown(false);
