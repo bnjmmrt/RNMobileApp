@@ -4,5 +4,8 @@ export const ROUTES = {
     ConnectedAccountsScreen:'ConnectedAccountsScreen',
     SelectInterestScreen:'SelectInterestScreen',
     NotificationsScreen:'NotificationsScreen',
-    FeedbackScreen:'FeedbackScreen'
+    FeedbackScreen:'FeedbackScreen',
+    FollowingScreen:'FollowingScreen',
+    ReferralScreen:'ReferralScreen',
+    HostProfileScreen:'HostProfileScreen'
 }

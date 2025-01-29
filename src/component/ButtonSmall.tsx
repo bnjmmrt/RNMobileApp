@@ -47,8 +47,8 @@ const ButtonSmall: React.FC<ButtonSmallProps> = ({
       disabled={disabled}
       style={[
         styles.button,
-        buttonBackground, // Apply background color if SOLID
-        borderStyle, // Apply border if STRIPE
+        buttonBackground,
+        borderStyle, 
         style,
       ]}
       onPress={onPress}
@@ -70,16 +70,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     flexDirection: 'row',
-    minWidth:80,
   },
   text: {
     fontSize: 14,
-    fontFamily: fontFamily.ABCDiatype_Bold,
+    fontFamily: fontFamily.ABCDiatype_Medium,
   },
   icon: {
-    marginRight: 8, // Add space between icon and text
-    width: 16, // Default icon size, can be customized
-    height: 16, // Default icon size, can be customized
+    marginRight: 4, 
+    width: 16, 
+    height: 16, 
   },
 });
 
