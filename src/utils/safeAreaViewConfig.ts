@@ -1,22 +1,22 @@
-import {SafeAreaViewConfig} from 'src/redux/slices/safeAreaViewConfigSlice';
-import {COLORS} from './constants';
+import { SafeAreaViewConfig } from 'src/redux/slices/safeAreaViewConfigSlice';
+import { COLORS } from './constants';
 
 interface SafeAreaViewConfigInterface {
   [path: string]: SafeAreaViewConfig;
 }
 
 export const SAFEWAREAVIEW_CONFIG: SafeAreaViewConfigInterface = {
-  EVENTS_TAB: {
-    showTopSafeAreaView: false,
+  DEFAULT_SCHEME: {
+    showTopSafeAreaView: true,
     topSafeAreaViewColor: COLORS.white,
     showBottomSafeAreaView: false,
     bottomSafeAreaViewColor: COLORS.white,
     statusBarStyle: 'dark-content',
     translucent: false,
   },
-  USERS_TAB: {
+  BLACK_SCHEME: {
     showTopSafeAreaView: true,
-    topSafeAreaViewColor: COLORS.black,
+    topSafeAreaViewColor: COLORS.black2,
     showBottomSafeAreaView: false,
     bottomSafeAreaViewColor: COLORS.white,
     statusBarStyle: 'default',
