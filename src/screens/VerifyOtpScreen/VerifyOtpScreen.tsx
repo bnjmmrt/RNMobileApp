@@ -14,7 +14,7 @@ import FullScreenLoader from '../../component/FullScreenLoader';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
 import { useSendOtp } from '../../redux//hooks/useSendOtp';
 import { useVerifyOtp } from '../../redux/hooks/useVerifyOtp';
-import { setEmail, setPhone } from 'src/redux/slices/appFlowSlice';
+import { setEmail, setPhone } from '../../redux/slices/appFlowSlice';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 

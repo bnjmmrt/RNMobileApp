@@ -6,6 +6,7 @@ import { SafeAreaView, View } from 'react-native';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 import AfterAppStaticComponent from '../../component/BeforeAppStaticComponent/AfterAppStaticComponent';
 import { useSelector } from 'react-redux';
+import EventsFeed from '../../component/EventsFeed/EventsFeed';
 import { RootState } from '../../redux/slices';
 import { useFocusEffect } from '@react-navigation/native';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
@@ -16,7 +17,7 @@ interface DiscoverScreenProps extends NativeStackScreenProps<any, any> { }
 
 const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
   // Access login data from Redux store
-  const { isSignUpCompleted, token } = useSelector((state: RootState) => state.auth.loginData);
+  const { isSignUpCompleted, token, isInvited } = useSelector((state: RootState) => state.auth.loginData);
 
   // Memoize styles to avoid unnecessary recalculations
   const styles = useMemo(() => DiscoverScreenStyle(), []);
@@ -35,13 +36,16 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
     }, [])
   );
   return (
-    <View style={styles.container}>
-      {hasFullAccess ? (
-        <AfterAppStaticComponent />
-      ) : (
-        <BeforeAppStaticComponent isChatScreen={false} />
-      )}
-    </View>
+    <SafeAreaView style={styles.container}>
+      {!isInvited ?
+        <EventsFeed />
+        :
+        <AfterAppStaticComponent
+          // title={LABLE.YOU_ARE_ON_WAITLIST}
+          // subTitle={LABLE.FULL_ACCESS_UNLOCK}
+        />
+      }
+    </SafeAreaView>
   );
 };
 
