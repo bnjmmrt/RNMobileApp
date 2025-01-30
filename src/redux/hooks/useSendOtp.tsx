@@ -5,6 +5,7 @@ import { FlashMessageComponent } from '../../component/FlashMessageComponent/Fla
 export const useSendOtp = (email?: string, phone?: string) => {
     const [checkMemberLogin] = useCheckMemberLoginMutation();
     const [isMemberExist, setMemberExist] = useState(false);
+    const [isGuest, setGuest] = useState(false);
 
     const sendOtp = async (isResend: boolean) => {
         try {
@@ -13,6 +14,7 @@ export const useSendOtp = (email?: string, phone?: string) => {
 
             if (response.status === 200) {
                 setMemberExist(response?.data?.isValid);
+                setGuest(response?.data?.isGuest || false)
                 isResend && FlashMessageComponent.show('success', 'OTP resent successfully!');
             }
         } catch (error) {
@@ -21,5 +23,5 @@ export const useSendOtp = (email?: string, phone?: string) => {
         }
     };
 
-    return { sendOtp, isMemberExist };
+    return { sendOtp, isMemberExist, isGuest };
 };

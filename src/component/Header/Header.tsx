@@ -100,8 +100,8 @@ const styles = StyleSheet.create({
     // shadowRadius: 2,
   },
   icon: {
-    width: 25,
-    height: 25,
+    width: 16,
+    height: 16,
   },
   emptyWrapper: {
     width: 40,

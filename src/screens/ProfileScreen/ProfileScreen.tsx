@@ -1,20 +1,20 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {View, TouchableOpacity, ScrollView, Platform} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker';
-import {BUTTON_LABLE, COLORS, LABLE, PROFILE} from '../../utils/constants';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, TouchableOpacity, ScrollView, Platform } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
+import { BUTTON_LABLE, COLORS, LABLE, PROFILE } from '../../utils/constants';
 import IMAGES from '../../assets/images/index';
 import ProfileScreenStyle from './ProfileScreenStyle';
-import {SafeAreaView} from 'react-native';
+import { SafeAreaView } from 'react-native';
 import HeaderComponent from '../../component/HeaderComponent';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 import ProfileTopView from './ProfileTopView';
 import ProfileListItem from './ProfileListItem';
 import TermsAndPolicy from '../../component/TermsAndPlolicy/TermsAndPolicy';
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
-import {Text} from 'react-native-animatable';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../redux/slices';
+import { Text } from 'react-native-animatable';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../redux/slices';
 import EditPictureBottomSheet from '../../component/BottomSheet/EditPictureBottomSheet';
 import DeleteAccountBottomSheet from 'src/component/BottomSheet/DeleteAccountBottomSheet';
 import useApi from '../../axios/useApi';
@@ -27,7 +27,7 @@ import { setAuthToken, setLoginData } from 'src/redux/slices/authSlice';
 import { ROUTES } from 'src/navigation/Route';
 
 // Define the type for navigation props
-interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
+interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
 interface ListItem {
   id: string;
@@ -35,8 +35,8 @@ interface ListItem {
   image: string;
   onPress?: any;
 }
-const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
-  const {apiRequest, loading, error} = useApi();
+const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
+  const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
   const styles = ProfileScreenStyle();
   const [showBottomSheet, setShowBottomSheet] = useState(false);
@@ -51,14 +51,19 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const userDetails = useSelector((state: RootState) => state.appFlow);
   const [isShown, setIsShown] = useState(false);
+  const profilePic = useSelector(
+    (state: RootState) => state.appFlow.profilePic,
+  );
+  const bottomSheetRef = useRef(null);
 
   useEffect(() => {
-    URL.length > 0 && setShowBottomSheet(true);
+    URL.length > 0 && bottomSheetRef?.current?.open();
   }, [URL]);
 
   const setWebUrl = (url: string) => {
     setURL(url);
   };
+
   const onChangeBottomSheet = (index: number) => {
     if (index === -1) {
       setShowBottomSheet(false);
@@ -90,9 +95,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   ];
 
   const itemsExtras: ListItem[] = [
-    {id: '11', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit},
-    {id: '12', title: PROFILE.FOLLOWING, image: IMAGES.following},
-    {id: '13', title: PROFILE.REFERRALS, image: IMAGES.thumbsUp},
+    { id: '11', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit },
+    { id: '12', title: PROFILE.FOLLOWING, image: IMAGES.following },
+    { id: '13', title: PROFILE.REFERRALS, image: IMAGES.thumbsUp },
     {
       id: '14',
       title: PROFILE.CONNECTED_ACCOUNTS,
@@ -113,12 +118,15 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
       image: '',
       onPress: deleteAccount,
     },
+    
   ];
 
+  const hasFullAccess = loginData.isSignUpCompleted || loginData.token.length > 0;
+
   useEffect(() => {
-    const listItems = loginData.isSignUpCompleted ? itemsExtras : items;
-    setListItems(listItems);
-  }, [loginData]);
+    const listItems = hasFullAccess ? itemsExtras : items
+    setListItems(listItems)
+  }, [loginData])
 
   const handleLogoutPress = () => {
     logoutBottomSheetRef.current?.open();
@@ -158,6 +166,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         //display error
       }
     }
+
   };
 
   const openCamera = async () => {
@@ -185,7 +194,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     <SafeAreaView
       style={[
         styles.container,
-        {backgroundColor: isInvited ? COLORS.black : COLORS.white},
+        { backgroundColor: !isInvited ? COLORS.black2 : COLORS.white },
       ]}>
       <FullScreenLoader loading={loading}>
         {isInvited ? (

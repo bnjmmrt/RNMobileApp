@@ -16,12 +16,12 @@ export type AppStackParamList = {
   EditProfileScreen: undefined;
   ProfileScreen: undefined;
   ConnectedAccountsScreen: undefined;
-  SelectInterestScreen:undefined;
-  NotificationsScreen:undefined;
-  FeedbackScreen:undefined;
-  HostProfileScreen:undefined;
-  ReferralScreen:undefined;
-  FollowingScreen:undefined;
+  SelectInterestScreen: undefined;
+  NotificationsScreen: undefined;
+  FeedbackScreen: undefined;
+  HostProfileScreen: undefined;
+  ReferralScreen: undefined;
+  FollowingScreen: undefined;
 
 };
 
@@ -31,7 +31,7 @@ const Stack = createStackNavigator<AppStackParamList>();
 export const ProfileStack: React.FC = () => {
   return (
     <Stack.Navigator
-      initialRouteName={ "ProfileScreen" }
+      initialRouteName={"ProfileScreen"}
       screenOptions={({ route, navigation }) => ({})}>
 
       <Stack.Screen
@@ -43,35 +43,35 @@ export const ProfileStack: React.FC = () => {
       <Stack.Screen
         name="EditProfileScreen"
         component={EditProfileScreen}
-        options={{ headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ConnectedAccountsScreen"
         component={ConnectedAccountsScreen}
-        options={{ headerShown: false}}
+        options={{ headerShown: false }}
       />
 
-<Stack.Screen
+      <Stack.Screen
         name="SelectInterestScreen"
         component={SelectInterestScreen}
-        options={{ headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="NotificationsScreen"
         component={NotificationsScreen}
-        options={{ headerShown: false}}
+        options={{ headerShown: false }}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="FeedbackScreen"
         component={FeedbackScreen}
-        options={{ headerShown: false}}
+        options={{ headerShown: false }}
       />
-        <Stack.Screen
+      <Stack.Screen
         name="HostProfileScreen"
         component={HostProfileScreen}
         options={{ headerShown: false }}
       />
-            <Stack.Screen
+      <Stack.Screen
         name="ReferralScreen"
         component={ReferralScreen}
         options={{ headerShown: false }}

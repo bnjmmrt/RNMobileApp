@@ -13,6 +13,10 @@ import InvitedEvents from './Tabs/InvitedEvents';
 import AppliedEvents from './Tabs/AppliedEvents';
 import PastEvents from './Tabs/PastEvents';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import AfterAppStaticComponent from 'src/component/BeforeAppStaticComponent/AfterAppStaticComponent';
+import { useFocusEffect } from '@react-navigation/native';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 interface EventScreenProps extends NativeStackScreenProps<any, any> { }
 
 interface TabItem {
@@ -29,6 +33,18 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const searchInputRef = useRef<any>(null);
   const [searchText, setSearchText] = useState('');
   // const changeTextDebouncer = useCallback(debounce(handleSearchTextChange, 500), []);
+
+  useFocusEffect(
+    useCallback(() => {
+      // Do something when the screen is focused
+      !loginData?.isInvited && changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.BLACK_SCHEME);
+
+      return () => {
+        // Optional cleanup when screen is unfocused
+        changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      };
+    }, [])
+  );
 
   const tabsData: TabItem[] = [
     { id: '1', label: BUTTON_LABLE.UPCOMING, title: 'No Events Here', subTitle: 'No upcoming events.' },
@@ -63,14 +79,19 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{...styles.container, backgroundColor: COLORS.white }}>
-      <View>
-        <HeaderComponent isDarkTheme={false} />
-        <SearchInput ref={searchInputRef} onSearchTextChange={handleSearchTextChange} />
-        <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
-        <View style={styles.contentContainer}>{renderTabContent()}</View>
-      </View>
-    </SafeAreaView>
+    <View style={styles.container}>
+      {loginData?.isInvited ?
+        <View style={{ backgroundColor: COLORS.white }}>
+          <HeaderComponent isDarkTheme={false} />
+          <SearchInput ref={searchInputRef} onSearchTextChange={handleSearchTextChange} />
+          <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} activeTabIndex={loginData?.isInvited ? 1 : 0} />
+          <View style={styles.contentContainer}>{renderTabContent()}</View>
+        </View>
+        :
+        <AfterAppStaticComponent />
+
+      }
+    </View>
   );
 };
 

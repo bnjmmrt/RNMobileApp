@@ -1,22 +1,26 @@
 import React, {useState} from 'react';
-import {
-  Modal,
-  View,
-  StyleSheet,
-} from 'react-native';
+import {Modal, View, StyleSheet} from 'react-native';
 import GooglePlacesInput from '../GooglePlacesInput/GooglePlacesInput';
 import {Wp} from '../../utils/dimensions';
-import { Address } from '../../redux/slices/appFlowSlice';
+import {Address} from '../../redux/slices/appFlowSlice';
+import Button from '../Button';
+import {BUTTON_LABLE} from '../../utils/constants';
 
-interface LocationPickerModalProps{
-  setLocation:(location:Address)=>void,
-  setIsShown:(ishown:boolean)=>void
+interface LocationPickerModalProps {
+  setLocation: (location: Address) => void;
+  setIsShown: (ishown: boolean) => void;
+  submitVisible?: boolean;
 }
-const LocationPickerModal:React.FC<LocationPickerModalProps> = ({setLocation,setIsShown}) => {
-  console.log("LocationPickerModal")
+
+const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
+  setLocation,
+  setIsShown,
+  submitVisible,
+}) => {
+  console.log('LocationPickerModal');
   const [modalVisible, setModalVisible] = useState(true);
 
-  const submit=()=>{
+  const submit = () => {
     setModalVisible(false);
     setIsShown(false);
   };
@@ -30,13 +34,15 @@ const LocationPickerModal:React.FC<LocationPickerModalProps> = ({setLocation,set
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <GooglePlacesInput submit={submit} setLocation={setLocation} />
-          {/* <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={BUTTON_LABLE.SUBMIT}
-            colorTheme="dark"
-            onPress={submit}
-          /> */}
+          {submitVisible && (
+            <Button
+              disabled={false}
+              style={styles.btnStyle}
+              title={BUTTON_LABLE.SUBMIT}
+              colorTheme="dark"
+              onPress={submit}
+            />
+          )}
         </View>
       </View>
     </Modal>
@@ -55,11 +61,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 25,
     paddingHorizontal: 20,
-    paddingVertical:30,
-    top:"5%",
+    paddingVertical: 30,
+    top: '5%',
     height: '90%',
   },
-  
+
   locationItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -78,7 +84,6 @@ const styles = StyleSheet.create({
     width: Wp(85),
     borderRadius: 100,
   },
- 
 });
 
 export default LocationPickerModal;

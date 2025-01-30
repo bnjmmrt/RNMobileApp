@@ -5,8 +5,8 @@ import { COLORS } from '../../utils/constants';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 import { View } from 'react-native';
-import IMAGES from '@images/index';
-import { Hp, Wp } from 'src/utils/dimensions';
+import IMAGES from '../../assets/images';
+import { Hp, Wp } from '../../utils/dimensions';
 import { CommonActions } from '@react-navigation/native';
 
 interface BeforeAppStaticScreenProps extends NativeStackScreenProps<any, any> { }
@@ -16,16 +16,14 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({ navigatio
   const redirectToHome = () => {
     const resetAction = CommonActions.reset({
       index: 0,
-      routes: [{ name: 'AuthStack' }],
+      routes: [{ name: 'LandingScreen' }],
     });
     navigation.dispatch(resetAction);
 
   }
   return (
     <SafeAreaView style={styles.container}>
-
-
-
+      
       <BeforeAppStaticComponent
         isChatScreen={false}
         showLogout={true} />
