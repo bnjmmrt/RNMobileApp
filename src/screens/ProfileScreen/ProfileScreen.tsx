@@ -21,6 +21,8 @@ import useApi from '../../axios/useApi';
 import { EndPoint } from '../../ApiManager/config';
 import { setProfilePic } from '../../redux/slices/appFlowSlice';
 import { environment } from '../../../environments/environment';
+import { CommonActions } from '@react-navigation/native';
+import { resetLoginData } from 'src/redux/slices/authSlice';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
@@ -145,8 +147,17 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     });
   };
 
+  const redirectToHome = () => {
+    const resetAction = CommonActions.reset({
+      index: 0,
+      routes: [{ name: 'AuthStack' }],
+    });
+    dispatch(resetLoginData());
+    navigation.dispatch(resetAction);
+  }
   const logOut = () => {
     logoutBottomSheetRef.current?.close();
+    redirectToHome()
   };
 
   const deleteAccount = () => {
@@ -156,9 +167,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   return (
     <SafeAreaView
       style={[
-        styles.container,
-        { backgroundColor: !isInvited ? COLORS.black2 : COLORS.white },
-      ]}>
+        styles.container]}>
 
       <View style={{ backgroundColor: COLORS.white }}>
         <HeaderComponent isDarkTheme={false} />

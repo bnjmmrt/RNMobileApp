@@ -1,28 +1,32 @@
-import React, { useState } from 'react';
-import 'react-native-gesture-handler';
-import { AuthStack } from './AuthStack';
-import { OnboardingStack } from './OnboardingStack';
+import React from 'react';
+import { MainStack } from './MainStack';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/slices';
-import BottomTabBar from '../component/Tabbar/BottomTabBar';
-import { AppStack } from './AppStack';
-import { AppFlowStack } from './AppFlowStack';
 
 const MainNavigation: React.FC = () => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  console.log("Login Data:", loginData)
+  const isVerified = loginData?.varifyStatus || 0;
+  const role = loginData?.roles[0]?.roleName || 'non_member';
 
-  const [isVerified, setVerified] = useState<number>(loginData?.varifyStatus || 0);
+  const initialRouteName =
+    isVerified === 0
+      ? 'AuthStack'
+      : 'AppStack';
 
-  if (isVerified === 0) {
-    return <AuthStack />;
-  }
+  const initialAppStackScreen =
+    role === 'non_member'
+      ? loginData?.token?.length > 0
+        ? 'BottomTabBar'
+        : 'BeforeAppStaticScreen'
+      : 'BottomTabBar';
 
-  if (loginData.isSignUpCompleted || loginData.isInvited || loginData.token.length > 0) {
-    return <OnboardingStack />;
-  }
-
-  return <AppStack />;
+  console.log("Sayyed :", loginData)
+  return (
+    <MainStack
+      initialRouteName={initialRouteName}
+      initialParams={initialRouteName === 'AppStack' ? { screen: initialAppStackScreen } : undefined}
+    />
+  );
 };
 
 export default MainNavigation;

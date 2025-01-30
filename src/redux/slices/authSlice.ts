@@ -6,7 +6,17 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  loginData: {},
+  loginData: {
+    isInvited: false,
+    isSignUpCompleted: false,
+    varifyStatus: 0,
+    roles:
+      [{
+        roleId: '1223343534435',
+        roleName: 'non_member'
+      }],
+    token: ''
+  },
   token: '',
 };
 
@@ -20,9 +30,13 @@ const authSlice = createSlice({
     setAuthToken(state, action: PayloadAction<any>) {
       state.token = action.payload;
     },
+    resetLoginData() {
+      console.log("Sayyed rest Called")
+      return initialState;
+    }
   },
 });
 
-export const { setLoginData, setAuthToken } = authSlice.actions;
+export const { setLoginData, setAuthToken, resetLoginData } = authSlice.actions;
 
 export default authSlice.reducer;
