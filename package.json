@@ -38,6 +38,7 @@
     "react-native-contacts": "^8.0.4",
     "react-native-country-codes-picker": "^2.3.5",
     "react-native-date-picker": "^5.0.8",
+    "react-native-daterange-picker": "^1.5.1",
     "react-native-flash-message": "^0.4.2",
     "react-native-gesture-handler": "^2.21.2",
     "react-native-get-random-values": "^1.11.0",

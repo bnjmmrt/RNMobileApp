@@ -3,14 +3,18 @@ import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {Hp, Wp} from '../../utils/dimensions';
 
 interface FeedAccessLocationProps {
+  allowAccess: boolean;
   setAllowAccess: React.Dispatch<React.SetStateAction<boolean>>;
   setFilterVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const FeedAccessLocation: React.FC<FeedAccessLocationProps> = ({
-  setFilterVisible,
+  allowAccess,
   setAllowAccess,
+  setFilterVisible,
 }) => {
+  if (!allowAccess) return null;
+
   return (
     <View style={styles.background}>
       <View style={styles.modal}>

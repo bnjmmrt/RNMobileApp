@@ -10,6 +10,7 @@ const IMAGES = {
   downArrow: require('./chevron-down.png'),
   search: require('./search-md.png'),
   clear: require('./clear.png'),
+  check1: require('./check1.png'),
   filter: require('./filter.png'),
   iconRumor: require('./icon_rumor.png'),
   introVideo: require('./intro_video.mp4'),

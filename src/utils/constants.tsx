@@ -30,19 +30,12 @@ export const BUTTON_LABLE = {
   DELETE_MY_ACCOUNT: 'Delete My Account',
   CLOSE: 'Close',
   SAVE_PHOTO: 'Save Photo',
-
-  INVITE_CONTACTS_VIA: 'Invite Contacts via Link',
-  INVITE: 'Invite',
-  SENT: 'Sent',
-  REQUREST: 'Request',
-  ACCESS_MY_CONTACTS: 'Access My Contacts',
-  ENTER_REFERRAL_CODE: 'Enter Referral Code',
-  CONFIRM: 'Confirm',
-
   ALL_USERS: 'All Users',
   LISTS: 'Lists',
   OVERVIEW: 'Overview',
   EVENTS: 'Events',
+  SHOW_RESULTS: 'Show Results',
+  CLEAR_FILTERS: 'Clear Filters',
 };
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',
@@ -242,3 +235,24 @@ export const SCREENS = {
   ALL_USERS: 'ALL_USERS',
   USER_DETAIL: 'USER_DETAIL',
 } as const;
+
+export const feedList = [
+  'After Parties',
+  'Album Release',
+  'Art Shows',
+  'Award Shows',
+  'Brand Experiences',
+  'Charity & Galas',
+  'Concerts',
+  'Culinary',
+  'Fashion Shows',
+  'Film Festivals',
+  'Movie Premieres',
+  'Nightlife',
+  'Private Parties',
+  'Product Launch',
+  'Sporting Events',
+  'Seasonal Celebrations',
+  'Talks & Workshops',
+  'Tech'
+]
