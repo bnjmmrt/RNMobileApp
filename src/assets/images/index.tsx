@@ -73,6 +73,8 @@ const IMAGES = {
   start_active: require('./star_active.png'),
   star_inactive: require('./star_inactive.png'),
   delete: require('./delete.png'),
+  social_x: require('./social_x.png'),
+  social_snapchat: require('./social_snapchat.png'),
 };
 
 export default IMAGES;
