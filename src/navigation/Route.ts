@@ -7,5 +7,6 @@ export const ROUTES = {
     FeedbackScreen:'FeedbackScreen',
     FollowingScreen:'FollowingScreen',
     ReferralScreen:'ReferralScreen',
-    HostProfileScreen:'HostProfileScreen'
+    HostProfileScreen:'HostProfileScreen',
+    LandingScreen:'LandingScreen'
 }
