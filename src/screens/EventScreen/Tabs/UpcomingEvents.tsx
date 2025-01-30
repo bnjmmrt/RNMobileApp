@@ -4,7 +4,7 @@ import { useFetchEventsQuery } from '../../../redux/actions/eventApiAction';
 import EventItem from '../EventItem';
 import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
 import { BUTTON_LABLE, COLORS } from '../../../utils/constants';
-import { Hp } from 'src/utils/dimensions';
+import { Hp } from '../../../utils/dimensions';
 
 interface UpcomingEventsProps {
   eventId: string;
