@@ -24,15 +24,17 @@ import BaseCityComponent from './BaseCityComponent';
 import CreativeFocusComponent from './CreativeFocusComponent';
 import GenderComponent from './GenderComponent';
 import Toast from 'src/component/Toast/Toast';
+import { setNotificationSettings } from 'src/redux/slices/appSettingsSlice';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
 const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const {apiRequest, loading, error} = useApi();
-
   const dispatch = useDispatch();
-  const userDetails = useSelector((state: RootState) => state.appFlow);
+  const data = useSelector((state: RootState) => state.appFlow);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
+ 
+  const [userDetails, setUserDetails] = useState(data);
 
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
@@ -47,6 +49,18 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const [selectedDate, setSelectedDate] = useState<string>(birthday);
   const [isToastShown, setIsToastShown] = useState(false);
   const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>();
+
+  const getUserSettingAndDetails = async () => {
+    const response = apiRequest(
+      'get',
+      EndPoint.user_settings + loginData.userId,
+    );
+    if(response.data){
+      //dependiing on API response parse data and set
+      setUserDetails(response.data.userrData);
+      dispatch( setNotificationSettings(response.data.notificationsSettings))
+    }
+  };
   useEffect(() => {
     if (loginData?.isSignUpCompleted) {
       phoneNumberInputRef?.current.setDisabled(true);
@@ -74,13 +88,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
       emailInputRef?.current.setDisabled(true);
       emailInputRef?.current.setEmailAddress(userDetails.email);
     }
+      
+      getUserSettingAndDetails();
   }, []);
-
-  const uploadFile = async () => {
-    return await apiRequest('post', EndPoint.user_profile_picture, {
-      profilePicture: userDetails.profilePic,
-    });
-  };
 
   const onConfirmClick = async () => {
     if (
@@ -112,9 +122,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
           gender: gender,
           lastName: lastNameRef.current.inputText,
           mobilePhone: userDetails.phone,
-          // creativeFocus: selectedCreativeFocus
-          //   ? selectedCreativeFocus.map((item: any) => item.id)
-          //   : userDetails.creativeFocus.map((item: any) => item.id),
+          creativeFocus: selectedCreativeFocus
+            ? selectedCreativeFocus.map((item: any) => item.id)
+            : userDetails.creativeFocus.map((item: any) => item.id),
         };
         console.log('requestObject', requestObject);
 
