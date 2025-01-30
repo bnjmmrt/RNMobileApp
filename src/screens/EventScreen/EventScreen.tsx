@@ -34,17 +34,17 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const [searchText, setSearchText] = useState('');
   // const changeTextDebouncer = useCallback(debounce(handleSearchTextChange, 500), []);
 
-  useFocusEffect(
-    useCallback(() => {
-      // Do something when the screen is focused
-      !loginData?.isInvited && changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.BLACK_SCHEME);
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     // Do something when the screen is focused
+  //     !loginData?.isInvited ? changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.BLACK_SCHEME) : changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
 
-      return () => {
-        // Optional cleanup when screen is unfocused
-        changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
-      };
-    }, [])
-  );
+  //     // return () => {
+  //     //   // Optional cleanup when screen is unfocused
+  //     //   changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+  //     // };
+  //   }, [])
+  // );
 
   const tabsData: TabItem[] = [
     { id: '1', label: BUTTON_LABLE.UPCOMING, title: 'No Events Here', subTitle: 'No upcoming events.' },
@@ -79,9 +79,9 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={{ ...styles.container, backgroundColor: loginData?.isInvited ? COLORS.white : COLORS.black2 }}>
       {loginData?.isInvited ?
-        <View style={{ backgroundColor: COLORS.white }}>
+        <View style={{ backgroundColor: COLORS.white, flex: 1 }}>
           <HeaderComponent isDarkTheme={false} />
           <SearchInput ref={searchInputRef} onSearchTextChange={handleSearchTextChange} />
           <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} activeTabIndex={loginData?.isInvited ? 1 : 0} />
@@ -91,7 +91,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
         <AfterAppStaticComponent />
 
       }
-    </View>
+    </SafeAreaView>
   );
 };
 

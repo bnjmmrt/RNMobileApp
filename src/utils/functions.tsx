@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import settings from '../ApiManager/config';
-import {parse, format} from 'date-fns';
+import { parse, format } from 'date-fns';
 import {
   configStatusBar,
   StatusBarState,
@@ -53,7 +53,7 @@ export const fontFamily = {
   RomieTrial: 'RomieTrial',
 };
 
-export const ErrorText: React.FC<ErrorTextProps> = ({msg}) => {
+export const ErrorText: React.FC<ErrorTextProps> = ({ msg }) => {
   return (
     <Text
       style={{
@@ -290,9 +290,9 @@ export const formatEventDates = (startDate: string, endDate: string) => {
   const end = parseDate(endDate);
 
   // Format options
-  const optionsDate = {weekday: 'short', month: 'short', day: 'numeric'};
-  const optionsTime = {hour: 'numeric', minute: 'numeric', hour12: true};
-  const optionsTimeZone = {timeZoneName: 'short'};
+  const optionsDate = { weekday: 'short', month: 'short', day: 'numeric' };
+  const optionsTime = { hour: 'numeric', minute: 'numeric', hour12: true };
+  const optionsTimeZone = { timeZoneName: 'short' };
 
   // Format components
   const formattedStartDate = new Intl.DateTimeFormat(
@@ -327,14 +327,6 @@ export const formatEventDates = (startDate: string, endDate: string) => {
   }
 };
 
-// Example usage
-const start1 = '11/21/2024 13:00';
-const end1 = '11/21/2024 15:00';
-console.log(formatEventDates(start1, end1)); // Thu, Nov 21, 1:00PM – 3:00PM EST
-
-const start2 = '11/21/2024 20:00';
-const end2 = '11/23/2024 12:00';
-console.log(formatEventDates(start2, end2)); // Thu, Nov 21, 8:00PM — Sat, Nov 23, 12:00PM EST
 
 // export const  formatEventDates = (startDate: string, endDate: string) => {
 
@@ -392,17 +384,17 @@ export const formatDate = (date: Date) => {
 };
 
 export const changeSafeAreaViewConfig = (config: StatusBarState) => {
-  store.store.dispatch(configStatusBar(config));
-  if (Platform.OS == 'android') {
-    StatusBar.setHidden(false);
-    StatusBar.setBackgroundColor(config.topSafeAreaViewColor, true);
-    // changeNavigationBarColor(config.bottomSafeAreaViewColor);
-    if (config.showBottomSafeAreaView) {
-      // showNavigationBar();
-    } else {
-      // hideNavigationBar();
-    }
-    StatusBar.setTranslucent(config.translucent || false);
-  }
-  StatusBar.setBarStyle(config.statusBarStyle, true);
+  // store.store.dispatch(configStatusBar(config));
+  // if (Platform.OS == 'android') {
+  //   StatusBar.setHidden(false);
+  //   StatusBar.setBackgroundColor(config.topSafeAreaViewColor, true);
+  //   // changeNavigationBarColor(config.bottomSafeAreaViewColor);
+  //   if (config.showBottomSafeAreaView) {
+  //     // showNavigationBar();
+  //   } else {
+  //     // hideNavigationBar();
+  //   }
+  //   StatusBar.setTranslucent(config.translucent || false);
+  // }
+  // StatusBar.setBarStyle(config.statusBarStyle, true);
 };

@@ -18,15 +18,15 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
   const styles = LandingStyles();
   const bottomSheetRef = useRef(null);
 
-  useFocusEffect(
-    useCallback(() => {
-      changeSafeAreaViewConfig({ ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME, showTopSafeAreaView: false, });
-      return () => {
-        // Optional cleanup when screen is unfocused
-        changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
-      };
-    }, [])
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     changeSafeAreaViewConfig({ ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME, showTopSafeAreaView: false });
+  //     return () => {
+  //       // Optional cleanup when screen is unfocused
+  //       changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+  //     };
+  //   }, [])
+  // );
 
 
   const onEnterClick = () => {

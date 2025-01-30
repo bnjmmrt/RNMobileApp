@@ -7,7 +7,7 @@ import VerifyOtpStyles from './VerifyOtpStyles';
 import BackButton from '../../component/BackButton/BackButton';
 import Button from '../../component/Button';
 import OTPComponent from '../../component/OTPComponent/OTPComponent';
-import { useRoute, RouteProp } from '@react-navigation/native';
+import { useRoute, RouteProp, CommonActions } from '@react-navigation/native';
 import { setAuthToken, setLoginData } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
 import FullScreenLoader from '../../component/FullScreenLoader';
@@ -47,24 +47,47 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         dispatch(setAuthToken(data?.token || ''))
         dispatch(setEmail(route.params.email || ''));
         dispatch(setPhone(route.params.phone || ''));
-        const userRole = data.roles[0]?.roleName
-        console.log("Sayyed userRole:", userRole)
-        if (userRole == 'non_member') {
-            console.log("Sayyed userRole:", "1")
+        const role = data.roles[0]?.roleName || 'non_member'
 
-            if (data.isSignUpCompleted || data.token.length > 0) {
-                console.log("Sayyed userRole:", "2")
+        if (role == 'non_member') {
+            const screenName = data?.token?.length > 0 ? "BottomTabBar" : "BeforeAppStaticScreen"
+            navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: 'AppStack', params: { screen: screenName } }],
+                })
+            );
 
-                navigation.navigate('BottomTabBar');
-            } else {
-                data?.isInvited ? navigation.navigate('BottomTabBar') :
-                    navigation.navigate('BeforeAppStaticScreen');
-            }
         } else {
-            console.log("Sayyed userRole:", "3")
-
-            navigation.navigate('BottomTabBar');
+            navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: 'AppStack', params: { screen: "BottomTabBar" } }],
+                })
+            );
         }
+
+
+
+        // console.log("Sayyed userRole:", userRole)
+
+
+
+        // if (userRole == 'non_member') {
+        //     console.log("Sayyed userRole:", "1")
+
+        //     if (data?.token?.length > 0) {
+
+        //         navigation.navigate('BottomTabBar');
+        //     } else {
+        //         data?.isInvited ? navigation.navigate('BottomTabBar') :
+        //             navigation.navigate('BeforeAppStaticScreen');
+        //     }
+        // } else {
+        //     console.log("Sayyed userRole:", "3")
+
+        //     navigation.navigate('BottomTabBar');
+        // }
     };
 
     return (
