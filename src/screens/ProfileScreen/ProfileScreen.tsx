@@ -23,6 +23,8 @@ import {setProfilePic} from '../../redux/slices/appFlowSlice';
 import {environment} from '../../../environments/environment';
 import ContactSupporrtBottomSheet from 'src/component/BottomSheet/ContactSupporrtBottomSheet';
 import FullScreenLoader from 'src/component/FullScreenLoader';
+import { setAuthToken, setLoginData } from 'src/redux/slices/authSlice';
+import { ROUTES } from 'src/navigation/Route';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
@@ -172,7 +174,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   };
 
   const logOut = () => {
+    console.log("logiut")
+     dispatch(setLoginData({}))
+     dispatch(setAuthToken(null))
     logoutBottomSheetRef.current?.close();
+    navigation.navigate(ROUTES.LandingScreen)
   };
 
   return (
