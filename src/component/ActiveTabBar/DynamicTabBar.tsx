@@ -13,10 +13,11 @@ export interface TabItem {
 type DynamicTabBarProps = {
   onTabChange?: (tab: TabItem) => void;
   tabs: TabItem[];
+  activeTabIndex: number;
 };
 
-const DynamicTabBar: React.FC<DynamicTabBarProps> = ({onTabChange, tabs}) => {
-  const [activeTab, setActiveTab] = useState<TabItem>(tabs[0]);
+const DynamicTabBar: React.FC<DynamicTabBarProps> = ({onTabChange, tabs, activeTabIndex = 0}) => {
+  const [activeTab, setActiveTab] = useState<TabItem>(tabs[activeTabIndex]);
 
   useEffect(() => {
     setActiveTab(activeTab);

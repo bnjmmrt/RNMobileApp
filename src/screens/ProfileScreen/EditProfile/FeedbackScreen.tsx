@@ -57,6 +57,9 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
     } else if (!isToastShown && selectedData) {
       setErrorMessage('');
 
+      confirmationRef.current.open();
+      return
+
       const requestData = {
         description: feedback,
         tag: selectedData[0].value,
@@ -73,6 +76,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
         confirmationRef.current.open();
       } else {
         //error message
+
       }
     } else {
       setIsToastShown(true);

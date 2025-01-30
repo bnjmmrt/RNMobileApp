@@ -1,28 +1,19 @@
 import React, { useRef, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Hp, Wp } from '../../utils/dimensions';
-import { BUTTON_LABLE, COLORS } from '../../utils/constants';
+import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import Button from '../Button';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
 import { ScrollView } from 'react-native';
 import { fontFamily } from '../../utils/functions';
-import { useNavigation } from '@react-navigation/native';
 import HeaderComponent from '../HeaderComponent';
 import ReferralCodeBottomSheet from '../ReferralCodeBottomSheet/ReferralCodeBottomSheet';
 import InviteReferralBottomSheet from '../InviteReferralBottomSheet/InviteReferralBottomSheet';
 import MiddleStaticComponent from '../TitleSubTitleComponent/MiddleStaticComponent';
 
-interface AfterAppStaticComponentProps {
-  title: string;
-  subTitle: string;
-}
 
-const AfterAppStaticComponent: React.FC<AfterAppStaticComponentProps> = ({
-  title,
-  subTitle,
-}) => {
+const AfterAppStaticComponent: React.FC<{}> = () => {
 
-  const navigation = useNavigation();
   const bottomSheetRef = useRef(null);
   const bottomSheetInviteRef = useRef(null);
   const [inviteReferral,setInviteReferral]=useState(false);
@@ -47,11 +38,10 @@ const AfterAppStaticComponent: React.FC<AfterAppStaticComponentProps> = ({
 
           <View style={{ height: Hp(5) }} />
 
-
           <TitleSubtitle
             style={{ paddingHorizontal: 20, marginTop: 20 }}
-            title={title}
-            subTitle={subTitle}
+            title={LABLE.YOU_ARE_ON_WAITLIST}
+            subTitle={LABLE.FULL_ACCESS_UNLOCK}
             centerTextAlign={true}
             isDarkTheme={true}
             titleFontSize={36}
