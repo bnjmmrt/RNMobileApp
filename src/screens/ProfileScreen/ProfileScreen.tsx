@@ -64,6 +64,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     setURL(url);
   };
 
+  const onChangeBottomSheet = (index: number) => {
+    if (index === -1) {
+      setShowBottomSheet(false);
+    }
+  };
+
   const [isInvited, setInvited] = useState<boolean>(
     loginData?.isInvited || false,
   );
@@ -112,6 +118,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       image: '',
       onPress: deleteAccount,
     },
+    
   ];
 
   const hasFullAccess = loginData.isSignUpCompleted || loginData.token.length > 0;
@@ -271,7 +278,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           </View>
         )}
       </FullScreenLoader>
-      <WebViewBottomSheet url={URL} ref={bottomSheetRef} />
     </SafeAreaView>
   );
 };

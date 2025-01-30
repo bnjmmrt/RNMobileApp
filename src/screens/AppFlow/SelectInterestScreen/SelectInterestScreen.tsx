@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -11,34 +11,76 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../redux/slices';
 import {setInterest, setPageProgress} from '../../../redux/slices/appFlowSlice';
 import Toast from '../../../component/Toast/Toast';
+import useApi from 'src/axios/useApi';
+import {EndPoint} from 'src/ApiManager/config';
+import FullScreenLoader from 'src/component/FullScreenLoader';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 interface SelectInterestScreenProps extends NativeStackScreenProps<any, any> {}
 
 const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
-  navigation,route
-  
+  navigation,
+  route,
 }) => {
   const dispatch = useDispatch();
-  const [configData, setConfigData] = useState(route.params ? route.params : {
-    headerTitle: null,
-    btnTitle: null,
-    subTitle: null,
-    fromProfile:false
-  });
+  const {apiRequest, loading, error} = useApi();
+  const [configData, setConfigData] = useState(
+    route.params
+      ? route.params
+      : {
+          headerTitle: null,
+          btnTitle: null,
+          subTitle: null,
+          fromProfile: false,
+        },
+  );
+
+  //give all interests
   const interest = useSelector(
     (state: RootState) => state.appFlowApiData.interests,
   );
+  //give user selected interests from store
   const selectedInterests = useSelector(
     (state: RootState) => state.appFlow.interest,
   );
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
+
   const styles = SelectInterestScreenStyles();
   const [selectedCategories, setSelectedCategories] =
     useState<any[]>(selectedInterests);
 
   const [isToastShown, setIsToastShown] = useState(false);
- 
+  const getMyInterests = () => {
+    const response = apiRequest(
+      'get',
+      EndPoint.user_interests + loginData.userId,
+    );
+    if(response.data){
+      //dependiing on API response parse data and set
+      setSelectedCategories(response.data)
+    }
+  };
+
+  const updateMyInterests = () => {
+    const requestObject = {
+      interestsIds: selectedCategories.map((item: any) => item.id),
+    };
+    return apiRequest(
+      'post',
+      EndPoint.user_interests + loginData.userId,
+      requestObject,
+    );
+  };
+
+  useEffect(() => {
+    //execute when naviagte from edit profile
+    if (configData.fromProfile && !selectedInterests.length) {
+      getMyInterests();
+    }
+  }, []);
+
   const handleCategorySelect = (category: any) => {
-    if (selectedCategories.find(item=> item.id===category.id)) {
+    if (selectedCategories.find(item => item.id === category.id)) {
       if (selectedCategories.length === 1) {
         setIsToastShown(true);
       }
@@ -52,79 +94,102 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
     }
   };
 
-  const onNextClick = () => {
-    if(!configData.fromProfile){
+  const onNextClick = async () => {
+    //execute when naviagte from app flow
+    if (!configData.fromProfile) {
       if (selectedCategories.length > 0) {
         setIsToastShown(false);
-        console.log('Selected Categories:', selectedCategories);
         dispatch(setInterest(selectedCategories));
         dispatch(setPageProgress(8));
         navigation.navigate('ProfilePhotoScreen');
       } else {
         setIsToastShown(true);
       }
-    }else{
-      //handle edit profile flow
+    } else {
+      //execute when navigate from edit profile
+      if (selectedCategories.length===0) {
+        setIsToastShown(true);
+      } else {
+        setIsToastShown(false);
+        const response: any = await updateMyInterests();
+        if (response.data) {
+          dispatch(setInterest(selectedCategories))
+           FlashMessageComponent.show('success', 'Details updated successfully!');
+        }
+      }
     }
-   
   };
 
   const handleBackPress = () => {
-  
-   if(!configData.fromProfile){
-    dispatch(setPageProgress(6));
-    navigation.navigate('CreativeFocusScreen');
-   }else {
-    navigation.goBack()
-   }
+    if (!configData.fromProfile) {
+      dispatch(setPageProgress(6));
+      navigation.navigate('CreativeFocusScreen');
+    } else {
+      navigation.goBack();
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header headerTitle={configData.headerTitle ? configData.headerTitle :LABLE.INTERESTS} onPress={handleBackPress} showProgressBar={!configData.fromProfile} />
-
-      <View style={styles.contentContainer}>
-        <Title
-          title={!configData.fromProfile ? LABLE.CHOOSE_YOUR_INTERESTS:''}
-          subTitle={configData.subTitle ? configData.subTitle : LABLE.CHOOSE_YOUR_INTERESTS_SUBTITLE}
+      <FullScreenLoader loading={loading}>
+        <Header
+          headerTitle={
+            configData.headerTitle ? configData.headerTitle : LABLE.INTERESTS
+          }
+          onPress={handleBackPress}
+          showProgressBar={!configData.fromProfile}
         />
 
-       <View style={styles.categoryContainer}>
-                 {interest?.map(item => (
-                   <TouchableOpacity
-                     key={item.id}
-                     style={[
-                       styles.categoryButton,
-                       selectedCategories.some(selected => selected.id === item.id) &&
-                         styles.selectedCategoryButton,
-                     ]}
-                     onPress={() => handleCategorySelect(item)}>
-                     <Text
-                       style={[
-                         styles.categoryText,
-                         selectedCategories.some(selected => selected.id === item.id) &&
-                           styles.selectedCategoryText,
-                       ]}>
-                       {item.name}
-                     </Text>
-                   </TouchableOpacity>
-                 ))}
-               </View>
-        {isToastShown && (
-          <Toast
-            message={'Please select at least one'}
-            onClose={() => setIsToastShown(false)}
+        <View style={styles.contentContainer}>
+          <Title
+            title={!configData.fromProfile ? LABLE.CHOOSE_YOUR_INTERESTS : ''}
+            subTitle={
+              configData.subTitle
+                ? configData.subTitle
+                : LABLE.CHOOSE_YOUR_INTERESTS_SUBTITLE
+            }
           />
-        )}
-      </View>
 
-      <Button
-        disabled={false}
-        style={styles.btnStyle}
-        title={configData.btnTitle ? configData.btnTitle: BUTTON_LABLE.NEXT}
-        colorTheme="dark"
-        onPress={onNextClick}
-      />
+          <View style={styles.categoryContainer}>
+            {interest?.map(item => (
+              <TouchableOpacity
+                key={item.id}
+                style={[
+                  styles.categoryButton,
+                  selectedCategories.some(
+                    selected => selected.id === item.id,
+                  ) && styles.selectedCategoryButton,
+                ]}
+                onPress={() => handleCategorySelect(item)}>
+                <Text
+                  style={[
+                    styles.categoryText,
+                    selectedCategories.some(
+                      selected => selected.id === item.id,
+                    ) && styles.selectedCategoryText,
+                  ]}>
+                  {item.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          {isToastShown && (
+            <Toast
+              message={'Please select at least one'}
+              onClose={() => setIsToastShown(false)}
+            />
+          )}
+        </View>
+         <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={
+              configData.btnTitle ? configData.btnTitle : BUTTON_LABLE.NEXT
+            }
+            colorTheme="dark"
+            onPress={onNextClick}
+          />
+      </FullScreenLoader>
     </SafeAreaView>
   );
 };

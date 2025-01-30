@@ -37,28 +37,6 @@ const memberTabs = [
   },
 ];
 
-const hostTabs = [
-  {
-    name: 'EventScreen',
-    component: EventScreen,
-    options: {tabBarLabel: 'Events', tabBarIcon: IMAGES.eventTab},
-  },
-  {
-    name: SCREENS.USERS_BOTTOM_TAB,
-    component: UsersModule,
-    options: {tabBarLabel: 'Users', tabBarIcon: IMAGES.profileTab},
-  },
-  {
-    name: 'ChatScreen',
-    component: ChatScreen,
-    options: {tabBarLabel: 'Chat', tabBarIcon: IMAGES.chatTab},
-  },
-  {
-    name: 'ProfileScreen',
-    component: ProfileStack,
-    options: {tabBarLabel: 'Profile', tabBarIcon: IMAGES.profileTab},
-  },
-];
 // const hostTabs = [
 //   {
 //     name: 'EventScreen',

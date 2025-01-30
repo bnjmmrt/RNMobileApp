@@ -17,8 +17,8 @@ import { EndPoint } from '../../../ApiManager/config';
 import MainNavigation from '../../../navigation';
 import { AppStack } from '../../../navigation/AppStack';
 import { convertDateFormat } from '../../../utils/functions';
-import { setAuthToken, setLoginData } from 'src/redux/slices/authSlice';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { setAuthToken, setLoginData } from '../../../redux/slices/authSlice';
+import { FlashMessageComponent } from '../../../component/FlashMessageComponent/FlashMessageComponent';
 
 interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
 

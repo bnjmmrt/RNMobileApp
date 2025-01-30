@@ -1,4 +1,4 @@
-import { createBaseApi } from "src/ApiManager/createBaseApi";
+import { createBaseApi } from "../../ApiManager/createBaseApi";
 
 export const referralApiAction = createBaseApi.injectEndpoints({
   endpoints: (builder) => ({

@@ -9,6 +9,9 @@ const IMAGES = {
   calender: require('./calender.png'),
   downArrow: require('./chevron-down.png'),
   search: require('./search-md.png'),
+  clear: require('./clear.png'),
+  filter: require('./filter.png'),
+  iconRumor: require('./icon_rumor.png'),
   introVideo: require('./intro_video.mp4'),
   pencil: require('./pencil-01.png'),
   rumorLogo: require('./Wordmark.png'),
@@ -73,6 +76,8 @@ const IMAGES = {
   start_active: require('./star_active.png'),
   star_inactive: require('./star_inactive.png'),
   delete: require('./delete.png'),
+  social_x: require('./social_x.png'),
+  social_snapchat: require('./social_snapchat.png'),
 };
 
 export default IMAGES;

@@ -105,7 +105,7 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
       case PROFILE.X:
         socialMediaBottomSheetRef?.current?.open();
         setConfigData({
-          logo: IMAGES.x,
+          logo: IMAGES.social_x,
           title: PROFILE.CONNECT_X,
           subTitle: getSubTitle(PROFILE.X),
           connectBtnBackground: COLORS.black,
@@ -123,7 +123,7 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
       case PROFILE.SNAPCHAT:
         socialMediaBottomSheetRef?.current?.open();
         setConfigData({
-          logo: IMAGES.snapchat,
+          logo: IMAGES.social_snapchat,
           title: PROFILE.CONNECT_SNAPCHAT,
           subTitle: getSubTitle(PROFILE.SNAPCHAT),
           connectBtnBackground: COLORS.yellow,
