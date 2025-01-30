@@ -10,7 +10,7 @@ const LandingStyles = () => {
         buttonWrapper: {
             bottom: 30, position: 'absolute'
         },
-        webViewStyle:{
+        webViewStyle: {
             flex: 1,
             backgroundColor: COLORS.white,
             width: '100%',
@@ -20,9 +20,9 @@ const LandingStyles = () => {
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor:COLORS.black
+            backgroundColor: COLORS.black
         },
-        contentContainer:{
+        contentContainer: {
             flex: 1,
             paddingHorizontal: 10,
         },
@@ -40,12 +40,12 @@ const LandingStyles = () => {
             width: Wp(85),
             borderRadius: 100,
         },
-        logoImgStyle:{
+        logoImgStyle: {
             width: Wp(20),
-            height : Hp(20),
-            resizeMode: 'contain',  
+            height: Hp(20),
+            resizeMode: 'contain',
         }
     });
-};  
+};
 
 export default LandingStyles;

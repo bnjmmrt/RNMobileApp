@@ -1,30 +1,30 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useMemo, useState } from 'react';
-import { Provider } from 'react-redux';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { StyleSheet, useColorScheme, LogBox } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import React, {useEffect, useMemo, useState} from 'react';
+import {Provider} from 'react-redux';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {StyleSheet, useColorScheme, LogBox} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
 import MainNavigation from './src/navigation';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import DarkTheme from './src/Theme/DarkTheme';
 import DefaultTheme from './src/Theme/DefaultTheme';
-import { AppContext } from './src/context/AppContext';
+import {AppContext} from './src/context/AppContext';
 // import { NetInfoProvider, useAuth } from './src/context/NetInfoContext';
 import NoInternetScreen from './src/component/NoInternetScreen';
-import { useNetInfo } from "@react-native-community/netinfo";
-import { store, persistor } from './src/redux/store';
+import {useNetInfo} from '@react-native-community/netinfo';
+import {store, persistor} from './src/redux/store';
 import FlashMessage from 'react-native-flash-message';
-import { PersistGate } from 'redux-persist/integration/react';
-
+import {PersistGate} from 'redux-persist/integration/react';
+import {SafeAreaViewWrapper} from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 const AppContent: React.FC = () => {
   // const { isInternetConnected } = useAuth();
-  const { isConnected } = useNetInfo();
+  const {isConnected} = useNetInfo();
   LogBox.ignoreAllLogs();
   useEffect(() => {
     console.log('Internet status:', isConnected);
   }, [isConnected]);
-  
+
   if (!isConnected && isConnected !== null) {
     return <NoInternetScreen />;
   }
@@ -43,7 +43,7 @@ const App: React.FC = () => {
       setIsDarkTheme,
       themeColors: isDarkTheme ? DarkTheme.colors : DefaultTheme.colors,
     }),
-    [isDarkTheme]
+    [isDarkTheme],
   );
 
   // useEffect(() => {
@@ -51,9 +51,8 @@ const App: React.FC = () => {
   // }, [systemTheme]);
 
   useEffect(() => {
-    setIsDarkTheme(true)
+    setIsDarkTheme(true);
   }, []);
-
 
   // useEffect(() => {
   //   const unsubscribe = NetInfo.addEventListener(state => {
@@ -65,17 +64,18 @@ const App: React.FC = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <NavigationContainer theme={isDarkTheme ? DarkTheme : DefaultTheme}>
-            <AppContext.Provider value={appContext}>
-              <SafeAreaProvider style={styles.container}>
-                <AppContent />
-                <FlashMessage position="top" />
-              </SafeAreaProvider>
-            </AppContext.Provider>
-          </NavigationContainer>
-        </GestureHandlerRootView>
+        <SafeAreaViewWrapper>
+          <GestureHandlerRootView style={{flex: 1}}>
+            <NavigationContainer theme={isDarkTheme ? DarkTheme : DefaultTheme}>
+              <AppContext.Provider value={appContext}>
+                <SafeAreaProvider style={styles.container}>
+                  <AppContent />
+                  <FlashMessage position="top" />
+                </SafeAreaProvider>
+              </AppContext.Provider>
+            </NavigationContainer>
+          </GestureHandlerRootView>
+        </SafeAreaViewWrapper>
       </PersistGate>
     </Provider>
   );

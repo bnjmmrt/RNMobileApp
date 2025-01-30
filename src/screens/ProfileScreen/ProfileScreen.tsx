@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { View, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { COLORS, LABLE, PROFILE } from '../../utils/constants';
+import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
+import { BUTTON_LABLE, COLORS, LABLE, PROFILE } from '../../utils/constants';
 import IMAGES from '../../assets/images/index';
 import ProfileScreenStyle from './ProfileScreenStyle';
 import { SafeAreaView } from 'react-native';
@@ -12,8 +13,14 @@ import ProfileListItem from './ProfileListItem';
 import TermsAndPolicy from '../../component/TermsAndPlolicy/TermsAndPolicy';
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
 import { Text } from 'react-native-animatable';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/slices';
+import EditPictureBottomSheet from '../../component/BottomSheet/EditPictureBottomSheet';
+import DeleteAccountBottomSheet from 'src/component/BottomSheet/DeleteAccountBottomSheet';
+import useApi from '../../axios/useApi';
+import { EndPoint } from '../../ApiManager/config';
+import { setProfilePic } from '../../redux/slices/appFlowSlice';
+import { environment } from '../../../environments/environment';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
@@ -21,31 +28,37 @@ interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
 interface ListItem {
   id: string;
   title: string;
-  image: string
+  image: string;
 }
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
+  const { apiRequest, loading, error } = useApi();
+  const dispatch = useDispatch();
   const styles = ProfileScreenStyle();
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [URL, setURL] = useState('');
   const [listItems, setListItems] = useState<ListItem[]>([]);
-
+  const [image, setImage] = useState<string>('');
+  const editPhotoBottomSheetRef = useRef<any>(null);
+  const savePhotoBottomSheetRef = useRef<any>(null);
+  const logoutBottomSheetRef = useRef<any>(null);
+  const deleteAccountBottomSheetRef = useRef<any>(null);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const profilePic = useSelector(
+    (state: RootState) => state.appFlow.profilePic,
+  );
+  const bottomSheetRef = useRef(null);
 
   useEffect(() => {
-    URL.length > 0 && setShowBottomSheet(true)
-  }, [URL])
+    URL.length > 0 && bottomSheetRef?.current?.open();
+  }, [URL]);
 
   const setWebUrl = (url: string) => {
-    setURL(url)
+    setURL(url);
   };
-  const onChangeBottomSheet = (index: number) => {
-    if (index === -1) {
-      setShowBottomSheet(false);
-    }
-  }
 
-
-  const [isInvited, setInvited] = useState<boolean>(loginData?.isInvited || false)
+  const [isInvited, setInvited] = useState<boolean>(
+    loginData?.isInvited || false,
+  );
 
   const items: ListItem[] = [
     { id: '1', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit },
@@ -59,7 +72,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     { id: '11', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit },
     { id: '12', title: PROFILE.FOLLOWING, image: IMAGES.following },
     { id: '13', title: PROFILE.REFERRALS, image: IMAGES.thumbsUp },
-    { id: '14', title: PROFILE.CONNECTED_ACCOUNTS, image: IMAGES.connectedAccount },
+    {
+      id: '14',
+      title: PROFILE.CONNECTED_ACCOUNTS,
+      image: IMAGES.connectedAccount,
+    },
     { id: '15', title: PROFILE.MY_INTERESTS, image: IMAGES.heart },
     { id: '16', title: PROFILE.NOTIFICATION, image: IMAGES.notification },
     { id: '17', title: PROFILE.FEEDBACK, image: IMAGES.feedback },
@@ -75,40 +92,139 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   }, [loginData])
 
   const handleLogoutPress = () => {
+    logoutBottomSheetRef.current?.open();
+  };
+
+  const editPhotoClick = () => {
+    editPhotoBottomSheetRef.current?.open();
+  };
+
+  const uploadFile = async () => {
+    const mimeType = `images/${image.split('.').pop()}`;
+    const fileName = image.split('/').pop();
+
+    const formData = new FormData();
+    formData.append('file', {
+      uri: image,
+      type: mimeType,
+      name: fileName,
+    });
+
+    return await apiRequest('post', EndPoint.file_upload, formData, null, {
+      'Content-Type': 'multipart/form-data',
+    });
+  };
+
+  const savePhoto = async () => {
+    if (image) {
+      // setIsToastShown(false);
+      savePhotoBottomSheetRef.current?.close();
+      const response: any = await uploadFile();
+      if (response.data) {
+        // setIsToastShown(false);
+        dispatch(
+          setProfilePic(environment.IMAGE_URL + response.data.fileKeyId),
+        );
+      } else {
+        //display error
+      }
+    }
 
   };
 
+  const openCamera = async () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+      cropperCircleOverlay: true,
+    }).then((image: ImageOrVideo) => {
+      setImage(image.path);
+      editPhotoBottomSheetRef.current?.close();
+      savePhotoBottomSheetRef.current?.open();
+    });
+  };
+
+  const logOut = () => {
+    logoutBottomSheetRef.current?.close();
+  };
+
+  const deleteAccount = () => {
+    deleteAccountBottomSheetRef.current?.open();
+  };
+
   return (
+    <SafeAreaView
+      style={[
+        styles.container,
+        { backgroundColor: !isInvited ? COLORS.black2 : COLORS.white },
+      ]}>
 
-    <SafeAreaView style={[styles.container, { backgroundColor: COLORS.white }]}>
-  
-        <View style={{ backgroundColor: COLORS.white }}>
+      <View style={{ backgroundColor: COLORS.white }}>
+        <HeaderComponent isDarkTheme={false} />
 
-          <HeaderComponent
-            isDarkTheme={false}
+        <ScrollView>
+          {loading && <Text> Uploading photo...</Text>}
+          <ProfileTopView
+            editPhotoClick={editPhotoClick}
+            profilePic={profilePic}
+          />
+          {listItems.map(item => {
+            return (
+              <ProfileListItem
+                key={item.id}
+                item={item}
+                onPress={deleteAccount}
+              />
+            );
+          })}
+
+          <TermsAndPolicy
+            setUrl={setWebUrl}
+            type="small"
+            showMessage={false}
           />
 
-          <ScrollView>
+          <TouchableOpacity onPress={() => handleLogoutPress()}>
+            <Text style={styles.textBelowStyle}>{PROFILE.LOGOUT}</Text>
+          </TouchableOpacity>
+        </ScrollView>
 
-            <ProfileTopView />
+        <WebViewBottomSheet url={URL} ref={bottomSheetRef} />
 
-            {listItems.map((item) => {
-              return <ProfileListItem
-                key={item.id}
-                item={item} />
-            })}
 
-            <TermsAndPolicy setUrl={setWebUrl} type='small' showMessage={false} />
+        <EditPictureBottomSheet
+          ref={editPhotoBottomSheetRef}
+          onPress={openCamera}
+          submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
+          cancelButtonText={BUTTON_LABLE.CANCEL}
+          snapPoints={[Platform.OS == 'android' ? '30%' : '22%']}
+          image={null}
+        />
 
-            <TouchableOpacity onPress={() => handleLogoutPress()}>
-              <Text style={styles.textBelowStyle}>{PROFILE.LOGOUT}</Text>
-            </TouchableOpacity>
-          </ScrollView>
+        <EditPictureBottomSheet
+          ref={savePhotoBottomSheetRef}
+          onPress={savePhoto}
+          submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
+          cancelButtonText={BUTTON_LABLE.CANCEL}
+          snapPoints={[Platform.OS == 'android' ? '50%' : '45%']}
+          image={image}
+        />
 
-          {showBottomSheet && <WebViewBottomSheet url={URL} onChange={onChangeBottomSheet} />}
-
-        </View>
-      
+        <EditPictureBottomSheet
+          ref={logoutBottomSheetRef}
+          title="Are you sure you want to log out?"
+          onPress={logOut}
+          submitButtonText={BUTTON_LABLE.CONFIRM}
+          cancelButtonText={BUTTON_LABLE.CANCEL}
+          snapPoints={[Platform.OS == 'android' ? '40%' : '30%']}
+          image={null}
+        />
+        <DeleteAccountBottomSheet
+          ref={deleteAccountBottomSheetRef}
+          onPress={deleteAccount}
+        />
+      </View>
 
     </SafeAreaView>
   );

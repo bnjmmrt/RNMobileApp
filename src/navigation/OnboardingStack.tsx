@@ -1,9 +1,9 @@
-import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { AppFlowStack } from './AppFlowStack';
+import React from 'react';
+import UserDetails from 'src/screens/UsersModule/UserDetails';
 import BottomTabBar from '../component/Tabbar/BottomTabBar';
+import { AppFlowStack } from './AppFlowStack';
 import EventDetailsScreen from 'src/screens/EventScreen/EventDetailsScreen';
-
 
 // Define the param list for the stack navigator
 export type OnboardingStackkParamList = {
@@ -19,7 +19,6 @@ export const OnboardingStack: React.FC = () => {
     <Stack.Navigator
       initialRouteName="BottomTabBar"
       screenOptions={({ route, navigation }) => ({})}>
-
       <Stack.Screen
         name="AppFlowStack"
         component={AppFlowStack}

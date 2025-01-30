@@ -6,6 +6,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  ViewStyle,
 } from 'react-native';
 import {COLORS, LABLE} from '../../utils/constants';
 
@@ -18,6 +19,7 @@ interface CustomSelectableTextProps {
   rightImage?: any;
   onPress?: () => void;
   defaultValue?: string;
+  style?:ViewStyle
 }
 
 const CustomSelectableText: React.FC<CustomSelectableTextProps> = ({
@@ -29,11 +31,12 @@ const CustomSelectableText: React.FC<CustomSelectableTextProps> = ({
   rightImage,
   onPress,
   defaultValue = '',
+  style
 }) => {
   // const [errorMessage, setErrorMessage] = useState('');
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,style]}>
       {/* Dynamic Label */}
       {label && <Text style={[styles.label]}>{label}</Text>}
 
@@ -48,7 +51,7 @@ const CustomSelectableText: React.FC<CustomSelectableTextProps> = ({
         
           {defaultValue ? <Text style={styles.inputText}>{defaultValue}</Text> : <Text style={styles.inputTextPlaceholder}>{placeholder}</Text>}
         
-        {rightImage && <Image source={rightImage} style={styles.leftImage} />}
+        {rightImage && <Image  source={rightImage} style={styles.leftImage} />}
       </TouchableOpacity>
 
       {/* Dynamic Error Message */}
@@ -73,12 +76,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 8,
-    height: 50,
+    height: 60,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,
   },
-  leftImage: {marginRight: 6},
+  leftImage: {marginRight: 6, width: 16, 
+    height: 16, },
   inputText: {
     width: '90%',
     fontSize: 14,

@@ -1,8 +1,21 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
-import { Alert, Image, Platform, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  Image,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import settings from '../ApiManager/config';
 import { parse, format } from 'date-fns';
+import {
+  configStatusBar,
+  StatusBarState,
+} from 'src/redux/slices/safeAreaViewConfigSlice';
+import store from 'src/redux/store';
 
 // ErrorText component with TypeScript props
 interface ErrorTextProps {
@@ -13,17 +26,15 @@ export const getApiBaseUrl = () => {
   return settings.apiUrl.replace(/[^\x20-\x7E]/g, '');
 };
 
-
-export const LINKS ={
+export const LINKS = {
   TERMS_AND_CONDITION: 'https://therumor.com/terms-of-services',
   PRIVACY_POLICY: 'https://therumor.com/privacy-policy',
   APPLY_FOR_HOST: 'https://therumor.com/auth/sign-up',
-}
-
+};
 
 export const fontFamily = {
   ABCDiatype_Bold: 'ABCDiatype-Bold',
-  ABCDiatype_BoldItalic:'ABCDiatype-BoldItalic',
+  ABCDiatype_BoldItalic: 'ABCDiatype-BoldItalic',
   ABCDiatype_Light: 'ABCDiatype-Light',
   ABCDiatype_LightItalic: 'ABCDiatype-LightItalic',
   ABCDiatype_Medium: 'ABCDiatype-Medium',
@@ -40,7 +51,6 @@ export const fontFamily = {
   RomieTrial_Regular_Italic: 'RomieTrial-Regular-Italic',
   RomieTrial_Regular: 'RomieTrial-Regular',
   RomieTrial: 'RomieTrial',
-
 };
 
 export const ErrorText: React.FC<ErrorTextProps> = ({ msg }) => {
@@ -65,16 +75,14 @@ export const AsyncStrings = {
   EMAIL: 'Email',
   STEP_ONE: 'Step 1',
   STEP_TWO: 'Step 2',
-  STEP_3:'Step 3',
+  STEP_3: 'Step 3',
   SCHOOL_SELECTION: 'SchoolSelection',
   BASIC_PROFILE_DATA: 'BasicProfileData',
-  REGION_TEXT:'Region',
-  ACCESS_TOKEN:'AccessToken',
-  SCHOOL_ID:'SchoolId',
-  USER_NAME:'UserName'
-}
-
-
+  REGION_TEXT: 'Region',
+  ACCESS_TOKEN: 'AccessToken',
+  SCHOOL_ID: 'SchoolId',
+  USER_NAME: 'UserName',
+};
 
 // Helper function for logging
 export function printLog(msg: string, value: any = ''): void {
@@ -83,16 +91,19 @@ export function printLog(msg: string, value: any = ''): void {
   }
 }
 
-export const objectToQueryString = (obj: Record<string, string | number | boolean>): string => {
+export const objectToQueryString = (
+  obj: Record<string, string | number | boolean>,
+): string => {
   const str: string[] = [];
   for (const p in obj) {
     if (obj.hasOwnProperty(p)) {
-      str.push(`${encodeURIComponent(p)}=${encodeURIComponent(String(obj[p]))}`);
+      str.push(
+        `${encodeURIComponent(p)}=${encodeURIComponent(String(obj[p]))}`,
+      );
     }
   }
   return str.length > 0 ? `?${str.join('&')}` : '';
 };
-
 
 // AsyncStorage utility functions with type safety
 export const storeData = async (key: string, data: any): Promise<void> => {
@@ -109,7 +120,7 @@ export const retrieveData = async (key: string): Promise<void | null> => {
     const jsonValue = await AsyncStorage.getItem(key);
 
     // If jsonValue is null or undefined, return null, else parse it and return the parsed value
-    return jsonValue != null ? (JSON.parse(jsonValue)) : null;
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (error) {
     console.error('Error retrieving data:', error);
     return null; // Return null in case of error
@@ -183,13 +194,12 @@ export const TagKey = {
   EMAIL: 'Email',
   STEP_ONE: 'Step 1',
   STEP_TWO: 'Step 2',
-  STEP_3:'Step 3',
+  STEP_3: 'Step 3',
   SCHOOL_SELECTION: 'SchoolSelection',
   BASIC_PROFILE_DATA: 'BasicProfileData',
-  REGION_TEXT:'Region',
-  ACCESS_TOKEN:'AccessToken',
-  SCHOOL_ID:'SchoolId'
-
+  REGION_TEXT: 'Region',
+  ACCESS_TOKEN: 'AccessToken',
+  SCHOOL_ID: 'SchoolId',
 };
 
 export const clearAllForLogout = async (): Promise<void> => {
@@ -222,12 +232,21 @@ export const ForceLogout = async (): Promise<void> => {
   // navigation.dispatch(resetAction);
 };
 
-export const ageCaluclation = (selectedDay: string, selectedMonth: string, selectedYear: string, months: string[]): number => {
+export const ageCaluclation = (
+  selectedDay: string,
+  selectedMonth: string,
+  selectedYear: string,
+  months: string[],
+): number => {
   const monthIndex = months.indexOf(selectedMonth);
   if (monthIndex === -1) {
     throw new Error('Invalid month name');
   }
-  const dob = new Date(parseInt(selectedYear), monthIndex, parseInt(selectedDay));
+  const dob = new Date(
+    parseInt(selectedYear),
+    monthIndex,
+    parseInt(selectedDay),
+  );
   const today = new Date();
   let age = today.getFullYear() - dob.getFullYear();
   const monthDiff = today.getMonth() - dob.getMonth();
@@ -236,76 +255,87 @@ export const ageCaluclation = (selectedDay: string, selectedMonth: string, selec
     age--;
   }
   return age;
-}
+};
 
-export const handleFormatDate = (selectedDay:string, selectedMonth:string, selectedYear:string, months:string[]) => {
+export const handleFormatDate = (
+  selectedDay: string,
+  selectedMonth: string,
+  selectedYear: string,
+  months: string[],
+) => {
   const monthIndex = months.indexOf(selectedMonth);
   if (monthIndex === -1) {
     console.error('Invalid month name');
     return;
   }
 
-  
   const monthNumber = (monthIndex + 1).toString().padStart(2, '0'); // Convert to two-digit month
   const dateString = `${selectedDay}/${monthNumber}/${selectedYear}`;
   const formattedDate = moment(dateString, 'DD/MM/YYYY').format('DD/MM/YYYY');
   console.log('Formatted Date:', formattedDate);
-  return formattedDate
+  return formattedDate;
 };
 
+export const formatEventDates = (startDate: string, endDate: string) => {
+  return startDate + " " + endDate
+  // // Helper function to parse the date
+  // function parseDate(dateString) {
+  //   const [datePart, timePart] = dateString.split(' ');
+  //   const [month, day, year] = datePart.split('/').map(Number);
+  //   const [hours, minutes] = timePart.split(':').map(Number);
+  //   return new Date(year, month - 1, day, hours, minutes);
+  // }
 
+  // // Parse input strings into Date objects
+  // const start = parseDate(startDate);
+  // const end = parseDate(endDate);
 
-export const  formatEventDates = (startDate: string, endDate: string) => {
-  // Helper function to parse the date
-  function parseDate(dateString) {
-    const [datePart, timePart] = dateString.split(" ");
-    const [month, day, year] = datePart.split("/").map(Number);
-    const [hours, minutes] = timePart.split(":").map(Number);
-    return new Date(year, month - 1, day, hours, minutes);
-  }
+  // // Format options
+  // const optionsDate = {weekday: 'short', month: 'short', day: 'numeric'};
+  // const optionsTime = {hour: 'numeric', minute: 'numeric', hour12: true};
+  // const optionsTimeZone = {timeZoneName: 'short'};
 
-  // Parse input strings into Date objects
-  const start = parseDate(startDate);
-  const end = parseDate(endDate);
+  // // Format components
+  // const formattedStartDate = new Intl.DateTimeFormat(
+  //   'en-US',
+  //   optionsDate,
+  // ).format(start);
+  // const formattedStartTime = new Intl.DateTimeFormat(
+  //   'en-US',
+  //   optionsTime,
+  // ).format(start);
+  // const formattedEndDate = new Intl.DateTimeFormat('en-US', optionsDate).format(
+  //   end,
+  // );
+  // const formattedEndTime = new Intl.DateTimeFormat('en-US', optionsTime).format(
+  //   end,
+  // );
+  // const timeZone = new Intl.DateTimeFormat('en-US', optionsTimeZone)
+  //   .format(start)
+  //   .split(' ')[1];
 
-  // Format options
-  const optionsDate = { weekday: "short", month: "short", day: "numeric" };
-  const optionsTime = { hour: "numeric", minute: "numeric", hour12: true };
-  const optionsTimeZone = { timeZoneName: "short" };
-
-  // Format components
-  const formattedStartDate = new Intl.DateTimeFormat("en-US", optionsDate).format(start);
-  const formattedStartTime = new Intl.DateTimeFormat("en-US", optionsTime).format(start);
-  const formattedEndDate = new Intl.DateTimeFormat("en-US", optionsDate).format(end);
-  const formattedEndTime = new Intl.DateTimeFormat("en-US", optionsTime).format(end);
-  const timeZone = new Intl.DateTimeFormat("en-US", optionsTimeZone).format(start).split(" ")[1];
-
-  // Check if start and end are on the same day
-  if (
-    start.getFullYear() === end.getFullYear() &&
-    start.getMonth() === end.getMonth() &&
-    start.getDate() === end.getDate()
-  ) {
-    // Same day: Include time range only
-    return `${formattedStartDate}, ${formattedStartTime} – ${formattedEndTime} ${timeZone}`;
-  } else {
-    // Different days: Include full date and time range
-    return `${formattedStartDate}, ${formattedStartTime} —\n${formattedEndDate}, ${formattedEndTime} ${timeZone}`;
-  }
-}
+  // // Check if start and end are on the same day
+  // if (
+  //   start.getFullYear() === end.getFullYear() &&
+  //   start.getMonth() === end.getMonth() &&
+  //   start.getDate() === end.getDate()
+  // ) {
+  //   // Same day: Include time range only
+  //   return `${formattedStartDate}, ${formattedStartTime} – ${formattedEndTime} ${timeZone}`;
+  // } else {
+  //   // Different days: Include full date and time range
+  //   return `${formattedStartDate}, ${formattedStartTime} —\n${formattedEndDate}, ${formattedEndTime} ${timeZone}`;
+  // }
+};
 
 // Example usage
-const start1 = "11/21/2024 13:00";
-const end1 = "11/21/2024 15:00";
+const start1 = '11/21/2024 13:00';
+const end1 = '11/21/2024 15:00';
 console.log(formatEventDates(start1, end1)); // Thu, Nov 21, 1:00PM – 3:00PM EST
 
-const start2 = "11/21/2024 20:00";
-const end2 = "11/23/2024 12:00";
+const start2 = '11/21/2024 20:00';
+const end2 = '11/23/2024 12:00';
 console.log(formatEventDates(start2, end2)); // Thu, Nov 21, 8:00PM — Sat, Nov 23, 12:00PM EST
-
-
-
-
 
 // export const  formatEventDates = (startDate: string, endDate: string) => {
 
@@ -350,4 +380,30 @@ export const isAndroid = (): boolean => platform === 'android';
 export const convertDateFormat = (dateString: string): string => {
   const [day, month, year] = dateString.split('/');
   return `${year}-${month}-${day}`;
+};
+
+export const formatDate = (date: Date) => {
+  return date
+    .toLocaleDateString('en-GB', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }) // Format to DD/MM/YYYY
+    .replace(/\//g, '/');
+};
+
+export const changeSafeAreaViewConfig = (config: StatusBarState) => {
+  store.store.dispatch(configStatusBar(config));
+  if (Platform.OS == 'android') {
+    StatusBar.setHidden(false);
+    StatusBar.setBackgroundColor(config.topSafeAreaViewColor, true);
+    // changeNavigationBarColor(config.bottomSafeAreaViewColor);
+    if (config.showBottomSafeAreaView) {
+      // showNavigationBar();
+    } else {
+      // hideNavigationBar();
+    }
+    StatusBar.setTranslucent(config.translucent || false);
+  }
+  StatusBar.setBarStyle(config.statusBarStyle, true);
 };

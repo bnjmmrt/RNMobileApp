@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/slices';
 import { AuthStack } from './AuthStack';
 import EventDetailsScreen from 'src/screens/EventScreen/EventDetailsScreen';
-
+import { SCREENS } from 'src/utils/constants';
 
 // Define the param list for the stack navigator
 export type AppStackParamList = {
@@ -16,6 +16,7 @@ export type AppStackParamList = {
   AppFlowStack: undefined;
   AuthStack: undefined;
   EventDetailsScreen: undefined;
+  [SCREENS.USER_DETAIL]: undefined;
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -24,9 +25,8 @@ const Stack = createStackNavigator<AppStackParamList>();
 export const AppStack: React.FC = () => {
   return (
     <Stack.Navigator
-      initialRouteName={"BeforeAppStaticScreen"}
+      initialRouteName={'BottomTabBar'}
       screenOptions={({ route, navigation }) => ({})}>
-
       <Stack.Screen
         name="BeforeAppStaticScreen"
         component={BeforeAppStaticScreen}
@@ -51,11 +51,6 @@ export const AppStack: React.FC = () => {
         options={{ headerShown: false }}
       />
 
-      <Stack.Screen
-        name="EventDetailsScreen"
-        component={EventDetailsScreen}
-        options={{ headerShown: false }}
-      />
 
 
 

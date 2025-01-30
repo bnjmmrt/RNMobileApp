@@ -1,4 +1,3 @@
-import { BorderlessButton } from "react-native-gesture-handler"
 
 export const BUTTON_LABLE = {
   ENTER: 'Enter',
@@ -7,7 +6,7 @@ export const BUTTON_LABLE = {
   GET_STARTED: 'Get Started',
   RESEND: 'Resend',
   SUBMTI_APPLICATION: 'Submit Application',
-  UPCOMING: "Upcoming",
+  UPCOMING: 'Upcoming',
   INVITED: 'Invited',
   APPLIED: 'Applied',
   PAST: 'Past',
@@ -18,45 +17,65 @@ export const BUTTON_LABLE = {
   SUPPORT_EMAIL_ID: 'support@therumor.com',
   SUBMIT: 'Submit',
   INVITE_CONTACTS_VIA: 'Invite Contacts via Link',
-  INVITE: "Invite",
+  INVITE: 'Invite',
   SENT: 'Sent',
   REQUREST: 'Request',
   ACCESS_MY_CONTACTS: 'Access My Contacts',
-  ENTER_REFERRAL_CODE: "Enter Referral Code",
-  CONFIRM: "Confirm",
-  FOLLOW: 'Follow'
-}
+  ENTER_REFERRAL_CODE: 'Enter Referral Code',
+  CONFIRM: 'Confirm',
+  INVITE_FRIENDS: 'Invite Friends to Join Rumor',
+  INVITES: 'Invites',
+  INVITE_FREINDS: 'Invite friends to join you on Rumor.',
+  REPLACE_PHOTO: 'Replace Photo',
+  CANCEL: 'Cancel',
+  DELETE_MY_ACCOUNT: 'Delete My Account',
+  CLOSE: 'Close',
+  SAVE_PHOTO: 'Save Photo',
+  ALL_USERS: 'All Users',
+  LISTS: 'Lists',
+  OVERVIEW: 'Overview',
+  EVENTS: 'Events',
+};
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',
   ENTER_YOUR_PHONE_NUMBER: 'Enter your phone number',
   ENTER_YOUR_EMAIL: 'Enter your email',
-  RUMOR_WILL_SEND_YOU_A_EMAIL_WITH_A_VERIFICATION_CODE: 'Rumor will send you an email with a verification code.',
-  RUMOR_WILL_SEND_YOU_A_TEXT_WITH_A_VERIFICATION_CODE: 'Rumor will send you a text with a verification code.',
+  RUMOR_WILL_SEND_YOU_A_EMAIL_WITH_A_VERIFICATION_CODE:
+    'Rumor will send you an email with a verification code.',
+  RUMOR_WILL_SEND_YOU_A_TEXT_WITH_A_VERIFICATION_CODE:
+    'Rumor will send you a text with a verification code.',
   EROOR_ENTER_PHONE_NUMBER: 'Please enter a valid phone number',
   EROOR_ENTER_EMAIL: 'Please enter a valid email address',
-  ERROR_VERIFY_CODE: 'The code you entered cannot be verified. Please try again.',
+  ERROR_VERIFY_CODE:
+    'The code you entered cannot be verified. Please try again.',
   EROOR_ENTER_CODE: 'Please enter a verification code',
   ENTER_YOUR_VERIFICATION_CODE: 'Enter your verification code',
   SEND_TO: 'Sent to ',
-  DONT_GET_CODE: "Didn’t get a code?",
+  DONT_GET_CODE: 'Didn’t get a code?',
   ENTER_YOUR_NAME: 'Let’s start with your name.',
   FIRST_NAME: 'First Name',
   LAST_NAME: 'Last Name',
   WHATS_YOUR_EMAIL_ADDRESS: 'What’s your email address?',
   WHATS_YOUR_PHONE_NUMBER: 'What’s your phone number?',
-  WHATS_YOUR_PHONE_NUMBER_SUBTITLE: 'We’ll contact you for membership and event updates.',
-  WHATS_YOUR_EMAIL_SUBTITLE: "We'll contact you for membership and event updates.",
+  WHATS_YOUR_PHONE_NUMBER_SUBTITLE:
+    'We’ll contact you for membership and event updates.',
+  WHATS_YOUR_EMAIL_SUBTITLE:
+    "We'll contact you for membership and event updates.",
   EMAIL_ADDRESS: 'Email Address',
-  WHATS_YOUR_GENDER: "What’s your gender?",
-  SELECT_THE_OPTION_THAT_BEST_DESCRIBES_YOU: 'Select the option that best describes you.',
-  WHEN_IS_YOUR_BIRTHDAY: "When’s your birthday?",
-  WE_WILL_USE_THIS_INFORMATION_TO_TAILOR_YOUR_EXPERIENCE: "We’ll use this information to tailor your experience.",
+  WHATS_YOUR_GENDER: 'What’s your gender?',
+  SELECT_THE_OPTION_THAT_BEST_DESCRIBES_YOU:
+    'Select the option that best describes you.',
+  WHEN_IS_YOUR_BIRTHDAY: 'When’s your birthday?',
+  WE_WILL_USE_THIS_INFORMATION_TO_TAILOR_YOUR_EXPERIENCE:
+    'We’ll use this information to tailor your experience.',
   WHERE_DO_YOU_CALL_HOME: 'Where do you call home?',
-  WE_WILL_RECOMMEND_EVENTS_AND_EXPERIENCES_NEAR_YOU: "We’ll recommend events and experiences near you.",
-  WHAT_IS_YOUR_CREATIVE_OR_PROFESSIONAL_FOCUS: "What’s your creative or professional focus?",
-  YOU_CAN_CHOOSE_UP_TO_3_CATEGORIES: "You can choose up to 3 categories",
-  SEARCH_FOR_A_LOCATION: "Search for a Location…",
-  DATE_PLACEHOLDER: "MM/DD/YYYY",
+  WE_WILL_RECOMMEND_EVENTS_AND_EXPERIENCES_NEAR_YOU:
+    'We’ll recommend events and experiences near you.',
+  WHAT_IS_YOUR_CREATIVE_OR_PROFESSIONAL_FOCUS:
+    'What’s your creative or professional focus?',
+  YOU_CAN_CHOOSE_UP_TO_3_CATEGORIES: 'You can choose up to 3 categories',
+  SEARCH_FOR_A_LOCATION: 'Search for a Location…',
+  DATE_PLACEHOLDER: 'MM/DD/YYYY',
   MY_DETAILS: 'My Details',
   EMAIL: 'Email',
   VERIFY_EMAIL: 'Verify Email',
@@ -76,25 +95,32 @@ export const LABLE = {
   IDENTITY_VERIFICATION_TITLE: 'Last step, what’s your Instagram?',
   IDENTITY_VERIFICATION_SUBTITLE: 'This helps us verify your online identity.',
   CHOOSE_YOUR_INTERESTS: 'Choose your interests',
-  CHOOSE_YOUR_INTERESTS_SUBTITLE: 'Select topics of interests so we can curate experiences you’ll want to attend.',
+  CHOOSE_YOUR_INTERESTS_SUBTITLE:
+    'Select topics of interests so we can curate experiences you’ll want to attend.',
   ADD_A_PHOTO: 'Add a photo',
   ADD_A_PHOTO_SUBTITLE: 'Upload a profile photo to complete your profile.',
-  CHAT_WITH_HOST: "Chat\nwith hosts.",
-  SEARCH_FOR_EVENT: "Search for an event…",
-  ACCESS_THE_MOST_VALUABLE_CALENDAR: "Access the most valuable calendar.",
-  TWO_MINUTES_TO_COMPLETE: "~2 min to Complete",
-  STREAMLINE_YOUR_LIFESTYLE: "Streamline your lifestyle.",
-  MANAGE_YOUR_EVENTS: "Manage your events, chats, and passes—all in one place.",
-  CONNECT_WITH_WORLD: "Connect with the world's top event organizers. Get discovered and invited to events that matter.",
-  CONNECT_DIRECTLY_WITH_PEOPLE: "Connect directly with the people behind the events. Request invites and confirm details seamlessly.",
-  UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS: "Unlock access to exclusive events",
-  GET_DISCOVERY_BY_THE_WORLD: "Get discovered by the world's top event organizers and receive invites to events that matter.",
-  DISCOVER_EXPERIENCES_ACROSS_ART: "Discover experiences across art, fashion, music, and more — listed by renowned hosts.",
-  DISCOVER_EXPERIENCES_IN_ART: "Discover experiences in art, fashion, music, and more—curated by renowned hosts.",
-  COMPLETE_VERIFICATION: "Complete Verification",
-  SEND_DIRECT_MSG_CODE: "Send direct message with the code:",
-  WE_WILL_REVIEW_APP: "We’ll review your application after we receive your message.",
-  EMAIL_THE_CODE: "Email the code to:",
+  CHAT_WITH_HOST: 'Chat\nwith hosts.',
+  SEARCH_FOR_EVENT: 'Search for an event…',
+  ACCESS_THE_MOST_VALUABLE_CALENDAR: 'Access the most valuable calendar.',
+  TWO_MINUTES_TO_COMPLETE: '~2 min to Complete',
+  STREAMLINE_YOUR_LIFESTYLE: 'Streamline your lifestyle.',
+  MANAGE_YOUR_EVENTS: 'Manage your events, chats, and passes—all in one place.',
+  CONNECT_WITH_WORLD:
+    "Connect with the world's top event organizers. Get discovered and invited to events that matter.",
+  CONNECT_DIRECTLY_WITH_PEOPLE:
+    'Connect directly with the people behind the events. Request invites and confirm details seamlessly.',
+  UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS: 'Unlock access to exclusive events',
+  GET_DISCOVERY_BY_THE_WORLD:
+    "Get discovered by the world's top event organizers and receive invites to events that matter.",
+  DISCOVER_EXPERIENCES_ACROSS_ART:
+    'Discover experiences across art, fashion, music, and more — listed by renowned hosts.',
+  DISCOVER_EXPERIENCES_IN_ART:
+    'Discover experiences in art, fashion, music, and more—curated by renowned hosts.',
+  COMPLETE_VERIFICATION: 'Complete Verification',
+  SEND_DIRECT_MSG_CODE: 'Send direct message with the code:',
+  WE_WILL_REVIEW_APP:
+    'We’ll review your application after we receive your message.',
+  EMAIL_THE_CODE: 'Email the code to:',
   DONT_USE_INSTAGRAM: "Don't use Instagram?",
   REFERRAL_CODE: "Referral Code",
   IF_YOU_HAVE_ANY_REFERRAL_CODE: 'If you have a referral code, enter it below.',
@@ -132,17 +158,36 @@ export const PROFILE = {
   REFERRALS: 'Referrals',
   CONNECTED_ACCOUNTS: 'Connected Accounts',
   MY_INTERESTS: 'My Interests',
-}
-
-export const EVENT_STATUS = {
-  AWAITING: 'Awaiting response from host',
-  INVITED: 'Invited by host',
-  DECLINED_BY_HOST: 'Request declined by host',
-  DECLINED_BY_YOU: 'You declined this invitation',
-  GOING: 'You are going',
-}
-
-
+  CONNECTED_ACCOUNTS_SUB_TITLE:
+    'Connect your social profiles to help hosts learn more about you and unlock more opportunities.',
+  INSTAGRAM: 'Instagram',
+  FACEBOOK: 'Facebook',
+  TIKTOK: 'TikTok',
+  LINKEDIN: 'LinkedIn',
+  YOUTUBE: 'YouTube',
+  X: 'X',
+  SNAPCHAT: 'Snapchat',
+  CONNECT_INSTAGRAM: 'Connect Instagram',
+  CONNECT_TIKTOK: 'Connect TikTok',
+  CONNECT_FACEBOOK: 'Connect Facebook',
+  CONNECT_LINKEDIN: 'Connect LinkedIn',
+  CONNECT_X: 'Connect X',
+  CONNECT_YOUTUBE: 'Connect YouTube',
+  CONNECT_SNAPCHAT: 'Connect Snapchat',
+  MY_INTERESTS_DESC:
+    "Choosing interests helps Rumor curate and recommend experiences that you'll love.",
+  FEEDBACK_SUBTITLE: 'Let us know what you think of Rumor.',
+  SMS_NOTIFICATIONS: 'SMS Notifications',
+  PUSH_NOTIFICATIONS: 'Push Notifications',
+  EMAIL_NOTIFICATIONS: 'Email Notifications',
+  FEEDBACK_MESSAGE: 'Thank you for your feedback!',
+  FEEDBACK_CONFIRMATION_MESSAGE:
+    'We truly appreciate your input and will use it to enhance our service.',
+  REVIEW_REFERRAL_REQUESTS:
+    'Review referral requests from friends who want to join Rumor. Your decision will remain private.',
+  REVIEW_VOUCH_REQUESTS:
+    'Approve or decline requests from members seeking your vouch to join an experience. Your decision is private.',
+};
 
 export const ERROR_MESSAGE = {
   FIRST_NAME: 'Please enter your first name',
@@ -150,9 +195,10 @@ export const ERROR_MESSAGE = {
   PLEASE_ENTER_YOUR_BASE_CITY: 'Please enter your base city',
   PLEASE_ENTER_YOUR_BIRTHDAY: 'Please enter your birthday',
   PLEASE_ENTER_A_VALID_EMAIL_ADDRESS: 'Please enter a valid email address',
-  PLEASE_ENTER_A_VALID_REFERRAL_CODE: "Please enter a valid referral code",
-  AGE_REQUIREMENT_NOT_MET: "Age requirement not met"
-}
+  PLEASE_ENTER_A_VALID_REFERRAL_CODE: 'Please enter a valid referral code',
+  AGE_REQUIREMENT_NOT_MET: 'Age requirement not met',
+  FEEDBACK_ERROR: 'Please enter your Feedback.',
+};
 export const COLORS = {
   black: '#1F1F1F',
   black2: '#0F0F0F',
@@ -179,6 +225,20 @@ export const COLORS = {
   bgRed: '#F5E7E7',
   borderGreen: '#B9D8CF',
   bgGreen: '#E8F2EF',
+  successLight: '#E8F2EF',
+  success: '#167E60',
+  pink: '#D93175',
+  blue: '#1877F2',
+  darkBlue: '#0A66C2',
+  red: '#FF0000',
+  yellow: '#FFFC00',
 
 }
 
+export const EVENT_STATUS = {
+  AWAITING: 'Awaiting response from host',
+  INVITED: 'Invited by host',
+  DECLINED_BY_HOST: 'Request declined by host',
+  DECLINED_BY_YOU: 'You declined this invitation',
+  GOING: 'You are going',
+}
