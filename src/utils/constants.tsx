@@ -1,6 +1,8 @@
+
 export const BUTTON_LABLE = {
   ENTER: 'Enter',
   NEXT: 'Next',
+  RSVP: 'RSVP',
   APPLY_TO_BE_HOST: 'Apply to be a Host',
   GET_STARTED: 'Get Started',
   RESEND: 'Resend',
@@ -30,19 +32,11 @@ export const BUTTON_LABLE = {
   DELETE_MY_ACCOUNT: 'Delete My Account',
   CLOSE: 'Close',
   SAVE_PHOTO: 'Save Photo',
-
-  INVITE_CONTACTS_VIA: 'Invite Contacts via Link',
-  INVITE: 'Invite',
-  SENT: 'Sent',
-  REQUREST: 'Request',
-  ACCESS_MY_CONTACTS: 'Access My Contacts',
-  ENTER_REFERRAL_CODE: 'Enter Referral Code',
-  CONFIRM: 'Confirm',
-
   ALL_USERS: 'All Users',
   LISTS: 'Lists',
   OVERVIEW: 'Overview',
   EVENTS: 'Events',
+  FOLLOW: 'Follow'
 };
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',
@@ -130,31 +124,30 @@ export const LABLE = {
     'We’ll review your application after we receive your message.',
   EMAIL_THE_CODE: 'Email the code to:',
   DONT_USE_INSTAGRAM: "Don't use Instagram?",
-  REFERRAL_CODE: 'Referral Code',
+  REFERRAL_CODE: "Referral Code",
   IF_YOU_HAVE_ANY_REFERRAL_CODE: 'If you have a referral code, enter it below.',
   ENTER_CODE: 'Enter Code',
   SELECT_A_REFERRAL: 'Select a Referral',
-  SEARCH_FRIENDS: 'Search friends..',
+  SEARCH_FRIENDS: "Search friends..",
   FRIENDS_WHO_ARE_MEMBERS: 'Friends who are members',
-  REQUEST_A_REFERRAL:
-    'Request a referral from a Rumor member to boost your application.',
-  CONTACTS: 'Contacts',
-  INVITE_FRIENDS_TO: 'Invite friends to fast track your membership approval.',
-  YOU_ARE_ON_WAITLIST: 'You’re on\nthe waitlist.',
-  FULL_ACCESS_UNLOCK:
-    'Full access will be unlocked once your application is approved.',
-  FASTRACK_YOUR_APPLICATION: 'Want to fast-track your application?',
-  REQUEST_REFERRAL_FROM_RUMOR: 'Request referrals from Rumor members.',
-  INVITE_YOUR_FRIEND: 'Invite your friends to join Rumor.',
-  SELECT_YOUR_BIRTHDAY_BELOW: 'Select your birthday below',
+  REQUEST_A_REFERRAL: 'Request a referral from a Rumor member to boost your application.',
+  CONTACTS: "Contacts",
+  INVITE_FRIENDS_TO: "Invite friends to fast track your membership approval.",
+  YOU_ARE_ON_WAITLIST: "You’re on\nthe waitlist.",
+  FULL_ACCESS_UNLOCK: "Full access will be unlocked once your application is approved.",
+  FASTRACK_YOUR_APPLICATION: "Want to fast-track your application?",
+  REQUEST_REFERRAL_FROM_RUMOR: "Request referrals from Rumor members.",
+  INVITE_YOUR_FRIEND: "Invite your friends to join Rumor.",
+  SELECT_YOUR_BIRTHDAY_BELOW: "Select your birthday below",
   LOGOUT: 'Log Out',
-  COMING_SOON: 'Coming Soon…',
+  COMING_SOON: "Coming Soon…",
   OTP_VERIFIED_SUCCESSFULLY: 'OTP verified successfully!',
-  SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:
-    'Something went wrong, please try again',
-  EDIT_PROFILE: 'Edit Profile',
-  PHONE_NUMBER: 'Phone Number',
-};
+  SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN: 'Something went wrong, please try again',
+  ABOUT_THE_EVENT: "About the Event",
+  READ_MORE: 'Read More',
+  FEATURED_TALENT: "Featured Talent",
+  DUMMY_TEXT: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent bland",
+}
 
 export const PROFILE = {
   EDIT_PROFILE: 'Edit Profile',
@@ -219,8 +212,6 @@ export const COLORS = {
   disable: '#D7D3D0',
   borderGray: '#E1E1E1',
   tabBorderColor: '#D8D8D8',
-  borderRed: '#E2B6B8',
-  bgRed: '#F5E7E7',
   text: '#B5B5B5',
   errorText: '#9D0D11',
   bgBackArrow: '#f4f4f4',
@@ -228,6 +219,14 @@ export const COLORS = {
   placeHodler: '#A2A1A1',
   surfaceSecondary: '#CDBAB1',
   nearBlack: '#676767',
+  borderYellow: '#FBE8BD',
+  bgYellow: '#FEF8E9',
+  borderBlue: '#B9D8CF',
+  bgBlue: '#E7F1F5',
+  borderRed: '#E2B6B8',
+  bgRed: '#F5E7E7',
+  borderGreen: '#B9D8CF',
+  bgGreen: '#E8F2EF',
   successLight: '#E8F2EF',
   success: '#167E60',
   pink: '#D93175',
@@ -235,4 +234,13 @@ export const COLORS = {
   darkBlue: '#0A66C2',
   red: '#FF0000',
   yellow: '#FFFC00',
-};
+
+}
+
+export const EVENT_STATUS = {
+  AWAITING: 'Awaiting response from host',
+  INVITED: 'Invited by host',
+  DECLINED_BY_HOST: 'Request declined by host',
+  DECLINED_BY_YOU: 'You declined this invitation',
+  GOING: 'You are going',
+}

@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import settings from '../ApiManager/config';
-import {parse, format} from 'date-fns';
+import { parse, format } from 'date-fns';
 import {
   configStatusBar,
   StatusBarState,
@@ -53,7 +53,7 @@ export const fontFamily = {
   RomieTrial: 'RomieTrial',
 };
 
-export const ErrorText: React.FC<ErrorTextProps> = ({msg}) => {
+export const ErrorText: React.FC<ErrorTextProps> = ({ msg }) => {
   return (
     <Text
       style={{
@@ -277,54 +277,55 @@ export const handleFormatDate = (
 };
 
 export const formatEventDates = (startDate: string, endDate: string) => {
-  // Helper function to parse the date
-  function parseDate(dateString) {
-    const [datePart, timePart] = dateString.split(' ');
-    const [month, day, year] = datePart.split('/').map(Number);
-    const [hours, minutes] = timePart.split(':').map(Number);
-    return new Date(year, month - 1, day, hours, minutes);
-  }
+  return startDate + " " + endDate
+  // // Helper function to parse the date
+  // function parseDate(dateString) {
+  //   const [datePart, timePart] = dateString.split(' ');
+  //   const [month, day, year] = datePart.split('/').map(Number);
+  //   const [hours, minutes] = timePart.split(':').map(Number);
+  //   return new Date(year, month - 1, day, hours, minutes);
+  // }
 
-  // Parse input strings into Date objects
-  const start = parseDate(startDate);
-  const end = parseDate(endDate);
+  // // Parse input strings into Date objects
+  // const start = parseDate(startDate);
+  // const end = parseDate(endDate);
 
-  // Format options
-  const optionsDate = {weekday: 'short', month: 'short', day: 'numeric'};
-  const optionsTime = {hour: 'numeric', minute: 'numeric', hour12: true};
-  const optionsTimeZone = {timeZoneName: 'short'};
+  // // Format options
+  // const optionsDate = {weekday: 'short', month: 'short', day: 'numeric'};
+  // const optionsTime = {hour: 'numeric', minute: 'numeric', hour12: true};
+  // const optionsTimeZone = {timeZoneName: 'short'};
 
-  // Format components
-  const formattedStartDate = new Intl.DateTimeFormat(
-    'en-US',
-    optionsDate,
-  ).format(start);
-  const formattedStartTime = new Intl.DateTimeFormat(
-    'en-US',
-    optionsTime,
-  ).format(start);
-  const formattedEndDate = new Intl.DateTimeFormat('en-US', optionsDate).format(
-    end,
-  );
-  const formattedEndTime = new Intl.DateTimeFormat('en-US', optionsTime).format(
-    end,
-  );
-  const timeZone = new Intl.DateTimeFormat('en-US', optionsTimeZone)
-    .format(start)
-    .split(' ')[1];
+  // // Format components
+  // const formattedStartDate = new Intl.DateTimeFormat(
+  //   'en-US',
+  //   optionsDate,
+  // ).format(start);
+  // const formattedStartTime = new Intl.DateTimeFormat(
+  //   'en-US',
+  //   optionsTime,
+  // ).format(start);
+  // const formattedEndDate = new Intl.DateTimeFormat('en-US', optionsDate).format(
+  //   end,
+  // );
+  // const formattedEndTime = new Intl.DateTimeFormat('en-US', optionsTime).format(
+  //   end,
+  // );
+  // const timeZone = new Intl.DateTimeFormat('en-US', optionsTimeZone)
+  //   .format(start)
+  //   .split(' ')[1];
 
-  // Check if start and end are on the same day
-  if (
-    start.getFullYear() === end.getFullYear() &&
-    start.getMonth() === end.getMonth() &&
-    start.getDate() === end.getDate()
-  ) {
-    // Same day: Include time range only
-    return `${formattedStartDate}, ${formattedStartTime} – ${formattedEndTime} ${timeZone}`;
-  } else {
-    // Different days: Include full date and time range
-    return `${formattedStartDate}, ${formattedStartTime} —\n${formattedEndDate}, ${formattedEndTime} ${timeZone}`;
-  }
+  // // Check if start and end are on the same day
+  // if (
+  //   start.getFullYear() === end.getFullYear() &&
+  //   start.getMonth() === end.getMonth() &&
+  //   start.getDate() === end.getDate()
+  // ) {
+  //   // Same day: Include time range only
+  //   return `${formattedStartDate}, ${formattedStartTime} – ${formattedEndTime} ${timeZone}`;
+  // } else {
+  //   // Different days: Include full date and time range
+  //   return `${formattedStartDate}, ${formattedStartTime} —\n${formattedEndDate}, ${formattedEndTime} ${timeZone}`;
+  // }
 };
 
 // export const  formatEventDates = (startDate: string, endDate: string) => {
