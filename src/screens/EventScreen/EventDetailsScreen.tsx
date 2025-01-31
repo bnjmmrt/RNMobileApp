@@ -27,6 +27,7 @@ import EventHostItem from 'src/component/Event/EventHostItem';
 import { FlatList } from 'react-native-gesture-handler';
 import EventVenue from 'src/component/Event/EventVenue';
 import EventOverview from 'src/component/Event/EventOverview';
+import Button from 'src/component/Button';
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
@@ -39,7 +40,7 @@ type RouteParams = {
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) => {
 
   const route = useRoute<RouteProp<RouteParams>>();
-  console.log(route.params?.item);
+  console.log(route.params);
   const statusMap = [
     { id: "1", label: EVENT_STATUS.AWAITING },
     { id: "2", label: EVENT_STATUS.INVITED },
@@ -51,15 +52,19 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
 
   // const styles = EventDetailsScreenStyle();
 
+  const onNextClick = () => {
+
+  }
+
   return (
-    <SafeAreaView style={{ ...styles.container }}>
+    <View style={{ ...styles.container }}>
 
       <ScrollView>
         <View style={{ ...styles.contentContainer }}>
 
           <View style={{}}>
             <FastImage
-              source={{ uri: route?.params?.item?.imageCover }}
+              source={{ uri: route?.params?.imageCover }}
               resizeMode={FastImage.resizeMode.cover}
               style={styles.icon}
             />
@@ -77,16 +82,22 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
               <EventHostItem item={item} />
             )}
           />
-          <EventVenue item={route?.params?.item}/>
-          <EventOverview item={route?.params?.item}/>
+          <EventVenue item={route?.params?.item} />
+          <EventOverview item={route?.params?.item} />
 
 
-
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={BUTTON_LABLE.RSVP}
+            colorTheme="dark"
+            onPress={onNextClick}
+          />
         </View>
 
       </ScrollView>
       <BackButtonOverlay onPress={() => navigation.goBack()} />
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -101,7 +112,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     flex: 1,
-    backgroundColor: COLORS.bgRed,
+    backgroundColor: COLORS.white,
   },
   imageContainer: {
     alignItems: 'center',
@@ -109,7 +120,8 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexDirection: 'column',
-    padding: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
     flex: 1,
     backgroundColor: COLORS.white,
   },
@@ -122,6 +134,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     height: Hp(60),
     flex: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 5,
   },
   titleStyle: {
     fontSize: 30,

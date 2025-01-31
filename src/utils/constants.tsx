@@ -2,6 +2,7 @@
 export const BUTTON_LABLE = {
   ENTER: 'Enter',
   NEXT: 'Next',
+  RSVP: 'RSVP',
   APPLY_TO_BE_HOST: 'Apply to be a Host',
   GET_STARTED: 'Get Started',
   RESEND: 'Resend',
@@ -35,6 +36,7 @@ export const BUTTON_LABLE = {
   LISTS: 'Lists',
   OVERVIEW: 'Overview',
   EVENTS: 'Events',
+  FOLLOW: 'Follow'
 };
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',

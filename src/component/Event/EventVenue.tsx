@@ -1,11 +1,12 @@
 import React from 'react';
-import { Text, StyleSheet, View, Image } from 'react-native';
+import { Text, StyleSheet, View, Image, TouchableOpacity, Platform, Linking } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
 import IMAGES from '@images/index';
 import { Hp, Wp } from 'src/utils/dimensions';
 import ButtonSmall from '../ButtonSmall';
 import MapView from 'react-native-maps';
+import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
 
 interface EventVenueProps {
   item: {};
@@ -17,7 +18,21 @@ const handlEventPress = () => {
 
 const EventVenue: React.FC<EventVenueProps> = ({ item }) => {
 
+  const latitude = 37.78825;
+  const longitude = -122.4324;
 
+  const openMap = () => {
+    const url = Platform.select({
+      ios: `maps://?q=${latitude},${longitude}`, // Apple Maps
+      android: `geo:${latitude},${longitude}?q=${latitude},${longitude}`, // Google Maps
+    });
+
+    if (url) {
+      Linking.openURL(url).catch(() => {
+        FlashMessageComponent.show('error', "Failed to open maps");
+      });
+    }
+  };
   return (
     <View style={[styles.container]}>
       <View style={{ flex: 1, padding: 5 }}>
@@ -29,12 +44,12 @@ const EventVenue: React.FC<EventVenueProps> = ({ item }) => {
         <Text style={styles.title}>{"RSVP to See Location"}</Text>
         <Text style={styles.subtitle}>{"Los Angeles, California"}</Text>
 
-        <View style={{ borderRadius: 10, overflow: 'hidden', height: 200, width: '100%', alignSelf: 'center', marginTop: 10 }}>
+        <View style={{ borderRadius: 10, overflow: 'hidden', height: 160, width: '100%', alignSelf: 'center', marginTop: 10, alignItems: 'center', justifyContent: 'center' }}>
           <MapView
             style={styles.map}
             initialRegion={{
-              latitude: 37.78825,
-              longitude: -122.4324,
+              latitude: latitude,
+              longitude: longitude,
               latitudeDelta: 0.0922,
               longitudeDelta: 0.0421,
             }}
@@ -43,7 +58,32 @@ const EventVenue: React.FC<EventVenueProps> = ({ item }) => {
             rotateEnabled={false}
             pitchEnabled={false}
           />
+
+          <TouchableOpacity
+            onPress={openMap}
+            style={{
+              width: 60,
+              height: 60,
+              backgroundColor: COLORS.black2,
+              borderRadius: 30,
+              alignSelf: 'center',
+              justifyContent: 'center',
+              alignItems: 'center',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.3,
+              shadowRadius: 4,
+              elevation: 5,
+            }}>
+            <Image
+              source={IMAGES.location}
+              resizeMode='contain'
+              tintColor={COLORS.white}
+              style={{ width: 20, height: 20 }}
+            />
+          </TouchableOpacity>
         </View>
+
 
       </View>
 

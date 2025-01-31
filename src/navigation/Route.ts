@@ -1,6 +1,7 @@
 export const ROUTES = {
   AppFlowStack: 'AppFlowStack',
   ProfileStack: 'ProfileStack',
+  EventStack: 'EventStack',
   BottomTabBar: 'BottomTabBar',
   BeforeAppStaticScreen: 'BeforeAppStaticScreen',
   ProfileScreen: 'ProfileScreen',
@@ -15,4 +16,5 @@ export const ROUTES = {
   UsersScreen: 'UsersScreen',
   UserDetail: 'UserDetail',
   ListDetail: 'ListDetail',
+  EventDetailsScreen: 'EventDetailsScreen',
 };

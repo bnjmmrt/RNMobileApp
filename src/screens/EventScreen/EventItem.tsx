@@ -6,6 +6,7 @@ import { Wp, Hp } from '../../utils/dimensions';
 import ButtonSmall from '../../component/ButtonSmall';
 import FastImage from '@d11/react-native-fast-image';
 import { useNavigation } from '@react-navigation/native';
+import { ROUTES } from 'src/navigation/Route';
 
 interface EventItemProps {
   item: {};
@@ -15,8 +16,13 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
   // Handle the "Next" button press
   const navigation = useNavigation();
   // Handle the "Next" button press
+
+
   const handlEventPress = () => {
-    navigation.navigate('EventDetailsScreen', { item });
+    navigation.navigate(ROUTES.EventStack, {
+      screen: ROUTES.EventDetailsScreen,
+      params: item
+    });
   };
 
   return (

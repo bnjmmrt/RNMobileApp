@@ -12,7 +12,7 @@ import FollowingScreen from 'src/screens/ProfileScreen/FollowingScreen/Following
 
 
 // Define the param list for the stack navigator
-export type AppStackParamList = {
+export type ProfileStackParamList = {
   EditProfileScreen: undefined;
   ProfileScreen: undefined;
   ConnectedAccountsScreen: undefined;
@@ -25,7 +25,7 @@ export type AppStackParamList = {
 
 };
 
-const Stack = createStackNavigator<AppStackParamList>();
+const Stack = createStackNavigator<ProfileStackParamList>();
 // const loginData = useSelector((state: RootState) => state.auth.loginData);
 
 export const ProfileStack: React.FC = () => {

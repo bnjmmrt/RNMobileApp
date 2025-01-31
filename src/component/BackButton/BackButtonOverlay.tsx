@@ -17,12 +17,12 @@ const BackButtonOverlay = ({ onPress }: { onPress: () => void }) => {
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: Wp(4),
-    position:'absolute',
-    marginTop: Hp(8),
+    position: 'absolute',
+    marginTop: Hp(1),
   },
   iconWrapper: {
     width: 40,
-    height:40,
+    height: 40,
     borderRadius: 20,
     backgroundColor: COLORS.bgBackArrow, // Light gray background
     justifyContent: 'center',
