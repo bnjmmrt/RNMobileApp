@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet, Modal, ScrollView} from 'react-native';
 import {Image} from 'react-native-animatable';
 import {COLORS} from '../../utils/constants';
@@ -8,6 +8,7 @@ import IMAGES from '../../assets/images';
 import type {EventItem, SeriesItem} from './EventsFeed';
 import CollapsibleView from '../CollapsibleView';
 import {format} from 'date-fns';
+import FeedDetail from './FeedDetail';
 
 interface FeedSeriesDetailProps {
   series: SeriesItem | null;
@@ -18,6 +19,9 @@ const FeedSeriesDetail: React.FC<FeedSeriesDetailProps> = ({
   series,
   setSeries,
 }) => {
+  const [detail, setDetail] = useState<EventItem | null>(null);
+  const [readMore, setReadMore] = useState<number | undefined>(5);
+
   if (!series) return null;
 
   return (
@@ -34,7 +38,9 @@ const FeedSeriesDetail: React.FC<FeedSeriesDetailProps> = ({
                 source={series.image || IMAGES.eventCoverPlaceholders1}
                 style={styles.seriesImage}
               />
-              <View style={styles.leftArrowBtn}>
+              <View
+                style={styles.leftArrowBtn}
+                onTouchEnd={() => setSeries(null)}>
                 <Image source={IMAGES.leftArrow} alt="left arrow" />
               </View>
             </View>
@@ -52,46 +58,52 @@ const FeedSeriesDetail: React.FC<FeedSeriesDetailProps> = ({
               </View>
               <View style={styles.seriesBox}>
                 <Text style={styles.label}>About the Series</Text>
-                <Text style={styles.description}>
-                  {series.short_description}
+                <Text style={styles.description} numberOfLines={readMore}>
+                  {series.about}
                 </Text>
-                <CollapsibleView title={<ReadMoreTitle />}>
-                  <Text style={styles.fullDescription}>
-                    {series.full_description}
-                  </Text>
-                </CollapsibleView>
+                <View
+                  style={styles.readMoreCard}
+                  onTouchEnd={() =>
+                    setReadMore(prev => (prev ? undefined : 5))
+                  }>
+                  <Text style={styles.readMore}>Read More</Text>
+                  <Image
+                    source={readMore ? IMAGES.downArrow : IMAGES.upArrow}
+                    style={styles.arrow}
+                  />
+                </View>
               </View>
               {series.events.map((event, index) => (
-                <EventItem key={index} event={event} />
+                <EventItem event={event} setDetail={setDetail} key={index} />
               ))}
             </View>
           </ScrollView>
         </View>
       </View>
+
+      <FeedDetail detail={detail} setDetail={setDetail} />
     </Modal>
   );
 };
 
-const ReadMoreTitle: React.FC = () => (
-  <>
-    <Text style={styles.readMore}>Read More</Text>
-    <Image source={IMAGES.downArrow} style={styles.arrow} />
-  </>
-);
-
 interface EventItemProps {
   event: EventItem;
+  setDetail: React.Dispatch<React.SetStateAction<EventItem | null>>;
 }
 
-const EventItem: React.FC<EventItemProps> = ({event}) => {
+const EventItem: React.FC<EventItemProps> = ({event, setDetail}) => {
   const formatEventDate = (dateString: string): string => {
     if (dateString === 'Invalid Date') return dateString;
-    const [year, month, day] = dateString.split('-');
+    const [year, month, day] = [
+      dateString.slice(6, 10),
+      dateString.slice(0, 2),
+      dateString.slice(3, 5),
+    ];
     return format(new Date(`${month}-${day}-${year}`), 'MMM d, p');
   };
 
   return (
-    <View style={styles.eventContainer}>
+    <View style={styles.eventContainer} onTouchEnd={() => setDetail(event)}>
       <Image
         source={
           event.image ? {uri: event.image} : IMAGES.eventCoverPlaceholders1
@@ -157,6 +169,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     color: 'white',
     textAlign: 'center',
+  },
+  readMoreCard: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderTopColor: '#E1E1E1',
+    borderTopWidth: 1,
   },
   hostContainer: {
     flex: 1,

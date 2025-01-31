@@ -13,6 +13,7 @@ interface FeedItemProps {
   isFeatured?: boolean;
   setDetail: React.Dispatch<React.SetStateAction<EventItem | null>>;
 }
+
 const FeedItem: React.FC<FeedItemProps> = ({item, isFeatured, setDetail}) => {
   return (
     <View style={styles.container} onTouchEnd={() => setDetail(item)}>

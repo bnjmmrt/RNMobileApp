@@ -1,11 +1,10 @@
 import React from 'react';
 import {Modal, View, StyleSheet, Text, Image} from 'react-native';
-import {COLORS} from '../../utils/constants';
-import {Hp, Wp} from '../../utils/dimensions';
+import {format} from 'date-fns';
 import Button from '../Button';
-import {fontFamily} from '../../utils/functions';
-import {EventItem} from './EventsFeed';
 import IMAGES from '../../assets/images';
+import {EventItem} from './EventsFeed';
+import {Hp, Wp} from '../../utils/dimensions';
 
 interface FeedDetailProps {
   detail: EventItem | null;
@@ -15,16 +14,24 @@ interface FeedDetailProps {
 const FeedDetail: React.FC<FeedDetailProps> = ({detail, setDetail}) => {
   if (!detail) return null;
 
+  const formatDate = (dateString: string) => {
+    const [year, month, day] = [
+      dateString.slice(6, 10),
+      dateString.slice(0, 2),
+      dateString.slice(3, 5),
+    ];
+    return format(new Date(`${year}-${month}-${day}`), 'MMM d yyyy');
+  };
+
   return (
     <Modal
       animationType="slide"
-      transparent={true}
+      transparent
       visible={!!detail}
       onRequestClose={() => setDetail(null)}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <View style={styles.modalBar} />
-
           <Image
             source={
               detail.image
@@ -33,19 +40,17 @@ const FeedDetail: React.FC<FeedDetailProps> = ({detail, setDetail}) => {
             }
             style={styles.image}
           />
-
           <Text style={styles.title}>{detail.title}</Text>
           <Text style={styles.dateText}>
-            {detail.startDate} - {detail.endDate}
+            {formatDate(detail.startDate)} - {formatDate(detail.endDate)}
           </Text>
           <Text style={styles.messageText}>Message</Text>
-
           <View style={styles.buttonContainer}>
             <Button
               disabled={false}
               style={styles.clearFilters}
               title="No"
-              onPress={() => {}}
+              onPress={() => setDetail(null)}
             />
             <Button
               disabled={false}
@@ -55,7 +60,6 @@ const FeedDetail: React.FC<FeedDetailProps> = ({detail, setDetail}) => {
               onPress={() => {}}
             />
           </View>
-
           <Text style={styles.infoText}>
             Your response is shown to hosts and boosts your chances of receiving
             relevant event invites.
@@ -86,8 +90,8 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 50,
     backgroundColor: '#D8D8D8',
-    top: -12,
     alignSelf: 'center',
+    marginBottom: 12,
   },
   title: {
     fontSize: 24,

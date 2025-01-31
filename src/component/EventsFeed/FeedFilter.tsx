@@ -3,18 +3,19 @@ import {Modal, View, StyleSheet, Text, ScrollView, Image} from 'react-native';
 import {BUTTON_LABLE, COLORS, feedList} from '../../utils/constants';
 import {Wp} from '../../utils/dimensions';
 // import DateRangePicker from 'react-native-daterange-picker';
+import CalendarRangePicker from 'react-native-calendar-date-range-picker';
 import Button from '../Button';
 import {fontFamily} from '../../utils/functions';
 import IMAGES from '../../assets/images';
 import moment from 'moment';
+import type {Filter} from './EventsFeed';
 
 interface FeedFilterProps {
-  filters: string[];
-  setFilters: React.Dispatch<React.SetStateAction<string[]>>;
+  filter: Filter;
+  setFilter: React.Dispatch<React.SetStateAction<Filter>>;
   filterVisible: boolean;
   setFilterVisible: React.Dispatch<React.SetStateAction<boolean>>;
   setLocationVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  handleSubmit: () => void;
 }
 
 interface DateRange {
@@ -23,26 +24,36 @@ interface DateRange {
 }
 
 const FeedFilter: React.FC<FeedFilterProps> = ({
-  filters,
-  setFilters,
+  filter,
+  setFilter,
   filterVisible,
   setFilterVisible,
   setLocationVisible,
-  handleSubmit,
 }) => {
-  const [startDate, setStartDate] = useState<moment.Moment | null>(null);
-  const [endDate, setEndDate] = useState<moment.Moment | null>(null);
-  const [displayedDate] = useState<moment.Moment>(moment());
-
-  const setDates = (dates: DateRange) => {
-    setStartDate(dates.startDate);
-    setEndDate(dates.endDate);
-  };
+  const [feedFilters, setFeedFilters] = useState<string[]>(filter.categories);
 
   const handleToggle = (feed: string) => {
-    if (filters.includes(feed))
-      setFilters(prev => prev.filter(f => f !== feed));
-    else setFilters(prev => [...prev, feed]);
+    if (feedFilters.includes(feed))
+      setFeedFilters(prev => prev.filter(f => f !== feed));
+    else setFeedFilters(prev => [...prev, feed]);
+  };
+
+  const handleShowResults = () => {
+    setFilter({
+      location: filter.location,
+      categories: feedFilters,
+      date: ['', ''],
+    });
+    setFilterVisible(false);
+  };
+
+  const handleClearFilters = () => {
+    setFilter({
+      location: '',
+      categories: [],
+      date: ['', ''],
+    });
+    setFeedFilters([]);
   };
 
   if (!filterVisible) return null;
@@ -64,7 +75,9 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
               {feedList.map(feed => (
                 <Text
                   style={
-                    filters.includes(feed) ? styles.selectedItem : styles.item
+                    feedFilters.includes(feed)
+                      ? styles.selectedItem
+                      : styles.item
                   }
                   key={feed}
                   onPress={() => handleToggle(feed)}>
@@ -75,10 +88,12 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
 
             <View>
               <Text style={styles.label}>Location</Text>
-              <View style={styles.container} onTouchEnd={() => setLocationVisible(true)}>
+              <View
+                style={styles.container}
+                onTouchEnd={() => setLocationVisible(true)}>
                 <View style={[styles.inputWrapper]}>
                   <Image source={IMAGES.search} style={styles.icon} />
-                  <Text>Currect Location ()</Text>
+                  <Text>Currect Location ({filter.location})</Text>
                 </View>
               </View>
             </View>
@@ -86,6 +101,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
             <View>
               <Text style={styles.label}>Date Range</Text>
               <View style={styles.container}>
+                <CalendarRangePicker monthsCount={2} />
                 {/* <DateRangePicker
                   onChange={setDates}
                   endDate={endDate}
@@ -102,14 +118,14 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
               style={styles.showResults}
               title={BUTTON_LABLE.SHOW_RESULTS}
               colorTheme="dark"
-              onPress={handleSubmit}
+              onPress={handleShowResults}
             />
 
             <Button
               disabled={false}
               style={styles.clearFilters}
               title={BUTTON_LABLE.CLEAR_FILTERS}
-              onPress={handleSubmit}
+              onPress={handleClearFilters}
             />
           </ScrollView>
         </View>
