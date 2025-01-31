@@ -15,7 +15,6 @@ import {LABLE} from '../../utils/constants';
 import {fontFamily} from '../../utils/functions';
 import {COLORS} from '../../utils/constants';
 import {CountryCode, isValidPhoneNumber} from 'libphonenumber-js';
-
 import {useNavigation} from '@react-navigation/native';
 import {Hp} from '../../utils/dimensions';
 

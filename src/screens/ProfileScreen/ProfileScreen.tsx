@@ -25,6 +25,7 @@ import {CommonActions, useFocusEffect} from '@react-navigation/native';
 import {resetLoginData} from 'src/redux/slices/authSlice';
 import {changeSafeAreaViewConfig} from 'src/utils/functions';
 import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import {verticalScale} from 'src/utils/dimensions';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
@@ -168,7 +169,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+        showBottomSafeAreaView: false,
+      });
     }, []),
   );
 
@@ -195,7 +199,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
 
           <TermsAndPolicy setUrl={setWebUrl} type="small" showMessage={false} />
 
-          <TouchableOpacity onPress={() => handleLogoutPress()}>
+          <TouchableOpacity
+            onPress={() => handleLogoutPress()}
+            style={{marginBottom: verticalScale(50)}}>
             <Text style={styles.textBelowStyle}>{PROFILE.LOGOUT}</Text>
           </TouchableOpacity>
         </ScrollView>

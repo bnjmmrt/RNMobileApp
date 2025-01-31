@@ -23,6 +23,10 @@ const LandingScreen: React.FC<LandingScreenProps> = ({navigation}) => {
       changeSafeAreaViewConfig({
         ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
         showTopSafeAreaView: false,
+        topSafeAreaViewColor: 'transparent',
+        translucent: true,
+        showBottomSafeAreaView: false,
+        bottomSafeAreaViewColor: 'transparent',
       });
     }, []),
   );

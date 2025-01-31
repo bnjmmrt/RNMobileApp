@@ -1,13 +1,13 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 import BottomTabBar from '../component/Tabbar/BottomTabBar';
 import BeforeAppStaticScreen from '../screens/BeforeApplicationFlow/BeforeAppStaticScreen';
-import { AppFlowStack } from './AppFlowStack';
-import { ROUTES } from './Route';
+import {AppFlowStack} from './AppFlowStack';
+import {ROUTES} from './Route';
 import UserDetails from 'src/screens/UsersModule/UserDetails';
 import ListDetails from 'src/screens/UsersModule/ListDetails';
-import { ProfileStack } from './ProfileStack';
-import { EventStack } from './EventStack';
+import {ProfileStack} from './ProfileStack';
+import {EventStack} from './EventStack';
 
 export type AppStackParamList = {
   BeforeAppStaticScreen: undefined;
@@ -26,12 +26,12 @@ interface AppStackProps {
 const Stack = createStackNavigator<AppStackParamList>();
 
 export const AppStack: React.FC<AppStackProps> = ({
-  initialRouteName = 'BeforeAppStaticScreen',
+  initialRouteName = 'BottomTabBar',
 }) => {
   return (
     <Stack.Navigator
       initialRouteName={initialRouteName}
-      screenOptions={{ headerShown: false }}>
+      screenOptions={{headerShown: false}}>
       <Stack.Screen
         name={ROUTES.BeforeAppStaticScreen}
         component={BeforeAppStaticScreen}
