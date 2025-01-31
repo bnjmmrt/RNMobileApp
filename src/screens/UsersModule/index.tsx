@@ -2,7 +2,7 @@ import IMAGES from '@images/index';
 import {useFocusEffect} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useCallback, useRef, useState} from 'react';
-import {SafeAreaView} from 'react-native';
+import {View} from 'react-native';
 import DynamicTabBar, {TabItem} from 'src/component/ActiveTabBar/DynamicTabBar';
 import Header from 'src/component/Header/Header';
 import {BUTTON_LABLE, COLORS} from 'src/utils/constants';
@@ -49,13 +49,12 @@ const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
 
   useFocusEffect(
     useCallback(() => {
-      // Do something when the screen is focused
       changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
     }, []),
   );
 
   return (
-    <SafeAreaView style={[styles.container]}>
+    <View style={[styles.container]}>
       <Header
         headerTitle="Users"
         showProgressBar={false}
@@ -69,7 +68,7 @@ const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
       {currentTab.id === '1' ? <AllUsers /> : null}
       {currentTab.id === '2' ? <Lists /> : null}
       <AddNewUserSheet ref={addNewUserSheetRef} />
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -67,17 +67,17 @@ const BottomTabBar = () => {
       loginData?.roles.length > 0 &&
       loginData?.roles[0]?.roleName) ||
     'non_member';
-  const bottomTabsData = hostTabs; //role === 'host' ? hostTabs : memberTabs;
+  const bottomTabsData = role === 'host' ? hostTabs : memberTabs;
   return (
     <Tab.Navigator
       tabBar={props => <BottomTabBrComponent {...props} />}
       screenOptions={{headerShown: false}}
       backBehavior="history"
       initialRouteName={
-        // role === 'host' ? 'EventScreen' : 'DiscoverScreen'
+        role === 'host' ? 'EventScreen' : 'DiscoverScreen'
         // loginData?.isInvited ? 'EventScreen' : 'DiscoverScreen'
         // ROUTES.UsersScreen
-        'EventScreen'
+        // 'DiscoverScreen'
       }>
       {bottomTabsData.map((item, index) => {
         return (

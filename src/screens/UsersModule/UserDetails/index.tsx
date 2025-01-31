@@ -14,6 +14,7 @@ import UserOverview from './UserOverview';
 import UserProfile from './UserProfile';
 import UserActionsSheet from '../BottomSheets/UserActionsSheet';
 import {verticalMarginScale} from 'src/utils/dimensions';
+import BottomSheet from '@gorhom/bottom-sheet';
 
 interface UserDetailsProps extends NativeStackScreenProps<any, any> {}
 

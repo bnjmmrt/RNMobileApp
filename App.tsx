@@ -33,26 +33,26 @@ const AppContent: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  const systemTheme = useColorScheme();
-  const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
+  // const systemTheme = useColorScheme();
+  // const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
 
-  type AppContextType = any;
-  const appContext = useMemo<AppContextType>(
-    () => ({
-      isDarkTheme,
-      setIsDarkTheme,
-      themeColors: isDarkTheme ? DarkTheme.colors : DefaultTheme.colors,
-    }),
-    [isDarkTheme],
-  );
+  // type AppContextType = any;
+  // const appContext = useMemo<AppContextType>(
+  //   () => ({
+  //     isDarkTheme,
+  //     setIsDarkTheme,
+  //     themeColors: isDarkTheme ? DarkTheme.colors : DefaultTheme.colors,
+  //   }),
+  //   [isDarkTheme],
+  // );
 
   // useEffect(() => {
   //   setIsDarkTheme(systemTheme === 'light');
   // }, [systemTheme]);
 
-  useEffect(() => {
-    setIsDarkTheme(true);
-  }, []);
+  // useEffect(() => {
+  //   setIsDarkTheme(true);
+  // }, []);
 
   // useEffect(() => {
   //   const unsubscribe = NetInfo.addEventListener(state => {
@@ -66,13 +66,13 @@ const App: React.FC = () => {
       <PersistGate loading={null} persistor={persistor}>
         <SafeAreaViewWrapper>
           <GestureHandlerRootView style={{flex: 1}}>
-            <NavigationContainer theme={isDarkTheme ? DarkTheme : DefaultTheme}>
-              <AppContext.Provider value={appContext}>
-                {/* <SafeAreaProvider style={styles.container}> */}
-                <AppContent />
-                <FlashMessage position="top" />
-                {/* </SafeAreaProvider> */}
-              </AppContext.Provider>
+            <NavigationContainer theme={DefaultTheme}>
+              {/* <AppContext.Provider value={appContext}> */}
+              {/* <SafeAreaProvider style={styles.container}> */}
+              <AppContent />
+              <FlashMessage position="top" />
+              {/* </SafeAreaProvider> */}
+              {/* </AppContext.Provider> */}
             </NavigationContainer>
           </GestureHandlerRootView>
         </SafeAreaViewWrapper>
