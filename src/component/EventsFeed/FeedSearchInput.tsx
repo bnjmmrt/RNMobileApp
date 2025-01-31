@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
-import {Image} from 'react-native-animatable';
+import React, { useState } from 'react';
+import { View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
-import {COLORS} from '../../utils/constants';
-import {fontFamily} from '../../utils/functions';
+import { COLORS } from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
 
 interface FeedSearchInputProps {
   handleChange: (text: string) => void;
@@ -52,7 +52,7 @@ const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
           </TouchableOpacity>
         )}
         <TouchableOpacity onPress={handleFilter} style={styles.filter}>
-            <Image source={IMAGES.filter} style={styles.filterIcon} />
+          <Image source={IMAGES.filter} style={styles.filterIcon} />
         </TouchableOpacity>
       </View>
     </View>
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     paddingHorizontal: 20,
+    marginBottom: 20,
     backgroundColor: COLORS.white,
   },
   inputWrapper: {

@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 interface AuthState {
   loginData: any;
@@ -6,7 +6,18 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  loginData: {},
+  loginData: {
+    isInvited: false,
+    isSignUpCompleted: false,
+    varifyStatus: 0,
+    roles: [
+      {
+        roleId: '1223343534435',
+        roleName: 'non_member',
+      },
+    ],
+    token: '',
+  },
   token: '',
 };
 
@@ -15,14 +26,18 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setLoginData(state, action: PayloadAction<any>) {
-      state.loginData = action.payload;
+      state.loginData = {...action.payload, isInvited: false};
     },
     setAuthToken(state, action: PayloadAction<any>) {
       state.token = action.payload;
     },
+    resetLoginData() {
+      console.log('Sayyed rest Called');
+      return initialState;
+    },
   },
 });
 
-export const { setLoginData, setAuthToken } = authSlice.actions;
+export const {setLoginData, setAuthToken, resetLoginData} = authSlice.actions;
 
 export default authSlice.reducer;

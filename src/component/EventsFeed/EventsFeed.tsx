@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {View, ScrollView, Text, Image} from 'react-native';
 import {COLORS} from '../../utils/constants';
-import {SafeAreaView} from 'react-native';
 import HeaderComponent from '../../component/HeaderComponent';
 import EventItem from '../../screens/EventScreen/EventItem';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
@@ -12,7 +11,7 @@ import {Wp, Hp} from '../../utils/dimensions';
 import {fontFamily} from '../../utils/functions';
 import FeedItem from './FeedItem';
 import NoResults from './NoResults';
-import {apiGet} from '../../ApiManager/MainApi';
+import { apiGet } from '../../ApiManager/MainApi';
 import FeedSearchInput from './FeedSearchInput';
 import FeedAccessLocation from './FeedAccessLocation';
 import FeedFilter from './FeedFilter';
@@ -163,16 +162,15 @@ const EventsFeed = () => {
   }, []);
 
   return (
-    <SafeAreaView
+    <View
       style={[
         styles.container,
-        {backgroundColor: isInvited ? COLORS.black : COLORS.white},
       ]}>
-      {isInvited ? (
+      {!isInvited ? (
         <BeforeAppStaticComponent
           isChatScreen={false}
-          // title={LABLE.UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS}
-          // subTitle={LABLE.GET_DISCOVERY_BY_THE_WORLD}
+        // title={LABLE.UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS}
+        // subTitle={LABLE.GET_DISCOVERY_BY_THE_WORLD}
         />
       ) : (
         <View>
@@ -287,7 +285,7 @@ const EventsFeed = () => {
           submitVisible
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

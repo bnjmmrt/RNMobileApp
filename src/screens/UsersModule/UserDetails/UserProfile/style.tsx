@@ -1,51 +1,79 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
-import {Wp, Hp} from '../../../../utils/dimensions';
+import {StyleSheet} from 'react-native';
 import {COLORS} from '../../../../utils/constants';
+import {
+  Wp,
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+} from '../../../../utils/dimensions';
 import {fontFamily} from '../../../../utils/functions';
-
-let screenWidth: number = Dimensions.get('window').width;
-const socialPresenceCardWidth = screenWidth - (Wp(10) + 38);
 
 const createStyle = () => {
   return StyleSheet.create({
     userName: {
-      fontSize: 24,
+      fontSize: fontScale(24),
       color: COLORS.black,
       fontFamily: fontFamily.RomieTrial_Bold,
-      marginTop: 8,
+      marginTop: verticalMarginScale(8),
       textAlign: 'center',
     },
     memberTypeWrapper: {
       borderWidth: 1,
       borderColor: COLORS.borderGray,
-      paddingVertical: 4,
-      paddingHorizontal: 8,
+      paddingVertical: verticalMarginScale(4),
+      paddingHorizontal: horizontalMarginScale(8),
       borderRadius: 99,
-      marginTop: -10,
+      marginTop: verticalMarginScale(-10),
       backgroundColor: COLORS.white,
     },
     memberType: {
-      fontSize: 12,
+      fontSize: fontScale(12),
       color: COLORS.black,
     },
 
     favButtonWrapper: {
-      borderTopLeftRadius: 12,
-      borderTopRightRadius: 12,
-      borderBottomLeftRadius: 22,
-      borderBottomRightRadius: 22,
+      borderTopLeftRadius: radiusScale(8),
+      borderTopRightRadius: radiusScale(8),
+      borderBottomLeftRadius: radiusScale(16),
+      borderBottomRightRadius: radiusScale(16),
       backgroundColor: COLORS.lighter_gray,
-      marginHorizontal: Wp(5),
-      padding: 8,
-      marginTop: 2,
+      marginHorizontal: horizontalMarginScale(16),
+      padding: horizontalMarginScale(8),
+      marginTop: verticalMarginScale(2),
     },
     favButton: {
-      marginHorizontal: 8,
+      marginHorizontal: horizontalMarginScale(8),
       width: '100%',
-      borderRadius: 99,
+      borderRadius: radiusScale(99),
       borderWidth: 1,
       borderColor: COLORS.borderGray,
+      height: verticalScale(40),
     },
+
+    userActionsFloatingContainer: {
+      position: 'absolute',
+      right: horizontalMarginScale(8),
+      top: horizontalMarginScale(8),
+      flexDirection: 'row',
+      gap: horizontalMarginScale(4),
+    },
+    userActionButton: {
+      borderRadius: radiusScale(99),
+      borderWidth: 1,
+      borderColor: COLORS.borderGray,
+      paddingVertical: verticalMarginScale(12),
+      paddingHorizontal: horizontalMarginScale(16),
+    },
+
+    userTagsContainer: {
+      paddingVertical: verticalMarginScale(4),
+      paddingHorizontal: horizontalMarginScale(8),
+      backgroundColor: COLORS.lighter_gray,
+      borderRadius: radiusScale(99),
+    },
+    userTags: {fontSize: fontScale(12), color: COLORS.black},
   });
 };
 

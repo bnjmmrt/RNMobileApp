@@ -1,11 +1,18 @@
 export const ROUTES = {
-    ProfileScreen:'ProfileScreen',
-    EditProfileScreen:'EditProfileScreen',
-    ConnectedAccountsScreen:'ConnectedAccountsScreen',
-    SelectInterestScreen:'SelectInterestScreen',
-    NotificationsScreen:'NotificationsScreen',
-    FeedbackScreen:'FeedbackScreen',
-    FollowingScreen:'FollowingScreen',
-    ReferralScreen:'ReferralScreen',
-    HostProfileScreen:'HostProfileScreen'
-}
+  AppFlowStack: 'AppFlowStack',
+  ProfileStack: 'ProfileStack',
+  BottomTabBar: 'BottomTabBar',
+  BeforeAppStaticScreen: 'BeforeAppStaticScreen',
+  ProfileScreen: 'ProfileScreen',
+  EditProfileScreen: 'EditProfileScreen',
+  ConnectedAccountsScreen: 'ConnectedAccountsScreen',
+  SelectInterestScreen: 'SelectInterestScreen',
+  NotificationsScreen: 'NotificationsScreen',
+  FeedbackScreen: 'FeedbackScreen',
+  FollowingScreen: 'FollowingScreen',
+  ReferralScreen: 'ReferralScreen',
+  HostProfileScreen: 'HostProfileScreen',
+  UsersScreen: 'UsersScreen',
+  UserDetail: 'UserDetail',
+  ListDetail: 'ListDetail',
+};

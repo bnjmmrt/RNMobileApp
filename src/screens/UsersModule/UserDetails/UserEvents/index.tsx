@@ -1,9 +1,11 @@
 import FastImage from '@d11/react-native-fast-image';
 import {useNavigation} from '@react-navigation/native';
-import React, {useCallback} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {FlatList, View} from 'react-native';
 import {CustomText} from 'src/component/CustomText';
 import createStyle from './style';
+import {horizontalMarginScale, verticalMarginScale} from 'src/utils/dimensions';
+import SearchInput from 'src/component/SearchInput';
 
 const dummyListData = [
   {
@@ -45,6 +47,13 @@ interface UserEventsProps {}
 const UserEvents: React.FC<UserEventsProps> = ({}) => {
   const styles = createStyle();
   const navigation = useNavigation();
+  const searchInputRef = useRef<any>(null);
+
+  const [searchText, setSearchText] = useState<string>('');
+
+  const handleSearchTextChange = (text: string) => {
+    setSearchText(text);
+  };
 
   const renderEventItem = useCallback(({item}: {item: any}) => {
     return (
@@ -63,14 +72,21 @@ const UserEvents: React.FC<UserEventsProps> = ({}) => {
   }, []);
 
   return (
-    <View>
+    <View style={{marginTop: verticalMarginScale(6)}}>
+      <SearchInput
+        ref={searchInputRef}
+        onSearchTextChange={handleSearchTextChange}
+      />
       <FlatList
         data={dummyListData}
         renderItem={renderEventItem}
         keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{gap: 16}}
-        columnWrapperStyle={{gap: 16}}
-        style={{marginHorizontal: 12}}
+        contentContainerStyle={{gap: horizontalMarginScale(16)}}
+        columnWrapperStyle={{gap: horizontalMarginScale(16)}}
+        style={{
+          marginHorizontal: horizontalMarginScale(12),
+          marginTop: verticalMarginScale(16),
+        }}
         bounces={false}
         numColumns={2}
       />
