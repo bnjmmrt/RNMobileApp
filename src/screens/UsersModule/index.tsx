@@ -1,19 +1,17 @@
 import IMAGES from '@images/index';
+import {useFocusEffect} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useCallback, useRef, useState} from 'react';
-import {FlatList, SafeAreaView, View} from 'react-native';
-import {useSelector} from 'react-redux';
+import {SafeAreaView} from 'react-native';
 import DynamicTabBar, {TabItem} from 'src/component/ActiveTabBar/DynamicTabBar';
 import Header from 'src/component/Header/Header';
-import SearchInput from 'src/component/SearchInput';
 import {BUTTON_LABLE, COLORS} from 'src/utils/constants';
-import {RootState} from '../../redux/slices';
-import UsersScreenStyle from './style';
-import UserListItem from './UsersListItem';
-import UserActionsSheet from './BottomSheets/UserActionsSheet';
-import BottomSheet from '@gorhom/bottom-sheet';
+import {changeSafeAreaViewConfig} from 'src/utils/functions';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 import AllUsers from './AllUsers';
+import AddNewUserSheet from './BottomSheets/AddNewUserSheet';
 import Lists from './Lists';
+import UsersScreenStyle from './style';
 
 const tabsData: TabItem[] = [
   {
@@ -33,8 +31,9 @@ const tabsData: TabItem[] = [
 interface UserModuleProps extends NativeStackScreenProps<any, any> {}
 
 const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
+  const addNewUserSheetRef = useRef(null);
+
   const styles = UsersScreenStyle();
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
 
   const [currentTab, setCurrentTab] = useState<TabItem>(tabsData[0]);
 
@@ -42,20 +41,34 @@ const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
     setCurrentTab(tab);
   };
 
+  const onPressHeaderPlus = () => {
+    if (currentTab.id === '1') {
+      addNewUserSheetRef?.current?.open();
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      // Do something when the screen is focused
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    }, []),
+  );
+
   return (
     <SafeAreaView style={[styles.container]}>
       <Header
         headerTitle="Users"
         showProgressBar={false}
         rightIcon={IMAGES.plus}
-        onPressRightIcon={() => {}}
-        showBackButton={true}
+        onPressRightIcon={onPressHeaderPlus}
+        showBackButton={false}
         rightIconWrapperStyle={{backgroundColor: COLORS.black}}
       />
       <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
 
       {currentTab.id === '1' ? <AllUsers /> : null}
       {currentTab.id === '2' ? <Lists /> : null}
+      <AddNewUserSheet ref={addNewUserSheetRef} />
     </SafeAreaView>
   );
 };

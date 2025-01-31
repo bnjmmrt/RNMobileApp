@@ -4,6 +4,8 @@ import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
 import Header from 'src/component/Header/Header';
 import {styles} from './style';
+import Input from 'src/component/Input/Input';
+import {verticalMarginScale, verticalScale} from 'src/utils/dimensions';
 
 const ReportUser = ({
   onPressBack,
@@ -27,14 +29,13 @@ const ReportUser = ({
           }
         </CustomText>
 
-        <CustomText style={styles.reportInputLabel}>
-          {'Report Message'}
-        </CustomText>
-        <TextInput
-          style={styles.reportInput}
-          placeholder="What would you like to report?"
-          verticalAlign="top"
+        <Input
           multiline
+          placeholder="What would you like to report?"
+          label="Report Message"
+          defaultValue=""
+          errorMessage=""
+          otherStyle={{marginTop: 0, marginBottom: verticalMarginScale(24)}}
         />
         <Button
           title="Submit Report"

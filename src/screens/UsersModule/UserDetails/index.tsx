@@ -13,6 +13,7 @@ import UserLists from './UserLists';
 import UserOverview from './UserOverview';
 import UserProfile from './UserProfile';
 import UserActionsSheet from '../BottomSheets/UserActionsSheet';
+import {verticalMarginScale} from 'src/utils/dimensions';
 
 interface UserDetailsProps extends NativeStackScreenProps<any, any> {}
 
@@ -46,18 +47,18 @@ const UserDetails: React.FC<UserDetailsProps> = ({}) => {
       <Header
         headerTitle="User Profile"
         showProgressBar={false}
-        rightIcon={IMAGES.upDownArrow}
+        rightIcon={IMAGES.dots}
         onPressRightIcon={() => {
           actionSheetRef?.current?.open();
         }}
         showBackButton={true}
       />
-      <ScrollView>
+      <ScrollView style={{marginTop: verticalMarginScale(16)}}>
         <UserProfile />
         <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
 
         {currentTab.id === '1' ? (
-          <View style={{gap: 16}}>
+          <View style={{gap: verticalMarginScale(16)}}>
             <UserOverview />
             <UserInterests />
             <UserLists />

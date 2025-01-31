@@ -37,7 +37,10 @@ const UserActionsSheet = forwardRef((props, ref) => {
     <BottomSheetComponent
       ref={ref}
       snapPoints={snapPoints} // Adjustable snap points
-      onClose={() => console.log('Bottom sheet closed')}>
+      onClose={() => {
+        setSelectedAction('');
+        console.log('Bottom sheet closed');
+      }}>
       <>
         {selectedAction === '' ? (
           <View style={styles.actionButtonContainer}>

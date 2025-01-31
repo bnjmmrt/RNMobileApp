@@ -236,9 +236,3 @@ export const COLORS = {
   red: '#FF0000',
   yellow: '#FFFC00',
 };
-
-export const SCREENS = {
-  USERS_BOTTOM_TAB: 'USERS_BOTTOM_TAB',
-  ALL_USERS: 'ALL_USERS',
-  USER_DETAIL: 'USER_DETAIL',
-} as const;

@@ -1,8 +1,13 @@
 import IMAGES from '@images/index';
 import React from 'react';
-import {TextInput} from 'react-native';
 import ButtonSmall from 'src/component/ButtonSmall';
-import {CustomText} from 'src/component/CustomText';
+import Input from 'src/component/Input/Input';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
 import UserDetailCard from '../UserDetailCard';
 import createStyle from './style';
 
@@ -13,20 +18,21 @@ const UserInformation: React.FC<UserInformationProps> = ({}) => {
 
   return (
     <UserDetailCard title={'Information'}>
-      <CustomText style={styles.inputLabel}>{'User Note'}</CustomText>
-      <TextInput
-        style={styles.input}
-        placeholder="These notes are internal and only visible to you"
-        verticalAlign="top"
+      <Input
         multiline
+        placeholder="These notes are internal and only visible to you"
+        label="User Notes"
+        defaultValue=""
+        errorMessage=""
+        otherStyle={{marginTop: 0}}
       />
       <ButtonSmall
         colorTheme="dark"
         style={{
-          padding: 12,
-          borderRadius: 99,
+          padding: horizontalMarginScale(12),
+          borderRadius: radiusScale(99),
           alignSelf: 'flex-start',
-          marginTop: 8,
+          marginTop: verticalMarginScale(8),
         }}
         title="Save"
         onPress={() => {}}

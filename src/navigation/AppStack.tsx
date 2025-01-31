@@ -1,17 +1,18 @@
+import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import { AppFlowStack } from './AppFlowStack';
 import BottomTabBar from '../component/Tabbar/BottomTabBar';
 import BeforeAppStaticScreen from '../screens/BeforeApplicationFlow/BeforeAppStaticScreen';
-import { AuthStack } from './AuthStack';
-import { SCREENS } from 'src/utils/constants';
+import {AppFlowStack} from './AppFlowStack';
+import {ROUTES} from './Route';
+import UserDetails from 'src/screens/UsersModule/UserDetails';
+import ListDetails from 'src/screens/UsersModule/ListDetails';
 
 export type AppStackParamList = {
   BeforeAppStaticScreen: undefined;
   BottomTabBar: undefined;
   AppFlowStack: undefined;
-  AuthStack: undefined;
-  [SCREENS.USER_DETAIL]: { user: number };
+  UserDetail: undefined;
+  ListDetail: undefined;
 };
 
 interface AppStackProps {
@@ -20,17 +21,21 @@ interface AppStackProps {
 
 const Stack = createStackNavigator<AppStackParamList>();
 
-export const AppStack: React.FC<AppStackProps> = ({ initialRouteName = 'BeforeAppStaticScreen' }) => {
+export const AppStack: React.FC<AppStackProps> = ({
+  initialRouteName = 'BeforeAppStaticScreen',
+}) => {
   return (
     <Stack.Navigator
       initialRouteName={initialRouteName}
-      screenOptions={{ headerShown: false }}
-    >
-      <Stack.Screen name="BeforeAppStaticScreen" component={BeforeAppStaticScreen} />
-      <Stack.Screen name="AppFlowStack" component={AppFlowStack} />
-      <Stack.Screen name="BottomTabBar" component={BottomTabBar} />
-      <Stack.Screen name="AuthStack" component={AuthStack} />
-      <Stack.Screen name={SCREENS.USER_DETAIL} component={AuthStack} />
+      screenOptions={{headerShown: false}}>
+      <Stack.Screen
+        name={ROUTES.BeforeAppStaticScreen}
+        component={BeforeAppStaticScreen}
+      />
+      <Stack.Screen name={ROUTES.AppFlowStack} component={AppFlowStack} />
+      <Stack.Screen name={ROUTES.BottomTabBar} component={BottomTabBar} />
+      <Stack.Screen name={ROUTES.UserDetail} component={UserDetails} />
+      <Stack.Screen name={ROUTES.ListDetail} component={ListDetails} />
     </Stack.Navigator>
   );
 };
