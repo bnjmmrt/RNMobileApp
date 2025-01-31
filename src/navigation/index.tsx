@@ -1,7 +1,7 @@
 import React from 'react';
-import {MainStack} from './MainStack';
-import {useSelector} from 'react-redux';
-import {RootState} from '../redux/slices';
+import { MainStack } from './MainStack';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/slices';
 
 const MainNavigation: React.FC = () => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
@@ -21,13 +21,12 @@ const MainNavigation: React.FC = () => {
         : 'BeforeAppStaticScreen'
       : 'BottomTabBar';
 
-  console.log('Sayyed :', loginData);
   return (
     <MainStack
       initialRouteName={initialRouteName}
       initialParams={
         initialRouteName === 'AppStack'
-          ? {screen: initialAppStackScreen}
+          ? { screen: initialAppStackScreen }
           : undefined
       }
     />

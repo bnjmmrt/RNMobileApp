@@ -1,9 +1,9 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import {useSelector} from 'react-redux';
-import {ProfileStack} from 'src/navigation/ProfileStack';
-import {ROUTES} from 'src/navigation/Route';
-import {RootState} from 'src/redux/slices';
+import { useSelector } from 'react-redux';
+import { ProfileStack } from 'src/navigation/ProfileStack';
+import { ROUTES } from 'src/navigation/Route';
+import { RootState } from 'src/redux/slices';
 import UsersModule from 'src/screens/UsersModule';
 import IMAGES from '../../assets/images';
 import ChatScreen from '../../screens/ChatScreen/ChatScreen';
@@ -18,22 +18,22 @@ const memberTabs = [
   {
     name: 'DiscoverScreen',
     component: DiscoverScreen,
-    options: {tabBarLabel: 'Discover', tabBarIcon: IMAGES.homeTab},
+    options: { tabBarLabel: 'Discover', tabBarIcon: IMAGES.homeTab },
   },
   {
     name: 'EventScreen',
     component: EventScreen,
-    options: {tabBarLabel: 'Events', tabBarIcon: IMAGES.eventTab},
+    options: { tabBarLabel: 'Events', tabBarIcon: IMAGES.eventTab },
   },
   {
     name: 'ChatScreen',
     component: ChatScreen,
-    options: {tabBarLabel: 'Chat', tabBarIcon: IMAGES.chatTab},
+    options: { tabBarLabel: 'Chat', tabBarIcon: IMAGES.chatTab },
   },
   {
     name: 'ProfileScreen',
-    component: ProfileStack,
-    options: {tabBarLabel: 'Profile', tabBarIcon: IMAGES.profileTab},
+    component: ProfileScreen,
+    options: { tabBarLabel: 'Profile', tabBarIcon: IMAGES.profileTab },
   },
 ];
 
@@ -41,22 +41,22 @@ const hostTabs = [
   {
     name: 'EventScreen',
     component: EventScreen,
-    options: {tabBarLabel: 'Events', tabBarIcon: IMAGES.eventTab},
+    options: { tabBarLabel: 'Events', tabBarIcon: IMAGES.eventTab },
   },
   {
     name: ROUTES.UsersScreen,
     component: UsersModule,
-    options: {tabBarLabel: 'Users', tabBarIcon: IMAGES.usersTab},
+    options: { tabBarLabel: 'Users', tabBarIcon: IMAGES.usersTab },
   },
   {
     name: 'ChatScreen',
     component: ChatScreen,
-    options: {tabBarLabel: 'Chat', tabBarIcon: IMAGES.chatTab},
+    options: { tabBarLabel: 'Chat', tabBarIcon: IMAGES.chatTab },
   },
   {
     name: 'ProfileScreen',
     component: ProfileScreen,
-    options: {tabBarLabel: 'Profile', tabBarIcon: IMAGES.profileTab},
+    options: { tabBarLabel: 'Profile', tabBarIcon: IMAGES.profileTab },
   },
 ];
 
@@ -71,7 +71,7 @@ const BottomTabBar = () => {
   return (
     <Tab.Navigator
       tabBar={props => <BottomTabBrComponent {...props} />}
-      screenOptions={{headerShown: false}}
+      screenOptions={{ headerShown: false }}
       backBehavior="history"
       initialRouteName={
         role === 'host' ? 'EventScreen' : 'DiscoverScreen'

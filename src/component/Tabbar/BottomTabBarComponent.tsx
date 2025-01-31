@@ -1,8 +1,8 @@
-import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
-import React, {ReactNode, useEffect, useRef} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import React, { ReactNode, useEffect, useRef } from 'react';
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import {COLORS} from '../../utils/constants';
+import { COLORS } from '../../utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -12,7 +12,7 @@ import {
   verticalScale,
   Wp,
 } from '../../utils/dimensions';
-import {CustomText} from '../CustomText';
+import { CustomText } from '../CustomText';
 
 const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
   state,
@@ -25,8 +25,8 @@ const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
     state.routes.forEach((_, index) => {
       const isFocused = state.index === index;
       const animation = isFocused
-        ? {0: {scale: 0}, 1: {scale: 1}}
-        : {0: {scale: 1}, 1: {scale: 0}};
+        ? { 0: { scale: 0 }, 1: { scale: 1 } }
+        : { 0: { scale: 1 }, 1: { scale: 0 } };
 
       labelRefs.current[index]?.animate(animation);
     });
@@ -36,7 +36,7 @@ const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
     <View style={styles.container}>
       <View style={styles.tabStyle}>
         {state.routes.map((route, index) => {
-          const {options} = descriptors[route.key];
+          const { options } = descriptors[route.key];
           const label = options.tabBarLabel ?? options.title ?? route.name;
 
           const isFocused = state.index === index;
@@ -57,10 +57,10 @@ const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
               key={route.key}
               style={[
                 styles.tabButton,
-                {backgroundColor: isFocused ? '#fff' : 'transparent'},
-                {flex: isFocused ? 1 : 0.6},
+                { backgroundColor: isFocused ? '#fff' : 'transparent' },
+                { flex: isFocused ? 1 : 0.6 },
               ]}
-              hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
               onPress={onPress}>
               <View style={styles.iconContainer}>
                 {/* Show the icon only if the tab is not focused */}
@@ -69,7 +69,7 @@ const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
                     source={options.tabBarIcon as number}
                     style={[
                       styles.tabIcon,
-                      {tintColor: isFocused ? COLORS.black : COLORS.white},
+                      { tintColor: isFocused ? COLORS.black : COLORS.white },
                     ]}
                   />
                 )}
@@ -114,9 +114,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: verticalMarginScale(16),
-    marginHorizontal: horizontalMarginScale(4),
-    marginVertical: horizontalMarginScale(1),
+    paddingVertical: verticalMarginScale(14),
+    marginHorizontal: horizontalMarginScale(5),
+    marginVertical: horizontalMarginScale(4),
   },
   iconContainer: {
     flexDirection: 'row',

@@ -1,5 +1,6 @@
 export const ROUTES = {
   AppFlowStack: 'AppFlowStack',
+  ProfileStack: 'ProfileStack',
   BottomTabBar: 'BottomTabBar',
   BeforeAppStaticScreen: 'BeforeAppStaticScreen',
   ProfileScreen: 'ProfileScreen',
