@@ -49,7 +49,7 @@ const createStyle = () => {
       borderRadius: radiusScale(99),
       borderWidth: 1,
       borderColor: COLORS.borderGray,
-      height: verticalScale(40),
+      paddingVertical: verticalMarginScale(12),
     },
 
     userActionsFloatingContainer: {

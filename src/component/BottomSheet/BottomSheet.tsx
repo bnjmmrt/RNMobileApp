@@ -6,7 +6,7 @@ import React, {
   useImperativeHandle,
   useState,
 } from 'react';
-import {StyleSheet, Modal, View} from 'react-native';
+import {StyleSheet, Modal, View, TouchableOpacity} from 'react-native';
 import BottomSheet, {
   BottomSheetFooter,
   BottomSheetScrollView,
@@ -23,6 +23,7 @@ interface BottomSheetComponentProps {
   backColor?: string;
   footer?: any;
   backgroundColor?: string;
+  enableDynamicSizing?: boolean;
 }
 
 const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
@@ -34,6 +35,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
       onClose,
       footer,
       backgroundColor,
+      enableDynamicSizing = false,
     },
     ref,
   ) => {
@@ -83,9 +85,9 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
             ref={sheetRef}
             snapPoints={snapPointsMemo}
             footerComponent={renderFooter}
-            enableDynamicSizing={false}
+            enableDynamicSizing={enableDynamicSizing}
             enableContentPanningGesture={false}
-            enablePanDownToClose
+            enablePanDownToClose={true}
             handleIndicatorStyle={[
               styles.indicatorStyle,
               {

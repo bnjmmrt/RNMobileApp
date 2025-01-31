@@ -1,14 +1,14 @@
+import IMAGES from '@images/index';
 import React, {forwardRef} from 'react';
 import {Image, ScrollView, View} from 'react-native';
+import AvatarInitials from 'src/component/AvatarInitials';
 import BottomSheetComponent from 'src/component/BottomSheet/BottomSheet';
+import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
 import Input from 'src/component/Input/Input';
 import PhoneNumberInput from 'src/component/PhonNumberComponent/PhoneNumberInput';
 import {verticalScale} from 'src/utils/dimensions';
 import {styles} from './style';
-import Button from 'src/component/Button';
-import AvatarInitials from 'src/component/AvatarInitials';
-import IMAGES from '@images/index';
 
 const AddNewUserSheet = forwardRef((props, ref) => {
   return (
@@ -43,7 +43,7 @@ const AddNewUserSheet = forwardRef((props, ref) => {
         <Button
           title="Add User"
           colorTheme="dark"
-          style={styles.cta}
+          style={[styles.cta, {marginBottom: 20}]}
           onPress={() => {}}
         />
       </ScrollView>

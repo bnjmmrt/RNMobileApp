@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Image, Text, Pressable } from 'react-native';
-import { Hp, Wp } from '../../utils/dimensions';
-import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
+import React, {useState} from 'react';
+import {View, StyleSheet, Image, Text, Pressable} from 'react-native';
+import {fontScale, Hp, verticalMarginScale, Wp} from '../../utils/dimensions';
+import {BUTTON_LABLE, COLORS, LABLE} from '../../utils/constants';
 import IMAGES from '../../assets/images/index';
 import Button from '../Button';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
-import { ScrollView } from 'react-native';
-import { fontFamily } from '../../utils/functions';
-import { useNavigation } from '@react-navigation/native';
+import {ScrollView} from 'react-native';
+import {fontFamily} from '../../utils/functions';
+import {useNavigation} from '@react-navigation/native';
+import {CustomText} from '../CustomText';
 
 interface BeforeAppStaticComponentProps {
   isChatScreen: boolean;
@@ -18,15 +19,36 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
 }) => {
   const navigation = useNavigation();
 
-
   const listData = [
-    { id: 0, uri: IMAGES.frame1, title: LABLE.ACCESS_THE_MOST_VALUABLE_CALENDAR, subTitle: LABLE.DISCOVER_EXPERIENCES_IN_ART },
-    { id: 1, uri: IMAGES.frame2, title: LABLE.UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS, subTitle: LABLE.CONNECT_WITH_WORLD },
-    { id: 2, uri: IMAGES.frame3, title: LABLE.CHAT_WITH_HOST, subTitle: LABLE.CONNECT_DIRECTLY_WITH_PEOPLE },
-    { id: 3, uri: IMAGES.frame4, title: LABLE.STREAMLINE_YOUR_LIFESTYLE, subTitle: LABLE.MANAGE_YOUR_EVENTS },
+    {
+      id: 0,
+      uri: IMAGES.frame1,
+      title: LABLE.ACCESS_THE_MOST_VALUABLE_CALENDAR,
+      subTitle: LABLE.DISCOVER_EXPERIENCES_IN_ART,
+    },
+    {
+      id: 1,
+      uri: IMAGES.frame2,
+      title: LABLE.UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS,
+      subTitle: LABLE.CONNECT_WITH_WORLD,
+    },
+    {
+      id: 2,
+      uri: IMAGES.frame3,
+      title: LABLE.CHAT_WITH_HOST,
+      subTitle: LABLE.CONNECT_DIRECTLY_WITH_PEOPLE,
+    },
+    {
+      id: 3,
+      uri: IMAGES.frame4,
+      title: LABLE.STREAMLINE_YOUR_LIFESTYLE,
+      subTitle: LABLE.MANAGE_YOUR_EVENTS,
+    },
   ];
 
-  const [current, setCurrent] = useState(isChatScreen ? listData[2] : listData[0]);
+  const [current, setCurrent] = useState(
+    isChatScreen ? listData[2] : listData[0],
+  );
 
   const handleImageClick = () => {
     if (isChatScreen) {
@@ -35,7 +57,6 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
       const nextIndex = (current.id + 1) % listData.length;
       setCurrent(listData[nextIndex]);
     }
-
   };
 
   const onButtonClick = () => {
@@ -43,7 +64,6 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
   };
 
   return (
-
     <View style={styles.container}>
       <ScrollView style={styles.contentContainer}>
         <View style={styles.logoContainer}>
@@ -65,7 +85,8 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
                   backgroundColor: index === 2 ? COLORS.white : COLORS.white,
                   borderRadius: size / 2,
                   marginRight: 8,
-                  opacity: index === 2 ? 1 : index === 1 || index === 3 ? 0.5 : 0.2,
+                  opacity:
+                    index === 2 ? 1 : index === 1 || index === 3 ? 0.5 : 0.2,
                 }}
               />
             ))}
@@ -78,23 +99,32 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           style={styles.titleSubtitle}
           title={current.title}
           subTitle={current.subTitle}
-          titleFontSize={32}
-          subTitleMargin={Hp(1)}
+          titleFontSize={fontScale(32)}
+          subTitleMargin={verticalMarginScale(8)}
           centerTextAlign={true}
           isDarkTheme={true}
         />
 
-        <View style={{ height: Hp(2) }} />
+        <View style={{height: Hp(2)}} />
 
-        {!isChatScreen && <Button
-          style={styles.btnStyle}
-          title={BUTTON_LABLE.APPLY_FOR_MEMBERSHIP}
-          colorTheme="light"
-          onPress={onButtonClick}
-        />}
-        {!isChatScreen && <Text style={styles.textBelowStyle}>{LABLE.TWO_MINUTES_TO_COMPLETE}</Text>}
-        {isChatScreen && <Text style={styles.textComingSoonStyle}>{LABLE.COMING_SOON}</Text>}
-
+        {!isChatScreen && (
+          <Button
+            style={styles.btnStyle}
+            title={BUTTON_LABLE.APPLY_FOR_MEMBERSHIP}
+            colorTheme="light"
+            onPress={onButtonClick}
+          />
+        )}
+        {!isChatScreen && (
+          <CustomText style={styles.textBelowStyle}>
+            {LABLE.TWO_MINUTES_TO_COMPLETE}
+          </CustomText>
+        )}
+        {isChatScreen && (
+          <CustomText style={styles.textComingSoonStyle}>
+            {LABLE.COMING_SOON}
+          </CustomText>
+        )}
       </ScrollView>
     </View>
   );
@@ -103,11 +133,10 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
 export default BeforeAppStaticComponent;
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: COLORS.black2
+    backgroundColor: COLORS.black2,
   },
   contentContainer: {
     flex: 1,
@@ -117,30 +146,24 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   logoContainer: {
-    alignItems: 'center', marginTop: Hp(5), marginBottom: 30
+    alignItems: 'center',
+    marginTop: Hp(5),
+    marginBottom: 30,
   },
   logoImgStyle: {
     resizeMode: 'center',
   },
   textBelowStyle: {
     color: COLORS.light_gray,
-    fontSize: 12,
+    fontSize: fontScale(12),
     textAlign: 'center',
-    fontFamily: fontFamily.ABCDiatype_Regular,
     marginVertical: Hp(1),
   },
   textComingSoonStyle: {
     color: COLORS.white,
-    fontSize: 22,
+    fontSize: fontScale(22),
     textAlign: 'center',
     fontFamily: fontFamily.RomieTrial_Bold,
-  },
-  logoutTextStyle: {
-    color: COLORS.white,
-    fontSize: 14,
-    textAlign: 'center',
-    fontFamily: fontFamily.ABCDiatype_Regular,
-    marginTop: 10,
   },
   image: {
     alignSelf: 'center',

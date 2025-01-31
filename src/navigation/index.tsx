@@ -12,7 +12,7 @@ const MainNavigation: React.FC = () => {
       loginData?.roles[0]?.roleName) ||
     'non_member';
 
-  const initialRouteName = isVerified === 0 ? 'AuthStack' : 'AppStack';
+  const initialRouteName = 'AppStack'; //isVerified === 0 ? 'AuthStack' : 'AppStack';
 
   const initialAppStackScreen =
     role === 'non_member'

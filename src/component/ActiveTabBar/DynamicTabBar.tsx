@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
     padding: verticalMarginScale(4),
     alignSelf: 'center',
     width: '90%',
-    marginVertical: 10,
   },
   tab: {
     flex: 1,

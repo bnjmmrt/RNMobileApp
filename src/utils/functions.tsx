@@ -13,7 +13,7 @@ import settings from '../ApiManager/config';
 import { parse, format } from 'date-fns';
 import {
   configStatusBar,
-  StatusBarState,
+  SafeAreaViewConfig,
 } from 'src/redux/slices/safeAreaViewConfigSlice';
 import store from 'src/redux/store';
 
@@ -383,7 +383,7 @@ export const formatDate = (date: Date) => {
     .replace(/\//g, '/');
 };
 
-export const changeSafeAreaViewConfig = (config: StatusBarState) => {
+export const changeSafeAreaViewConfig = (config: SafeAreaViewConfig) => {
   store.store.dispatch(configStatusBar(config));
   if (Platform.OS == 'android') {
     StatusBar.setHidden(false);
@@ -394,6 +394,7 @@ export const changeSafeAreaViewConfig = (config: StatusBarState) => {
     } else {
       // hideNavigationBar();
     }
+
     StatusBar.setTranslucent(config.translucent || false);
   }
   StatusBar.setBarStyle(config.statusBarStyle, true);

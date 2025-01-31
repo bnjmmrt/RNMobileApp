@@ -9,7 +9,11 @@ import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 import IMAGES from '../../assets/images';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 import {COLORS} from '../../utils/constants';
-import {Wp} from '../../utils/dimensions';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+  Wp,
+} from '../../utils/dimensions';
 
 interface BeforeAppStaticScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -39,7 +43,11 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
 
       <TouchableOpacity
         onPress={redirectToHome}
-        style={{top: 60, right: Wp(5), position: 'absolute'}}>
+        style={{
+          top: horizontalMarginScale(16),
+          right: horizontalMarginScale(16),
+          position: 'absolute',
+        }}>
         <View style={styles.iconWrapper}>
           <Image source={IMAGES.cross} />
         </View>
