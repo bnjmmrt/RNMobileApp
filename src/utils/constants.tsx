@@ -36,6 +36,8 @@ export const BUTTON_LABLE = {
   LISTS: 'Lists',
   OVERVIEW: 'Overview',
   EVENTS: 'Events',
+  SHOW_RESULTS: 'Show Results',
+  CLEAR_FILTERS: 'Clear Filters',
   FOLLOW: 'Follow'
 };
 export const LABLE = {
@@ -201,6 +203,7 @@ export const ERROR_MESSAGE = {
   AGE_REQUIREMENT_NOT_MET: 'Age requirement not met',
   FEEDBACK_ERROR: 'Please enter your Feedback.',
 };
+
 export const COLORS = {
   black: '#1F1F1F',
   black2: '#0F0F0F',
@@ -234,8 +237,28 @@ export const COLORS = {
   darkBlue: '#0A66C2',
   red: '#FF0000',
   yellow: '#FFFC00',
+};
 
-}
+export const feedList = [
+  'After Parties',
+  'Album Release',
+  'Art Shows',
+  'Award Shows',
+  'Brand Experiences',
+  'Charity & Galas',
+  'Concerts',
+  'Culinary',
+  'Fashion Shows',
+  'Film Festivals',
+  'Movie Premieres',
+  'Nightlife',
+  'Private Parties',
+  'Product Launch',
+  'Sporting Events',
+  'Seasonal Celebrations',
+  'Talks & Workshops',
+  'Tech'
+]
 
 export const EVENT_STATUS = {
   AWAITING: 'Awaiting response from host',

@@ -33,7 +33,12 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
       onRequestClose={() => setModalVisible(false)}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <GooglePlacesInput submit={submit} setLocation={setLocation} />
+          <GooglePlacesInput
+            submit={() => {
+              if (!submitVisible) submit();
+            }}
+            setLocation={setLocation}
+          />
           {submitVisible && (
             <Button
               disabled={false}
