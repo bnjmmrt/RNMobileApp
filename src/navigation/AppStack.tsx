@@ -7,6 +7,7 @@ import { ROUTES } from './Route';
 import UserDetails from 'src/screens/UsersModule/UserDetails';
 import ListDetails from 'src/screens/UsersModule/ListDetails';
 import { ProfileStack } from './ProfileStack';
+import { EventStack } from './EventStack';
 
 export type AppStackParamList = {
   BeforeAppStaticScreen: undefined;
@@ -15,6 +16,7 @@ export type AppStackParamList = {
   UserDetail: undefined;
   ListDetail: undefined;
   ProfileStack: undefined;
+  EventStack: undefined;
 };
 
 interface AppStackProps {
@@ -37,6 +39,7 @@ export const AppStack: React.FC<AppStackProps> = ({
       <Stack.Screen name={ROUTES.AppFlowStack} component={AppFlowStack} />
       <Stack.Screen name={ROUTES.BottomTabBar} component={BottomTabBar} />
       <Stack.Screen name={ROUTES.ProfileStack} component={ProfileStack} />
+      <Stack.Screen name={ROUTES.EventStack} component={EventStack} />
       <Stack.Screen name={ROUTES.UserDetail} component={UserDetails} />
       <Stack.Screen name={ROUTES.ListDetail} component={ListDetails} />
     </Stack.Navigator>
