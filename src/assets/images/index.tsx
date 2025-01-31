@@ -76,6 +76,7 @@ const IMAGES = {
   start_active: require('./star_active.png'),
   star_inactive: require('./star_inactive.png'),
   delete: require('./delete.png'),
+  loader: require('./loader.png'),
 };
 
 export default IMAGES;

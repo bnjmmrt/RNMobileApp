@@ -1,4 +1,4 @@
-import React, {useState, forwardRef, useImperativeHandle} from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,9 @@ import {
   TouchableOpacity,
   ViewStyle,
 } from 'react-native';
-import {COLORS} from '../../utils/constants';
-import {useNavigation} from '@react-navigation/native';
+import { COLORS } from '../../utils/constants';
+import { useNavigation } from '@react-navigation/native';
+import { fontFamily } from 'src/utils/functions';
 
 interface InputProps {
   label?: string;
@@ -22,6 +23,7 @@ interface InputProps {
   onChangeText?: (text: string) => void;
   multiline?: boolean;
   otherStyle?: ViewStyle;
+  editable?: boolean
 }
 
 const Input = forwardRef((props: InputProps, ref) => {
@@ -36,6 +38,8 @@ const Input = forwardRef((props: InputProps, ref) => {
     defaultValue = '',
     onChangeText,
     otherStyle,
+    height = 60,
+    editable
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -78,10 +82,12 @@ const Input = forwardRef((props: InputProps, ref) => {
           styles.inputContainer,
           multiline ? styles.multilineInputContainer : null,
           errorMessage ? styles.errorInputWrapper : null,
+          { height: height }
         ]}>
         {leftImage && <Image source={leftImage} style={styles.leftImage} />}
         <TextInput
           {...props}
+          editable={editable}
           style={[styles.input, multiline ? styles.multilineInput : null]}
           value={inputText}
           placeholder={placeholder}
@@ -96,7 +102,7 @@ const Input = forwardRef((props: InputProps, ref) => {
         />
         {rightImage && (
           <TouchableOpacity onPress={onPressImage}>
-            <Image source={rightImage} style={styles.leftImage} />
+            <Image source={rightImage} style={styles.rightImage} />
           </TouchableOpacity>
         )}
       </View>
@@ -118,12 +124,12 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     fontSize: 14,
     // color: COLORS.labelGray,
+    fontFamily: fontFamily.ABCDiatype_Medium
   },
   inputContainer: {
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 8,
-    height: 60,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -133,11 +139,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingTop: 10,
   },
-  leftImage: {marginRight: 6, width: 20, height: 20},
+  leftImage: { width: 16, height: 16 },
+  rightImage: { width: 16, height: 16 },
   input: {
-    width: '90%',
+    flex: 1,
     fontSize: 16,
     color: COLORS.black,
+    fontFamily: fontFamily.ABCDiatype_Medium
   },
   multilineInput: {
     height: '100%',

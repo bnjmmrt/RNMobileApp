@@ -1,23 +1,24 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, StyleProp, ViewStyle, TextStyle, ImageSourcePropType, Image, Platform, ImageStyle, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, StyleProp, ViewStyle, TextStyle, ImageSourcePropType, Image, ActivityIndicator, ImageStyle } from 'react-native';
 import { Hp, Wp } from '../utils/dimensions';
 import { fontFamily } from '../utils/functions';
 import { COLORS } from '../utils/constants';
 
 interface ButtonProps {
   title: string;
-  onPress: () => void; // Function called on button press
-  style?: StyleProp<ViewStyle>; // Optional custom button styles
-  textStyle?: StyleProp<TextStyle>; // Optional custom text styles
-  imageSource?: ImageSourcePropType; // Optional image source
+  onPress: () => void;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
+  imageSource?: ImageSourcePropType;
   imageStyle?: StyleProp<ViewStyle>;
-  rightImageSource?: ImageSourcePropType; // Optional image source
+  rightImageSource?: ImageSourcePropType;
   rightImageStyle?: StyleProp<ImageStyle>;
   leftImageStyle?: StyleProp<ImageStyle>;
   disabled?: boolean;
   colorTheme?: string;
   loading?: boolean;
-  clearButtonStyle?:StyleProp<ViewStyle>
+  clearButtonStyle?: StyleProp<ViewStyle>;
+  buttonType?: 'stripe';
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -32,15 +33,23 @@ const Button: React.FC<ButtonProps> = ({
   rightImageStyle,
   disabled,
   loading,
-  clearButtonStyle
+  clearButtonStyle,
+  buttonType = 'solid'
 }) => {
 
-  const colorbackground = colorTheme == 'dark' ? COLORS.black : COLORS.white;
-  const textColor = colorTheme == 'dark' ? COLORS.white : COLORS.black;
+  const colorbackground = colorTheme === 'dark' ? COLORS.black : COLORS.white;
+  const textColor = buttonType === 'stripe' ? COLORS.black : (colorTheme === 'dark' ? COLORS.white : COLORS.black);
+
   return (
     <TouchableOpacity
       disabled={disabled}
-      style={[styles.button, { backgroundColor: disabled ? COLORS.disable : colorbackground }, style,clearButtonStyle]} 
+      style={[styles.button,
+      {
+        backgroundColor: disabled ? COLORS.disable : buttonType === 'stripe' ? COLORS.white : colorbackground,
+        borderWidth: buttonType === 'stripe' ? 2 : 0,
+        borderColor: buttonType === 'stripe' ? COLORS.black : 'transparent'
+      },
+        style, clearButtonStyle]}
       onPress={onPress}
     >
       {loading ? <ActivityIndicator /> :
@@ -49,14 +58,13 @@ const Button: React.FC<ButtonProps> = ({
           <Text style={[styles.text, { color: textColor }, textStyle]}>{title}</Text>
           {rightImageSource && <Image source={rightImageSource} style={[styles.image, rightImageStyle]} />}
         </>}
-
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
-    height: 50,
+    height: 48,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
@@ -67,7 +75,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 14,
     marginHorizontal: 10,
-    fontFamily: fontFamily.ABCDiatype_Regular
+    fontFamily: fontFamily.ABCDiatype_Medium
   },
   image: {
     width: Hp(3),
