@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -19,7 +19,10 @@ import Toast from '../../../component/Toast/Toast';
 import useApi from '../../../axios/useApi';
 import {EndPoint} from '../../../ApiManager/config';
 import AvatarInitials from '../../../component/AvatarInitials';
-import { environment } from '../../../../environments/environment';
+import {environment} from '../../../../environments/environment';
+import {useFocusEffect} from '@react-navigation/native';
+import {changeSafeAreaViewConfig} from 'src/utils/functions';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 
 interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -55,11 +58,13 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   const onNextClick = async () => {
     if (image) {
       setIsToastShown(false);
-      const response:any = await uploadFile();
+      const response: any = await uploadFile();
 
       if (response.data) {
         setIsToastShown(false);
-         dispatch(setProfilePic(environment.IMAGE_URL + response.data.fileKeyId));
+        dispatch(
+          setProfilePic(environment.IMAGE_URL + response.data.fileKeyId),
+        );
         dispatch(setPageProgress(9));
         navigation.navigate('IdentityVerification');
       } else {
@@ -88,8 +93,15 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
       setIsToastShown(false);
     });
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    }, []),
+  );
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header headerTitle={LABLE.PROFILE_PHOTO} onPress={handleBackPress} />
 
       <View style={styles.contentContainer}>
@@ -108,9 +120,9 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
           ) : (
             <View style={{alignSelf: 'center'}}>
               <AvatarInitials
-              name={userDetails?.firstName + ' ' + userDetails?.lastName}
-              size={48}
-            />
+                name={userDetails?.firstName + ' ' + userDetails?.lastName}
+                size={48}
+              />
             </View>
           )}
 
@@ -138,7 +150,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
         colorTheme="dark"
         onPress={onNextClick}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

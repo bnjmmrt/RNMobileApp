@@ -1,30 +1,37 @@
 import {Dimensions, StyleSheet} from 'react-native';
 import {COLORS} from '../../../../utils/constants';
-import {Wp} from '../../../../utils/dimensions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+} from '../../../../utils/dimensions';
 import {fontFamily} from '../../../../utils/functions';
 
 let screenWidth: number = Dimensions.get('window').width;
-const socialPresenceCardWidth = screenWidth - (Wp(10) + 38);
+const socialPresenceCardWidth =
+  screenWidth - (horizontalMarginScale(32) + horizontalMarginScale(38));
 
 const createStyle = () => {
   return StyleSheet.create({
-    container: {},
     sectionTitle: {
-      fontSize: 12,
+      fontSize: fontScale(12),
       color: COLORS.light_gray,
       fontFamily: fontFamily.ABCDiatype_Medium,
-      marginTop: 24,
-      marginBottom: 12,
+      marginTop: verticalMarginScale(24),
+      marginBottom: verticalMarginScale(12),
     },
     infoRowContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 4,
-      paddingVertical: 8,
+      gap: horizontalMarginScale(4),
+      paddingVertical: verticalMarginScale(8),
     },
     infoRowIcon: {
-      height: 16,
-      width: 16,
+      height: verticalScale(16),
+      width: verticalScale(16),
       tintColor: COLORS.surfaceSecondary,
     },
     infoRowTitle: {
@@ -35,16 +42,16 @@ const createStyle = () => {
     socialPresenceRowContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingVertical: 8,
+      paddingVertical: verticalMarginScale(8),
       backgroundColor: COLORS.lighter_gray,
-      borderRadius: 99,
+      borderRadius: radiusScale(99),
       justifyContent: 'center',
       width: socialPresenceCardWidth / 2,
-      gap: 4,
+      gap: horizontalMarginScale(4),
     },
     socialPresenceRowIcon: {
-      height: 20,
-      width: 20,
+      height: verticalScale(20),
+      width: verticalScale(20),
     },
     socialPresenceRowValue: {
       color: COLORS.black,
@@ -54,14 +61,14 @@ const createStyle = () => {
       flexDirection: 'row',
     },
     totalFollowing: {
-      fontSize: 64,
+      fontSize: fontScale(64),
       color: COLORS.black,
       fontFamily: fontFamily.RomieTrial_Medium,
-      lineHeight: 72,
+      lineHeight: verticalScale(72),
     },
     totalFollowingUnit: {
-      fontSize: 32,
-      height: 64,
+      fontSize: fontScale(32),
+      height: verticalScale(64),
       color: COLORS.black,
       fontFamily: fontFamily.RomieTrial_Bold,
     },

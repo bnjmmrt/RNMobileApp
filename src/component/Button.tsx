@@ -1,8 +1,21 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, StyleProp, ViewStyle, TextStyle, ImageSourcePropType, Image, Platform, ImageStyle, ActivityIndicator } from 'react-native';
-import { Hp, Wp } from '../utils/dimensions';
-import { fontFamily } from '../utils/functions';
-import { COLORS } from '../utils/constants';
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+  TextStyle,
+  ImageSourcePropType,
+  Image,
+  Platform,
+  ImageStyle,
+  ActivityIndicator,
+} from 'react-native';
+import {Hp, Wp} from '../utils/dimensions';
+import {fontFamily} from '../utils/functions';
+import {COLORS} from '../utils/constants';
+import {CustomText} from './CustomText';
 
 interface ButtonProps {
   title: string;
@@ -17,7 +30,7 @@ interface ButtonProps {
   disabled?: boolean;
   colorTheme?: string;
   loading?: boolean;
-  clearButtonStyle?:StyleProp<ViewStyle>
+  clearButtonStyle?: StyleProp<ViewStyle>;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -32,24 +45,41 @@ const Button: React.FC<ButtonProps> = ({
   rightImageStyle,
   disabled,
   loading,
-  clearButtonStyle
+  clearButtonStyle,
 }) => {
-
   const colorbackground = colorTheme == 'dark' ? COLORS.black : COLORS.white;
   const textColor = colorTheme == 'dark' ? COLORS.white : COLORS.black;
   return (
     <TouchableOpacity
       disabled={disabled}
-      style={[styles.button, { backgroundColor: disabled ? COLORS.disable : colorbackground }, style,clearButtonStyle]} 
-      onPress={onPress}
-    >
-      {loading ? <ActivityIndicator /> :
+      style={[
+        styles.button,
+        {backgroundColor: disabled ? COLORS.disable : colorbackground},
+        style,
+        clearButtonStyle,
+      ]}
+      onPress={onPress}>
+      {loading ? (
+        <ActivityIndicator />
+      ) : (
         <>
-          {imageSource && <Image source={imageSource} style={[styles.image, leftImageStyle]} />}
-          <Text style={[styles.text, { color: textColor }, textStyle]}>{title}</Text>
-          {rightImageSource && <Image source={rightImageSource} style={[styles.image, rightImageStyle]} />}
-        </>}
-
+          {imageSource && (
+            <Image
+              source={imageSource}
+              style={[styles.image, leftImageStyle]}
+            />
+          )}
+          <CustomText style={[styles.text, {color: textColor}, textStyle]}>
+            {title}
+          </CustomText>
+          {rightImageSource && (
+            <Image
+              source={rightImageSource}
+              style={[styles.image, rightImageStyle]}
+            />
+          )}
+        </>
+      )}
     </TouchableOpacity>
   );
 };
@@ -62,17 +92,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: Wp(90),
     alignSelf: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   text: {
-    fontSize: 14,
     marginHorizontal: 10,
-    fontFamily: fontFamily.ABCDiatype_Regular
   },
   image: {
     width: Hp(3),
     height: Hp(3),
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
 });
 

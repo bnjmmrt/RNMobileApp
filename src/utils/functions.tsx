@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import settings from '../ApiManager/config';
-import { parse, format } from 'date-fns';
+import {parse, format} from 'date-fns';
 import {
   configStatusBar,
   StatusBarState,
@@ -53,7 +53,7 @@ export const fontFamily = {
   RomieTrial: 'RomieTrial',
 };
 
-export const ErrorText: React.FC<ErrorTextProps> = ({ msg }) => {
+export const ErrorText: React.FC<ErrorTextProps> = ({msg}) => {
   return (
     <Text
       style={{
@@ -290,9 +290,9 @@ export const formatEventDates = (startDate: string, endDate: string) => {
   const end = parseDate(endDate);
 
   // Format options
-  const optionsDate = { weekday: 'short', month: 'short', day: 'numeric' };
-  const optionsTime = { hour: 'numeric', minute: 'numeric', hour12: true };
-  const optionsTimeZone = { timeZoneName: 'short' };
+  const optionsDate = {weekday: 'short', month: 'short', day: 'numeric'};
+  const optionsTime = {hour: 'numeric', minute: 'numeric', hour12: true};
+  const optionsTimeZone = {timeZoneName: 'short'};
 
   // Format components
   const formattedStartDate = new Intl.DateTimeFormat(
@@ -326,7 +326,6 @@ export const formatEventDates = (startDate: string, endDate: string) => {
     return `${formattedStartDate}, ${formattedStartTime} —\n${formattedEndDate}, ${formattedEndTime} ${timeZone}`;
   }
 };
-
 
 // export const  formatEventDates = (startDate: string, endDate: string) => {
 
@@ -384,17 +383,17 @@ export const formatDate = (date: Date) => {
 };
 
 export const changeSafeAreaViewConfig = (config: StatusBarState) => {
-  // store.store.dispatch(configStatusBar(config));
-  // if (Platform.OS == 'android') {
-  //   StatusBar.setHidden(false);
-  //   StatusBar.setBackgroundColor(config.topSafeAreaViewColor, true);
-  //   // changeNavigationBarColor(config.bottomSafeAreaViewColor);
-  //   if (config.showBottomSafeAreaView) {
-  //     // showNavigationBar();
-  //   } else {
-  //     // hideNavigationBar();
-  //   }
-  //   StatusBar.setTranslucent(config.translucent || false);
-  // }
-  // StatusBar.setBarStyle(config.statusBarStyle, true);
+  store.store.dispatch(configStatusBar(config));
+  if (Platform.OS == 'android') {
+    StatusBar.setHidden(false);
+    StatusBar.setBackgroundColor(config.topSafeAreaViewColor, true);
+    // changeNavigationBarColor(config.bottomSafeAreaViewColor);
+    if (config.showBottomSafeAreaView) {
+      // showNavigationBar();
+    } else {
+      // hideNavigationBar();
+    }
+    StatusBar.setTranslucent(config.translucent || false);
+  }
+  StatusBar.setBarStyle(config.statusBarStyle, true);
 };

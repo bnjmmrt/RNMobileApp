@@ -1,19 +1,15 @@
-import React, { useState } from 'react';
-import { TouchableOpacity, View } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  LABLE,
-  BUTTON_LABLE,
-  ERROR_MESSAGE,
-} from '../../../utils/constants';
+import React, {useCallback, useState} from 'react';
+import {TouchableOpacity, View} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {LABLE, BUTTON_LABLE, ERROR_MESSAGE} from '../../../utils/constants';
 import BaseCityScreenStyles from './BaseCityScreenStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import IMAGES from '../../../assets/images';
 import Header from '../../../component/Header/Header';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../redux/slices';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../redux/slices';
 import {
   Address,
   setBaseCity,
@@ -21,10 +17,13 @@ import {
 } from '../../../redux/slices/appFlowSlice';
 import LocationPickerModal from '../../../component/BottomSheet/LocationPickerModal';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
+import {useFocusEffect} from '@react-navigation/native';
+import {changeSafeAreaViewConfig} from 'src/utils/functions';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 
-interface BaseCityScreenProps extends NativeStackScreenProps<any, any> { }
+interface BaseCityScreenProps extends NativeStackScreenProps<any, any> {}
 
-const BaseCityScreen: React.FC<BaseCityScreenProps> = ({ navigation }) => {
+const BaseCityScreen: React.FC<BaseCityScreenProps> = ({navigation}) => {
   const dispatch = useDispatch();
   const baseCity = useSelector((state: RootState) => state.appFlow.baseCity);
   const [selectedCity, setSelectedCity] = useState<Address>(baseCity);
@@ -60,8 +59,14 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({ navigation }) => {
     setIsShown(!isShown);
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    }, []),
+  );
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header headerTitle={LABLE.BASE_CITY} onPress={handleBackPress} />
 
       <View style={styles.contentContainer}>
@@ -94,7 +99,7 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({ navigation }) => {
         colorTheme="dark"
         onPress={onNextClick}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
