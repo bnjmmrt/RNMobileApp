@@ -1,8 +1,8 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {BUTTON_LABLE, COLORS, LABLE} from '../../utils/constants';
-import {fontFamily, formatEventDates} from '../../utils/functions';
-import {Wp, Hp} from '../../utils/dimensions';
+import { View, Text, StyleSheet } from 'react-native';
+import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
+import { fontFamily, formatEventDates } from '../../utils/functions';
+import { Wp, Hp } from '../../utils/dimensions';
 import ButtonSmall from '../../component/ButtonSmall';
 import FastImage from '@d11/react-native-fast-image';
 import { useNavigation } from '@react-navigation/native';
@@ -10,19 +10,20 @@ import { useNavigation } from '@react-navigation/native';
 interface EventItemProps {
   item: {};
 }
-const EventItem: React.FC<EventItemProps> = ({item}) => {
+const EventItem: React.FC<EventItemProps> = ({ item }) => {
+
   // Handle the "Next" button press
   const navigation = useNavigation();
   // Handle the "Next" button press
   const handlEventPress = () => {
-    navigation.navigate('EventDetailsScreen', {item});
+    navigation.navigate('EventDetailsScreen', { item });
   };
 
   return (
     <View style={styles.container}>
       <View style={[styles.imageContainer]}>
         <FastImage
-          source={{uri: item.imageCover}}
+          source={{ uri: item.imageCover }}
           resizeMode={FastImage.resizeMode.cover}
           style={styles.icon}
         />
@@ -30,12 +31,12 @@ const EventItem: React.FC<EventItemProps> = ({item}) => {
       <View style={styles.contentContainer}>
         <Text style={styles.titleStyle}>{item.name}</Text>
         <Text style={styles.subtitle} numberOfLines={2}>
-          {formatEventDates(item.startDate, item.endDate)}
+          {item.startDate}
         </Text>
         <Text style={styles.subtitle} numberOfLines={2}>
           {item.location.location}
         </Text>
-        <View style={{alignItems: 'flex-start', flexDirection: 'row'}}>
+        <View style={{ alignItems: 'flex-start', flexDirection: 'row' }}>
           <ButtonSmall
             disabled={false}
             style={styles.btnStyle}

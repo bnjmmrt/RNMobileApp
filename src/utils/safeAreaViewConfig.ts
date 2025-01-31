@@ -1,5 +1,5 @@
-import { SafeAreaViewConfig } from 'src/redux/slices/safeAreaViewConfigSlice';
-import { COLORS } from './constants';
+import {SafeAreaViewConfig} from 'src/redux/slices/safeAreaViewConfigSlice';
+import {COLORS} from './constants';
 
 interface SafeAreaViewConfigInterface {
   [path: string]: SafeAreaViewConfig;

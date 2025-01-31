@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -11,20 +11,27 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../redux/slices';
 import {setInterest, setPageProgress} from '../../../redux/slices/appFlowSlice';
 import Toast from '../../../component/Toast/Toast';
+import {useFocusEffect} from '@react-navigation/native';
+import {changeSafeAreaViewConfig} from 'src/utils/functions';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 
 interface SelectInterestScreenProps extends NativeStackScreenProps<any, any> {}
 
 const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
-  navigation,route
-  
+  navigation,
+  route,
 }) => {
   const dispatch = useDispatch();
-  const [configData, setConfigData] = useState(route.params ? route.params : {
-    headerTitle: null,
-    btnTitle: null,
-    subTitle: null,
-    fromProfile:false
-  });
+  const [configData, setConfigData] = useState(
+    route.params
+      ? route.params
+      : {
+          headerTitle: null,
+          btnTitle: null,
+          subTitle: null,
+          fromProfile: false,
+        },
+  );
   const interest = useSelector(
     (state: RootState) => state.appFlowApiData.interests,
   );
@@ -36,9 +43,9 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
     useState<any[]>(selectedInterests);
 
   const [isToastShown, setIsToastShown] = useState(false);
- 
+
   const handleCategorySelect = (category: any) => {
-    if (selectedCategories.find(item=> item.id===category.id)) {
+    if (selectedCategories.find(item => item.id === category.id)) {
       if (selectedCategories.length === 1) {
         setIsToastShown(true);
       }
@@ -53,7 +60,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
   };
 
   const onNextClick = () => {
-    if(!configData.fromProfile){
+    if (!configData.fromProfile) {
       if (selectedCategories.length > 0) {
         setIsToastShown(false);
         console.log('Selected Categories:', selectedCategories);
@@ -63,53 +70,68 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
       } else {
         setIsToastShown(true);
       }
-    }else{
+    } else {
       //handle edit profile flow
     }
-   
   };
 
   const handleBackPress = () => {
-  
-   if(!configData.fromProfile){
-    dispatch(setPageProgress(6));
-    navigation.navigate('CreativeFocusScreen');
-   }else {
-    navigation.goBack()
-   }
+    if (!configData.fromProfile) {
+      dispatch(setPageProgress(6));
+      navigation.navigate('CreativeFocusScreen');
+    } else {
+      navigation.goBack();
+    }
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    }, []),
+  );
+
   return (
-    <SafeAreaView style={styles.container}>
-      <Header headerTitle={configData.headerTitle ? configData.headerTitle :LABLE.INTERESTS} onPress={handleBackPress} showProgressBar={!configData.fromProfile} />
+    <View style={styles.container}>
+      <Header
+        headerTitle={
+          configData.headerTitle ? configData.headerTitle : LABLE.INTERESTS
+        }
+        onPress={handleBackPress}
+        showProgressBar={!configData.fromProfile}
+      />
 
       <View style={styles.contentContainer}>
         <Title
-          title={!configData.fromProfile ? LABLE.CHOOSE_YOUR_INTERESTS:''}
-          subTitle={configData.subTitle ? configData.subTitle : LABLE.CHOOSE_YOUR_INTERESTS_SUBTITLE}
+          title={!configData.fromProfile ? LABLE.CHOOSE_YOUR_INTERESTS : ''}
+          subTitle={
+            configData.subTitle
+              ? configData.subTitle
+              : LABLE.CHOOSE_YOUR_INTERESTS_SUBTITLE
+          }
         />
 
-       <View style={styles.categoryContainer}>
-                 {interest?.map(item => (
-                   <TouchableOpacity
-                     key={item.id}
-                     style={[
-                       styles.categoryButton,
-                       selectedCategories.some(selected => selected.id === item.id) &&
-                         styles.selectedCategoryButton,
-                     ]}
-                     onPress={() => handleCategorySelect(item)}>
-                     <Text
-                       style={[
-                         styles.categoryText,
-                         selectedCategories.some(selected => selected.id === item.id) &&
-                           styles.selectedCategoryText,
-                       ]}>
-                       {item.name}
-                     </Text>
-                   </TouchableOpacity>
-                 ))}
-               </View>
+        <View style={styles.categoryContainer}>
+          {interest?.map(item => (
+            <TouchableOpacity
+              key={item.id}
+              style={[
+                styles.categoryButton,
+                selectedCategories.some(selected => selected.id === item.id) &&
+                  styles.selectedCategoryButton,
+              ]}
+              onPress={() => handleCategorySelect(item)}>
+              <Text
+                style={[
+                  styles.categoryText,
+                  selectedCategories.some(
+                    selected => selected.id === item.id,
+                  ) && styles.selectedCategoryText,
+                ]}>
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
         {isToastShown && (
           <Toast
             message={'Please select at least one'}
@@ -121,11 +143,11 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
       <Button
         disabled={false}
         style={styles.btnStyle}
-        title={configData.btnTitle ? configData.btnTitle: BUTTON_LABLE.NEXT}
+        title={configData.btnTitle ? configData.btnTitle : BUTTON_LABLE.NEXT}
         colorTheme="dark"
         onPress={onNextClick}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

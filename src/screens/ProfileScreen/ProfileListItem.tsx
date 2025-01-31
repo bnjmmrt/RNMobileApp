@@ -1,4 +1,4 @@
-import React, {useState, forwardRef, useImperativeHandle} from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import {
   View,
   Text,
@@ -7,12 +7,12 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import {Image} from 'react-native-animatable';
+import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
-import {COLORS, PROFILE} from '../../utils/constants';
-import {fontFamily} from '../../utils/functions';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {ROUTES} from '../../navigation/Route';
+import { COLORS, PROFILE } from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { ROUTES } from '../../navigation/Route';
 
 interface ListItemProps {
   item: {
@@ -24,51 +24,58 @@ interface ListItemProps {
   onPress: () => void;
 }
 
-const ProfileListItem: React.FC<ListItemProps> = ({item, onPress}) => {
+const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
   const navigation = useNavigation<NavigationProp>();
+
+  const redirectToProfileStack = (screenName: string, params = {}) => {
+    navigation.navigate("ProfileStack", {
+      screen: screenName,
+      params
+    });
+  }
 
   const handleItemClick = (item: any) => {
     switch (item.title) {
       case PROFILE.EDIT_PROFILE:
         console.log('Redirecting to Edit Profile...');
-        navigation.navigate(ROUTES.EditProfileScreen);
+        redirectToProfileStack(ROUTES.EditProfileScreen);
         break;
 
       case PROFILE.FOLLOWING:
         console.log('Redirecting to Following...');
-        navigation.navigate(ROUTES.FollowingScreen);
+        redirectToProfileStack(ROUTES.FollowingScreen);
         // Example: navigate('/following');
         break;
 
       case PROFILE.REFERRALS:
         console.log('Redirecting to Referrals...');
-        navigation.navigate(ROUTES.ReferralScreen);
+        redirectToProfileStack(ROUTES.ReferralScreen);
         // Example: navigate('/referrals');
         break;
 
       case PROFILE.CONNECTED_ACCOUNTS:
         console.log('Redirecting to Connected Accounts...');
-        navigation.navigate(ROUTES.ConnectedAccountsScreen);
+        redirectToProfileStack(ROUTES.ConnectedAccountsScreen);
         break;
 
       case PROFILE.MY_INTERESTS:
         console.log('Redirecting to My Interests...');
-        navigation.navigate(ROUTES.SelectInterestScreen, {
+        redirectToProfileStack(ROUTES.SelectInterestScreen, {
           headerTitle: 'My Interests',
           btnTitle: 'Update',
           subTitle: PROFILE.MY_INTERESTS_DESC,
-          fromProfile:true
+          fromProfile: true
         });
         break;
 
       case PROFILE.NOTIFICATION:
         console.log('Redirecting to Notifications...');
-        navigation.navigate(ROUTES.NotificationsScreen);
+        redirectToProfileStack(ROUTES.NotificationsScreen);
         break;
 
       case PROFILE.FEEDBACK:
         console.log('Redirecting to Feedback...');
-        navigation.navigate(ROUTES.FeedbackScreen);
+        redirectToProfileStack(ROUTES.FeedbackScreen);
         break;
 
       case PROFILE.CONTACT_SUPPORT:
@@ -97,7 +104,7 @@ const ProfileListItem: React.FC<ListItemProps> = ({item, onPress}) => {
         <Text
           style={[
             styles.input,
-            {color: item.image ? COLORS.black : COLORS.errorText},
+            { color: item.image ? COLORS.black : COLORS.errorText },
           ]}>
           {item.title}
         </Text>

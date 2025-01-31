@@ -9,6 +9,9 @@ const IMAGES = {
   calender: require('./calender.png'),
   downArrow: require('./chevron-down.png'),
   search: require('./search-md.png'),
+  clear: require('./clear.png'),
+  filter: require('./filter.png'),
+  iconRumor: require('./icon_rumor.png'),
   introVideo: require('./intro_video.mp4'),
   pencil: require('./pencil-01.png'),
   rumorLogo: require('./Wordmark.png'),
@@ -16,6 +19,7 @@ const IMAGES = {
   homeTab: require('./homeTab.png'),
   eventTab: require('./eventTab.png'),
   chatTab: require('./chatTab.png'),
+  usersTab: require('./usersTab.png'),
   bell: require('./bell.png'),
   profileTab: require('./profileTab.png'),
   frame1: require('./Frame1.png'),
@@ -77,6 +81,11 @@ const IMAGES = {
   tickInvited: require('./tickInvited.png'),
   tickDeclined: require('./tickDeclined.png'),
   tickGoing: require('./tickGoing.png'),
+  user_check: require('./user-check.png'),
+  arrow_up_right: require('./arrow-up-right.png'),
+  filter_lines: require('./filter-lines.png'),
+  list: require('./list.png'),
+  alert_triangle_filled: require('./alert-triangle-filled.png'),
 };
 
 export default IMAGES;

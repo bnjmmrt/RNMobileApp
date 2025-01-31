@@ -328,15 +328,6 @@ export const formatEventDates = (startDate: string, endDate: string) => {
   // }
 };
 
-// Example usage
-const start1 = '11/21/2024 13:00';
-const end1 = '11/21/2024 15:00';
-console.log(formatEventDates(start1, end1)); // Thu, Nov 21, 1:00PM – 3:00PM EST
-
-const start2 = '11/21/2024 20:00';
-const end2 = '11/23/2024 12:00';
-console.log(formatEventDates(start2, end2)); // Thu, Nov 21, 8:00PM — Sat, Nov 23, 12:00PM EST
-
 // export const  formatEventDates = (startDate: string, endDate: string) => {
 
 //   // Convert input strings into Date objects

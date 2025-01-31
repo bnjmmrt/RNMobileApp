@@ -1,6 +1,11 @@
 import {StyleSheet} from 'react-native';
 import {COLORS} from 'src/utils/constants';
-import {Wp} from 'src/utils/dimensions';
+import {
+  horizontalMarginScale,
+  horizontalScale,
+  verticalMarginScale,
+  Wp,
+} from 'src/utils/dimensions';
 import {fontFamily} from 'src/utils/functions';
 
 export const styles = StyleSheet.create({
@@ -12,10 +17,12 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 99,
+    paddingVertical: verticalMarginScale(12),
+    height: undefined,
   },
 
   actionContentWrapper: {
-    marginHorizontal: Wp(5),
+    marginHorizontal: horizontalMarginScale(12),
   },
   actionCta: {
     borderRadius: 99,
@@ -26,7 +33,6 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     color: COLORS.light_gray,
     marginBottom: 32,
-    marginTop: 16,
   },
   reportInputLabel: {
     color: COLORS.black,
@@ -65,7 +71,7 @@ export const styles = StyleSheet.create({
     borderColor: COLORS.borderGray,
   },
   createListCta: {
-    borderWidth: 1,
+    borderWidth: horizontalScale(2),
     borderColor: COLORS.black,
     marginTop: 8,
   },

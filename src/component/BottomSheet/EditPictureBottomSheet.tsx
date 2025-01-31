@@ -1,10 +1,10 @@
-import React, {useRef, forwardRef, useState} from 'react';
-import {View, StyleSheet, Text, Image} from 'react-native';
+import React, { useRef, forwardRef, useState } from 'react';
+import { View, StyleSheet, Text, Image } from 'react-native';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
-import {COLORS} from '../../utils/constants';
+import { COLORS } from '../../utils/constants';
 import Button from '../Button';
-import {fontFamily} from '../../utils/functions';
-import {EndPoint} from '../../ApiManager/config';
+import { fontFamily } from '../../utils/functions';
+import { EndPoint } from '../../ApiManager/config';
 import useApi from '../../axios/useApi';
 
 interface EditPictureBottomSheetProps {
@@ -36,7 +36,7 @@ const EditPictureBottomSheet = forwardRef(
             <View style={styles.profilePhotoContainer}>
               <Image
                 style={styles.profilePhotoContainer}
-                source={{uri: props.image}}
+                source={{ uri: props.image }}
                 resizeMode="cover"
               />
             </View>
@@ -56,7 +56,7 @@ const EditPictureBottomSheet = forwardRef(
             colorTheme="dark"
             onPress={cancelClick}
             clearButtonStyle={styles.clearButton}
-            textStyle={{color: '#000'}}
+            textStyle={{ color: '#000' }}
           />
         </View>
       </BottomSheetComponent>

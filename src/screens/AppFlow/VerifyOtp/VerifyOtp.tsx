@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -8,7 +8,7 @@ import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
 import OTPComponent from '../../../component/OTPComponent/OTPComponent';
-import {useRoute, RouteProp} from '@react-navigation/native';
+import {useRoute, RouteProp, useFocusEffect} from '@react-navigation/native';
 import {FlashMessageComponent} from '../../../component/FlashMessageComponent/FlashMessageComponent';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -18,6 +18,8 @@ import {
 import {RootState} from '../../../redux/slices';
 import useApi from '../../../axios/useApi';
 import {EndPoint} from '../../../ApiManager/config';
+import {changeSafeAreaViewConfig} from 'src/utils/functions';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 
 interface VerifyOtpScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -65,9 +67,9 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
       };
     }
     await apiRequest('post', endPoint, params);
-    if (!error && message ==='resent') {
+    if (!error && message === 'resent') {
       FlashMessageComponent.show('success', `OTP ${message} successfully!`);
-    } else if(error){
+    } else if (error) {
       FlashMessageComponent.show(
         'error',
         'Something went wrong, please try again!',
@@ -150,8 +152,14 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
     sendOtp('resent');
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    }, []),
+  );
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header
         headerTitle={isEmailVerified ? LABLE.VERIFY_PHONE : LABLE.VERIFY_EMAIL}
         onPress={handleBackPress}
@@ -178,7 +186,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
         colorTheme="dark"
         onPress={onNextClick}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
