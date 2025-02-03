@@ -30,10 +30,8 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
     const fetch = async () => {
       const focusResponse:any = await apiRequest('get', EndPoint.get_focuses);
       dispatch(setCreativeFocus(focusResponse.data));
-      console.log("focusResponse")
       const interestResponse:any = await apiRequest('get', EndPoint.interests);
       dispatch(setInterests(interestResponse.data));
-      console.log("interestResponse",interestResponse)
     };
 
     useEffect(() => {

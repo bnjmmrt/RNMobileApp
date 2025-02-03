@@ -24,7 +24,7 @@ import BaseCityComponent from './BaseCityComponent';
 import CreativeFocusComponent from './CreativeFocusComponent';
 import GenderComponent from './GenderComponent';
 import Toast from 'src/component/Toast/Toast';
-import { setNotificationSettings } from 'src/redux/slices/appSettingsSlice';
+import { setNotificationSettings } from '../../../redux/slices/appSettingsSlice';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -190,7 +190,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
             </>
           )}
 
-          {loginData?.isSignUpCompleted && (
+          {!loginData?.isSignUpCompleted && (
             <View>
               <Text style={[styles.label]}>{LABLE.GENDER}</Text>
               <GenderComponent selectedGender={selectedGender} />
@@ -215,14 +215,15 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
             onClose={() => setIsToastShown(false)}
           />
         )}
-      </ScrollView>
-      <Button
+         <Button
         disabled={false}
         style={styles.btnStyle}
         title={BUTTON_LABLE.CONFIRM}
         colorTheme="dark"
         onPress={onConfirmClick}
       />
+      </ScrollView>
+     
     </SafeAreaView>
   );
 };

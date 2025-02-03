@@ -22,7 +22,7 @@ export interface UserDetailsState {
 const initialState: UserDetailsState = {
   firstName: '',
   lastName: '',
-  gender: 0,
+  gender: -1,
   baseCity: {address:'',placeId:''},
   birthday: '',
   email: '',
