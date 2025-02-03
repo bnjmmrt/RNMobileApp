@@ -43,9 +43,6 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
 
 
   const onNextClick = async () => {
-    usernameRef.current && usernameRef.current.validateInputs();
-
-    if (usernameRef.current.validateInputs()) {
       const requestParams: any = {
         address: {
           address: userDetails.baseCity.address,
@@ -87,7 +84,6 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         FlashMessageComponent.show('error', 'Something went wrong, please try again!');
         // console.error('Error verifying OTP:', error);
       }
-    }
   };
 
   const handleBackPress = () => {

@@ -6,8 +6,7 @@ import CustomSelectableText from '../../../component/CustomSelectableText/Custom
 import IMAGES from '../../../assets/images';
 import {LABLE, ERROR_MESSAGE, COLORS} from '../../../utils/constants';
 import DatepickerBottomSheet from '../../../component/BottomSheet/DatepickerBottomSheet';
-import {formatDate} from '../../../utils/functions';
-import {setBirthday} from 'src/redux/slices/appFlowSlice';
+import {formatDate, validateAge} from '../../../utils/functions';
 
 interface DatePickerComponentProps {
   birthDate:string
@@ -35,20 +34,11 @@ const DatePickerComponent = forwardRef((props:DatePickerComponentProps, ref) => 
    
   };
 
-  const isUnder18 = (selectedDate: string) => {
-    const [day, month, year] = selectedDate.split('/').map(Number);
-    const selectedDateObj = new Date(year, month - 1, day);
-    const today = new Date();
-    const eighteenYearsAgo = new Date();
-    eighteenYearsAgo.setFullYear(today.getFullYear() - 18);
-    return selectedDateObj > eighteenYearsAgo;
-  };
-
   const validateBirthDate = () => {
     if (!selectedDate) {
       setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_YOUR_BIRTHDAY);
       return false;
-    } else if (isUnder18(selectedDate)) {
+    } else if (validateAge(selectedDate)) {
       setErrorMessage(ERROR_MESSAGE.AGE_REQUIREMENT_NOT_MET);
       return false;
     }

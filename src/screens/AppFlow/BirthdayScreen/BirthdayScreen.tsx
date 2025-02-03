@@ -17,6 +17,7 @@ import {
 import DatepickerBottomSheet from '../../../component/BottomSheet/DatepickerBottomSheet';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import BirthdayScreenStyles from './BirthdayScreenStyles';
+import { formatDate, validateAge } from 'src/utils/functions';
 interface BirthdayScreenProps extends NativeStackScreenProps<any, any> { }
 
 const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
@@ -39,26 +40,15 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
 
   const handleDateChange = (date: Date) => {
     setErrorMessage(null); // Clear any error message
-    const formattedDate = date
-      .toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' }) // Format to DD/MM/YYYY
-      .replace(/\//g, '/');
+    const formattedDate = formatDate(date);
     setSelectedDate(formattedDate); // Update the selected date
-  };
-
-  const isUnder18 = (selectedDate: string) => {
-    const [day, month, year] = selectedDate.split('/').map(Number); // Parse the date
-    const selectedDateObj = new Date(year, month - 1, day); // Create a date object
-    const today = new Date();
-    const eighteenYearsAgo = new Date();
-    eighteenYearsAgo.setFullYear(today.getFullYear() - 18);
-    return selectedDateObj > eighteenYearsAgo; // Check if under 18
   };
 
   const validateInputs = () => {
     if (!selectedDate) {
       setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_YOUR_BIRTHDAY);
       return false;
-    } else if (isUnder18(selectedDate)) {
+    } else if (validateAge(selectedDate)) {
       setErrorMessage(ERROR_MESSAGE.AGE_REQUIREMENT_NOT_MET);
       return false;
     }
