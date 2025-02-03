@@ -9,7 +9,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setPageProgress} from '../../../redux/slices/appFlowSlice';
 import Header from '../../../component/Header/Header';
 import {
@@ -17,6 +17,7 @@ import {
   PROFILE,
 } from '../../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
+import {RootState} from '../../../redux/slices';
 
 interface NotificationsScreenProps {}
 
@@ -31,12 +32,13 @@ interface ConfigData {
 const NotificationsScreen: React.FC<NotificationsScreenProps> = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-
-  const [isSMSNotificationEnabled, setSMSNotificationEnabled] = useState(true);
+ const notificationsSettings = useSelector((state: RootState) => state.appSettings.notificationsSettings);
+ console.log("notificationsSettings",notificationsSettings)
+  const [isSMSNotificationEnabled, setSMSNotificationEnabled] = useState(notificationsSettings?.allowSMSNotifications);
   const [isPushNotificationEnabled, setPushNotificationEnabled] =
-    useState(false);
+    useState(notificationsSettings?.allowPushNotifications);
   const [isEmailNotificationEnabled, setEmailNotificationEnabled] =
-    useState(false);
+    useState(notificationsSettings?.allowEmailNotifications);
 
   const toggleSMSNotification = () =>
     setSMSNotificationEnabled(previousState => !previousState);

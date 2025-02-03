@@ -80,7 +80,7 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
 
       case PROFILE.CONTACT_SUPPORT:
         console.log('Redirecting to Contact Support...');
-        // Example: navigate('/contact-support');
+        onPress();
         break;
 
       case PROFILE.DELETE_ACCOUNT:
@@ -100,7 +100,7 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
       <TouchableOpacity
         style={[styles.inputWrapper]}
         onPress={() => handleItemClick(item)}>
-        <Image source={item.image} style={styles.icon} />
+        {item.image && <Image source={item.image} style={styles.icon} /> }
         <Text
           style={[
             styles.input,

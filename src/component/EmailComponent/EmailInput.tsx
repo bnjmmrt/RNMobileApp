@@ -8,13 +8,16 @@ import { useNavigation } from '@react-navigation/native';
 const EmailInput = forwardRef((_, ref) => {
     const [emailAddress, setEmailAddress] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+     const [disabled, setDisabled ]= useState(false);
     const navigation = useNavigation()
 
     // Expose handleNextPress to the parent
     useImperativeHandle(ref, () => ({
         handleNextPress,
         validateEmailAddress,
-        emailAddress
+        setEmailAddress,
+        emailAddress,
+        setDisabled
     }));
 
     // Validate email format
@@ -37,10 +40,10 @@ const EmailInput = forwardRef((_, ref) => {
 
     return (
         <View style={styles.container}>
-            <View style={[styles.inputWrapper, errorMessage && styles.errorInputWrapper]}>
+            <View style={[styles.inputWrapper, errorMessage && styles.errorInputWrapper,disabled && styles.disabledInput]}>
                 <Image source={IMAGES.email} style={styles.icon} />
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input,disabled && {color:COLORS.light_gray}]}
                     placeholder="example@gmail.com"
                     keyboardType="email-address"
                     focusable={true} // Enable input focus
@@ -51,6 +54,7 @@ const EmailInput = forwardRef((_, ref) => {
                         setErrorMessage(''); // Clear error on text change
                     }}
                     onBlur={validateEmailAddress}
+                    editable={!disabled}
                 />
             </View>
             {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
@@ -88,6 +92,10 @@ const styles = StyleSheet.create({
         fontSize: 12,
         marginTop: 5,
         color: COLORS.errorText,
+    },
+    disabledInput: {
+        backgroundColor: COLORS.lighter_gray,
+        color: COLORS.dark_gray,
     },
 });
 

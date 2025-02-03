@@ -375,11 +375,11 @@ export const convertDateFormat = (dateString: string): string => {
 
 export const formatDate = (date: Date) => {
   return date
-    .toLocaleDateString('en-GB', {
+    .toLocaleDateString('en-US', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
-    }) // Format to DD/MM/YYYY
+    }) // Format to MM/DD/YYYY
     .replace(/\//g, '/');
 };
 
@@ -398,4 +398,13 @@ export const changeSafeAreaViewConfig = (config: SafeAreaViewConfig) => {
     StatusBar.setTranslucent(config.translucent || false);
   }
   StatusBar.setBarStyle(config.statusBarStyle, true);
+};
+export const validateAge = (selectedDate: string) => {
+  const [month, day, year] = selectedDate.split('/').map(Number);
+  const selectedDateObj = new Date(year, month - 1, day);
+  const today = new Date();
+  const eighteenYearsAgo = new Date();
+  eighteenYearsAgo.setFullYear(today.getFullYear() - 18);
+
+  return selectedDateObj > eighteenYearsAgo;
 };
