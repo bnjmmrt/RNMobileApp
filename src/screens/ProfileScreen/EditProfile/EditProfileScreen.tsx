@@ -7,6 +7,7 @@ import {
   BUTTON_LABLE,
   ERROR_MESSAGE,
   COLORS,
+  PROFILE,
 } from '../../../utils/constants';
 import Button from '../../../component/Button';
 import Input from '../../../component/Input/Input';
@@ -148,7 +149,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <Header
-        headerTitle={LABLE.EDIT_PROFILE}
+        headerTitle={PROFILE.EDIT_PROFILE}
         onPress={handleBackPress}
         showProgressBar={false}
       />
@@ -215,15 +216,15 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
             onClose={() => setIsToastShown(false)}
           />
         )}
-         <Button
+        
+      </ScrollView>
+      <Button
         disabled={false}
         style={styles.btnStyle}
         title={BUTTON_LABLE.CONFIRM}
         colorTheme="dark"
         onPress={onConfirmClick}
       />
-      </ScrollView>
-     
     </SafeAreaView>
   );
 };
