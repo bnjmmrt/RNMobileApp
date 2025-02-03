@@ -91,6 +91,7 @@ const IMAGES = {
   filter_lines: require('./filter-lines.png'),
   list: require('./list.png'),
   alert_triangle_filled: require('./alert-triangle-filled.png'),
+  frame: require('./frame.png'),
 };
 
 export default IMAGES;

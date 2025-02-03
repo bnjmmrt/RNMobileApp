@@ -38,7 +38,10 @@ export const BUTTON_LABLE = {
   EVENTS: 'Events',
   SHOW_RESULTS: 'Show Results',
   CLEAR_FILTERS: 'Clear Filters',
-  FOLLOW: 'Follow'
+  FOLLOW: 'Follow',
+    UPDATE_APPLICATION: 'Update Application',
+    YES:"Yes",
+    NO:'No'
 };
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',
