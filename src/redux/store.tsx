@@ -10,7 +10,7 @@ import { createBaseApi } from '../ApiManager/createBaseApi';
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['auth','appFlow','appFlowApiData'],
+  whitelist: ['auth','appFlow','appFlowApiData','appSettings'],
   serializableCheck: false
 };
 // AsyncStorage.clear()

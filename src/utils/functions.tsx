@@ -13,7 +13,7 @@ import settings from '../ApiManager/config';
 import { parse, format } from 'date-fns';
 import {
   configStatusBar,
-  StatusBarState,
+  SafeAreaViewConfig,
 } from 'src/redux/slices/safeAreaViewConfigSlice';
 import store from 'src/redux/store';
 
@@ -277,56 +277,56 @@ export const handleFormatDate = (
 };
 
 export const formatEventDates = (startDate: string, endDate: string) => {
-  // Helper function to parse the date
-  function parseDate(dateString) {
-    const [datePart, timePart] = dateString.split(' ');
-    const [month, day, year] = datePart.split('/').map(Number);
-    const [hours, minutes] = timePart.split(':').map(Number);
-    return new Date(year, month - 1, day, hours, minutes);
-  }
+  return startDate + " " + endDate
+  // // Helper function to parse the date
+  // function parseDate(dateString) {
+  //   const [datePart, timePart] = dateString.split(' ');
+  //   const [month, day, year] = datePart.split('/').map(Number);
+  //   const [hours, minutes] = timePart.split(':').map(Number);
+  //   return new Date(year, month - 1, day, hours, minutes);
+  // }
 
-  // Parse input strings into Date objects
-  const start = parseDate(startDate);
-  const end = parseDate(endDate);
+  // // Parse input strings into Date objects
+  // const start = parseDate(startDate);
+  // const end = parseDate(endDate);
 
-  // Format options
-  const optionsDate = { weekday: 'short', month: 'short', day: 'numeric' };
-  const optionsTime = { hour: 'numeric', minute: 'numeric', hour12: true };
-  const optionsTimeZone = { timeZoneName: 'short' };
+  // // Format options
+  // const optionsDate = {weekday: 'short', month: 'short', day: 'numeric'};
+  // const optionsTime = {hour: 'numeric', minute: 'numeric', hour12: true};
+  // const optionsTimeZone = {timeZoneName: 'short'};
 
-  // Format components
-  const formattedStartDate = new Intl.DateTimeFormat(
-    'en-US',
-    optionsDate,
-  ).format(start);
-  const formattedStartTime = new Intl.DateTimeFormat(
-    'en-US',
-    optionsTime,
-  ).format(start);
-  const formattedEndDate = new Intl.DateTimeFormat('en-US', optionsDate).format(
-    end,
-  );
-  const formattedEndTime = new Intl.DateTimeFormat('en-US', optionsTime).format(
-    end,
-  );
-  const timeZone = new Intl.DateTimeFormat('en-US', optionsTimeZone)
-    .format(start)
-    .split(' ')[1];
+  // // Format components
+  // const formattedStartDate = new Intl.DateTimeFormat(
+  //   'en-US',
+  //   optionsDate,
+  // ).format(start);
+  // const formattedStartTime = new Intl.DateTimeFormat(
+  //   'en-US',
+  //   optionsTime,
+  // ).format(start);
+  // const formattedEndDate = new Intl.DateTimeFormat('en-US', optionsDate).format(
+  //   end,
+  // );
+  // const formattedEndTime = new Intl.DateTimeFormat('en-US', optionsTime).format(
+  //   end,
+  // );
+  // const timeZone = new Intl.DateTimeFormat('en-US', optionsTimeZone)
+  //   .format(start)
+  //   .split(' ')[1];
 
-  // Check if start and end are on the same day
-  if (
-    start.getFullYear() === end.getFullYear() &&
-    start.getMonth() === end.getMonth() &&
-    start.getDate() === end.getDate()
-  ) {
-    // Same day: Include time range only
-    return `${formattedStartDate}, ${formattedStartTime} – ${formattedEndTime} ${timeZone}`;
-  } else {
-    // Different days: Include full date and time range
-    return `${formattedStartDate}, ${formattedStartTime} —\n${formattedEndDate}, ${formattedEndTime} ${timeZone}`;
-  }
+  // // Check if start and end are on the same day
+  // if (
+  //   start.getFullYear() === end.getFullYear() &&
+  //   start.getMonth() === end.getMonth() &&
+  //   start.getDate() === end.getDate()
+  // ) {
+  //   // Same day: Include time range only
+  //   return `${formattedStartDate}, ${formattedStartTime} – ${formattedEndTime} ${timeZone}`;
+  // } else {
+  //   // Different days: Include full date and time range
+  //   return `${formattedStartDate}, ${formattedStartTime} —\n${formattedEndDate}, ${formattedEndTime} ${timeZone}`;
+  // }
 };
-
 
 // export const  formatEventDates = (startDate: string, endDate: string) => {
 
@@ -375,26 +375,36 @@ export const convertDateFormat = (dateString: string): string => {
 
 export const formatDate = (date: Date) => {
   return date
-    .toLocaleDateString('en-GB', {
+    .toLocaleDateString('en-US', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
-    }) // Format to DD/MM/YYYY
+    }) // Format to MM/DD/YYYY
     .replace(/\//g, '/');
 };
 
-export const changeSafeAreaViewConfig = (config: StatusBarState) => {
-  // store.store.dispatch(configStatusBar(config));
-  // if (Platform.OS == 'android') {
-  //   StatusBar.setHidden(false);
-  //   StatusBar.setBackgroundColor(config.topSafeAreaViewColor, true);
-  //   // changeNavigationBarColor(config.bottomSafeAreaViewColor);
-  //   if (config.showBottomSafeAreaView) {
-  //     // showNavigationBar();
-  //   } else {
-  //     // hideNavigationBar();
-  //   }
-  //   StatusBar.setTranslucent(config.translucent || false);
-  // }
-  // StatusBar.setBarStyle(config.statusBarStyle, true);
+export const changeSafeAreaViewConfig = (config: SafeAreaViewConfig) => {
+  store.store.dispatch(configStatusBar(config));
+  if (Platform.OS == 'android') {
+    StatusBar.setHidden(false);
+    StatusBar.setBackgroundColor(config.topSafeAreaViewColor, true);
+    // changeNavigationBarColor(config.bottomSafeAreaViewColor);
+    if (config.showBottomSafeAreaView) {
+      // showNavigationBar();
+    } else {
+      // hideNavigationBar();
+    }
+
+    StatusBar.setTranslucent(config.translucent || false);
+  }
+  StatusBar.setBarStyle(config.statusBarStyle, true);
+};
+export const validateAge = (selectedDate: string) => {
+  const [month, day, year] = selectedDate.split('/').map(Number);
+  const selectedDateObj = new Date(year, month - 1, day);
+  const today = new Date();
+  const eighteenYearsAgo = new Date();
+  eighteenYearsAgo.setFullYear(today.getFullYear() - 18);
+
+  return selectedDateObj > eighteenYearsAgo;
 };

@@ -1,16 +1,23 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {Hp, Wp} from '../../utils/dimensions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface FeedAccessLocationProps {
+  allowAccessModal: boolean;
   setAllowAccess: React.Dispatch<React.SetStateAction<boolean>>;
+  setAllowAccessModal: React.Dispatch<React.SetStateAction<boolean>>;
   setFilterVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const FeedAccessLocation: React.FC<FeedAccessLocationProps> = ({
-  setFilterVisible,
+  allowAccessModal,
   setAllowAccess,
+  setAllowAccessModal,
+  setFilterVisible,
 }) => {
+  if (!allowAccessModal) return null;
+
   return (
     <View style={styles.background}>
       <View style={styles.modal}>
@@ -26,7 +33,8 @@ const FeedAccessLocation: React.FC<FeedAccessLocationProps> = ({
         <View style={styles.section2}>
           <TouchableOpacity
             onPress={() => {
-              setAllowAccess(false);
+              setAllowAccess(true);
+              setAllowAccessModal(false);
               setFilterVisible(true);
             }}>
             <Text style={styles.onlyWhileUsing}>Only While using the App</Text>
@@ -35,8 +43,10 @@ const FeedAccessLocation: React.FC<FeedAccessLocationProps> = ({
 
         <View style={styles.section3}>
           <TouchableOpacity
-            onPress={() => {
-              setAllowAccess(false);
+            onPress={async () => {
+              await AsyncStorage.setItem('allowAccess', '1');
+              setAllowAccess(true);
+              setAllowAccessModal(false);
               setFilterVisible(true);
             }}>
             <Text style={styles.alwaysAllow}>Always Allow</Text>
@@ -46,7 +56,7 @@ const FeedAccessLocation: React.FC<FeedAccessLocationProps> = ({
         <View style={styles.section4}>
           <TouchableOpacity
             onPress={() => {
-              setAllowAccess(false);
+              setAllowAccessModal(false);
             }}>
             <Text style={styles.dontAllow}>Don't Allow</Text>
           </TouchableOpacity>

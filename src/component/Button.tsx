@@ -1,8 +1,21 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, StyleProp, ViewStyle, TextStyle, ImageSourcePropType, Image, ActivityIndicator, ImageStyle } from 'react-native';
-import { Hp, Wp } from '../utils/dimensions';
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+  TextStyle,
+  ImageSourcePropType,
+  Image,
+  Platform,
+  ImageStyle,
+  ActivityIndicator,
+} from 'react-native';
+import { Hp, radiusScale, verticalMarginScale, Wp } from '../utils/dimensions';
 import { fontFamily } from '../utils/functions';
 import { COLORS } from '../utils/constants';
+import { CustomText } from './CustomText';
 
 interface ButtonProps {
   title: string;
@@ -64,23 +77,23 @@ const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    height: 48,
-    borderRadius: 10,
+    // height: 50,
+    borderRadius: radiusScale(99),
     alignItems: 'center',
     justifyContent: 'center',
     width: Wp(90),
     alignSelf: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    paddingVertical: verticalMarginScale(16),
   },
   text: {
-    fontSize: 14,
     marginHorizontal: 10,
     fontFamily: fontFamily.ABCDiatype_Medium
   },
   image: {
     width: Hp(3),
     height: Hp(3),
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
 });
 

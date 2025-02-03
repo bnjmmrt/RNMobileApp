@@ -3,6 +3,7 @@ import {FlatList, View} from 'react-native';
 import {CustomText} from 'src/component/CustomText';
 import UserDetailCard from '../UserDetailCard';
 import createStyle from './style';
+import {horizontalMarginScale} from 'src/utils/dimensions';
 
 const dummyListData = [
   {
@@ -58,8 +59,11 @@ const UserInterests: React.FC<UserInterestsProps> = ({}) => {
         data={dummyListData}
         renderItem={renderInterestsListRow}
         keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{gap: 4, flexDirection: 'row', flexWrap: 'wrap'}}
-        style={{gap: 4}}
+        contentContainerStyle={{
+          gap: horizontalMarginScale(4),
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+        }}
         bounces={false}
       />
     </UserDetailCard>

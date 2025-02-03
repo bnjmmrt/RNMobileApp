@@ -23,14 +23,6 @@ import {EndPoint} from 'src/ApiManager/config';
 
 interface FeedbackScreenProps {}
 
-interface ConfigData {
-  logo: string;
-  title: string;
-  subTitle: string;
-  connectBtnBackground: string;
-  snapPoints?: any;
-}
-
 export interface Tag {
   id: number;
   name: string;

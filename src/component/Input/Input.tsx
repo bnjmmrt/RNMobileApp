@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { COLORS } from '../../utils/constants';
 import { useNavigation } from '@react-navigation/native';
+import { CustomText } from '../CustomText';
+import { fontScale } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
 
 interface InputProps {
@@ -74,7 +76,7 @@ const Input = forwardRef((props: InputProps, ref) => {
   return (
     <View style={[styles.container, otherStyle]}>
       {/* Dynamic Label */}
-      {label && <Text style={[styles.label]}>{label}</Text>}
+      {label && <CustomText style={[styles.label]}>{label}</CustomText>}
 
       {/* Input Field */}
       <View
@@ -122,7 +124,6 @@ const styles = StyleSheet.create({
   },
   label: {
     paddingVertical: 2,
-    fontSize: 14,
     // color: COLORS.labelGray,
     fontFamily: fontFamily.ABCDiatype_Medium
   },
@@ -142,8 +143,8 @@ const styles = StyleSheet.create({
   leftImage: { width: 16, height: 16 },
   rightImage: { width: 16, height: 16 },
   input: {
-    flex: 1,
-    fontSize: 16,
+    width: '90%',
+    fontSize: fontScale(14),
     color: COLORS.black,
     fontFamily: fontFamily.ABCDiatype_Medium
   },

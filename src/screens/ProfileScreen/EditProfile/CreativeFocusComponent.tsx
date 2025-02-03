@@ -4,12 +4,11 @@ import {COLORS} from '../../../utils/constants';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../redux/slices';
 import {Wp} from '../../../utils/dimensions';
-import { Tag } from './FeedbackScreen';
 
 interface CreativeFocusComponentProps {
   list?:any[];
   setIsToastShown:(isShown:boolean)=>void;
-  getSelectedData:(data:Tag[])=>void;
+  getSelectedData:(data:any[])=>void;
 }
 
 const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,setIsToastShown,getSelectedData}) => {
@@ -28,6 +27,10 @@ const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,set
 
   const [itemList,_setItemLiist]=useState(list ? list : creativeFocus)
 
+
+  const getFilteredData=(list:any[],categoryId:string)=>{
+    return list.filter((item: any) => item.id !== categoryId)
+  }
   const handleCategorySelect = (category: any) => {
     if (list?.length) {
       // When list data is available, allow only one selection
@@ -46,19 +49,20 @@ const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,set
       }
     } else {
       // Original logic for multiple selection
+      const filteredList=getFilteredData(selectedCategories,category.id)
       if (selectedCategories.find(item => item.id === category.id)) {
-        if (selectedCategories.length === 0) {
+        // Remove category if already selected
+        setSelectedCategories(filteredList);
+        
+        getSelectedData( filteredList);
+        if (filteredList.length === 0) {
           setIsToastShown(true);
         }
-        // Remove category if already selected
-        setSelectedCategories(
-          selectedCategories.filter((item: any) => item.id !== category.id),
-        );
-        getSelectedData(selectedCategories);
       } else if (selectedCategories.length < 3) {
-        getSelectedData(selectedCategories);
+       
         setIsToastShown(false);
         setSelectedCategories([...selectedCategories, category]);
+        getSelectedData([...selectedCategories, category]);
       }
     }
   };

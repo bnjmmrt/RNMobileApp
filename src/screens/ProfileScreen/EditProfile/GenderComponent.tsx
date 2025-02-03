@@ -5,12 +5,11 @@ import {RootState} from '../../../redux/slices';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
 import IMAGES from '../../../assets/images';
 import {LABLE, ERROR_MESSAGE, COLORS} from '../../../utils/constants';
-import BottomSheetComponent from 'src/component/BottomSheet/BottomSheet';
+import BottomSheetComponent from '../../../component/BottomSheet/BottomSheet';
 
 interface GenderComponentProps {
-  // setSelectedDate:(date:Date)=>void,
-  // date:Date,
-  // setDate:(date:Date)=>void
+  selectedGender:(gender:any)=>void,
+
 }
 
 const genderList = [
@@ -19,18 +18,18 @@ const genderList = [
   {id: 2, gender: 'Non-binary'},
   {id: 3, gender: 'Prefer not to say'},
 ];
-const GenderComponent: React.FC<GenderComponentProps> = () => {
-  const dispatch = useDispatch();
+const GenderComponent: React.FC<GenderComponentProps> = ({selectedGender}) => {
   const genderSheetRef = useRef<any>(null);
-  const birthday = useSelector((state: RootState) => state.appFlow.birthday);
-  const [gender, setGender] = useState<string>('Female'); // Initialize with birthday from Redux
+  const genderId = useSelector((state: RootState) => state.appFlow.gender);
+  const item:any=genderList.find(item => item.id === genderId)
+  const [gender, setSelectedGender] = useState<any>(item); // Initialize with birthday from Redux
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const openDatePicker = () => {
     genderSheetRef.current?.open(); // Open the date picker
   };
 
   const validateInputs = () => {
-    if (!gender) {
+    if (!genderId) {
       setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_YOUR_BIRTHDAY);
       return false;
     }
@@ -38,7 +37,9 @@ const GenderComponent: React.FC<GenderComponentProps> = () => {
     return true;
   };
 
-  const handlePress = () => {
+  const handleSelect = (gender:any) => {
+    setSelectedGender(gender)
+    selectedGender(gender.id)
     genderSheetRef.current?.close();
   };
 
@@ -48,7 +49,7 @@ const GenderComponent: React.FC<GenderComponentProps> = () => {
         placeholder={LABLE.GENDER}
         rightImage={IMAGES.upDownArrow}
         errorMessage={errorMessage}
-        defaultValue={gender}
+        defaultValue={gender?.gender}
         onPress={openDatePicker}
         style={styles.container}
       />
@@ -63,7 +64,7 @@ const GenderComponent: React.FC<GenderComponentProps> = () => {
               <TouchableOpacity
                 key={item.id.toString()}
                 style={styles.button}
-                onPress={handlePress}>
+                onPress={()=>handleSelect(item)}>
                 <Text style={styles.buttonText}>{item.gender}</Text>
               </TouchableOpacity>
             );

@@ -6,12 +6,13 @@ import { RootState } from '../redux/slices';
 const MainNavigation: React.FC = () => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const isVerified = loginData?.varifyStatus || 0;
-  const role = loginData?.roles[0]?.roleName || 'non_member';
+  const role =
+    (loginData?.roles &&
+      loginData?.roles.length > 0 &&
+      loginData?.roles[0]?.roleName) ||
+    'non_member';
 
-  const initialRouteName =
-    isVerified === 0
-      ? 'AuthStack'
-      : 'AppStack';
+  const initialRouteName = 'AppStack'; //isVerified === 0 ? 'AuthStack' : 'AppStack';
 
   const initialAppStackScreen =
     role === 'non_member'
@@ -20,11 +21,14 @@ const MainNavigation: React.FC = () => {
         : 'BeforeAppStaticScreen'
       : 'BottomTabBar';
 
-  console.log("Sayyed :", loginData)
   return (
     <MainStack
       initialRouteName={initialRouteName}
-      initialParams={initialRouteName === 'AppStack' ? { screen: initialAppStackScreen } : undefined}
+      initialParams={
+        initialRouteName === 'AppStack'
+          ? { screen: initialAppStackScreen }
+          : undefined
+      }
     />
   );
 };

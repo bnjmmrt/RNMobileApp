@@ -1,46 +1,66 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { View, StyleSheet, Linking, Image, SafeAreaView } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Hp } from '../../utils/dimensions';
-import { BUTTON_LABLE } from '../../utils/constants';
-import { changeSafeAreaViewConfig, LINKS } from '../..//utils/functions';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {View, StyleSheet, Linking, Image, SafeAreaView} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {Hp} from '../../utils/dimensions';
+import {BUTTON_LABLE} from '../../utils/constants';
+import {changeSafeAreaViewConfig, LINKS} from '../..//utils/functions';
 import Video from 'react-native-video';
 import IMAGES from '../../assets/images/index';
 import LandingStyles from './LandingStyles';
 import Button from '../../component/Button';
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
-import { useFocusEffect } from '@react-navigation/native';
-import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import {
+  setCreativeFocus,
+  setInterests,
+} from '../../redux/slices/appFlowApiDataSlice';
+import useApi from 'src/axios/useApi';
+import { useDispatch } from 'react-redux';
+import { EndPoint } from 'src/ApiManager/config';
+
+import {useFocusEffect} from '@react-navigation/native';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 // Define the type for navigation props
-interface LandingScreenProps extends NativeStackScreenProps<any, any> { }
+interface LandingScreenProps extends NativeStackScreenProps<any, any> {}
 
 const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
+  const {apiRequest, loading, error} = useApi();
+  const dispatch = useDispatch();
   const styles = LandingStyles();
   const bottomSheetRef = useRef(null);
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     changeSafeAreaViewConfig({ ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME, showTopSafeAreaView: false });
-  //     return () => {
-  //       // Optional cleanup when screen is unfocused
-  //       changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
-  //     };
-  //   }, [])
-  // );
+    const fetch = async () => {
+      const focusResponse:any = await apiRequest('get', EndPoint.get_focuses);
+      dispatch(setCreativeFocus(focusResponse.data));
+      const interestResponse:any = await apiRequest('get', EndPoint.interests);
+      dispatch(setInterests(interestResponse.data));
+    };
 
+    useEffect(() => {
+        fetch();
+      }, []);
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
+        showTopSafeAreaView: false,
+        topSafeAreaViewColor: 'transparent',
+        translucent: true,
+        showBottomSafeAreaView: false,
+        bottomSafeAreaViewColor: 'transparent',
+      });
+    }, []),
+  );
 
   const onEnterClick = () => {
-    navigation.navigate('EmailPhoneScreen')
-  }
+    navigation.navigate('EmailPhoneScreen');
+  };
 
   const handleOpenWebView = () => {
     bottomSheetRef?.current?.open();
   };
 
-
   return (
-
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Video
         source={IMAGES.introVideo}
         style={StyleSheet.absoluteFillObject} // Full-screen background
@@ -51,12 +71,11 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
         playWhenInactive={false} // Pause video when the app is inactive
       />
       <View style={styles.overlayContainer}>
-        <View style={{ flex: 1, justifyContent: 'center' }}>
+        <View style={{flex: 1, justifyContent: 'center'}}>
           <Image source={IMAGES.monogram} style={styles.logoImgStyle} />
         </View>
 
         <View style={styles.buttonWrapper}>
-
           <Button
             disabled={false}
             style={styles.btnStyle}
@@ -65,7 +84,7 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
             onPress={handleOpenWebView}
           />
 
-          <View style={{ height: Hp(2) }} />
+          <View style={{height: Hp(2)}} />
 
           <Button
             disabled={false}
@@ -74,16 +93,11 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
             colorTheme={'light'}
             onPress={onEnterClick}
           />
-
         </View>
 
         <WebViewBottomSheet url={LINKS.APPLY_FOR_HOST} ref={bottomSheetRef} />
-
-
       </View>
-
-
-    </SafeAreaView>
+    </View>
   );
 };
 
