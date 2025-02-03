@@ -74,12 +74,13 @@ const BottomTabBar = () => {
       screenOptions={{ headerShown: false }}
       backBehavior="history"
       initialRouteName={
-        role === 'host' ? 'EventScreen' : 'DiscoverScreen'
+        // role === 'host' ? 'EventScreen' : 'DiscoverScreen'
         // loginData?.isInvited ? 'EventScreen' : 'DiscoverScreen'
         // ROUTES.UsersScreen
         // 'DiscoverScreen'
+        'EventScreen'
       }>
-      {bottomTabsData.map((item, index) => {
+      {hostTabs.map((item, index) => {
         return (
           <Tab.Screen
             name={item.name}

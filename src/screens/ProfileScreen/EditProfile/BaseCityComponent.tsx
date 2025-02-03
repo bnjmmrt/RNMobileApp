@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {forwardRef, useImperativeHandle, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {
   LABLE,
@@ -18,7 +18,7 @@ import {Wp} from '../../../utils/dimensions';
 
 interface BaseCityComponentProps {}
 
-const BaseCityComponent: React.FC<BaseCityComponentProps> = () => {
+const BaseCityComponent =forwardRef((props, ref) => {
   const dispatch = useDispatch();
   const baseCity = useSelector((state: RootState) => state.appFlow.baseCity);
   const [selectedCity, setSelectedCity] = useState<Address>(baseCity);
@@ -26,8 +26,14 @@ const BaseCityComponent: React.FC<BaseCityComponentProps> = () => {
   const [isShown, setIsShown] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+
+  useImperativeHandle(ref, () => ({
+    validateBaseCity,
+     selectedCity
+    }));
+
   // Validate inputs
-  const validateInputs = () => {
+  const validateBaseCity = () => {
     if (!selectedCity.address) {
       setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_YOUR_BASE_CITY);
       return false;
@@ -64,7 +70,7 @@ const BaseCityComponent: React.FC<BaseCityComponentProps> = () => {
     
     </>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

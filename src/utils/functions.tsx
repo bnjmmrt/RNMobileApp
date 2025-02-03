@@ -13,7 +13,7 @@ import settings from '../ApiManager/config';
 import { parse, format } from 'date-fns';
 import {
   configStatusBar,
-  StatusBarState,
+  SafeAreaViewConfig,
 } from 'src/redux/slices/safeAreaViewConfigSlice';
 import store from 'src/redux/store';
 
@@ -375,15 +375,15 @@ export const convertDateFormat = (dateString: string): string => {
 
 export const formatDate = (date: Date) => {
   return date
-    .toLocaleDateString('en-GB', {
+    .toLocaleDateString('en-US', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
-    }) // Format to DD/MM/YYYY
+    }) // Format to MM/DD/YYYY
     .replace(/\//g, '/');
 };
 
-export const changeSafeAreaViewConfig = (config: StatusBarState) => {
+export const changeSafeAreaViewConfig = (config: SafeAreaViewConfig) => {
   store.store.dispatch(configStatusBar(config));
   if (Platform.OS == 'android') {
     StatusBar.setHidden(false);
@@ -394,7 +394,17 @@ export const changeSafeAreaViewConfig = (config: StatusBarState) => {
     } else {
       // hideNavigationBar();
     }
+
     StatusBar.setTranslucent(config.translucent || false);
   }
   StatusBar.setBarStyle(config.statusBarStyle, true);
+};
+export const validateAge = (selectedDate: string) => {
+  const [month, day, year] = selectedDate.split('/').map(Number);
+  const selectedDateObj = new Date(year, month - 1, day);
+  const today = new Date();
+  const eighteenYearsAgo = new Date();
+  eighteenYearsAgo.setFullYear(today.getFullYear() - 18);
+
+  return selectedDateObj > eighteenYearsAgo;
 };

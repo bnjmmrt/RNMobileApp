@@ -47,9 +47,6 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   )}&body=${encodeURIComponent(body)}`;
 
   const onNextClick = async () => {
-    usernameRef.current && usernameRef.current.validateInputs();
-
-    if (usernameRef.current.validateInputs()) {
       const requestParams: any = {
         address: {
           address: userDetails.baseCity.address,
@@ -94,7 +91,6 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         );
         // console.error('Error verifying OTP:', error);
       }
-    }
   };
 
   const handleBackPress = () => {

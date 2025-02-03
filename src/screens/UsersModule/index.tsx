@@ -12,6 +12,7 @@ import AllUsers from './AllUsers';
 import AddNewUserSheet from './BottomSheets/AddNewUserSheet';
 import Lists from './Lists';
 import UsersScreenStyle from './style';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 const tabsData: TabItem[] = [
   {
@@ -49,7 +50,10 @@ const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+        showBottomSafeAreaView: false,
+      });
     }, []),
   );
 

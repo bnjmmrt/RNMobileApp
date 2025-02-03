@@ -35,7 +35,10 @@ const ChatScreen: React.FC<ChatScreenProps> = ({navigation}) => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.BLACK_SCHEME);
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
+        showBottomSafeAreaView: false,
+      });
     }, []),
   );
   return (

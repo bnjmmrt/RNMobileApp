@@ -1,5 +1,5 @@
-import React, {useCallback, useState} from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useRef, useState} from 'react';
+import {Image, Platform, Text, TouchableOpacity, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker';
@@ -20,6 +20,8 @@ import useApi from '../../../axios/useApi';
 import {EndPoint} from '../../../ApiManager/config';
 import AvatarInitials from '../../../component/AvatarInitials';
 import {environment} from '../../../../environments/environment';
+import EditPictureBottomSheet from '../../../component/BottomSheet/EditPictureBottomSheet';
+import FullScreenLoader from 'src/component/FullScreenLoader';
 import {useFocusEffect} from '@react-navigation/native';
 import {changeSafeAreaViewConfig} from 'src/utils/functions';
 import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
@@ -35,9 +37,12 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
     (state: RootState) => state.appFlow.profilePic,
   );
   const styles = ProfilePhotoScreenStyles();
+  
   const [image, setImage] = useState<string>(profilePic);
   const [isToastShown, setIsToastShown] = useState(false);
+  const [isUplaodProfile, setIsUploadProfile] = useState(false);
   const userDetails = useSelector((state: any) => state.appFlow);
+  const savePhotoBottomSheetRef = useRef<any>(null);
 
   const uploadFile = async () => {
     const mimeType = `images/${image.split('.').pop()}`;
@@ -55,21 +60,30 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
     });
   };
 
-  const onNextClick = async () => {
+  const savePhoto = async () => {
     if (image) {
-      setIsToastShown(false);
-      const response: any = await uploadFile();
-
-      if (response.data) {
-        setIsToastShown(false);
-        dispatch(
-          setProfilePic(environment.IMAGE_URL + response.data.fileKeyId),
-        );
+      if (isUplaodProfile) {
+        // setIsToastShown(false);
+        savePhotoBottomSheetRef.current?.close();
+        const response: any = await uploadFile();
+        if (response.data) {
+          // setIsToastShown(false);
+          dispatch(
+            setProfilePic(environment.IMAGE_URL + response.data.fileKeyId),
+          );
+        } else {
+          //display error
+        }
+      } else {
         dispatch(setPageProgress(9));
         navigation.navigate('IdentityVerification');
-      } else {
-        //display error
       }
+    }
+  };
+  const onNextClick = async () => {
+    if (image) {
+      dispatch(setPageProgress(9));
+      navigation.navigate('IdentityVerification');
     }
     {
       setIsToastShown(true);
@@ -91,6 +105,8 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
     }).then((image: ImageOrVideo) => {
       setImage(image.path);
       setIsToastShown(false);
+      setIsUploadProfile(true);
+      savePhotoBottomSheetRef.current?.open();
     });
   };
 
@@ -101,7 +117,8 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+       <FullScreenLoader loading={loading}>
       <Header headerTitle={LABLE.PROFILE_PHOTO} onPress={handleBackPress} />
 
       <View style={styles.contentContainer}>
@@ -109,12 +126,12 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
           title={LABLE.ADD_A_PHOTO}
           subTitle={LABLE.ADD_A_PHOTO_SUBTITLE}
         />
-        {/* {loading && <Text>Loading...</Text>} */}
+        
         <View style={styles.profilePhotoContainer}>
           {image ? (
             <Image
               style={styles.profilePhotoContainer}
-              source={{uri: image}}
+              source={{uri: profilePic}}
               resizeMode="cover"
             />
           ) : (
@@ -133,7 +150,16 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
               style={styles.ic_pencil}
             />
           </TouchableOpacity>
+          <EditPictureBottomSheet
+            ref={savePhotoBottomSheetRef}
+            onPress={savePhoto}
+            submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
+            cancelButtonText={BUTTON_LABLE.CANCEL}
+            snapPoints={[Platform.OS == 'android' ? '50%' : '45%']}
+            image={image}
+          />
         </View>
+        {/* {loading && <Text>Uploading ...</Text>} */}
         {/* Render profile photo */}
         {isToastShown && (
           <Toast
@@ -150,7 +176,8 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
         colorTheme="dark"
         onPress={onNextClick}
       />
-    </View>
+      </FullScreenLoader>
+    </SafeAreaView>
   );
 };
 
