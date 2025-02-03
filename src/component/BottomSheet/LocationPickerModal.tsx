@@ -17,11 +17,10 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
   setIsShown,
   submitVisible,
 }) => {
-  console.log('LocationPickerModal');
   const [modalVisible, setModalVisible] = useState(true);
 
   const submit = () => {
-    setModalVisible(false);
+    // setModalVisible(false);
     setIsShown(false);
   };
 
