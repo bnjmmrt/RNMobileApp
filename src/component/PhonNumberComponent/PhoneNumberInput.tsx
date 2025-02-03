@@ -1,15 +1,14 @@
-import React, {useState, forwardRef, useImperativeHandle} from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-  ViewStyle,
+    View,
+    Text,
+    StyleSheet,
+    TextInput,
+    TouchableOpacity,
+    Alert,
 } from 'react-native';
-import {Image} from 'react-native-animatable';
-import {CountryPicker} from '../../component/PhonNumberComponent/CountryPicker';
+import { Image } from 'react-native-animatable';
+import { CountryPicker } from "../../component/PhonNumberComponent/CountryPicker";
 import IMAGES from '../../assets/images';
 import { LABLE } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
@@ -24,8 +23,7 @@ import { Hp } from '../../utils/dimensions';
 import { useDispatch } from 'react-redux';
 import { setCountryCallingCode,setCountryCodeFlag } from '../../redux/slices/appFlowSlice';
 
-const PhoneNumberInput = forwardRef(
-  ({label, otherStyle}: {label?: string; otherStyle?: ViewStyle}, ref) => {
+const PhoneNumberInput = forwardRef((_, ref) => {
     const dispatch = useDispatch();
     const [phoneNumber, setPhoneNumber] = useState('');
     const [callingCode, setCallingCode] = useState('+1');
@@ -56,24 +54,21 @@ const PhoneNumberInput = forwardRef(
     }));
 
     const validatePhoneNumber = () => {
-      const mobileNumber = `${callingCode}${phoneNumber}`;
-      const isValid = isValidPhoneNumber(mobileNumber, code);
-      if (!isValid) {
-        setErrorMessage(LABLE.EROOR_ENTER_PHONE_NUMBER);
-        return false;
-      }
-      setErrorMessage('');
-      return true;
+        const mobileNumber = `${callingCode}${phoneNumber}`
+        const isValid = isValidPhoneNumber(mobileNumber, code)
+        if(!isValid){
+            setErrorMessage(LABLE.EROOR_ENTER_PHONE_NUMBER);
+            return false;
+        }
+        setErrorMessage('');
+        return true;
     };
 
     const handleNextPress = () => {
-      if (validatePhoneNumber()) {
-        navigation.navigate('VerifyOtpScreen', {
-          phone: `${callingCode}${phoneNumber}`,
-          isEmail: false,
-        });
-        // Alert.alert("Success!!", `Phone Number: ${callingCode} ${phoneNumber}`);
-      }
+        if (validatePhoneNumber()) {
+            navigation.navigate('VerifyOtpScreen', { phone: `${callingCode}${phoneNumber}` , isEmail: false})
+            // Alert.alert("Success!!", `Phone Number: ${callingCode} ${phoneNumber}`);
+        }
     };
 
     return (
@@ -114,78 +109,12 @@ const PhoneNumberInput = forwardRef(
                 lang="en"
             />
         </View>
-
-       
     );
-  },
-);
+});
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'column',
-  },
-  label: {
-    paddingVertical: 2,
-    fontSize: 14,
-    // color: COLORS.labelGray,
-  },
-  inputWrapper: {
-    height: 60,
-    borderWidth: 1,
-    borderColor: COLORS.borderGray,
-    borderRadius: 10,
-    backgroundColor: COLORS.white,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  errorInputWrapper: {
-    height: 60,
-    borderWidth: 1,
-    borderColor: COLORS.borderRed,
-    borderRadius: 10,
-    backgroundColor: COLORS.bgRed,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  flagContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  flag: {
-    fontSize: 22,
-    width: 25,
-    textAlign: 'center',
-    height: 25,
-  },
-  arrowIcon: {
-    marginHorizontal: 10,
-  },
-  callingCode: {
-    fontSize: 16,
-    color: COLORS.text,
-    fontFamily: fontFamily.ABCDiatype_Regular,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    fontFamily: fontFamily.ABCDiatype_Regular,
-    color: COLORS.black,
-    paddingHorizontal: 5,
-  },
-  errorText: {
-    fontSize: 12,
-    marginTop: 5,
-    color: COLORS.errorText,
-    fontFamily: fontFamily.ABCDiatype_Regular,
-  },
-  countryPicker: {
-    modal: {
-      height: Hp(80),
-      backgroundColor: COLORS.white,
-      borderTopLeftRadius: 30,
-      borderTopRightRadius: 30,
+    container: {
+        flexDirection: 'column',
     },
     inputWrapper: {
         height: 60,
@@ -257,7 +186,6 @@ const styles = StyleSheet.create({
             height: 50,
         },
     },
-  },
 });
 
 export default PhoneNumberInput;
