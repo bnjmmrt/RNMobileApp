@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {fontFamily} from '../../utils/functions';
 import {COLORS} from '../../utils/constants';
+import {radiusScale, verticalMarginScale} from 'src/utils/dimensions';
+import {CustomText} from '../CustomText';
 
 export interface TabItem {
   id: string;
@@ -13,10 +15,14 @@ export interface TabItem {
 type DynamicTabBarProps = {
   onTabChange?: (tab: TabItem) => void;
   tabs: TabItem[];
-  activeTabIndex: number;
+  activeTabIndex?: number;
 };
 
-const DynamicTabBar: React.FC<DynamicTabBarProps> = ({onTabChange, tabs, activeTabIndex = 0}) => {
+const DynamicTabBar: React.FC<DynamicTabBarProps> = ({
+  onTabChange,
+  tabs,
+  activeTabIndex = 0,
+}) => {
   const [activeTab, setActiveTab] = useState<TabItem>(tabs[activeTabIndex]);
 
   useEffect(() => {
@@ -36,13 +42,13 @@ const DynamicTabBar: React.FC<DynamicTabBarProps> = ({onTabChange, tabs, activeT
           key={tab.id}
           style={[styles.tab, activeTab.id === tab.id && styles.activeTab]}
           onPress={() => handleTabPress(tab)}>
-          <Text
+          <CustomText
             style={[
               styles.tabText,
               activeTab.id === tab.id && styles.activeTabText,
             ]}>
             {tab.label}
-          </Text>
+          </CustomText>
         </TouchableOpacity>
       ))}
     </View>
@@ -53,20 +59,19 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: COLORS.white,
-    borderRadius: 25,
+    borderRadius: radiusScale(99),
     borderWidth: 1,
     borderColor: COLORS.tabBorderColor,
-    padding: 2,
+    padding: verticalMarginScale(4),
     alignSelf: 'center',
     width: '90%',
-    marginVertical: 10,
   },
   tab: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 10,
-    borderRadius: 20,
+    paddingVertical: verticalMarginScale(12),
+    borderRadius: radiusScale(99),
   },
   activeTab: {
     backgroundColor: COLORS.tabBorderColor,
@@ -74,9 +79,6 @@ const styles = StyleSheet.create({
   },
   tabText: {
     color: COLORS.black,
-    fontSize: 14,
-    paddingVertical: 2,
-    fontFamily: fontFamily.ABCDiatype_Regular,
   },
   activeTabText: {
     color: COLORS.black,

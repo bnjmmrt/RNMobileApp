@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -15,6 +15,9 @@ import useApi from 'src/axios/useApi';
 import {EndPoint} from 'src/ApiManager/config';
 import FullScreenLoader from 'src/component/FullScreenLoader';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import {useFocusEffect} from '@react-navigation/native';
+import {changeSafeAreaViewConfig} from 'src/utils/functions';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 
 interface SelectInterestScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -96,6 +99,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
 
   const onNextClick = async () => {
     //execute when naviagte from app flow
+
     if (!configData.fromProfile) {
       if (selectedCategories.length > 0) {
         setIsToastShown(false);
@@ -117,6 +121,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
            FlashMessageComponent.show('success', 'Details updated successfully!');
         }
       }
+      //handle edit profile flow
     }
   };
 
@@ -128,6 +133,12 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
       navigation.goBack();
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    }, []),
+  );
 
   return (
     <SafeAreaView style={styles.container}>

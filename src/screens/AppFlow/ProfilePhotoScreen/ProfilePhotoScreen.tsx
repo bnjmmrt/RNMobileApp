@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {Image, Platform, Text, TouchableOpacity, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -22,6 +22,9 @@ import AvatarInitials from '../../../component/AvatarInitials';
 import {environment} from '../../../../environments/environment';
 import EditPictureBottomSheet from '../../../component/BottomSheet/EditPictureBottomSheet';
 import FullScreenLoader from 'src/component/FullScreenLoader';
+import {useFocusEffect} from '@react-navigation/native';
+import {changeSafeAreaViewConfig} from 'src/utils/functions';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 
 interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -106,6 +109,13 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
       savePhotoBottomSheetRef.current?.open();
     });
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    }, []),
+  );
+
   return (
     <SafeAreaView style={styles.container}>
        <FullScreenLoader loading={loading}>

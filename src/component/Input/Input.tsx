@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import {COLORS} from '../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
+import {CustomText} from '../CustomText';
+import {fontScale} from 'src/utils/dimensions';
 
 interface InputProps {
   label?: string;
@@ -70,7 +72,7 @@ const Input = forwardRef((props: InputProps, ref) => {
   return (
     <View style={[styles.container, otherStyle]}>
       {/* Dynamic Label */}
-      {label && <Text style={[styles.label]}>{label}</Text>}
+      {label && <CustomText style={[styles.label]}>{label}</CustomText>}
 
       {/* Input Field */}
       <View
@@ -116,7 +118,6 @@ const styles = StyleSheet.create({
   },
   label: {
     paddingVertical: 2,
-    fontSize: 14,
     // color: COLORS.labelGray,
   },
   inputContainer: {
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
   leftImage: {marginRight: 6, width: 20, height: 20},
   input: {
     width: '90%',
-    fontSize: 16,
+    fontSize: fontScale(14),
     color: COLORS.black,
   },
   multilineInput: {

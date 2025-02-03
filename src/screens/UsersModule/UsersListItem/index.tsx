@@ -4,8 +4,8 @@ import React from 'react';
 import {Image, TouchableOpacity, View} from 'react-native';
 import AvatarInitials from 'src/component/AvatarInitials';
 import {CustomText} from 'src/component/CustomText';
-import {OnboardingStackkParamList} from 'src/navigation/OnboardingStack';
-import {SCREENS} from 'src/utils/constants';
+import {AppStackParamList} from 'src/navigation/AppStack';
+import {ROUTES} from 'src/navigation/Route';
 import UserListItemStyle from './style';
 
 interface UserListItemProps {
@@ -20,10 +20,10 @@ const UserListItem: React.FC<UserListItemProps> = ({
   onSelectUser = () => {},
 }) => {
   const styles = UserListItemStyle();
-  const navigation = useNavigation<NavigationProp<OnboardingStackkParamList>>();
+  const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
   const onPressUser = () => {
-    navigation.navigate(SCREENS.USER_DETAIL, {user: 1});
+    navigation.navigate(ROUTES.UserDetail, {user: 1});
   };
 
   return (

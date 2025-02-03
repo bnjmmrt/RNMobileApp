@@ -1,21 +1,28 @@
-import React, { useRef, useState } from 'react';
-import { View } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
+import React, {useCallback, useRef, useState} from 'react';
+import {View} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {LABLE, BUTTON_LABLE} from '../../../utils/constants';
 import EnterEmailPhoneStyles from './EnterEmailPhoneStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
-import { useDispatch, useSelector } from 'react-redux';
-import { setEmail, setPageProgress, setPhone } from '../../../redux/slices/appFlowSlice';
-import { RootState } from '../../../redux/slices';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  setEmail,
+  setPageProgress,
+  setPhone,
+} from '../../../redux/slices/appFlowSlice';
+import {RootState} from '../../../redux/slices';
 import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
 import EmailInput from '../../../component/EmailComponent/EmailInput';
+import {useFocusEffect} from '@react-navigation/native';
+import {changeSafeAreaViewConfig} from 'src/utils/functions';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 
-interface EnterEmailPhoneProps extends NativeStackScreenProps<any, any> { }
+interface EnterEmailPhoneProps extends NativeStackScreenProps<any, any> {}
 
-const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
+const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({navigation}) => {
   const dispatch = useDispatch();
   // const isEmailVerified = useSelector((state: RootState) => state.appFlow.isEmailVerified);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
@@ -24,33 +31,46 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
 
-
   const onNextClick = () => {
     if (loginData?.varifyStatus === 1) {
       if (phoneNumberInputRef.current.validatePhoneNumber()) {
-        dispatch(setPhone(phoneNumberInputRef.current.callingCode + phoneNumberInputRef.current.phoneNumber));
-        navigation.navigate('VerifyEmail', { 
-          phone: phoneNumberInputRef.current.callingCode + phoneNumberInputRef.current.phoneNumber,
-          isEmail: false
+        dispatch(
+          setPhone(
+            phoneNumberInputRef.current.callingCode +
+              phoneNumberInputRef.current.phoneNumber,
+          ),
+        );
+        navigation.navigate('VerifyEmail', {
+          phone:
+            phoneNumberInputRef.current.callingCode +
+            phoneNumberInputRef.current.phoneNumber,
+          isEmail: false,
         });
       }
     } else {
       if (emailInputRef.current.validateEmailAddress()) {
         dispatch(setEmail(emailInputRef.current.emailAddress));
-        navigation.navigate('VerifyEmail', { email: emailInputRef.current.emailAddress, isEmail: true });
+        navigation.navigate('VerifyEmail', {
+          email: emailInputRef.current.emailAddress,
+          isEmail: true,
+        });
       }
     }
-
-
   };
 
   const handleBackPress = () => {
     dispatch(setPageProgress(1));
     navigation.navigate('MyDetailsScreen');
-  }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    }, []),
+  );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header
         headerTitle={isEmailVerified === 1 ? LABLE.PHONE : LABLE.EMAIL}
         onPress={handleBackPress}
@@ -58,13 +78,22 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
 
       <View style={styles.contentContainer}>
         <Title
-          title={isEmailVerified === 1 ? LABLE.WHATS_YOUR_PHONE_NUMBER : LABLE.WHATS_YOUR_EMAIL_ADDRESS}
-          subTitle={isEmailVerified === 1 ? LABLE.WHATS_YOUR_PHONE_NUMBER_SUBTITLE : LABLE.WHATS_YOUR_EMAIL_SUBTITLE}
+          title={
+            isEmailVerified === 1
+              ? LABLE.WHATS_YOUR_PHONE_NUMBER
+              : LABLE.WHATS_YOUR_EMAIL_ADDRESS
+          }
+          subTitle={
+            isEmailVerified === 1
+              ? LABLE.WHATS_YOUR_PHONE_NUMBER_SUBTITLE
+              : LABLE.WHATS_YOUR_EMAIL_SUBTITLE
+          }
         />
-        {isEmailVerified === 1 ?
+        {isEmailVerified === 1 ? (
           <PhoneNumberInput ref={phoneNumberInputRef} />
-          :
-          <EmailInput ref={emailInputRef} />}
+        ) : (
+          <EmailInput ref={emailInputRef} />
+        )}
       </View>
 
       <Button
@@ -74,7 +103,7 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
         colorTheme="dark"
         onPress={onNextClick}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

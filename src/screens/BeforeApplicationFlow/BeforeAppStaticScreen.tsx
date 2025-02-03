@@ -1,39 +1,58 @@
-import React from 'react';
-import { Image, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { COLORS } from '../../utils/constants';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
-import { View } from 'react-native';
+import {CommonActions, useFocusEffect} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React, {useCallback} from 'react';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {useDispatch} from 'react-redux';
+import {resetLoginData} from 'src/redux/slices/authSlice';
+import {changeSafeAreaViewConfig} from 'src/utils/functions';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 import IMAGES from '../../assets/images';
-import { Hp, Wp } from '../../utils/dimensions';
-import { CommonActions } from '@react-navigation/native';
+import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
+import {COLORS} from '../../utils/constants';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+  Wp,
+} from '../../utils/dimensions';
 
-interface BeforeAppStaticScreenProps extends NativeStackScreenProps<any, any> { }
+interface BeforeAppStaticScreenProps extends NativeStackScreenProps<any, any> {}
 
-const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({ navigation }) => {
+const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
+  navigation,
+}) => {
+  const dispatch = useDispatch();
+
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.BLACK_SCHEME);
+    }, []),
+  );
 
   const redirectToHome = () => {
     const resetAction = CommonActions.reset({
       index: 0,
-      routes: [{ name: 'LandingScreen' }],
+      routes: [{name: 'AuthStack'}],
     });
+    dispatch(resetLoginData());
     navigation.dispatch(resetAction);
+  };
 
-  }
   return (
-    <SafeAreaView style={styles.container}>
-      
-      <BeforeAppStaticComponent
-        isChatScreen={false}
-        showLogout={true} />
+    <View style={styles.container}>
+      <BeforeAppStaticComponent isChatScreen={false} />
 
-      <TouchableOpacity onPress={redirectToHome} style={{ top: Hp(8), right: Wp(5), position: 'absolute' }}>
+      <TouchableOpacity
+        onPress={redirectToHome}
+        style={{
+          top: horizontalMarginScale(16),
+          right: horizontalMarginScale(16),
+          position: 'absolute',
+        }}>
         <View style={styles.iconWrapper}>
           <Image source={IMAGES.cross} />
         </View>
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 };
 

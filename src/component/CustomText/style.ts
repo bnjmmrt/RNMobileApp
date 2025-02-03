@@ -4,7 +4,7 @@ import {fontFamily} from 'src/utils/functions';
 
 export const styles = StyleSheet.create({
   customText: {
-    color: COLORS.text,
+    color: COLORS.black,
     fontFamily: fontFamily.ABCDiatype_Regular,
     fontSize: 12,
   },
