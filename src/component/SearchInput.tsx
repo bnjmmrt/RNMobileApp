@@ -8,10 +8,10 @@ import { fontFamily } from '../utils/functions';
 // Define the props for SearchInput
 interface SearchInputProps extends TextInputProps {
     onSearchTextChange?: (text: string) => void;
-    placeholder?:string
+    placeholder?: string
 }
 
-const SearchInput = forwardRef(({ onSearchTextChange,placeholder }: SearchInputProps, ref) => {
+const SearchInput = forwardRef(({ onSearchTextChange, placeholder }: SearchInputProps, ref) => {
     const [searchText, setSearchText] = useState('');
 
     // Expose handleNextPress to the parent
@@ -37,7 +37,7 @@ const SearchInput = forwardRef(({ onSearchTextChange,placeholder }: SearchInputP
                 <Image source={IMAGES.search} style={styles.icon} />
                 <TextInput
                     style={styles.input}
-                    placeholder={placeholder?placeholder:"Search for an event.."}
+                    placeholder={placeholder ? placeholder : "Search for an event.."}
                     value={searchText}
                     onChangeText={handleTextChange}
                 />
@@ -49,7 +49,6 @@ const SearchInput = forwardRef(({ onSearchTextChange,placeholder }: SearchInputP
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        paddingHorizontal: 20,
         backgroundColor: COLORS.white,
     },
     inputWrapper: {

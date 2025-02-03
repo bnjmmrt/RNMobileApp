@@ -18,6 +18,8 @@ import Input from 'src/component/Input/Input';
 import { BUTTON_LABLE, COLORS } from 'src/utils/constants';
 import { Wp } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
+import RequestVouch from './RequestVouch';
+import useContactPermission from 'src/utils/hooks/useContactPermission';
 
 const guestList = [
     { id: 0, label: 'No Guests' },
@@ -39,6 +41,7 @@ const RSPVScreen = () => {
     const [errors, setErrors] = useState({});
     const [selectedGuests, setSelectedGuests] = useState('No Guests');
     const [activeView, setActiveTab] = useState('');
+    const { requestContactPermission } = useContactPermission();
 
     const validateInputs = () => {
         let isValid = true;
@@ -70,7 +73,10 @@ to vouch for you.`}</CustomText>
                         style={styles.requestBtn}
                         title={'Request a Vouch'}
                         colorTheme="dark"
-                    // onPress={handleInviteLink}
+                        onPress={async () => {
+                            await requestContactPermission();
+                            setActiveTab('vouch')
+                        }}
                     />
                 </View>
                 <Button
@@ -100,9 +106,21 @@ to vouch for you.`}</CustomText>
                 );
             case 'options':
                 return renderOptions();
+            case 'vouch':
+                return <RequestVouch />
 
             default:
                 return null;
+        }
+    };
+    const getSnapPoints = (): string => {
+        switch (activeView) {
+            case 'options':
+                return '40%';
+            case 'submit':
+                return '60%';
+            default:
+                return '85%';
         }
     };
     const renderOptions = () => {
@@ -153,7 +171,7 @@ to vouch for you.`}</CustomText>
                 colorTheme="dark"
                 onPress={handleSubmit}
             />
-            <BottomSheetComponent ref={bottomSheetRef} snapPoints={[activeView == 'options' ? '40%' : '60%']}>
+            <BottomSheetComponent ref={bottomSheetRef} snapPoints={[getSnapPoints()]}>
                 <View style={styles.bottomSheetContent}>
                     {renderBottomSheetContent()}
                 </View>
