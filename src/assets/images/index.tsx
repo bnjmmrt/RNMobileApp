@@ -11,6 +11,7 @@ const IMAGES = {
   upArrow: require('./chevron-up.png'),
   downArrow: require('./chevron-down.png'),
   search: require('./search-md.png'),
+  calendar: require('./calendar.png'),
   clear: require('./clear.png'),
   check1: require('./check1.png'),
   filter: require('./filter.png'),

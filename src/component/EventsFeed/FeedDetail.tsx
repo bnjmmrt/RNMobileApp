@@ -9,11 +9,14 @@ import {Hp, Wp} from '../../utils/dimensions';
 interface FeedDetailProps {
   detail: EventItem | null;
   setDetail: React.Dispatch<React.SetStateAction<EventItem | null>>;
+  handleNotify: () => void;
 }
 
-const FeedDetail: React.FC<FeedDetailProps> = ({detail, setDetail}) => {
-  if (!detail) return null;
-
+const FeedDetail: React.FC<FeedDetailProps> = ({
+  detail,
+  setDetail,
+  handleNotify,
+}) => {
   const formatDate = (dateString: string) => {
     const [year, month, day] = [
       dateString.slice(6, 10),
@@ -22,6 +25,13 @@ const FeedDetail: React.FC<FeedDetailProps> = ({detail, setDetail}) => {
     ];
     return format(new Date(`${year}-${month}-${day}`), 'MMM d yyyy');
   };
+
+  const handleYes = () => {
+    handleNotify();
+    setDetail(null);
+  };
+
+  if (!detail) return null;
 
   return (
     <Modal
@@ -57,7 +67,7 @@ const FeedDetail: React.FC<FeedDetailProps> = ({detail, setDetail}) => {
               style={styles.showResults}
               title="Yes"
               colorTheme="dark"
-              onPress={() => {}}
+              onPress={handleYes}
             />
           </View>
           <Text style={styles.infoText}>
