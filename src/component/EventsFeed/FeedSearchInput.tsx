@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import { Image } from 'react-native-animatable';
+import React, {useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Text,
+} from 'react-native';
+import {Image} from 'react-native-animatable';
 import IMAGES from '../../assets/images';
-import { COLORS } from '../../utils/constants';
-import { fontFamily } from '../../utils/functions';
+import {COLORS} from '../../utils/constants';
+import {fontFamily} from '../../utils/functions';
 
 interface FeedSearchInputProps {
   handleChange: (text: string) => void;
   handleSearch: () => void;
   handleClear: () => void;
   handleFilter: () => void;
+  filterLength: number;
 }
 
 const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
@@ -17,6 +24,7 @@ const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
   handleSearch,
   handleClear,
   handleFilter,
+  filterLength,
 }) => {
   const [searchText, setSearchText] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -52,6 +60,7 @@ const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
           </TouchableOpacity>
         )}
         <TouchableOpacity onPress={handleFilter} style={styles.filter}>
+          {filterLength > 0 && <Text style={styles.black}>{filterLength}</Text>}
           <Image source={IMAGES.filter} style={styles.filterIcon} />
         </TouchableOpacity>
       </View>
@@ -88,14 +97,17 @@ const styles = StyleSheet.create({
     height: 16,
   },
   filter: {
-    width: 30,
-    height: 30,
-    marginLeft: 6,
+    flexDirection: 'row',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    height: 30,
+    gap: 4,
+    paddingHorizontal: 8,
+    marginLeft: 6,
     backgroundColor: '#D8D8D8',
     borderRadius: 100,
+    color: 'black',
   },
   filterIcon: {
     width: 16,
@@ -106,6 +118,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.black,
     fontFamily: fontFamily.ABCDiatype_Regular,
+  },
+  black: {
+    color: 'black',
   },
 });
 
