@@ -28,6 +28,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import EventVenue from 'src/component/Event/EventVenue';
 import EventOverview from 'src/component/Event/EventOverview';
 import Button from 'src/component/Button';
+import { event_mock } from './eventMock';
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
@@ -35,6 +36,7 @@ type RouteParams = {
     item: {}
   };
 };
+
 
 
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) => {
@@ -53,7 +55,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
   // const styles = EventDetailsScreenStyle();
 
   const onNextClick = () => {
-
+    navigation.navigate('RSPVScreen', { event: event_mock.data })
   }
 
   return (
@@ -61,7 +63,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
 
       <ScrollView>
         <View style={{ ...styles.contentContainer }}>
-
           <View style={{}}>
             <FastImage
               source={{ uri: route?.params?.imageCover }}
@@ -84,8 +85,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
           />
           <EventVenue item={route?.params?.item} />
           <EventOverview item={route?.params?.item} />
-
-
           <Button
             disabled={false}
             style={styles.btnStyle}

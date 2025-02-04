@@ -9,6 +9,7 @@ import {
   PermissionsAndroid,
   Platform,
   Linking,
+  SafeAreaView,
 } from 'react-native';
 import Contacts from 'react-native-contacts';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
@@ -23,6 +24,7 @@ import TabBar from '../ActiveTabBar/TabBar';
 import { fontFamily } from '../../utils/functions';
 import { useFetchMembersQuery, useRequestMemberMutation } from '../../redux/actions/referralApiAction';
 import { RenderMemberList } from './RenderMemberList';
+import Header from '../Header/Header';
 
 interface AppMember {
   name: string;
@@ -265,32 +267,23 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   );
 
   return (
-    <BottomSheetComponent
-      ref={ref}
-      snapPoints={['90%']}
-      footer={footerComponent()}
-      onClose={() => {setSelectedTab('01')
-        setSearchQuery('');
-        handleSearch('')}}
-    >
+
+    <SafeAreaView style={{ flex: 1 }}>
+      <Header headerTitle="Referrals & Invites" showProgressBar={false} />
       <View style={{ paddingHorizontal: 20, flex: 1 }}>
-        <Title title={LABLE.SELECT_A_REFERRAL} align="center" />
-
-
         <TabBar
           onTabChange={(tab) => {
             setSelectedTab(tab)
             setSearchQuery('');
             handleSearch('');
           }}
-          tabOneLabel="Contacts"
-          tabTwoLabel="Members"
+          tabOneLabel="Request a Referral"
+          tabTwoLabel="Invite Contacts"
           width='100%'
         />
 
-        {selectedTab === '02' && (
-          <>
-            <Text style={styles.sectionSubtitle}>{LABLE.REQUEST_A_REFERRAL}</Text>
+        {selectedTab === '01' && (
+          <View style={{ gap: 8 }}>
             <Input
               ref={searchInputRef}
               placeholder={LABLE.SEARCH_FRIENDS}
@@ -301,21 +294,22 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
               }}
               defaultValue={searchQuery}
             />
+            <Text style={styles.sectionTitle}>{LABLE.FRIENDS_WHO_ARE_MEMBERS}</Text>
+            <Text style={styles.sectionSubtitle}>{LABLE.REQUEST_A_REFERRAL}</Text>
             <FlatList
               data={filteredMembers}
               scrollEnabled={false}
-              contentContainerStyle={{ gap: 4, marginTop: 20 }}
+              contentContainerStyle={{ gap: 4, marginTop: 12 }}
               keyExtractor={(item, index) => '' + item.phoneNumber + index}
               renderItem={({ item }) =>
                 <RenderMemberList item={item} />
               }
             />
-          </>
+          </View>
         )}
 
-        {selectedTab === '01' && (
-          <View style={{ flex: 1 }}>
-            <Text style={styles.sectionSubtitle}>{LABLE.INVITE_FRIENDS_TO}</Text>
+        {selectedTab === '02' && (
+          <View style={{ flex: 1, gap: 8 }}>
             <Input
               ref={searchInputRef}
               placeholder={LABLE.SEARCH_FRIENDS}
@@ -326,10 +320,12 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
               }}
               defaultValue={searchQuery}
             />
+            <Text style={styles.sectionTitle}>{LABLE.CONTACTS}</Text>
+            <Text style={styles.sectionSubtitle}>{LABLE.INVITE_FRIENDS_TO}</Text>
             <FlatList
               data={filteredContacts}
               keyExtractor={(item, index) => '' + item.phoneNumber + index}
-              contentContainerStyle={{ gap: 4, flexGrow: 1, paddingBottom: 100, marginTop: 16 }}
+              contentContainerStyle={{ gap: 4, flexGrow: 1, paddingBottom: 100, marginTop: 12 }}
               renderItem={({ item }) =>
                 renderListItem(
                   item,
@@ -358,7 +354,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
           </>
         )}
       </View>
-    </BottomSheetComponent>
+    </SafeAreaView>
   );
 });
 

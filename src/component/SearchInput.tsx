@@ -92,13 +92,12 @@ const SearchInput = forwardRef(
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        paddingHorizontal: 20,
         backgroundColor: COLORS.white,
     },
     inputWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
-        height: 50,
+        height: 48,
         borderWidth: 1,
         flex: 1,
         borderColor: COLORS.borderGray,

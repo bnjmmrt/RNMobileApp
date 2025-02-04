@@ -77,14 +77,13 @@ const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    // height: 50,
+    height: 48,
     borderRadius: radiusScale(99),
     alignItems: 'center',
     justifyContent: 'center',
     width: Wp(90),
     alignSelf: 'center',
     flexDirection: 'row',
-    paddingVertical: verticalMarginScale(16),
   },
   text: {
     marginHorizontal: 10,

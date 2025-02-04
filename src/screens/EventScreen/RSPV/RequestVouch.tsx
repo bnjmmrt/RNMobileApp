@@ -1,18 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { PermissionsAndroid, Platform, StyleSheet, View } from 'react-native';
-import Button from 'src/component/Button';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import Input from 'src/component/Input/Input';
+import { StyleSheet, View } from 'react-native';
 import Contacts from 'react-native-contacts';
 
-import Title from 'src/component/Title/Title';
-import { COLORS, LABLE } from 'src/utils/constants';
-import { FlatList } from 'react-native';
+import { FlatList, Text } from 'react-native';
 import { RenderMemberList } from 'src/component/InviteReferralBottomSheet/RenderMemberList';
-import IMAGES from '@images/index';
-import { fontFamily } from 'src/utils/functions';
-import { Text } from 'react-native';
 import SearchInput from 'src/component/SearchInput';
+import Title from 'src/component/Title/Title';
+import { COLORS } from 'src/utils/constants';
+import { fontFamily } from 'src/utils/functions';
+import useContacts from 'src/utils/hooks/useContactPermission';
+import useContactPermission from 'src/utils/hooks/useContactPermission';
 interface ContactItem {
     name: string;
     phone: string;
@@ -57,6 +54,7 @@ const membersData = [
 ];
 
 const RequestVouch = ({ onClose }: { onClose: () => void }) => {
+    const { getContacts } = useContactPermission();
     const [contacts, setContacts] = useState<ContactItem[]>([]);
     const [members, setMembers] = useState<ContactItem[]>([]);
     // const { data: membersData, isMembersLoading, isError } = useFetchMembersQuery();
@@ -65,28 +63,20 @@ const RequestVouch = ({ onClose }: { onClose: () => void }) => {
     const [requestSent, setRequestSent] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const searchInputRef = useRef(null);
-    const [permissionGranted, setPermissionGranted] = useState(true);
     const [selectedTab, setSelectedTab] = useState('01');
     const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
 
 
     useEffect(() => {
-        fetchContacts()
+        fetchContacts();
     }, []);
 
     const fetchContacts = async () => {
         try {
-            const deviceContacts = await Contacts.getAll().catch((err) =>
-                setPermissionGranted(false)
-            );
+            const formattedContacts = await getContacts();
+            console.log(formattedContacts.length, "helel")
 
-            const formattedContacts = deviceContacts
-                .map((contact: any) => ({
-                    name: `${contact.givenName} ${contact.familyName}`.trim(),
-                    phoneNumber: contact.phoneNumbers[0]?.number.replace(/\D/g, '') || '',
-                }))
-                .filter((contact) => contact.phoneNumber);
 
             const memberPhoneNumbers = new Set(
                 membersData.map((member) =>
@@ -141,7 +131,6 @@ const RequestVouch = ({ onClose }: { onClose: () => void }) => {
     };
 
     return (
-
         <View style={{ gap: 12 }}>
             <Title title={"Select a Member to Vouch for You"} align="center" />
             <SearchInput placeholder='Search friends..' onSearchTextChange={handleSearch} />

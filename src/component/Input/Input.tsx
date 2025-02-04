@@ -25,7 +25,9 @@ interface InputProps {
   onChangeText?: (text: string) => void;
   multiline?: boolean;
   otherStyle?: ViewStyle;
-  editable?: boolean
+  editable?: boolean;
+  isRequired?: boolean;
+  height?: any;
 }
 
 const Input = forwardRef((props: InputProps, ref) => {
@@ -41,7 +43,8 @@ const Input = forwardRef((props: InputProps, ref) => {
     onChangeText,
     otherStyle,
     height = 60,
-    editable
+    editable,
+    isRequired = false
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -72,11 +75,12 @@ const Input = forwardRef((props: InputProps, ref) => {
       // navigation.navigate('VerifyOtpScreen', { email: inputText, isEmail: true });
     }
   };
+  const requiredText = () => isRequired && <CustomText style={{ color: COLORS.errorText }}> *</CustomText>
 
   return (
     <View style={[styles.container, otherStyle]}>
       {/* Dynamic Label */}
-      {label && <CustomText style={[styles.label]}>{label}</CustomText>}
+      {label && <CustomText style={[styles.label]}>{label}{requiredText()}</CustomText>}
 
       {/* Input Field */}
       <View
@@ -143,7 +147,7 @@ const styles = StyleSheet.create({
   leftImage: { width: 16, height: 16 },
   rightImage: { width: 16, height: 16 },
   input: {
-    width: '90%',
+    flex: 1,
     fontSize: fontScale(14),
     color: COLORS.black,
     fontFamily: fontFamily.ABCDiatype_Medium
