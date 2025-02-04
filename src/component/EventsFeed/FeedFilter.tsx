@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import {Modal, View, StyleSheet, Text, ScrollView, Image} from 'react-native';
 import {BUTTON_LABLE, COLORS, feedList} from '../../utils/constants';
 import {Wp} from '../../utils/dimensions';
-// import DateRangePicker from 'react-native-daterange-picker';
-import CalendarRangePicker from 'react-native-calendar-date-range-picker';
+import DateTimePicker from 'react-native-ui-datepicker';
+import dayjs from 'dayjs';
 import Button from '../Button';
 import {fontFamily} from '../../utils/functions';
 import IMAGES from '../../assets/images';
@@ -30,6 +30,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
   setFilterVisible,
   setLocationVisible,
 }) => {
+  const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false);
   const [feedFilters, setFeedFilters] = useState<string[]>(filter.categories);
 
   const handleToggle = (feed: string) => {
@@ -39,11 +40,10 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
   };
 
   const handleShowResults = () => {
-    setFilter({
-      location: filter.location,
+    setFilter(prev => ({
+      ...prev,
       categories: feedFilters,
-      date: ['', ''],
-    });
+    }));
     setFilterVisible(false);
   };
 
@@ -101,15 +101,41 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
             <View>
               <Text style={styles.label}>Date Range</Text>
               <View style={styles.container}>
-                <CalendarRangePicker monthsCount={2} />
-                {/* <DateRangePicker
-                  onChange={setDates}
-                  endDate={endDate}
-                  startDate={startDate}
-                  displayedDate={displayedDate}
-                  range>
-                  <Text>Click me!</Text>
-                </DateRangePicker> */}
+                <View
+                  style={[styles.inputWrapper]}
+                  onTouchEnd={() => setDatePickerVisible(prev => !prev)}>
+                  <Image source={IMAGES.calendar} style={styles.icon} />
+                  <View style={styles.inputValueWithLabel}>
+                    <Text>{`${dayjs(filter.date[0]).format(
+                      'MM/DD/YY',
+                    )} - ${dayjs(filter.date[1]).format('MM/DD/YY')}`}</Text>
+                    <Image source={IMAGES.downArrow} style={styles.icon} />
+                  </View>
+                </View>
+                {datePickerVisible && (
+                  <View style={styles.datePicker}>
+                    <DateTimePicker
+                      mode="range"
+                      startDate={filter.date[0]}
+                      endDate={filter.date[1]}
+                      headerButtonStyle={{
+                        backgroundColor: '#D8D8D8',
+                        borderRadius: 100,
+                        padding: 8,
+                      }}
+                      selectedItemColor="black"
+                      selectedRangeBackgroundColor="lightgray"
+                      dayContainerStyle={styles.dayContainerStyle}
+                      onChange={({startDate, endDate}) =>
+                        setFilter(prev => ({
+                          ...prev,
+                          date: [startDate, endDate],
+                        }))
+                      }
+                      headerContainerStyle={{marginTop: 16}}
+                    />
+                  </View>
+                )}
               </View>
             </View>
 
@@ -230,8 +256,13 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   container: {
-    flexDirection: 'row',
     backgroundColor: 'white',
+  },
+  inputValueWithLabel: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flex: 1,
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -245,7 +276,17 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 6,
   },
+  datePicker: {
+    borderRadius: 12,
+    borderColor: '#E1E1E1',
+    borderWidth: 1,
+    marginTop: 6,
+    paddingBottom: 24,
+    paddingHorizontal: 12,
+  },
   icon: {
+    width: 16,
+    height: 17,
     marginRight: 6,
   },
   input: {
@@ -253,6 +294,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'black',
     fontFamily: fontFamily.ABCDiatype_Regular,
+  },
+  dayContainerStyle: {
+    width: 40,
+    marginHorizontal: 'auto',
+    height: 40,
   },
 });
 

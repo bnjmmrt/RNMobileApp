@@ -11,7 +11,7 @@ import {
 import { COLORS } from '../../utils/constants';
 import { useNavigation } from '@react-navigation/native';
 import { CustomText } from '../CustomText';
-import { fontScale } from 'src/utils/dimensions';
+import { fontScale, horizontalMarginScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
 
 interface InputProps {
@@ -124,10 +124,10 @@ const Input = forwardRef((props: InputProps, ref) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    marginTop: 24,
+    marginTop: verticalMarginScale(24),
   },
   label: {
-    paddingVertical: 2,
+    paddingVertical: horizontalMarginScale(2),
     // color: COLORS.labelGray,
     fontFamily: fontFamily.ABCDiatype_Medium
   },
@@ -137,12 +137,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: horizontalMarginScale(16),
   },
   multilineInputContainer: {
-    height: 160, // Adjust height for multiline inputs
-    alignItems: 'flex-start',
-    paddingTop: 10,
+    height: verticalScale(160),
+    paddingTop: verticalMarginScale(10),
   },
   leftImage: { width: 16, height: 16 },
   rightImage: { width: 16, height: 16 },
@@ -154,15 +153,15 @@ const styles = StyleSheet.create({
   },
   multilineInput: {
     height: '100%',
-    textAlignVertical: 'top', // Ensures text starts at the top for multiline
+    textAlignVertical: 'top',
   },
   errorInputWrapper: {
     borderColor: COLORS.borderRed,
     backgroundColor: COLORS.bgRed,
   },
   errorText: {
-    fontSize: 12,
-    marginTop: 5,
+    fontSize: fontScale(12),
+    marginTop: verticalMarginScale(5),
     color: COLORS.errorText,
   },
 });

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Modal, View, StyleSheet} from 'react-native';
 import GooglePlacesInput from '../GooglePlacesInput/GooglePlacesInput';
-import {Wp} from '../../utils/dimensions';
+import {fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalMarginScale, Wp} from '../../utils/dimensions';
 import {Address} from '../../redux/slices/appFlowSlice';
 import Button from '../Button';
 import {BUTTON_LABLE} from '../../utils/constants';
@@ -17,11 +17,10 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
   setIsShown,
   submitVisible,
 }) => {
-  console.log('LocationPickerModal');
   const [modalVisible, setModalVisible] = useState(true);
 
   const submit = () => {
-    setModalVisible(false);
+    // setModalVisible(false);
     setIsShown(false);
   };
 
@@ -64,9 +63,10 @@ const styles = StyleSheet.create({
   modalContent: {
     width: '100%',
     backgroundColor: 'white',
-    borderRadius: 25,
-    paddingHorizontal: 20,
-    paddingVertical: 30,
+    borderRadius:radiusScale(25),
+    paddingHorizontal:horizontalMarginScale(20),
+    paddingVertical:verticalMarginScale(30
+    ),
     top: '5%',
     height: '90%',
   },
@@ -74,20 +74,20 @@ const styles = StyleSheet.create({
   locationItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 1,
+    padding:verticalMarginScale(10),
+    borderBottomWidth:horizontalScale(1),
     borderBottomColor: '#ccc',
   },
   flag: {
-    fontSize: 20,
-    marginRight: 10,
+    fontSize:fontScale(20),
+    marginRight:verticalMarginScale(10),
   },
   locationName: {
-    fontSize: 16,
+    fontSize: fontScale(16),
   },
   btnStyle: {
     width: Wp(85),
-    borderRadius: 100,
+    borderRadius:radiusScale(100),
   },
 });
 

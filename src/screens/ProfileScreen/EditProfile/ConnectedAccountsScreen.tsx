@@ -16,7 +16,7 @@ import {
 } from '../../../utils/constants';
 import DatepickerBottomSheet from '../../../component/BottomSheet/DatepickerBottomSheet';
 import {useNavigation} from '@react-navigation/native';
-import {Hp, Wp} from '../../../utils/dimensions';
+import {fontScale, horizontalMarginScale, Hp, radiusScale, verticalMarginScale, Wp} from '../../../utils/dimensions';
 import {fontFamily} from '../../../utils/functions';
 
 import AccountItem from './AccountItem';
@@ -186,23 +186,23 @@ const styles = StyleSheet.create({
 
   btnStyle: {
     width: Wp(85),
-    borderRadius: 100,
+    borderRadius:radiusScale(100),
   },
   contentContainer: {
     flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical:horizontalMarginScale(10),
+    paddingHorizontal: horizontalMarginScale(20),
   },
   listContainer: {
-    marginVertical: 16,
+    marginVertical:verticalMarginScale(16),
   },
   subTitle: {
     color: COLORS.light_gray,
-    fontSize: 13,
+    fontSize:fontScale(13),
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginVertical: Hp(1),
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom:verticalMarginScale(16),
   },
 });
 export default ConnectedAccountsScreen;

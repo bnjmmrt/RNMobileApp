@@ -7,6 +7,7 @@ import IMAGES from '../../../assets/images';
 import {LABLE, ERROR_MESSAGE, COLORS} from '../../../utils/constants';
 import DatepickerBottomSheet from '../../../component/BottomSheet/DatepickerBottomSheet';
 import {formatDate, validateAge} from '../../../utils/functions';
+import { horizontalMarginScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 
 interface DatePickerComponentProps {
   birthDate:string
@@ -70,9 +71,9 @@ const DatePickerComponent = forwardRef((props:DatePickerComponentProps, ref) => 
 const styles = StyleSheet.create({
   container: {
     marginTop: 0,
-    height: 60,
+    height:verticalScale(60),
   },
-  calenderImage: {marginRight: 6, width: 16, height: 16},
+  calenderImage: {marginRight:verticalMarginScale(6), width:horizontalMarginScale(16), height:verticalMarginScale(16)},
   iconContainer: {},
 });
 export default DatePickerComponent;

@@ -62,8 +62,8 @@ export const EndPoint = {
   host_feedback:'v1/auth/host-feedback',
   user_profile_picture:'v1/auth/user-profile-picture/',
   user_profile:'v1/auth/user-profile/',
-  user_settings:'/auth/user-settings/',
-  user_interests:'/platform/user-interests/',
+  user_settings:'v1/auth/user-settings/',
+  user_interests:'v1/platform/user-interests/',
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

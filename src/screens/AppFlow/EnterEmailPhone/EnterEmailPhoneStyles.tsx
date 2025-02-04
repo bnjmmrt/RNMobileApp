@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { Wp, Hp } from '../../../utils/dimensions';
+import { Wp, Hp, radiusScale, verticalMarginScale, horizontalMarginScale, fontScale } from '../../../utils/dimensions';
 import { fontFamily } from '../../../utils/functions';
 import { COLORS } from '../../../utils/constants';
 
@@ -11,21 +11,21 @@ const EnterEmailPhoneStyles = () => {
     },
     btnStyle: {
       width: Wp(85),
-      borderRadius: 100,
+      borderRadius:radiusScale(100),
     },
     contentContainer: {
       flex: 1,
-      paddingVertical: 10,
-      paddingHorizontal: 20,
+      paddingVertical:verticalMarginScale(10),
+      paddingHorizontal:horizontalMarginScale(20),
     },
     title: {
       color: COLORS.black,
-      fontSize: 32,
+      fontSize:fontScale(32),
       fontFamily: fontFamily.RomieTrial_Bold,
     },
     subtitle: {
       color: COLORS.light_gray,
-      fontSize: 13,
+      fontSize: fontScale(13),
       fontFamily: fontFamily.ABCDiatype_Regular,
       marginVertical: Hp(2),
     },
