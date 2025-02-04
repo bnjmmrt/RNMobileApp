@@ -1,22 +1,7 @@
-import React, { useState, useRef, useCallback } from 'react';
-import { View, SafeAreaView, ScrollView, StyleSheet, Text } from 'react-native';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/slices';
-import EventDetailsScreenStyle from './EventDetailsScreenStyle';
-import HeaderComponent from '../../component/HeaderComponent';
-import SearchInput from '../../component/SearchInput';
-import DynamicTabBar from '../../component/ActiveTabBar/DynamicTabBar';
-import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
+import React, { useState } from 'react';
+import { View, ScrollView, StyleSheet, Text } from 'react-native';
 import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
-import UpcomingEvents from './Tabs/UpcomingEvents';
-import InvitedEvents from './Tabs/InvitedEvents';
-import AppliedEvents from './Tabs/AppliedEvents';
-import PastEvents from './Tabs/PastEvents';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import AfterAppStaticComponent from 'src/component/BeforeAppStaticComponent/AfterAppStaticComponent';
-import BackButton from 'src/component/BackButton/BackButton';
-import { Image } from 'react-native-animatable';
-import IMAGES from '@images/index';
 import FastImage from '@d11/react-native-fast-image';
 import { fontFamily } from 'src/utils/functions';
 import { Hp, Wp } from 'src/utils/dimensions';
@@ -61,7 +46,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
 
       <ScrollView>
         <View style={{ ...styles.contentContainer }}>
-
           <View style={{}}>
             <FastImage
               source={{ uri: route?.params?.imageCover }}
@@ -84,8 +68,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
           />
           <EventVenue item={route?.params?.item} />
           <EventOverview item={route?.params?.item} />
-
-
           <Button
             disabled={false}
             style={styles.btnStyle}
@@ -105,9 +87,8 @@ export default EventDetailsScreen;
 const styles = StyleSheet.create({
   btnStyle: {
     borderRadius: 100,
-    paddingHorizontal: 10,
-    marginTop: 10,
-    paddingVertical: 7,
+    marginVertical: 10,
+    height: 50,
   },
   container: {
     flexDirection: 'column',
