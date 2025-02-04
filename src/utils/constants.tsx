@@ -41,6 +41,7 @@ export const BUTTON_LABLE = {
   UPDATE_APPLICATION: 'Update Application',
   YES: 'Yes',
   NO: 'No',
+  ADD_GUEST_DETAILS:'Add Guest Details'
 };
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',
@@ -159,7 +160,10 @@ export const LABLE = {
   RSVP_TEXT: `If you select ‘No’, you cannot change your response. If you later decide you’d like to attend, you’ll need to request another invite from the host.`,
   WE_WERE_SORRY_CANT_MAKE_IT:"We’re sorry you         can’t make it.",
   YOU_DECLINED_THIS_INVITATION:"You declined this invitation",
-  DISCOVER_MORE_EVENTS:"Discover More Events"
+  DISCOVER_MORE_EVENTS:"Discover More Events",
+  RSVP_QUESTION_DETAILS:"The host is offering you the option to bring up to [X] guests. How many guests would you like to bring?",
+  RSVP_SUBTITLE:"If you later decide you'd like to attend, you'll need to request another invite from the host.",
+  RSVP_INSTRUCTION:" Please add your additional guests’ details by [event date and time],or their passes will be canceled."
 };
 
 export const PROFILE = {

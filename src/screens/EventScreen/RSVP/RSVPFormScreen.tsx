@@ -66,15 +66,24 @@ const reasons = [
   {id: 7, name: 'Weather Concerns'},
   {id: 8, name: 'Other'},
 ];
+const guests = [
+  {id: 0, name: 'No Guests'},
+  {id: 1, name: 'Guest 1'},
+  {id: 2, name: 'Guest 2'},
+  {id: 3, name: 'Guest 3'},
+  {id: 4, name: 'Guest 4'},
+];
 const RSVPFormScreen = () => {
   const navigation = useNavigation();
   const [isToastShown, setIsToastShown] = useState(false);
 
   const [showDropdown, setShowDropdown] = useState(false);
-
-  const [selectedOption, setSelectedOption] = useState<any>({});
+  const [showYesOptionDropdown, setYesOptionDropdown] = useState(false);
+  const [selectedReason, setSelectedReason] = useState<any>({});
+  const [selectedGuest, setSelectedGuest] = useState<any>(guests[0]);
   const [selectedButton, setSelectedButton] = useState('');
-  const listRef = useRef<any>(null);
+  const reasonsRef = useRef<any>(null);
+  const guestRef = useRef<any>(null);
   const confirmationRef = useRef<any>(null);
 
   const handleBackPress = () => {
@@ -84,15 +93,23 @@ const RSVPFormScreen = () => {
   const onNoClick = () => {
     setSelectedButton('No');
     setShowDropdown(true);
+    setYesOptionDropdown(false);
   };
   const onYesClick = () => {
     setSelectedButton('Yes');
     setShowDropdown(false);
+    setYesOptionDropdown(true);
+  };
+  const onClickReason = () => {
+    reasonsRef.current.open();
   };
 
-  const onSelect = () => {
-    listRef.current.open();
+  const onClickGuest = () => {
+    guestRef.current.open();
   };
+  const onAddGuest=()=>{
+    //contact logic
+  }
   const submit = () => {
     // setIsToastShown(true);
     confirmationRef.current.open();
@@ -106,7 +123,7 @@ const RSVPFormScreen = () => {
         showProgressBar={false}
       />
 
-      <ScrollView style={{marginVertical: verticalMarginScale(16)}}>
+      <ScrollView style={styles.scrollContainer}>
         <EventCard />
         <StatusBanner />
 
@@ -119,7 +136,11 @@ const RSVPFormScreen = () => {
               disabled={false}
               title={BUTTON_LABLE.YES}
               onPress={onYesClick}
-              style={selectedButton == 'Yes' ? styles.smallButton : styles.clearButton}
+              style={
+                selectedButton == 'Yes'
+                  ? styles.smallButton
+                  : styles.clearButton
+              }
               clearButtonStyle={
                 selectedButton == 'No' ? styles.clearButton : styles.smallButton
               }
@@ -129,7 +150,9 @@ const RSVPFormScreen = () => {
               disabled={false}
               title={BUTTON_LABLE.NO}
               onPress={onNoClick}
-              style={selectedButton == 'No' ? styles.smallButton : styles.clearButton}
+              style={
+                selectedButton == 'No' ? styles.smallButton : styles.clearButton
+              }
               clearButtonStyle={
                 selectedButton == 'Yes'
                   ? styles.clearButton
@@ -146,30 +169,67 @@ const RSVPFormScreen = () => {
               placeholder={'Select...'}
               rightImage={IMAGES.downArrow}
               errorMessage={''}
-              defaultValue={selectedOption?.name}
-              onPress={onSelect}
+              defaultValue={selectedReason?.name}
+              onPress={onClickReason}
               style={{marginTop: verticalMarginScale(4)}}
             />
             <Text style={styles.infoText}>{LABLE.RSVP_TEXT}</Text>
           </View>
         )}
+        {showYesOptionDropdown && (
+          <>
+            <View>
+              <Text style={[styles.infoText, {color: COLORS.black}]}>
+                {LABLE.RSVP_QUESTION_DETAILS}
+              </Text>
+              <CustomSelectableText
+                placeholder={'No Guest'}
+                rightImage={IMAGES.downArrow}
+                errorMessage={''}
+                defaultValue={selectedGuest?.name}
+                onPress={onClickGuest}
+                style={styles.customSelectText}
+              />
+            </View>
+            {selectedGuest.name !== guests[0].name && (
+                <Button
+                  disabled={false}
+                  style={[styles.clearButton, styles.btnBorder]}
+                  title={BUTTON_LABLE.ADD_GUEST_DETAILS}
+                  colorTheme="white"
+                  onPress={onAddGuest}
+                />
+            )}
+          </>
+        )}
+
         <ListComponentBottomSheet
-          ref={listRef}
+          ref={reasonsRef}
           list={reasons}
-          selectedItem={setSelectedOption}
+          selectedItem={setSelectedReason}
           snapPoints={[Platform.OS === 'android' ? '65%' : '60%']}
+        />
+        <ListComponentBottomSheet
+          ref={guestRef}
+          list={guests}
+          selectedItem={setSelectedGuest}
+          snapPoints={[Platform.OS === 'android' ? '45%' : '40%']}
         />
         <ConfirmationBottomSheet
           ref={confirmationRef}
           title={LABLE.WE_WERE_SORRY_CANT_MAKE_IT}
-          subTitle="If you later decide you'd like to attend, you'll need to request another invite from the host."
+          subTitle={LABLE.RSVP_SUBTITLE}
           status={LABLE.YOU_DECLINED_THIS_INVITATION}
           btnLabel={LABLE.DISCOVER_MORE_EVENTS}
           snapPoints={[Platform.OS === 'android' ? '40%' : '38%']}
-          btnStyle={[styles.clearButton,styles.btnBorder]}
+          btnStyle={[styles.clearButton, styles.btnBorder]}
         />
       </ScrollView>
-
+      {showYesOptionDropdown && (
+        <Text style={[styles.infoText, styles.bottomText]}>
+         {LABLE.RSVP_INSTRUCTION}
+        </Text>
+      )}
       <Button
         disabled={false}
         style={styles.btnStyle}
@@ -194,12 +254,13 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    marginHorizontal: horizontalMarginScale(12),
+    // marginHorizontal: horizontalMarginScale(12),
     padding: verticalMarginScale(10),
     borderRadius: radiusScale(10),
     borderWidth: horizontalScale(1),
     borderColor: COLORS.lighter_gray,
   },
+  scrollContainer:{marginVertical: verticalMarginScale(16),paddingHorizontal:16},
   image: {
     width: horizontalScale(80),
     height: verticalScale(110),
@@ -212,7 +273,7 @@ const styles = StyleSheet.create({
     padding: verticalMarginScale(12),
     borderRadius: radiusScale(8),
     marginVertical: verticalMarginScale(16),
-    marginHorizontal: horizontalMarginScale(12),
+    // marginHorizontal: horizontalMarginScale(12),
   },
   statusText: {
     fontSize: fontScale(14),
@@ -239,6 +300,7 @@ const styles = StyleSheet.create({
     color: COLORS.light_gray,
     lineHeight: verticalScale(14),
   },
+  bottomText: {paddingHorizontal: verticalMarginScale(12), textAlign: 'center'},
   label: {
     fontSize: fontScale(14),
     fontWeight: '500',
@@ -255,11 +317,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderColor: COLORS.lighter_gray,
     width: '48%',
+    height:verticalScale(50)
   },
-  btnBorder:{
-    width:"100%",
-    borderWidth:horizontalScale(1.5),
-    borderColor:COLORS.black
+  btnBorder: {
+    width: '100%',
+    borderWidth: horizontalScale(1.5),
+    borderColor: COLORS.black,
   },
   smallButton: {
     width: '48%',
@@ -276,6 +339,7 @@ const styles = StyleSheet.create({
     right: 0,
     alignItems: 'center',
   },
+  customSelectText:{marginTop: verticalMarginScale(4),marginBottom:verticalMarginScale(8)}
 });
 
 export default RSVPFormScreen;
