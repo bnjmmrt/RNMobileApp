@@ -1,11 +1,12 @@
-import React, {useRef, forwardRef, useState} from 'react';
-import {View, StyleSheet, Text, Image} from 'react-native';
+import React, { useRef, forwardRef, useState } from 'react';
+import { View, StyleSheet, Text, Image } from 'react-native';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
-import {COLORS} from '../../utils/constants';
+import { COLORS } from '../../utils/constants';
 import Button from '../Button';
-import {fontFamily} from '../../utils/functions';
-import {EndPoint} from '../../ApiManager/config';
+import { fontFamily } from '../../utils/functions';
+import { EndPoint } from '../../ApiManager/config';
 import useApi from '../../axios/useApi';
+import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalScale } from 'src/utils/dimensions';
 
 interface EditPictureBottomSheetProps {
   onPress: () => void;
@@ -36,7 +37,7 @@ const EditPictureBottomSheet = forwardRef(
             <View style={styles.profilePhotoContainer}>
               <Image
                 style={styles.profilePhotoContainer}
-                source={{uri: props.image}}
+                source={{ uri: props.image }}
                 resizeMode="cover"
               />
             </View>
@@ -56,7 +57,7 @@ const EditPictureBottomSheet = forwardRef(
             colorTheme="dark"
             onPress={cancelClick}
             clearButtonStyle={styles.clearButton}
-            textStyle={{color: '#000'}}
+            textStyle={{ color: '#000' }}
           />
         </View>
       </BottomSheetComponent>
@@ -66,26 +67,26 @@ const EditPictureBottomSheet = forwardRef(
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
+    paddingHorizontal:horizontalMarginScale(20),
     gap: 12,
   },
   btnStyle: {
-    borderRadius: 100,
+    borderRadius:fontScale(100),
   },
   clearButton: {
-    borderWidth: 1,
+    borderWidth:horizontalScale(1),
     backgroundColor: COLORS.white,
     borderColor: COLORS.black,
   },
   title: {
-    fontSize: 24,
+    fontSize:fontScale(24),
     fontFamily: fontFamily.RomieTrial_Bold,
     textAlign: 'center',
   },
   profilePhotoContainer: {
-    height: 196,
-    width: 196,
-    borderRadius: 100,
+    height:verticalScale(196),
+    width:horizontalScale(196),
+    borderRadius:radiusScale(100),
     backgroundColor: COLORS.tabBorderColor,
     alignSelf: 'center',
     justifyContent: 'center',

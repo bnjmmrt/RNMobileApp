@@ -1,32 +1,37 @@
-import React, { useRef } from 'react';
-import { ScrollView, Text, View, Linking, Platform } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
+import React, {useCallback, useRef} from 'react';
+import {ScrollView, Text, View, Linking, Platform} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {LABLE, BUTTON_LABLE} from '../../../utils/constants';
 import IdentityVerificationStyles from './IdentityVerificationStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
-import { useDispatch, useSelector } from 'react-redux';
-import { setPageProgress } from '../../../redux/slices/appFlowSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {setPageProgress} from '../../../redux/slices/appFlowSlice';
 import Input from '../../../component/Input/Input';
 import IMAGES from '../../../assets/images';
-import { useMemberSignUp } from '../../../redux/hooks/useMemberSignUp';
+import {useMemberSignUp} from '../../../redux/hooks/useMemberSignUp';
 import useApi from '../../../axios/useApi';
-import { EndPoint } from '../../../ApiManager/config';
+import {EndPoint} from '../../../ApiManager/config';
 import MainNavigation from '../../../navigation';
-import { AppStack } from '../../../navigation/AppStack';
-import { convertDateFormat } from '../../../utils/functions';
-import { setAuthToken, setLoginData } from 'src/redux/slices/authSlice';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import {AppStack} from '../../../navigation/AppStack';
+import {
+  changeSafeAreaViewConfig,
+  convertDateFormat,
+} from '../../../utils/functions';
+import {setAuthToken, setLoginData} from '../../../redux/slices/authSlice';
+import {FlashMessageComponent} from '../../../component/FlashMessageComponent/FlashMessageComponent';
+import {useFocusEffect} from '@react-navigation/native';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 
-interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
+interface IdentityVerificationProps extends NativeStackScreenProps<any, any> {}
 
 const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   navigation,
 }) => {
-  const { signUp } = useMemberSignUp();
-  const { apiRequest, loading, error } = useApi();
+  const {signUp} = useMemberSignUp();
+  const {apiRequest, loading, error} = useApi();
   const userDetails = useSelector((state: any) => state.appFlow);
   const loginData = useSelector((state: any) => state.auth.loginData);
   // console.log('persist data', userDetails);
@@ -41,11 +46,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     subject,
   )}&body=${encodeURIComponent(body)}`;
 
-
   const onNextClick = async () => {
-    usernameRef.current && usernameRef.current.validateInputs();
-
-    if (usernameRef.current.validateInputs()) {
       const requestParams: any = {
         address: {
           address: userDetails.baseCity.address,
@@ -58,7 +59,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         interestsIds: userDetails.interest.map((item: any) => item.id),
         gender: userDetails.gender,
         lastName: userDetails.lastName,
-        phoneNumber: userDetails.phone ? userDetails.phone : loginData.phone,
+        phoneNumber: '+915645345678', // userDetails.phone ? userDetails.phone : loginData.phone,
         instagramAccessToken: '',
         instagramUserName: usernameRef.current.inputText,
         linkedInAccessToken: '',
@@ -75,19 +76,21 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       );
 
       if (response.status === 200) {
-        const data = { ...loginData, isSignUpCompleted: true };
-        dispatch(setLoginData(data))
+        const data = {...loginData, token: response.data};
+        dispatch(setLoginData(data));
         dispatch(setPageProgress(1));
-        dispatch(setAuthToken(response.data))
+        dispatch(setAuthToken(response.data));
         navigation.navigate('BottomTabBar');
 
         // dispatch(resetAppFlowDetails());
         // persistStore(store).purge(); // This clears the persisted state
       } else {
-        FlashMessageComponent.show('error', 'Something went wrong, please try again!');
+        FlashMessageComponent.show(
+          'error',
+          'Something went wrong, please try again!',
+        );
         // console.error('Error verifying OTP:', error);
       }
-    }
   };
 
   const handleBackPress = () => {
@@ -103,15 +106,21 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     Linking.openURL(mailtoURL);
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    }, []),
+  );
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header
         headerTitle={LABLE.IDENTITY_VERIFICATION}
         onPress={handleBackPress}
       />
 
       <ScrollView
-        contentContainerStyle={{ paddingBottom: 50 }}
+        contentContainerStyle={{paddingBottom: 50}}
         style={styles.contentContainer}>
         <Title
           title={LABLE.IDENTITY_VERIFICATION_TITLE}
@@ -150,7 +159,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
             onPress={goToInstagram}
           />
           <View style={styles.divider} />
-          <Text style={[styles.title, { marginVertical: 20 }]}>
+          <Text style={[styles.title, {marginVertical: 20}]}>
             {LABLE.DONT_USE_INSTAGRAM}
           </Text>
           <Text style={styles.subTitle}>{LABLE.EMAIL_THE_CODE}</Text>
@@ -179,7 +188,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         loading={loading}
         onPress={onNextClick}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

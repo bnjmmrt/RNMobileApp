@@ -4,6 +4,7 @@ import BottomSheetComponent from './BottomSheet';
 import {BUTTON_LABLE, COLORS, PROFILE} from '../../utils/constants';
 import Button from '../Button';
 import {fontFamily} from '../../utils/functions';
+import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale } from 'src/utils/dimensions';
 
 interface DeleteAccountBottomSheetProps {
 
@@ -77,24 +78,24 @@ const DeleteAccountBottomSheet = forwardRef(
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
+    paddingHorizontal:horizontalMarginScale(20),
     gap: 12,
   },
   deleteAccountBtnStyle: {
-    borderRadius: 100,
+    borderRadius:radiusScale(100),
     backgroundColor: COLORS.errorText,
-    marginTop: 8,
+    marginTop:verticalMarginScale(8),
   },
   btnStyle: {
-    borderRadius: 100,
+    borderRadius:radiusScale(100),
   },
   title: {
-    fontSize: 24,
+    fontSize: fontScale(24),
     fontFamily: fontFamily.RomieTrial_Bold,
   },
   description: {
-    fontSize: 14,
-    paddingTop: 6,
+    fontSize: fontScale(14),
+    paddingTop: verticalMarginScale(6),
     color: COLORS.light_gray,
   },
 });

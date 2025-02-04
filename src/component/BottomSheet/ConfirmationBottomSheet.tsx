@@ -4,7 +4,7 @@ import BottomSheetComponent from './BottomSheet';
 import {COLORS} from '../../utils/constants';
 import Button from '../Button';
 import {fontFamily} from '../../utils/functions';
-import {Hp} from '../../utils/dimensions';
+import {fontScale, horizontalMarginScale, horizontalScale, Hp, radiusScale, verticalScale} from '../../utils/dimensions';
 
 interface ConfirmationBottomSheetProps {
   // onPress: () => void;
@@ -53,34 +53,34 @@ const ConfirmationBottomSheet = forwardRef(
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
+    paddingHorizontal:horizontalMarginScale(20),
     gap: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
   logoContainer: {
-    width: 96,
-    height: 96,
-    borderRadius: 50, 
+    width:horizontalScale(96),
+    height:verticalScale(96),
+    borderRadius:fontScale(50), 
     backgroundColor: COLORS.lighter_gray,
     justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
-    width: 30,
-    height: 30,
+    width:horizontalScale(30),
+    height:verticalScale(30),
   },
   btnStyle: {
-    borderRadius: 100,
+    borderRadius:radiusScale(100),
   },
   title: {
-    fontSize: 32,
+    fontSize:fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
     textAlign: 'center',
   },
   subTitle: {
     color: COLORS.light_gray,
-    fontSize: 14,
+    fontSize:fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginVertical: Hp(1),
     textAlign: 'center',

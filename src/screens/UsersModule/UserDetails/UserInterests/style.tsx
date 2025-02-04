@@ -1,4 +1,9 @@
 import {StyleSheet} from 'react-native';
+import {
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
 import {COLORS} from '../../../../utils/constants';
 
 const createStyle = () => {
@@ -7,9 +12,9 @@ const createStyle = () => {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingVertical: 4,
-      paddingHorizontal: 8,
-      borderRadius: 99,
+      paddingVertical: verticalMarginScale(4),
+      paddingHorizontal: horizontalMarginScale(8),
+      borderRadius: radiusScale(99),
       borderWidth: 1,
       borderColor: COLORS.borderGray,
     },

@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import {COLORS} from '../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
+import {CustomText} from '../CustomText';
+import {fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale} from 'src/utils/dimensions';
 
 interface InputProps {
   label?: string;
@@ -70,7 +72,7 @@ const Input = forwardRef((props: InputProps, ref) => {
   return (
     <View style={[styles.container, otherStyle]}>
       {/* Dynamic Label */}
-      {label && <Text style={[styles.label]}>{label}</Text>}
+      {label && <CustomText style={[styles.label]}>{label}</CustomText>}
 
       {/* Input Field */}
       <View
@@ -112,31 +114,30 @@ const Input = forwardRef((props: InputProps, ref) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    marginTop: 24,
+    marginTop: verticalMarginScale(24),
   },
   label: {
-    paddingVertical: 2,
-    fontSize: 14,
+    paddingVertical: horizontalMarginScale(2),
     // color: COLORS.labelGray,
   },
   inputContainer: {
     borderWidth: 1,
     borderColor: COLORS.borderGray,
-    borderRadius: 8,
-    height: 60,
+    borderRadius: radiusScale(8),
+    height: verticalScale(60),
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: horizontalMarginScale(16),
   },
   multilineInputContainer: {
-    height: 160, // Adjust height for multiline inputs
+    height: verticalScale(160), // Adjust height for multiline inputs
     alignItems: 'flex-start',
-    paddingTop: 10,
+    paddingTop: verticalMarginScale(10),
   },
-  leftImage: {marginRight: 6, width: 20, height: 20},
+  leftImage: {marginRight: horizontalMarginScale(6), width:horizontalMarginScale(20), height: verticalMarginScale(20)},
   input: {
     width: '90%',
-    fontSize: 16,
+    fontSize: fontScale(14),
     color: COLORS.black,
   },
   multilineInput: {
@@ -148,8 +149,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.bgRed,
   },
   errorText: {
-    fontSize: 12,
-    marginTop: 5,
+    fontSize: fontScale(12),
+    marginTop: verticalMarginScale(5),
     color: COLORS.errorText,
   },
 });

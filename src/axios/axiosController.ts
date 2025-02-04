@@ -5,7 +5,7 @@ import { FlashMessageComponent } from '../component/FlashMessageComponent/FlashM
 
 // Create an Axios instance with type annotations
 export const axiosController: AxiosInstance = axios.create({
-  baseURL: environment.DEV_URL, 
+  baseURL: environment.DEV_URL,
   timeout: 10000, // Timeout in ms
   headers: {
     'Content-Type': 'application/json',
@@ -13,12 +13,12 @@ export const axiosController: AxiosInstance = axios.create({
 });
 
 axiosController.interceptors.request.use(
-  async(config: AxiosRequestConfig) => {
+  async (config: AxiosRequestConfig) => {
     // const token = ''; // Example: retrieve token;
     const token = await getItem(TagKey.IsBearerToken);
     if (token) {
       if (config.headers) {
-        config.headers['Authorization'] =  token ? `Bearer ${token}` : '';
+        config.headers['Authorization'] = token ? `Bearer ${token}` : '';
       }
     }
 
@@ -61,19 +61,20 @@ axiosController.interceptors.response.use(
     const status = error.response?.status;
     if (status === 400) {
       console.error('Bad request ----');
+      FlashMessageComponent.show('error', 'Something went wrong, please try again!');
     } else
-    if (status === 401) {
-      FlashMessageComponent.show('error',"Unauthorized access - Token might be expired")
-      console.error('Unauthorized access - Token might be expired');
-    } else if (status === 403) {
-      console.error('Forbidden access');
-    } else if (status === 404) {
-      console.error('Resource not found');
-    } else if (status >= 500) {
-      console.error('Internal server error');
-    } else {
-      console.error('An error occurred:', error.message);
-    }
+      if (status === 401) {
+        FlashMessageComponent.show('error', "Unauthorized access - Token might be expired")
+        console.error('Unauthorized access - Token might be expired');
+      } else if (status === 403) {
+        console.error('Forbidden access');
+      } else if (status === 404) {
+        console.error('Resource not found');
+      } else if (status >= 500) {
+        console.error('Internal server error');
+      } else {
+        console.error('An error occurred:', error.message);
+      }
 
     return Promise.reject(error); // Propagate error
   }

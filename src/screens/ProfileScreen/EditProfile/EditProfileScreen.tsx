@@ -7,82 +7,137 @@ import {
   BUTTON_LABLE,
   ERROR_MESSAGE,
   COLORS,
+  PROFILE,
 } from '../../../utils/constants';
 import Button from '../../../component/Button';
-import Title from '../../../component/Title/Title';
 import Input from '../../../component/Input/Input';
 import Header from '../../../component/Header/Header';
 // import {useGetPostsQuery} from '../../../redux/slices/apiSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../redux/slices';
-import {
-  setFirstName,
-  setIsEmailVerified,
-  setLastName,
-  setPageProgress,
-} from '../../../redux/slices/appFlowSlice';
-
 import useApi from '../../../axios/useApi';
 import {EndPoint} from '../../../ApiManager/config';
-import {Wp} from '../../../utils/dimensions';
+import {fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, Wp} from '../../../utils/dimensions';
 import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
 import EmailInput from '../../../component/EmailComponent/EmailInput';
-import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
-import IMAGES from '../../../assets/images';
 import DatePickerComponent from './DatePickerComponent';
 import BaseCityComponent from './BaseCityComponent';
 import CreativeFocusComponent from './CreativeFocusComponent';
 import GenderComponent from './GenderComponent';
+import Toast from 'src/component/Toast/Toast';
+import { setNotificationSettings } from '../../../redux/slices/appSettingsSlice';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
 const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const {apiRequest, loading, error} = useApi();
-
   const dispatch = useDispatch();
-  const userDetails = useSelector((state: RootState) => state.appFlow);
+  const data = useSelector((state: RootState) => state.appFlow);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const isEmailPhoneBothVerified = useSelector(
-    (state: RootState) => state.appFlow.isEmailPhoneBothVerified,
-  );
+ 
+  const [userDetails, setUserDetails] = useState(data);
 
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
+  const baseCityRef = useRef<any>(null);
+  const birthDayRef = useRef<any>(null);
+  const [gender, selectedGender] = useState(userDetails.gender);
+  const birthday = useSelector((state: RootState) => state.appFlow.birthday);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>();
-    const [isToastShown, setIsToastShown] = useState(false);
-    const [selectedData, getSelectedData] = useState<any[]>();
+  const [selectedDate, setSelectedDate] = useState<string>(birthday);
+  const [isToastShown, setIsToastShown] = useState(false);
+  const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>();
 
-  const fetch = async () => {
-    // const focusResponse = await apiRequest('get', EndPoint.get_focuses);
-    // dispatch(setCreativeFocus(focusResponse.data));
-    // const interestResponse = await apiRequest('get', EndPoint.interests);
-    // dispatch(setInterests(interestResponse.data));
+  const getUserSettingAndDetails = async () => {
+    const response = apiRequest(
+      'get',
+      EndPoint.user_settings + loginData.userId,
+    );
+    if(response.data){
+      //dependiing on API response parse data and set
+      setUserDetails(response.data.userrData);
+      dispatch( setNotificationSettings(response.data.notificationsSettings))
+    }
   };
-
   useEffect(() => {
-    fetch();
+    if (loginData?.isSignUpCompleted) {
+      phoneNumberInputRef?.current.setDisabled(true);
+      phoneNumberInputRef?.current.setPhoneNumber(userDetails.phone);
+      phoneNumberInputRef?.current.setCallingCode(
+        userDetails.countryCallingCode,
+      );
+      // phoneNumberInputRef?.current.setCode(userDetails.countryCodeFlag);
+      phoneNumberInputRef?.current.setFlag(userDetails.countryCodeFlag || '🇺🇸');
+      emailInputRef?.current.setDisabled(true);
+      emailInputRef?.current.setEmailAddress(userDetails.email);
+    }
+
+    if (loginData?.varifyStatus === 2) {
+      phoneNumberInputRef?.current.setDisabled(true);
+      phoneNumberInputRef?.current.setPhoneNumber(userDetails.phone);
+      phoneNumberInputRef?.current.setCallingCode(
+        userDetails.countryCallingCode,
+      );
+      // phoneNumberInputRef?.current.setCode(userDetails.countryCodeFlag);
+      phoneNumberInputRef?.current.setFlag(userDetails.countryCodeFlag || '🇺🇸');
+    }
+
+    if (loginData?.varifyStatus === 1) {
+      emailInputRef?.current.setDisabled(true);
+      emailInputRef?.current.setEmailAddress(userDetails.email);
+    }
+      
+      getUserSettingAndDetails();
   }, []);
 
-  const onNextClick = () => {
+  const onConfirmClick = async () => {
     if (
       firstNameRef.current.validateInputs() &&
-      // firstNameRef.current.inputText.length > 2 &&
-      lastNameRef.current.validateInputs()
-      //  && lastNameRef.current.inputText.length > 2
+      lastNameRef.current.validateInputs() &&
+      birthDayRef.current.validateBirthDate() &&
+      baseCityRef.current.validateBaseCity() &&
+      !isToastShown
     ) {
-      dispatch(setFirstName(firstNameRef.current.inputText));
-      dispatch(setLastName(lastNameRef.current.inputText));
-      dispatch(setIsEmailVerified(false));
-      if (isEmailPhoneBothVerified) {
-        dispatch(setPageProgress(3));
-        navigation.navigate('GenderScreen');
-      } else {
-        dispatch(setPageProgress(2));
-        navigation.navigate('EnterEmail');
+      const fileUploadResponse: any = await apiRequest(
+        'put',
+        EndPoint.user_profile_picture + loginData?.userId,
+        {profilePicture: userDetails.profilePic},
+      );
+      console.log('fileUploadResponse,fileUploadResponse');
+      if (fileUploadResponse.data) {
+        const requestObject: any = {
+          address: {
+            address: baseCityRef.current.selectedCity.address,
+            city: '',
+            latitude: '',
+            longitude: '',
+            placeId: baseCityRef.current.selectedCity.placeId,
+            regionCode: '',
+          },
+          birthDate: userDetails.birthday,
+          email: userDetails.email,
+          firstName: firstNameRef.current.inputText,
+          gender: gender,
+          lastName: lastNameRef.current.inputText,
+          mobilePhone: userDetails.phone,
+          creativeFocus: selectedCreativeFocus
+            ? selectedCreativeFocus.map((item: any) => item.id)
+            : userDetails.creativeFocus.map((item: any) => item.id),
+        };
+        console.log('requestObject', requestObject);
+
+        const response: any = await apiRequest(
+          'put',
+          EndPoint.user_profile + loginData?.userId,
+          requestObject,
+        );
+        console.log('response,response');
+        if (response.data) {
+          //display success
+        }
       }
     }
   };
@@ -94,12 +149,12 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <Header
-        headerTitle={LABLE.EDIT_PROFILE}
+        headerTitle={PROFILE.EDIT_PROFILE}
         onPress={handleBackPress}
         showProgressBar={false}
       />
 
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.contentContainer}>
           <Input
             ref={firstNameRef}
@@ -113,46 +168,62 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
             errorMessage={ERROR_MESSAGE.LAST_NAME}
             defaultValue={userDetails.lastName}
           />
-
-          {loginData?.varifyStatus === 1 && (
-            <>
-         
-              <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
-              <PhoneNumberInput ref={phoneNumberInputRef} />
-            </>
-          )}
-
-          {loginData?.varifyStatus === 2 && (
+          {loginData?.isSignUpCompleted ? (
             <>
               <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
               <EmailInput ref={emailInputRef} />
+              <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
+              <PhoneNumberInput ref={phoneNumberInputRef} />
+            </>
+          ) : (
+            <>
+              {loginData?.varifyStatus === 2 ? (
+                <>
+                  <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
+                  <PhoneNumberInput ref={phoneNumberInputRef} />
+                </>
+              ) : (
+                <>
+                  <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
+                  <EmailInput ref={emailInputRef} />
+                </>
+              )}
             </>
           )}
 
-          {loginData?.isSignUpCompleted && (
+          {!loginData?.isSignUpCompleted && (
             <View>
               <Text style={[styles.label]}>{LABLE.GENDER}</Text>
-              <GenderComponent />
+              <GenderComponent selectedGender={selectedGender} />
 
               <Text style={[styles.label]}>{LABLE.BIRTHDAY}</Text>
-              <DatePickerComponent />
+              <DatePickerComponent ref={birthDayRef} birthDate={selectedDate} />
 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
-              <BaseCityComponent />
+              <BaseCityComponent ref={baseCityRef} />
 
               <Text style={[styles.label]}>{LABLE.CREATIVE_FOCUS}</Text>
-              <CreativeFocusComponent setIsToastShown={setIsToastShown}
-          getSelectedData={getSelectedData} />
+              <CreativeFocusComponent
+                setIsToastShown={setIsToastShown}
+                getSelectedData={getSelectedCreativeFocus}
+              />
             </View>
           )}
         </View>
+        {isToastShown && (
+          <Toast
+            message={'Please select at least one'}
+            onClose={() => setIsToastShown(false)}
+          />
+        )}
+        
       </ScrollView>
       <Button
         disabled={false}
         style={styles.btnStyle}
         title={BUTTON_LABLE.CONFIRM}
         colorTheme="dark"
-        onPress={onNextClick}
+        onPress={onConfirmClick}
       />
     </SafeAreaView>
   );
@@ -165,17 +236,18 @@ const styles = StyleSheet.create({
   },
   btnStyle: {
     width: Wp(85),
-    borderRadius: 100,
+    borderRadius:radiusScale(100),
   },
   contentContainer: {
     flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical:verticalMarginScale(10),
+    paddingHorizontal: horizontalMarginScale(20),
   },
+  scrollContainer: {paddingBottom: verticalMarginScale(200)},
   label: {
-    paddingVertical: 2,
-    fontSize: 14,
-    paddingTop: 20,
+    paddingVertical: horizontalMarginScale(2),
+    fontSize:fontScale(14),
+    paddingTop: verticalMarginScale(20),
   },
 });
 

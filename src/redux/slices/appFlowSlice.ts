@@ -15,12 +15,14 @@ export interface UserDetailsState {
   pageProgress: number;
   isEmailVerified: boolean;
   isEmailPhoneBothVerified: boolean;
+  countryCodeFlag:string;
+  countryCallingCode:string
 }
 
 const initialState: UserDetailsState = {
   firstName: '',
   lastName: '',
-  gender: 0,
+  gender: -1,
   baseCity: {address:'',placeId:''},
   birthday: '',
   email: '',
@@ -31,6 +33,8 @@ const initialState: UserDetailsState = {
   pageProgress: 1,
   isEmailVerified: false,
   isEmailPhoneBothVerified: false,
+  countryCodeFlag:'',
+  countryCallingCode:''
 };
 
 const appFlowSlice = createSlice({
@@ -58,6 +62,12 @@ const appFlowSlice = createSlice({
     },
     setPhone(state, action: PayloadAction<string>) {
       state.phone = action.payload;
+    },
+    setCountryCallingCode(state, action: PayloadAction<string>) {
+      state.countryCallingCode = action.payload;
+    },
+    setCountryCodeFlag(state, action: PayloadAction<string>) {
+      state.countryCodeFlag = action.payload;
     },
     setCreativeFocus(state, action: PayloadAction<string[]>) {
       state.creativeFocus = action.payload;
@@ -97,6 +107,8 @@ export const {
   setBirthday,
   setEmail,
   setPhone,
+  setCountryCallingCode,
+  setCountryCodeFlag,
   setCreativeFocus,
   setInterest,
   setPageProgress,

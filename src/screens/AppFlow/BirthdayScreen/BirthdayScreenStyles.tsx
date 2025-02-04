@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {Wp} from '../../../utils/dimensions';
+import {fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale, Wp} from '../../../utils/dimensions';
 
 import {COLORS} from '../../../utils/constants';
 
@@ -12,30 +12,30 @@ const GenderScreenStyles = () => {
 
     btnStyle: {
       width: Wp(85),
-      borderRadius: 100,
+      borderRadius:radiusScale(100),
     },
 
     contentContainer: {
       flex: 1,
-      paddingVertical: 10,
-      paddingHorizontal: 20,
+      paddingVertical:verticalMarginScale(10),
+      paddingHorizontal:horizontalMarginScale(20),
     },
     inputContainer: {
-      marginTop: 20,
+      marginTop:verticalMarginScale(20),
       borderWidth: 1,
       borderColor: COLORS.borderGray,
-      borderRadius: 8,
-      height: 50,
+      borderRadius:radiusScale(8),
+      height:verticalScale(50),
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: 15,
+      paddingHorizontal: horizontalMarginScale(15),
     },
     input: {
       width: '90%',
-      fontSize: 16,
+      fontSize:fontScale(16),
       color: COLORS.black,
     },
-    calenderImage:{marginRight:6,width:16,height:16},
+    calenderImage:{marginRight:verticalMarginScale(6),width:horizontalMarginScale(16),height:verticalMarginScale(16)},
     iconContainer: {},
   });
 };

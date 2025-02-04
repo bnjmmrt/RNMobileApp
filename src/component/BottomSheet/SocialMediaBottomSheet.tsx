@@ -4,7 +4,7 @@ import BottomSheetComponent from './BottomSheet';
 import {BUTTON_LABLE, COLORS, LABLE, PROFILE} from '../../utils/constants';
 import Button from '../Button';
 import {fontFamily} from '../../utils/functions';
-import {Hp} from '../../utils/dimensions';
+import {fontScale, horizontalMarginScale, horizontalScale, Hp, radiusScale, verticalMarginScale} from '../../utils/dimensions';
 import Input from '../Input/Input';
 
 interface SocialMediaBottomSheetProps {
@@ -37,7 +37,7 @@ const SocialMediaBottomSheet = forwardRef(
         snapPoints={
           props.snapPoints
             ? props.snapPoints
-            : [Platform.OS === 'android' ? '50%' : '45%']
+            : [Platform.OS === 'android' ? '45%' : '45%']
         }
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
@@ -127,18 +127,16 @@ const SocialMediaBottomSheet = forwardRef(
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
+    paddingHorizontal:horizontalMarginScale(20),
     gap: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
-    width: 40,
-    height: 40,
-    marginTop: 10,
+    marginTop:verticalMarginScale(10),
   },
   btnStyle: {
-    borderRadius: 100,
+    borderRadius:radiusScale(100),
   },
   clearButton: {
     borderWidth: 1,
@@ -146,7 +144,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.black,
   },
   title: {
-    fontSize: 24,
+    fontSize:fontScale(24),
     fontFamily: fontFamily.RomieTrial_Bold,
     textAlign: 'center',
   },
@@ -159,31 +157,31 @@ const styles = StyleSheet.create({
   },
   input: {marginTop: 0},
   mainContainer: {
-    borderWidth: 1,
+    borderWidth:horizontalScale(1),
     borderColor: COLORS.borderGray,
-    borderRadius: 8,
+    borderRadius:radiusScale(8),
     alignItems: 'center',
-    padding: 15,
-    marginVertical: 15,
+    padding:verticalMarginScale(15),
+    marginVertical:verticalMarginScale(15),
   },
   title1: {
     color: COLORS.black,
-    fontSize: 20,
+    fontSize: fontScale(20),
     fontFamily: fontFamily.RomieTrial_Bold,
   },
   subTitle1: {
     color: COLORS.light_gray,
-    fontSize: 14,
+    fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginVertical: Hp(0.15),
     textAlign: 'center',
   },
   numberContainer: {
-    height: 20,
-    width: 20,
-    borderRadius: 10,
+    height:verticalMarginScale(20),
+    width:verticalMarginScale(20),
+    borderRadius:radiusScale(10),
     backgroundColor: COLORS.surfaceSecondary,
-    fontSize: 14,
+    fontSize: fontScale(14),
     marginTop: Hp(1),
     alignItems: 'center',
     justifyContent: 'center',
@@ -192,15 +190,15 @@ const styles = StyleSheet.create({
   },
   numberText: {
     color: COLORS.black,
-    fontSize: 14,
+    fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Regular,
     textAlign: 'center',
   },
   btnRumor: {
     color: COLORS.black,
     backgroundColor: COLORS.tabBorderColor,
-    fontSize: 11,
-    padding: 10,
+    fontSize: fontScale(11),
+    padding:verticalMarginScale(10),
   },
   emailStyle: {
     color: COLORS.black,
@@ -209,13 +207,13 @@ const styles = StyleSheet.create({
   divider: {
     height: 0.5,
     backgroundColor: COLORS.tabBorderColor,
-    width: 200,
-    marginTop: 20,
+    width:horizontalMarginScale(200),
+    marginTop: verticalMarginScale(20),
   },
   btnSmallStyle: {
     width: 'auto',
-    height: 40,
-    borderRadius: 100,
+    height:verticalMarginScale(40),
+    borderRadius:radiusScale(100),
     alignSelf: 'center',
     backgroundColor: COLORS.tabBorderColor,
     marginTop: Hp(1),
@@ -223,13 +221,13 @@ const styles = StyleSheet.create({
 
   btnRumorContainer: {
     backgroundColor: COLORS.lighter_gray,
-    paddingHorizontal: 6,
-    paddingVertical: 3,
-    borderRadius: 8,
+    paddingHorizontal:horizontalMarginScale(6),
+    paddingVertical:verticalMarginScale(3),
+    borderRadius: radiusScale(8),
   },
   btnRumorText: {
     color: COLORS.black,
-    fontSize: 11,
+    fontSize: fontScale(11),
     textAlign: 'center',
   },
 });

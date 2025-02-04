@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {
   Image,
@@ -12,9 +13,14 @@ import {
 import {fontFamily} from '../..//utils/functions';
 import IMAGES from '../../assets/images';
 import {COLORS} from '../../utils/constants';
-import {Hp, Wp} from '../../utils/dimensions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+} from '../../utils/dimensions';
 import ProgressBar from '../ProgressBar/ProgressBar';
-import {useNavigation} from '@react-navigation/native';
 
 interface HeaderProps {
   onPress?: () => void;
@@ -83,13 +89,13 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: Wp(5),
-    paddingVertical: Hp(1.7),
+    marginHorizontal: horizontalMarginScale(20),
+    paddingVertical: verticalMarginScale(16),
   },
   iconWrapper: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: verticalScale(40),
+    height: verticalScale(40),
+    borderRadius: radiusScale(20),
     backgroundColor: COLORS.tabBorderColor,
     justifyContent: 'center',
     alignItems: 'center',
@@ -100,18 +106,18 @@ const styles = StyleSheet.create({
     // shadowRadius: 2,
   },
   icon: {
-    width: 16,
-    height: 16,
+    width: verticalScale(16),
+    height: verticalScale(16),
   },
   emptyWrapper: {
-    width: 40,
-    height: 40,
+    width: verticalScale(40),
+    height: verticalScale(40),
   },
   titleWrapper: {
     flex: 1,
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: fontScale(24),
     color: COLORS.black,
     fontFamily: fontFamily.RomieTrial_Bold,
     textAlign: 'center',

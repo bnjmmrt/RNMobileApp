@@ -11,7 +11,7 @@ import {
   PROFILE,
 } from '../../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
-import {Hp, Wp} from '../../../utils/dimensions';
+import {fontScale, horizontalMarginScale, Hp, radiusScale, verticalMarginScale, verticalScale, Wp} from '../../../utils/dimensions';
 import {fontFamily} from '../../../utils/functions';
 import CreativeFocusComponent from './CreativeFocusComponent';
 import Button from '../../../component/Button';
@@ -22,14 +22,6 @@ import useApi from '../../../axios/useApi';
 import {EndPoint} from 'src/ApiManager/config';
 
 interface FeedbackScreenProps {}
-
-interface ConfigData {
-  logo: string;
-  title: string;
-  subTitle: string;
-  connectBtnBackground: string;
-  snapPoints?: any;
-}
 
 export interface Tag {
   id: number;
@@ -161,51 +153,51 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical:verticalMarginScale(10),
+    paddingHorizontal:horizontalMarginScale(20),
     height: '100%',
   },
   subTitle: {
     color: COLORS.light_gray,
-    fontSize: 13,
+    fontSize:fontScale(13),
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginVertical: Hp(1),
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom:verticalMarginScale(16),
   },
 
   textareaContainer: {
     borderWidth: 1,
     borderColor: COLORS.borderGray,
-    borderRadius: 10,
-    padding: 10,
+    borderRadius:radiusScale(10),
+    padding:verticalMarginScale(10),
     backgroundColor: COLORS.white,
-    marginVertical: 10,
+    marginVertical:verticalMarginScale(10),
     width: '100%',
   },
   textArea: {
     textAlignVertical: 'top',
-    fontSize: 16,
+    fontSize:fontScale(16),
     color: '#333',
-    height: 100,
+    height:verticalScale(100),
   },
   tagText: {
     fontFamily: fontFamily.RomieTrial_Bold,
-    fontSize: 20,
-    marginTop: 20,
+    fontSize:fontScale(20),
+    marginTop:verticalMarginScale(20),
   },
   btnStyle: {
     width: Wp(85),
-    borderRadius: 100,
-    marginBottom: 100,
+    borderRadius:radiusScale(100),
+    marginBottom:verticalMarginScale(100),
   },
   errorInputWrapper: {
     borderColor: COLORS.borderRed,
     backgroundColor: COLORS.bgRed,
   },
   errorText: {
-    fontSize: 12,
-    marginTop: 5,
+    fontSize:fontScale(12),
+    marginTop:verticalMarginScale(5),
     color: COLORS.errorText,
   },
 });

@@ -4,6 +4,7 @@ import {FlatList, Image, ImageSourcePropType, View} from 'react-native';
 import {CustomText} from 'src/component/CustomText';
 import UserDetailCard from '../UserDetailCard';
 import createStyle from './style';
+import {horizontalMarginScale} from 'src/utils/dimensions';
 
 const dummySocialData = [
   {
@@ -72,37 +73,35 @@ const UserOverview: React.FC<UserOverviewProps> = ({}) => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <UserDetailCard title={'Overview'}>
-        <CustomText style={[styles.sectionTitle, {marginTop: 0}]}>
-          {'Information'}
-        </CustomText>
-        <InfoRow title="Female" icon={IMAGES.profileTab} />
-        <InfoRow title="39" icon={IMAGES.hourglass} />
-        <InfoRow title="Chicago" icon={IMAGES.location} />
-        <InfoRow title="22 Oct 1995" icon={IMAGES.calender} />
-        <InfoRow title="(684) 555-0102" icon={IMAGES.phone} />
-        <InfoRow title="bessie.cooper@example.com" icon={IMAGES.contact} />
+    <UserDetailCard title={'Overview'}>
+      <CustomText style={[styles.sectionTitle, {marginTop: 0}]}>
+        {'Information'}
+      </CustomText>
+      <InfoRow title="Female" icon={IMAGES.profileTab} />
+      <InfoRow title="39" icon={IMAGES.hourglass} />
+      <InfoRow title="Chicago" icon={IMAGES.location} />
+      <InfoRow title="22 Oct 1995" icon={IMAGES.calender} />
+      <InfoRow title="(684) 555-0102" icon={IMAGES.phone} />
+      <InfoRow title="bessie.cooper@example.com" icon={IMAGES.contact} />
 
-        <CustomText style={styles.sectionTitle}>
-          {'Social Media Presence'}
-        </CustomText>
-        <FlatList
-          data={dummySocialData}
-          renderItem={renderSocialPresenceRow}
-          keyExtractor={(item, index) => index.toString()}
-          columnWrapperStyle={{gap: 4}}
-          contentContainerStyle={{gap: 4}}
-          numColumns={2}
-        />
+      <CustomText style={styles.sectionTitle}>
+        {'Social Media Presence'}
+      </CustomText>
+      <FlatList
+        data={dummySocialData}
+        renderItem={renderSocialPresenceRow}
+        keyExtractor={(item, index) => index.toString()}
+        columnWrapperStyle={{gap: horizontalMarginScale(4)}}
+        contentContainerStyle={{gap: horizontalMarginScale(4)}}
+        numColumns={2}
+      />
 
-        <CustomText style={styles.sectionTitle}>{'Total Following'}</CustomText>
-        <View style={styles.totalFollowingContainer}>
-          <CustomText style={styles.totalFollowing}>{'12.2'}</CustomText>
-          <CustomText style={styles.totalFollowingUnit}>{'M'}</CustomText>
-        </View>
-      </UserDetailCard>
-    </View>
+      <CustomText style={styles.sectionTitle}>{'Total Following'}</CustomText>
+      <View style={styles.totalFollowingContainer}>
+        <CustomText style={styles.totalFollowing}>{'12.2'}</CustomText>
+        <CustomText style={styles.totalFollowingUnit}>{'M'}</CustomText>
+      </View>
+    </UserDetailCard>
   );
 };
 

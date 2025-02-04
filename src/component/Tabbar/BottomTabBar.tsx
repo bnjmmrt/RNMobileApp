@@ -1,16 +1,16 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import BottomTabBrComponent from './BottomTabBarComponent';
-import DiscoverScreen from '../../screens/DiscoverScreen/DiscoverScreen';
-import IMAGES from '../../assets/images';
-import EventScreen from '../../screens/EventScreen/EventScreen';
-import ChatScreen from '../../screens/ChatScreen/ChatScreen';
-import ProfileScreen from '../../screens/ProfileScreen/ProfileScreen';
-import {useSelector} from 'react-redux';
-import {RootState} from 'src/redux/slices';
-import UsersModule from 'src/screens/UsersModule';
-import {SCREENS} from 'src/utils/constants';
+import { useSelector } from 'react-redux';
 import { ProfileStack } from 'src/navigation/ProfileStack';
+import { ROUTES } from 'src/navigation/Route';
+import { RootState } from 'src/redux/slices';
+import UsersModule from 'src/screens/UsersModule';
+import IMAGES from '../../assets/images';
+import ChatScreen from '../../screens/ChatScreen/ChatScreen';
+import DiscoverScreen from '../../screens/DiscoverScreen/DiscoverScreen';
+import EventScreen from '../../screens/EventScreen/EventScreen';
+import ProfileScreen from '../../screens/ProfileScreen/ProfileScreen';
+import BottomTabBrComponent from './BottomTabBarComponent';
 
 const Tab = createBottomTabNavigator();
 
@@ -18,59 +18,69 @@ const memberTabs = [
   {
     name: 'DiscoverScreen',
     component: DiscoverScreen,
-    options: {tabBarLabel: 'Discover', tabBarIcon: IMAGES.homeTab},
+    options: { tabBarLabel: 'Discover', tabBarIcon: IMAGES.homeTab },
   },
   {
     name: 'EventScreen',
     component: EventScreen,
-    options: {tabBarLabel: 'Events', tabBarIcon: IMAGES.eventTab},
+    options: { tabBarLabel: 'Events', tabBarIcon: IMAGES.eventTab },
   },
   {
     name: 'ChatScreen',
     component: ChatScreen,
-    options: {tabBarLabel: 'Chat', tabBarIcon: IMAGES.chatTab},
+    options: { tabBarLabel: 'Chat', tabBarIcon: IMAGES.chatTab },
   },
   {
     name: 'ProfileScreen',
-    component: ProfileStack,
-    options: {tabBarLabel: 'Profile', tabBarIcon: IMAGES.profileTab},
+    component: ProfileScreen,
+    options: { tabBarLabel: 'Profile', tabBarIcon: IMAGES.profileTab },
   },
 ];
 
-// const hostTabs = [
-//   {
-//     name: 'EventScreen',
-//     component: EventScreen,
-//     options: {tabBarLabel: 'Events', tabBarIcon: IMAGES.eventTab},
-//   },
-//   {
-//     name: SCREENS.USERS_BOTTOM_TAB,
-//     component: UsersModule,
-//     options: {tabBarLabel: 'Users', tabBarIcon: IMAGES.profileTab},
-//   },
-//   {
-//     name: 'ChatScreen',
-//     component: ChatScreen,
-//     options: {tabBarLabel: 'Chat', tabBarIcon: IMAGES.chatTab},
-//   },
-//   {
-//     name: 'ProfileScreen',
-//     component: ProfileScreen,
-//     options: {tabBarLabel: 'Profile', tabBarIcon: IMAGES.profileTab},
-//   },
-// ];
+const hostTabs = [
+  {
+    name: 'EventScreen',
+    component: EventScreen,
+    options: { tabBarLabel: 'Events', tabBarIcon: IMAGES.eventTab },
+  },
+  {
+    name: ROUTES.UsersScreen,
+    component: UsersModule,
+    options: { tabBarLabel: 'Users', tabBarIcon: IMAGES.usersTab },
+  },
+  {
+    name: 'ChatScreen',
+    component: ChatScreen,
+    options: { tabBarLabel: 'Chat', tabBarIcon: IMAGES.chatTab },
+  },
+  {
+    name: 'ProfileScreen',
+    component: ProfileScreen,
+    options: { tabBarLabel: 'Profile', tabBarIcon: IMAGES.profileTab },
+  },
+];
 
 const BottomTabBar = () => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-
-
+  const role =
+    (loginData?.roles &&
+      loginData?.roles.length > 0 &&
+      loginData?.roles[0]?.roleName) ||
+    'non_member';
+  const bottomTabsData = role === 'host' ? hostTabs : memberTabs;
   return (
     <Tab.Navigator
       tabBar={props => <BottomTabBrComponent {...props} />}
-      screenOptions={{headerShown: false}}
+      screenOptions={{ headerShown: false }}
       backBehavior="history"
-      initialRouteName={loginData?.isInvited ? "EventScreen" : "DiscoverScreen"}>
-      {memberTabs.map((item, index) => {
+      initialRouteName={
+        // role === 'host' ? 'EventScreen' : 'DiscoverScreen'
+        // loginData?.isInvited ? 'EventScreen' : 'DiscoverScreen'
+        // ROUTES.UsersScreen
+        // 'DiscoverScreen'
+        'EventScreen'
+      }>
+      {hostTabs.map((item, index) => {
         return (
           <Tab.Screen
             name={item.name}

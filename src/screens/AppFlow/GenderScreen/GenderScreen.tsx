@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -11,6 +11,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../redux/slices';
 import {setGender, setPageProgress} from '../../../redux/slices/appFlowSlice';
 import Toast from '../../../component/Toast/Toast';
+import {useFocusEffect} from '@react-navigation/native';
+import {changeSafeAreaViewConfig} from 'src/utils/functions';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 
 const genderList = [
   {id: 0, gender: 'Male'},
@@ -33,7 +36,7 @@ const GenderScreen: React.FC<GenderScreenProps> = ({navigation}) => {
   };
 
   const onNextClick = () => {
-    if (selectedGender>=0) {
+    if (selectedGender >= 0) {
       setIsToastShown(false);
       dispatch(setGender(selectedGender));
       dispatch(setPageProgress(4));
@@ -48,8 +51,14 @@ const GenderScreen: React.FC<GenderScreenProps> = ({navigation}) => {
     navigation.navigate('MyDetailsScreen');
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    }, []),
+  );
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header headerTitle={LABLE.GENDER} onPress={handleBackPress} />
       <View style={styles.contentContainer}>
         <Title
@@ -91,7 +100,7 @@ const GenderScreen: React.FC<GenderScreenProps> = ({navigation}) => {
         colorTheme="dark"
         onPress={onNextClick}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
