@@ -1,4 +1,3 @@
-
 export const BUTTON_LABLE = {
   ENTER: 'Enter',
   NEXT: 'Next',
@@ -39,9 +38,9 @@ export const BUTTON_LABLE = {
   SHOW_RESULTS: 'Show Results',
   CLEAR_FILTERS: 'Clear Filters',
   FOLLOW: 'Follow',
-    UPDATE_APPLICATION: 'Update Application',
-    YES:"Yes",
-    NO:'No'
+  UPDATE_APPLICATION: 'Update Application',
+  YES: 'Yes',
+  NO: 'No',
 };
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',
@@ -129,31 +128,39 @@ export const LABLE = {
     'We’ll review your application after we receive your message.',
   EMAIL_THE_CODE: 'Email the code to:',
   DONT_USE_INSTAGRAM: "Don't use Instagram?",
-  REFERRAL_CODE: "Referral Code",
+  REFERRAL_CODE: 'Referral Code',
   IF_YOU_HAVE_ANY_REFERRAL_CODE: 'If you have a referral code, enter it below.',
   ENTER_CODE: 'Enter Code',
   SELECT_A_REFERRAL: 'Select a Referral',
-  SEARCH_FRIENDS: "Search friends..",
+  SEARCH_FRIENDS: 'Search friends..',
   FRIENDS_WHO_ARE_MEMBERS: 'Friends who are members',
-  REQUEST_A_REFERRAL: 'Request a referral from a Rumor member to boost your application.',
-  CONTACTS: "Contacts",
-  INVITE_FRIENDS_TO: "Invite friends to fast track your membership approval.",
-  YOU_ARE_ON_WAITLIST: "You’re on\nthe waitlist.",
-  FULL_ACCESS_UNLOCK: "Full access will be unlocked once your application is approved.",
-  FASTRACK_YOUR_APPLICATION: "Want to fast-track your application?",
-  REQUEST_REFERRAL_FROM_RUMOR: "Request referrals from Rumor members.",
-  INVITE_YOUR_FRIEND: "Invite your friends to join Rumor.",
-  SELECT_YOUR_BIRTHDAY_BELOW: "Select your birthday below",
+  REQUEST_A_REFERRAL:
+    'Request a referral from a Rumor member to boost your application.',
+  CONTACTS: 'Contacts',
+  INVITE_FRIENDS_TO: 'Invite friends to fast track your membership approval.',
+  YOU_ARE_ON_WAITLIST: 'You’re on\nthe waitlist.',
+  FULL_ACCESS_UNLOCK:
+    'Full access will be unlocked once your application is approved.',
+  FASTRACK_YOUR_APPLICATION: 'Want to fast-track your application?',
+  REQUEST_REFERRAL_FROM_RUMOR: 'Request referrals from Rumor members.',
+  INVITE_YOUR_FRIEND: 'Invite your friends to join Rumor.',
+  SELECT_YOUR_BIRTHDAY_BELOW: 'Select your birthday below',
   LOGOUT: 'Log Out',
-  COMING_SOON: "Coming Soon…",
+  COMING_SOON: 'Coming Soon…',
   OTP_VERIFIED_SUCCESSFULLY: 'OTP verified successfully!',
-  SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN: 'Something went wrong, please try again',
-  ABOUT_THE_EVENT: "About the Event",
+  SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:
+    'Something went wrong, please try again',
+  ABOUT_THE_EVENT: 'About the Event',
   READ_MORE: 'Read More',
-  FEATURED_TALENT: "Featured Talent",
-  DUMMY_TEXT: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent bland",
-  PHONE_NUMBER:'Phone Number'
-}
+  FEATURED_TALENT: 'Featured Talent',
+  DUMMY_TEXT:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent bland',
+  PHONE_NUMBER: 'Phone Number',
+  RSVP_TEXT: `If you select ‘No’, you cannot change your response. If you later decide you’d like to attend, you’ll need to request another invite from the host.`,
+  WE_WERE_SORRY_CANT_MAKE_IT:"We’re sorry you         can’t make it.",
+  YOU_DECLINED_THIS_INVITATION:"You declined this invitation",
+  DISCOVER_MORE_EVENTS:"Discover More Events"
+};
 
 export const PROFILE = {
   EDIT_PROFILE: 'Edit Profile',
@@ -261,8 +268,8 @@ export const feedList = [
   'Sporting Events',
   'Seasonal Celebrations',
   'Talks & Workshops',
-  'Tech'
-]
+  'Tech',
+];
 
 export const EVENT_STATUS = {
   AWAITING: 'Awaiting response from host',
@@ -270,4 +277,4 @@ export const EVENT_STATUS = {
   DECLINED_BY_HOST: 'Request declined by host',
   DECLINED_BY_YOU: 'You declined this invitation',
   GOING: 'You are going',
-}
+};

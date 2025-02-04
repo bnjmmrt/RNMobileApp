@@ -1,16 +1,19 @@
 import IMAGES from '@images/index';
-import { useNavigation } from '@react-navigation/native';
-import React, {useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import React, {useRef, useState} from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   Image,
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  Platform,
 } from 'react-native';
+import ConfirmationBottomSheet from 'src/component/BottomSheet/ConfirmationBottomSheet';
+import ListComponentBottomSheet from 'src/component/BottomSheet/ListComponentBottomSheet';
 import Button from 'src/component/Button';
+import CustomSelectableText from 'src/component/CustomSelectableText/CustomSelectableText';
 import Header from 'src/component/Header/Header';
 import Toast from 'src/component/Toast/Toast';
 import {
@@ -53,63 +56,127 @@ const StatusBanner = () => {
   );
 };
 
+const reasons = [
+  {id: 1, name: 'Scheduling Conflict'},
+  {id: 2, name: 'Prior Commitment'},
+  {id: 3, name: 'Traveling'},
+  {id: 4, name: 'Event Location Inconvenient'},
+  {id: 5, name: 'Not Interested in This Event'},
+  {id: 6, name: 'Too Short of Notice'},
+  {id: 7, name: 'Weather Concerns'},
+  {id: 8, name: 'Other'},
+];
 const RSVPFormScreen = () => {
   const navigation = useNavigation();
   const [isToastShown, setIsToastShown] = useState(false);
+
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const [selectedOption, setSelectedOption] = useState<any>({});
+  const [selectedButton, setSelectedButton] = useState('');
+  const listRef = useRef<any>(null);
+  const confirmationRef = useRef<any>(null);
 
   const handleBackPress = () => {
     navigation.goBack();
   };
 
+  const onNoClick = () => {
+    setSelectedButton('No');
+    setShowDropdown(true);
+  };
+  const onYesClick = () => {
+    setSelectedButton('Yes');
+    setShowDropdown(false);
+  };
+
+  const onSelect = () => {
+    listRef.current.open();
+  };
   const submit = () => {
-    // Show the toast
-    setIsToastShown(true);
+    // setIsToastShown(true);
+    confirmationRef.current.open();
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      {/* HEADER + SCROLL CONTENT */}
+    <SafeAreaView style={styles.container}>
       <Header
         headerTitle={BUTTON_LABLE.RSVP}
         onPress={handleBackPress}
         showProgressBar={false}
       />
 
-      <ScrollView style={{flex: 1}}>
+      <ScrollView style={{marginVertical: verticalMarginScale(16)}}>
         <EventCard />
         <StatusBanner />
 
         <View style={[styles.card, {flexDirection: 'column'}]}>
           <View>
-            <Text>Would you like to attend the event?</Text>
+            <Text style={styles.info}>Would you like to attend the event?</Text>
           </View>
           <View style={styles.rsvpButtonsRow}>
             <Button
               disabled={false}
               title={BUTTON_LABLE.YES}
-              onPress={submit}
-              clearButtonStyle={styles.clearButton}
+              onPress={onYesClick}
+              style={selectedButton == 'Yes' ? styles.smallButton : styles.clearButton}
+              clearButtonStyle={
+                selectedButton == 'No' ? styles.clearButton : styles.smallButton
+              }
+              colorTheme={selectedButton == 'Yes' ? 'dark' : 'white'}
             />
             <Button
               disabled={false}
               title={BUTTON_LABLE.NO}
-              onPress={submit}
-              clearButtonStyle={styles.clearButton}
+              onPress={onNoClick}
+              style={selectedButton == 'No' ? styles.smallButton : styles.clearButton}
+              clearButtonStyle={
+                selectedButton == 'Yes'
+                  ? styles.clearButton
+                  : styles.smallButton
+              }
+              colorTheme={selectedButton == 'No' ? 'dark' : 'white'}
             />
           </View>
         </View>
+        {showDropdown && (
+          <View style={{padding: verticalMarginScale(12)}}>
+            <Text style={styles.label}>Why can’t you attend?</Text>
+            <CustomSelectableText
+              placeholder={'Select...'}
+              rightImage={IMAGES.downArrow}
+              errorMessage={''}
+              defaultValue={selectedOption?.name}
+              onPress={onSelect}
+              style={{marginTop: verticalMarginScale(4)}}
+            />
+            <Text style={styles.infoText}>{LABLE.RSVP_TEXT}</Text>
+          </View>
+        )}
+        <ListComponentBottomSheet
+          ref={listRef}
+          list={reasons}
+          selectedItem={setSelectedOption}
+          snapPoints={[Platform.OS === 'android' ? '65%' : '60%']}
+        />
+        <ConfirmationBottomSheet
+          ref={confirmationRef}
+          title={LABLE.WE_WERE_SORRY_CANT_MAKE_IT}
+          subTitle="If you later decide you'd like to attend, you'll need to request another invite from the host."
+          status={LABLE.YOU_DECLINED_THIS_INVITATION}
+          btnLabel={LABLE.DISCOVER_MORE_EVENTS}
+          snapPoints={[Platform.OS === 'android' ? '40%' : '38%']}
+          btnStyle={[styles.clearButton,styles.btnBorder]}
+        />
       </ScrollView>
 
-      {/* BOTTOM BUTTON */}
       <Button
         disabled={false}
         style={styles.btnStyle}
-        title={BUTTON_LABLE.UPDATE_APPLICATION}
+        title={BUTTON_LABLE.SUBMIT}
         colorTheme="dark"
         onPress={submit}
       />
-
-      {/* ABSOLUTE TOAST */}
       {isToastShown && (
         <View style={styles.toastWrapper}>
           <Toast
@@ -123,10 +190,10 @@ const RSVPFormScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {flex: 1, padding: verticalMarginScale(10)},
   card: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    marginVertical: verticalMarginScale(16),
     marginHorizontal: horizontalMarginScale(12),
     padding: verticalMarginScale(10),
     borderRadius: radiusScale(10),
@@ -166,6 +233,17 @@ const styles = StyleSheet.create({
     fontSize: fontScale(14),
     color: 'gray',
   },
+  infoText: {
+    marginTop: verticalScale(16),
+    fontSize: fontScale(12),
+    color: COLORS.light_gray,
+    lineHeight: verticalScale(14),
+  },
+  label: {
+    fontSize: fontScale(14),
+    fontWeight: '500',
+    marginTop: verticalMarginScale(2),
+  },
   btnStyle: {
     width: Wp(85),
     borderRadius: radiusScale(100),
@@ -173,19 +251,27 @@ const styles = StyleSheet.create({
     marginVertical: verticalMarginScale(10),
   },
   clearButton: {
-    borderWidth: 1.5,
+    borderWidth: horizontalScale(1.5),
     backgroundColor: COLORS.white,
     borderColor: COLORS.lighter_gray,
+    width: '48%',
+  },
+  btnBorder:{
+    width:"100%",
+    borderWidth:horizontalScale(1.5),
+    borderColor:COLORS.black
+  },
+  smallButton: {
     width: '48%',
   },
   rsvpButtonsRow: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    paddingVertical: 12,
+    paddingVertical: verticalMarginScale(12),
   },
   toastWrapper: {
     position: 'absolute',
-    bottom: 80, // Adjust as needed to appear above the bottom button
+    bottom: verticalMarginScale(60),
     left: 0,
     right: 0,
     alignItems: 'center',

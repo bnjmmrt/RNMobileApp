@@ -9,6 +9,13 @@ import {
   ViewStyle,
 } from 'react-native';
 import {COLORS, LABLE} from '../../utils/constants';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+} from 'src/utils/dimensions';
 
 interface CustomSelectableTextProps {
   label?: string;
@@ -19,7 +26,7 @@ interface CustomSelectableTextProps {
   rightImage?: any;
   onPress?: () => void;
   defaultValue?: string;
-  style?:ViewStyle
+  style?: ViewStyle;
 }
 
 const CustomSelectableText: React.FC<CustomSelectableTextProps> = ({
@@ -31,12 +38,12 @@ const CustomSelectableText: React.FC<CustomSelectableTextProps> = ({
   rightImage,
   onPress,
   defaultValue = '',
-  style
+  style,
 }) => {
   // const [errorMessage, setErrorMessage] = useState('');
 
   return (
-    <View style={[styles.container,style]}>
+    <View style={[styles.container, style]}>
       {/* Dynamic Label */}
       {label && <Text style={[styles.label]}>{label}</Text>}
 
@@ -48,10 +55,19 @@ const CustomSelectableText: React.FC<CustomSelectableTextProps> = ({
           errorMessage ? styles.errorInputWrapper : null,
         ]}>
         {leftImage && <Image source={leftImage} style={styles.leftImage} />}
-        
-          {defaultValue ? <Text style={styles.inputText}>{defaultValue}</Text> : <Text style={styles.inputTextPlaceholder}>{placeholder}</Text>}
-        
-        {rightImage && <Image  source={rightImage} style={styles.leftImage} />}
+
+        {defaultValue ? (
+          <Text
+            style={
+              leftImage ? styles.inputText : [styles.inputText, {width: '95%'}]
+            }>
+            {defaultValue}
+          </Text>
+        ) : (
+          <Text style={styles.inputTextPlaceholder}>{placeholder}</Text>
+        )}
+
+        {rightImage && <Image source={rightImage} style={styles.leftImage} />}
       </TouchableOpacity>
 
       {/* Dynamic Error Message */}
@@ -65,52 +81,51 @@ const CustomSelectableText: React.FC<CustomSelectableTextProps> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    marginTop: 24,
+    marginTop: verticalMarginScale(24),
   },
   label: {
-    paddingVertical: 2,
-    fontSize: 14,
+    paddingVertical: verticalMarginScale(2),
+    fontSize: fontScale(14),
     // color: COLORS.labelGray,
   },
   inputContainer: {
     borderWidth: 1,
     borderColor: COLORS.borderGray,
-    borderRadius: 8,
-    height: 60,
+    borderRadius: radiusScale(8),
+    height: verticalScale(60),
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 15,
+    paddingHorizontal: horizontalMarginScale(15),
   },
-  leftImage: {marginRight: 6, width: 16, 
-    height: 16, },
+  leftImage: {marginRight: verticalMarginScale(6)},
   inputText: {
     width: '90%',
-    fontSize: 14,
+    fontSize: fontScale(14),
     color: COLORS.black,
   },
   inputTextPlaceholder: {
-    width: '90%',
-    fontSize: 14,
+    width: '95%',
+    fontSize: fontScale(14),
     color: COLORS.light_gray,
   },
 
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 60,
+    height: verticalMarginScale(60),
     borderWidth: 1,
     borderColor: COLORS.borderGray,
-    borderRadius: 10,
+    borderRadius: radiusScale(10),
     backgroundColor: COLORS.white,
-    paddingHorizontal: 20,
+    paddingHorizontal: horizontalMarginScale(20),
   },
   errorInputWrapper: {
     borderColor: COLORS.borderRed,
     backgroundColor: COLORS.bgRed,
   },
   errorText: {
-    fontSize: 12,
-    marginTop: 5,
+    fontSize: fontScale(12),
+    marginTop: verticalMarginScale(5),
     color: COLORS.errorText,
   },
 });
