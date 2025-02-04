@@ -1,42 +1,43 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image, Text, Pressable } from 'react-native';
+import { View, StyleSheet, Image, Text, Pressable, ActivityIndicator } from 'react-native';
 import { Hp, Wp } from '../../utils/dimensions';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '../../assets/images/index';
-import Button from '../Button';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
-import { ScrollView } from 'react-native';
 import { fontFamily } from '../../utils/functions';
-import { useNavigation } from '@react-navigation/native';
 
 interface EventEmptyRecordProps {
     title: string;
     subTitle: string;
+    isLoading: boolean;
 }
 
 const EventEmptyRecord: React.FC<EventEmptyRecordProps> = ({
     title,
-    subTitle
+    subTitle,
+    isLoading
 }) => {
     return (
 
-        <View style={styles.container}>
-            <View style={styles.logoContainer}>
-                <Image source={IMAGES.noRecord} style={styles.logoImgStyle} />
+        !isLoading ? (
+            <View style={styles.container}>
+                <View style={styles.logoContainer}>
+                    <Image source={IMAGES.noRecord} style={styles.logoImgStyle} />
+                </View>
+
+                <TitleSubtitle
+                    style={styles.titleSubtitle}
+                    title={title}
+                    subTitle={subTitle}
+                    titleFontSize={30}
+                    subTitleMargin={Hp(1)}
+                    centerTextAlign={true}
+                    isDarkTheme={false}
+                />
             </View>
-
-            <TitleSubtitle
-                style={styles.titleSubtitle}    
-                title={title}
-                subTitle={subTitle}
-                titleFontSize={30}
-                subTitleMargin={Hp(1)}
-                centerTextAlign={true}
-                isDarkTheme={false}
-            />
-
-
-        </View>
+        ) : (
+            <ActivityIndicator />
+        )
     );
 };
 
@@ -95,6 +96,6 @@ const styles = StyleSheet.create({
     titleSubtitle: {
         paddingHorizontal: 20,
         marginTop: 20,
-        backgroundColor:COLORS.white
+        backgroundColor: COLORS.white
     },
 });

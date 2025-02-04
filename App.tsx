@@ -16,10 +16,28 @@ import { store, persistor } from './src/redux/store';
 import FlashMessage from 'react-native-flash-message';
 import { PersistGate } from 'redux-persist/integration/react';
 import { SafeAreaViewWrapper } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import { EndPoint } from 'src/ApiManager/config';
 
+import useApi from 'src/axios/useApi';
+import { useDispatch } from 'react-redux';
+import { setCreativeFocus } from 'src/redux/slices/appFlowSlice';
+import { setInterests } from 'src/redux/slices/appFlowApiDataSlice';
 const AppContent: React.FC = () => {
   // const { isInternetConnected } = useAuth();
   const { isConnected } = useNetInfo();
+  const { apiRequest, loading, error } = useApi();
+  const dispatch = useDispatch();
+  const fetch = async () => {
+    const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
+    dispatch(setCreativeFocus(focusResponse.data));
+    const interestResponse: any = await apiRequest('get', EndPoint.interests);
+    dispatch(setInterests(interestResponse.data));
+  };
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
 
   LogBox.ignoreAllLogs();
   useEffect(() => {
@@ -33,33 +51,6 @@ const AppContent: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  // const systemTheme = useColorScheme();
-  // const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
-
-  // type AppContextType = any;
-  // const appContext = useMemo<AppContextType>(
-  //   () => ({
-  //     isDarkTheme,
-  //     setIsDarkTheme,
-  //     themeColors: isDarkTheme ? DarkTheme.colors : DefaultTheme.colors,
-  //   }),
-  //   [isDarkTheme],
-  // );
-
-  // useEffect(() => {
-  //   setIsDarkTheme(systemTheme === 'light');
-  // }, [systemTheme]);
-
-  // useEffect(() => {
-  //   setIsDarkTheme(true);
-  // }, []);
-
-  // useEffect(() => {
-  //   const unsubscribe = NetInfo.addEventListener(state => {
-  //     console.log('Network status changed:', state.isConnected);
-  //   });
-  //   return () => unsubscribe(); // Cleanup the listener on component unmount
-  // }, []);
 
   const MyTheme = {
     ...DefaultTheme,
