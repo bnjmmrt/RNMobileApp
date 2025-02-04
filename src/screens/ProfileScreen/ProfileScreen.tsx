@@ -209,7 +209,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
   const logOut = () => {
     console.log("logiut")
-    dispatch(setLoginData({}))
+    dispatch(resetLoginData())
     dispatch(setAuthToken(null))
     logoutBottomSheetRef.current?.close();
     navigation.navigate(ROUTES.LandingScreen)

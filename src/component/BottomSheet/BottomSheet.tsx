@@ -6,13 +6,13 @@ import React, {
   useImperativeHandle,
   useState,
 } from 'react';
-import {StyleSheet, Modal, View, TouchableOpacity} from 'react-native';
+import { StyleSheet, Modal, View, TouchableOpacity, Pressable } from 'react-native';
 import BottomSheet, {
   BottomSheetFooter,
   BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
-import {Hp, Wp} from '../../utils/dimensions';
-import {COLORS} from '../../utils/constants';
+import { Hp, Wp } from '../../utils/dimensions';
+import { COLORS } from '../../utils/constants';
 
 interface BottomSheetComponentProps {
   children: React.ReactNode;
@@ -64,6 +64,11 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
       onClose?.();
     }, [onClose]);
 
+    const closeSheet = () => {
+      sheetRef.current?.close();
+
+    }
+
     const snapPointsMemo = useMemo(() => snapPoints, [snapPoints]);
     const renderFooter = useCallback(
       props => (
@@ -80,7 +85,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
         visible={isVisible}
         animationType="fade"
         onRequestClose={handleClosePress}>
-        <View style={styles.modalContainer}>
+        <Pressable style={styles.modalContainer} onPress={closeSheet}>
           <BottomSheet
             ref={sheetRef}
             snapPoints={snapPointsMemo}
@@ -103,7 +108,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
             }}>
             {children}
           </BottomSheet>
-        </View>
+        </Pressable>
       </Modal>
     );
   },
