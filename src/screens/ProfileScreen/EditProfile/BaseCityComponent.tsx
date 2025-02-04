@@ -14,7 +14,7 @@ import {RootState} from '../../../redux/slices';
 import {Address} from '../../../redux/slices/appFlowSlice';
 import LocationPickerModal from '../../../component/BottomSheet/LocationPickerModal';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
-import {Wp} from '../../../utils/dimensions';
+import {fontScale, horizontalMarginScale, radiusScale, verticalScale, Wp} from '../../../utils/dimensions';
 
 interface BaseCityComponentProps {}
 
@@ -75,17 +75,17 @@ const BaseCityComponent =forwardRef((props, ref) => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 0,
-    height: 60,
+    height:verticalScale(60),
     backgroundColor: COLORS.white,
   },
   btnStyle: {
     width: Wp(85),
-    borderRadius: 100,
+    borderRadius:radiusScale(100),
   },
   contentContainer: {
     flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical:horizontalMarginScale(10),
+    paddingHorizontal: horizontalMarginScale(20),
   },
   spacer: {
     flex: 1,
@@ -94,15 +94,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 8,
-    height: 50,
+    height:verticalScale(50),
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 15,
+    paddingHorizontal:horizontalMarginScale(15),
   },
-  searchImage: {marginRight: 6},
+  searchImage: {marginRight: horizontalMarginScale(6)},
   input: {
     width: '90%',
-    fontSize: 16,
+    fontSize:fontScale(16),
     color: COLORS.white,
   },
 });

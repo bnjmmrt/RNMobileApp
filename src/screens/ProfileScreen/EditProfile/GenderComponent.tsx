@@ -6,6 +6,7 @@ import CustomSelectableText from '../../../component/CustomSelectableText/Custom
 import IMAGES from '../../../assets/images';
 import {LABLE, ERROR_MESSAGE, COLORS} from '../../../utils/constants';
 import BottomSheetComponent from '../../../component/BottomSheet/BottomSheet';
+import { fontScale, horizontalMarginScale, verticalMarginScale } from 'src/utils/dimensions';
 
 interface GenderComponentProps {
   selectedGender:(gender:any)=>void,
@@ -80,25 +81,25 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
   genderContainer: {
-    paddingHorizontal: 12,
+    paddingHorizontal:horizontalMarginScale(12),
   },
-  calenderImage: {marginRight: 6, width: 16, height: 16},
+  calenderImage: {marginRight:verticalMarginScale(6), width:horizontalMarginScale(16), height:verticalMarginScale(16)},
   iconContainer: {},
 
   button: {
     borderWidth: 1,
     borderColor: COLORS.lighter_gray,
-    borderRadius: 25,
+    borderRadius:fontScale(25),
     // paddingVertical: 10,
     // paddingHorizontal: 40,
     backgroundColor: COLORS.white,
-    marginTop: 5,
+    marginTop:verticalMarginScale(5),
   },
   buttonText: {
-    fontSize: 16,
+    fontSize:fontScale(16),
     color: COLORS.black,
     textAlign: 'center',
-    padding: 14,
+    padding:verticalMarginScale(14),
   },
 });
 export default GenderComponent;

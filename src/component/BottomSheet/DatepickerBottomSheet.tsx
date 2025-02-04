@@ -1,7 +1,7 @@
 import React, {forwardRef} from 'react';
 import {Platform, View, StyleSheet, Text} from 'react-native';
 import BottomSheetComponent from './BottomSheet';
-import {Wp} from '../../utils/dimensions';
+import {fontScale, radiusScale, verticalMarginScale, Wp} from '../../utils/dimensions';
 import {
   BUTTON_LABLE,
   COLORS,
@@ -65,19 +65,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 32,
+    fontSize:fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
     fontWeight: '700',
   },
   subTitle: {
-    marginVertical: 10,
-    fontSize: 14,
+    marginVertical:verticalMarginScale(10),
+    fontSize: fontScale(14),
     color: COLORS.light_gray,
   },
   btnStyle: {
     width: Wp(85),
-    borderRadius: 100,
-    marginTop: 20,
+    borderRadius:radiusScale(100),
+    marginTop:verticalMarginScale(20),
   },
 });
 
