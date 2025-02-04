@@ -8,21 +8,20 @@ import { ScrollView } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import HeaderComponent from '../HeaderComponent';
 import ReferralCodeBottomSheet from '../ReferralCodeBottomSheet/ReferralCodeBottomSheet';
-import InviteReferralBottomSheet from '../InviteReferralBottomSheet/InviteReferralBottomSheet';
 import MiddleStaticComponent from '../TitleSubTitleComponent/MiddleStaticComponent';
+import useContactPermission from 'src/utils/hooks/useContactPermission';
+import { useNavigation } from '@react-navigation/native';
 
 
 const AfterAppStaticComponent: React.FC<{}> = () => {
+  const { requestContactPermission } = useContactPermission();
+  const { navigate } = useNavigation();
 
   const bottomSheetRef = useRef(null);
-  const bottomSheetInviteRef = useRef(null);
-  const [inviteReferral,setInviteReferral]=useState(false);
 
-  const onAccessContactClick = () => {
-    setInviteReferral(true);
-    setTimeout(() => {
-      bottomSheetInviteRef?.current?.open();
-    }, 1000);
+  const onAccessContactClick = async () => {
+    await requestContactPermission();
+    navigate('InviteReferralScreen')
   }
   const onEnterReferralClick = () => {
     bottomSheetRef?.current?.open();
@@ -71,7 +70,6 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
         </View>
 
       </ScrollView>
-      {inviteReferral && <InviteReferralBottomSheet ref={bottomSheetInviteRef} />}
       <ReferralCodeBottomSheet ref={bottomSheetRef} />
 
     </View>

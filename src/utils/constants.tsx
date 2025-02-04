@@ -8,6 +8,7 @@ export const BUTTON_LABLE = {
   GET_STARTED: 'Get Started',
   RESEND: 'Resend',
   SUBMTI_APPLICATION: 'Submit Application',
+  UPDATE_APPLICATION: 'Update Application',
   UPCOMING: 'Upcoming',
   INVITED: 'Invited',
   APPLIED: 'Applied',
@@ -239,6 +240,7 @@ export const COLORS = {
   darkBlue: '#0A66C2',
   red: '#FF0000',
   yellow: '#FFFC00',
+  yellowLight: '#FEF8E9'
 };
 
 export const feedList = [
