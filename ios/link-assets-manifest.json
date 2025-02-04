@@ -1,0 +1,77 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/ABCDiatype-Bold.ttf",
+      "sha1": "89d89f085feea6df07573391689c496462656704"
+    },
+    {
+      "path": "src/assets/fonts/ABCDiatype-BoldItalic.ttf",
+      "sha1": "ce5836ff673db34d4160e67bf1f83493797a6d74"
+    },
+    {
+      "path": "src/assets/fonts/ABCDiatype-Light.ttf",
+      "sha1": "97321d027d84970584165ec500d4fe50e5b74d04"
+    },
+    {
+      "path": "src/assets/fonts/ABCDiatype-LightItalic.ttf",
+      "sha1": "0fd7e36dc4f595ed7809bb7f5afd5fd3b5e4e932"
+    },
+    {
+      "path": "src/assets/fonts/ABCDiatype-Medium.ttf",
+      "sha1": "d8d0e3986820e13030b95717008b77fa7c58012d"
+    },
+    {
+      "path": "src/assets/fonts/ABCDiatype-MediumItalic.ttf",
+      "sha1": "1e2bf2dc2478183f92df4450855003e02bea1a53"
+    },
+    {
+      "path": "src/assets/fonts/ABCDiatype-Regular.ttf",
+      "sha1": "149ef6222179d304a08146849ab841a1413aeba8"
+    },
+    {
+      "path": "src/assets/fonts/ABCDiatype-RegularItalic.ttf",
+      "sha1": "8bffacc65e159c7b8af58e9a9b4454d20415ae73"
+    },
+    {
+      "path": "src/assets/fonts/ABCDiatype-Thin.ttf",
+      "sha1": "a0b246db09279fedbc565ec91931debe96128144"
+    },
+    {
+      "path": "src/assets/fonts/ABCDiatype-ThinItalic.ttf",
+      "sha1": "a8a8b3b467fa9f1dd5665b25a4423c0954800101"
+    },
+    {
+      "path": "src/assets/fonts/RomieTrial-Black.otf",
+      "sha1": "7da2dfffba14feeb4d243e63ff89935911a8fe77"
+    },
+    {
+      "path": "src/assets/fonts/RomieTrial-Bold.otf",
+      "sha1": "96162dcfbfa58aa01cbd430f9c390b309ceb408e"
+    },
+    {
+      "path": "src/assets/fonts/RomieTrial-Heavy.otf",
+      "sha1": "ce5b3b29787b8c2afa1ed3919d7a065bf333fa88"
+    },
+    {
+      "path": "src/assets/fonts/RomieTrial-Light.otf",
+      "sha1": "63fa3264254de807a71808e8c41c795a582ac87b"
+    },
+    {
+      "path": "src/assets/fonts/RomieTrial-Medium.otf",
+      "sha1": "dd9ea93cd5a5fe0c4d18eff3d59a21925790e7e6"
+    },
+    {
+      "path": "src/assets/fonts/RomieTrial-Regular-Italic.otf",
+      "sha1": "7f2d792ec4879f8fb4b5af2056f183fc4b3e4d0d"
+    },
+    {
+      "path": "src/assets/fonts/RomieTrial-Regular.otf",
+      "sha1": "bba829178b332e15274f19030f0b187c50f5e63d"
+    },
+    {
+      "path": "src/assets/fonts/RomieTrial.otf",
+      "sha1": "bba829178b332e15274f19030f0b187c50f5e63d"
+    }
+  ]
+}

@@ -1,118 +1,94 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useMemo, useState } from 'react';
+import { Provider } from 'react-redux';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StyleSheet, useColorScheme, LogBox } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import MainNavigation from './src/navigation';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import DarkTheme from './src/Theme/DarkTheme';
+import DefaultTheme from './src/Theme/DefaultTheme';
+import { AppContext } from './src/context/AppContext';
+// import { NetInfoProvider, useAuth } from './src/context/NetInfoContext';
+import NoInternetScreen from './src/component/NoInternetScreen';
+import { useNetInfo } from "@react-native-community/netinfo";
+import { store, persistor } from './src/redux/store';
+import FlashMessage from 'react-native-flash-message';
+import { PersistGate } from 'redux-persist/integration/react';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const AppContent: React.FC = () => {
+  // const { isInternetConnected } = useAuth();
+  const { isConnected } = useNetInfo();
+  LogBox.ignoreAllLogs();
+  useEffect(() => {
+    console.log('Internet status:', isConnected);
+  }, [isConnected]);
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+  // console.log("isConnected",isConnected)
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+  // console.log("isInternetConnected",isInternetConnected)
+
+  if (!isConnected && isConnected !== null) {
+    return <NoInternetScreen />;
+  }
+
+  return <MainNavigation />;
+};
+
+const App: React.FC = () => {
+  const systemTheme = useColorScheme();
+  const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
+
+  type AppContextType = any;
+  const appContext = useMemo<AppContextType>(
+    () => ({
+      isDarkTheme,
+      setIsDarkTheme,
+      themeColors: isDarkTheme ? DarkTheme.colors : DefaultTheme.colors,
+    }),
+    [isDarkTheme]
   );
-}
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  // useEffect(() => {
+  //   setIsDarkTheme(systemTheme === 'light');
+  // }, [systemTheme]);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  useEffect(() => {
+    setIsDarkTheme(true)
+  }, []);
+
+
+  // useEffect(() => {
+  //   const unsubscribe = NetInfo.addEventListener(state => {
+  //     console.log('Network status changed:', state.isConnected);
+  //   });
+  //   return () => unsubscribe(); // Cleanup the listener on component unmount
+  // }, []);
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <NavigationContainer theme={isDarkTheme ? DarkTheme : DefaultTheme}>
+            <AppContext.Provider value={appContext}>
+              <SafeAreaProvider style={styles.container}>
+                <AppContent />
+                <FlashMessage position="top" />
+              </SafeAreaProvider>
+            </AppContext.Provider>
+          </NavigationContainer>
+        </GestureHandlerRootView>
+      </PersistGate>
+    </Provider>
+  );
+};
 
 export default App;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
