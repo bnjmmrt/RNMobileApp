@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -15,6 +15,9 @@ import {
 } from '../../../redux/slices/appFlowSlice';
 import Toast from '../../../component/Toast/Toast';
 import {useGetFocusesQuery} from '../../../redux/actions/appFlowApiAction';
+import {useFocusEffect} from '@react-navigation/native';
+import {changeSafeAreaViewConfig} from 'src/utils/functions';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 
 interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -22,7 +25,7 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
   navigation,
 }) => {
   const {data, error, isLoading} = useGetFocusesQuery('');
-  
+
   const dispatch = useDispatch();
   const selectedCreativeFocus = useSelector(
     (state: RootState) => state.appFlow.creativeFocus,
@@ -31,25 +34,26 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
     (state: RootState) => state.appFlowApiData.creativeFocus,
   );
   const styles = CreativeFocusScreenStyles();
-  const [selectedCategories, setSelectedCategories] =
-    useState<any[]>(selectedCreativeFocus);
+  const [selectedCategories, setSelectedCategories] = useState<any[]>(
+    selectedCreativeFocus,
+  );
 
   const [isToastShown, setIsToastShown] = useState(false);
 
   const handleCategorySelect = (category: any) => {
-     console.log(selectedCategories.length)
-    if (selectedCategories.find(item=> item.id===category.id)) {
-      console.log(category)
+    console.log(selectedCategories.length);
+    if (selectedCategories.find(item => item.id === category.id)) {
+      console.log(category);
       if (selectedCategories.length === 1) {
         setIsToastShown(true);
       }
       // Remove category if already selected
       setSelectedCategories(
-        selectedCategories.filter((item:any) => item.id !== category.id),
+        selectedCategories.filter((item: any) => item.id !== category.id),
       );
     } else if (selectedCategories.length < 3) {
       // Add category if less than 3 are selected
-      console.log(category)
+      console.log(category);
       setIsToastShown(false);
       setSelectedCategories([...selectedCategories, category]);
     }
@@ -72,8 +76,14 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
     navigation.navigate('BaseCityScreen');
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    }, []),
+  );
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header headerTitle={LABLE.CREATIVE_FOCUS} onPress={handleBackPress} />
 
       <View style={styles.contentContainer}>
@@ -95,8 +105,9 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
               <Text
                 style={[
                   styles.categoryText,
-                  selectedCategories.some(selected => selected.id === item.id) &&
-                    styles.selectedCategoryText,
+                  selectedCategories.some(
+                    selected => selected.id === item.id,
+                  ) && styles.selectedCategoryText,
                 ]}>
                 {item.name}
               </Text>
@@ -118,7 +129,7 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
         colorTheme="dark"
         onPress={onNextClick}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

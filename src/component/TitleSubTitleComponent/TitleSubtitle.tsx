@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, TextStyle, View, ViewStyle} from 'react-native';
 import {COLORS} from '../../utils/constants';
-import {Hp, Wp} from '../../utils/dimensions';
+import {fontScale, verticalMarginScale} from '../../utils/dimensions';
 import {fontFamily} from '../../utils/functions';
 import {CustomText} from '../CustomText';
 
@@ -22,8 +22,8 @@ const TitleSubtitle: React.FC<TitleSubtitleProps> = ({
   subTitle = '', // Default to empty string
   centerTextAlign = false, // Default value set
   isDarkTheme = false, // Default value
-  titleFontSize = 32,
-  subTitleMargin = Hp(2),
+  titleFontSize = fontScale(32),
+  subTitleMargin = verticalMarginScale(16),
   style, // Destructure style prop
   titleTextstyle,
   subTitleTextstyle,
@@ -68,11 +68,10 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: COLORS.light_gray,
-    fontSize: 13,
+    fontSize: fontScale(14),
   },
   contentContainer: {
     flexDirection: 'column',
-    width: Wp(90),
   },
 });
 

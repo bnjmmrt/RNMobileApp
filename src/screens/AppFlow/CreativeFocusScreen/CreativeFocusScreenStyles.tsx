@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { COLORS } from '../../../utils/constants';
-import { Wp } from '../../../utils/dimensions';
+import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, Wp } from '../../../utils/dimensions';
 
 const CreativeFocusScreenStyles = () =>
   StyleSheet.create({
@@ -10,21 +10,21 @@ const CreativeFocusScreenStyles = () =>
     },
     contentContainer: {
       flex: 1,
-      paddingHorizontal: 20,
-      paddingVertical: 10
+      paddingHorizontal:horizontalMarginScale(20),
+      paddingVertical:verticalMarginScale(10)
     },
     categoryContainer: {
-      marginTop: 20,
+      marginTop:verticalMarginScale(20),
       flexDirection: 'row',
       flexWrap: 'wrap',
     },
     categoryButton: {
       borderWidth: 1,
       borderColor: '#D1D1D1',
-      borderRadius: 20,
-      paddingVertical: 10,
-      paddingHorizontal: 15,
-      margin: 5,
+      borderRadius:radiusScale(20),
+      paddingVertical:verticalMarginScale(10),
+      paddingHorizontal:horizontalMarginScale(15),
+      margin:verticalMarginScale(5),
       backgroundColor: COLORS.lighter_gray,
     },
     selectedCategoryButton: {
@@ -32,7 +32,7 @@ const CreativeFocusScreenStyles = () =>
       borderColor: COLORS.black,
     },
     categoryText: {
-      fontSize: 14,
+      fontSize:fontScale(14),
       color: COLORS.black,
     },
     selectedCategoryText: {
@@ -40,7 +40,7 @@ const CreativeFocusScreenStyles = () =>
     },
     btnStyle: {
       width: Wp(85),
-      borderRadius: 100,
+      borderRadius:radiusScale(100),
     },
   });
 

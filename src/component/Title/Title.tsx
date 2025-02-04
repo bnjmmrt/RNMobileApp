@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import { COLORS } from '../../utils/constants';
-import { Hp } from '../../utils/dimensions';
+import { fontScale, Hp, verticalMarginScale } from '../../utils/dimensions';
 
 interface HeaderProps {
   title: string;
@@ -21,16 +21,16 @@ const Header: React.FC<HeaderProps> = ({ title, subTitle, align = 'left' }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 10,
+    marginTop:verticalMarginScale(10),
   },
   title: {
     color: COLORS.black,
-    fontSize: 32,
+    fontSize:fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
   },
   subTitle: {
     color: COLORS.light_gray,
-    fontSize: 14,
+    fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginVertical: Hp(1),
     textAlign: 'center', // Default alignment

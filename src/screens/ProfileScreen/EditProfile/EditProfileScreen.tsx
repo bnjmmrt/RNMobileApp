@@ -7,6 +7,7 @@ import {
   BUTTON_LABLE,
   ERROR_MESSAGE,
   COLORS,
+  PROFILE,
 } from '../../../utils/constants';
 import Button from '../../../component/Button';
 import Input from '../../../component/Input/Input';
@@ -16,7 +17,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../redux/slices';
 import useApi from '../../../axios/useApi';
 import {EndPoint} from '../../../ApiManager/config';
-import {Wp} from '../../../utils/dimensions';
+import {fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, Wp} from '../../../utils/dimensions';
 import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
 import EmailInput from '../../../component/EmailComponent/EmailInput';
 import DatePickerComponent from './DatePickerComponent';
@@ -148,7 +149,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <Header
-        headerTitle={LABLE.EDIT_PROFILE}
+        headerTitle={PROFILE.EDIT_PROFILE}
         onPress={handleBackPress}
         showProgressBar={false}
       />
@@ -215,15 +216,15 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
             onClose={() => setIsToastShown(false)}
           />
         )}
-         <Button
+        
+      </ScrollView>
+      <Button
         disabled={false}
         style={styles.btnStyle}
         title={BUTTON_LABLE.CONFIRM}
         colorTheme="dark"
         onPress={onConfirmClick}
       />
-      </ScrollView>
-     
     </SafeAreaView>
   );
 };
@@ -235,18 +236,18 @@ const styles = StyleSheet.create({
   },
   btnStyle: {
     width: Wp(85),
-    borderRadius: 100,
+    borderRadius:radiusScale(100),
   },
   contentContainer: {
     flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical:verticalMarginScale(10),
+    paddingHorizontal: horizontalMarginScale(20),
   },
-  scrollContainer: {paddingBottom: 200},
+  scrollContainer: {paddingBottom: verticalMarginScale(200)},
   label: {
-    paddingVertical: 2,
-    fontSize: 14,
-    paddingTop: 20,
+    paddingVertical: horizontalMarginScale(2),
+    fontSize:fontScale(14),
+    paddingTop: verticalMarginScale(20),
   },
 });
 

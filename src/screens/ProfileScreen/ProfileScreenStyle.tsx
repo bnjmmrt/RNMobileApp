@@ -1,5 +1,5 @@
 import { Platform, StyleSheet, } from 'react-native';
-import { Wp, Hp } from '../../utils/dimensions';
+import { Wp, Hp, fontScale, radiusScale, verticalMarginScale, horizontalMarginScale } from '../../utils/dimensions';
 import { COLORS } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
 
@@ -18,22 +18,22 @@ const ProfileScreenStyle = () => {
         },
         btnStyle: {
             width: Wp(85),
-            borderRadius: 100,
+            borderRadius:radiusScale(100),
         },
         logoContainer: {
-            alignItems: 'center', marginTop: 10, marginBottom: 10
+            alignItems: 'center', marginVertical:verticalMarginScale(10)
         },
         logoImgStyle: {
-            width: 100,
-            height: 50,
+            width:horizontalMarginScale(100),
+            height:verticalMarginScale(50),
             resizeMode: 'center',
         },
         textBelowStyle: {
             color: COLORS.light_gray,
-            fontSize: 14,
+            fontSize:fontScale(14),
             textAlign:'center',
             fontFamily: fontFamily.ABCDiatype_Regular,
-            marginBottom: 100
+            marginBottom: verticalMarginScale(100)
         },
     });
 };

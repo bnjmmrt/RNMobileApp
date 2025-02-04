@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {COLORS} from '../../../utils/constants';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../redux/slices';
-import {Wp} from '../../../utils/dimensions';
+import {fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, Wp} from '../../../utils/dimensions';
 
 interface CreativeFocusComponentProps {
   list?:any[];
@@ -98,21 +98,21 @@ const styles = StyleSheet.create({
  
   contentContainer: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal:horizontalMarginScale(20),
+    paddingVertical:verticalMarginScale(10),
   },
   categoryContainer: {
-    marginTop: 6,
+    marginTop:verticalMarginScale(6),
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
   categoryButton: {
     borderWidth: 1,
     borderColor: '#D1D1D1',
-    borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    margin: 2,
+    borderRadius:radiusScale(20),
+    paddingVertical:verticalMarginScale(10),
+    paddingHorizontal:horizontalMarginScale(15),
+    margin: verticalMarginScale(2),
     backgroundColor: COLORS.lighter_gray,
   },
   selectedCategoryButton: {
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.black,
   },
   categoryText: {
-    fontSize: 14,
+    fontSize:fontScale(14),
     color: COLORS.black,
   },
   selectedCategoryText: {
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   btnStyle: {
     width: Wp(85),
-    borderRadius: 100,
+    borderRadius:radiusScale(100),
   },
 });
 export default CreativeFocusComponent;

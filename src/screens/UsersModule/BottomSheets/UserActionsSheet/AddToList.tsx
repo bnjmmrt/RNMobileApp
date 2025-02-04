@@ -17,7 +17,7 @@ const AddToList = ({
       return (
         <Button
           title={'List ' + (index + 1)}
-          style={[styles.actionCta, styles.listItem]}
+          style={[styles.actionButton]}
           onPress={onSuccess}
         />
       );

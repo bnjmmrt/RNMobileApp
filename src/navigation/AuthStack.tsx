@@ -3,11 +3,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LandingScreen from '../screens/LandingScreen/LandingScreen';
 import EmailPhoneScreen from '../screens/EmailPhoneScreen/EmailPhoneScreen';
 import VerifyOtpScreen from '../screens/VerifyOtpScreen/VerifyOtpScreen';
-import { AppStack } from './AppStack';
-import { OnboardingStack } from './OnboardingStack';
-import BeforeAppStaticScreen from 'src/screens/BeforeApplicationFlow/BeforeAppStaticScreen';
-import { AppFlowStack } from './AppFlowStack';
-import BottomTabBar from '../component/Tabbar/BottomTabBar';
 
 
 // Define the param list for the stack navigator
@@ -15,9 +10,6 @@ export type AuthStackParamList = {
   LandingScreen: undefined;
   EmailPhoneScreen: undefined;
   VerifyOtpScreen: undefined;
-  BottomTabBar: undefined;
-  BeforeAppStaticScreen: undefined;
-  AppFlowStack: undefined;
 };
 
 const Stack = createStackNavigator<AuthStackParamList>();
@@ -44,25 +36,6 @@ export const AuthStack: React.FC = () => {
         component={VerifyOtpScreen}
         options={{ headerShown: false }}
       />
-
-      <Stack.Screen
-        name="BeforeAppStaticScreen"
-        component={BeforeAppStaticScreen}
-        options={{ headerShown: false }}
-      />
-
-      <Stack.Screen
-        name="AppFlowStack"
-        component={AppFlowStack}
-        options={{ headerShown: false }}
-      />
-
-      <Stack.Screen
-        name="BottomTabBar"
-        component={BottomTabBar}
-        options={{ headerShown: false }}
-      />
-
 
     </Stack.Navigator>
   );

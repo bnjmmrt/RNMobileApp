@@ -1,59 +1,47 @@
-import React, {useState} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {AppFlowStack} from './AppFlowStack';
+import React from 'react';
 import BottomTabBar from '../component/Tabbar/BottomTabBar';
 import BeforeAppStaticScreen from '../screens/BeforeApplicationFlow/BeforeAppStaticScreen';
-import {useSelector} from 'react-redux';
-import {RootState} from '../redux/slices';
-import {AuthStack} from './AuthStack';
-import {SCREENS} from 'src/utils/constants';
+import {AppFlowStack} from './AppFlowStack';
+import {ROUTES} from './Route';
+import UserDetails from 'src/screens/UsersModule/UserDetails';
+import ListDetails from 'src/screens/UsersModule/ListDetails';
+import {ProfileStack} from './ProfileStack';
+import {EventStack} from './EventStack';
 
-// Define the param list for the stack navigator
 export type AppStackParamList = {
   BeforeAppStaticScreen: undefined;
   BottomTabBar: undefined;
   AppFlowStack: undefined;
-  AuthStack: undefined;
-  [SCREENS.USER_DETAIL]: undefined;
+  UserDetail: undefined;
+  ListDetail: undefined;
+  ProfileStack: undefined;
+  EventStack: undefined;
 };
 
-const Stack = createStackNavigator<AppStackParamList>();
-// const loginData = useSelector((state: RootState) => state.auth.loginData);
+interface AppStackProps {
+  initialRouteName?: keyof AppStackParamList;
+}
 
-export const AppStack: React.FC = () => {
+const Stack = createStackNavigator<AppStackParamList>();
+
+export const AppStack: React.FC<AppStackProps> = ({
+  initialRouteName = 'BottomTabBar',
+}) => {
   return (
     <Stack.Navigator
-      initialRouteName={'BottomTabBar'}
-      screenOptions={({route, navigation}) => ({})}>
+      initialRouteName={initialRouteName}
+      screenOptions={{headerShown: false}}>
       <Stack.Screen
-        name="BeforeAppStaticScreen"
+        name={ROUTES.BeforeAppStaticScreen}
         component={BeforeAppStaticScreen}
-        options={{headerShown: false}}
       />
-
-      <Stack.Screen
-        name="AppFlowStack"
-        component={AppFlowStack}
-        options={{headerShown: false}}
-      />
-
-      <Stack.Screen
-        name="BottomTabBar"
-        component={BottomTabBar}
-        options={{headerShown: false}}
-      />
-
-      <Stack.Screen
-        name="AuthStack"
-        component={AuthStack}
-        options={{headerShown: false}}
-      />
-
-      <Stack.Screen
-        name={SCREENS.USER_DETAIL}
-        component={AuthStack}
-        options={{headerShown: false}}
-      />
+      <Stack.Screen name={ROUTES.AppFlowStack} component={AppFlowStack} />
+      <Stack.Screen name={ROUTES.BottomTabBar} component={BottomTabBar} />
+      <Stack.Screen name={ROUTES.ProfileStack} component={ProfileStack} />
+      <Stack.Screen name={ROUTES.EventStack} component={EventStack} />
+      <Stack.Screen name={ROUTES.UserDetail} component={UserDetails} />
+      <Stack.Screen name={ROUTES.ListDetail} component={ListDetails} />
     </Stack.Navigator>
   );
 };
