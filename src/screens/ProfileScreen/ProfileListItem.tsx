@@ -13,6 +13,7 @@ import { COLORS, PROFILE } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { ROUTES } from '../../navigation/Route';
+import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 
 interface ListItemProps {
   item: {
@@ -117,39 +118,39 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    paddingHorizontal: 10,
+    paddingHorizontal:horizontalMarginScale(10),
     backgroundColor: COLORS.white,
-    marginBottom: 5,
+    marginBottom:verticalMarginScale(5),
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 55,
-    borderWidth: 1,
+    height:verticalMarginScale(55),
+    borderWidth:verticalScale(1),
     flex: 1,
     borderColor: COLORS.borderGray,
-    borderRadius: 10,
+    borderRadius:radiusScale(10),
     backgroundColor: COLORS.white,
-    paddingHorizontal: 20,
+    paddingHorizontal:horizontalMarginScale(20),
   },
   errorInputWrapper: {
     borderColor: COLORS.borderRed,
     backgroundColor: COLORS.bgRed,
   },
   icon: {
-    marginRight: 10,
-    width: 20,
-    height: 20,
+    marginRight:horizontalMarginScale(10),
+    width:horizontalMarginScale(20),
+    height:verticalMarginScale(20),
   },
   input: {
     flex: 1,
-    fontSize: 14,
+    fontSize:fontScale(14),
     color: COLORS.black,
     fontFamily: fontFamily.ABCDiatype_Regular,
   },
   errorText: {
-    fontSize: 12,
-    marginTop: 5,
+    fontSize:fontScale(12),
+    marginTop:verticalMarginScale(5),
     color: COLORS.errorText,
   },
 });

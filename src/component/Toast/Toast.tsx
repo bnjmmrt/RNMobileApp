@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Text, StyleSheet, TouchableOpacity, Animated, Image} from 'react-native';
 import { COLORS } from '../../utils/constants';
 import IMAGES from '../../assets/images';
+import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale } from 'src/utils/dimensions';
 
 interface ToastProps {
   message: String;
@@ -43,16 +44,16 @@ const styles = StyleSheet.create({
  
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: fontScale(16),
   },
   toast: {
     position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
+    bottom:verticalMarginScale(20),
+    left:horizontalMarginScale(20),
+    right: horizontalMarginScale(20),
     backgroundColor:COLORS.bgRed,
-    borderRadius: 5,
-    padding: 10,
+    borderRadius:radiusScale(5),
+    padding:verticalMarginScale(10),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -64,13 +65,13 @@ const styles = StyleSheet.create({
     // elevation: 5,
   },
   message: {
-    fontSize: 16,
+    fontSize: fontScale(16),
     flex: 1,
     color:COLORS.black
   },
   closeButton: {
-    fontSize: 20,
+    fontSize: fontScale(20),
     fontWeight: 'bold',
-    margin: 10,
+    margin: verticalMarginScale(10),
   },
 });

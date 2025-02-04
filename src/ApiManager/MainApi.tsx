@@ -24,8 +24,6 @@ const instance = axios.create({
 });
 
 export const apiPost = async (url: any, apiData = {}) => {
-  console.log("Api post :", `${getApiBaseUrl()}${url}`)
-  console.log("Api post param:", `${getApiBaseUrl()}${url}`, apiData)
   return new Promise(async (res, rej) => {
     instance
       .post(`${getApiBaseUrl()}${url}`, apiData, await getHeaders())
@@ -75,8 +73,6 @@ export const apiPost = async (url: any, apiData = {}) => {
 };
 
 export const apiPut = async (url: any, apiData: {}) => {
-  console.log("Api Put :", `${getApiBaseUrl()}${url}`)
-  console.log("Api Put param:", `${getApiBaseUrl()}${url}`, apiData)
   return new Promise(async (res, rej) => {
     axios
       .put(`${getApiBaseUrl()}${url}`, apiData, await getHeaders())
@@ -119,7 +115,6 @@ export const apiPut = async (url: any, apiData: {}) => {
 };
 
 export const apiGet = async (url: any) => {
-  console.log("Api get :", `${getApiBaseUrl()}${url}`)
   return new Promise(async (res, rej) => {
 
     axios.get(getApiBaseUrl() + url, await getHeaders())

@@ -1,10 +1,10 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { ProfileStack } from 'src/navigation/ProfileStack';
-import { ROUTES } from 'src/navigation/Route';
-import { RootState } from 'src/redux/slices';
-import UsersModule from 'src/screens/UsersModule';
+import { ProfileStack } from '../../navigation/ProfileStack';
+import { ROUTES } from '../../navigation/Route';
+import { RootState } from '../../redux/slices';
+import UsersModule from '../../screens/UsersModule';
 import IMAGES from '../../assets/images';
 import ChatScreen from '../../screens/ChatScreen/ChatScreen';
 import DiscoverScreen from '../../screens/DiscoverScreen/DiscoverScreen';

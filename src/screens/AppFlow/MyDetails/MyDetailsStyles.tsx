@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { Wp } from '../../../utils/dimensions';
+import { horizontalMarginScale, radiusScale, verticalMarginScale, Wp } from '../../../utils/dimensions';
 import { COLORS } from '../../../utils/constants';
 
 const MyDetailsStyles = () => {
@@ -10,12 +10,12 @@ const MyDetailsStyles = () => {
     },
     btnStyle: {
       width: Wp(85),
-      borderRadius: 100,
+      borderRadius:radiusScale(100),
     },
     contentContainer: {
       flex: 1,
-      paddingVertical: 10,
-      paddingHorizontal: 20,
+      paddingVertical:verticalMarginScale(10),
+      paddingHorizontal:horizontalMarginScale(20),
     },
   });
 };

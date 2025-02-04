@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {View, Text, StyleSheet, Modal, ScrollView} from 'react-native';
 import {Image} from 'react-native-animatable';
 import {COLORS} from '../../utils/constants';
@@ -21,6 +21,14 @@ const FeedSeriesDetail: React.FC<FeedSeriesDetailProps> = ({
 }) => {
   const [detail, setDetail] = useState<EventItem | null>(null);
   const [readMore, setReadMore] = useState<number | undefined>(5);
+  const [responseSubmitted, setResponseSubmitted] = useState<boolean>(false);
+
+  const handleNotify = useCallback(() => {
+    setResponseSubmitted(true);
+    setTimeout(() => {
+      setResponseSubmitted(false);
+    }, 3000);
+  }, [setResponseSubmitted]);
 
   if (!series) return null;
 
@@ -81,7 +89,18 @@ const FeedSeriesDetail: React.FC<FeedSeriesDetailProps> = ({
         </View>
       </View>
 
-      <FeedDetail detail={detail} setDetail={setDetail} />
+      {responseSubmitted && (
+        <View style={styles.responseSubmitted}>
+          <Image source={IMAGES.check1} style={styles.check1} />
+          <Text style={styles.responseSubmittedText}>Response Submitted</Text>
+        </View>
+      )}
+
+      <FeedDetail
+        detail={detail}
+        setDetail={setDetail}
+        handleNotify={handleNotify}
+      />
     </Modal>
   );
 };
@@ -115,6 +134,7 @@ const EventItem: React.FC<EventItemProps> = ({event, setDetail}) => {
         <Text style={styles.title}>{event.title}</Text>
         <Text>{formatEventDate(event.startDate)}</Text>
       </View>
+      <Image source={IMAGES.arrowRight} alt="arrow-right" />
     </View>
   );
 };
@@ -244,6 +264,8 @@ const styles = StyleSheet.create({
   },
   eventContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginTop: 10,
     padding: 8,
     borderWidth: 1,
@@ -259,7 +281,28 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'flex-start',
+    flex: 1,
     marginLeft: 16,
+  },
+  responseSubmitted: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'absolute',
+    gap: 6,
+    left: 144,
+    bottom: 56,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    backgroundColor: '#000000BF',
+  },
+  responseSubmittedText: {
+    color: 'white',
+  },
+  check1: {
+    width: 16,
+    height: 16,
   },
 });
 

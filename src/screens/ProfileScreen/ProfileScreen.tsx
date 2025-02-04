@@ -245,9 +245,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
           </TouchableOpacity>
         </ScrollView>
 
-            {showBottomSheet && (
+            {/* {showBottomSheet && (
               <WebViewBottomSheet url={URL} onChange={onChangeBottomSheet} />
-            )}
+            )} */}
 
             {isShown && (
               <ContactSupporrtBottomSheet

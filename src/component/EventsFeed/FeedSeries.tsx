@@ -20,7 +20,7 @@ const FeedSeries: React.FC<FeedSeriesProps> = ({item, setSeries}) => {
         <Image source={item.image} style={styles.image} />
         <Image
           source={
-            item.events?.[0].image
+            item.events?.[0]?.image
               ? {uri: item.events[0].image}
               : IMAGES.eventCoverPlaceholders1
           }
@@ -28,7 +28,7 @@ const FeedSeries: React.FC<FeedSeriesProps> = ({item, setSeries}) => {
         />
         <Image
           source={
-            item.events?.[1].image
+            item.events?.[1]?.image
               ? {uri: item.events[1].image}
               : IMAGES.eventCoverPlaceholders1
           }
