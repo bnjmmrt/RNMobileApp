@@ -118,7 +118,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-       <FullScreenLoader loading={loading}>
+      
       <Header headerTitle={LABLE.PROFILE_PHOTO} onPress={handleBackPress} />
 
       <View style={styles.contentContainer}>
@@ -128,6 +128,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
         />
         
         <View style={styles.profilePhotoContainer}>
+        <FullScreenLoader loading={loading}>
           {image ? (
             <Image
               style={styles.profilePhotoContainer}
@@ -141,7 +142,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
                 size={48}
               />
             </View>
-          )}
+          )}</FullScreenLoader>
 
           <TouchableOpacity style={styles.iconContainer} onPress={openPicker}>
             <Image
@@ -176,7 +177,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
         colorTheme="dark"
         onPress={onNextClick}
       />
-      </FullScreenLoader>
+      
     </SafeAreaView>
   );
 };

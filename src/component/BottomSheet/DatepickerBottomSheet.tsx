@@ -41,12 +41,13 @@ const DatepickerBottomSheet = forwardRef((props:Props, ref) => {
           mode="date"
           open={true}
           date={props.date}
+          locale="en-US"    
           onDateChange={(date: any) => {
             props?.setSelectedDate(date);
             props.setDate(date)
           }}
           minimumDate={hundredYearsAgo}
-          maximumDate={today}
+          // maximumDate={today}
         />
         <Button
           style={styles.btnStyle}

@@ -59,7 +59,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         interestsIds: userDetails.interest.map((item: any) => item.id),
         gender: userDetails.gender,
         lastName: userDetails.lastName,
-        phoneNumber: '+915645345678', // userDetails.phone ? userDetails.phone : loginData.phone,
+        phoneNumber: userDetails.phone ? userDetails.phone : loginData.phone,
         instagramAccessToken: '',
         instagramUserName: usernameRef.current.inputText,
         linkedInAccessToken: '',
