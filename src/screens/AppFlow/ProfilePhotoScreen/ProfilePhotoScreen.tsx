@@ -136,7 +136,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
               resizeMode="cover"
             />
           ) : (
-            <View style={{alignSelf: 'center'}}>
+            <View style={styles.profilePhotoContainer}>
               <AvatarInitials
                 name={userDetails?.firstName + ' ' + userDetails?.lastName}
                 size={48}
