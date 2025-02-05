@@ -54,7 +54,7 @@ const membersData = [
 ];
 
 const RequestVouch = ({ onClose }: { onClose: () => void }) => {
-    const { getContacts } = useContactPermission();
+    const { getContacts } = useContacts();
     const [contacts, setContacts] = useState<ContactItem[]>([]);
     const [members, setMembers] = useState<ContactItem[]>([]);
     // const { data: membersData, isMembersLoading, isError } = useFetchMembersQuery();
@@ -75,17 +75,12 @@ const RequestVouch = ({ onClose }: { onClose: () => void }) => {
     const fetchContacts = async () => {
         try {
             const formattedContacts = await getContacts();
-            console.log(formattedContacts.length, "helel")
-
-
             const memberPhoneNumbers = new Set(
                 membersData.map((member) =>
                     member.phoneNumber.replace(/\s|-/g, "")
                 )
             );
-
             const membersResult: string[] = [];
-
             formattedContacts.forEach((contact) => {
                 if (memberPhoneNumbers.has(contact.phoneNumber)) {
                     const matchedMember = membersData.find(
@@ -96,7 +91,6 @@ const RequestVouch = ({ onClose }: { onClose: () => void }) => {
                     }
                 }
             });
-
             setMembers(membersResult);
             setFilteredMembers(membersResult);
         } catch (error) {

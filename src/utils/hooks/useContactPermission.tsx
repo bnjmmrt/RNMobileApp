@@ -77,9 +77,6 @@ const useContacts = () => {
         }
     };
 
-    useEffect(() => {
-        requestContactPermission();
-    }, []);
 
     return { permissionGranted, requestContactPermission, getContacts };
 };

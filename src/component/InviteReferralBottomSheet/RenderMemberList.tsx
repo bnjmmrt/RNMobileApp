@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     name: {
         fontSize: fontScale(14),
         fontFamily: fontFamily.ABCDiatype_Regular,
+        color: COLORS.black
     },
     phone: {
         fontSize: fontScale(12),
