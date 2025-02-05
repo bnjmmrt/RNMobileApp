@@ -46,7 +46,7 @@ const ProfilePhotoScreenStyles = () => {
       height: verticalScale(100),
       width: horizontalScale(100),
       borderRadius: radiusScale(50),
-      backgroundColor: COLORS.tabBorderColor,
+      // backgroundColor: COLORS.tabBorderColor,
       alignSelf: 'center',
       justifyContent: "center",
       alignItems: "center"
