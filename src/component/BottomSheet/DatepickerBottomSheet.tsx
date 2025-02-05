@@ -30,7 +30,7 @@ const DatepickerBottomSheet = forwardRef((props:Props, ref) => {
   return (
     <BottomSheetComponent
       ref={ref}
-      snapPoints={[Platform.OS === 'android' ? '55%' : '50%']}
+      snapPoints={[Platform.OS === 'android' ? '45%' : '50%']}
       onClose={() => console.log(ref)}>
       <View style={styles.container}>
         <Text style={styles.title}>{LABLE.BIRTHDAY}</Text>
@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
     fontSize:fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
     fontWeight: '700',
+    color:COLORS.black
   },
   subTitle: {
     marginVertical:verticalMarginScale(10),
