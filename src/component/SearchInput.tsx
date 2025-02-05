@@ -93,8 +93,6 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         backgroundColor: COLORS.white,
-        marginHorizontal: 15
-
     },
     inputWrapper: {
         flexDirection: 'row',
@@ -113,7 +111,7 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        fontSize: fontScale(14),
+        fontSize: fontScale(16),
         color: COLORS.black,
         fontFamily: fontFamily.ABCDiatype_Regular,
     },

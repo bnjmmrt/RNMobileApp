@@ -1,21 +1,21 @@
-import {CommonActions, useFocusEffect} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useCallback} from 'react';
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {useDispatch} from 'react-redux';
-import {resetLoginData} from 'src/redux/slices/authSlice';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { CommonActions, useFocusEffect } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useCallback } from 'react';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { resetLoginData } from 'src/redux/slices/authSlice';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import IMAGES from '../../assets/images';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
-import {COLORS} from '../../utils/constants';
+import { COLORS } from '../../utils/constants';
 import {
   horizontalMarginScale,
   verticalMarginScale,
   Wp,
 } from '../../utils/dimensions';
 
-interface BeforeAppStaticScreenProps extends NativeStackScreenProps<any, any> {}
+interface BeforeAppStaticScreenProps extends NativeStackScreenProps<any, any> { }
 
 const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
   navigation,
@@ -31,7 +31,7 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
   const redirectToHome = () => {
     const resetAction = CommonActions.reset({
       index: 0,
-      routes: [{name: 'AuthStack'}],
+      routes: [{ name: 'AuthStack' }],
     });
     dispatch(resetLoginData());
     navigation.dispatch(resetAction);
@@ -39,7 +39,7 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
 
   return (
     <View style={styles.container}>
-      <BeforeAppStaticComponent isChatScreen={false} />
+      {/* <BeforeAppStaticComponent isChatScreen={false} /> */}
 
       <TouchableOpacity
         onPress={redirectToHome}

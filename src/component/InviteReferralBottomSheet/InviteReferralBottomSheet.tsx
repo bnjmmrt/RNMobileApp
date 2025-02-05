@@ -1,35 +1,29 @@
-
-import React, { useState, useRef, forwardRef, useEffect } from 'react';
+import React, { useState, useRef, forwardRef, useEffect, useCallback } from 'react';
 import {
   StyleSheet,
   View,
   Text,
   FlatList,
   Share,
-  PermissionsAndroid,
-  Platform,
   Linking,
   SafeAreaView,
 } from 'react-native';
-import Contacts from 'react-native-contacts';
-import BottomSheetComponent from '../BottomSheet/BottomSheet';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
-import Title from '../Title/Title';
 import AvatarInitials from '../AvatarInitials';
-import Input from '../Input/Input';
 import ButtonSmall from '../ButtonSmall';
 import Button from '../Button';
 import IMAGES from '../../assets/images';
 import TabBar from '../ActiveTabBar/TabBar';
-import { fontFamily } from '../../utils/functions';
+import { changeSafeAreaViewConfig, fontFamily } from '../../utils/functions';
 import { useFetchMembersQuery, useRequestMemberMutation } from '../../redux/actions/referralApiAction';
 import { RenderMemberList } from './RenderMemberList';
 import Header from '../Header/Header';
-
-interface AppMember {
-  name: string;
-  phone: string;
-}
+import SearchInput from '../SearchInput';
+import { fontScale, horizontalMarginScale, Hp, verticalMarginScale } from 'src/utils/dimensions';
+import EventEmptyRecord from '../EmptyRecord/EventEmptyRecord';
+import { useFocusEffect } from '@react-navigation/native';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import useContacts from 'src/utils/hooks/useContactPermission';
 
 interface ContactItem {
   name: string;
@@ -83,57 +77,32 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   const [filteredContacts, setFilteredContacts] = useState<ContactItem[]>([]);
   const [filteredMembers, setFilteredMembers] = useState<ContactItem[]>([]);
   const [requestSent, setRequestSent] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const searchInputRef = useRef(null);
-  const [permissionGranted, setPermissionGranted] = useState(true);
   const [selectedTab, setSelectedTab] = useState('01');
   const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-
-  const requestAndroidPermissions = () => {
-    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
-      title: 'Contacts',
-      message: 'This app would like to view your contacts.',
-      buttonPositive: 'Please accept bare mortal',
-    })
-      .then((res) => {
-        console.log('Permission: ', res);
-        setPermissionGranted(true);
-        fetchContacts();
-      })
-      .catch((error) => {
-        setPermissionGranted(false);
-        console.error('Permission error: ', error);
-      });
-  };
+  const { getContacts, permissionGranted } = useContacts();
 
   useEffect(() => {
-    Platform.OS == 'ios' ? fetchContacts() : requestAndroidPermissions();
+    fetchContacts()
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    }, []),
+  );
 
 
   const fetchContacts = async () => {
     try {
-      const deviceContacts = await Contacts.getAll().catch((err) =>
-        setPermissionGranted(false)
-      );
-
-      const formattedContacts = deviceContacts
-        .map((contact: any) => ({
-          name: `${contact.givenName} ${contact.familyName}`.trim(),
-          phoneNumber: contact.phoneNumbers[0]?.number.replace(/\D/g, '') || '',
-        }))
-        .filter((contact) => contact.phoneNumber);
-
+      const formattedContacts = await getContacts();
       const memberPhoneNumbers = new Set(
         membersData.map((member) =>
           member.phoneNumber.replace(/\s|-/g, "")
         )
       );
-
       const membersResult: string[] = [];
       const nonMembersResult: string[] = [];
-
       formattedContacts.forEach((contact) => {
         if (memberPhoneNumbers.has(contact.phoneNumber)) {
           const matchedMember = membersData.find(
@@ -146,7 +115,6 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
           nonMembersResult.push(contact);
         }
       });
-
       setContacts(nonMembersResult);
       setFilteredContacts(nonMembersResult.slice(0, PAGE_SIZE));
       setMembers(membersResult);
@@ -267,14 +235,12 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   );
 
   return (
-
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <Header headerTitle="Referrals & Invites" showProgressBar={false} />
       <View style={{ paddingHorizontal: 20, flex: 1 }}>
         <TabBar
           onTabChange={(tab) => {
             setSelectedTab(tab)
-            setSearchQuery('');
             handleSearch('');
           }}
           tabOneLabel="Request a Referral"
@@ -283,22 +249,39 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
         />
 
         {selectedTab === '01' && (
-          <View style={{ gap: 8 }}>
-            <Input
-              ref={searchInputRef}
+          <View style={{ flex: 1, gap: 8, marginTop: verticalMarginScale(12) }}>
+            <SearchInput
               placeholder={LABLE.SEARCH_FRIENDS}
-              leftImage={IMAGES.search}
-              onChangeText={(query) => {
-                setSearchQuery(query);
+              onSearchTextChange={(query) => {
                 handleSearch(query);
               }}
-              defaultValue={searchQuery}
             />
-            <Text style={styles.sectionTitle}>{LABLE.FRIENDS_WHO_ARE_MEMBERS}</Text>
-            <Text style={styles.sectionSubtitle}>{LABLE.REQUEST_A_REFERRAL}</Text>
+            <View>
+              <Text style={styles.sectionTitle}>{LABLE.FRIENDS_WHO_ARE_MEMBERS}</Text>
+              <Text style={styles.sectionSubtitle}>{LABLE.REQUEST_A_REFERRAL}</Text>
+            </View>
             <FlatList
               data={filteredMembers}
               scrollEnabled={false}
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={
+                <View style={{ height: Hp(40), justifyContent: 'center', alignItems: 'center' }}>
+                  <EventEmptyRecord title='No Results' subTitle='No Contacts are members at this time' />
+                  {!permissionGranted && (
+                    <>
+                      <Text style={styles.sectionSubtitle}>
+                        Allow permission to send invite to contacts
+                      </Text>
+                      <ButtonSmall
+                        colorTheme="dark"
+                        style={styles.settingsButton}
+                        title="Go to Settings"
+                        onPress={() => Linking.openURL('app-settings:')}
+                      />
+                    </>
+                  )}
+                </View>
+              }
               contentContainerStyle={{ gap: 4, marginTop: 12 }}
               keyExtractor={(item, index) => '' + item.phoneNumber + index}
               renderItem={({ item }) =>
@@ -309,23 +292,40 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
         )}
 
         {selectedTab === '02' && (
-          <View style={{ flex: 1, gap: 8 }}>
-            <Input
-              ref={searchInputRef}
+          <View style={{ flex: 1, gap: 8, marginTop: verticalMarginScale(12) }}>
+            <SearchInput
               placeholder={LABLE.SEARCH_FRIENDS}
-              leftImage={IMAGES.search}
-              onChangeText={(query) => {
-                setSearchQuery(query);
+              onSearchTextChange={(query) => {
                 handleSearch(query);
               }}
-              defaultValue={searchQuery}
             />
-            <Text style={styles.sectionTitle}>{LABLE.CONTACTS}</Text>
-            <Text style={styles.sectionSubtitle}>{LABLE.INVITE_FRIENDS_TO}</Text>
+            <View>
+              <Text style={styles.sectionTitle}>{LABLE.CONTACTS}</Text>
+              <Text style={styles.sectionSubtitle}>{LABLE.INVITE_FRIENDS_TO}</Text>
+            </View>
             <FlatList
               data={filteredContacts}
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={
+                <View style={{ height: Hp(40), justifyContent: 'center', alignItems: 'center' }}>
+                  <EventEmptyRecord title='No Results' subTitle='No Contacts are members at this time' />
+                  {!permissionGranted && (
+                    <>
+                      <Text style={styles.sectionSubtitle}>
+                        Allow permission to send invite to contacts
+                      </Text>
+                      <ButtonSmall
+                        colorTheme="dark"
+                        style={styles.settingsButton}
+                        title="Go to Settings"
+                        onPress={() => Linking.openURL('app-settings:')}
+                      />
+                    </>
+                  )}
+                </View>
+              }
               keyExtractor={(item, index) => '' + item.phoneNumber + index}
-              contentContainerStyle={{ gap: 4, flexGrow: 1, paddingBottom: 100, marginTop: 12 }}
+              contentContainerStyle={{ gap: 4, flexGrow: 1, paddingBottom: verticalMarginScale(100), marginTop: verticalMarginScale(12) }}
               renderItem={({ item }) =>
                 renderListItem(
                   item,
@@ -340,43 +340,36 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
           </View>
         )}
 
-        {!permissionGranted && (
-          <>
-            <Text style={styles.sectionTitle}>
-              Allow permission to send invite to contacts
-            </Text>
-            <ButtonSmall
-              colorTheme="dark"
-              style={styles.settingsButton}
-              title="Go to Settings"
-              onPress={() => Linking.openURL('app-settings:')}
-            />
-          </>
-        )}
+
+        {footerComponent()}
       </View>
+
+
+
     </SafeAreaView>
   );
 });
 
 const styles = StyleSheet.create({
   smallBtnStyle: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: horizontalMarginScale(12),
+    paddingVertical: verticalMarginScale(8),
     borderRadius: 100,
   },
-  settingsButton: { marginTop: 12, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 100 },
+  settingsButton: { marginTop: verticalMarginScale(12), paddingHorizontal: horizontalMarginScale(12), paddingVertical: verticalMarginScale(8), borderRadius: 100 },
   btnStyle: {
     borderRadius: 100,
-    marginTop: 20,
+    marginBottom: verticalMarginScale(20),
+    marginTop: verticalMarginScale(20)
   },
   sectionTitle: {
-    fontSize: 18,
-    marginTop: 0,
+    fontSize: fontScale(18),
     textAlign: 'center',
     fontFamily: fontFamily.ABCDiatype_Medium,
+    color: COLORS.black
   },
   sectionSubtitle: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     color: COLORS.light_gray,
     fontFamily: fontFamily.ABCDiatype_Regular,
     textAlign: 'center',
@@ -385,19 +378,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 12,
+    paddingHorizontal: horizontalMarginScale(12),
+    paddingVertical: verticalMarginScale(12),
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 16,
   },
   name: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Regular,
+    color: COLORS.black
   },
   phone: {
-    fontSize: 12,
+    fontSize: fontScale(12),
     color: COLORS.light_gray,
-    marginTop: 4,
+    marginTop: verticalMarginScale(4),
     fontFamily: fontFamily.ABCDiatype_Regular,
   },
 });

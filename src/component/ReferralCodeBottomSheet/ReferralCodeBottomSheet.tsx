@@ -1,7 +1,7 @@
 import React, { useRef, forwardRef } from 'react';
 import { Platform, View, StyleSheet } from 'react-native';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
-import { Hp } from '../../utils/dimensions';
+import { horizontalMarginScale, Hp } from '../../utils/dimensions';
 import { BUTTON_LABLE, COLORS, ERROR_MESSAGE, LABLE } from '../../utils/constants';
 import Title from '../Title/Title';
 import Input from '../Input/Input';
@@ -12,10 +12,6 @@ import { useSubmitReferralCodeMutation } from '../../redux/actions/referralApiAc
 const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   const inputRef = useRef(null);
   const [submitReferralCode, { isLoading }] = useSubmitReferralCodeMutation();
-
-
-
-
   const handleSubmit = async () => {
     const { inputText, validateInputs } = inputRef.current;
 
@@ -23,11 +19,11 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
       try {
         const response = await submitReferralCode({
           referralCode: inputText,
-          userId: 'userId', 
+          userId: 'userId',
         }).unwrap();
 
         FlashMessageComponent.show('success', 'Code submitted successfully!');
-        ref.current?.close(); 
+        ref.current?.close();
       } catch (error) {
         inputRef.current.setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_A_VALID_REFERRAL_CODE);
       }
@@ -37,8 +33,8 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   return (
     <BottomSheetComponent
       ref={ref}
-      snapPoints={[Platform.OS=="android"?'45%':'40%']}
-      onClose={() =>console.log(ref)}
+      snapPoints={[Platform.OS == "android" ? '47%' : '45%']}
+      onClose={() => console.log(ref)}
       footer={<Button
         disabled={false}
         style={styles.btnStyle}
@@ -48,30 +44,28 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
         onPress={handleSubmit}
       />}
     >
-        <View style={styles.container}>
-          <Title
-            title={LABLE.REFERRAL_CODE}
-            subTitle={LABLE.IF_YOU_HAVE_ANY_REFERRAL_CODE}
-            align="center"
-          />
-          <Input
-            ref={inputRef}
-            label={LABLE.ENTER_CODE}
-            errorMessage={ERROR_MESSAGE.PLEASE_ENTER_A_VALID_REFERRAL_CODE}
-          />
-        </View>
+      <View style={styles.container}>
+        <Title
+          title={LABLE.REFERRAL_CODE}
+          subTitle={LABLE.IF_YOU_HAVE_ANY_REFERRAL_CODE}
+          align="center"
+        />
+        <Input
+          ref={inputRef}
+          label={LABLE.ENTER_CODE}
+          errorMessage={ERROR_MESSAGE.PLEASE_ENTER_A_VALID_REFERRAL_CODE}
+        />
+      </View>
     </BottomSheetComponent>
   );
 });
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-    gap: 12,
+    paddingHorizontal: horizontalMarginScale(20),
   },
   btnStyle: {
     borderRadius: 100,
-    marginTop: Hp(1),
   },
 });
 

@@ -9,12 +9,12 @@ import { fontFamily } from '../../utils/functions';
 import HeaderComponent from '../HeaderComponent';
 import ReferralCodeBottomSheet from '../ReferralCodeBottomSheet/ReferralCodeBottomSheet';
 import MiddleStaticComponent from '../TitleSubTitleComponent/MiddleStaticComponent';
-import useContactPermission from 'src/utils/hooks/useContactPermission';
 import { useNavigation } from '@react-navigation/native';
+import useContacts from 'src/utils/hooks/useContactPermission';
 
 
 const AfterAppStaticComponent: React.FC<{}> = () => {
-  const { requestContactPermission } = useContactPermission();
+  const { requestContactPermission } = useContacts();
   const { navigate } = useNavigation();
 
   const bottomSheetRef = useRef(null);
@@ -56,7 +56,7 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
             style={styles.btnStyle}
             title={BUTTON_LABLE.ACCESS_MY_CONTACTS}
             colorTheme={'light'}
-            onPress={onAccessContactClick}
+            onPress={() => onAccessContactClick()}
           />
           <View style={{ height: Hp(1) }} />
 
