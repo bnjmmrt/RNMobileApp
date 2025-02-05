@@ -30,7 +30,7 @@ interface TabItem {
 const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const styles = EventScreenStyle();
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const eventId = loginData?.eventId || 'a2fdf281-e9e8-4df8-8549-337ba79dab5f';
+  const userId = loginData?.guestId || '6267f02a-0c86-4752-9e62-8bada629d830';
   const searchInputRef = useRef<any>(null);
   const [searchText, setSearchText] = useState('');
   const showEvents = loginData?.isInvited || loginData?.token?.length > 0;
@@ -68,13 +68,13 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const renderTabContent = () => {
     switch (currentTab.label) {
       case BUTTON_LABLE.UPCOMING:
-        return <UpcomingEvents eventId={eventId} searchText={searchText} />;
+        return <UpcomingEvents userId={userId} searchText={searchText} />;
       case BUTTON_LABLE.INVITED:
-        return <InvitedEvents eventId={eventId} searchText={searchText} />;
+        return <InvitedEvents userId={userId} searchText={searchText} />;
       case BUTTON_LABLE.APPLIED:
-        return <AppliedEvents eventId={eventId} searchText={searchText} />;
+        return <AppliedEvents userId={userId} searchText={searchText} />;
       case BUTTON_LABLE.PAST:
-        return <PastEvents eventId={eventId} searchText={searchText} />;
+        return <PastEvents userId={userId} searchText={searchText} />;
       default:
         return null;
     }
