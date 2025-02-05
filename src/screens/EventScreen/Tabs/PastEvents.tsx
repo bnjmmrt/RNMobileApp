@@ -59,7 +59,7 @@ const PastEvents: React.FC<PastEventsProps> = ({ eventId, searchText }) => {
         />
       ) : (
         <View style={{ height: Hp(55), alignItems: 'center', justifyContent: 'center' }}>
-          <EventEmptyRecord title="No Events Here" subTitle="No upcoming events." />
+          <EventEmptyRecord title="No Events Here" subTitle="No upcoming events." isLoading={isLoading} />
         </View>
       )}
     </View>

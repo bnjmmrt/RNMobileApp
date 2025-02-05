@@ -375,6 +375,7 @@ export const convertDateFormat = (dateString: string): string => {
 
 export const formatDate = (date: Date) => {
   return date
+  return date
     .toLocaleDateString('en-US', {
       year: 'numeric',
       month: '2-digit',

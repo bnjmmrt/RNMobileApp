@@ -1,10 +1,10 @@
 import React from 'react';
-import {Modal, View, StyleSheet, Text, Image} from 'react-native';
-import {format} from 'date-fns';
+import { Modal, View, StyleSheet, Text, Image } from 'react-native';
+import { format } from 'date-fns';
 import Button from '../Button';
 import IMAGES from '../../assets/images';
-import {EventItem} from './EventsFeed';
-import {Hp, Wp} from '../../utils/dimensions';
+import { EventItem } from './EventsFeed';
+import { Hp, Wp } from '../../utils/dimensions';
 
 interface FeedDetailProps {
   detail: EventItem | null;
@@ -45,7 +45,7 @@ const FeedDetail: React.FC<FeedDetailProps> = ({
           <Image
             source={
               detail.image
-                ? {uri: detail.image}
+                ? { uri: detail.image }
                 : IMAGES.eventCoverPlaceholders1
             }
             style={styles.image}
