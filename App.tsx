@@ -70,12 +70,12 @@ const App: React.FC = () => {
               {/* <AppContext.Provider value={appContext}> */}
               {/* <SafeAreaProvider style={styles.container}> */}
               <AppContent />
-              <FlashMessage position="top" />
               {/* </SafeAreaProvider> */}
               {/* </AppContext.Provider> */}
             </NavigationContainer>
           </GestureHandlerRootView>
         </SafeAreaViewWrapper>
+        <FlashMessage position="top" />
       </PersistGate>
     </Provider>
   );
