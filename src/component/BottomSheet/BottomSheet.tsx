@@ -13,6 +13,7 @@ import {
   View,
   TouchableOpacity,
   Pressable,
+  Platform,
 } from 'react-native';
 import {Hp, Wp} from '../../utils/dimensions';
 import {COLORS} from '../../utils/constants';
@@ -112,7 +113,9 @@ const BottomSheetComponent = forwardRef<
         visible={isVisible}
         animationType="fade"
         onRequestClose={handleClosePress}>
-        <Pressable style={styles.modalContainer} onPress={closeSheet}>
+        <Pressable
+          style={styles.modalContainer}
+          onPress={Platform.OS === 'android' ? closeSheet : () => {}}>
           <BottomSheet
             ref={sheetRef}
             snapPoints={snapPointsMemo}

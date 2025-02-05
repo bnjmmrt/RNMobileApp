@@ -80,8 +80,7 @@ export const styles = StyleSheet.create({
   createListMessage: {
     textAlign: 'center',
     color: COLORS.light_gray,
-    marginBottom: 32,
-    marginTop: 16,
+    marginBottom: 8,
   },
   listNameInputLabel: {
     color: COLORS.black,

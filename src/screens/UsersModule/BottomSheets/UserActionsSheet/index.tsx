@@ -51,7 +51,7 @@ const UserActionsSheet = forwardRef<BottomSheetMethods, {user: string}>(
         : selectedAction === 'addToList'
         ? ['50%', '90%']
         : selectedAction === 'createList'
-        ? ['35%']
+        ? [`${verticalScale(35)}%`]
         : ['25%'];
 
     const onSpamSuccess = () => {

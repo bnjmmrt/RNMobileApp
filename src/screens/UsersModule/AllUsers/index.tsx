@@ -5,7 +5,11 @@ import {FlatList, View} from 'react-native';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import SearchInput from 'src/component/SearchInput';
 import {AppStackParamList} from 'src/navigation/AppStack';
-import {Hp, verticalMarginScale} from 'src/utils/dimensions';
+import {
+  horizontalMarginScale,
+  Hp,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
 import UserListItem from '../UsersListItem';
 import createStyle from './style';
 import {useFetchAllUsersQuery} from 'src/redux/actions/usersApiAction';
@@ -73,7 +77,11 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   );
 
   return (
-    <View style={{marginTop: verticalMarginScale(8)}}>
+    <View
+      style={{
+        marginTop: verticalMarginScale(8),
+        marginHorizontal: horizontalMarginScale(20),
+      }}>
       <SearchInput
         ref={searchInputRef}
         onSearchTextChange={handleSearchTextChange}
@@ -87,10 +95,6 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
         data={allUsers?.users || []}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        style={{
-          alignSelf: 'center',
-          width: '90%',
-        }}
         contentContainerStyle={{gap: verticalMarginScale(16)}}
         ListHeaderComponent={<View />}
         ListFooterComponent={<View />}
