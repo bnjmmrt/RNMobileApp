@@ -15,7 +15,7 @@ const ProfilePhotoScreenStyles = () => {
     },
     btnSmallStyle: {
       width: 'auto',
-      height:verticalScale(40),
+      height:verticalScale(50),
       borderRadius:radiusScale(100),
       alignSelf: 'center',
       backgroundColor: COLORS.tabBorderColor,

@@ -128,6 +128,9 @@ const styles = StyleSheet.create({
   },
   label: {
     paddingVertical: horizontalMarginScale(2),
+    color: COLORS.black,
+    fontSize:fontScale(14),
+    fontWeight:'500',
     // color: COLORS.labelGray,
     fontFamily: fontFamily.ABCDiatype_Medium
   },
@@ -149,6 +152,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: fontScale(14),
     color: COLORS.black,
+    fontWeight:'500',
     fontFamily: fontFamily.ABCDiatype_Medium
   },
   multilineInput: {
