@@ -53,17 +53,18 @@ export const EndPoint = {
   get_focuses: 'v1/platform/get-focuses',
   interests: 'v1/platform/interests',
   member_signUp: 'v1/auth/member-sign-up',
-  file_upload:'v1/files/upload',
-  check_member_logiin:'v1/auth/check-member-login',
-  email_send_verification_code:'v1/auth/send-verification-code-by-email',
-  email_verify_code:'v1/auth/verify-code-by-email',
-  phone_send_verification_code:'v1/communication/send-verification-code',
+  file_upload: 'v1/files/upload',
+  check_member_logiin: 'v1/auth/check-member-login',
+  email_send_verification_code: 'v1/auth/send-verification-code-by-email',
+  email_verify_code: 'v1/auth/verify-code-by-email',
+  phone_send_verification_code: 'v1/communication/send-verification-code',
   phone_verify_code: 'v1/communication/verify-code',
-  host_feedback:'v1/auth/host-feedback',
-  user_profile_picture:'v1/auth/user-profile-picture/',
-  user_profile:'v1/auth/user-profile/',
-  user_settings:'/auth/user-settings/',
-  user_interests:'/platform/user-interests/',
+  host_feedback: 'v1/auth/host-feedback',
+  user_profile_picture: 'v1/auth/user-profile-picture/',
+  user_profile: 'v1/auth/user-profile/',
+  user_settings: 'v1/auth/user-settings/',
+  user_interests: 'v1/platform/user-interests/',
+  get_user_status: 'v1/auth/get-user-with-roles-by-email'
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

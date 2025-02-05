@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import EventScreen from 'src/screens/EventScreen/EventScreen';
 import EventDetailsScreen from 'src/screens/EventScreen/EventDetailsScreen';
+import RSPVScreen from 'src/screens/EventScreen/RSPV/RSPVScreen';
 
 
 // Define the param list for the stack navigator
@@ -28,6 +29,11 @@ export const EventStack: React.FC = () => {
       <Stack.Screen
         name="EventDetailsScreen"
         component={EventDetailsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="RSPVScreen"
+        component={RSPVScreen}
         options={{ headerShown: false }}
       />
 
