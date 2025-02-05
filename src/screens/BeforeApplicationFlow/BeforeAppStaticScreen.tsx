@@ -39,13 +39,13 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
 
   return (
     <View style={styles.container}>
-      {/* <BeforeAppStaticComponent isChatScreen={false} /> */}
+      <BeforeAppStaticComponent isChatScreen={false} />
 
       <TouchableOpacity
         onPress={redirectToHome}
         style={{
-          top: horizontalMarginScale(16),
-          right: horizontalMarginScale(16),
+          top: horizontalMarginScale(20),
+          right: horizontalMarginScale(20),
           position: 'absolute',
         }}>
         <View style={styles.iconWrapper}>
@@ -63,9 +63,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.black2,
   },
   iconWrapper: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: COLORS.white,
     justifyContent: 'center',
     alignItems: 'center',

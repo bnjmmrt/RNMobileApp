@@ -1,27 +1,27 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {LABLE, BUTTON_LABLE} from '../../../utils/constants';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { View } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
 import VerifyOtpStyles from './VerifyOtpStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
 import OTPComponent from '../../../component/OTPComponent/OTPComponent';
-import {useRoute, RouteProp, useFocusEffect} from '@react-navigation/native';
-import {FlashMessageComponent} from '../../../component/FlashMessageComponent/FlashMessageComponent';
-import {useDispatch, useSelector} from 'react-redux';
+import { useRoute, RouteProp, useFocusEffect } from '@react-navigation/native';
+import { FlashMessageComponent } from '../../../component/FlashMessageComponent/FlashMessageComponent';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   setIsEmailPhoneBothVerified,
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
-import {RootState} from '../../../redux/slices';
+import { RootState } from '../../../redux/slices';
 import useApi from '../../../axios/useApi';
-import {EndPoint} from '../../../ApiManager/config';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { EndPoint } from '../../../ApiManager/config';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-interface VerifyOtpScreenProps extends NativeStackScreenProps<any, any> {}
+interface VerifyOtpScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: {
@@ -31,7 +31,7 @@ type RouteParams = {
   };
 };
 
-const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
+const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
   const styles = VerifyOtpStyles();
   const isEmailVerified = useSelector(
@@ -41,7 +41,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
     handleNextPress: () => void;
     showInvalidCodeError: (message: string) => void;
   }>(null);
-  const {apiRequest, loading, error} = useApi();
+  const { apiRequest, loading, error } = useApi();
 
   const route = useRoute<RouteProp<RouteParams>>();
   // const { sendOtp, isMemberExist } = useSendOtp(route.params.email, route.params.phone);
@@ -81,7 +81,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
     sendOtp('sent');
   }, [route.params]);
 
-  const verifyCode = async () => {
+  const verifyCode = async (code) => {
     let params;
     let endPoint;
     if (route.params.isEmail) {
@@ -114,7 +114,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
 
   const onNextClick = async () => {
     otpInputRef.current && otpInputRef.current.handleNextPress();
-    await verifyCode();
+    // await verifyCode();
   };
 
   const handleBackPress = () => navigation.goBack();

@@ -12,21 +12,21 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {Image} from 'react-native-animatable';
-import {CountryPicker} from '../../component/PhonNumberComponent/CountryPicker';
+import { Image } from 'react-native-animatable';
+import { CountryPicker } from '../../component/PhonNumberComponent/CountryPicker';
 import IMAGES from '../../assets/images';
-import {LABLE} from '../../utils/constants';
-import {fontFamily} from '../../utils/functions';
-import {COLORS} from '../../utils/constants';
-import {CountryCode, isValidPhoneNumber} from 'libphonenumber-js';
-import {useNavigation} from '@react-navigation/native';
-import {Hp} from '../../utils/dimensions';
-import {useDispatch} from 'react-redux';
+import { LABLE } from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
+import { COLORS } from '../../utils/constants';
+import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js';
+import { useNavigation } from '@react-navigation/native';
+import { Hp } from '../../utils/dimensions';
+import { useDispatch } from 'react-redux';
 import {
   setCountryCallingCode,
   setCountryCodeFlag,
 } from '../../redux/slices/appFlowSlice';
-import {BottomSheetTextInput} from '@gorhom/bottom-sheet';
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
 type TranslatedNames = Record<string, string>;
 
@@ -62,9 +62,9 @@ const PhoneNumberInput = forwardRef(
     const [errorMessage, setErrorMessage] = useState('');
     const [disabled, setDisabled] = useState(false);
     const navigation = useNavigation();
+    const dispatch = useDispatch();
 
     const handleCountrySelect = (selectedCountry: any) => {
-      const dispatch = useDispatch();
       dispatch(setCountryCallingCode(selectedCountry.callingCode));
       dispatch(setCountryCodeFlag(selectedCountry.flag));
       setFlag(selectedCountry.flag);
