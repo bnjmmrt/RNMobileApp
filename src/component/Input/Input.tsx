@@ -118,7 +118,9 @@ const styles = StyleSheet.create({
   },
   label: {
     paddingVertical: horizontalMarginScale(2),
-    // color: COLORS.labelGray,
+    color: COLORS.black,
+    fontSize:fontScale(14),
+    fontWeight:'500'
   },
   inputContainer: {
     borderWidth: 1,
@@ -139,6 +141,7 @@ const styles = StyleSheet.create({
     width: '90%',
     fontSize: fontScale(14),
     color: COLORS.black,
+    fontWeight:'500'
   },
   multilineInput: {
     height: '100%',
