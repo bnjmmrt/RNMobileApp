@@ -1,29 +1,18 @@
+import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import React, {forwardRef, useImperativeHandle, useRef, useState} from 'react';
-import {Image, ScrollView, View} from 'react-native';
 import BottomSheetComponent, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
-import Input, {InputRefMethods} from 'src/component/Input/Input';
-import PhoneNumberInput, {
-  countryType,
-} from 'src/component/PhonNumberComponent/PhoneNumberInput';
-import {
-  useAddNewUserMutation,
-  useLazyFetchAllUsersQuery,
-} from 'src/redux/actions/usersApiAction';
-import {verticalScale} from 'src/utils/dimensions';
-import {styles} from './style';
 import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import AvatarInitials from 'src/component/AvatarInitials';
-import IMAGES from '@images/index';
-import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
+import Input, {InputRefMethods} from 'src/component/Input/Input';
 import {
   useAddNewCustomListMutation,
-  useFetchAllCustomListsQuery,
   useLazyFetchAllCustomListsQuery,
 } from 'src/redux/actions/listsApiAction';
+import {verticalScale} from 'src/utils/dimensions';
+import {styles} from './style';
 
 const AddNewCustomListSheet = forwardRef<BottomSheetMethods>(({}, ref) => {
   const sheetRef = useRef<BottomSheetMethods>(null);

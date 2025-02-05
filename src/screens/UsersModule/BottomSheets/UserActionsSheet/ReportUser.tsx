@@ -10,7 +10,7 @@ import {
   useReportUserMutation,
 } from 'src/redux/actions/usersApiAction';
 import {RootState} from 'src/redux/slices';
-import {verticalMarginScale} from 'src/utils/dimensions';
+import {verticalMarginScale, verticalScale} from 'src/utils/dimensions';
 import {styles} from './style';
 import {BottomSheetScrollView, BottomSheetView} from '@gorhom/bottom-sheet';
 
