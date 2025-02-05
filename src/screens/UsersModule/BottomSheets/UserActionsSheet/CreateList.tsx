@@ -10,7 +10,7 @@ const CreateList = ({
   onSuccess,
 }: {
   onPressBack: () => void;
-  onSuccess: () => {};
+  onSuccess: () => void;
 }) => {
   return (
     <View>

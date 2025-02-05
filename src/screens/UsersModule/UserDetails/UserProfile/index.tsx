@@ -12,14 +12,70 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
+import {shallowEqual, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/slices';
+import {COLORS} from 'src/utils/constants';
+import {
+  useLazyFetchUserDetailsQuery,
+  useMarkUserFavMutation,
+  UserDetailResponse,
+  useUnmarkUserFavMutation,
+} from 'src/redux/actions/usersApiAction';
+import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
-interface UserProfileProps {}
+interface UserProfileProps {
+  user: string;
+}
 
-const UserProfile: React.FC<UserProfileProps> = ({}) => {
+const UserProfile: React.FC<UserProfileProps> = ({user}) => {
   const styles = createStyle();
+  const [
+    markUserFav,
+    {error: markUserFavError, isLoading: markUserFavLoading},
+  ] = useMarkUserFavMutation();
+  const [
+    unMarkUserFav,
+    {error: unMarkUserFavError, isLoading: unMarkUserFavLoading},
+  ] = useUnmarkUserFavMutation();
+  const [fetchUserDetails, {}] = useLazyFetchUserDetailsQuery();
+
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const {userDetails} = useSelector((state: RootState) => {
+    const queryResult = state.api.queries[
+      `fetchUserDetails(${JSON.stringify({user})})`
+    ] as {data: UserDetailResponse} | undefined;
+
+    return {
+      userDetails: queryResult?.data?.data ?? undefined,
+    };
+  }, shallowEqual);
+
+  const handleFavCta = async () => {
+    try {
+      let response;
+      let payload = {
+        targetUserId: user,
+        user: '',
+      };
+      if (userDetails?.isFavourite) {
+        response = await unMarkUserFav(payload).unwrap();
+      } else {
+        response = await markUserFav(payload).unwrap();
+      }
+
+      if (response.status === 200) {
+        fetchUserDetails({user: user});
+        FlashMessageComponent.show('success', 'User marked as favorite!');
+      } else {
+        FlashMessageComponent.show('error', 'Something went wrong!');
+      }
+    } catch (error) {
+      FlashMessageComponent.show('error', 'Something went wrong!');
+    }
+  };
 
   return (
-    <>
+    <View>
       <UserDetailCard
         containerStyle={{
           borderBottomLeftRadius: radiusScale(8),
@@ -29,37 +85,65 @@ const UserProfile: React.FC<UserProfileProps> = ({}) => {
         }}>
         <View style={{alignItems: 'center'}}>
           <AvatarInitials
-            name="Jennh Wilson"
+            name={`${userDetails?.firstName || ''} ${
+              userDetails?.lastName || ''
+            }`}
             size={80}
-            imgUrl="https://wac-cdn.atlassian.com/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg?cdnVersion=2532"
+            imgUrl={userDetails?.imageUrl}
           />
-          <View style={styles.memberTypeWrapper}>
-            <CustomText style={styles.memberType}>{'Non-Member'}</CustomText>
+          <View
+            style={[
+              styles.memberTypeWrapper,
+              userDetails?.role === 'member' && {
+                backgroundColor: COLORS.black,
+                borderWidth: 0,
+              },
+            ]}>
+            {userDetails?.role === 'member' ? (
+              <Image source={IMAGES.check_verified} />
+            ) : null}
+            <CustomText
+              style={[
+                styles.memberType,
+                userDetails?.role === 'member' && {
+                  color: COLORS.white,
+                },
+              ]}>
+              {userDetails?.role.split('_').join(' ') || ''}
+            </CustomText>
           </View>
-          <CustomText style={styles.userName}>{'Jenny Wilson'}</CustomText>
-          <ScrollView
-            contentContainerStyle={{
-              gap: horizontalMarginScale(4),
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              marginTop: verticalMarginScale(16),
-              justifyContent: 'center',
-            }}
-            scrollEnabled={false}>
-            {[1, 1, 1, 1, 1].map((item, index) => {
-              return (
-                <View style={styles.userTagsContainer}>
-                  <CustomText style={styles.userTags}>{'Actor'}</CustomText>
-                </View>
-              );
-            })}
-          </ScrollView>
+          <CustomText style={styles.userName}>
+            {`${userDetails?.firstName || ''} ${userDetails?.lastName || ''}`}
+          </CustomText>
+          {userDetails?.category ? (
+            <ScrollView
+              contentContainerStyle={{
+                gap: horizontalMarginScale(4),
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                marginTop: verticalMarginScale(16),
+                justifyContent: 'center',
+              }}
+              scrollEnabled={false}>
+              {userDetails.category
+                .split(', ')
+                .map((item: string, index: number) => {
+                  return (
+                    <View style={styles.userTagsContainer}>
+                      <CustomText style={styles.userTags}>{item}</CustomText>
+                    </View>
+                  );
+                })}
+            </ScrollView>
+          ) : null}
         </View>
 
         <View style={styles.userActionsFloatingContainer}>
-          <TouchableOpacity style={styles.userActionButton}>
-            <Image source={IMAGES.alert_triangle_filled} />
-          </TouchableOpacity>
+          {userDetails?.isSpam ? (
+            <TouchableOpacity style={styles.userActionButton}>
+              <Image source={IMAGES.alert_triangle_filled} />
+            </TouchableOpacity>
+          ) : null}
           <TouchableOpacity style={styles.userActionButton}>
             <Image source={IMAGES.user_check} />
           </TouchableOpacity>
@@ -68,13 +152,15 @@ const UserProfile: React.FC<UserProfileProps> = ({}) => {
       <View style={styles.favButtonWrapper}>
         <Button
           title={'Favorite'}
-          imageSource={IMAGES.start_active}
+          imageSource={
+            userDetails?.isFavourite ? IMAGES.star_active : IMAGES.star_inactive
+          }
           leftImageStyle={{height: verticalScale(16), width: verticalScale(16)}}
           style={styles.favButton}
-          onPress={() => {}}
+          onPress={handleFavCta}
         />
       </View>
-    </>
+    </View>
   );
 };
 

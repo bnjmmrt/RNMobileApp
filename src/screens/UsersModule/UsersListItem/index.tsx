@@ -23,19 +23,19 @@ const UserListItem: React.FC<UserListItemProps> = ({
   const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
   const onPressUser = () => {
-    navigation.navigate(ROUTES.UserDetail, {user: 1});
+    navigation.navigate(ROUTES.UserDetail, {user: item.id});
   };
 
   return (
     <TouchableOpacity style={styles.container} onPress={onPressUser}>
       <View style={styles.userInfoContainer}>
         <AvatarInitials
-          name="Vijay Soni"
-          backgroundColor="red"
+          name={item.name}
+          imgUrl={item.profilePicture}
           size={40}
           textColor="white"
         />
-        <CustomText style={styles.username}>{'Vijay Soni'}</CustomText>
+        <CustomText style={styles.username}>{item.name}</CustomText>
       </View>
       <TouchableOpacity onPress={() => onSelectUser(item)}>
         <Image

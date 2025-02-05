@@ -13,6 +13,8 @@ import AddNewUserSheet from './BottomSheets/AddNewUserSheet';
 import Lists from './Lists';
 import UsersScreenStyle from './style';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
+import AddNewCustomListSheet from './BottomSheets/AddNewCustomListSheet';
 
 const tabsData: TabItem[] = [
   {
@@ -32,7 +34,8 @@ const tabsData: TabItem[] = [
 interface UserModuleProps extends NativeStackScreenProps<any, any> {}
 
 const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
-  const addNewUserSheetRef = useRef(null);
+  const addNewUserSheetRef = useRef<BottomSheetMethods>(null);
+  const addNewListSheetRef = useRef<BottomSheetMethods>(null);
 
   const styles = UsersScreenStyle();
 
@@ -45,6 +48,9 @@ const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
   const onPressHeaderPlus = () => {
     if (currentTab.id === '1') {
       addNewUserSheetRef?.current?.open();
+    }
+    if (currentTab.id === '2') {
+      addNewListSheetRef?.current?.open();
     }
   };
 
@@ -72,6 +78,7 @@ const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
       {currentTab.id === '1' ? <AllUsers /> : null}
       {currentTab.id === '2' ? <Lists /> : null}
       <AddNewUserSheet ref={addNewUserSheetRef} />
+      <AddNewCustomListSheet ref={addNewListSheetRef} />
     </View>
   );
 };
