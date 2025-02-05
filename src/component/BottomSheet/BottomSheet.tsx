@@ -1,4 +1,4 @@
-import BottomSheet, {BottomSheetFooter} from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetFooter } from '@gorhom/bottom-sheet';
 import React, {
   forwardRef,
   useCallback,
@@ -15,8 +15,8 @@ import {
   Pressable,
   Platform,
 } from 'react-native';
-import {Hp, Wp} from '../../utils/dimensions';
-import {COLORS} from '../../utils/constants';
+import { Hp, Wp } from '../../utils/dimensions';
+import { COLORS } from '../../utils/constants';
 import FlashMessage from 'react-native-flash-message';
 import {
   getFlashMessageBackgroundColor,
@@ -113,9 +113,7 @@ const BottomSheetComponent = forwardRef<
         visible={isVisible}
         animationType="fade"
         onRequestClose={handleClosePress}>
-        <Pressable
-          style={styles.modalContainer}
-          onPress={Platform.OS === 'android' ? closeSheet : () => {}}>
+        <View style={styles.modalContainer} >
           <BottomSheet
             ref={sheetRef}
             snapPoints={snapPointsMemo}
@@ -140,7 +138,7 @@ const BottomSheetComponent = forwardRef<
             keyboardBlurBehavior="restore">
             {children}
           </BottomSheet>
-        </Pressable>
+        </View>
         <FlashMessage ref={flashMessageRef} position={'top'} />
       </Modal>
     );
