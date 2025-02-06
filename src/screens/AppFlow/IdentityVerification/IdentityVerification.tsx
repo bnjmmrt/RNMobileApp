@@ -1,37 +1,37 @@
-import React, {useCallback, useRef} from 'react';
-import {ScrollView, Text, View, Linking, Platform} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {LABLE, BUTTON_LABLE} from '../../../utils/constants';
+import React, { useCallback, useRef } from 'react';
+import { ScrollView, Text, View, Linking, Platform } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
 import IdentityVerificationStyles from './IdentityVerificationStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
-import {useDispatch, useSelector} from 'react-redux';
-import {setPageProgress} from '../../../redux/slices/appFlowSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPageProgress } from '../../../redux/slices/appFlowSlice';
 import Input from '../../../component/Input/Input';
 import IMAGES from '../../../assets/images';
-import {useMemberSignUp} from '../../../redux/hooks/useMemberSignUp';
+import { useMemberSignUp } from '../../../redux/hooks/useMemberSignUp';
 import useApi from '../../../axios/useApi';
-import {EndPoint} from '../../../ApiManager/config';
+import { EndPoint } from '../../../ApiManager/config';
 import MainNavigation from '../../../navigation';
-import {AppStack} from '../../../navigation/AppStack';
+import { AppStack } from '../../../navigation/AppStack';
 import {
   changeSafeAreaViewConfig,
   convertDateFormat,
 } from '../../../utils/functions';
-import {setAuthToken, setLoginData} from '../../../redux/slices/authSlice';
-import {FlashMessageComponent} from '../../../component/FlashMessageComponent/FlashMessageComponent';
-import {useFocusEffect} from '@react-navigation/native';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { setAuthToken, setLoginData } from '../../../redux/slices/authSlice';
+import { FlashMessageComponent } from '../../../component/FlashMessageComponent/FlashMessageComponent';
+import { useFocusEffect } from '@react-navigation/native';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-interface IdentityVerificationProps extends NativeStackScreenProps<any, any> {}
+interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
 
 const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   navigation,
 }) => {
-  const {signUp} = useMemberSignUp();
-  const {apiRequest, loading, error} = useApi();
+  const { signUp } = useMemberSignUp();
+  const { apiRequest, loading, error } = useApi();
   const userDetails = useSelector((state: any) => state.appFlow);
   const loginData = useSelector((state: any) => state.auth.loginData);
   // console.log('persist data', userDetails);
@@ -47,50 +47,50 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   )}&body=${encodeURIComponent(body)}`;
 
   const onNextClick = async () => {
-      const requestParams: any = {
-        address: {
-          address: userDetails.baseCity.address,
-          placeId: userDetails.baseCity.placeId,
-        },
-        dateOfBirth: convertDateFormat(userDetails.birthday),
-        email: userDetails.email,
-        firstName: userDetails.firstName,
-        focusIds: userDetails.creativeFocus.map((item: any) => item.id),
-        interestsIds: userDetails.interest.map((item: any) => item.id),
-        gender: userDetails.gender,
-        lastName: userDetails.lastName,
-        phoneNumber: userDetails.phone ? userDetails.phone : loginData.phone,
-        instagramAccessToken: '',
-        instagramUserName: usernameRef.current.inputText,
-        linkedInAccessToken: '',
-        facebookAccessToken: '',
-        platform: Platform.OS,
-        socialUrl: '',
-        profilePicture: userDetails.profilePic,
-      };
-      console.log('requestParams', requestParams);
-      const response: any = await apiRequest(
-        'post',
-        EndPoint.member_signUp,
-        requestParams,
+    const requestParams: any = {
+      address: {
+        address: userDetails.baseCity.address,
+        placeId: userDetails.baseCity.placeId,
+      },
+      dateOfBirth: convertDateFormat(userDetails.birthday),
+      email: userDetails.email,
+      firstName: userDetails.firstName,
+      focusIds: userDetails.creativeFocus.map((item: any) => item.id),
+      interestsIds: userDetails.interest.map((item: any) => item.id),
+      gender: userDetails.gender,
+      lastName: userDetails.lastName,
+      phoneNumber: "+917869332222",// userDetails.phone ? userDetails.phone : loginData.phone,
+      instagramAccessToken: '',
+      instagramUserName: usernameRef.current.inputText,
+      linkedInAccessToken: '',
+      facebookAccessToken: '',
+      platform: Platform.OS,
+      socialUrl: '',
+      profilePicture: userDetails.profilePic,
+    };
+    console.log('requestParams', requestParams);
+    const response: any = await apiRequest(
+      'post',
+      EndPoint.member_signUp,
+      requestParams,
+    );
+
+    if (response.status === 200) {
+      const data = { ...loginData, token: response.data };
+      dispatch(setLoginData(data));
+      dispatch(setPageProgress(1));
+      dispatch(setAuthToken(response.data));
+      navigation.navigate('BottomTabBar');
+
+      // dispatch(resetAppFlowDetails());
+      // persistStore(store).purge(); // This clears the persisted state
+    } else {
+      FlashMessageComponent.show(
+        'error',
+        'Something went wrong, please try again!',
       );
-
-      if (response.status === 200) {
-        const data = {...loginData, token: response.data};
-        dispatch(setLoginData(data));
-        dispatch(setPageProgress(1));
-        dispatch(setAuthToken(response.data));
-        navigation.navigate('BottomTabBar');
-
-        // dispatch(resetAppFlowDetails());
-        // persistStore(store).purge(); // This clears the persisted state
-      } else {
-        FlashMessageComponent.show(
-          'error',
-          'Something went wrong, please try again!',
-        );
-        // console.error('Error verifying OTP:', error);
-      }
+      // console.error('Error verifying OTP:', error);
+    }
   };
 
   const handleBackPress = () => {
@@ -120,7 +120,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       />
 
       <ScrollView
-        contentContainerStyle={{paddingBottom: 50}}
+        contentContainerStyle={{ paddingBottom: 50 }}
         style={styles.contentContainer}>
         <Title
           title={LABLE.IDENTITY_VERIFICATION_TITLE}
@@ -159,7 +159,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
             onPress={goToInstagram}
           />
           <View style={styles.divider} />
-          <Text style={[styles.title, {marginVertical: 20}]}>
+          <Text style={[styles.title, { marginVertical: 20 }]}>
             {LABLE.DONT_USE_INSTAGRAM}
           </Text>
           <Text style={styles.subTitle}>{LABLE.EMAIL_THE_CODE}</Text>
