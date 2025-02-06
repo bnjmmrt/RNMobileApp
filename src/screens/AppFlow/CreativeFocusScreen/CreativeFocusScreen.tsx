@@ -1,25 +1,25 @@
-import React, {useCallback, useState} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, { useCallback, useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import CreativeFocusScreenStyles from './CreativeFocusScreenStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
-import {LABLE, BUTTON_LABLE} from '../../../utils/constants';
+import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
 import Header from '../../../component/Header/Header';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../redux/slices';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/slices';
 import {
   setCreativeFocus,
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
 import Toast from '../../../component/Toast/Toast';
-import {useGetFocusesQuery} from '../../../redux/actions/appFlowApiAction';
-import {useFocusEffect} from '@react-navigation/native';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { useGetFocusesQuery } from '../../../redux/actions/appFlowApiAction';
+import { useFocusEffect } from '@react-navigation/native';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> {}
+interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> { }
 
 const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
   navigation,
@@ -35,7 +35,7 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
   const [selectedCategories, setSelectedCategories] = useState<any[]>(
     selectedCreativeFocus,
   );
-console.log("selectedCategories",selectedCategories)
+
   const [isToastShown, setIsToastShown] = useState(false);
 
   const handleCategorySelect = (category: any) => {
@@ -58,7 +58,7 @@ console.log("selectedCategories",selectedCategories)
   };
 
   const onNextClick = () => {
-    if (selectedCategories.length > 0) {
+    if (selectedCategories.length > 0 && selectedCategories.length <= 3) {
       setIsToastShown(false);
       console.log('Selected Categories:', selectedCategories);
       dispatch(setCreativeFocus(selectedCategories));
@@ -97,7 +97,7 @@ console.log("selectedCategories",selectedCategories)
               style={[
                 styles.categoryButton,
                 selectedCategories.some(selected => selected.id === item.id) &&
-                  styles.selectedCategoryButton,
+                styles.selectedCategoryButton,
               ]}
               onPress={() => handleCategorySelect(item)}>
               <Text
