@@ -48,6 +48,7 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
           ref={inputRef}
           inputFieldContainerStyle={{ height: 56 }}
           label={LABLE.ENTER_CODE}
+          forBottomSheet
           errorMessage={ERROR_MESSAGE.PLEASE_ENTER_A_VALID_REFERRAL_CODE}
         />
         <Button
@@ -58,8 +59,6 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
           loading={isLoading}
           onPress={handleSubmit}
         />
-
-
       </BottomSheetScrollView>
 
     </BottomSheetComponent>
