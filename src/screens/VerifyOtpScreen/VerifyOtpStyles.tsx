@@ -1,12 +1,12 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   Wp,
   Hp,
   verticalMarginScale,
   horizontalMarginScale,
 } from '../../utils/dimensions';
-import {fontFamily} from '../../utils/functions';
-import {COLORS} from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
+import { COLORS } from '../../utils/constants';
 
 const VerifyOtpStyles = () => {
   return StyleSheet.create({
@@ -16,8 +16,8 @@ const VerifyOtpStyles = () => {
     },
     contentContainer: {
       flex: 1,
-      paddingTop: verticalMarginScale(16),
-      paddingBottom: verticalMarginScale(8),
+      paddingTop: verticalMarginScale(10),
+      paddingBottom: verticalMarginScale(20),
       paddingHorizontal: horizontalMarginScale(20),
     },
     spacer: {
