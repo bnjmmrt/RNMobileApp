@@ -1,22 +1,18 @@
-import React, {forwardRef} from 'react';
-import {Platform, View, StyleSheet, Text} from 'react-native';
+import React, { forwardRef } from 'react';
+import { Platform, View, StyleSheet, Text } from 'react-native';
 import BottomSheetComponent from './BottomSheet';
-import {fontScale, radiusScale, verticalMarginScale, Wp} from '../../utils/dimensions';
-import {
-  BUTTON_LABLE,
-  COLORS,
-  LABLE,
-} from '../../utils/constants';
+import { fontScale, radiusScale, verticalMarginScale, Wp } from '../../utils/dimensions';
+import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import Button from '../Button';
 import DatePicker from 'react-native-date-picker';
-import {fontFamily} from '../../utils/functions';
+import { fontFamily } from '../../utils/functions';
 
 interface Props {
-  setSelectedDate:(date:Date)=>void,
-  date:Date,
-  setDate:(date:Date)=>void
+  setSelectedDate: (date: Date) => void;
+  date: Date;
+  setDate: (date: Date) => void;
 }
-const DatepickerBottomSheet = forwardRef((props:Props, ref) => {
+const DatepickerBottomSheet = forwardRef((props: Props, ref) => {
   const hundredYearsAgo = new Date();
   hundredYearsAgo.setFullYear(hundredYearsAgo.getFullYear() - 100);
 
@@ -24,7 +20,7 @@ const DatepickerBottomSheet = forwardRef((props:Props, ref) => {
   today.setHours(0, 0, 0, 0);
 
   const onNextClick = () => {
-    ref.current?.close(); 
+    ref.current?.close();
   };
 
   return (
@@ -41,10 +37,10 @@ const DatepickerBottomSheet = forwardRef((props:Props, ref) => {
           mode="date"
           open={true}
           date={props.date}
-          locale="en-US"    
+          locale="en-US"
           onDateChange={(date: any) => {
-            props?.setSelectedDate(date);
-            props.setDate(date)
+            props.setSelectedDate(date);
+            props.setDate(date);
           }}
           minimumDate={hundredYearsAgo}
           // maximumDate={today}
@@ -66,20 +62,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize:fontScale(32),
+    fontSize: fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
     fontWeight: '700',
-    color:COLORS.black
+    color: COLORS.black,
   },
   subTitle: {
-    marginVertical:verticalMarginScale(10),
+    marginVertical: verticalMarginScale(10),
     fontSize: fontScale(14),
     color: COLORS.light_gray,
   },
   btnStyle: {
     width: Wp(85),
-    borderRadius:radiusScale(100),
-    marginTop:verticalMarginScale(20),
+    borderRadius: radiusScale(100),
+    marginTop: verticalMarginScale(20),
   },
 });
 

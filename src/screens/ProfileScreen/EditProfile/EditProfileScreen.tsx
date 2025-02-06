@@ -52,13 +52,14 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
   const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>();
 
   const getUserSettingAndDetails = async () => {
-    const response = apiRequest(
+    const response:any =await apiRequest(
       'get',
-      EndPoint.user_settings + loginData.userId,
+      EndPoint.user_settings + 'userId',
     );
-    if (response.data) {
+    console.log("getUserSettingAndDetails",response)
+    if (response.status===200) {
       //dependiing on API response parse data and set
-      setUserDetails(response.data.userrData);
+      // setUserDetails(response.data.userData);
       dispatch(setNotificationSettings(response.data.notificationsSettings))
     }
   };
