@@ -4,6 +4,8 @@ import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
 import Header from 'src/component/Header/Header';
 import {styles} from './style';
+import Input from 'src/component/Input/Input';
+import {verticalMarginScale} from 'src/utils/dimensions';
 
 const CreateList = ({
   onPressBack,
@@ -25,16 +27,16 @@ const CreateList = ({
           {'Create a name for your list'}
         </CustomText>
 
-        <CustomText style={styles.listNameInputLabel}>{'List Name'}</CustomText>
-        <TextInput
-          style={styles.listNameInput}
-          placeholder="What would you like to report?"
-          verticalAlign="top"
+        <Input
+          label="List Name"
+          placeholder=""
+          forBottomSheet={true}
+          errorMessage={''}
         />
         <Button
           title="Add to List"
           colorTheme="dark"
-          style={styles.actionCta}
+          style={[styles.actionCta, {marginTop: verticalMarginScale(24)}]}
           onPress={onSuccess}
         />
       </View>

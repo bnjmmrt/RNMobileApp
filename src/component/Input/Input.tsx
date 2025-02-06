@@ -38,8 +38,8 @@ interface InputProps {
   otherStyle?: ViewStyle;
   editable?: boolean;
   isRequired?: boolean;
-  height?: any;
   forBottomSheet?: boolean;
+  inputFieldContainerStyle?: ViewStyle;
 }
 
 export type InputRefMethods = {
@@ -61,10 +61,10 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     defaultValue = '',
     onChangeText,
     otherStyle,
-    height = 60,
     editable,
     isRequired = false,
     forBottomSheet = false,
+    inputFieldContainerStyle,
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -122,7 +122,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
           styles.inputContainer,
           multiline ? styles.multilineInputContainer : null,
           errorMessage ? styles.errorInputWrapper : null,
-          {height: height},
+          inputFieldContainerStyle,
         ]}>
         {leftImage && <Image source={leftImage} style={styles.leftImage} />}
         <InputComponent
@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: horizontalMarginScale(16),
+    height: verticalScale(48),
   },
   multilineInputContainer: {
     height: verticalScale(160),

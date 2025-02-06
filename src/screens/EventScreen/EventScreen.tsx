@@ -1,24 +1,25 @@
-import { useFocusEffect } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useCallback, useRef, useState } from 'react';
-import { View } from 'react-native';
-import { useSelector } from 'react-redux';
+import {useFocusEffect} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React, {useCallback, useRef, useState} from 'react';
+import {View} from 'react-native';
+import {useSelector} from 'react-redux';
 import debounce from 'lodash/debounce';
 import AfterAppStaticComponent from 'src/component/BeforeAppStaticComponent/AfterAppStaticComponent';
-import { changeSafeAreaViewConfig } from 'src/utils/functions';
-import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import {changeSafeAreaViewConfig} from 'src/utils/functions';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 import DynamicTabBar from '../../component/ActiveTabBar/DynamicTabBar';
 import HeaderComponent from '../../component/HeaderComponent';
 import SearchInput from '../../component/SearchInput';
-import { RootState } from '../../redux/slices';
-import { BUTTON_LABLE, COLORS, tabsData } from '../../utils/constants';
+import {RootState} from '../../redux/slices';
+import {BUTTON_LABLE, COLORS, tabsData} from '../../utils/constants';
 import EventScreenStyle from './EventScreenStyle';
 import AppliedEvents from './Tabs/AppliedEvents';
 import InvitedEvents from './Tabs/InvitedEvents';
 import PastEvents from './Tabs/PastEvents';
 import UpcomingEvents from './Tabs/UpcomingEvents';
+import {horizontalMarginScale, verticalMarginScale} from 'src/utils/dimensions';
 
-interface EventScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventScreenProps extends NativeStackScreenProps<any, any> {}
 
 interface TabItem {
   id: string;
@@ -27,7 +28,7 @@ interface TabItem {
   subTitle: string;
 }
 
-const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
+const EventScreen: React.FC<EventScreenProps> = ({navigation}) => {
   const styles = EventScreenStyle();
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const userId = loginData?.guestId || '6267f02a-0c86-4752-9e62-8bada629d830';
@@ -39,22 +40,21 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
     useCallback(() => {
       showEvents
         ? changeSafeAreaViewConfig({
-          ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-          showBottomSafeAreaView: false,
-        })
+            ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+            showBottomSafeAreaView: false,
+          })
         : changeSafeAreaViewConfig({
-          ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
-          showBottomSafeAreaView: false,
-        });
-    }, [loginData?.isInvited])
+            ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
+            showBottomSafeAreaView: false,
+          });
+    }, [loginData?.isInvited]),
   );
-
 
   const [currentTab, setCurrentTab] = useState<TabItem>(tabsData[1]);
 
   const debouncedSearch = useCallback(
     debounce((text: string) => setSearchText(text), 500),
-    []
+    [],
   );
 
   const handleSearchTextChange = (text: string) => {
@@ -87,23 +87,23 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
         backgroundColor: showEvents ? COLORS.white : COLORS.black2,
       }}>
       {showEvents ? (
-        <View style={{ backgroundColor: COLORS.white, flex: 1 }}>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            flex: 1,
+            gap: verticalMarginScale(15),
+          }}>
           <HeaderComponent isDarkTheme={false} />
-          <View style={{ width: '100%', height: 10 }} />
-
           <SearchInput
             ref={searchInputRef}
             onSearchTextChange={handleSearchTextChange}
+            mainContainerStyle={{marginHorizontal: horizontalMarginScale(20)}}
           />
-          <View style={{ width: '100%', height: 10 }} />
-
           <DynamicTabBar
             onTabChange={handleTabChange}
             tabs={tabsData}
             activeTabIndex={showEvents ? 1 : 0}
           />
-          <View style={{ width: '100%', height: 10 }} />
-
           <View style={styles.contentContainer}>{renderTabContent()}</View>
         </View>
       ) : (

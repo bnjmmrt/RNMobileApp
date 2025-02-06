@@ -1,27 +1,27 @@
 import IMAGES from '@images/index';
 import React from 'react';
 import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
+import {shallowEqual, useSelector} from 'react-redux';
 import AvatarInitials from 'src/component/AvatarInitials';
 import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
-import UserDetailCard from '../UserDetailCard';
-import createStyle from './style';
-import {
-  horizontalMarginScale,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-} from 'src/utils/dimensions';
-import {shallowEqual, useSelector} from 'react-redux';
-import {RootState} from 'src/redux/slices';
-import {COLORS} from 'src/utils/constants';
+import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import {
   useLazyFetchUserDetailsQuery,
   useMarkUserFavMutation,
   UserDetailResponse,
   useUnmarkUserFavMutation,
 } from 'src/redux/actions/usersApiAction';
-import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import {RootState} from 'src/redux/slices';
+import {COLORS} from 'src/utils/constants';
+import {
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+} from 'src/utils/dimensions';
+import UserDetailCard from '../UserDetailCard';
+import createStyle from './style';
 
 interface UserProfileProps {
   user: string;
@@ -55,7 +55,7 @@ const UserProfile: React.FC<UserProfileProps> = ({user}) => {
       let response;
       let payload = {
         targetUserId: user,
-        user: '',
+        user: loginData.userId,
       };
       if (userDetails?.isFavourite) {
         response = await unMarkUserFav(payload).unwrap();
@@ -70,7 +70,10 @@ const UserProfile: React.FC<UserProfileProps> = ({user}) => {
         FlashMessageComponent.show('error', 'Something went wrong!');
       }
     } catch (error) {
-      FlashMessageComponent.show('error', 'Something went wrong!');
+      FlashMessageComponent.show(
+        'error',
+        error?.data?.error?.message || 'Something went wrong!',
+      );
     }
   };
 

@@ -110,7 +110,7 @@ export const LABLE = {
   ACCESS_THE_MOST_VALUABLE_CALENDAR: 'Access the most valuable calendar.',
   TWO_MINUTES_TO_COMPLETE: '~2 min to Complete',
   STREAMLINE_YOUR_LIFESTYLE: 'Streamline your lifestyle.',
-  MANAGE_YOUR_EVENTS: 'Manage your events, chats, and passes—all in one place.',
+  MANAGE_YOUR_EVENTS: 'Manage your events, chats, and passes—all in one\nplace.',
   CONNECT_WITH_WORLD:
     "Connect with the world's top event organizers. Get discovered and invited to events that matter.",
   CONNECT_DIRECTLY_WITH_PEOPLE:
