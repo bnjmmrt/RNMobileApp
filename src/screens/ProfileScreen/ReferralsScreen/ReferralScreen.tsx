@@ -9,14 +9,15 @@ import ReferralRequestItem from './ReferralRequestItem';
 import Button from 'src/component/Button';
 import InviteFriendsSheet from './InviteFriendsSheet';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
-import { Hp } from 'src/utils/dimensions';
+import { fontScale, horizontalMarginScale, Hp, radiusScale, verticalMarginScale, Wp } from 'src/utils/dimensions';
 import { useNavigation } from '@react-navigation/native';
+import useContacts from 'src/utils/hooks/useContactPermission';
 
 const ReferralScreen: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'referrals' | 'vouches'>('referrals');
-  const inviteFriendSheetRef=useRef(null);
-  const [showBottomSheet,setShowSheet]=useState(false);
-  const {goBack}=useNavigation();
+  const inviteFriendSheetRef = useRef(null);
+  const { goBack } = useNavigation();
+  const { requestContactPermission } = useContacts();
 
   const referralsData = [
     { id: 1, name: 'Sarah Michaels' },
@@ -37,13 +38,13 @@ const ReferralScreen: React.FC = () => {
 
     return (
       <>
-        <Text style={styles.sectionSubtitle}>{subtitle}</Text>
         <FlatList
           data={data}
-          ListEmptyComponent={ <View style={{ alignItems: 'center', justifyContent: 'center', height: Hp(40), flexDirection: 'row'}}>
-          <EventEmptyRecord title= {"You have no referral requests at this time."}/>
+          ListEmptyComponent={<View style={{ alignItems: 'center', justifyContent: 'center', height: Hp('50%'), flexDirection: 'row' }}>
+            <EventEmptyRecord title={activeTab === 'referrals' ? "You have no referral requests at this time." : "You have no vouch requests at this time."} />
           </View>}
-          contentContainerStyle={{ gap: 12, marginTop: 24, paddingBottom: 60 }}
+          ListHeaderComponent={<Text style={styles.sectionSubtitle}>{subtitle}</Text>}
+          contentContainerStyle={{ gap: 12, marginTop: verticalMarginScale(16), paddingBottom: 60 }}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <ReferralRequestItem
@@ -76,21 +77,20 @@ const ReferralScreen: React.FC = () => {
         tabTwoLabel="Vouch Requests"
         countOne={2}
         countTwo={2}
+        width={Wp(88)}
       />
-      <View style={{ paddingHorizontal: 16, flex: 1 }}>{renderContent()}</View>
+      <View style={{ paddingHorizontal: horizontalMarginScale(20), flex: 1 }}>{renderContent()}</View>
       <Button
         disabled={false}
         style={styles.btnStyle}
         title={BUTTON_LABLE.INVITE_FRIENDS}
         colorTheme="dark"
-        onPress={() => {
-            setShowSheet(true);
-            setTimeout(() => {
-                inviteFriendSheetRef.current.open();
-            }, 500);
+        onPress={async () => {
+          await requestContactPermission();
+          inviteFriendSheetRef.current.open();
         }}
       />
-      {showBottomSheet && <InviteFriendsSheet ref={inviteFriendSheetRef}/>}
+      <InviteFriendsSheet ref={inviteFriendSheetRef} />
     </SafeAreaView>
   );
 };
@@ -101,10 +101,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   sectionSubtitle: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     color: COLORS.light_gray,
     fontFamily: fontFamily.ABCDiatype_Regular,
     textAlign: 'center',
+    marginBottom: verticalMarginScale(12),
   },
   messageText: {
     fontSize: 14,
@@ -113,7 +114,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   btnStyle: {
-    borderRadius: 100,
+    borderRadius: radiusScale(99),
+    marginBottom: verticalMarginScale(20),
   },
 });
 

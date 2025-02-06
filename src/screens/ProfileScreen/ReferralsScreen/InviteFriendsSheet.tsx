@@ -20,6 +20,9 @@ import { BUTTON_LABLE, COLORS, LABLE } from 'src/utils/constants';
 import BottomSheetComponent from 'src/component/BottomSheet/BottomSheet';
 import Input from 'src/component/Input/Input';
 import Title from 'src/component/Title/Title';
+import useContacts from 'src/utils/hooks/useContactPermission';
+import SearchInput from 'src/component/SearchInput';
+import { fontScale, horizontalMarginScale, verticalMarginScale } from 'src/utils/dimensions';
 
 
 interface ContactItem {
@@ -32,48 +35,23 @@ const PAGE_SIZE = 30;
 
 const InviteFriendsSheet = forwardRef((props, ref) => {
   const [contacts, setContacts] = useState<ContactItem[]>([]);
+  const { getContacts, permissionGranted } = useContacts();
   const [filteredContacts, setFilteredContacts] = useState<ContactItem[]>([]);
   const [requestSent, setRequestSent] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const searchInputRef = useRef(null);
-  const [permissionGranted, setPermissionGranted] = useState(true);
   const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const requestAndroidPermissions = () => {
-    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
-      title: 'Contacts',
-      message: 'This app would like to view your contacts.',
-      buttonPositive: 'Please accept bare mortal',
-    })
-      .then((res) => {
-        console.log('Permission: ', res);
-        setPermissionGranted(true);
-        fetchContacts();
-      })
-      .catch((error) => {
-        setPermissionGranted(false);
-        console.error('Permission error: ', error);
-      });
-  };
-
   useEffect(() => {
-    Platform.OS == 'ios' ? fetchContacts() : requestAndroidPermissions();
+    fetchContacts();
   }, []);
 
 
   const fetchContacts = async () => {
     try {
-      const deviceContacts = await Contacts.getAll().catch((err) =>
-        setPermissionGranted(false)
-      );
-      const formattedContacts = deviceContacts
-        .map((contact: any) => ({
-          name: `${contact.givenName} ${contact.familyName}`.trim(),
-          phoneNumber: contact.phoneNumbers[0]?.number.replace(/\D/g, '') || '',
-        }))
-        .filter((contact) => contact.phoneNumber);
 
+      const formattedContacts = await getContacts();
       setContacts(formattedContacts);
       setFilteredContacts(formattedContacts.slice(0, PAGE_SIZE));
 
@@ -176,13 +154,15 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
   );
 
   const footerComponent = () => (
-    <Button
-      disabled={false}
-      style={styles.btnStyle}
-      title={BUTTON_LABLE.INVITE_CONTACTS_VIA}
-      colorTheme="dark"
-      onPress={handleInviteLink}
-    />
+    <View style={{ backgroundColor: COLORS.white }}>
+      <Button
+        disabled={false}
+        style={styles.btnStyle}
+        title={BUTTON_LABLE.INVITE_CONTACTS_VIA}
+        colorTheme="dark"
+        onPress={handleInviteLink}
+      />
+    </View>
   );
 
   return (
@@ -192,51 +172,38 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
       footer={footerComponent()}
       onClose={() => {
         setSearchQuery('');
-        handleSearch('')}}
+        handleSearch('')
+      }}
     >
       <View style={{ paddingHorizontal: 20, flex: 1 }}>
         <Title title={BUTTON_LABLE.INVITES} align="center" />
-          <View style={{ flex: 1 }}>
-            <Text style={styles.sectionSubtitle}>{BUTTON_LABLE.INVITE_FREINDS}</Text>
-            <Input
-              ref={searchInputRef}
-              placeholder={LABLE.SEARCH_FRIENDS}
-              leftImage={IMAGES.search}
-              onChangeText={(query) => {
-                setSearchQuery(query);
-                handleSearch(query);
-              }}
-              defaultValue={searchQuery}
-            />
-            <FlatList
-              data={filteredContacts}
-              keyExtractor={(item, index) => '' + item.phoneNumber + index}
-              contentContainerStyle={{ gap: 4, flexGrow: 1, paddingBottom: 100, marginTop: 16 }}
-              renderItem={({ item }) =>
-                renderListItem(
-                  item,
-                  'Invite',
-                  () => handleInvite(item),
-                  requestSent.includes(item.phoneNumber)
-                )
-              }
-              onEndReached={handleLoadMore}
-              onEndReachedThreshold={0.5}
-            />
-          </View>
-        {!permissionGranted && (
-          <>
-            <Text style={styles.sectionTitle}>
-              Allow permission to send invite to contacts
-            </Text>
-            <ButtonSmall
-              colorTheme="dark"
-              style={styles.settingsButton}
-              title="Go to Settings"
-              onPress={() => Linking.openURL('app-settings:')}
-            />
-          </>
-        )}
+        <View style={{ flex: 1 }}>
+          <Text style={styles.sectionSubtitle}>{BUTTON_LABLE.INVITE_FREINDS}</Text>
+          <SearchInput
+            placeholder={LABLE.SEARCH_FRIENDS}
+            onSearchTextChange={(query) => {
+              setSearchQuery(query);
+              handleSearch(query);
+            }}
+          />
+          <FlatList
+            data={filteredContacts}
+            keyExtractor={(item, index) => '' + item.phoneNumber + index}
+            contentContainerStyle={{ gap: 4, flexGrow: 1, paddingBottom: 100, marginTop: 16 }}
+            renderItem={({ item }) =>
+              renderListItem(
+                item,
+                'Invite',
+                () => handleInvite(item),
+                requestSent.includes(item.phoneNumber)
+              )
+            }
+            showsVerticalScrollIndicator={false}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+          />
+        </View>
+
       </View>
     </BottomSheetComponent>
   );
@@ -254,34 +221,37 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: fontScale(18),
     marginTop: 0,
     textAlign: 'center',
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
   sectionSubtitle: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     color: COLORS.light_gray,
-    fontFamily: fontFamily.ABCDiatype_Regular,
+    fontFamily: fontFamily.ABCDiatype_Medium,
     textAlign: 'center',
+    marginBottom: verticalMarginScale(16),
+    marginTop: verticalMarginScale(8)
   },
   listItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 12,
+    paddingVertical: verticalMarginScale(12),
+    paddingHorizontal: horizontalMarginScale(12),
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 16,
   },
   name: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Regular,
   },
   phone: {
-    fontSize: 12,
+    fontSize: fontScale(12),
     color: COLORS.light_gray,
-    marginTop: 4,
+    marginTop: verticalMarginScale(4),
     fontFamily: fontFamily.ABCDiatype_Regular,
   },
 });
