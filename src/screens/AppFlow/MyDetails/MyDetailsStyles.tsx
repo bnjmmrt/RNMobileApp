@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { horizontalMarginScale, radiusScale, verticalMarginScale, Wp } from '../../../utils/dimensions';
 import { COLORS } from '../../../utils/constants';
 
@@ -12,6 +12,7 @@ const MyDetailsStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
+      bottom:Platform.OS==='android' ? 20 :0
     },
     contentContainer: {
       flex: 1,

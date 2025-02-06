@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { Wp, Hp, radiusScale, verticalMarginScale, horizontalMarginScale, fontScale } from '../../../utils/dimensions';
 import { COLORS } from '../../../utils/constants';
 
@@ -12,6 +12,7 @@ const GenderScreenStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
+      bottom:Platform.OS==='android' ? 20 :0
     },
     contentContainer: {
       flex: 1,

@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    paddingBottom: verticalMarginScale(20)
   },
   itemContainer: {marginTop:verticalMarginScale(20), paddingVertical:verticalMarginScale(10), paddingHorizontal:horizontalMarginScale(20)},
   item: {
