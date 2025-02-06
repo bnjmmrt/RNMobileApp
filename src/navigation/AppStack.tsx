@@ -14,7 +14,7 @@ export type AppStackParamList = {
   BeforeAppStaticScreen: undefined;
   BottomTabBar: undefined;
   AppFlowStack: undefined;
-  UserDetail: undefined;
+  UserDetail: {user: string};
   ListDetail: undefined;
   ProfileStack: undefined;
   EventStack: undefined;

@@ -1,11 +1,25 @@
 package com.rumor
 
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.window.SplashScreen
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
 
+
 class MainActivity : ReactActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+//        setTheme(R.style.AppTheme) // Reset to your main theme
+        super.onCreate(savedInstanceState)
+        // Delay for 2 seconds before switching the theme
+        Handler(Looper.getMainLooper()).postDelayed({
+            setTheme(R.style.AppTheme) // Reset to your main theme
+        }, 1000)
+    }
 
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule

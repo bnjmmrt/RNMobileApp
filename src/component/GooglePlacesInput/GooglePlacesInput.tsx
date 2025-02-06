@@ -5,6 +5,7 @@ import { COLORS } from '../../utils/constants';
 import { Address } from '../../redux/slices/appFlowSlice';
 import { environment } from '../../../environments/environment';
 import IMAGES from '../../assets/images';
+import { verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 
 interface GooglePlacesInputProps {
   setLocation: (location: Address) => void;
@@ -18,7 +19,8 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({ setLocation, subm
           borderRadius: 8,
           borderWidth: 2,
           borderColor: COLORS.borderGray,
-
+          height:60,
+          padding:verticalMarginScale(4)
         },
 
       }}

@@ -1,4 +1,9 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, {
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  useEffect,
+} from 'react';
 import {
   View,
   Text,
@@ -8,11 +13,17 @@ import {
   TouchableOpacity,
   ViewStyle,
 } from 'react-native';
-import { COLORS } from '../../utils/constants';
-import { useNavigation } from '@react-navigation/native';
-import { CustomText } from '../CustomText';
-import { fontScale, horizontalMarginScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
-import { fontFamily } from 'src/utils/functions';
+import {COLORS} from '../../utils/constants';
+import {useNavigation} from '@react-navigation/native';
+import {CustomText} from '../CustomText';
+import {
+  fontScale,
+  horizontalMarginScale,
+  verticalMarginScale,
+  verticalScale,
+} from 'src/utils/dimensions';
+import {fontFamily} from 'src/utils/functions';
+import {BottomSheetTextInput} from '@gorhom/bottom-sheet';
 
 interface InputProps {
   label?: string;
@@ -27,10 +38,18 @@ interface InputProps {
   otherStyle?: ViewStyle;
   editable?: boolean;
   isRequired?: boolean;
-  height?: any;
+  forBottomSheet?: boolean;
+  inputFieldContainerStyle?: ViewStyle;
 }
 
-const Input = forwardRef((props: InputProps, ref) => {
+export type InputRefMethods = {
+  handleNextPress: () => void;
+  validateInputs: () => boolean;
+  inputText: string;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+};
+
+const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
   const {
     label,
     errorMessage: initialErrorMessage,
@@ -42,9 +61,10 @@ const Input = forwardRef((props: InputProps, ref) => {
     defaultValue = '',
     onChangeText,
     otherStyle,
-    height = 60,
     editable,
-    isRequired = false
+    isRequired = false,
+    forBottomSheet = false,
+    inputFieldContainerStyle,
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -75,12 +95,26 @@ const Input = forwardRef((props: InputProps, ref) => {
       // navigation.navigate('VerifyOtpScreen', { email: inputText, isEmail: true });
     }
   };
-  const requiredText = () => isRequired && <CustomText style={{ color: COLORS.errorText }}> *</CustomText>
+  const requiredText = () =>
+    isRequired && <CustomText style={{color: COLORS.errorText}}> *</CustomText>;
+
+  useEffect(() => {
+    if (defaultValue) {
+      setInputText(defaultValue);
+    }
+  }, [defaultValue]);
+
+  const InputComponent = forBottomSheet ? BottomSheetTextInput : TextInput;
 
   return (
     <View style={[styles.container, otherStyle]}>
       {/* Dynamic Label */}
-      {label && <CustomText style={[styles.label]}>{label}{requiredText()}</CustomText>}
+      {label && (
+        <CustomText style={[styles.label]}>
+          {label}
+          {requiredText()}
+        </CustomText>
+      )}
 
       {/* Input Field */}
       <View
@@ -88,10 +122,10 @@ const Input = forwardRef((props: InputProps, ref) => {
           styles.inputContainer,
           multiline ? styles.multilineInputContainer : null,
           errorMessage ? styles.errorInputWrapper : null,
-          { height: height }
+          inputFieldContainerStyle,
         ]}>
         {leftImage && <Image source={leftImage} style={styles.leftImage} />}
-        <TextInput
+        <InputComponent
           {...props}
           editable={editable}
           style={[styles.input, multiline ? styles.multilineInput : null]}
@@ -128,8 +162,11 @@ const styles = StyleSheet.create({
   },
   label: {
     paddingVertical: horizontalMarginScale(2),
+    color: COLORS.black,
+    fontSize: fontScale(14),
+    fontWeight: '500',
     // color: COLORS.labelGray,
-    fontFamily: fontFamily.ABCDiatype_Medium
+    fontFamily: fontFamily.ABCDiatype_Medium,
   },
   inputContainer: {
     borderWidth: 1,
@@ -138,18 +175,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: horizontalMarginScale(16),
+    height: verticalScale(48),
   },
   multilineInputContainer: {
     height: verticalScale(160),
     paddingTop: verticalMarginScale(10),
   },
-  leftImage: { width: 16, height: 16 },
-  rightImage: { width: 16, height: 16 },
+  leftImage: {width: 16, height: 16},
+  rightImage: {width: 16, height: 16},
   input: {
     flex: 1,
     fontSize: fontScale(14),
     color: COLORS.black,
-    fontFamily: fontFamily.ABCDiatype_Medium
+    fontWeight: '500',
+    fontFamily: fontFamily.ABCDiatype_Medium,
   },
   multilineInput: {
     height: '100%',

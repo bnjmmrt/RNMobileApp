@@ -4,29 +4,30 @@ import { fontFamily } from '../../../utils/functions';
 import { COLORS } from '../../../utils/constants';
 
 const VerifyOtpStyles = () => {
-  return  StyleSheet.create({
+  return StyleSheet.create({
     container: {
-      flex:1,
+      flex: 1,
       backgroundColor: COLORS.white,
+      paddingBottom: 20,
     },
-    btnStyle:{
+    btnStyle: {
       width: Wp(85),
-      borderRadius:radiusScale(100),
+      borderRadius: radiusScale(100),
     },
     contentContainer: {
       flex: 1,
-      paddingVertical:verticalMarginScale(10),
-      paddingHorizontal:horizontalMarginScale(20),
+      paddingVertical: verticalMarginScale(10),
+      paddingHorizontal: horizontalMarginScale(20),
     },
     title: {
       color: COLORS.black,
-      fontSize:fontScale(32),
-      fontFamily:fontFamily.RomieTrial_Bold,
+      fontSize: fontScale(32),
+      fontFamily: fontFamily.RomieTrial_Bold,
     },
     subtitle: {
       color: COLORS.light_gray,
       fontSize: fontScale(13),
-      fontFamily:fontFamily.ABCDiatype_Regular,
+      fontFamily: fontFamily.ABCDiatype_Regular,
       marginVertical: Hp(2),
     },
     spacer: {

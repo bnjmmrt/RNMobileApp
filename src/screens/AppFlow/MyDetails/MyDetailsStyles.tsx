@@ -7,15 +7,16 @@ const MyDetailsStyles = () => {
     container: {
       flex: 1,
       backgroundColor: COLORS.white,
+      paddingBottom: 20,
     },
     btnStyle: {
       width: Wp(85),
-      borderRadius:radiusScale(100),
+      borderRadius: radiusScale(100),
     },
     contentContainer: {
       flex: 1,
-      paddingVertical:verticalMarginScale(10),
-      paddingHorizontal:horizontalMarginScale(20),
+      paddingVertical: verticalMarginScale(10),
+      paddingHorizontal: horizontalMarginScale(20),
     },
   });
 };
