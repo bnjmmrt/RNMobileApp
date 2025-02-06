@@ -34,10 +34,7 @@ const FeedItem: React.FC<FeedItemProps> = ({ item, isFeatured, setDetail }) => {
             ? item.startDate
             : format(
                 new Date(
-                  `${item.startDate.slice(6, 10)}-${item.startDate.slice(
-                    0,
-                    2,
-                  )}-${item.startDate.slice(3, 5)}`,
+                  `${item.startDate.slice(0, 10)}`,
                 ),
                 'MMM d, p',
               )} */}

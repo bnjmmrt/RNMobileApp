@@ -8,7 +8,7 @@ import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/slices';
 import {StyleSheet} from 'react-native';
 import {Wp, Hp} from '../../utils/dimensions';
-import {fontFamily} from '../../utils/functions';
+import {fontFamily, retrieveData} from '../../utils/functions';
 import FeedItem from './FeedItem';
 import dayjs from 'dayjs';
 import NoResults from './NoResults';
@@ -22,7 +22,6 @@ import IMAGES from '@images/index';
 import FeedSeries from './FeedSeries';
 import FeedSeriesDetail from './FeedSeriesDetail';
 import FeedFilterItem from './FeedFilterItem';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {DateType} from 'react-native-ui-datepicker';
 
 export interface EventItem {
@@ -71,7 +70,7 @@ const EventsFeed = () => {
   const [series, setSeries] = useState<SeriesItem[]>([]);
   const [seriesDetail, setSeriesDetail] = useState<SeriesItem | null>(null);
   const [responseSubmitted, setResponseSubmitted] = useState<boolean>(false);
-  const [pagination, setPagination] = useState<Pagination>({take: 5, skip: 1});
+  const [pagination, setPagination] = useState<Pagination>({take: 5, skip: 0});
   const [filter, setFilter] = useState<Filter>({
     location: '',
     categories: [],
@@ -80,11 +79,14 @@ const EventsFeed = () => {
 
   const isInvited = loginData?.isInvited || false;
 
-  const handleSearchChange = (text: string) => {
-    setSearchTerm(text);
-  };
+  const handleSearchChange = useCallback(
+    (text: string) => {
+      setSearchTerm(text);
+    },
+    [setSearchTerm],
+  );
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     setSearchEnter(searchTerm === '');
 
     setFilterEvents(
@@ -92,31 +94,37 @@ const EventsFeed = () => {
         value.title.toLowerCase().includes(searchTerm.toLowerCase()),
       ),
     );
-  };
+  }, [searchTerm, allFilterEvents]);
 
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     setSearchEnter(true);
     setFilterEvents(allFilterEvents);
-  };
+  }, [allFilterEvents]);
 
-  const handleFilter = () => {
+  const handleFilter = useCallback(() => {
     if (allowAccess) setFilterVisible(true);
     else setAllowAccessModal(true);
-  };
+  }, [allowAccess]);
 
   const handleNotify = useCallback(() => {
     setResponseSubmitted(true);
     setTimeout(() => {
       setResponseSubmitted(false);
     }, 3000);
-  }, [setResponseSubmitted]);
+  }, []);
+
+  const handleLoadMore = useCallback(() => {
+    setPagination(prev => ({...prev, take: prev.take + 6}));
+  }, []);
 
   const fetchEvents = useCallback(async () => {
     try {
-      const res: any = await apiGet(
-        `/events/feed?take=${pagination.take}&skip=${pagination.skip}&startDate=${filter.date[0]}&endDate=${filter.date[1]}&findInNameAndDescription=${searchTerm}`,
-      );
       const featuredRes: any = await apiGet('/events/feed/featured');
+      const res: any = await apiGet(
+        `/events/users/${loginData.userId}/events?take=${pagination.take}&skip=${
+          pagination.skip
+        }`,
+      );
 
       const eventsRes = res.data.map((item: any) => ({
         id: item.id,
@@ -135,14 +143,12 @@ const EventsFeed = () => {
         endDate: item.endDate,
         type: item.name,
         location: item?.location?.location || '',
-        image: item.imageCover || item.imagFlyer,
+        image: item.imageCover || item.imageFlyer,
       }));
 
       setFeaturedEvents(featuredEventsRes);
       setFilterEvents(eventsRes);
       setAllFilterEvents(eventsRes);
-
-      setLoading(false);
 
       setSeries([
         {
@@ -156,22 +162,10 @@ const EventsFeed = () => {
       ]);
     } catch (error) {
       console.error('Failed to fetch events:', error);
+    } finally {
+      setLoading(false);
     }
-  }, [
-    setFeaturedEvents,
-    setFilterEvents,
-    setAllFilterEvents,
-    setLoading,
-    setSeries,
-    apiGet,
-    filter,
-    pagination.skip,
-    pagination.take,
-  ]);
-
-  const handleLoadMore = () => {
-    setPagination(prev => ({...prev, skip: prev.skip + prev.take}));
-  };
+  }, [pagination]);
 
   useEffect(() => {
     fetchEvents();
@@ -179,8 +173,13 @@ const EventsFeed = () => {
 
   useEffect(() => {
     const formatAllowAccess = async () => {
-      const allow = await AsyncStorage.getItem('allowAccess');
-      setAllowAccess(allow === '1');
+      try {
+        const allow = await retrieveData('allowAccess');
+        console.log('Allow Access:', allow);
+        setAllowAccess(allow && allow === 'true' ? true : false);
+      } catch (error) {
+        console.error('Error retrieving data from AsyncStorage:', error);
+      }
     };
 
     formatAllowAccess();
@@ -189,11 +188,7 @@ const EventsFeed = () => {
   return (
     <View style={[styles.container]}>
       {isInvited ? (
-        <BeforeAppStaticComponent
-          isChatScreen={false}
-          // title={LABLE.UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS}
-          // subTitle={LABLE.GET_DISCOVERY_BY_THE_WORLD}
-        />
+        <BeforeAppStaticComponent isChatScreen={false} />
       ) : (
         <View>
           <HeaderComponent isDarkTheme={false} />
@@ -272,41 +267,22 @@ const EventsFeed = () => {
                         key={entryIndex}
                       />
                     ))}
-                  {/* <FlatList
+                  <FlatList
                     data={filterEvents}
-                    renderItem={({item, index}) => (
-                      <FeedItem setDetail={setDetail} item={item} key={index} />
+                    renderItem={({item}) => (
+                      <FeedItem setDetail={setDetail} item={item} />
                     )}
                     keyExtractor={item => item.id.toString()}
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0.5}
-                  /> */}
-                  {filterEvents.map((value, index) => (
+                  />
+                  {/* {filterEvents.map((value, index) => (
                     <FeedItem setDetail={setDetail} item={value} key={index} />
-                  ))}
+                  ))} */}
                 </View>
               </>
             )}
           </ScrollView>
-
-          <View style={styles.paginationContainer}>
-            <Text
-              disabled={pagination.skip === 0}
-              onPress={() =>
-                setPagination(prev => ({...prev, skip: prev.skip - prev.take}))
-              }
-              style={styles.pagination}>
-              Prev
-            </Text>
-            <Text
-              disabled={filterEvents.length < pagination.take}
-              onPress={() =>
-                setPagination(prev => ({...prev, skip: prev.skip + prev.take}))
-              }
-              style={styles.pagination}>
-              Next
-            </Text>
-          </View>
         </View>
       )}
 
@@ -371,7 +347,7 @@ const styles = StyleSheet.create({
   filterScrollView: {
     paddingVertical: 8,
     marginHorizontal: 16,
-    height: Hp(8),
+    height: 16,
   },
   scrollView: {
     height: Hp(41),
@@ -389,7 +365,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    paddingBottom: 100,
   },
   btnStyle: {
     width: Wp(85),
@@ -431,23 +406,6 @@ const styles = StyleSheet.create({
   check1: {
     width: 16,
     height: 16,
-  },
-  paginationContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 8,
-    paddingVertical: 16,
-  },
-  pagination: {
-    backgroundColor: '#E1E1E1',
-    color: 'black',
-    padding: 12,
-    width: 96,
-    display: 'flex',
-    justifyContent: 'center',
-    textAlign: 'center',
-    borderRadius: 12,
   },
 });
 

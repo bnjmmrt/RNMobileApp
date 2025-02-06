@@ -18,12 +18,7 @@ const FeedDetail: React.FC<FeedDetailProps> = ({
   handleNotify,
 }) => {
   const formatDate = (dateString: string) => {
-    const [year, month, day] = [
-      dateString.slice(6, 10),
-      dateString.slice(0, 2),
-      dateString.slice(3, 5),
-    ];
-    return format(new Date(`${year}-${month}-${day}`), 'MMM d yyyy');
+    return format(new Date(`${dateString.slice(0, 10)}`), 'MMM d yyyy');
   };
 
   const handleYes = () => {
