@@ -43,6 +43,7 @@ export const BUTTON_LABLE = {
   FOLLOW: 'Follow'
 };
 export const LABLE = {
+  WELCOME: 'Welcome to Rumors!',
   RUMORAPP: 'RUMORAPP',
   ENTER_YOUR_PHONE_NUMBER: 'Enter your phone number',
   ENTER_YOUR_EMAIL: 'Enter your email',
@@ -143,6 +144,9 @@ export const LABLE = {
   REQUEST_REFERRAL_FROM_RUMOR: "Request referrals from Rumor members.",
   INVITE_YOUR_FRIEND: "Invite your friends to join Rumor.",
   SELECT_YOUR_BIRTHDAY_BELOW: "Select your birthday below",
+  WELCOME_NOTE_LINE_1: 'Your application has been approved. You’re now part of a private network connecting you to experiences from the world\'s top event organizers.',
+  WELCOME_NOTE_LINE_2: 'At Rumor, we value positivity, respect, and meaningful connections. Please take a moment to review our',
+  WELCOME_NOTE_LINE_3: 'We’re excited to have you in our community and can’t wait for you to explore everything Rumor has to offer.',
   LOGOUT: 'Log Out',
   COMING_SOON: "Coming Soon…",
   OTP_VERIFIED_SUCCESSFULLY: 'OTP verified successfully!',
