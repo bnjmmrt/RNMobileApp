@@ -27,7 +27,7 @@ const DeleteAccountBottomSheet = forwardRef(
     return (
       <BottomSheetComponent
         ref={ref}
-        snapPoints={[Platform.OS == 'android' ? '65%' : '60%']}
+        snapPoints={[ '60%']}
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
           <Text style={styles.title}>{PROFILE.DELETE_ACCOUNT}</Text>

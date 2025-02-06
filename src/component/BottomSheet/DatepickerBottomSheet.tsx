@@ -1,54 +1,69 @@
-import React, {forwardRef} from 'react';
-import {Platform, View, StyleSheet, Text} from 'react-native';
+import React, { forwardRef } from 'react';
+import { Platform, View, StyleSheet, Text } from 'react-native';
 import BottomSheetComponent from './BottomSheet';
-import {fontScale, radiusScale, verticalMarginScale, Wp} from '../../utils/dimensions';
+import { fontScale, radiusScale, verticalMarginScale, Wp } from '../../utils/dimensions';
 import {
   BUTTON_LABLE,
   COLORS,
   LABLE,
 } from '../../utils/constants';
 import Button from '../Button';
-import DatePicker from 'react-native-date-picker';
-import {fontFamily} from '../../utils/functions';
+import DatePickerIOS from 'react-native-date-picker';
+import { fontFamily } from '../../utils/functions';
+import { DatePicker } from 'react-native-wheel-pick';
 
 interface Props {
-  setSelectedDate:(date:Date)=>void,
-  date:Date,
-  setDate:(date:Date)=>void
+  setSelectedDate: (date: Date) => void,
+  date: Date,
+  setDate: (date: Date) => void
 }
-const DatepickerBottomSheet = forwardRef((props:Props, ref) => {
+const DatepickerBottomSheet = forwardRef((props: Props, ref) => {
   const hundredYearsAgo = new Date();
   hundredYearsAgo.setFullYear(hundredYearsAgo.getFullYear() - 100);
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const maxYear = new Date();
+  maxYear.setFullYear(maxYear.getFullYear() - 15);
+
+  // const today = new Date();
+  // today.setHours(0, 0, 0, 0);
 
   const onNextClick = () => {
-    ref.current?.close(); 
+    ref.current?.close();
   };
 
   return (
     <BottomSheetComponent
       ref={ref}
-      snapPoints={[Platform.OS === 'android' ? '45%' : '50%']}
+      snapPoints={[Platform.OS === 'ios' ? '50%' : '48%']}
       onClose={() => console.log(ref)}>
       <View style={styles.container}>
         <Text style={styles.title}>{LABLE.BIRTHDAY}</Text>
         <Text style={styles.subTitle}>{LABLE.SELECT_YOUR_BIRTHDAY_BELOW}</Text>
-        <DatePicker
+        {Platform.OS === 'ios' ? <DatePickerIOS
           title={''}
           theme="light"
           mode="date"
           open={true}
           date={props.date}
-          locale="en-US"    
+          locale="en-US"
           onDateChange={(date: any) => {
             props?.setSelectedDate(date);
-            props.setDate(date)
+            props.setDate(date);
           }}
           minimumDate={hundredYearsAgo}
-          // maximumDate={today}
-        />
+          maximumDate={maxYear}
+        /> : (
+          <DatePicker
+          textSize={18}
+            minimumDate={new Date(hundredYearsAgo)}
+            maximumDate={new Date(maxYear)}
+            style={{ backgroundColor: 'white', width: 320, height: 200 }}
+            onDateChange={(date: any) => {
+              props?.setSelectedDate(date);
+              props.setDate(date);
+            }}
+          />
+        )}
         <Button
           style={styles.btnStyle}
           title={BUTTON_LABLE.CONFIRM}
@@ -66,20 +81,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize:fontScale(32),
+    fontSize: fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
-    fontWeight: '700',
-    color:COLORS.black
+    color: COLORS.black
   },
   subTitle: {
-    marginVertical:verticalMarginScale(10),
+    marginVertical: verticalMarginScale(10),
     fontSize: fontScale(14),
     color: COLORS.light_gray,
   },
   btnStyle: {
     width: Wp(85),
-    borderRadius:radiusScale(100),
-    marginTop:verticalMarginScale(20),
+    borderRadius: radiusScale(100),
+    marginTop: verticalMarginScale(20),
   },
 });
 

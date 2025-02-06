@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { Wp, Hp, radiusScale, verticalScale, verticalMarginScale, horizontalMarginScale, fontScale, horizontalScale } from '../../../utils/dimensions';
 import { COLORS } from '../../../utils/constants';
 import { fontFamily } from '../../../utils/functions';
@@ -13,6 +13,7 @@ const ProfilePhotoScreenStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
+      bottom:Platform.OS==='android' ? 20 :0
     },
     btnSmallStyle: {
       width: 'auto',
@@ -70,6 +71,7 @@ const ProfilePhotoScreenStyles = () => {
       fontFamily: fontFamily.ABCDiatype_Regular,
       marginVertical: Hp(0.15),
       textAlign: 'center',
+      paddingHorizontal:horizontalMarginScale(10)
     },
     numberContainer: {
       height: verticalScale(20),
