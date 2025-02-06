@@ -54,7 +54,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
   const getUserSettingAndDetails = async () => {
     const response:any =await apiRequest(
       'get',
-      EndPoint.user_settings + 'userId',
+      EndPoint.user_settings + loginData?.userId,
     );
     console.log("getUserSettingAndDetails",response)
     if (response.status===200) {

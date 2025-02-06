@@ -1,7 +1,7 @@
 import React, { useRef, useState} from 'react';
-import {Platform, StyleSheet, Text, TextInput, View} from 'react-native';
+import {StyleSheet, Text, TextInput, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setPageProgress} from '../../../redux/slices/appFlowSlice';
 import Header from '../../../component/Header/Header';
 import {
@@ -20,6 +20,7 @@ import IMAGES from '@images/index';
 import Toast from '../../../component/Toast/Toast';
 import useApi from '../../../axios/useApi';
 import {EndPoint} from 'src/ApiManager/config';
+import { RootState } from '../../../redux/slices';
 
 interface FeedbackScreenProps {}
 
@@ -44,7 +45,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   const [isToastShown, setIsToastShown] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedData, getSelectedData] = useState<Tag[]>();
-
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
 
   const handleBackPress = () => {
     dispatch(setPageProgress(3));
@@ -62,7 +63,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
       const requestData = {
         description: feedback,
         tag: selectedData[0].value,
-        userId: 'userId',
+        userId: loginData?.userId
       };
       console.log('requestObject', requestData);
       const response: any = await apiRequest(
@@ -70,8 +71,10 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
         EndPoint.host_feedback,
         requestData,
       );
-      if (response.data) {
-        // show confirmation sheet on API success
+      console.log('host_feedbackhost_feedback', response);
+      if (response.status===200) {
+        setFeedback('');
+        getSelectedData([]);
         confirmationRef.current.open();
       } else {
         //error message
@@ -137,7 +140,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
       <Button
         disabled={false}
         style={styles.btnStyle}
-        title={BUTTON_LABLE.SUBMIT}
+        title={BUTTON_LABLE.CONFIRM}
         colorTheme="dark"
         onPress={onSubmit}
       />
@@ -149,7 +152,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    paddingBottom: 20
   },
   contentContainer: {
     flex: 1,
@@ -175,13 +177,11 @@ const styles = StyleSheet.create({
     marginVertical:verticalMarginScale(10),
     width: '100%',
   },
-  textArea: { 
+  textArea: {
     textAlignVertical: 'top',
-    fontSize:fontScale(14),
+    fontSize:fontScale(16),
     color: '#333',
     height:verticalScale(100),
-    fontWeight:'500',
-    lineHeight:verticalScale(16)
   },
   tagText: {
     fontFamily: fontFamily.RomieTrial_Bold,
@@ -189,9 +189,9 @@ const styles = StyleSheet.create({
     marginTop:verticalMarginScale(20),
   },
   btnStyle: {
-    // width: Wp(85),
+    width: Wp(85),
     borderRadius:radiusScale(100),
-    bottom:Platform.OS==='android' ? 20 :0
+    marginBottom:verticalMarginScale(100),
   },
   errorInputWrapper: {
     borderColor: COLORS.borderRed,
@@ -204,3 +204,4 @@ const styles = StyleSheet.create({
   },
 });
 export default FeedbackScreen;
+
