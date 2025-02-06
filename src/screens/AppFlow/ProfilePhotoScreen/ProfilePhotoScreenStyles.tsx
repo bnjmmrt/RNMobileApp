@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { Wp, Hp, radiusScale, verticalMarginScale, horizontalMarginScale, fontScale, verticalScale, horizontalScale } from '../../../utils/dimensions';
 import { COLORS } from '../../../utils/constants';
 
@@ -12,6 +12,7 @@ const ProfilePhotoScreenStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
+      bottom:Platform.OS==='android' ? 20 :0
     },
     contentContainer: {
       flex: 1,
@@ -43,9 +44,9 @@ const ProfilePhotoScreenStyles = () => {
       color: COLORS.white,
     },
     profilePhotoContainer: {
-      height: verticalScale(100),
-      width: horizontalScale(100),
-      borderRadius: radiusScale(50),
+      height: 100,
+      width: 100,
+      borderRadius: 50,
       backgroundColor: COLORS.tabBorderColor,
       alignSelf: 'center',
       justifyContent: "center",
@@ -55,9 +56,9 @@ const ProfilePhotoScreenStyles = () => {
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: COLORS.black,
-      borderRadius: radiusScale(50),
-      width: horizontalScale(32),
-      height: verticalScale(32),
+      borderRadius: 50,
+      width: 32,
+      height: 32,
       position: 'absolute',
       right: 0,
       bottom: 0,

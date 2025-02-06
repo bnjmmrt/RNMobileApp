@@ -25,7 +25,7 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick,profileP
         <View style={styles.container}>
 
 <View style={styles.profilePhotoContainer}>
-    {/* <FullScreenLoader loading={loading}> */}
+    <FullScreenLoader loading={loading} customStyle={styles.profilePhotoContainer}>
           {profilePic ? (
             <Image
               style={styles.profilePhotoContainer}
@@ -33,11 +33,11 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick,profileP
               resizeMode="cover"
             />
           ) : (
-            <View style={{alignSelf: 'center'}}>
+            <View style={styles.profilePhotoContainer}>
               <AvatarInitials name={'Bessie Cooper'} size={48} />
             </View>
           )}
-{/* </FullScreenLoader> */}
+</FullScreenLoader>
           <TouchableOpacity style={styles.iconContainer} onPress={editPhotoClick}>
             <Image
               resizeMode="contain"

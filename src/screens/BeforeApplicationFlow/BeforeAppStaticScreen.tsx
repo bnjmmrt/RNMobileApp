@@ -1,26 +1,42 @@
-import { CommonActions, useFocusEffect } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useCallback } from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { resetLoginData } from 'src/redux/slices/authSlice';
-import { changeSafeAreaViewConfig } from 'src/utils/functions';
-import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import {CommonActions, useFocusEffect} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React, {useCallback, useEffect} from 'react';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {useDispatch} from 'react-redux';
+import {resetLoginData} from 'src/redux/slices/authSlice';
+import {changeSafeAreaViewConfig} from 'src/utils/functions';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 import IMAGES from '../../assets/images';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
-import { COLORS } from '../../utils/constants';
+import {COLORS} from '../../utils/constants';
 import {
   horizontalMarginScale,
   verticalMarginScale,
   Wp,
 } from '../../utils/dimensions';
+import useApi from 'src/axios/useApi';
+import {EndPoint} from 'src/ApiManager/config';
 
-interface BeforeAppStaticScreenProps extends NativeStackScreenProps<any, any> { }
+interface BeforeAppStaticScreenProps extends NativeStackScreenProps<any, any> {}
 
 const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
   navigation,
 }) => {
   const dispatch = useDispatch();
+  const {apiRequest, loading, error} = useApi();
+
+  useEffect(() => {
+    fetchCurrentUser();
+  }, []);
+
+  const fetchCurrentUser = async () => {
+    //token is reqired to run this API 
+    const response: any = await apiRequest('get', EndPoint.current_user);
+    console.log('fetchCurrentUser', response);
+    if (response.status === 200) {
+      //set User details in redux
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -31,7 +47,7 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
   const redirectToHome = () => {
     const resetAction = CommonActions.reset({
       index: 0,
-      routes: [{ name: 'AuthStack' }],
+      routes: [{name: 'AuthStack'}],
     });
     dispatch(resetLoginData());
     navigation.dispatch(resetAction);
