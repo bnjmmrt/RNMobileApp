@@ -1,18 +1,27 @@
+import BottomSheet, { BottomSheetFooter } from '@gorhom/bottom-sheet';
 import React, {
-  useRef,
-  useCallback,
-  useMemo,
   forwardRef,
+  useCallback,
   useImperativeHandle,
+  useMemo,
+  useRef,
   useState,
 } from 'react';
-import { StyleSheet, Modal, View, TouchableOpacity, Pressable } from 'react-native';
-import BottomSheet, {
-  BottomSheetFooter,
-  BottomSheetScrollView,
-} from '@gorhom/bottom-sheet';
+import {
+  StyleSheet,
+  Modal,
+  View,
+  TouchableOpacity,
+  Pressable,
+  Platform,
+} from 'react-native';
 import { Hp, Wp } from '../../utils/dimensions';
 import { COLORS } from '../../utils/constants';
+import FlashMessage from 'react-native-flash-message';
+import {
+  getFlashMessageBackgroundColor,
+  MessageType,
+} from '../FlashMessageComponent/FlashMessageComponent';
 
 interface BottomSheetComponentProps {
   children: React.ReactNode;
@@ -26,7 +35,16 @@ interface BottomSheetComponentProps {
   enableDynamicSizing?: boolean;
 }
 
-const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
+export type BottomSheetMethods = {
+  open: () => void;
+  close: () => void;
+  showFlashMessage: (type: MessageType, message: string) => void;
+};
+
+const BottomSheetComponent = forwardRef<
+  BottomSheetMethods,
+  BottomSheetComponentProps
+>(
   (
     {
       children,
@@ -39,6 +57,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
     },
     ref,
   ) => {
+    const flashMessageRef = useRef<FlashMessage | null>(null);
     const [isVisible, setIsVisible] = useState(false);
     const sheetRef = useRef<BottomSheet>(null);
 
@@ -50,7 +69,17 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
         sheetRef.current?.close();
         setIsVisible(false);
       },
+      showFlashMessage: showFlashMessage,
     }));
+
+    const showFlashMessage = (type: MessageType, message: string) => {
+      flashMessageRef?.current?.showMessage({
+        message,
+        type: 'default',
+        backgroundColor: getFlashMessageBackgroundColor(type),
+        color: '#fff',
+      });
+    };
 
     const handleSheetChange = useCallback(
       (index: number) => {
@@ -66,12 +95,11 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
 
     const closeSheet = () => {
       sheetRef.current?.close();
-
-    }
+    };
 
     const snapPointsMemo = useMemo(() => snapPoints, [snapPoints]);
     const renderFooter = useCallback(
-      props => (
+      (props: any) => (
         <BottomSheetFooter {...props} bottomInset={24}>
           {typeof footer === 'function' ? footer() : footer}
         </BottomSheetFooter>
@@ -85,7 +113,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
         visible={isVisible}
         animationType="fade"
         onRequestClose={handleClosePress}>
-        <Pressable style={styles.modalContainer} onPress={closeSheet}>
+        <View style={styles.modalContainer} >
           <BottomSheet
             ref={sheetRef}
             snapPoints={snapPointsMemo}
@@ -105,10 +133,13 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetComponentProps>(
               backgroundColor: backgroundColor ? backgroundColor : COLORS.white,
               borderTopLeftRadius: 30,
               borderTopRightRadius: 30,
-            }}>
+            }}
+            keyboardBehavior="interactive"
+            keyboardBlurBehavior="restore">
             {children}
           </BottomSheet>
-        </Pressable>
+        </View>
+        <FlashMessage ref={flashMessageRef} position={'top'} />
       </Modal>
     );
   },

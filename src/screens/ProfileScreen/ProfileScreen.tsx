@@ -197,22 +197,17 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     });
   };
 
-  const redirectToHome = () => {
+  const logOut = () => {
     const resetAction = CommonActions.reset({
       index: 0,
       routes: [{ name: 'AuthStack' }],
     });
     dispatch(resetLoginData());
+    dispatch(setAuthToken(null))
+    logoutBottomSheetRef.current?.close();
     navigation.dispatch(resetAction);
   };
 
-  const logOut = () => {
-    console.log("logiut")
-    dispatch(resetLoginData())
-    dispatch(setAuthToken(null))
-    logoutBottomSheetRef.current?.close();
-    navigation.navigate(ROUTES.LandingScreen)
-  };
 
   return (
     <View

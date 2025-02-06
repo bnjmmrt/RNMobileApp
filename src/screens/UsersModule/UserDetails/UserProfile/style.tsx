@@ -27,10 +27,14 @@ const createStyle = () => {
       borderRadius: 99,
       marginTop: verticalMarginScale(-10),
       backgroundColor: COLORS.white,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: horizontalMarginScale(4),
     },
     memberType: {
       fontSize: fontScale(12),
       color: COLORS.black,
+      textTransform: 'capitalize',
     },
 
     favButtonWrapper: {

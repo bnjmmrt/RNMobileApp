@@ -1,50 +1,71 @@
 import IMAGES from '@images/index';
+import moment from 'moment';
 import React, {useCallback} from 'react';
 import {FlatList, Image, ImageSourcePropType, View} from 'react-native';
+import {shallowEqual, useSelector} from 'react-redux';
 import {CustomText} from 'src/component/CustomText';
+import {UserDetailResponse} from 'src/redux/actions/usersApiAction';
+import {RootState} from 'src/redux/slices';
+import {horizontalMarginScale} from 'src/utils/dimensions';
 import UserDetailCard from '../UserDetailCard';
 import createStyle from './style';
-import {horizontalMarginScale} from 'src/utils/dimensions';
 
-const dummySocialData = [
-  {
-    icon: IMAGES.insta,
-    value: '1233432',
-  },
-  {
-    icon: IMAGES.linkdn,
-    value: '',
-  },
-  {
-    icon: IMAGES.snapchat,
-    value: '',
-  },
-  {
-    icon: IMAGES.tiktok,
-    value: '',
-  },
-  {
-    icon: IMAGES.x,
-    value: '',
-  },
-  {
-    icon: IMAGES.yt,
-    value: '',
-  },
-  {
-    icon: IMAGES.fb,
-    value: '',
-  },
-];
+interface UserOverviewProps {
+  user: string;
+}
 
-interface UserOverviewProps {}
-
-const UserOverview: React.FC<UserOverviewProps> = ({}) => {
+const UserOverview: React.FC<UserOverviewProps> = ({user}) => {
   const styles = createStyle();
+
+  const {userDetails} = useSelector((state: RootState) => {
+    const queryResult = state.api.queries[
+      `fetchUserDetails(${JSON.stringify({user})})`
+    ] as {data: UserDetailResponse} | undefined;
+
+    return {
+      userDetails: queryResult?.data?.data ?? undefined,
+    };
+  }, shallowEqual);
+
+  const socialPresenceData = [
+    {
+      icon: IMAGES.insta,
+      value: userDetails?.socialStats?.instagramFollowersCount || 0,
+    },
+    {
+      icon: IMAGES.linkdn,
+      value: userDetails?.socialStats?.linkedinFollowersCount || 0,
+    },
+    {
+      icon: IMAGES.snapchat,
+      value: userDetails?.socialStats?.snapchatFollowersCount || 0,
+    },
+    {
+      icon: IMAGES.tiktok,
+      value: userDetails?.socialStats?.tiktokFollowersCount || 0,
+    },
+    {
+      icon: IMAGES.x,
+      value: userDetails?.socialStats?.xFollowersCount || 0,
+    },
+    {
+      icon: IMAGES.yt,
+      value: userDetails?.socialStats?.youtubeFollowersCount || 0,
+    },
+    {
+      icon: IMAGES.fb,
+      value: userDetails?.socialStats?.facebookFollowersCount || 0,
+    },
+  ];
+
+  const totalFollowers = socialPresenceData.reduce(
+    (total, item) => total + (item.value || 0),
+    0,
+  );
 
   const InfoRow = ({
     icon,
-    title,
+    title = '',
   }: {
     title: string;
     icon: ImageSourcePropType;
@@ -77,30 +98,62 @@ const UserOverview: React.FC<UserOverviewProps> = ({}) => {
       <CustomText style={[styles.sectionTitle, {marginTop: 0}]}>
         {'Information'}
       </CustomText>
-      <InfoRow title="Female" icon={IMAGES.profileTab} />
-      <InfoRow title="39" icon={IMAGES.hourglass} />
-      <InfoRow title="Chicago" icon={IMAGES.location} />
-      <InfoRow title="22 Oct 1995" icon={IMAGES.calender} />
-      <InfoRow title="(684) 555-0102" icon={IMAGES.phone} />
-      <InfoRow title="bessie.cooper@example.com" icon={IMAGES.contact} />
+      {userDetails?.gender ? (
+        <InfoRow title={userDetails?.gender} icon={IMAGES.profileTab} />
+      ) : null}
+      {userDetails?.age ? (
+        <InfoRow
+          title={String(userDetails?.age || '')}
+          icon={IMAGES.hourglass}
+        />
+      ) : null}
+      {userDetails?.city ? (
+        <InfoRow title={userDetails?.city} icon={IMAGES.location} />
+      ) : null}
+      {userDetails?.dateOfBirth ? (
+        <InfoRow
+          title={moment(userDetails?.dateOfBirth, 'MM/DD/YYYY').format(
+            'DD MMM YYYY',
+          )}
+          icon={IMAGES.calender}
+        />
+      ) : null}
+      {userDetails?.phoneNumber ? (
+        <InfoRow title={userDetails?.phoneNumber} icon={IMAGES.phone} />
+      ) : null}
+      {userDetails?.email ? (
+        <InfoRow title={userDetails?.email} icon={IMAGES.contact} />
+      ) : null}
 
-      <CustomText style={styles.sectionTitle}>
-        {'Social Media Presence'}
-      </CustomText>
-      <FlatList
-        data={dummySocialData}
-        renderItem={renderSocialPresenceRow}
-        keyExtractor={(item, index) => index.toString()}
-        columnWrapperStyle={{gap: horizontalMarginScale(4)}}
-        contentContainerStyle={{gap: horizontalMarginScale(4)}}
-        numColumns={2}
-      />
+      {userDetails?.socialStats && totalFollowers ? (
+        <>
+          <CustomText style={styles.sectionTitle}>
+            {'Social Media Presence'}
+          </CustomText>
+          <FlatList
+            data={socialPresenceData}
+            renderItem={renderSocialPresenceRow}
+            keyExtractor={(item, index) => index.toString()}
+            columnWrapperStyle={{gap: horizontalMarginScale(4)}}
+            contentContainerStyle={{gap: horizontalMarginScale(4)}}
+            numColumns={2}
+          />
+        </>
+      ) : null}
 
-      <CustomText style={styles.sectionTitle}>{'Total Following'}</CustomText>
-      <View style={styles.totalFollowingContainer}>
-        <CustomText style={styles.totalFollowing}>{'12.2'}</CustomText>
-        <CustomText style={styles.totalFollowingUnit}>{'M'}</CustomText>
-      </View>
+      {totalFollowers ? (
+        <>
+          <CustomText style={styles.sectionTitle}>
+            {'Total Following'}
+          </CustomText>
+          <View style={styles.totalFollowingContainer}>
+            <CustomText style={styles.totalFollowing}>
+              {totalFollowers}
+            </CustomText>
+            {/* <CustomText style={styles.totalFollowingUnit}>{'M'}</CustomText> */}
+          </View>
+        </>
+      ) : null}
     </UserDetailCard>
   );
 };

@@ -10,6 +10,7 @@ const initialState: AuthState = {
     isInvited: false,
     isSignUpCompleted: false,
     varifyStatus: 0,
+    userId: '6267f02a-0c86-4752-9e62-8bada629d830',
     roles: [
       {
         roleId: '1223343534435',
