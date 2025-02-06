@@ -7,7 +7,7 @@ const CreativeFocusScreenStyles = () =>
     container: {
       flex: 1,
       backgroundColor: COLORS.white,
-      paddingBottom: 20,
+      // paddingBottom: 20,
     },
     contentContainer: {
       flex: 1,

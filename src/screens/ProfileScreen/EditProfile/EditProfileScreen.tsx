@@ -234,13 +234,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    paddingBottom: 20
+    // paddingBottom: 20
   },
   btnStyle: {
     // width: Wp(85),
     // height: 50,
     borderRadius: radiusScale(100),
-    bottom:Platform.OS==='android' ? 20 :0
+    bottom:Platform.OS==='android' ? verticalMarginScale(20) :0
   },
   contentContainer: {
     flex: 1,

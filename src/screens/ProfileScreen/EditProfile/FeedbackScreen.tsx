@@ -1,5 +1,5 @@
 import React, { useRef, useState} from 'react';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {Platform, StyleSheet, Text, TextInput, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import {setPageProgress} from '../../../redux/slices/appFlowSlice';
@@ -71,7 +71,6 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
         EndPoint.host_feedback,
         requestData,
       );
-      console.log('host_feedbackhost_feedback', response);
       if (response.status===200) {
         setFeedback('');
         getSelectedData([]);
@@ -191,7 +190,7 @@ const styles = StyleSheet.create({
   btnStyle: {
     width: Wp(85),
     borderRadius:radiusScale(100),
-    marginBottom:verticalMarginScale(100),
+    bottom:Platform.OS==='android' ? verticalMarginScale(20) :0
   },
   errorInputWrapper: {
     borderColor: COLORS.borderRed,
