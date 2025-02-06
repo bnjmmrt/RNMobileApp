@@ -1,14 +1,14 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, Image, Text, Pressable} from 'react-native';
-import {fontScale, Hp, verticalMarginScale, Wp} from '../../utils/dimensions';
-import {BUTTON_LABLE, COLORS, LABLE} from '../../utils/constants';
+import React, { useState } from 'react';
+import { View, StyleSheet, Image, Text, Pressable } from 'react-native';
+import { fontScale, Hp, verticalMarginScale, Wp } from '../../utils/dimensions';
+import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '../../assets/images/index';
 import Button from '../Button';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
-import {ScrollView} from 'react-native';
-import {fontFamily} from '../../utils/functions';
-import {useNavigation} from '@react-navigation/native';
-import {CustomText} from '../CustomText';
+import { ScrollView } from 'react-native';
+import { fontFamily } from '../../utils/functions';
+import { useNavigation } from '@react-navigation/native';
+import { CustomText } from '../CustomText';
 
 interface BeforeAppStaticComponentProps {
   isChatScreen: boolean;
@@ -105,7 +105,7 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           isDarkTheme={true}
         />
 
-        <View style={{height: Hp(2)}} />
+        <View style={{ height: Hp(2) }} />
 
         {!isChatScreen && (
           <Button
@@ -147,8 +147,8 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: Hp(5),
-    marginBottom: 30,
+    marginTop: verticalMarginScale(60),
+    marginBottom: verticalMarginScale(40),
   },
   logoImgStyle: {
     resizeMode: 'center',

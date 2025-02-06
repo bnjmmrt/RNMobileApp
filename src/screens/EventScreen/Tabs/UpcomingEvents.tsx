@@ -7,16 +7,16 @@ import { BUTTON_LABLE, COLORS } from '../../../utils/constants';
 import { Hp } from '../../../utils/dimensions';
 
 interface UpcomingEventsProps {
-  eventId: string;
+  userId: string;
   searchText: string;
 }
 
-const UpcomingEvents: React.FC<UpcomingEventsProps> = ({ eventId, searchText }) => {
+const UpcomingEvents: React.FC<UpcomingEventsProps> = ({ userId, searchText }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [events, setEvents] = useState<any[]>([]);
   const { data, isLoading } = useFetchEventsQuery({
-    eventId,
+    userId,
     guestEventStatus: 'UPCOMING',
     searchText: searchText,
     take: 10,

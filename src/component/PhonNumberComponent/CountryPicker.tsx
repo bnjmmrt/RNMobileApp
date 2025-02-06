@@ -314,7 +314,8 @@ export const CountryPicker = ({
               ],
             },
           ]}>
-          <View style={{ flexDirection: 'column' }}>
+          <Pressable
+            style={{ flexDirection: 'column' }}>
             <Text
               style={{
                 fontSize: 32,
@@ -353,7 +354,7 @@ export const CountryPicker = ({
                 {...rest}
               />
             </View>
-          </View>
+          </Pressable>
 
           <View style={[styles.line, style?.line]} />
           {resultCountries.length === 0 ? (

@@ -1,13 +1,20 @@
 import IMAGES from '@images/index';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {FlatList, View} from 'react-native';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import SearchInput from 'src/component/SearchInput';
 import {AppStackParamList} from 'src/navigation/AppStack';
-import {Hp, verticalMarginScale} from 'src/utils/dimensions';
+import {
+  horizontalMarginScale,
+  Hp,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
 import UserListItem from '../UsersListItem';
 import createStyle from './style';
+import {useFetchAllUsersQuery} from 'src/redux/actions/usersApiAction';
+import {shallowEqual, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/slices';
 
 interface AllUserProps {}
 
@@ -18,6 +25,28 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
 
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const [searchText, setSearchText] = useState<string>('');
+  const [allUsers, setAllUsers] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const {data, isLoading} = useFetchAllUsersQuery({
+    take: 10,
+    skip: (currentPage - 1) * 10,
+    searchValue: searchText,
+  });
+
+  useEffect(() => {
+    if (data) {
+      setAllUsers(prev =>
+        currentPage === 1 ? data.data : [...prev, ...data.data],
+      );
+    }
+  }, [data]);
+
+  const loadMore = () => {
+    if (data?.totalCount < data?.users?.length && !isLoading) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
 
   const onSelectUser = (user: number) => {
     if (selectedUsers.includes(user)) {
@@ -48,21 +77,24 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   );
 
   return (
-    <View>
+    <View
+      style={{
+        marginTop: verticalMarginScale(8),
+        marginHorizontal: horizontalMarginScale(20),
+      }}>
       <SearchInput
         ref={searchInputRef}
         onSearchTextChange={handleSearchTextChange}
         placeholder="Search..."
         rightIcon={IMAGES.filter_lines}
         onPressRightIcon={() => {}}
-        rightIconText="125"
+        rightIconText=""
       />
 
       <FlatList
-        data={[1, 2, 3, 4, 5]}
+        data={allUsers?.users || []}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        style={{alignSelf: 'center', width: '90%'}}
         contentContainerStyle={{gap: verticalMarginScale(16)}}
         ListHeaderComponent={<View />}
         ListFooterComponent={<View />}
@@ -79,6 +111,8 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
             />
           </View>
         }
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
       />
     </View>
   );

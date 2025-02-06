@@ -6,16 +6,16 @@ import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
 import { Hp } from '../../../utils/dimensions';
 
 interface PastEventsProps {
-  eventId: string;
+  userId: string;
   searchText: string;
 }
 
-const PastEvents: React.FC<PastEventsProps> = ({ eventId, searchText }) => {
+const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [events, setEvents] = useState<any[]>([]);
   const { data, isLoading } = useFetchEventsQuery({
-    eventId,
+    userId,
     guestEventStatus: 'PAST',
     searchText: searchText,
     take: 10,

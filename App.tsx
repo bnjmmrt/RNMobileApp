@@ -20,7 +20,7 @@ import { EndPoint } from 'src/ApiManager/config';
 
 import useApi from 'src/axios/useApi';
 import { useDispatch } from 'react-redux';
-import { setCreativeFocus } from 'src/redux/slices/appFlowSlice';
+import { setCreativeFocus } from 'src/redux/slices/appFlowApiDataSlice';
 import { setInterests } from 'src/redux/slices/appFlowApiDataSlice';
 const AppContent: React.FC = () => {
   // const { isInternetConnected } = useAuth();
@@ -38,7 +38,6 @@ const AppContent: React.FC = () => {
     fetch();
   }, []);
 
-
   LogBox.ignoreAllLogs();
   useEffect(() => {
     console.log('Internet status:', isConnected);
@@ -51,7 +50,6 @@ const AppContent: React.FC = () => {
 };
 
 const App: React.FC = () => {
-
   const MyTheme = {
     ...DefaultTheme,
     colors: {
@@ -70,12 +68,12 @@ const App: React.FC = () => {
               {/* <AppContext.Provider value={appContext}> */}
               {/* <SafeAreaProvider style={styles.container}> */}
               <AppContent />
-              <FlashMessage position="top" />
               {/* </SafeAreaProvider> */}
               {/* </AppContext.Provider> */}
             </NavigationContainer>
           </GestureHandlerRootView>
         </SafeAreaViewWrapper>
+        <FlashMessage position="top" />
       </PersistGate>
     </Provider>
   );

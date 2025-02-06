@@ -22,7 +22,6 @@ import { EndPoint } from '../../ApiManager/config';
 import { setProfilePic } from '../../redux/slices/appFlowSlice';
 import { environment } from '../../../environments/environment';
 import ContactSupporrtBottomSheet from 'src/component/BottomSheet/ContactSupporrtBottomSheet';
-import FullScreenLoader from 'src/component/FullScreenLoader';
 import { setAuthToken, setLoginData } from 'src/redux/slices/authSlice';
 import { ROUTES } from 'src/navigation/Route';
 import { CommonActions, useFocusEffect } from '@react-navigation/native';
@@ -198,22 +197,17 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     });
   };
 
-  const redirectToHome = () => {
+  const logOut = () => {
     const resetAction = CommonActions.reset({
       index: 0,
       routes: [{ name: 'AuthStack' }],
     });
     dispatch(resetLoginData());
+    dispatch(setAuthToken(null))
+    logoutBottomSheetRef.current?.close();
     navigation.dispatch(resetAction);
   };
 
-  const logOut = () => {
-    console.log("logiut")
-    dispatch(resetLoginData())
-    dispatch(setAuthToken(null))
-    logoutBottomSheetRef.current?.close();
-    navigation.navigate(ROUTES.LandingScreen)
-  };
 
   return (
     <View
@@ -221,7 +215,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         styles.container,
         { backgroundColor: !isInvited ? COLORS.black2 : COLORS.white },
       ]}>
-      <FullScreenLoader loading={loading}>
+     
         {isInvited ? (
           <BeforeAppStaticComponent
             title={LABLE.STREAMLINE_YOUR_LIFESTYLE}
@@ -232,11 +226,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             <HeaderComponent isDarkTheme={false} />
 
             <ScrollView>
-              {loading && <Text> Uploading photo...</Text>}
+            
               <ProfileTopView
                 editPhotoClick={editPhotoClick}
                 profilePic={userDetails?.profilePic}
                 name={`${userDetails.firstName} ${userDetails.lastName}`}
+                loading={loading}
               />
               {listItems.map(item => {
                 return (
@@ -301,7 +296,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             />
           </View>
         )}
-      </FullScreenLoader>
     </View>
   );
 };

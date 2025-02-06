@@ -17,6 +17,7 @@ import AppliedEvents from './Tabs/AppliedEvents';
 import InvitedEvents from './Tabs/InvitedEvents';
 import PastEvents from './Tabs/PastEvents';
 import UpcomingEvents from './Tabs/UpcomingEvents';
+import { horizontalMarginScale, verticalMarginScale } from 'src/utils/dimensions';
 
 interface EventScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -30,10 +31,15 @@ interface TabItem {
 const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const styles = EventScreenStyle();
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const eventId = loginData?.eventId || 'a2fdf281-e9e8-4df8-8549-337ba79dab5f';
+  const role =
+    (loginData?.roles &&
+      loginData?.roles.length > 0 &&
+      loginData?.roles[0]?.roleName) ||
+    'non_member';
+  const userId = loginData?.guestId || '6267f02a-0c86-4752-9e62-8bada629d830';
   const searchInputRef = useRef<any>(null);
   const [searchText, setSearchText] = useState('');
-  const showEvents = loginData?.isInvited || loginData?.token?.length > 0;
+  const showEvents = loginData?.isInvited || role === 'member';
 
   useFocusEffect(
     useCallback(() => {
@@ -46,15 +52,14 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
           ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
           showBottomSafeAreaView: false,
         });
-    }, [loginData?.isInvited])
+    }, [loginData?.isInvited]),
   );
-
 
   const [currentTab, setCurrentTab] = useState<TabItem>(tabsData[1]);
 
   const debouncedSearch = useCallback(
     debounce((text: string) => setSearchText(text), 500),
-    []
+    [],
   );
 
   const handleSearchTextChange = (text: string) => {
@@ -68,13 +73,13 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const renderTabContent = () => {
     switch (currentTab.label) {
       case BUTTON_LABLE.UPCOMING:
-        return <UpcomingEvents eventId={eventId} searchText={searchText} />;
+        return <UpcomingEvents userId={userId} searchText={searchText} />;
       case BUTTON_LABLE.INVITED:
-        return <InvitedEvents eventId={eventId} searchText={searchText} />;
+        return <InvitedEvents userId={userId} searchText={searchText} />;
       case BUTTON_LABLE.APPLIED:
-        return <AppliedEvents eventId={eventId} searchText={searchText} />;
+        return <AppliedEvents userId={userId} searchText={searchText} />;
       case BUTTON_LABLE.PAST:
-        return <PastEvents eventId={eventId} searchText={searchText} />;
+        return <PastEvents userId={userId} searchText={searchText} />;
       default:
         return null;
     }
@@ -87,23 +92,23 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
         backgroundColor: showEvents ? COLORS.white : COLORS.black2,
       }}>
       {showEvents ? (
-        <View style={{ backgroundColor: COLORS.white, flex: 1 }}>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            flex: 1,
+            gap: verticalMarginScale(15),
+          }}>
           <HeaderComponent isDarkTheme={false} />
-          <View style={{ width: '100%', height: 10 }} />
-
           <SearchInput
             ref={searchInputRef}
             onSearchTextChange={handleSearchTextChange}
+            mainContainerStyle={{ marginHorizontal: horizontalMarginScale(20) }}
           />
-          <View style={{ width: '100%', height: 10 }} />
-
           <DynamicTabBar
             onTabChange={handleTabChange}
             tabs={tabsData}
             activeTabIndex={showEvents ? 1 : 0}
           />
-          <View style={{ width: '100%', height: 10 }} />
-
           <View style={styles.contentContainer}>{renderTabContent()}</View>
         </View>
       ) : (

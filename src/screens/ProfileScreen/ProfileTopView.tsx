@@ -7,13 +7,15 @@ import { fontFamily } from '../../utils/functions';
 import { Wp, Hp } from '../../utils/dimensions';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
 import AvatarInitials from '../../component/AvatarInitials';
+import FullScreenLoader from 'src/component/FullScreenLoader';
 
 interface ProfileTopViewProps {
     editPhotoClick:()=>void;
     profilePic:any;
     name:string;
+    loading?:boolean
 }
-const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick,profilePic,name}) => {
+const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick,profilePic,name,loading}) => {
 
     // Handle the "Next" button press
     const handlEventPress = () => {
@@ -23,6 +25,7 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick,profileP
         <View style={styles.container}>
 
 <View style={styles.profilePhotoContainer}>
+    {/* <FullScreenLoader loading={loading}> */}
           {profilePic ? (
             <Image
               style={styles.profilePhotoContainer}
@@ -34,7 +37,7 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick,profileP
               <AvatarInitials name={'Bessie Cooper'} size={48} />
             </View>
           )}
-
+{/* </FullScreenLoader> */}
           <TouchableOpacity style={styles.iconContainer} onPress={editPhotoClick}>
             <Image
               resizeMode="contain"
