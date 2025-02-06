@@ -1,5 +1,5 @@
 import React, { useRef, useState} from 'react';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {Platform, StyleSheet, Text, TextInput, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch} from 'react-redux';
 import {setPageProgress} from '../../../redux/slices/appFlowSlice';
@@ -58,7 +58,6 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
       setErrorMessage('');
 
       confirmationRef.current.open();
-      return
 
       const requestData = {
         description: feedback,
@@ -138,7 +137,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
       <Button
         disabled={false}
         style={styles.btnStyle}
-        title={BUTTON_LABLE.CONFIRM}
+        title={BUTTON_LABLE.SUBMIT}
         colorTheme="dark"
         onPress={onSubmit}
       />
@@ -150,6 +149,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    paddingBottom: 20
   },
   contentContainer: {
     flex: 1,
@@ -175,11 +175,13 @@ const styles = StyleSheet.create({
     marginVertical:verticalMarginScale(10),
     width: '100%',
   },
-  textArea: {
+  textArea: { 
     textAlignVertical: 'top',
-    fontSize:fontScale(16),
+    fontSize:fontScale(14),
     color: '#333',
     height:verticalScale(100),
+    fontWeight:'500',
+    lineHeight:verticalScale(16)
   },
   tagText: {
     fontFamily: fontFamily.RomieTrial_Bold,
@@ -187,9 +189,9 @@ const styles = StyleSheet.create({
     marginTop:verticalMarginScale(20),
   },
   btnStyle: {
-    width: Wp(85),
+    // width: Wp(85),
     borderRadius:radiusScale(100),
-    marginBottom:verticalMarginScale(100),
+    bottom:Platform.OS==='android' ? 20 :0
   },
   errorInputWrapper: {
     borderColor: COLORS.borderRed,

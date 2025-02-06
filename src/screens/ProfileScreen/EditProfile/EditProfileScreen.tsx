@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -234,12 +234,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    paddingBottom: 10
+    paddingBottom: 20
   },
   btnStyle: {
-    width: Wp(85),
-    height: 50,
+    // width: Wp(85),
+    // height: 50,
     borderRadius: radiusScale(100),
+    bottom:Platform.OS==='android' ? 20 :0
   },
   contentContainer: {
     flex: 1,
