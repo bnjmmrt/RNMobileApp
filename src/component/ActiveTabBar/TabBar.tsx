@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {fontFamily} from '../../utils/functions';
-import {COLORS} from '../../utils/constants';
-import {radiusScale, verticalMarginScale} from 'src/utils/dimensions';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { fontFamily } from '../../utils/functions';
+import { COLORS } from '../../utils/constants';
+import { radiusScale, verticalMarginScale } from 'src/utils/dimensions';
 
 type TabBarProps = {
   onTabChange?: (tab: string) => void;
@@ -59,7 +59,7 @@ const TabBar: React.FC<TabBarProps> = ({
   );
 
   return (
-    <View style={[{...styles.container, width}]}>
+    <View style={[{ ...styles.container, width }]}>
       {renderTab(tabOneLabel, '01', countOne)}
       {renderTab(tabTwoLabel, '02', countTwo)}
     </View>
@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row',
     paddingVertical: verticalMarginScale(12),
     borderRadius: radiusScale(99),
   },

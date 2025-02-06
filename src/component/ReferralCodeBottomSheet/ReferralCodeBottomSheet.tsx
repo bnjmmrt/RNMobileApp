@@ -1,13 +1,14 @@
 import React, { useRef, forwardRef } from 'react';
 import { Platform, View, StyleSheet } from 'react-native';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
-import { horizontalMarginScale, Hp } from '../../utils/dimensions';
+import { horizontalMarginScale, Hp, verticalMarginScale, verticalScale } from '../../utils/dimensions';
 import { BUTTON_LABLE, COLORS, ERROR_MESSAGE, LABLE } from '../../utils/constants';
 import Title from '../Title/Title';
 import Input from '../Input/Input';
 import Button from '../Button';
 import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
 import { useSubmitReferralCodeMutation } from '../../redux/actions/referralApiAction';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   const inputRef = useRef(null);
@@ -33,18 +34,11 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   return (
     <BottomSheetComponent
       ref={ref}
-      snapPoints={[Platform.OS == "android" ? '47%' : '45%']}
+      snapPoints={[`${verticalScale(40)}%`]}
       onClose={() => console.log(ref)}
-      footer={<Button
-        disabled={false}
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.SUBMIT}
-        colorTheme="dark"
-        loading={isLoading}
-        onPress={handleSubmit}
-      />}
+    // footer={}
     >
-      <View style={styles.container}>
+      <BottomSheetScrollView style={styles.container}>
         <Title
           title={LABLE.REFERRAL_CODE}
           subTitle={LABLE.IF_YOU_HAVE_ANY_REFERRAL_CODE}
@@ -52,10 +46,22 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
         />
         <Input
           ref={inputRef}
+          inputFieldContainerStyle={{ height: 56 }}
           label={LABLE.ENTER_CODE}
           errorMessage={ERROR_MESSAGE.PLEASE_ENTER_A_VALID_REFERRAL_CODE}
         />
-      </View>
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.SUBMIT}
+          colorTheme="dark"
+          loading={isLoading}
+          onPress={handleSubmit}
+        />
+
+
+      </BottomSheetScrollView>
+
     </BottomSheetComponent>
   );
 });
@@ -66,6 +72,8 @@ const styles = StyleSheet.create({
   },
   btnStyle: {
     borderRadius: 100,
+    marginTop: verticalMarginScale(40),
+    height: 48
   },
 });
 

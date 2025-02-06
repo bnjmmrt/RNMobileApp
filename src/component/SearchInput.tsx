@@ -1,4 +1,4 @@
-import React, {useState, forwardRef, useImperativeHandle} from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import {
   View,
   TextInput,
@@ -8,17 +8,17 @@ import {
   ImageSourcePropType,
   ViewStyle,
 } from 'react-native';
-import {Image} from 'react-native-animatable';
+import { Image } from 'react-native-animatable';
 import IMAGES from '../assets/images';
-import {COLORS} from '../utils/constants';
-import {fontFamily} from '../utils/functions';
+import { COLORS } from '../utils/constants';
+import { fontFamily } from '../utils/functions';
 import {
   fontScale,
   horizontalMarginScale,
   radiusScale,
   verticalMarginScale,
 } from 'src/utils/dimensions';
-import {CustomText} from './CustomText';
+import { CustomText } from './CustomText';
 
 // Define the props for SearchInput
 interface SearchInputProps extends TextInputProps {
@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: COLORS.white,
+    marginHorizontal: 15
   },
   inputWrapper: {
     flexDirection: 'row',

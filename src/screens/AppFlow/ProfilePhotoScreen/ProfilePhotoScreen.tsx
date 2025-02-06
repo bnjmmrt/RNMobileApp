@@ -128,7 +128,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
         />
         
         <View style={styles.profilePhotoContainer}>
-        <FullScreenLoader loading={loading}>
+        <FullScreenLoader loading={loading} customStyle={styles.profilePhotoContainer}>
           {image ? (
             <Image
               style={styles.profilePhotoContainer}

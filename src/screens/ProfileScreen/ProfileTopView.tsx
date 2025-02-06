@@ -25,19 +25,19 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick, profile
         <View style={styles.container}>
 
             <View style={styles.profilePhotoContainer}>
-                {/* <FullScreenLoader loading={loading}> */}
-                {profilePic ? (
-                    <Image
-                        style={styles.profilePhotoContainer}
-                        source={{ uri: profilePic }}
-                        resizeMode="cover"
-                    />
-                ) : (
-                    <View style={{ alignSelf: 'center' }}>
-                        <AvatarInitials name={'Bessie Cooper'} size={48} />
-                    </View>
-                )}
-                {/* </FullScreenLoader> */}
+                <FullScreenLoader loading={loading} customStyle={styles.profilePhotoContainer}>
+                    {profilePic ? (
+                        <Image
+                            style={styles.profilePhotoContainer}
+                            source={{ uri: profilePic }}
+                            resizeMode="cover"
+                        />
+                    ) : (
+                        <View style={styles.profilePhotoContainer}>
+                            <AvatarInitials name={'Bessie Cooper'} size={48} />
+                        </View>
+                    )}
+                </FullScreenLoader>
                 <TouchableOpacity style={styles.iconContainer} onPress={editPhotoClick}>
                     <Image
                         resizeMode="contain"

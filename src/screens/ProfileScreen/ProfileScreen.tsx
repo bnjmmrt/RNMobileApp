@@ -29,7 +29,7 @@ import { resetLoginData } from 'src/redux/slices/authSlice';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { verticalScale } from 'src/utils/dimensions';
-import { resetAppFlowDetails } from 'src/redux/slices/appFlowApiDataSlice';
+import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
@@ -72,12 +72,15 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     }, []),
   );
 
-  useEffect(() => {
-    URL.length > 0 && bottomSheetRef?.current?.open();
-  }, [URL]);
+  // useEffect(() => {
+  //   URL.length > 0 && bottomSheetRef?.current?.open();
+  // }, [URL]);
 
   const setWebUrl = (url: string) => {
+    console.log('setUrl', url);
     setURL(url);
+    URL.length && bottomSheetRef?.current?.open();
+
   };
 
   const onChangeBottomSheet = (index: number) => {
@@ -138,7 +141,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   ];
 
   const hasFullAccess =
-    loginData.isSignUpCompleted || loginData.token.length > 0;
+    loginData?.isSignUpCompleted || loginData?.token?.id
 
   useEffect(() => {
     const listItems = hasFullAccess ? itemsExtras : items;
@@ -254,9 +257,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             </TouchableOpacity>
           </ScrollView>
 
-          {/* {showBottomSheet && (
-              <WebViewBottomSheet url={URL} onChange={onChangeBottomSheet} />
-            )} */}
+          <WebViewBottomSheet url={URL} ref={bottomSheetRef} />
 
           {isShown && (
             <ContactSupporrtBottomSheet

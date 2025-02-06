@@ -5,7 +5,7 @@ import { COLORS } from '../../utils/constants';
 import { fontScale, Hp, verticalMarginScale } from '../../utils/dimensions';
 
 interface HeaderProps {
-  title: string;
+  title?: string;
   subTitle?: string;
   align?: 'left' | 'center' | 'right'; 
 }
@@ -13,7 +13,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ title, subTitle, align = 'left' }) => {
   return (
     <View style={[styles.container, { alignItems: align }]}>
-      <Text style={[styles.title,{textAlign:align}]}>{title}</Text>
+      { title && <Text style={[styles.title,{textAlign:align}]}>{title}</Text>}
       {subTitle && <Text style={[styles.subTitle,{textAlign:align}]}>{subTitle}</Text>}
     </View>
   );

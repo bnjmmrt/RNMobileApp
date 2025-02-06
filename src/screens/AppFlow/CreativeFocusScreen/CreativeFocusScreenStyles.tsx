@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { COLORS } from '../../../utils/constants';
 import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, Wp } from '../../../utils/dimensions';
 
@@ -42,6 +42,7 @@ const CreativeFocusScreenStyles = () =>
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
+      bottom:Platform.OS==='android' ? 20 :0
     },
   });
 

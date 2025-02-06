@@ -14,9 +14,9 @@ import { useNavigation } from '@react-navigation/native';
 
 const ReferralScreen: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'referrals' | 'vouches'>('referrals');
-  const inviteFriendSheetRef=useRef(null);
-  const [showBottomSheet,setShowSheet]=useState(false);
-  const {goBack}=useNavigation();
+  const inviteFriendSheetRef = useRef(null);
+  const [showBottomSheet, setShowSheet] = useState(false);
+  const { goBack } = useNavigation();
 
   const referralsData = [
     { id: 1, name: 'Sarah Michaels' },
@@ -40,8 +40,8 @@ const ReferralScreen: React.FC = () => {
         <Text style={styles.sectionSubtitle}>{subtitle}</Text>
         <FlatList
           data={data}
-          ListEmptyComponent={ <View style={{ alignItems: 'center', justifyContent: 'center', height: Hp(40), flexDirection: 'row'}}>
-          <EventEmptyRecord title= {"You have no referral requests at this time."}/>
+          ListEmptyComponent={<View style={{ alignItems: 'center', justifyContent: 'center', height: Hp(40), flexDirection: 'row' }}>
+            <EventEmptyRecord title={"You have no referral requests at this time."} />
           </View>}
           contentContainerStyle={{ gap: 12, marginTop: 24, paddingBottom: 60 }}
           showsVerticalScrollIndicator={false}
@@ -74,7 +74,7 @@ const ReferralScreen: React.FC = () => {
         onTabChange={(tab) => setActiveTab(tab === "01" ? 'referrals' : 'vouches')}
         tabOneLabel="Referral Requests"
         tabTwoLabel="Vouch Requests"
-        countOne={2}
+        countOne={4}
         countTwo={2}
       />
       <View style={{ paddingHorizontal: 16, flex: 1 }}>{renderContent()}</View>
@@ -84,13 +84,13 @@ const ReferralScreen: React.FC = () => {
         title={BUTTON_LABLE.INVITE_FRIENDS}
         colorTheme="dark"
         onPress={() => {
-            setShowSheet(true);
-            setTimeout(() => {
-                inviteFriendSheetRef.current.open();
-            }, 500);
+          setShowSheet(true);
+          setTimeout(() => {
+            inviteFriendSheetRef.current.open();
+          }, 500);
         }}
       />
-      {showBottomSheet && <InviteFriendsSheet ref={inviteFriendSheetRef}/>}
+      {showBottomSheet && <InviteFriendsSheet ref={inviteFriendSheetRef} />}
     </SafeAreaView>
   );
 };
