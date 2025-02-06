@@ -54,9 +54,10 @@ const DatepickerBottomSheet = forwardRef((props: Props, ref) => {
           maximumDate={maxYear}
         /> : (
           <DatePicker
+          textSize={18}
             minimumDate={new Date(hundredYearsAgo)}
             maximumDate={new Date(maxYear)}
-            style={{ backgroundColor: 'white', width: 370, height: 240 }}
+            style={{ backgroundColor: 'white', width: 320, height: 200 }}
             onDateChange={(date: any) => {
               props?.setSelectedDate(date);
               props.setDate(date);
