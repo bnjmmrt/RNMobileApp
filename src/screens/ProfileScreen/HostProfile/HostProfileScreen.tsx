@@ -18,7 +18,7 @@ import ButtonSmall from 'src/component/ButtonSmall';
 import Header from 'src/component/Header/Header';
 import Title from 'src/component/Title/Title';
 import { COLORS } from 'src/utils/constants';
-import { Wp } from 'src/utils/dimensions';
+import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale, Wp } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
 import ReportHostView from './ReportHostView';
 import ReportAndBlockHostView from './ReportandBlockView';
@@ -34,11 +34,11 @@ type BottomSheetRef = {
 
 const HostProfileScreen: React.FC = () => {
   const bottomSheetRef = useRef<BottomSheetRef | null>(null);
-  const {params}=useRoute();
+  const { params } = useRoute();
   const [activeView, setActiveView] = useState<ViewType>(null);
-  const {goBack} = useNavigation();
+  const { goBack } = useNavigation();
   // const { data, isLoading, error } = useFetchProfileDetailsQuery(params?.hostId); 
-  const data=mockProfileDetails;
+  const data = mockProfileDetails;
 
 
   const handleOpenBottomSheet = (view: ViewType) => {
@@ -81,7 +81,7 @@ const HostProfileScreen: React.FC = () => {
   const getSnapPoints = (): string => {
     switch (activeView) {
       case 'options':
-        return '20%';
+        return '25%';
       case 'block':
         return '40%';
       default:
@@ -93,7 +93,7 @@ const HostProfileScreen: React.FC = () => {
   const socialMediaLinks = profile?.socialMedia || {};
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <Header
         showProgressBar={false}
         rightIcon={IMAGES.dots}
@@ -102,10 +102,10 @@ const HostProfileScreen: React.FC = () => {
         onPress={goBack}
       />
 
-      <ScrollView nestedScrollEnabled>
-        <View style={{ paddingHorizontal: 25 }}>
+      <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
+        <View style={{ paddingHorizontal: horizontalMarginScale(20) }}>
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <AvatarInitials imgUrl={profile?.companyLogo || ''} size={96} />
+            <AvatarInitials imgUrl={profile?.companyLogo || ''} size={radiusScale(96)} />
             <Title
               title={profile?.companyName || 'Company Name'}
               subTitle={profile?.bio || 'Bio not available'}
@@ -120,7 +120,7 @@ const HostProfileScreen: React.FC = () => {
                 url: socialMediaLinks[key],
               }))}
               renderItem={({ item }) => (
-                 item.icon && <TouchableOpacity onPress={() => Linking.openURL(item?.url)}>
+                item.icon && <TouchableOpacity onPress={() => Linking.openURL(item?.url)}>
                   <Image style={{ width: 20, height: 20 }} source={item.icon} />
                 </TouchableOpacity>
               )}
@@ -137,12 +137,12 @@ const HostProfileScreen: React.FC = () => {
             horizontal
             showsHorizontalScrollIndicator={false}
             ListEmptyComponent={<Text style={styles.dateText}>No upcoming events.</Text>}
-            contentContainerStyle={{ gap: 16, marginVertical: 12 }}
+            contentContainerStyle={{ gap: 16, marginVertical: verticalMarginScale(12) }}
             data={profile?.pendingEvents || []}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => { }}>
                 <Image
-                  style={{ width: Wp('42%'), height: 245, borderRadius: 8 }}
+                  style={{ width: Wp('42%'), height: verticalScale(245), borderRadius: 8 }}
                   source={{ uri: item.imageCover }}
                 />
                 <Text style={styles.eventNameText}>{item.name}</Text>
@@ -154,13 +154,13 @@ const HostProfileScreen: React.FC = () => {
           <FlatList
             horizontal
             ListEmptyComponent={<Text style={styles.dateText}>No past events.</Text>}
-            contentContainerStyle={{ gap: 16, marginTop: 12,marginBottom:100 }}
+            contentContainerStyle={{ gap: 16, marginTop: verticalMarginScale(12), marginBottom: 100 }}
             data={profile?.pastEvents || []}
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => { }}>
                 <Image
-                  style={{ width: Wp('42%'), height: 245, borderRadius: 8 }}
+                  style={{ width: Wp('42%'), height: verticalScale(245), borderRadius: 8 }}
                   source={{ uri: item.imageCover }}
                 />
                 <Text style={styles.eventNameText}>{item.name}</Text>
@@ -254,37 +254,38 @@ const styles = StyleSheet.create({
     marginTop: 12
   },
   headerText: {
-    fontSize: 24,
+    fontSize: fontScale(24),
     fontFamily: fontFamily.RomieTrial_Bold,
     color: COLORS.black,
-    marginTop: 20,
+    marginTop: verticalMarginScale(20),
   },
   eventNameText: {
-    fontSize: 16,
+    fontSize: fontScale(16),
     fontFamily: fontFamily.ABCDiatype_Medium,
     color: COLORS.black,
-    marginTop: 12,
+    marginTop: verticalMarginScale(12),
   },
   dateText: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Medium,
     color: COLORS.light_gray,
+    marginTop: verticalMarginScale(2)
   },
   optionText: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Medium,
     color: COLORS.black,
   },
   greyStripeButton: {
-    paddingVertical: 12,
+    paddingVertical: verticalMarginScale(12),
     alignItems: 'center', borderRadius: 1000, borderWidth: 1, borderColor: COLORS.borderGray
   },
   redButton: {
     backgroundColor: COLORS.errorText,
-    paddingVertical: 12, alignItems: 'center', borderRadius: 1000, height: 48, marginTop: 12
+    paddingVertical: 12, alignItems: 'center', borderRadius: 1000, height: 48, marginTop: verticalMarginScale(12)
   },
   blackStripe: {
-    paddingVertical: 12,
+    paddingVertical: verticalMarginScale(12),
     alignItems: 'center', borderRadius: 1000,
     borderWidth: 2, borderColor: COLORS.black, height: 48
   }

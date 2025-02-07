@@ -1,3 +1,4 @@
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import React, { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Button from 'src/component/Button';
@@ -17,7 +18,7 @@ const ReportAndBlockHostView = ({ onClose }: { onClose: () => void }) => {
                 //   userId: 'userId', 
                 // }).unwrap();
 
-                FlashMessageComponent.show('success', 'Code submitted successfully!');
+                FlashMessageComponent.show('success', 'Reported successfully!');
                 onClose();
             } catch (error) {
                 inputRef.current.setErrorMessage("Please,enter a message");
@@ -26,15 +27,16 @@ const ReportAndBlockHostView = ({ onClose }: { onClose: () => void }) => {
     };
     return (
 
-        <View style={{ paddingHorizontal: 12 }}>
-            <Title align="center" title="Report & Block" subTitle="Please share more details on why you 
+        <BottomSheetScrollView style={{ paddingHorizontal: 12 }}>
+            <Title align="center" title="Report & Block Host" subTitle="Please share more details on why you 
 are reporting this host." />
-            <View style={{ height: 220 }}>
+            <View>
                 <Input
                     ref={inputRef}
                     label={'What would you like to report?'}
                     errorMessage={'Please, enter a message'}
                     multiline
+                    forBottomSheet
                 />
             </View>
             <Button
@@ -45,7 +47,7 @@ are reporting this host." />
                 // loading={isLoading}
                 onPress={handleSubmitReport}
             />
-        </View>
+        </BottomSheetScrollView>
     );
 };
 const styles = StyleSheet.create({

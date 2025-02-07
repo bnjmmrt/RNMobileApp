@@ -265,21 +265,8 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
               scrollEnabled={false}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={
-                <View style={{ height: Hp(40), justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ height: Hp(50), justifyContent: 'center', alignItems: 'center' }}>
                   <EventEmptyRecord title='No Results' subTitle='No Contacts are members at this time' />
-                  {!permissionGranted && (
-                    <>
-                      <Text style={styles.sectionSubtitle}>
-                        Allow permission to send invite to contacts
-                      </Text>
-                      <ButtonSmall
-                        colorTheme="dark"
-                        style={styles.settingsButton}
-                        title="Go to Settings"
-                        onPress={() => Linking.openURL('app-settings:')}
-                      />
-                    </>
-                  )}
                 </View>
               }
               contentContainerStyle={{ gap: 4, marginTop: 12 }}
