@@ -15,7 +15,7 @@ const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,set
   const dispatch = useDispatch();
 
   const selectedCreativeFocus = useSelector(
-    (state: RootState) => state.appFlow.creativeFocus,
+    (state: RootState) => state.appFlowApiData.memberProfileData.focuses,
   );
   const creativeFocus = useSelector(
     (state: RootState) => state.appFlowApiData.creativeFocus,

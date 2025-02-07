@@ -32,22 +32,19 @@ interface EditProfileScreenProps extends NativeStackScreenProps<any, any> { }
 const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => {
   const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
-  const data = useSelector((state: RootState) => state.appFlow);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-
-  const [userDetails, setUserDetails] = useState(data);
-
+  const memberProfileData = useSelector((state: RootState) => state.appFlowApiData.memberProfileData);
+  
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
   const baseCityRef = useRef<any>(null);
   const birthDayRef = useRef<any>(null);
-  const [gender, selectedGender] = useState(userDetails.gender);
-  const birthday = useSelector((state: RootState) => state.appFlow.birthday);
+  const [gender, selectedGender] = useState(memberProfileData.gender);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>('02/05/1998');
+  const [selectedDate, setSelectedDate] = useState<string>(memberProfileData?.dateOfBirth);
   const [isToastShown, setIsToastShown] = useState(false);
   const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>();
 
@@ -66,29 +63,27 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
   useEffect(() => {
     if (loginData?.isSignUpCompleted) {
       phoneNumberInputRef?.current.setDisabled(true);
-      phoneNumberInputRef?.current.setPhoneNumber(userDetails.phone);
-      phoneNumberInputRef?.current.setCallingCode(
-        userDetails.countryCallingCode,
-      );
-      // phoneNumberInputRef?.current.setCode(userDetails.countryCodeFlag);
-      phoneNumberInputRef?.current.setFlag(userDetails.countryCodeFlag || '🇺🇸');
+      phoneNumberInputRef?.current.setPhoneNumber(memberProfileData.phoneNumber);
+      // phoneNumberInputRef?.current.setCallingCode(
+      //   memberProfileData.countryCallingCode,
+      // );
+     // phoneNumberInputRef?.current.setFlag(userDetails.countryCodeFlag || '🇺🇸');
       emailInputRef?.current.setDisabled(true);
-      emailInputRef?.current.setEmailAddress(userDetails.email);
+      emailInputRef?.current.setEmailAddress(memberProfileData.email);
     }
 
     if (loginData?.varifyStatus === 2) {
       phoneNumberInputRef?.current.setDisabled(true);
-      phoneNumberInputRef?.current.setPhoneNumber(userDetails.phone);
-      phoneNumberInputRef?.current.setCallingCode(
-        userDetails.countryCallingCode,
-      );
-      // phoneNumberInputRef?.current.setCode(userDetails.countryCodeFlag);
-      phoneNumberInputRef?.current.setFlag(userDetails.countryCodeFlag || '🇺🇸');
+      phoneNumberInputRef?.current.setPhoneNumber(memberProfileData.phoneNumber);
+      // phoneNumberInputRef?.current.setCallingCode(
+      //   memberProfileData.countryCallingCode,
+      // );
+      // phoneNumberInputRef?.current.setFlag(memberProfileData.countryCodeFlag || '🇺🇸');
     }
 
     if (loginData?.varifyStatus === 1) {
       emailInputRef?.current.setDisabled(true);
-      emailInputRef?.current.setEmailAddress(userDetails.email);
+      emailInputRef?.current.setEmailAddress(memberProfileData.email);
     }
 
     // getUserSettingAndDetails();
@@ -105,7 +100,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
       const fileUploadResponse: any = await apiRequest(
         'put',
         EndPoint.user_profile_picture + loginData?.userId,
-        { profilePicture: userDetails.profilePic },
+        { profilePicture: memberProfileData.imageUrl },
       );
       console.log('fileUploadResponse,fileUploadResponse');
       if (fileUploadResponse.data) {
@@ -118,15 +113,15 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
             placeId: baseCityRef.current.selectedCity.placeId,
             regionCode: '',
           },
-          birthDate: userDetails.birthday,
-          email: userDetails.email,
+          birthDate:birthDayRef.current.selectedDate,
+          email: memberProfileData.email,
           firstName: firstNameRef.current.inputText,
           gender: gender,
           lastName: lastNameRef.current.inputText,
-          mobilePhone: userDetails.phone,
+          mobilePhone: memberProfileData.phoneNumber,
           creativeFocus: selectedCreativeFocus
             ? selectedCreativeFocus.map((item: any) => item.id)
-            : userDetails.creativeFocus.map((item: any) => item.id),
+            : memberProfileData.creativeFocus.map((item: any) => item.id),
         };
         console.log('requestObject', requestObject);
 
@@ -161,13 +156,13 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
             ref={firstNameRef}
             label={LABLE.FIRST_NAME}
             errorMessage={ERROR_MESSAGE.FIRST_NAME}
-            defaultValue={userDetails.firstName}
+            defaultValue={memberProfileData.firstName}
           />
           <Input
             ref={lastNameRef}
             label={LABLE.LAST_NAME}
             errorMessage={ERROR_MESSAGE.LAST_NAME}
-            defaultValue={userDetails.lastName}
+            defaultValue={memberProfileData.lastName}
           />
           {loginData?.isSignUpCompleted ? (
             <>

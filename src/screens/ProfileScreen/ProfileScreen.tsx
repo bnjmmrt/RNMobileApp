@@ -54,11 +54,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const deleteAccountBottomSheetRef = useRef<any>(null);
   const contactSupportBottomSheetRef = useRef<any>(null);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const userDetails = useSelector((state: RootState) => state.appFlow);
+  const memberProfileData = useSelector((state: RootState) => state.appFlowApiData.memberProfileData);
   const [isShown, setIsShown] = useState(false);
-  const profilePic = useSelector(
-    (state: RootState) => state.appFlow.profilePic,
-  );
+
   const bottomSheetRef = useRef(null);
 
   useFocusEffect(
@@ -234,8 +232,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
             <ProfileTopView
               editPhotoClick={editPhotoClick}
-              profilePic={userDetails?.profilePic}
-              name={`${userDetails.firstName} ${userDetails.lastName}`}
+              profilePic={memberProfileData?.imageUrl}
+              name={`${memberProfileData.firstName} ${memberProfileData.lastName}`}
               loading={loading}
             />
             {listItems.map(item => {

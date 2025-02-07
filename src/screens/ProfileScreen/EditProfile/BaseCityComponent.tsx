@@ -20,8 +20,8 @@ interface BaseCityComponentProps {}
 
 const BaseCityComponent =forwardRef((props, ref) => {
   const dispatch = useDispatch();
-  const baseCity = useSelector((state: RootState) => state.appFlow.baseCity);
-  const [selectedCity, setSelectedCity] = useState<Address>(baseCity);
+  const address = useSelector((state: RootState) => state.appFlowApiData.memberProfileData.address);
+  const [selectedCity, setSelectedCity] = useState<Address>(address);
 
   const [isShown, setIsShown] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

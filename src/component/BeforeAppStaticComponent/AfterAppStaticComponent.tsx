@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Hp, Wp } from '../../utils/dimensions';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
@@ -11,13 +11,41 @@ import ReferralCodeBottomSheet from '../ReferralCodeBottomSheet/ReferralCodeBott
 import MiddleStaticComponent from '../TitleSubTitleComponent/MiddleStaticComponent';
 import { useNavigation } from '@react-navigation/native';
 import useContacts from 'src/utils/hooks/useContactPermission';
+import { useDispatch, useSelector } from 'react-redux';
+import useApi from 'src/axios/useApi';
+import { EndPoint } from 'src/ApiManager/config';
+import { setIsFirstTimeLoggedIn, setMemberProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import { RootState } from 'src/redux/slices';
 
 
 const AfterAppStaticComponent: React.FC<{}> = () => {
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
   const { requestContactPermission } = useContacts();
   const { navigate } = useNavigation();
+  const dispatch = useDispatch();
+  const { apiRequest, loading, error } = useApi();
 
   const bottomSheetRef = useRef(null);
+
+
+const fetchCurrentUser = async () => {
+    //token is reqired to run this API 
+    const response: any = await apiRequest('get', EndPoint.current_user);
+    if (response.status === 200) {
+      dispatch(setMemberProfileData(response?.data[0].memberProfile))
+    }
+  };
+//  const fetchUserById = async () => {
+//     const response: any = await apiRequest('post', EndPoint.get_user_with_role_by_id,{id:loginData?.id});
+//     if (response.status === 200) {
+//       dispatch(setIsFirstTimeLoggedIn(response.data.isFirstTimeLoggedIn))
+//     }
+//   };
+  
+  useEffect(()=>{
+        // fetchUserById(); //return isFirstTimeLoggedIn flag 
+         fetchCurrentUser();// fetch current user details
+  },[])
 
   const onAccessContactClick = async () => {
     await requestContactPermission();
