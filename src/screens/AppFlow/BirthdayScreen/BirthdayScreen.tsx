@@ -9,8 +9,8 @@ import Title from '../../../component/Title/Title';
 import Button from '../../../component/Button';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
 import IMAGES from '../../../assets/images';
-import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants';
-import DatepickerBottomSheet from '../../../component/BottomSheet/DatepickerBottomSheet';
+import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants'; ``
+import DatepickerBottomSheet from '../../../component/BottomSheet/CustomDatepickerBottomSheet';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import BirthdayScreenStyles from './BirthdayScreenStyles';
 import { formatDate, validateAge } from 'src/utils/functions';
@@ -21,11 +21,15 @@ import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 interface BirthdayScreenProps extends NativeStackScreenProps<any, any> { }
 
 const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
+
+
   const dispatch = useDispatch();
   const bottomSheetRef = useRef<any>(null);
   const styles = BirthdayScreenStyles();
   const birthday = useSelector((state: RootState) => state.appFlow.birthday);
-  const [selectedDate, setSelectedDate] = useState<string>('01/01/1990'); // Initialize with birthday from Redux
+  const [selectedDate, setSelectedDate] = useState<string | undefined>('');
+
+  // const [selectedDate, setSelectedDate] = useState<string>('11/12/1990'); // Initialize with birthday from Redux
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [date, setDate] = useState<any>(new Date());
 
@@ -38,11 +42,11 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
     bottomSheetRef.current?.open(); // Open the date picker
   };
 
-  const handleDateChange = (date: Date) => {
+  const handleDateChange = (date: string) => {
     setErrorMessage(null); // Clear any error message
-    const formattedDate = formatDate(date);
-    console.log(formattedDate);
-    setSelectedDate(formattedDate); // Update the selected date
+    // const formattedDate = formatDate(date);
+    // console.log(formattedDate);
+    setSelectedDate(date); // Update the selected date
   };
 
   const validateInputs = () => {
@@ -102,8 +106,7 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
       <DatepickerBottomSheet
         ref={bottomSheetRef}
         setSelectedDate={handleDateChange}
-        date={date}
-        setDate={setDate}
+        date={selectedDate}
       />
     </View>
   );
