@@ -81,7 +81,7 @@ const RSVPFormScreen = () => {
   const [showYesOptionDropdown, setYesOptionDropdown] = useState(false);
   const [selectedReason, setSelectedReason] = useState<any>({});
   const [selectedGuest, setSelectedGuest] = useState<any>(guests[0]);
-  const [selectedButton, setSelectedButton] = useState('');
+  const [selectedButton, setSelectedButton] = useState<string|null>(null);
   const reasonsRef = useRef<any>(null);
   const guestRef = useRef<any>(null);
   const confirmationRef = useRef<any>(null);
@@ -107,12 +107,15 @@ const RSVPFormScreen = () => {
   const onClickGuest = () => {
     guestRef.current.open();
   };
-  const onAddGuest=()=>{
+  const onAddGuest = () => {
     //contact logic
-  }
+  };
   const submit = () => {
-    // setIsToastShown(true);
-    confirmationRef.current.open();
+    if (selectedButton===null) {
+      setIsToastShown(true);
+    } else {
+      confirmationRef.current.open();
+    }
   };
 
   return (
@@ -192,13 +195,13 @@ const RSVPFormScreen = () => {
               />
             </View>
             {selectedGuest.name !== guests[0].name && (
-                <Button
-                  disabled={false}
-                  style={[styles.clearButton, styles.btnBorder]}
-                  title={BUTTON_LABLE.ADD_GUEST_DETAILS}
-                  colorTheme="white"
-                  onPress={onAddGuest}
-                />
+              <Button
+                disabled={false}
+                style={[styles.clearButton, styles.btnBorder]}
+                title={BUTTON_LABLE.ADD_GUEST_DETAILS}
+                colorTheme="white"
+                onPress={onAddGuest}
+              />
             )}
           </>
         )}
@@ -227,7 +230,7 @@ const RSVPFormScreen = () => {
       </ScrollView>
       {showYesOptionDropdown && (
         <Text style={[styles.infoText, styles.bottomText]}>
-         {LABLE.RSVP_INSTRUCTION}
+          {LABLE.RSVP_INSTRUCTION}
         </Text>
       )}
       <Button
@@ -260,7 +263,10 @@ const styles = StyleSheet.create({
     borderWidth: horizontalScale(1),
     borderColor: COLORS.lighter_gray,
   },
-  scrollContainer:{marginVertical: verticalMarginScale(16),paddingHorizontal:16},
+  scrollContainer: {
+    marginVertical: verticalMarginScale(16),
+    paddingHorizontal: 16,
+  },
   image: {
     width: horizontalScale(80),
     height: verticalScale(110),
@@ -317,7 +323,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderColor: COLORS.lighter_gray,
     width: '48%',
-    height:verticalScale(50)
+    height: verticalScale(50),
   },
   btnBorder: {
     width: '100%',
@@ -339,7 +345,10 @@ const styles = StyleSheet.create({
     right: 0,
     alignItems: 'center',
   },
-  customSelectText:{marginTop: verticalMarginScale(4),marginBottom:verticalMarginScale(8)}
+  customSelectText: {
+    marginTop: verticalMarginScale(4),
+    marginBottom: verticalMarginScale(8),
+  },
 });
 
 export default RSVPFormScreen;
