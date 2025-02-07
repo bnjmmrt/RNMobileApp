@@ -75,7 +75,7 @@ const ReferralScreen: React.FC = () => {
         onTabChange={(tab) => setActiveTab(tab === "01" ? 'referrals' : 'vouches')}
         tabOneLabel="Referral Requests"
         tabTwoLabel="Vouch Requests"
-        countOne={2}
+        countOne={4}
         countTwo={2}
         width={Wp(88)}
       />

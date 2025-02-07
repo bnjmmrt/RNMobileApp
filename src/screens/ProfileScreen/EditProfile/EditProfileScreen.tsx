@@ -52,12 +52,12 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
   const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>();
 
   const getUserSettingAndDetails = async () => {
-    const response:any =await apiRequest(
+    const response: any = await apiRequest(
       'get',
       EndPoint.user_settings + loginData?.userId,
     );
-    console.log("getUserSettingAndDetails",response)
-    if (response.status===200) {
+    console.log("getUserSettingAndDetails", response)
+    if (response.status === 200) {
       //dependiing on API response parse data and set
       // setUserDetails(response.data.userData);
       dispatch(setNotificationSettings(response.data.notificationsSettings))
@@ -91,7 +91,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
       emailInputRef?.current.setEmailAddress(userDetails.email);
     }
 
-    getUserSettingAndDetails();
+    // getUserSettingAndDetails();
   }, []);
 
   const onConfirmClick = async () => {
@@ -239,8 +239,10 @@ const styles = StyleSheet.create({
   btnStyle: {
     // width: Wp(85),
     // height: 50,
+    marginTop: verticalMarginScale(20),
+    marginBottom: verticalMarginScale(20),
     borderRadius: radiusScale(100),
-    bottom:Platform.OS==='android' ? verticalMarginScale(20) :0
+    bottom: Platform.OS === 'android' ? verticalMarginScale(20) : 0
   },
   contentContainer: {
     flex: 1,

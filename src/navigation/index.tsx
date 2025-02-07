@@ -13,10 +13,11 @@ const MainNavigation: React.FC = () => {
     'non_member';
 
   const initialRouteName = isVerified === 0 ? 'AuthStack' : 'AppStack';
-
+  const isRedirectToBeforeAppStaticScreen = loginData?.token?.length > 0 || loginData?.token?.id
+  console.log("Sayyed login Data:", loginData)
   const initialAppStackScreen =
     role === 'non_member'
-      ? loginData?.token?.length > 0
+      ? isRedirectToBeforeAppStaticScreen
         ? 'BottomTabBar'
         : 'BeforeAppStaticScreen'
       : 'BottomTabBar';

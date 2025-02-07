@@ -94,6 +94,7 @@ const BottomTabBar = () => {
       {bottomTabsData.map((item, index) => {
         return (
           <Tab.Screen
+            key={item.name} // Use a unique value, like item.name or index
             name={item.name}
             component={item.component}
             options={item.options}
