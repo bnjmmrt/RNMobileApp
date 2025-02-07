@@ -38,7 +38,7 @@ export const AppFlowStack: React.FC = () => {
 
   const getInitialPage=()=>{
      switch(pageProgress){
-      case 0: return "WelcomeScreen";
+      // case 0: return "WelcomeScreen";
       case 1: return "MyDetailsScreen";
       case 2 : return "EnterEmailPhone";
       case 3 : return "GenderScreen";
@@ -48,7 +48,7 @@ export const AppFlowStack: React.FC = () => {
       case 7 : return "SelectInterestScreen";
       case 8 : return "ProfilePhotoScreen";
       case 9 : return "IdentityVerification";
-      default : return "WelcomeScreen"
+      default : return "MyDetailsScreen"
      }
   }
   return (

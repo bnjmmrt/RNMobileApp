@@ -14,16 +14,25 @@ import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle'
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
 import { BUTTON_LABLE, LABLE } from '../../utils/constants';
 import EmailPhoneStyles from './EmailPhoneStyles';
+import { useDispatch } from 'react-redux';
+import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
 
 interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> { }
 
-const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
+const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({navigation}) => {
+  const dispatch=useDispatch()
   const styles = EmailPhoneStyles();
   const [currentTab, setCurrentTab] = useState('01');
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
   const [URL, setURL] = useState('');
   const bottomSheetRef = useRef(null);
+
+  dispatch(resetAppFlowDetails())
+
+  useEffect(() => {
+    URL.length > 0 && bottomSheetRef?.current?.open();
+  }, [URL]);
 
   const setWebUrl = (url: string) => {
     setURL(url);

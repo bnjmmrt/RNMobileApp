@@ -47,14 +47,14 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
   const birthday = useSelector((state: RootState) => state.appFlow.birthday);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>(birthday);
+  const [selectedDate, setSelectedDate] = useState<string>('02/05/1998');
   const [isToastShown, setIsToastShown] = useState(false);
   const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>();
 
   const getUserSettingAndDetails = async () => {
     const response: any = await apiRequest(
       'get',
-      EndPoint.user_settings + loginData?.userId,
+      EndPoint.user_settings + loginData?.id,
     );
     console.log("getUserSettingAndDetails", response)
     if (response.status === 200) {
@@ -203,7 +203,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
               <BaseCityComponent ref={baseCityRef} />
 
-              <Text style={[styles.label]}>{LABLE.CREATIVE_FOCUS}</Text>
+              <Text style={[styles.label,{marginTop:!baseCityRef.current?.validateBaseCity() ? verticalMarginScale(24):0}]}>{LABLE.CREATIVE_FOCUS}</Text>
               <CreativeFocusComponent
                 setIsToastShown={setIsToastShown}
                 getSelectedData={getSelectedCreativeFocus}
@@ -254,6 +254,9 @@ const styles = StyleSheet.create({
     paddingVertical: horizontalMarginScale(2),
     fontSize: fontScale(14),
     paddingTop: verticalMarginScale(20),
+    color:COLORS.black,
+    fontWeight:'500',
+    lineHeight:16
   },
 });
 

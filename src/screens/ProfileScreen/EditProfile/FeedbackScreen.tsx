@@ -63,7 +63,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
       const requestData = {
         description: feedback,
         tag: selectedData[0].value,
-        userId: loginData?.userId
+        userId: loginData?.id
       };
       console.log('requestObject', requestData);
       const response: any = await apiRequest(

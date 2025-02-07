@@ -4,6 +4,7 @@ import {Image} from 'react-native-animatable';
 import IMAGES from '../../assets/images';
 import {COLORS, LABLE} from '../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
+import { verticalScale } from 'src/utils/dimensions';
 
 const EmailInput = forwardRef((_, ref) => {
   const [emailAddress, setEmailAddress] = useState('');
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 60,
+    height:verticalScale(56),
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 10,
