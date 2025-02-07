@@ -1,5 +1,4 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import {
     View,
     TextInput,
@@ -10,10 +9,7 @@ import {
     ViewStyle,
 } from 'react-native';
 import { Image } from 'react-native-animatable';
-import { Image } from 'react-native-animatable';
 import IMAGES from '../assets/images';
-import { COLORS } from '../utils/constants';
-import { fontFamily } from '../utils/functions';
 import { COLORS } from '../utils/constants';
 import { fontFamily } from '../utils/functions';
 import {
@@ -23,7 +19,6 @@ import {
     verticalMarginScale,
     verticalScale,
 } from 'src/utils/dimensions';
-import { CustomText } from './CustomText';
 import { CustomText } from './CustomText';
 
 // Define the props for SearchInput
