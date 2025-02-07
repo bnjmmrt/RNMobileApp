@@ -36,7 +36,7 @@ const DatepickerBottomSheet = forwardRef((props: Props, ref) => {
   return (
     <BottomSheetComponent
       ref={ref}
-      snapPoints={[Platform.OS === 'ios' ? '50%' : '53%']}
+      snapPoints={[Platform.OS === 'ios' ? '50%' : '50%']}
       onClose={() => console.log(ref)}>
       <View style={styles.container}>
         <Text style={styles.title}>{LABLE.BIRTHDAY}</Text>
