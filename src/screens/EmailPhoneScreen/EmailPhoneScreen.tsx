@@ -1,9 +1,9 @@
-import {useFocusEffect} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View} from 'react-native';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { useFocusEffect } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { View } from 'react-native';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import TabBar from '../../component/ActiveTabBar/TabBar';
 import BackButton from '../../component/BackButton/BackButton';
 import Button from '../../component/Button';
@@ -12,12 +12,12 @@ import PhoneNumberInput from '../../component/PhonNumberComponent/PhoneNumberInp
 import TermsAndPolicy from '../../component/TermsAndPlolicy/TermsAndPolicy';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
-import {BUTTON_LABLE, LABLE} from '../../utils/constants';
+import { BUTTON_LABLE, LABLE } from '../../utils/constants';
 import EmailPhoneStyles from './EmailPhoneStyles';
 import { useDispatch } from 'react-redux';
 import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
 
-interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> {}
+interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> { }
 
 const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({navigation}) => {
   const dispatch=useDispatch()
@@ -36,6 +36,7 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({navigation}) => {
 
   const setWebUrl = (url: string) => {
     setURL(url);
+    url && bottomSheetRef?.current?.open();
   };
 
   const onNextClick = () => {

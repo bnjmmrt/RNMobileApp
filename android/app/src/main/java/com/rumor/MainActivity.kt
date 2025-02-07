@@ -8,13 +8,15 @@ import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
-
+import android.view.WindowManager;
 
 class MainActivity : ReactActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 //        setTheme(R.style.AppTheme) // Reset to your main theme
         super.onCreate(savedInstanceState)
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+
         // Delay for 2 seconds before switching the theme
         Handler(Looper.getMainLooper()).postDelayed({
             setTheme(R.style.AppTheme) // Reset to your main theme

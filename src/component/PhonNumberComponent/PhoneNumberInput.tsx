@@ -139,7 +139,8 @@ const PhoneNumberInput = forwardRef(
           <InputComponent
             style={styles.input}
             placeholder="Enter phone number"
-            keyboardType="phone-pad"
+            keyboardType='phone-pad'
+            returnKeyType="done"
             value={phoneNumber}
             maxLength={12}
             onChangeText={(text: string) => {

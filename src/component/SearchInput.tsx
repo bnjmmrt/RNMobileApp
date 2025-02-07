@@ -99,11 +99,12 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         backgroundColor: COLORS.white,
+        marginHorizontal: 15
     },
     inputWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
-        height: verticalScale(48),
+        height: 48,
         borderWidth: 1,
         flex: 1,
         borderColor: COLORS.borderGray,

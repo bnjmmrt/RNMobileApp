@@ -59,7 +59,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       interestsIds: userDetails.interest.map((item: any) => item.id),
       gender: userDetails.gender,
       lastName: userDetails.lastName,
-      phoneNumber: "+917869332222",// userDetails.phone ? userDetails.phone : loginData.phone,
+      phoneNumber: "+917869542234",// userDetails.phone ? userDetails.phone : loginData.phone,
       instagramAccessToken: '',
       instagramUserName: usernameRef.current.inputText,
       linkedInAccessToken: '',
@@ -76,7 +76,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     );
 
     if (response.status === 200) {
-      const data = { ...loginData, token: response.data };
+      const data = { ...loginData, token: response.data, isSignUpCompleted: true };
       dispatch(setLoginData(data));
       dispatch(setPageProgress(1));
       dispatch(setAuthToken(response.data));
