@@ -253,7 +253,8 @@ const styles = StyleSheet.create({
     fontSize: fontScale(14),
     paddingTop: verticalMarginScale(20),
     color:COLORS.black,
-    fontWeight:'500'
+    fontWeight:'500',
+    lineHeight:16
   },
 });
 

@@ -20,7 +20,7 @@ import { fontFamily } from '../../utils/functions';
 import { COLORS } from '../../utils/constants';
 import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js';
 import { useNavigation } from '@react-navigation/native';
-import { Hp } from '../../utils/dimensions';
+import { Hp, verticalScale } from '../../utils/dimensions';
 import { useDispatch } from 'react-redux';
 import {
   setCountryCallingCode,
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   inputWrapper: {
-    height: 60,
+    height:verticalScale(56),
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 10,
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   errorInputWrapper: {
-    height: 60,
+    height:verticalScale(56),
     borderWidth: 1,
     borderColor: COLORS.borderRed,
     borderRadius: 10,
