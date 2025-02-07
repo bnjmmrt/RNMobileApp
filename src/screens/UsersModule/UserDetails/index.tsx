@@ -3,8 +3,13 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useRef, useState} from 'react';
 import {SafeAreaView, ScrollView, View} from 'react-native';
 import DynamicTabBar, {TabItem} from 'src/component/ActiveTabBar/DynamicTabBar';
+import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
 import Header from 'src/component/Header/Header';
+import {AppStackParamList} from 'src/navigation/AppStack';
+import {useFetchUserDetailsQuery} from 'src/redux/actions/usersApiAction';
 import {BUTTON_LABLE} from 'src/utils/constants';
+import {verticalMarginScale} from 'src/utils/dimensions';
+import UserActionsSheet from '../BottomSheets/UserActionsSheet';
 import userDetailsStyle from './style';
 import UserEvents from './UserEvents';
 import UserInformation from './UserInformation';
@@ -12,11 +17,10 @@ import UserInterests from './UserInterests';
 import UserLists from './UserLists';
 import UserOverview from './UserOverview';
 import UserProfile from './UserProfile';
-import UserActionsSheet from '../BottomSheets/UserActionsSheet';
-import {verticalMarginScale} from 'src/utils/dimensions';
-import BottomSheet from '@gorhom/bottom-sheet';
+import FullScreenLoader from 'src/component/FullScreenLoader';
 
-interface UserDetailsProps extends NativeStackScreenProps<any, any> {}
+interface UserDetailsProps
+  extends NativeStackScreenProps<AppStackParamList, 'UserDetail'> {}
 
 const tabsData: TabItem[] = [
   {
@@ -33,11 +37,16 @@ const tabsData: TabItem[] = [
   },
 ];
 
-const UserDetails: React.FC<UserDetailsProps> = ({}) => {
+const UserDetails: React.FC<UserDetailsProps> = ({route}) => {
   const styles = userDetailsStyle();
-  const actionSheetRef = useRef(null);
+  const actionSheetRef = useRef<BottomSheetMethods>(null);
+  const {user} = route?.params;
 
   const [currentTab, setCurrentTab] = useState<TabItem>(tabsData[0]);
+
+  const {data: userData, isLoading} = useFetchUserDetailsQuery({
+    user: user,
+  });
 
   const handleTabChange = (tab: TabItem) => {
     setCurrentTab(tab);
@@ -54,25 +63,33 @@ const UserDetails: React.FC<UserDetailsProps> = ({}) => {
         }}
         showBackButton={true}
       />
-      <ScrollView style={{marginTop: verticalMarginScale(16)}}>
-        <UserProfile />
-        <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
+      <FullScreenLoader loading={isLoading}>
+        {userData ? (
+          <ScrollView
+            style={{marginTop: verticalMarginScale(16)}}
+            contentContainerStyle={{gap: verticalMarginScale(16)}}>
+            <UserProfile user={user} />
 
-        {currentTab.id === '1' ? (
-          <View style={{gap: verticalMarginScale(16)}}>
-            <UserOverview />
-            <UserInterests />
-            <UserLists />
-            <UserInformation />
-          </View>
+            <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
+
+            {currentTab.id === '1' && userData ? (
+              <View style={{gap: verticalMarginScale(16)}}>
+                <UserOverview user={user} />
+                <UserInterests user={user} />
+                <UserLists user={user} />
+                <UserInformation user={user} />
+              </View>
+            ) : null}
+            {currentTab.id === '2' ? (
+              <View>
+                <UserEvents />
+              </View>
+            ) : null}
+          </ScrollView>
         ) : null}
-        {currentTab.id === '2' ? (
-          <View>
-            <UserEvents />
-          </View>
-        ) : null}
-      </ScrollView>
-      <UserActionsSheet ref={actionSheetRef} />
+
+        <UserActionsSheet ref={actionSheetRef} user={user} />
+      </FullScreenLoader>
     </SafeAreaView>
   );
 };

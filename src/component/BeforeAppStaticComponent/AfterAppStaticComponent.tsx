@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, StatusBar, SafeAreaView } from 'react-native';
 import { Hp, Wp } from '../../utils/dimensions';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import Button from '../Button';
@@ -8,21 +8,21 @@ import { ScrollView } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import HeaderComponent from '../HeaderComponent';
 import ReferralCodeBottomSheet from '../ReferralCodeBottomSheet/ReferralCodeBottomSheet';
-import InviteReferralBottomSheet from '../InviteReferralBottomSheet/InviteReferralBottomSheet';
 import MiddleStaticComponent from '../TitleSubTitleComponent/MiddleStaticComponent';
+import { useNavigation } from '@react-navigation/native';
+import useContacts from 'src/utils/hooks/useContactPermission';
+import GradientOverlay from 'src/screens/BeforeApplicationFlow/GradientOverlay';
 
 
 const AfterAppStaticComponent: React.FC<{}> = () => {
+  const { requestContactPermission } = useContacts();
+  const { navigate } = useNavigation();
 
   const bottomSheetRef = useRef(null);
-  const bottomSheetInviteRef = useRef(null);
-  const [inviteReferral,setInviteReferral]=useState(false);
 
-  const onAccessContactClick = () => {
-    setInviteReferral(true);
-    setTimeout(() => {
-      bottomSheetInviteRef?.current?.open();
-    }, 1000);
+  const onAccessContactClick = async () => {
+    await requestContactPermission();
+    navigate('InviteReferralScreen')
   }
   const onEnterReferralClick = () => {
     bottomSheetRef?.current?.open();
@@ -30,11 +30,17 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
 
   return (
 
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
+      <GradientOverlay />
       <ScrollView >
         <View style={styles.contentContainer}>
 
-          <HeaderComponent isDarkTheme={true} />
+          <HeaderComponent isDarkTheme={true} hasGradient={true} />
 
           <View style={{ height: Hp(5) }} />
 
@@ -57,7 +63,7 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
             style={styles.btnStyle}
             title={BUTTON_LABLE.ACCESS_MY_CONTACTS}
             colorTheme={'light'}
-            onPress={onAccessContactClick}
+            onPress={() => onAccessContactClick()}
           />
           <View style={{ height: Hp(1) }} />
 
@@ -71,10 +77,9 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
         </View>
 
       </ScrollView>
-      {inviteReferral && <InviteReferralBottomSheet ref={bottomSheetInviteRef} />}
       <ReferralCodeBottomSheet ref={bottomSheetRef} />
 
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -85,11 +90,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: COLORS.black2
+    // backgroundColor: COLORS.black2,
   },
   contentContainer: {
     flex: 1,
-    flexDirection: 'column', alignItems: 'center'
+    flexDirection: 'column', alignItems: 'center',
+    paddingTop: 30
   },
   btnStyle: {
     width: Wp(85),

@@ -1,10 +1,10 @@
 import React from 'react';
-import {Modal, View, StyleSheet, Text, Image} from 'react-native';
-import {format} from 'date-fns';
+import { Modal, View, StyleSheet, Text, Image } from 'react-native';
+import { format } from 'date-fns';
 import Button from '../Button';
 import IMAGES from '../../assets/images';
-import {EventItem} from './EventsFeed';
-import {Hp, Wp} from '../../utils/dimensions';
+import { EventItem } from './EventsFeed';
+import { Hp, Wp } from '../../utils/dimensions';
 
 interface FeedDetailProps {
   detail: EventItem | null;
@@ -18,12 +18,7 @@ const FeedDetail: React.FC<FeedDetailProps> = ({
   handleNotify,
 }) => {
   const formatDate = (dateString: string) => {
-    const [year, month, day] = [
-      dateString.slice(6, 10),
-      dateString.slice(0, 2),
-      dateString.slice(3, 5),
-    ];
-    return format(new Date(`${year}-${month}-${day}`), 'MMM d yyyy');
+    return format(new Date(`${dateString.slice(0, 10)}`), 'MMM d yyyy');
   };
 
   const handleYes = () => {
@@ -45,7 +40,7 @@ const FeedDetail: React.FC<FeedDetailProps> = ({
           <Image
             source={
               detail.image
-                ? {uri: detail.image}
+                ? { uri: detail.image }
                 : IMAGES.eventCoverPlaceholders1
             }
             style={styles.image}

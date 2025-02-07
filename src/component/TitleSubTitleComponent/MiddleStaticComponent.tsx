@@ -13,7 +13,7 @@ interface MiddleStaticComponentProps {
 }
 
 const MiddleStaticComponent: React.FC<MiddleStaticComponentProps> = ({
-    style, 
+    style,
     titleTextstyle,
     subTitleTextstyle
 }) => {
@@ -35,7 +35,7 @@ const MiddleStaticComponent: React.FC<MiddleStaticComponentProps> = ({
             }
         </View>
     );
-    
+
 };
 //  paddingHorizontal: 20, marginTop: 20 
 const styles = StyleSheet.create({
@@ -63,13 +63,14 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 10,
         borderWidth: 1,
-        borderColor: COLORS.dark_gray
+        borderColor: COLORS.dark_gray,
+        backgroundColor: COLORS.black2
     },
     listContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         marginStart: 10,
-        marginBottom:10
+        marginBottom: 10
     }
 });
 

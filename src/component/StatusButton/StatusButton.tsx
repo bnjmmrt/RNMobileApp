@@ -2,6 +2,7 @@ import IMAGES from '@images/index';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
 import { COLORS } from 'src/utils/constants';
+import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
 
 interface StatusButtonProps {
@@ -13,12 +14,12 @@ interface StatusButtonProps {
 
 const StatusButton: React.FC<StatusButtonProps> = ({ text, type, status, onPress }) => {
   if (type === 'circular' && status) {
-    const icon = status === 'approve' ? IMAGES.tick : IMAGES.cancel; 
-    const bgColor = status === 'approve' ? COLORS.successLight : COLORS.bgRed; 
-    const tintColor = status === 'approve' ? COLORS.success : COLORS.errorText; 
+    const icon = status === 'approve' ? IMAGES.tick : IMAGES.cancel;
+    const bgColor = status === 'approve' ? COLORS.successLight : COLORS.bgRed;
+    const tintColor = status === 'approve' ? COLORS.success : COLORS.errorText;
     return (
-      <TouchableOpacity style={[styles.circularButton,{backgroundColor:bgColor}]} onPress={onPress}>
-        <Image source={icon} style={[styles.icon,{tintColor:tintColor}]} />
+      <TouchableOpacity style={[styles.circularButton, { backgroundColor: bgColor }]} onPress={onPress}>
+        <Image source={icon} style={[styles.icon, { tintColor: tintColor }]} />
       </TouchableOpacity>
     );
   }
@@ -35,13 +36,13 @@ const StatusButton: React.FC<StatusButtonProps> = ({ text, type, status, onPress
 
 const styles = StyleSheet.create({
   baseButton: {
-    paddingHorizontal: 16,
-    flex:1,
-    paddingVertical: 8,
-    borderRadius: 100,
+    paddingHorizontal: horizontalMarginScale(16),
+    flex: 1,
+    paddingVertical: verticalMarginScale(8),
+    borderRadius: radiusScale(99),
     alignItems: 'center',
     justifyContent: 'center',
-    height:40
+    height: verticalScale(40)
   },
   solidButton: {
     backgroundColor: COLORS.black,
@@ -52,25 +53,25 @@ const styles = StyleSheet.create({
   },
   solidText: {
     color: COLORS.white,
-    fontSize: 14,
-    fontFamily:fontFamily.ABCDiatype_Medium
+    fontSize: fontScale(14),
+    fontFamily: fontFamily.ABCDiatype_Medium
   },
   stripeText: {
     color: COLORS.black,
-    fontSize: 14,
-    fontFamily:fontFamily.ABCDiatype_Medium
+    fontSize: fontScale(14),
+    fontFamily: fontFamily.ABCDiatype_Medium
   },
   circularButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: radiusScale(48),
+    height: radiusScale(48),
+    borderRadius: radiusScale(99),
     alignItems: 'center',
     justifyContent: 'center',
   },
   icon: {
     width: 14,
     height: 14,
-    resizeMode:'contain'
+    resizeMode: 'contain'
   },
 });
 

@@ -1,3 +1,5 @@
+import { TabItem } from "src/component/ActiveTabBar/DynamicTabBar";
+
 export const BUTTON_LABLE = {
   ENTER: 'Enter',
   NEXT: 'Next',
@@ -6,6 +8,7 @@ export const BUTTON_LABLE = {
   GET_STARTED: 'Get Started',
   RESEND: 'Resend',
   SUBMTI_APPLICATION: 'Submit Application',
+  UPDATE_APPLICATION: 'Update Application',
   UPCOMING: 'Upcoming',
   INVITED: 'Invited',
   APPLIED: 'Applied',
@@ -38,13 +41,13 @@ export const BUTTON_LABLE = {
   SHOW_RESULTS: 'Show Results',
   CLEAR_FILTERS: 'Clear Filters',
   FOLLOW: 'Follow',
-  UPDATE_APPLICATION: 'Update Application',
   YES: 'Yes',
   NO: 'No',
   ADD_GUEST_DETAILS:'Add Guest Details',
   ADD:'Add'
 };
 export const LABLE = {
+  WELCOME: 'Welcome to Rumors!',
   RUMORAPP: 'RUMORAPP',
   ENTER_YOUR_PHONE_NUMBER: 'Enter your phone number',
   ENTER_YOUR_EMAIL: 'Enter your email',
@@ -112,7 +115,7 @@ export const LABLE = {
   ACCESS_THE_MOST_VALUABLE_CALENDAR: 'Access the most valuable calendar.',
   TWO_MINUTES_TO_COMPLETE: '~2 min to Complete',
   STREAMLINE_YOUR_LIFESTYLE: 'Streamline your lifestyle.',
-  MANAGE_YOUR_EVENTS: 'Manage your events, chats, and passes—all in one place.',
+  MANAGE_YOUR_EVENTS: 'Manage your events, chats, and passes—all in one\nplace.',
   CONNECT_WITH_WORLD:
     "Connect with the world's top event organizers. Get discovered and invited to events that matter.",
   CONNECT_DIRECTLY_WITH_PEOPLE:
@@ -147,6 +150,9 @@ export const LABLE = {
   REQUEST_REFERRAL_FROM_RUMOR: 'Request referrals from Rumor members.',
   INVITE_YOUR_FRIEND: 'Invite your friends to join Rumor.',
   SELECT_YOUR_BIRTHDAY_BELOW: 'Select your birthday below',
+  WELCOME_NOTE_LINE_1: 'Your application has been approved. You’re now part of a private network connecting you to experiences from the world\'s top event organizers.',
+  WELCOME_NOTE_LINE_2: 'At Rumor, we value positivity, respect, and meaningful connections. Please take a moment to review our',
+  WELCOME_NOTE_LINE_3: 'We’re excited to have you in our community and can’t wait for you to explore everything Rumor has to offer.',
   LOGOUT: 'Log Out',
   COMING_SOON: 'Coming Soon…',
   OTP_VERIFIED_SUCCESSFULLY: 'OTP verified successfully!',
@@ -170,8 +176,8 @@ export const LABLE = {
   ADD_GUEST_SYNC_TEXT:'Easily sync your phone contacts to invite friends to join you at events.',
   SYNC_CONTACT_SEETTINGS:'Sync Contacts in Settings',
   ADD_GUEST:'Add Guest',
-  ADD_GUSET_SUBTITLE:'Your changes will only be saved in Rumor and will not impact your device’s contact list.'
-};
+  ADD_GUSET_SUBTITLE:'Your changes will only be saved in Rumor and will not impact your device’s contact list.',
+}
 
 export const PROFILE = {
   EDIT_PROFILE: 'Edit Profile',
@@ -259,6 +265,7 @@ export const COLORS = {
   darkBlue: '#0A66C2',
   red: '#FF0000',
   yellow: '#FFFC00',
+  yellowLight: '#FEF8E9'
 };
 
 export const feedList = [
@@ -289,3 +296,31 @@ export const EVENT_STATUS = {
   DECLINED_BY_YOU: 'You declined this invitation',
   GOING: 'You are going',
 };
+
+
+export const tabsData: TabItem[] = [
+  {
+    id: '1',
+    label: BUTTON_LABLE.UPCOMING,
+    title: 'No Events Here',
+    subTitle: 'No upcoming events.',
+  },
+  {
+    id: '2',
+    label: BUTTON_LABLE.INVITED,
+    title: 'No Events Here',
+    subTitle: 'No invitations yet.',
+  },
+  {
+    id: '3',
+    label: BUTTON_LABLE.APPLIED,
+    title: 'No Events Here',
+    subTitle: 'You haven’t applied to any events yet.',
+  },
+  {
+    id: '4',
+    label: BUTTON_LABLE.PAST,
+    title: 'No Events Here',
+    subTitle: 'No past events.',
+  },
+];

@@ -14,6 +14,7 @@ import {
   TextStyle,
   TouchableOpacity,
   Image,
+  Pressable,
 } from 'react-native';
 import {
   CountryItem,
@@ -21,15 +22,15 @@ import {
   Style,
   ListHeaderComponentProps,
 } from '../../../node_modules/react-native-country-codes-picker/types/Types';
-import {useKeyboardStatus} from '../../../node_modules/react-native-country-codes-picker/helpers/useKeyboardStatus';
-import {CountryButton} from '../../../node_modules/react-native-country-codes-picker/components/CountryButton';
-import {countriesRemover} from '../../../node_modules/react-native-country-codes-picker/helpers/countriesRemover';
-import {removeDiacritics} from '../../../node_modules/react-native-country-codes-picker/helpers/diacriticsRemover';
-import {fontFamily} from '../../utils/functions';
+import { useKeyboardStatus } from '../../../node_modules/react-native-country-codes-picker/helpers/useKeyboardStatus';
+import { CountryButton } from '../../../node_modules/react-native-country-codes-picker/components/CountryButton';
+import { countriesRemover } from '../../../node_modules/react-native-country-codes-picker/helpers/countriesRemover';
+import { removeDiacritics } from '../../../node_modules/react-native-country-codes-picker/helpers/diacriticsRemover';
+import { fontFamily } from '../../utils/functions';
 import IMAGES from '../../assets/images';
 
-export {countryCodes} from '../../../node_modules/react-native-country-codes-picker/constants/countryCodes';
-export {CountryButton} from '../../../node_modules/react-native-country-codes-picker/components/CountryButton';
+export { countryCodes } from '../../../node_modules/react-native-country-codes-picker/constants/countryCodes';
+export { CountryButton } from '../../../node_modules/react-native-country-codes-picker/components/CountryButton';
 export type {
   CountryItem,
   ItemTemplateProps,
@@ -71,6 +72,7 @@ interface Props {
 
   onBackdropPress?: (...args: any) => any;
   pickerButtonOnPress: (item: CountryItem) => any;
+  closeCountryModal: () => void;
   itemTemplate?: (props: ItemTemplateProps) => JSX.Element;
   ListHeaderComponent?: (props: ListHeaderComponentProps) => JSX.Element;
   onRequestClose?: (...args: any) => any;
@@ -87,6 +89,7 @@ export const CountryPicker = ({
   show,
   popularCountries,
   pickerButtonOnPress,
+  closeCountryModal,
   inputPlaceholder,
   inputPlaceholderTextColor,
   searchMessage,
@@ -214,7 +217,7 @@ export const CountryPicker = ({
     }).start(() => setShowModal(false));
   };
 
-  const renderItem = ({item, index}: {item: CountryItem; index: number}) => {
+  const renderItem = ({ item, index }: { item: CountryItem; index: number }) => {
     let itemName = item?.name[lang];
     let checkName = itemName?.length ? itemName : item?.name['en'];
     return (
@@ -235,7 +238,7 @@ export const CountryPicker = ({
           typeof pickerButtonOnPress === 'function' &&
             pickerButtonOnPress(item);
         }}>
-        <Text style={[style?.flag, {fontSize: 25, marginEnd: 10}]}>
+        <Text style={[style?.flag, { fontSize: 25, marginEnd: 10 }]}>
           {item.flag}
         </Text>
         <Text
@@ -252,7 +255,7 @@ export const CountryPicker = ({
         <Text
           style={[
             style?.dialCode,
-            {color: '#838282', fontFamily: fontFamily.ABCDiatype_Regular},
+            { color: '#838282', fontFamily: fontFamily.ABCDiatype_Regular },
           ]}>
           {item.dial_code}
         </Text>
@@ -272,7 +275,12 @@ export const CountryPicker = ({
       visible={showModal}
       onShow={openModal}
       onRequestClose={onRequestClose}>
-      <View
+      <Pressable
+        onPress={() => {
+          Keyboard.dismiss();
+          typeof closeCountryModal === 'function' &&
+            closeCountryModal();
+        }}
         style={{
           flex: 1,
           justifyContent: 'flex-end',
@@ -306,7 +314,8 @@ export const CountryPicker = ({
               ],
             },
           ]}>
-          <View style={{flexDirection: 'column'}}>
+          <Pressable
+            style={{ flexDirection: 'column' }}>
             <Text
               style={{
                 fontSize: 32,
@@ -326,7 +335,7 @@ export const CountryPicker = ({
                   alignItems: 'center',
                 },
               ]}>
-              <Image source={IMAGES.search} style={{marginStart: 20}} />
+              <Image source={IMAGES.search} style={{ marginStart: 20 }} />
 
               <TextInput
                 style={[
@@ -345,7 +354,7 @@ export const CountryPicker = ({
                 {...rest}
               />
             </View>
-          </View>
+          </Pressable>
 
           <View style={[styles.line, style?.line]} />
           {resultCountries.length === 0 ? (
@@ -399,7 +408,7 @@ export const CountryPicker = ({
             },
           ]}
         />
-      </View>
+      </Pressable>
     </Modal>
   );
 };
@@ -414,7 +423,7 @@ interface CountryListProps {
   ListHeaderComponent?: (props: ListHeaderComponentProps) => JSX.Element;
   itemTemplate?: (props: ItemTemplateProps) => JSX.Element;
   pickerButtonOnPress: (item: CountryItem) => any;
-
+  closeCountryModal: () => void;
   style?: Style;
 }
 
@@ -426,6 +435,7 @@ export const CountryList = ({
   excludedCountries,
   style,
   pickerButtonOnPress,
+  closeCountryModal,
   ListHeaderComponent,
   itemTemplate: ItemTemplate = CountryButton,
   ...rest
@@ -471,7 +481,7 @@ export const CountryList = ({
     });
   }, [searchValue]);
 
-  const renderItem = ({item, index}: {item: CountryItem; index: number}) => {
+  const renderItem = ({ item, index }: { item: CountryItem; index: number }) => {
     let itemName = item?.name[lang];
     let checkName = itemName.length ? itemName : item?.name['en'];
     return (
@@ -528,7 +538,7 @@ type StyleKeys =
   | 'countryMessage'
   | 'line';
 
-const styles: {[key in StyleKeys]: ViewStyle} = {
+const styles: { [key in StyleKeys]: ViewStyle } = {
   container: {
     flex: 1,
     position: 'absolute',

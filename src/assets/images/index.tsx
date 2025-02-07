@@ -78,9 +78,10 @@ const IMAGES = {
   linkdn: require('./linkedn.png'),
   yt: require('./yt.png'),
   fb: require('./fb.png'),
-  start_active: require('./star_active.png'),
+  star_active: require('./star_active.png'),
   star_inactive: require('./star_inactive.png'),
   delete: require('./delete.png'),
+  loader: require('./loader.png'),
   social_x: require('./social_x.png'),
   social_snapchat: require('./social_snapchat.png'),
   tickAwaiting: require('./tickAwaiting.png'),
@@ -94,6 +95,7 @@ const IMAGES = {
   alert_triangle_filled: require('./alert-triangle-filled.png'),
   frame: require('./frame.png'),
   settings: require('./settings.png'),
+  check_verified: require('./check-verified.png'),
 };
 
 export default IMAGES;

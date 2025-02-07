@@ -7,13 +7,15 @@ import { fontFamily } from '../../utils/functions';
 import { Wp, Hp } from '../../utils/dimensions';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
 import AvatarInitials from '../../component/AvatarInitials';
+import FullScreenLoader from 'src/component/FullScreenLoader';
 
 interface ProfileTopViewProps {
-    editPhotoClick:()=>void;
-    profilePic:any;
-    name:string;
+    editPhotoClick: () => void;
+    profilePic: any;
+    name: string;
+    loading?: boolean
 }
-const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick,profilePic,name}) => {
+const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick, profilePic, name, loading }) => {
 
     // Handle the "Next" button press
     const handlEventPress = () => {
@@ -22,27 +24,28 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick,profileP
     return (
         <View style={styles.container}>
 
-<View style={styles.profilePhotoContainer}>
-          {profilePic ? (
-            <Image
-              style={styles.profilePhotoContainer}
-              source={{uri: profilePic}}
-              resizeMode="cover"
-            />
-          ) : (
-            <View style={{alignSelf: 'center'}}>
-              <AvatarInitials name={'Bessie Cooper'} size={48} />
+            <View style={styles.profilePhotoContainer}>
+                <FullScreenLoader loading={loading} customStyle={styles.profilePhotoContainer}>
+                    {profilePic ? (
+                        <Image
+                            style={styles.profilePhotoContainer}
+                            source={{ uri: profilePic }}
+                            resizeMode="cover"
+                        />
+                    ) : (
+                        <View style={styles.profilePhotoContainer}>
+                            <AvatarInitials name={'Bessie Cooper'} size={48} />
+                        </View>
+                    )}
+                </FullScreenLoader>
+                <TouchableOpacity style={styles.iconContainer} onPress={editPhotoClick}>
+                    <Image
+                        resizeMode="contain"
+                        source={IMAGES.pencil}
+                        style={styles.ic_pencil}
+                    />
+                </TouchableOpacity>
             </View>
-          )}
-
-          <TouchableOpacity style={styles.iconContainer} onPress={editPhotoClick}>
-            <Image
-              resizeMode="contain"
-              source={IMAGES.pencil}
-              style={styles.ic_pencil}
-            />
-          </TouchableOpacity>
-        </View>
             <TitleSubtitle
                 title={name}
                 subTitle='Non-Member'
@@ -65,7 +68,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
         padding: 10,
-        marginTop:10,
+        marginTop: 10,
         width: Wp(100),
         backgroundColor: COLORS.white,
 
@@ -111,9 +114,9 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         backgroundColor: COLORS.tabBorderColor,
         alignSelf: 'center',
-        justifyContent:"center",
-        alignItems:"center"
-      },
+        justifyContent: "center",
+        alignItems: "center"
+    },
     iconContainer: {
         justifyContent: 'center',
         alignItems: 'center',

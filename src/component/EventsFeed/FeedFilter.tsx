@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Modal, View, StyleSheet, Text, ScrollView, Image} from 'react-native';
 import {BUTTON_LABLE, COLORS, feedList} from '../../utils/constants';
 import {Wp} from '../../utils/dimensions';
@@ -56,6 +56,10 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
     setFeedFilters([]);
   };
 
+  useEffect(() => {
+    setFeedFilters(filter.categories);
+  }, [setFeedFilters, filter.categories, filterVisible]);
+
   if (!filterVisible) return null;
 
   return (
@@ -106,9 +110,15 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
                   onTouchEnd={() => setDatePickerVisible(prev => !prev)}>
                   <Image source={IMAGES.calendar} style={styles.icon} />
                   <View style={styles.inputValueWithLabel}>
-                    <Text>{`${dayjs(filter.date[0]).format(
-                      'MM/DD/YY',
-                    )} - ${dayjs(filter.date[1]).format('MM/DD/YY')}`}</Text>
+                    <Text>{`${
+                      filter.date[0]
+                        ? dayjs(filter.date[0]).format('MM/DD/YY')
+                        : ''
+                    } - ${
+                      filter.date[1]
+                        ? dayjs(filter.date[1]).format('MM/DD/YY')
+                        : ''
+                    }`}</Text>
                     <Image source={IMAGES.downArrow} style={styles.icon} />
                   </View>
                 </View>

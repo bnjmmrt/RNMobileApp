@@ -47,50 +47,56 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   )}&body=${encodeURIComponent(body)}`;
 
   const onNextClick = async () => {
-      const requestParams: any = {
-        address: {
-          address: userDetails.baseCity.address,
-          placeId: userDetails.baseCity.placeId,
-        },
-        dateOfBirth: convertDateFormat(userDetails.birthday),
-        email: userDetails.email,
-        firstName: userDetails.firstName,
-        focusIds: userDetails.creativeFocus.map((item: any) => item.id),
-        interestsIds: userDetails.interest.map((item: any) => item.id),
-        gender: userDetails.gender,
-        lastName: userDetails.lastName,
-        phoneNumber: '+915645345678', // userDetails.phone ? userDetails.phone : loginData.phone,
-        instagramAccessToken: '',
-        instagramUserName: usernameRef.current.inputText,
-        linkedInAccessToken: '',
-        facebookAccessToken: '',
-        platform: Platform.OS,
-        socialUrl: '',
-        profilePicture: userDetails.profilePic,
+    const requestParams: any = {
+      address: {
+        address: userDetails.baseCity.address,
+        placeId: userDetails.baseCity.placeId,
+      },
+      dateOfBirth: convertDateFormat(userDetails.birthday),
+      email: userDetails.email,
+      firstName: userDetails.firstName,
+      focusIds: userDetails.creativeFocus.map((item: any) => item.id),
+      interestsIds: userDetails.interest.map((item: any) => item.id),
+      gender: userDetails.gender,
+      lastName: userDetails.lastName,
+      phoneNumber: userDetails.phone ? userDetails.phone : loginData.phone,
+      instagramAccessToken: '',
+      instagramUserName: usernameRef.current.inputText,
+      linkedInAccessToken: '',
+      facebookAccessToken: '',
+      platform: Platform.OS,
+      socialUrl: '',
+      profilePicture: userDetails.profilePic,
+    };
+    console.log('requestParams', requestParams);
+    const response: any = await apiRequest(
+      'post',
+      EndPoint.member_signUp,
+      requestParams,
+    );
+   
+    if (response.status === 200) {
+      const data = {
+        ...loginData,
+        roles: response?.data.roles,
+        token: response.data.token,
+        isSignUpCompleted: true,
+        userId: response?.data?.id,
       };
-      console.log('requestParams', requestParams);
-      const response: any = await apiRequest(
-        'post',
-        EndPoint.member_signUp,
-        requestParams,
+      dispatch(setLoginData(data));
+      dispatch(setPageProgress(1));
+      dispatch(setAuthToken(response.data.token));
+      navigation.navigate('BottomTabBar');
+
+      // dispatch(resetAppFlowDetails());
+      // persistStore(store).purge(); // This clears the persisted state
+    } else {
+      FlashMessageComponent.show(
+        'error',
+        'Something went wrong, please try again!',
       );
-
-      if (response.status === 200) {
-        const data = {...loginData, token: response.data};
-        dispatch(setLoginData(data));
-        dispatch(setPageProgress(1));
-        dispatch(setAuthToken(response.data));
-        navigation.navigate('BottomTabBar');
-
-        // dispatch(resetAppFlowDetails());
-        // persistStore(store).purge(); // This clears the persisted state
-      } else {
-        FlashMessageComponent.show(
-          'error',
-          'Something went wrong, please try again!',
-        );
-        // console.error('Error verifying OTP:', error);
-      }
+      // console.error('Error verifying OTP:', error);
+    }
   };
 
   const handleBackPress = () => {

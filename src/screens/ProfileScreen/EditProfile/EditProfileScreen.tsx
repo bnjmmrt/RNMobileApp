@@ -1,7 +1,7 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, { useEffect, useRef, useState } from 'react';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   LABLE,
   BUTTON_LABLE,
@@ -13,11 +13,11 @@ import Button from '../../../component/Button';
 import Input from '../../../component/Input/Input';
 import Header from '../../../component/Header/Header';
 // import {useGetPostsQuery} from '../../../redux/slices/apiSlice';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../redux/slices';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/slices';
 import useApi from '../../../axios/useApi';
-import {EndPoint} from '../../../ApiManager/config';
-import {fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, Wp} from '../../../utils/dimensions';
+import { EndPoint } from '../../../ApiManager/config';
+import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, Wp } from '../../../utils/dimensions';
 import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
 import EmailInput from '../../../component/EmailComponent/EmailInput';
 import DatePickerComponent from './DatePickerComponent';
@@ -27,14 +27,14 @@ import GenderComponent from './GenderComponent';
 import Toast from 'src/component/Toast/Toast';
 import { setNotificationSettings } from '../../../redux/slices/appSettingsSlice';
 
-interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
+interface EditProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
-const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
-  const {apiRequest, loading, error} = useApi();
+const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => {
+  const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
   const data = useSelector((state: RootState) => state.appFlow);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
- 
+
   const [userDetails, setUserDetails] = useState(data);
 
   const firstNameRef = useRef<any>(null);
@@ -47,19 +47,20 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const birthday = useSelector((state: RootState) => state.appFlow.birthday);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>(birthday);
+  const [selectedDate, setSelectedDate] = useState<string>('02/05/1998');
   const [isToastShown, setIsToastShown] = useState(false);
   const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>();
 
   const getUserSettingAndDetails = async () => {
-    const response = apiRequest(
+    const response: any = await apiRequest(
       'get',
-      EndPoint.user_settings + loginData.userId,
+      EndPoint.user_settings + loginData?.id,
     );
-    if(response.data){
+    console.log("getUserSettingAndDetails", response)
+    if (response.status === 200) {
       //dependiing on API response parse data and set
-      setUserDetails(response.data.userrData);
-      dispatch( setNotificationSettings(response.data.notificationsSettings))
+      // setUserDetails(response.data.userData);
+      dispatch(setNotificationSettings(response.data.notificationsSettings))
     }
   };
   useEffect(() => {
@@ -89,8 +90,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
       emailInputRef?.current.setDisabled(true);
       emailInputRef?.current.setEmailAddress(userDetails.email);
     }
-      
-      getUserSettingAndDetails();
+
+    // getUserSettingAndDetails();
   }, []);
 
   const onConfirmClick = async () => {
@@ -104,7 +105,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
       const fileUploadResponse: any = await apiRequest(
         'put',
         EndPoint.user_profile_picture + loginData?.userId,
-        {profilePicture: userDetails.profilePic},
+        { profilePicture: userDetails.profilePic },
       );
       console.log('fileUploadResponse,fileUploadResponse');
       if (fileUploadResponse.data) {
@@ -147,7 +148,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header
         headerTitle={PROFILE.EDIT_PROFILE}
         onPress={handleBackPress}
@@ -202,7 +203,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
               <BaseCityComponent ref={baseCityRef} />
 
-              <Text style={[styles.label]}>{LABLE.CREATIVE_FOCUS}</Text>
+              <Text style={[styles.label,{marginTop:!baseCityRef.current?.validateBaseCity() ? verticalMarginScale(24):0}]}>{LABLE.CREATIVE_FOCUS}</Text>
               <CreativeFocusComponent
                 setIsToastShown={setIsToastShown}
                 getSelectedData={getSelectedCreativeFocus}
@@ -216,7 +217,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
             onClose={() => setIsToastShown(false)}
           />
         )}
-        
+
       </ScrollView>
       <Button
         disabled={false}
@@ -225,7 +226,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
         colorTheme="dark"
         onPress={onConfirmClick}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -233,21 +234,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    // paddingBottom: 20
   },
   btnStyle: {
-    width: Wp(85),
-    borderRadius:radiusScale(100),
+    // width: Wp(85),
+    // height: 50,
+    marginTop: verticalMarginScale(20),
+    marginBottom: verticalMarginScale(20),
+    borderRadius: radiusScale(100),
+    bottom: Platform.OS === 'android' ? verticalMarginScale(20) : 0
   },
   contentContainer: {
     flex: 1,
-    paddingVertical:verticalMarginScale(10),
+    paddingVertical: verticalMarginScale(10),
     paddingHorizontal: horizontalMarginScale(20),
   },
-  scrollContainer: {paddingBottom: verticalMarginScale(200)},
+  scrollContainer: { paddingBottom: verticalMarginScale(200) },
   label: {
     paddingVertical: horizontalMarginScale(2),
-    fontSize:fontScale(14),
+    fontSize: fontScale(14),
     paddingTop: verticalMarginScale(20),
+    color:COLORS.black,
+    fontWeight:'500',
+    lineHeight:16
   },
 });
 

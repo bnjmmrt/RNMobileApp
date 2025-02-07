@@ -86,13 +86,14 @@ const styles = StyleSheet.create({
   label: {
     paddingVertical: verticalMarginScale(2),
     fontSize: fontScale(14),
-    // color: COLORS.labelGray,
+    color: COLORS.black,
+    fontWeight:'500'
   },
   inputContainer: {
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: radiusScale(8),
-    height: verticalScale(60),
+    height: verticalScale(56),
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: horizontalMarginScale(15),
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: verticalMarginScale(60),
+    height: verticalScale(56),
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: radiusScale(10),

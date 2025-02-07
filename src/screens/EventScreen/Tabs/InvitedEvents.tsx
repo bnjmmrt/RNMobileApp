@@ -6,16 +6,16 @@ import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
 import { Hp } from '../../../utils/dimensions';
 
 interface InvitedEventsProps {
-  eventId: string;
+  userId: string;
   searchText: string;
 }
 
-const InvitedEvents: React.FC<InvitedEventsProps> = ({ eventId, searchText }) => {
+const InvitedEvents: React.FC<InvitedEventsProps> = ({ userId, searchText }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [events, setEvents] = useState<any[]>([]);
   const { data, isLoading } = useFetchEventsQuery({
-    eventId,
+    userId,
     guestEventStatus: 'INVITED',
     searchText: searchText,
     take: 10,
@@ -62,7 +62,7 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({ eventId, searchText }) =>
         />
       ) : (
         <View style={{ height: Hp(55), alignItems: 'center', justifyContent: 'center' }}>
-          <EventEmptyRecord title="No Events Here" subTitle="No upcoming events." />
+          <EventEmptyRecord title="No Events Here" subTitle="No upcoming events." isLoading={isLoading} />
         </View>
       )}
     </View>

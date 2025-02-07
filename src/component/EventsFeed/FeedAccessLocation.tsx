@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {Hp, Wp} from '../../utils/dimensions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {storeData} from '../../utils/functions';
 
 interface FeedAccessLocationProps {
   allowAccessModal: boolean;
@@ -44,7 +44,7 @@ const FeedAccessLocation: React.FC<FeedAccessLocationProps> = ({
         <View style={styles.section3}>
           <TouchableOpacity
             onPress={async () => {
-              await AsyncStorage.setItem('allowAccess', '1');
+              await storeData('allowAccess', 'true');
               setAllowAccess(true);
               setAllowAccessModal(false);
               setFilterVisible(true);

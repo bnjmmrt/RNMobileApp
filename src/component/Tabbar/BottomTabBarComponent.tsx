@@ -1,6 +1,13 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import React, { ReactNode, useEffect, useRef } from 'react';
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { COLORS } from '../../utils/constants';
 import {
@@ -13,6 +20,8 @@ import {
   Wp,
 } from '../../utils/dimensions';
 import { CustomText } from '../CustomText';
+import { shallowEqual, useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
 
 const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
   state,
@@ -20,6 +29,13 @@ const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
   navigation,
 }) => {
   const labelRefs = useRef<(Animatable.View & View)[]>([]);
+
+  const { showBottomTabs } = useSelector(
+    (state: RootState) => ({
+      showBottomTabs: state.bottomTabBar.showBottomTabs,
+    }),
+    shallowEqual,
+  );
 
   useEffect(() => {
     state.routes.forEach((_, index) => {
@@ -33,7 +49,13 @@ const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
   }, [state.index]);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          display: showBottomTabs ? 'flex' : 'none',
+        },
+      ]}>
       <View style={styles.tabStyle}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
@@ -97,7 +119,7 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     zIndex: 999,
-    bottom: Hp(4),
+    bottom: verticalScale(30),
     alignSelf: 'center',
   },
   tabStyle: {

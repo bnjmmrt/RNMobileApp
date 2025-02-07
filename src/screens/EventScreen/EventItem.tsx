@@ -29,18 +29,18 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
     <View style={styles.container}>
       <View style={[styles.imageContainer]}>
         <FastImage
-          source={{ uri: item.imageCover }}
+          source={{ uri: item?.imageCover }}
           resizeMode={FastImage.resizeMode.cover}
           style={styles.icon}
         />
       </View>
       <View style={styles.contentContainer}>
-        <Text style={styles.titleStyle}>{item.name}</Text>
+        <Text style={styles.titleStyle}>{item?.name}</Text>
         <Text style={styles.subtitle} numberOfLines={2}>
-          {item.startDate}
+          {item?.startDate}
         </Text>
         <Text style={styles.subtitle} numberOfLines={2}>
-          {item.location.location}
+          {item?.location?.location}
         </Text>
         <View style={{ alignItems: 'flex-start', flexDirection: 'row' }}>
           <ButtonSmall

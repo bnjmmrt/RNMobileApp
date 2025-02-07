@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import AvatarInitials from 'src/component/AvatarInitials';
 import StatusButton from 'src/component/StatusButton/StatusButton';
 import { COLORS } from 'src/utils/constants';
+import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
 
 interface ReferralRequestItemProps {
@@ -39,7 +40,7 @@ const ReferralRequestItem: React.FC<ReferralRequestItemProps> = ({ name, message
     return (
         <View style={[styles.container, isSubmitted && styles.row]}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                <AvatarInitials name={name} size={48} />
+                <AvatarInitials name={name} size={radiusScale(48)} />
                 {!isSubmitted && <View style={{ width: '85%' }}><Text style={styles.messageText}>{name} {message}</Text></View>}
             </View>
             <View style={[styles.content, isSubmitted && styles.contentRow]}>
@@ -70,7 +71,8 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         borderColor: COLORS.borderGray,
         borderWidth: 1,
-        padding: 16,
+        paddingHorizontal: horizontalMarginScale(16),
+        paddingVertical: verticalMarginScale(16),
         flexDirection: 'column',
         gap: 12,
         justifyContent: 'center'
@@ -95,15 +97,15 @@ const styles = StyleSheet.create({
         marginTop: 2,
     },
     messageText: {
-        fontSize: 14,
+        fontSize: fontScale(14),
         color: COLORS.black,
-        fontFamily:fontFamily.ABCDiatype_Regular
+        fontFamily: fontFamily.ABCDiatype_Medium
     },
     requestText: {
-        fontSize: 14,
+        fontSize: fontScale(14),
         color: COLORS.light_gray,
         flexWrap: 'wrap',
-        marginTop: 2
+        marginTop: verticalMarginScale(4)
     },
 });
 

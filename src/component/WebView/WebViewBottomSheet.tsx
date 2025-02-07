@@ -14,7 +14,7 @@ const WebViewBottomSheet = forwardRef((props, ref) => {
 
         <BottomSheetComponent
             ref={ref}
-            snapPoints={['95%']} // Adjustable snap points
+            snapPoints={['90%']} // Adjustable snap points
             backgroundColor={COLORS.black}
             onClose={() => console.log('Bottom sheet closed')}
         >

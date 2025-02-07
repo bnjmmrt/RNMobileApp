@@ -23,9 +23,11 @@ const dummyListData = [
   },
 ];
 
-interface UserListsProps {}
+interface UserListsProps {
+  user: string;
+}
 
-const UserLists: React.FC<UserListsProps> = ({}) => {
+const UserLists: React.FC<UserListsProps> = ({user}) => {
   const styles = createStyle();
   const renderUsersListRow = useCallback(
     ({item, index}: {item: any; index: number}) => {

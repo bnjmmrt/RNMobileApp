@@ -10,6 +10,7 @@ import CreativeFocusScreen from '../screens/AppFlow/CreativeFocusScreen/Creative
 import SelectInterestScreen from '../screens/AppFlow/SelectInterestScreen/SelectInterestScreen';
 import ProfilePhotoScreen from '../screens/AppFlow/ProfilePhotoScreen/ProfilePhotoScreen';
 import IdentityVerification from '../screens/AppFlow/IdentityVerification/IdentityVerification';
+import WelcomeScreen from '../screens/AppFlow/WelcomeScreen/WelcomeScreen';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/slices';
 import ReferralScreen from 'src/screens/ProfileScreen/ReferralsScreen/ReferralScreen';
@@ -26,8 +27,8 @@ export type AppFlowStackParamList = {
   SelectInterestScreen: undefined;
   ProfilePhotoScreen: undefined;
   IdentityVerification: undefined;
-  ReferralsScreen:undefined
-  
+  ReferralsScreen: undefined;
+  WelcomeScreen: undefined;
 };
 
 const Stack = createStackNavigator<AppFlowStackParamList>();
@@ -37,6 +38,7 @@ export const AppFlowStack: React.FC = () => {
 
   const getInitialPage=()=>{
      switch(pageProgress){
+      // case 0: return "WelcomeScreen";
       case 1: return "MyDetailsScreen";
       case 2 : return "EnterEmailPhone";
       case 3 : return "GenderScreen";
@@ -53,6 +55,11 @@ export const AppFlowStack: React.FC = () => {
     <Stack.Navigator
       initialRouteName={getInitialPage()}
       screenOptions={({ route, navigation }) => ({})}>
+      <Stack.Screen
+        name="WelcomeScreen"
+        component={WelcomeScreen}
+        options={{ headerShown: false }}
+      />
 
       <Stack.Screen
         name="MyDetailsScreen"

@@ -10,12 +10,14 @@ const initialState: AuthState = {
     isInvited: false,
     isSignUpCompleted: false,
     varifyStatus: 0,
+    userId: '',
     roles: [
       {
-        roleId: '1223343534435',
-        roleName: 'non_member',
+        roleId: '',
+        roleName: '',
       },
     ],
+    isGuest:false,
     token: '',
   },
   token: '',
