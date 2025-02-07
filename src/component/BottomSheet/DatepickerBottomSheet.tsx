@@ -11,6 +11,8 @@ import Button from '../Button';
 import DatePickerIOS from 'react-native-date-picker';
 import { fontFamily } from '../../utils/functions';
 import { DatePicker } from 'react-native-wheel-pick';
+import { Dimensions } from 'react-native';
+const { width, height } = Dimensions.get('window');
 
 interface Props {
   setSelectedDate: (date: Date) => void,
@@ -34,7 +36,7 @@ const DatepickerBottomSheet = forwardRef((props: Props, ref) => {
   return (
     <BottomSheetComponent
       ref={ref}
-      snapPoints={[Platform.OS === 'ios' ? '50%' : '48%']}
+      snapPoints={[Platform.OS === 'ios' ? '50%' : '53%']}
       onClose={() => console.log(ref)}>
       <View style={styles.container}>
         <Text style={styles.title}>{LABLE.BIRTHDAY}</Text>
@@ -53,16 +55,19 @@ const DatepickerBottomSheet = forwardRef((props: Props, ref) => {
           minimumDate={hundredYearsAgo}
           maximumDate={maxYear}
         /> : (
+          <View style={styles.datePickerContainer}>
           <DatePicker
-          textSize={18}
+            textSize={18}
             minimumDate={new Date(hundredYearsAgo)}
             maximumDate={new Date(maxYear)}
-            style={{ backgroundColor: 'white', width: 320, height: 200 }}
+            style={{ backgroundColor: 'white', width: '100%', height: '100%' }}
             onDateChange={(date: any) => {
               props?.setSelectedDate(date);
               props.setDate(date);
             }}
           />
+        </View>
+        
         )}
         <Button
           style={styles.btnStyle}
@@ -95,6 +100,7 @@ const styles = StyleSheet.create({
     borderRadius: radiusScale(100),
     marginTop: verticalMarginScale(20),
   },
+  datePickerContainer:{ width: width * 0.8, height: height * 0.25, justifyContent: 'center', alignItems: 'center' }
 });
 
 export default DatepickerBottomSheet;

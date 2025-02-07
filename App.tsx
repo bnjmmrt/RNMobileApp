@@ -20,8 +20,8 @@ import { EndPoint } from 'src/ApiManager/config';
 
 import useApi from 'src/axios/useApi';
 import { useDispatch } from 'react-redux';
-import { setCreativeFocus } from 'src/redux/slices/appFlowApiDataSlice';
-import { setInterests } from 'src/redux/slices/appFlowApiDataSlice';
+import { setCreativeFocus } from 'src/redux/slices/appGlobalDataSlice';
+import { setInterests } from 'src/redux/slices/appGlobalDataSlice';
 const AppContent: React.FC = () => {
   // const { isInternetConnected } = useAuth();
   const { isConnected } = useNetInfo();

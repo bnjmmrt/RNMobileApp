@@ -20,14 +20,14 @@ const appFlowApiDataSlice = createSlice({
     setInterests(state, action: PayloadAction<any[]>) {
       state.interests = action.payload;
     },
-    resetAppFlowDetails(state) {
+    resetAppGlobalData(state) {
       // Reset state to initial values
       Object.assign(state, initialState);
     },
   },
 });
 
-export const {setCreativeFocus, setInterests, resetAppFlowDetails} =
+export const {setCreativeFocus, setInterests, resetAppGlobalData} =
   appFlowApiDataSlice.actions;
 
 export default appFlowApiDataSlice.reducer;
