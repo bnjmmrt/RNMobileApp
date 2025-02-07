@@ -34,6 +34,19 @@ import {
 } from 'src/utils/dimensions';
 import {fontFamily} from 'src/utils/functions';
 
+const SwapDeleteComponent = () => {
+  return (
+    <View style={styles.swapDeletecontainer}>
+
+      <View style={styles.avatarContainer}>
+        <Text style={styles.avatarText}>{'IF'}</Text>
+      </View>
+  
+      <Text style={styles.name}>{'Anurag Harod'}</Text>
+    </View>
+  );
+};
+
 const EventCard = () => {
   return (
     <View style={styles.card}>
@@ -81,7 +94,7 @@ const RSVPFormScreen = () => {
   const [showYesOptionDropdown, setYesOptionDropdown] = useState(false);
   const [selectedReason, setSelectedReason] = useState<any>({});
   const [selectedGuest, setSelectedGuest] = useState<any>(guests[0]);
-  const [selectedButton, setSelectedButton] = useState<string|null>(null);
+  const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const reasonsRef = useRef<any>(null);
   const guestRef = useRef<any>(null);
   const confirmationRef = useRef<any>(null);
@@ -101,17 +114,19 @@ const RSVPFormScreen = () => {
     setYesOptionDropdown(true);
   };
   const onClickReason = () => {
-    reasonsRef.current.open();
+    reasonsRef?.current.open();
   };
 
   const onClickGuest = () => {
-    guestRef.current.open();
+    guestRef?.current.open();
   };
   const onAddGuest = () => {
     //contact logic
+
+    navigation.navigate('AddGuestOptionScreen');
   };
   const submit = () => {
-    if (selectedButton===null) {
+    if (selectedButton === null) {
       setIsToastShown(true);
     } else {
       confirmationRef.current.open();
@@ -194,14 +209,17 @@ const RSVPFormScreen = () => {
                 style={styles.customSelectText}
               />
             </View>
-            {selectedGuest.name !== guests[0].name && (
-              <Button
-                disabled={false}
-                style={[styles.clearButton, styles.btnBorder]}
-                title={BUTTON_LABLE.ADD_GUEST_DETAILS}
-                colorTheme="white"
-                onPress={onAddGuest}
-              />
+            {selectedGuest?.name != guests[0]?.name && (
+               <>
+                <SwapDeleteComponent />
+                <Button
+                  disabled={false}
+                  style={[styles.clearButton, styles.btnBorder]}
+                  title={BUTTON_LABLE.ADD_GUEST_DETAILS}
+                  colorTheme="white"
+                  onPress={onAddGuest}
+                />
+              </>
             )}
           </>
         )}
@@ -348,6 +366,35 @@ const styles = StyleSheet.create({
   customSelectText: {
     marginTop: verticalMarginScale(4),
     marginBottom: verticalMarginScale(8),
+  },
+
+  swapDeletecontainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: verticalScale(1),
+    borderColor: COLORS.borderGray,
+    borderRadius: radiusScale(16),
+    padding: verticalMarginScale(16),
+    marginVertical: verticalMarginScale(8),
+    backgroundColor: COLORS.white,
+  },
+  avatarContainer: {
+    width: horizontalScale(40),
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#ccc', // Placeholder color
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  avatarText: {
+    fontSize: 14,
+    color: '#000', // Adjust for contrast
+    fontWeight: '600',
+  },
+  name: {
+    fontSize: 16,
+    color: '#000',
   },
 });
 

@@ -41,7 +41,8 @@ export const BUTTON_LABLE = {
   UPDATE_APPLICATION: 'Update Application',
   YES: 'Yes',
   NO: 'No',
-  ADD_GUEST_DETAILS:'Add Guest Details'
+  ADD_GUEST_DETAILS:'Add Guest Details',
+  ADD:'Add'
 };
 export const LABLE = {
   RUMORAPP: 'RUMORAPP',
@@ -163,7 +164,13 @@ export const LABLE = {
   DISCOVER_MORE_EVENTS:"Discover More Events",
   RSVP_QUESTION_DETAILS:"The host is offering you the option to bring up to [X] guests. How many guests would you like to bring?",
   RSVP_SUBTITLE:"If you later decide you'd like to attend, you'll need to request another invite from the host.",
-  RSVP_INSTRUCTION:" Please add your additional guests’ details by [event date and time],or their passes will be canceled."
+  RSVP_INSTRUCTION:" Please add your additional guests’ details by [event date and time],or their passes will be canceled.",
+  ADD_FRIEND_AS_GUEST:'Add friends as guests',
+  ADD_GUEST_SUBTITLE:'Provide details to add your additional guest.',
+  ADD_GUEST_SYNC_TEXT:'Easily sync your phone contacts to invite friends to join you at events.',
+  SYNC_CONTACT_SEETTINGS:'Sync Contacts in Settings',
+  ADD_GUEST:'Add Guest',
+  ADD_GUSET_SUBTITLE:'Your changes will only be saved in Rumor and will not impact your device’s contact list.'
 };
 
 export const PROFILE = {

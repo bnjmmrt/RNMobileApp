@@ -93,6 +93,7 @@ const IMAGES = {
   list: require('./list.png'),
   alert_triangle_filled: require('./alert-triangle-filled.png'),
   frame: require('./frame.png'),
+  settings: require('./settings.png'),
 };
 
 export default IMAGES;
