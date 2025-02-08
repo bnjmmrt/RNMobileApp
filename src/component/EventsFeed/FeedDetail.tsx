@@ -1,10 +1,21 @@
 import React from 'react';
-import { Modal, View, StyleSheet, Text, Image } from 'react-native';
-import { format } from 'date-fns';
+import {Modal, View, StyleSheet, Text, Image} from 'react-native';
+import {format} from 'date-fns';
 import Button from '../Button';
 import IMAGES from '../../assets/images';
-import { EventItem } from './EventsFeed';
-import { Hp, Wp } from '../../utils/dimensions';
+import {EventItem} from './EventsFeed';
+import {
+  fontScale,
+  horizontalMarginScale,
+  horizontalScale,
+  Hp,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+} from '../../utils/dimensions';
+import {COLORS} from '../../utils/constants';
+import {fontFamily} from '../../utils/functions';
 
 interface FeedDetailProps {
   detail: EventItem | null;
@@ -40,7 +51,7 @@ const FeedDetail: React.FC<FeedDetailProps> = ({
           <Image
             source={
               detail.image
-                ? { uri: detail.image }
+                ? {uri: detail.image}
                 : IMAGES.eventCoverPlaceholders1
             }
             style={styles.image}
@@ -80,68 +91,68 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: COLORS.grayMiddle,
   },
   modalContent: {
-    width: '100%',
-    backgroundColor: 'white',
-    borderRadius: 25,
-    paddingVertical: 20,
+    width: Wp(100),
+    backgroundColor: COLORS.white,
+    borderRadius: radiusScale(25),
+    paddingVertical: verticalMarginScale(20),
     top: '10%',
-    height: '80%',
+    height: Hp(80),
   },
   modalBar: {
-    width: 48,
-    height: 4,
-    borderRadius: 50,
-    backgroundColor: '#D8D8D8',
+    width: horizontalScale(48),
+    height: verticalScale(4),
+    borderRadius: radiusScale(50),
+    backgroundColor: COLORS.tabBorderColor,
     alignSelf: 'center',
-    marginBottom: 12,
+    marginBottom: verticalMarginScale(12),
   },
   title: {
-    fontSize: 24,
-    color: 'black',
-    fontFamily: 'Times New Roman',
+    fontSize: fontScale(24),
+    color: COLORS.black,
+    fontFamily: fontFamily.RomieTrial_Bold,
     fontWeight: '700',
     lineHeight: 32,
     textAlign: 'center',
-    paddingTop: 36,
+    paddingTop: verticalMarginScale(36),
   },
   dateText: {
-    paddingVertical: 6,
+    paddingVertical: verticalMarginScale(6),
     textAlign: 'center',
   },
   messageText: {
-    paddingVertical: 6,
+    paddingVertical: verticalMarginScale(6),
     textAlign: 'center',
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 12,
+    marginTop: verticalMarginScale(12),
     gap: 8,
   },
   infoText: {
     textAlign: 'center',
-    fontSize: 12,
-    paddingHorizontal: 18,
-    paddingTop: 8,
+    fontSize: fontScale(12),
+    paddingHorizontal: horizontalMarginScale(18),
+    paddingTop: verticalMarginScale(8),
   },
   image: {
     width: Wp(96),
     height: Hp(40),
-    borderRadius: 16,
+    borderRadius: radiusScale(16),
     alignSelf: 'center',
   },
   showResults: {
     width: Wp(45),
-    borderRadius: 100,
+    borderRadius: radiusScale(100),
   },
   clearFilters: {
     width: Wp(45),
-    borderColor: 'black',
+    borderColor: COLORS.black,
     borderWidth: 2,
-    borderRadius: 100,
+    borderRadius: radiusScale(100),
   },
 });
 

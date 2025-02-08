@@ -4,7 +4,7 @@ import { Image } from 'react-native-animatable';
 import { format } from 'date-fns';
 import { COLORS } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
-import { Wp, Hp } from '../../utils/dimensions';
+import { Wp, Hp, verticalMarginScale, horizontalMarginScale, radiusScale, fontScale } from '../../utils/dimensions';
 import IMAGES from '../../assets/images';
 import { EventItem } from './EventsFeed';
 
@@ -47,38 +47,35 @@ const FeedItem: React.FC<FeedItemProps> = ({ item, isFeatured, setDetail }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    padding: 10,
-    paddingHorizontal: 11,
+    paddingVertical: verticalMarginScale(10),
+    paddingHorizontal: horizontalMarginScale(11),
     width: Wp(48),
-    // height: Hp(25),
   },
   imageContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    // height: 100,
   },
   contentContainer: {
     flexDirection: 'column',
     flex: 1,
-    marginTop: 8,
-    paddingHorizontal: 8,
+    marginTop: verticalMarginScale(8),
+    paddingHorizontal: horizontalMarginScale(8),
   },
   icon: {
-    // marginRight: 10,
     height: Hp(33),
     width: Wp(41),
-    borderRadius: 10,
+    borderRadius: radiusScale(10),
   },
   title: {
-    fontSize: 18,
+    fontSize: fontScale(18),
     fontFamily: fontFamily.ABCDiatype_Medium,
     color: COLORS.black,
   },
   subtitle: {
     color: COLORS.light_gray,
-    fontSize: 12,
+    fontSize: fontScale(12),
     fontFamily: fontFamily.ABCDiatype_Regular,
-    marginTop: 1,
+    marginTop: verticalMarginScale(1),
   },
 });
 

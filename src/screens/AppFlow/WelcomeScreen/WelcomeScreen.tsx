@@ -5,13 +5,17 @@ import WelcomeScreenStyles from './WelcomeScreenStyles';
 import { COLORS, BUTTON_LABLE, LABLE } from '../../../utils/constants';
 import IMAGES from '../../../assets/images';
 import Button from '../../../component/Button';
+import { useSelector } from 'react-redux';
 
 const WelcomePage:React.FC<{navigation: any}> = ({ navigation }) => {
   const styles = WelcomeScreenStyles();
+  const loginData = useSelector((state: any) => state.auth.loginData);
   const userName = 'Zohan Khan';
   const openCommunityGuidelines = () => {
     console.log('openCommunityGuidelines');
   };
+
+  console.log("loginData: ", loginData)
 
   console.log('Navigation Prop:', navigation);
   const onEnterClick = () => {

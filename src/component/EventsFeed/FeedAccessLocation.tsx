@@ -1,7 +1,8 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import {Hp, Wp} from '../../utils/dimensions';
+import {fontScale, horizontalMarginScale, horizontalScale, Hp, radiusScale, verticalMarginScale, verticalScale, Wp} from '../../utils/dimensions';
 import {storeData} from '../../utils/functions';
+import { COLORS } from '../../utils/constants';
 
 interface FeedAccessLocationProps {
   allowAccessModal: boolean;
@@ -23,7 +24,7 @@ const FeedAccessLocation: React.FC<FeedAccessLocationProps> = ({
       <View style={styles.modal}>
         <View style={styles.section1}>
           <Text style={styles.title}>
-            Allow "Rumor" to access your location
+            Allow ”Rumor” to access your location
           </Text>
           <Text style={styles.content}>
             This app requires location tracking
@@ -75,73 +76,68 @@ const styles = StyleSheet.create({
     width: Wp(100),
     height: Hp(100),
     zIndex: 9999999,
-    backgroundColor: '#00000033',
+    backgroundColor: COLORS.grayFeedLocation1,
   },
   modal: {
-    width: 270,
-    height: 232,
-    borderRadius: 16,
-    backgroundColor: '#E0E0E0FA',
+    width: horizontalScale(270),
+    height: verticalScale(232),
+    borderRadius: radiusScale(16),
+    backgroundColor: COLORS.grayFeedLocation2,
   },
   section1: {
-    paddingVertical: 16,
-    paddingHorizontal: 8,
+    paddingVertical: verticalMarginScale(16),
+    paddingHorizontal: horizontalMarginScale(8),
   },
   section2: {
-    borderTopColor: '#54545657',
+    borderTopColor: COLORS.grayFeedLocation3,
     borderTopWidth: 0.3,
-    paddingVertical: 8,
+    paddingVertical: verticalMarginScale(8),
   },
   section3: {
-    borderTopColor: '#54545657',
+    borderTopColor: COLORS.grayFeedLocation3,
     borderTopWidth: 0.3,
-    paddingVertical: 8,
+    paddingVertical: verticalMarginScale(8),
   },
   section4: {
-    borderTopColor: '#54545657',
+    borderTopColor: COLORS.grayFeedLocation3,
     borderTopWidth: 0.3,
-    paddingVertical: 8,
+    paddingVertical: verticalMarginScale(8),
   },
   title: {
-    color: '#000000',
-    fontFamily: 'SF Pro',
-    fontSize: 17,
+    color: COLORS.black,
+    fontSize: fontScale(17),
     fontWeight: '600',
     lineHeight: 22,
     letterSpacing: -0.43,
     textAlign: 'center',
   },
   content: {
-    color: '#000000',
-    fontFamily: 'SF Pro',
-    fontSize: 12,
+    color: COLORS.black,
+    fontSize: fontScale(12),
     fontWeight: '400',
     lineHeight: 22,
     letterSpacing: -0.43,
     textAlign: 'center',
   },
   onlyWhileUsing: {
-    color: '#007AFF',
-    fontFamily: 'SF Pro',
-    fontSize: 17,
+    color: COLORS.blueLocation,
+    fontSize: fontScale(17),
     fontWeight: '600',
     lineHeight: 22,
     letterSpacing: -0.43,
     textAlign: 'center',
   },
   alwaysAllow: {
-    color: '#007AFF',
-    fontFamily: 'SF Pro',
-    fontSize: 14,
+    color: COLORS.blueLocation,
+    fontSize: fontScale(17),
     fontWeight: '300',
     lineHeight: 22,
     letterSpacing: -0.43,
     textAlign: 'center',
   },
   dontAllow: {
-    color: '#007AFF',
-    fontFamily: 'SF Pro',
-    fontSize: 14,
+    color: COLORS.blueLocation,
+    fontSize: fontScale(17),
     fontWeight: '300',
     lineHeight: 22,
     letterSpacing: -0.43,

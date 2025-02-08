@@ -2,12 +2,20 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {View, ScrollView, Text, Image, FlatList} from 'react-native';
 import {COLORS} from '../../utils/constants';
 import HeaderComponent from '../../component/HeaderComponent';
-import EventItem from '../../screens/EventScreen/EventItem';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/slices';
 import {StyleSheet} from 'react-native';
-import {Wp, Hp} from '../../utils/dimensions';
+import {
+  Wp,
+  Hp,
+  horizontalMarginScale,
+  verticalMarginScale,
+  radiusScale,
+  fontScale,
+  verticalScale,
+  horizontalScale,
+} from '../../utils/dimensions';
 import {fontFamily, retrieveData} from '../../utils/functions';
 import FeedItem from './FeedItem';
 import dayjs from 'dayjs';
@@ -23,6 +31,7 @@ import FeedSeries from './FeedSeries';
 import FeedSeriesDetail from './FeedSeriesDetail';
 import FeedFilterItem from './FeedFilterItem';
 import type {DateType} from 'react-native-ui-datepicker';
+import {Address} from '../../redux/slices/appFlowSlice';
 
 export interface EventItem {
   id: string;
@@ -43,7 +52,7 @@ export interface SeriesItem {
 }
 
 export interface Filter {
-  location: string;
+  location: Address;
   categories: string[];
   date: [DateType, DateType];
 }
@@ -72,7 +81,7 @@ const EventsFeed = () => {
   const [responseSubmitted, setResponseSubmitted] = useState<boolean>(false);
   const [pagination, setPagination] = useState<Pagination>({take: 5, skip: 0});
   const [filter, setFilter] = useState<Filter>({
-    location: '',
+    location: {address: '', placeId: '', latitude: '', longitude: ''},
     categories: [],
     date: ['', ''],
   });
@@ -121,9 +130,7 @@ const EventsFeed = () => {
     try {
       const featuredRes: any = await apiGet('/events/feed/featured');
       const res: any = await apiGet(
-        `/events/users/${loginData.userId}/events?take=${pagination.take}&skip=${
-          pagination.skip
-        }`,
+        `/events/users/${loginData.userId}/events?take=${pagination.take}&skip=${pagination.skip}&longitude=${filter.location.longitude}&latitude=${filter.location.latitude}`,
       );
 
       const eventsRes = res.data.map((item: any) => ({
@@ -199,7 +206,7 @@ const EventsFeed = () => {
             handleFilter={handleFilter}
             filterLength={
               filter.categories.length +
-              (filter.location ? 1 : 0) +
+              (filter.location.address ? 1 : 0) +
               (filter.date[0] && filter.date[1] ? 1 : 0)
             }
           />
@@ -208,8 +215,18 @@ const EventsFeed = () => {
             (filter.date[0] && filter.date[1])) && (
             <ScrollView horizontal style={styles.filterScrollView}>
               <FeedFilterItem
-                content={filter.location}
-                handleClear={() => setFilter(prev => ({...prev, location: ''}))}
+                content={filter.location.address}
+                handleClear={() =>
+                  setFilter(prev => ({
+                    ...prev,
+                    location: {
+                      address: '',
+                      placeId: '',
+                      longitude: '',
+                      latitude: '',
+                    },
+                  }))
+                }
               />
               {filter.date[0] && filter.date[1] && (
                 <FeedFilterItem
@@ -318,9 +335,7 @@ const EventsFeed = () => {
 
       {locationVisible && (
         <LocationPickerModal
-          setLocation={value =>
-            setFilter(prev => ({...prev, location: value.address}))
-          }
+          setLocation={value => setFilter(prev => ({...prev, location: value}))}
           setIsShown={setLocationVisible}
           submitVisible
         />
@@ -332,22 +347,23 @@ const EventsFeed = () => {
 const styles = StyleSheet.create({
   featuredContainer: {
     flexDirection: 'column',
-    padding: 10,
+    paddingHorizontal: horizontalMarginScale(10),
+    paddingVertical: verticalMarginScale(10),
     width: Wp(100),
     backgroundColor: COLORS.lighter_gray,
-    marginTop: 15,
+    marginTop: verticalMarginScale(15),
   },
   title: {
-    fontSize: 32,
+    fontSize: fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
     color: COLORS.black,
     lineHeight: 40,
-    paddingLeft: 12,
+    paddingLeft: horizontalMarginScale(12),
   },
   filterScrollView: {
-    paddingVertical: 8,
-    marginHorizontal: 16,
-    height: 16,
+    paddingVertical: verticalMarginScale(8),
+    marginHorizontal: horizontalMarginScale(16),
+    height: verticalScale(16),
   },
   scrollView: {
     height: Hp(41),
@@ -355,34 +371,33 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: COLORS.white,
   },
   contentContainer: {
     flex: 1,
     flexDirection: 'column',
   },
   eventContainer: {
-    marginLeft: 10,
+    marginLeft: horizontalMarginScale(10),
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
   btnStyle: {
     width: Wp(85),
-    borderRadius: 100,
+    borderRadius: radiusScale(100),
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 10,
+    marginVertical: verticalMarginScale(10),
   },
   logoImgStyle: {
-    width: 100,
-    height: 50,
+    width: horizontalScale(100),
+    height: verticalScale(50),
     resizeMode: 'center',
   },
   textBelowStyle: {
     color: COLORS.light_gray,
-    fontSize: 12,
+    fontSize: fontScale(12),
     textAlign: 'center',
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginVertical: Hp(1),
@@ -393,19 +408,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
     bottom: 56,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    backgroundColor: '#000000BF',
+    marginHorizontal: 'auto',
+    paddingHorizontal: horizontalMarginScale(12),
+    paddingVertical: verticalMarginScale(6),
+    borderRadius: radiusScale(6),
+    backgroundColor: COLORS.grayMiddle,
   },
   responseSubmittedText: {
-    color: 'white',
+    color: COLORS.white,
   },
   check1: {
-    width: 16,
-    height: 16,
+    width: horizontalScale(16),
+    height: verticalScale(16),
   },
 });
 

@@ -244,7 +244,14 @@ export const COLORS = {
   darkBlue: '#0A66C2',
   red: '#FF0000',
   yellow: '#FFFC00',
-  yellowLight: '#FEF8E9'
+  yellowLight: '#FEF8E9',
+  grayMiddle: '#000000BF',
+  blueLocation: '#007AFF',
+  whiteFeedContainer: '#F1F1F1',
+  grayFeed: '#222222',
+  grayFeedLocation1: '#00000033',
+  grayFeedLocation2: '#E0E0E0FA',
+  grayFeedLocation3: '#54545657',
 };
 
 export const feedList = [
