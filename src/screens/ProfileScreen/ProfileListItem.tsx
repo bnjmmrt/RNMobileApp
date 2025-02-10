@@ -71,7 +71,7 @@ const ProfileListItem: React.FC<ListItemProps> = ({item, onPress}) => {
       case PROFILE.CONNECTED_ACCOUNTS:
         console.log('Redirecting to Connected Accounts...');
         screenName =
-          loginData?.roles[0].roleName !== 'host'
+          loginData?.roles[0].roleName === 'host'
             ? ROUTES.HostConnectedAccountsScreen
             : ROUTES.ConnectedAccountsScreen;
         redirectToProfileStack(screenName);
