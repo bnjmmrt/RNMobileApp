@@ -31,12 +31,11 @@ import {
   verticalScale,
   Wp,
 } from '../../../utils/dimensions';
-import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
-import EmailInput from '../../../component/EmailComponent/EmailInput';
 import Toast from 'src/component/Toast/Toast';
-import {setHostProfileData} from 'src/redux/slices/appGlobalDataSlice';
 import SocialMediaInput from 'src/component/Input/SocialMediaInput';
 import IMAGES from '@images/index';
+import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { setHostProfileData } from 'src/redux/slices/appGlobalDataSlice';
 
 interface HostConnectedAccountsScreenProps
   extends NativeStackScreenProps<any, any> {}
@@ -50,7 +49,6 @@ const HostConnectedAccountsScreen: React.FC<
   const hostProfileData = useSelector(
     (state: RootState) => state.appFlowApiData.hostProfileData,
   );
-  const [bio, setBio] = useState('');
   const instagramRef = useRef<any>(null);
   const tiktokRef = useRef<any>(null);
   const facebookRef = useRef<any>(null);
@@ -59,40 +57,30 @@ const HostConnectedAccountsScreen: React.FC<
   const youtubeRef = useRef<any>(null);
 
   const [isToastShown, setIsToastShown] = useState(false);
+console.log("hostProfileDatahostProfileDatahostProfileData",hostProfileData?.socialMedia)
+useEffect(()=>{
+  
+},[])
 
-  const getHostDetails = async () => {
-    const response: any = await apiRequest(
-      'get',
-      `v1/auth/host/${loginData?.id}/profile`,
-    );
-    console.log('getHostDetails', response);
-    if (response.status === 200) {
-      //dependiing on API response parse data and set
-      dispatch(setHostProfileData(response.data));
-    }
-  };
-  useEffect(() => {
-    getHostDetails();
-  }, []);
 
   const onConfirmClick = async () => {
     const requestObject: any = {
-      bio: bio,
-      companyLogo: 'string',
+      bio: hostProfileData?.bio,
+      companyLogo: hostProfileData?.companyLogo,
       companyName: hostProfileData?.companyName,
       email: hostProfileData?.email,
-      eventsPerYear: 0,
+      eventsPerYear: hostProfileData?.eventsPerYear,
       firstName: hostProfileData?.firstName,
       lastName: hostProfileData?.lastName,
       phoneNumber: hostProfileData?.phoneNumber,
-      referredBy: 'string',
+      referredBy: hostProfileData?.referredBy,
       socialMedia: {
         facebook: facebookRef?.current.inputText,
         instagram: instagramRef?.current.inputText,
         linkedin: linkedinRef?.current.inputText,
-        tiktok: tiktokRef?.current.inputText,
+        tiktok: '@'+tiktokRef?.current.inputText,
         x: xRef?.current.inputText,
-        youtube: youtubeRef?.current.inputText,
+        youtube: '@'+youtubeRef?.current.inputText,
       },
     };
 
@@ -103,9 +91,10 @@ const HostConnectedAccountsScreen: React.FC<
       `v1/auth/host/${loginData?.id}/profile`,
       requestObject,
     );
-    console.log('response,response');
-    if (response.data) {
-      //display success
+    if (response.status === 200) {
+      FlashMessageComponent.show('success', 'Profile updated successfully');
+      //navigate if required
+      dispatch(setHostProfileData(response?.data))
     }
   };
 
@@ -116,7 +105,7 @@ const HostConnectedAccountsScreen: React.FC<
   return (
     <View style={styles.container}>
       <Header
-        headerTitle={PROFILE.EDIT_PROFILE}
+        headerTitle={PROFILE.CONNECTED_ACCOUNTS}
         onPress={handleBackPress}
         showProgressBar={false}
       />
@@ -129,6 +118,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.INSTAGRAM}
             prefix="instagram.com/"
             isIconShown={true}
+            defaultValue={hostProfileData?.socialMedia.instagram}
           />
           <SocialMediaInput
             image={IMAGES.host_tiktok}
@@ -136,6 +126,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.TIKTOK}
             prefix="tiktok.com/@"
             isIconShown={false}
+            defaultValue={hostProfileData?.socialMedia.tiktok}
           />
           <SocialMediaInput
             image={IMAGES.fb}
@@ -143,6 +134,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.FACEBOOK}
             prefix="facebook.com/"
             isIconShown={false}
+            defaultValue={hostProfileData?.socialMedia.facebook}
           />
           <SocialMediaInput
             image={IMAGES.linkdn}
@@ -150,6 +142,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.LINKEDIN}
             prefix="linkedin.com/.in/"
             isIconShown={false}
+            defaultValue={hostProfileData?.socialMedia.linkedin}
           />
           <SocialMediaInput
             image={IMAGES.host_x}
@@ -157,6 +150,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.X}
             prefix="x.com/"
             isIconShown={false}
+            defaultValue={hostProfileData?.socialMedia.x}
           />
           <SocialMediaInput
             image={IMAGES.yt}
@@ -164,6 +158,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.YOUTUBE}
             prefix="youtube.com/@"
             isIconShown={false}
+            defaultValue={hostProfileData?.socialMedia.youtube}
           />
         </View>
         {isToastShown && (
@@ -179,6 +174,7 @@ const HostConnectedAccountsScreen: React.FC<
         title={BUTTON_LABLE.CONFIRM}
         colorTheme="dark"
         onPress={onConfirmClick}
+        loading={loading}
       />
     </View>
   );
@@ -197,7 +193,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingVertical: verticalMarginScale(10),
+    // paddingVertical: verticalMarginScale(10),
   },
   scrollContainer: {
     paddingVertical: verticalMarginScale(16),

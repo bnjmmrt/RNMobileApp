@@ -167,7 +167,8 @@ export const LABLE = {
   WEBSITE:'Website',
   COMPANY_NAME:'Company Name',
   BIO:'Bio',
-  COMPANY_DESCRIPTION:'Description of Company'
+  COMPANY_DESCRIPTION:'Description of Company',
+  ENTER_FEEDBACK:'Enter Feedback'
 };
 
 export const PROFILE = {

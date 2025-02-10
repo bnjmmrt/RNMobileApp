@@ -37,6 +37,7 @@ import EmailInput from '../../../component/EmailComponent/EmailInput';
 import Toast from 'src/component/Toast/Toast';
 import {setNotificationSettings} from '../../../redux/slices/appSettingsSlice';
 import {setHostProfileData} from 'src/redux/slices/appGlobalDataSlice';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 interface HostEditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -46,10 +47,9 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
   const {apiRequest, loading, error} = useApi();
   const dispatch = useDispatch();
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [bio, setBio] = useState('');
   const [hostdetails, setHostDetails] = useState<any>();
   const companyNameRef = useRef<any>(null);
+  const bioRef = useRef<any>(null);
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
   const websiteRef = useRef<any>(null);
@@ -61,43 +61,36 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
     );
     console.log('getHostDetails', response);
     if (response.status === 200) {
-      //dependiing on API response parse data and set
+   
       dispatch(setHostProfileData(response.data));
       setHostDetails(response?.data);
+
+      phoneNumberInputRef?.current.setPhoneNumber(response?.data.phoneNumber);
+      emailInputRef?.current.setEmailAddress(response?.data.email);
+      phoneNumberInputRef?.current.setDisabled(true);
+      emailInputRef?.current.setDisabled(true);
     }
   };
   useEffect(() => {
-    phoneNumberInputRef?.current.setDisabled(true);
-    phoneNumberInputRef?.current.setPhoneNumber(hostdetails?.phoneNumber);
-    // phoneNumberInputRef?.current.setCallingCode(
-    //   memberProfileData.countryCallingCode,
-    // );
-    // phoneNumberInputRef?.current.setFlag(userDetails?.countryCodeFlag || '🇺🇸');
-    emailInputRef?.current.setDisabled(true);
-    emailInputRef?.current.setEmailAddress(hostdetails?.email);
-
     getHostDetails();
   }, []);
 
   const onConfirmClick = async () => {
-    if (!bio) {
-      // setErrorMessage(ERROR_MESSAGE.FEEDBACK_ERROR);
-    }
+  
     if (
       companyNameRef.current.validateInputs() &&
       websiteRef.current.validateInputs()
     ) {
+      console.log("inside")
       const requestObject: any = {
-        bio: bio,
+        bio: bioRef?.current.inputText,
         companyLogo: 'string',
         companyName: companyNameRef?.current.inputText,
-        email: emailInputRef?.current.emailAddress,
+        email: hostdetails?.email,
         eventsPerYear: 0,
         firstName: hostdetails?.firstName,
         lastName: hostdetails?.lastName,
-        phoneNumber:
-          phoneNumberInputRef?.current.callingCode +
-          phoneNumberInputRef?.current.phoneNumber,
+        phoneNumber: '+917262811869',
         referredBy: 'string',
         socialMedia: {
           facebook: hostdetails?.socialMedia.facebook,
@@ -109,17 +102,15 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
         },
         website: websiteRef?.current.inputText,
       };
-
-      console.log('requestObject', requestObject);
-
+console.log("requestobj",requestObject)
       const response: any = await apiRequest(
         'put',
         `v1/auth/host/${loginData?.id}/profile`,
         requestObject,
       );
-      console.log('response,response');
-      if (response.data) {
-        //display success
+      if (response.status===200) {
+        FlashMessageComponent.show('success',"Profile updated successfully")
+        //navigate if required
       }
     }
   };
@@ -144,25 +135,13 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
             errorMessage={ERROR_MESSAGE.COMPANY_NAME_ERROR}
             defaultValue={hostdetails?.companyName}
           />
-          <Text style={[styles.label]}>{LABLE.BIO}</Text>
-          <View
-            style={[
-              styles.textareaContainer,
-              errorMessage ? styles.errorInputWrapper : null,
-            ]}>
-            <TextInput
-              style={styles.textArea}
-              placeholder={LABLE.COMPANY_DESCRIPTION}
-              placeholderTextColor="#c4c4c4"
-              multiline
-              numberOfLines={6}
-              value={bio}
-              onChangeText={text => setBio(text)}
-            />
-          </View>
-          {errorMessage ? (
-            <Text style={[styles.errorText]}>{errorMessage}</Text>
-          ) : null}
+           <Input
+            ref={bioRef}
+            label={LABLE.BIO}
+            errorMessage={''}
+            defaultValue={hostdetails?.bio}
+            multiline={true}
+          />
           <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
           <EmailInput ref={emailInputRef} />
           <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
@@ -172,7 +151,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
             ref={websiteRef}
             label={LABLE.WEBSITE}
             errorMessage={ERROR_MESSAGE.WEBSITE_ERROR}
-            defaultValue={hostdetails?.websiteURL}
+            defaultValue={hostdetails?.website}
           />
         </View>
       </ScrollView>
@@ -182,6 +161,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
         title={BUTTON_LABLE.CONFIRM}
         colorTheme="dark"
         onPress={onConfirmClick}
+        loading={loading}
       />
     </View>
   );

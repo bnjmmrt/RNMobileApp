@@ -12,9 +12,10 @@ export type InputRefMethods = {
   label:string;
   prefix:string;
   image:string;
+  defaultValue:string
 };
 const SocialMediaInput=forwardRef((props:InputRefMethods, ref) => {
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState(props.defaultValue);
     const [errorMessage, setErrorMessage] = useState(props?.errorMessage);
 
     const validateInputs = () => {
@@ -44,6 +45,7 @@ const SocialMediaInput=forwardRef((props:InputRefMethods, ref) => {
           placeholderTextColor="#A0A0A0"
           value={inputText}
           onChangeText={setInputText}
+          defaultValue={props?.defaultValue}
         />
         {props?.isIconShown &&  <Image source={IMAGES.checkCircleFilled} style={styles.icon} />}
       </View>
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
     height:verticalScale(48)
   },
   icon: {
-    marginRight: 8,
+    marginRight:horizontalMarginScale(8)
   },
   prefix: {
     fontSize:fontScale(14),
@@ -84,7 +86,6 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize:fontScale(14),
     color: COLORS.black,
-    marginLeft: 5,
   },
 });
 

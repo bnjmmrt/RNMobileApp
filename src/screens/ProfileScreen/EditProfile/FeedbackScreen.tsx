@@ -1,4 +1,4 @@
-import React, { useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {Platform, StyleSheet, Text, TextInput, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
@@ -8,10 +8,19 @@ import {
   BUTTON_LABLE,
   COLORS,
   ERROR_MESSAGE,
+  LABLE,
   PROFILE,
 } from '../../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
-import {fontScale, horizontalMarginScale, Hp, radiusScale, verticalMarginScale, verticalScale, Wp} from '../../../utils/dimensions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  Hp,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+} from '../../../utils/dimensions';
 import {fontFamily} from '../../../utils/functions';
 import CreativeFocusComponent from './CreativeFocusComponent';
 import Button from '../../../component/Button';
@@ -20,7 +29,8 @@ import IMAGES from '@images/index';
 import Toast from '../../../component/Toast/Toast';
 import useApi from '../../../axios/useApi';
 import {EndPoint} from 'src/ApiManager/config';
-import { RootState } from '../../../redux/slices';
+import {RootState} from '../../../redux/slices';
+import Input from 'src/component/Input/Input';
 
 interface FeedbackScreenProps {}
 
@@ -40,30 +50,27 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const {apiRequest, loading, error} = useApi();
-  const [feedback, setFeedback] = useState('');
   const confirmationRef = useRef<any>(null);
   const [isToastShown, setIsToastShown] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+
   const [selectedData, getSelectedData] = useState<Tag[]>();
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-
+  const feedbackRef = useRef<any>(null);
   const handleBackPress = () => {
     dispatch(setPageProgress(3));
     navigation.goBack();
   };
 
   const onSubmit = async () => {
-    if (!feedback) {
-      setErrorMessage(ERROR_MESSAGE.FEEDBACK_ERROR);
-    } else if (!isToastShown && selectedData) {
-      setErrorMessage('');
-
-      confirmationRef.current.open();
-
+    if (
+      feedbackRef?.current.validateInputs() &&
+      !isToastShown &&
+      selectedData
+    ) {
       const requestData = {
-        description: feedback,
+        description: feedbackRef?.current.inputText,
         tag: selectedData[0].value,
-        userId: loginData?.id
+        userId: loginData?.id,
       };
       console.log('requestObject', requestData);
       const response: any = await apiRequest(
@@ -71,13 +78,11 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
         EndPoint.host_feedback,
         requestData,
       );
-      if (response.status===200) {
-        setFeedback('');
-        getSelectedData([]);
+      console.log('feedback response', response);
+      if (response.status === 200) {
         confirmationRef.current.open();
-      } else {
-        //error message
-
+        feedbackRef.current.inputText = '';
+        getSelectedData([]);
       }
     } else {
       setIsToastShown(true);
@@ -94,25 +99,12 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
 
       <View style={styles.contentContainer}>
         <Text style={styles.subTitle}>{PROFILE.FEEDBACK_SUBTITLE}</Text>
-
-        <View
-          style={[
-            styles.textareaContainer,
-            errorMessage ? styles.errorInputWrapper : null,
-          ]}>
-          <TextInput
-            style={styles.textArea}
-            placeholder="Enter Feedback"
-            placeholderTextColor="#c4c4c4"
-            multiline
-            numberOfLines={6}
-            value={feedback}
-            onChangeText={text => setFeedback(text)}
-          />
-        </View>
-        {errorMessage ? (
-          <Text style={[styles.errorText]}>{errorMessage}</Text>
-        ) : null}
+        <Input
+          ref={feedbackRef}
+          placeholder={LABLE.ENTER_FEEDBACK}
+          errorMessage={ERROR_MESSAGE.FEEDBACK_ERROR}
+          multiline={true}
+        />
         <Text style={styles.tagText}>Tag</Text>
         <CreativeFocusComponent
           list={list}
@@ -142,6 +134,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
         title={BUTTON_LABLE.CONFIRM}
         colorTheme="dark"
         onPress={onSubmit}
+        loading={loading}
       />
     </SafeAreaView>
   );
@@ -154,53 +147,52 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingVertical:verticalMarginScale(10),
-    paddingHorizontal:horizontalMarginScale(20),
+    paddingVertical: verticalMarginScale(10),
+    paddingHorizontal: horizontalMarginScale(20),
     height: '100%',
   },
   subTitle: {
     color: COLORS.light_gray,
-    fontSize:fontScale(13),
+    fontSize: fontScale(13),
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginVertical: Hp(1),
     textAlign: 'center',
-    marginBottom:verticalMarginScale(16),
+    marginBottom: verticalMarginScale(16),
   },
 
   textareaContainer: {
     borderWidth: 1,
     borderColor: COLORS.borderGray,
-    borderRadius:radiusScale(10),
-    padding:verticalMarginScale(10),
+    borderRadius: radiusScale(10),
+    padding: verticalMarginScale(10),
     backgroundColor: COLORS.white,
-    marginVertical:verticalMarginScale(10),
+    marginVertical: verticalMarginScale(10),
     width: '100%',
   },
   textArea: {
     textAlignVertical: 'top',
-    fontSize:fontScale(16),
+    fontSize: fontScale(16),
     color: '#333',
-    height:verticalScale(100),
+    height: verticalScale(100),
   },
   tagText: {
     fontFamily: fontFamily.RomieTrial_Bold,
-    fontSize:fontScale(20),
-    marginTop:verticalMarginScale(20),
+    fontSize: fontScale(20),
+    marginTop: verticalMarginScale(20),
   },
   btnStyle: {
     width: Wp(85),
-    borderRadius:radiusScale(100),
-    bottom:Platform.OS==='android' ? verticalMarginScale(20) :0
+    borderRadius: radiusScale(100),
+    bottom: Platform.OS === 'android' ? verticalMarginScale(20) : 0,
   },
   errorInputWrapper: {
     borderColor: COLORS.borderRed,
     backgroundColor: COLORS.bgRed,
   },
   errorText: {
-    fontSize:fontScale(12),
-    marginTop:verticalMarginScale(5),
+    fontSize: fontScale(12),
+    marginTop: verticalMarginScale(5),
     color: COLORS.errorText,
   },
 });
 export default FeedbackScreen;
-
