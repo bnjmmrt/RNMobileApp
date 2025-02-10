@@ -3,7 +3,16 @@ import {View, Text, StyleSheet, Modal, ScrollView} from 'react-native';
 import {Image} from 'react-native-animatable';
 import {COLORS} from '../../utils/constants';
 import {fontFamily} from '../../utils/functions';
-import {Wp, Hp, verticalMarginScale, horizontalMarginScale, radiusScale, horizontalScale, verticalScale, fontScale} from '../../utils/dimensions';
+import {
+  Wp,
+  Hp,
+  verticalMarginScale,
+  horizontalMarginScale,
+  radiusScale,
+  horizontalScale,
+  verticalScale,
+  fontScale,
+} from '../../utils/dimensions';
 import IMAGES from '../../assets/images';
 import type {EventItem, SeriesItem} from './EventsFeed';
 import CollapsibleView from '../CollapsibleView';
@@ -174,7 +183,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizontalMarginScale(8),
     gap: 8,
     borderRadius: radiusScale(100),
-    width: horizontalScale(70),
+    width: Wp(70),
     marginVertical: verticalMarginScale(16),
     alignItems: 'center',
   },
@@ -182,10 +191,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    width: horizontalScale(40),
-    height: verticalScale(40),
+    width: 40,
+    height: 40,
     fontSize: fontScale(7),
-    paddingTop: verticalMarginScale(12),
+    paddingTop: verticalMarginScale(14),
     borderRadius: radiusScale(100),
     backgroundColor: COLORS.black,
     color: COLORS.white,
@@ -207,7 +216,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   hostRole: {
-    color: COLORS.grayFeed,
+    color: COLORS.light_gray,
   },
   followButton: {
     borderRadius: radiusScale(100),
@@ -218,8 +227,8 @@ const styles = StyleSheet.create({
     color: COLORS.white,
   },
   leftArrowBtn: {
-    width: horizontalScale(48),
-    height: verticalScale(48),
+    width: 48,
+    height: 48,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

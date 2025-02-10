@@ -1,7 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {Modal, View, StyleSheet, Text, ScrollView, Image} from 'react-native';
 import {BUTTON_LABLE, COLORS, feedList} from '../../utils/constants';
-import {fontScale, horizontalMarginScale, horizontalScale, Hp, radiusScale, verticalMarginScale, verticalScale, Wp} from '../../utils/dimensions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  horizontalScale,
+  Hp,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+} from '../../utils/dimensions';
 import DateTimePicker from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
 import Button from '../Button';
@@ -32,6 +41,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
 }) => {
   const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false);
   const [feedFilters, setFeedFilters] = useState<string[]>(filter.categories);
+  const [alert, setAlert] = useState<boolean>(false);
 
   const handleToggle = (feed: string) => {
     if (feedFilters.includes(feed))
@@ -40,10 +50,16 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
   };
 
   const handleShowResults = () => {
+    if (filter.date[0] && !filter.date[1]) {
+      setAlert(true);
+      return null;
+    }
+
     setFilter(prev => ({
       ...prev,
       categories: feedFilters,
     }));
+
     setFilterVisible(false);
   };
 
@@ -122,6 +138,11 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
                     <Image source={IMAGES.downArrow} style={styles.icon} />
                   </View>
                 </View>
+
+                {alert && (
+                  <Text style={styles.alert}>Please choose an End Date.</Text>
+                )}
+
                 {datePickerVisible && (
                   <View style={styles.datePicker}>
                     <DateTimePicker
@@ -206,6 +227,9 @@ const styles = StyleSheet.create({
     borderRadius: radiusScale(100),
     paddingHorizontal: horizontalMarginScale(8),
     paddingVertical: verticalMarginScale(8),
+  },
+  alert: {
+    color: COLORS.red,
   },
   item: {
     paddingVertical: verticalMarginScale(12),

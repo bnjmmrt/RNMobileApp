@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     paddingVertical: verticalMarginScale(8),
     backgroundColor: COLORS.whiteFeedContainer,
     marginHorizontal: horizontalMarginScale(8),
-    height: horizontalScale(48),
+    height: horizontalScale(36),
   },
   content: {
     color: COLORS.black,

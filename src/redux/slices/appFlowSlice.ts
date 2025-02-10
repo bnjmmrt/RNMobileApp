@@ -35,7 +35,7 @@ const initialState: UserDetailsState = {
   creativeFocus: [],
   interest: [],
   profilePic: '',
-  pageProgress: 0,
+  pageProgress: 1,
   isEmailVerified: false,
   isEmailPhoneBothVerified: false,
   countryCodeFlag: '',

@@ -5,7 +5,7 @@ import {COLORS} from '../../utils/constants';
 import {fontFamily} from '../../utils/functions';
 import {Wp, Hp, verticalMarginScale, horizontalMarginScale, radiusScale, fontScale} from '../../utils/dimensions';
 import IMAGES from '../../assets/images';
-import {SeriesItem} from './EventsFeed';
+import type {SeriesItem} from './EventsFeed';
 
 interface FeedSeriesProps {
   item: SeriesItem;

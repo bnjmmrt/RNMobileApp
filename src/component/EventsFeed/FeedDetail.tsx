@@ -29,7 +29,16 @@ const FeedDetail: React.FC<FeedDetailProps> = ({
   handleNotify,
 }) => {
   const formatDate = (dateString: string) => {
-    return format(new Date(`${dateString.slice(0, 10)}`), 'MMM d yyyy');
+    console.log(dateString);
+    return format(
+      new Date(
+        `${dateString.slice(6, 10)}-${dateString.slice(
+          0,
+          2,
+        )}-${dateString.slice(3, 5)}`,
+      ),
+      'MMM d yyyy',
+    );
   };
 
   const handleYes = () => {
@@ -141,7 +150,10 @@ const styles = StyleSheet.create({
   image: {
     width: Wp(96),
     height: Hp(40),
+    borderWidth: 1,
+    borderColor: COLORS.borderGray,
     borderRadius: radiusScale(16),
+    objectFit: 'contain',
     alignSelf: 'center',
   },
   showResults: {

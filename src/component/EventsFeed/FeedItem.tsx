@@ -1,12 +1,19 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Image } from 'react-native-animatable';
-import { format } from 'date-fns';
-import { COLORS } from '../../utils/constants';
-import { fontFamily } from '../../utils/functions';
-import { Wp, Hp, verticalMarginScale, horizontalMarginScale, radiusScale, fontScale } from '../../utils/dimensions';
+import {View, Text, StyleSheet} from 'react-native';
+import {Image} from 'react-native-animatable';
+import {format} from 'date-fns';
+import {COLORS} from '../../utils/constants';
+import {fontFamily} from '../../utils/functions';
+import {
+  Wp,
+  Hp,
+  verticalMarginScale,
+  horizontalMarginScale,
+  radiusScale,
+  fontScale,
+} from '../../utils/dimensions';
 import IMAGES from '../../assets/images';
-import { EventItem } from './EventsFeed';
+import type {EventItem, SeriesItem} from './EventsFeed';
 
 interface FeedItemProps {
   item: EventItem;
@@ -14,13 +21,13 @@ interface FeedItemProps {
   setDetail: React.Dispatch<React.SetStateAction<EventItem | null>>;
 }
 
-const FeedItem: React.FC<FeedItemProps> = ({ item, isFeatured, setDetail }) => {
+const FeedItem: React.FC<FeedItemProps> = ({item, isFeatured, setDetail}) => {
   return (
     <View style={styles.container} onTouchEnd={() => setDetail(item)}>
       <View style={[styles.imageContainer]}>
         <Image
           source={
-            item.image ? { uri: item.image } : IMAGES.eventCoverPlaceholders1
+            item.image ? {uri: item.image} : IMAGES.eventCoverPlaceholders1
           }
           style={styles.icon}
         />
@@ -29,7 +36,8 @@ const FeedItem: React.FC<FeedItemProps> = ({ item, isFeatured, setDetail }) => {
         <Text numberOfLines={1} style={styles.title}>
           {item.title}
         </Text>
-        <Text numberOfLines={1} style={styles.subtitle}>{item.startDate}
+        <Text numberOfLines={1} style={styles.subtitle}>
+          {item.startDate}
           {/* {item.startDate === 'Invalid Date'
             ? item.startDate
             : format(

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState, useMemo} from 'react';
 import {View, ScrollView, Text, Image, FlatList} from 'react-native';
 import {COLORS} from '../../utils/constants';
 import HeaderComponent from '../../component/HeaderComponent';
@@ -6,16 +6,6 @@ import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/B
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/slices';
 import {StyleSheet} from 'react-native';
-import {
-  Wp,
-  Hp,
-  horizontalMarginScale,
-  verticalMarginScale,
-  radiusScale,
-  fontScale,
-  verticalScale,
-  horizontalScale,
-} from '../../utils/dimensions';
 import {fontFamily, retrieveData} from '../../utils/functions';
 import FeedItem from './FeedItem';
 import dayjs from 'dayjs';
@@ -32,6 +22,16 @@ import FeedSeriesDetail from './FeedSeriesDetail';
 import FeedFilterItem from './FeedFilterItem';
 import type {DateType} from 'react-native-ui-datepicker';
 import {Address} from '../../redux/slices/appFlowSlice';
+import {
+  Wp,
+  Hp,
+  horizontalMarginScale,
+  verticalMarginScale,
+  radiusScale,
+  fontScale,
+  verticalScale,
+  horizontalScale,
+} from '../../utils/dimensions';
 
 export interface EventItem {
   id: string;
@@ -64,9 +64,8 @@ export interface Pagination {
 
 const EventsFeed = () => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-
-  const [allFilterEvents, setAllFilterEvents] = useState<EventItem[]>([]);
-  const [filterEvents, setFilterEvents] = useState<EventItem[]>([]);
+  const [allEvents, setAllEvents] = useState<(EventItem & SeriesItem)[]>([]);
+  const [events, setEvents] = useState<(EventItem & SeriesItem)[]>([]);
   const [featuredEvents, setFeaturedEvents] = useState<EventItem[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [searchEnter, setSearchEnter] = useState<boolean>(true);
@@ -76,10 +75,9 @@ const EventsFeed = () => {
   const [filterVisible, setFilterVisible] = useState<boolean>(false);
   const [locationVisible, setLocationVisible] = useState<boolean>(false);
   const [detail, setDetail] = useState<EventItem | null>(null);
-  const [series, setSeries] = useState<SeriesItem[]>([]);
   const [seriesDetail, setSeriesDetail] = useState<SeriesItem | null>(null);
   const [responseSubmitted, setResponseSubmitted] = useState<boolean>(false);
-  const [pagination, setPagination] = useState<Pagination>({take: 5, skip: 0});
+  const [pagination, setPagination] = useState<Pagination>({take: 7, skip: 0});
   const [filter, setFilter] = useState<Filter>({
     location: {address: '', placeId: '', latitude: '', longitude: ''},
     categories: [],
@@ -88,27 +86,24 @@ const EventsFeed = () => {
 
   const isInvited = loginData?.isInvited || false;
 
-  const handleSearchChange = useCallback(
-    (text: string) => {
-      setSearchTerm(text);
-    },
-    [setSearchTerm],
-  );
+  const handleSearchChange = useCallback((text: string) => {
+    setSearchTerm(text);
+  }, []);
 
   const handleSearch = useCallback(() => {
     setSearchEnter(searchTerm === '');
 
-    setFilterEvents(
-      allFilterEvents.filter(value =>
+    setEvents(
+      allEvents.filter(value =>
         value.title.toLowerCase().includes(searchTerm.toLowerCase()),
       ),
     );
-  }, [searchTerm, allFilterEvents]);
+  }, [searchTerm, allEvents]);
 
   const handleClear = useCallback(() => {
     setSearchEnter(true);
-    setFilterEvents(allFilterEvents);
-  }, [allFilterEvents]);
+    setEvents(allEvents);
+  }, [allEvents]);
 
   const handleFilter = useCallback(() => {
     if (allowAccess) setFilterVisible(true);
@@ -123,66 +118,75 @@ const EventsFeed = () => {
   }, []);
 
   const handleLoadMore = useCallback(() => {
-    setPagination(prev => ({...prev, take: prev.take + 6}));
-  }, []);
-
-  const fetchEvents = useCallback(async () => {
-    try {
-      const featuredRes: any = await apiGet('/events/feed/featured');
-      const res: any = await apiGet(
-        `/events/users/${loginData.userId}/events?take=${pagination.take}&skip=${pagination.skip}&longitude=${filter.location.longitude}&latitude=${filter.location.latitude}`,
-      );
-
-      const eventsRes = res.data.map((item: any) => ({
-        id: item.id,
-        title: item.name,
-        startDate: item.startDate,
-        endDate: item.endDate,
-        type: item.name,
-        location: item?.location?.location || '',
-        image: item.imageCover || item.imageFlyer,
-      }));
-
-      const featuredEventsRes = featuredRes.data[0].events.map((item: any) => ({
-        id: item.id,
-        title: item.name,
-        startDate: item.startDate,
-        endDate: item.endDate,
-        type: item.name,
-        location: item?.location?.location || '',
-        image: item.imageCover || item.imageFlyer,
-      }));
-
-      setFeaturedEvents(featuredEventsRes);
-      setFilterEvents(eventsRes);
-      setAllFilterEvents(eventsRes);
-
-      setSeries([
-        {
-          title: 'Lakers Season 2025',
-          image: IMAGES.eventCoverPlaceholders,
-          about:
-            'The highly anticipated Revolve Festival officially kicks off the 2023 Coachella festival season in spectacular style, drawing attention from music and fashion enthusiasts alike. This iconic event makes a show-stopping return to the desert, delivering its most extravagant and memorable celebration yet. With a lineup of star-studded performances, exclusive experiences, and cutting-edge fashion moments, Revolve Festival solidifies its place as a must-attend event, setting the tone for an unforgettable festival season.',
-          period: 'Jan 10 - May 20, 2025',
-          events: eventsRes,
-        },
-      ]);
-    } catch (error) {
-      console.error('Failed to fetch events:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [pagination]);
+    setPagination(prev => ({...prev, skip: prev.skip + prev.take}));
+  }, [setPagination]);
 
   useEffect(() => {
+    setEvents(prev => [
+      ...prev,
+      ...allEvents.slice(
+        pagination.skip,
+        pagination.skip + pagination.take,
+      ),
+    ]);
+  }, [pagination.skip]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res: any = await apiGet(
+          `/events/users/${loginData.id}/events?longitude=${filter.location.longitude}&latitude=${filter.location.latitude}&eventTypeName=${filter.categories.join(',')}`,
+        );
+
+        const eventsRes = res.data.map((item: any) => ({
+          id: item.id,
+          title: item.name,
+          startDate: item.startDate,
+          endDate: item.endDate,
+          type: item.name,
+          location: item?.location?.location || '',
+          image: item.imageCover || item.imageFlyer,
+        }));
+
+        const featuredEventsRes = res.data
+          .filter((item: any) => item.featuredEventSection)
+          .map((item: any) => ({
+            id: item.id,
+            title: item.name,
+            startDate: item.startDate,
+            endDate: item.endDate,
+            type: item.name,
+            location: item?.location?.location || '',
+            image: item.imageCover || item.imageFlyer,
+          }));
+
+        setFeaturedEvents(featuredEventsRes);
+        setEvents([
+          {
+            title: 'Lakers Season 2025',
+            image: IMAGES.eventCoverPlaceholders,
+            about:
+              'The highly anticipated Revolve Festival officially kicks off the 2023 Coachella festival season in spectacular style, drawing attention from music and fashion enthusiasts alike. This iconic event makes a show-stopping return to the desert, delivering its most extravagant and memorable celebration yet. With a lineup of star-studded performances, exclusive experiences, and cutting-edge fashion moments, Revolve Festival solidifies its place as a must-attend event, setting the tone for an unforgettable festival season.',
+            period: 'Jan 10 - May 20, 2025',
+            events: eventsRes,
+          },
+          ...eventsRes.slice(0, pagination.take),
+        ]);
+        setAllEvents(eventsRes);
+      } catch (error) {
+        console.error('Failed to fetch events:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchEvents();
-  }, [fetchEvents]);
+  }, [loginData.id, filter]);
 
   useEffect(() => {
     const formatAllowAccess = async () => {
       try {
         const allow = await retrieveData('allowAccess');
-        console.log('Allow Access:', allow);
         setAllowAccess(allow && allow === 'true' ? true : false);
       } catch (error) {
         console.error('Error retrieving data from AsyncStorage:', error);
@@ -193,7 +197,7 @@ const EventsFeed = () => {
   }, []);
 
   return (
-    <View style={[styles.container]}>
+    <View style={styles.container}>
       {isInvited ? (
         <BeforeAppStaticComponent isChatScreen={false} />
       ) : (
@@ -211,7 +215,10 @@ const EventsFeed = () => {
             }
           />
           {(filter.categories.length > 0 ||
-            filter.location ||
+            filter.location.address ||
+            filter.location.placeId ||
+            filter.location.longitude ||
+            filter.location.latitude ||
             (filter.date[0] && filter.date[1])) && (
             <ScrollView horizontal style={styles.filterScrollView}>
               <FeedFilterItem
@@ -255,17 +262,17 @@ const EventsFeed = () => {
             </ScrollView>
           )}
           <ScrollView>
-            {filterEvents.length === 0 ? (
+            {events.length === 0 ? (
               <NoResults loading={loading} />
             ) : (
               <>
-                {searchEnter && (
+                {searchEnter && featuredEvents.length > 0 && (
                   <View style={styles.featuredContainer}>
                     <Text style={styles.title}>Featured Events</Text>
                     <ScrollView horizontal style={styles.scrollView}>
                       {featuredEvents.map((event, index) => (
                         <FeedItem
-                          key={index}
+                          key={event.id} // Changed to use a unique ID
                           item={event}
                           setDetail={setDetail}
                           isFeatured
@@ -274,28 +281,29 @@ const EventsFeed = () => {
                     </ScrollView>
                   </View>
                 )}
-
                 <View style={styles.eventContainer}>
-                  {searchEnter &&
-                    series.map((entry, entryIndex) => (
-                      <FeedSeries
-                        setSeries={setSeriesDetail}
-                        item={entry}
-                        key={entryIndex}
-                      />
-                    ))}
                   <FlatList
-                    data={filterEvents}
-                    renderItem={({item}) => (
-                      <FeedItem setDetail={setDetail} item={item} />
-                    )}
-                    keyExtractor={item => item.id.toString()}
+                    data={events}
+                    renderItem={({item}) =>
+                      item.events && searchEnter ? (
+                        <FeedSeries
+                          key={item.title}
+                          setSeries={setSeriesDetail}
+                          item={item}
+                        />
+                      ) : (
+                        <FeedItem
+                          key={item.id}
+                          setDetail={setDetail}
+                          item={item}
+                        />
+                      )
+                    }
+                    numColumns={2}
+                    keyExtractor={(_item, index) => index.toString()}
                     onEndReached={handleLoadMore}
-                    onEndReachedThreshold={0.5}
+                    onEndReachedThreshold={5}
                   />
-                  {/* {filterEvents.map((value, index) => (
-                    <FeedItem setDetail={setDetail} item={value} key={index} />
-                  ))} */}
                 </View>
               </>
             )}
@@ -311,20 +319,17 @@ const EventsFeed = () => {
       )}
 
       <FeedSeriesDetail series={seriesDetail} setSeries={setSeriesDetail} />
-
       <FeedDetail
         detail={detail}
         setDetail={setDetail}
         handleNotify={handleNotify}
       />
-
       <FeedAccessLocation
         allowAccessModal={allowAccessModal}
         setAllowAccess={setAllowAccess}
         setAllowAccessModal={setAllowAccessModal}
         setFilterVisible={setFilterVisible}
       />
-
       <FeedFilter
         filter={filter}
         setFilter={setFilter}
@@ -332,7 +337,6 @@ const EventsFeed = () => {
         setFilterVisible={setFilterVisible}
         setLocationVisible={setLocationVisible}
       />
-
       {locationVisible && (
         <LocationPickerModal
           setLocation={value => setFilter(prev => ({...prev, location: value}))}
@@ -361,9 +365,8 @@ const styles = StyleSheet.create({
     paddingLeft: horizontalMarginScale(12),
   },
   filterScrollView: {
-    paddingVertical: verticalMarginScale(8),
     marginHorizontal: horizontalMarginScale(16),
-    height: verticalScale(16),
+    height: verticalScale(64),
   },
   scrollView: {
     height: Hp(41),
@@ -406,10 +409,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 4,
     bottom: 56,
     marginHorizontal: 'auto',
-    paddingHorizontal: horizontalMarginScale(12),
+    height: horizontalScale(32),
+    paddingHorizontal: horizontalMarginScale(6),
     paddingVertical: verticalMarginScale(6),
     borderRadius: radiusScale(6),
     backgroundColor: COLORS.grayMiddle,
@@ -418,8 +422,10 @@ const styles = StyleSheet.create({
     color: COLORS.white,
   },
   check1: {
-    width: horizontalScale(16),
-    height: verticalScale(16),
+    width: horizontalScale(12),
+    height: verticalScale(12),
+    paddingVertical: verticalMarginScale(8),
+    paddingHorizontal: horizontalMarginScale(8),
   },
 });
 
