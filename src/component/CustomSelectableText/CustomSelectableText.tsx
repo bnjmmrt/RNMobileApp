@@ -9,6 +9,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import {COLORS, LABLE} from '../../utils/constants';
+import { fontScale, verticalScale } from 'src/utils/dimensions';
 
 interface CustomSelectableTextProps {
   label?: string;
@@ -69,14 +70,15 @@ const styles = StyleSheet.create({
   },
   label: {
     paddingVertical: 2,
-    fontSize: 14,
-    // color: COLORS.labelGray,
+    fontSize:fontScale(14),
+    color: COLORS.black,
+    fontWeight:'500'
   },
   inputContainer: {
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 8,
-    height: 60,
+    height: verticalScale(56),
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,
@@ -97,7 +99,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 60,
+    height: verticalScale(56),
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 10,

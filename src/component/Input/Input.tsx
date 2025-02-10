@@ -110,10 +110,10 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     <View style={[styles.container, otherStyle]}>
       {/* Dynamic Label */}
       {label && (
-        <CustomText style={[styles.label]}>
+        <Text style={styles.label}>
           {label}
           {requiredText()}
-        </CustomText>
+        </Text>
       )}
 
       {/* Input Field */}
@@ -165,8 +165,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontSize: fontScale(14),
     fontWeight: '500',
-    // color: COLORS.labelGray,
-    fontFamily: fontFamily.ABCDiatype_Medium,
+    lineHeight:16
   },
   inputContainer: {
     borderWidth: 1,
@@ -175,7 +174,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: horizontalMarginScale(16),
-    height: verticalScale(48),
+    height: verticalScale(56),
   },
   multilineInputContainer: {
     height: verticalScale(160),
@@ -188,7 +187,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(14),
     color: COLORS.black,
     fontWeight: '500',
-    fontFamily: fontFamily.ABCDiatype_Medium,
+    fontFamily: fontFamily.ABCDiatype_Bold,
   },
   multilineInput: {
     height: '100%',
@@ -197,6 +196,7 @@ const styles = StyleSheet.create({
   errorInputWrapper: {
     borderColor: COLORS.borderRed,
     backgroundColor: COLORS.bgRed,
+    height: verticalScale(56),
   },
   errorText: {
     fontSize: fontScale(12),

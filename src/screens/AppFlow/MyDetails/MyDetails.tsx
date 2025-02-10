@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Text, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,16 +17,7 @@ import {
   setLastName,
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
-import {
-  setCreativeFocus,
-  setInterests,
-} from '../../../redux/slices/appFlowApiDataSlice';
-import {
-  useGetFocusesQuery,
-  useGetInterestsQuery,
-} from '../../../redux/actions/appFlowApiAction';
 import useApi from '../../../axios/useApi';
-import { EndPoint } from '../../../ApiManager/config';
 import { useFocusEffect } from '@react-navigation/native';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
@@ -35,29 +26,12 @@ interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  console.log('Login Data:', loginData);
-  //  const {data: focuses,} = useGetFocusesQuery('');
-  //  const {data: interests,} = useGetInterestsQuery('');
-
   const { apiRequest, loading, error } = useApi();
-
   const dispatch = useDispatch();
   const userDetails = useSelector((state: RootState) => state.appFlow);
   const isEmailPhoneBothVerified = useSelector(
     (state: RootState) => state.appFlow.isEmailPhoneBothVerified,
   );
-
-  const fetch = async () => {
-    const focusResponse = await apiRequest('get', EndPoint.get_focuses);
-    dispatch(setCreativeFocus(focusResponse.data));
-
-    const interestResponse = await apiRequest('get', EndPoint.interests);
-    dispatch(setInterests(interestResponse.data));
-  };
-
-  useEffect(() => {
-    // fetch();
-  }, []);
 
   const styles = EmailPhoneStyles();
   const firstNameRef = useRef<any>(null);
@@ -73,7 +47,7 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
       dispatch(setFirstName(firstNameRef.current.inputText));
       dispatch(setLastName(lastNameRef.current.inputText));
       dispatch(setIsEmailVerified(false));
-      if (!isEmailPhoneBothVerified) {
+      if (isEmailPhoneBothVerified) {
         dispatch(setPageProgress(3));
         navigation.navigate('GenderScreen');
       } else {

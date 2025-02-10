@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } f
 import { environment } from '../../environments/environment';
 import { getItem, TagKey } from '../utils/functions';
 import { FlashMessageComponent } from '../component/FlashMessageComponent/FlashMessageComponent';
+import {store} from 'src/redux/store';
 
 // Create an Axios instance with type annotations
 export const axiosController: AxiosInstance = axios.create({
@@ -15,7 +16,8 @@ export const axiosController: AxiosInstance = axios.create({
 axiosController.interceptors.request.use(
   async (config: AxiosRequestConfig) => {
     // const token = ''; // Example: retrieve token;
-    const token = await getItem(TagKey.IsBearerToken);
+    // const token = await getItem(TagKey.IsBearerToken);
+    const token = store.getState().auth.token;
     if (token) {
       if (config.headers) {
         config.headers['Authorization'] = token ? `Bearer ${token}` : '';
@@ -26,7 +28,7 @@ axiosController.interceptors.request.use(
     const fullUrl = config.baseURL ? `${config.baseURL}${config.url}` : config.url;
     console.log('Request URL:', fullUrl);
     console.log('Request Method:', config.method);
-    console.log('Request Headers:', config.headers);
+     console.log('Request Headers:', config.headers);
     if (config.params) {
       console.log('Request Params:', config.params);
     }

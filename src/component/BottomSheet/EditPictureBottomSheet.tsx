@@ -67,27 +67,29 @@ const EditPictureBottomSheet = forwardRef(
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal:horizontalMarginScale(20),
+    paddingHorizontal: horizontalMarginScale(20),
     gap: 12,
   },
   btnStyle: {
-    borderRadius:fontScale(100),
+    borderRadius: fontScale(100),
   },
   clearButton: {
-    borderWidth:horizontalScale(1),
+    borderWidth: horizontalScale(1),
     backgroundColor: COLORS.white,
     borderColor: COLORS.black,
   },
   title: {
-    fontSize:fontScale(24),
+    fontSize: fontScale(24),
     fontFamily: fontFamily.RomieTrial_Bold,
     textAlign: 'center',
   },
   profilePhotoContainer: {
-    height:verticalScale(196),
-    width:horizontalScale(196),
-    borderRadius:radiusScale(100),
+    height: verticalScale(196),
+    width: verticalScale(196),
+    borderRadius: radiusScale(100),
+    borderWidth: horizontalScale(1),
     backgroundColor: COLORS.tabBorderColor,
+    borderColor: COLORS.borderGray,
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',

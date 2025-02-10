@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Image, Text, Pressable, ActivityIndicator } from 'react-native';
-import { Hp, Wp } from '../../utils/dimensions';
+import { fontScale, Hp, Wp } from '../../utils/dimensions';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '../../assets/images/index';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     },
     textComingSoonStyle: {
         color: COLORS.white,
-        fontSize: 22,
+        fontSize: fontScale(22),
         textAlign: 'center',
         fontFamily: fontFamily.RomieTrial_Bold,
     },

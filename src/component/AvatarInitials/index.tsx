@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { COLORS } from '../../../src/utils/constants';
 import { fontFamily } from '../../../src/utils/functions';
+import { radiusScale } from 'src/utils/dimensions';
 
 type AvatarInitialsProps = {
   name?: string;
@@ -9,12 +10,12 @@ type AvatarInitialsProps = {
   backgroundColor?: string;
   textColor?: string;
   imgUrl?: string;
-  onPress?:any
+  onPress?: any
 };
 
 const AvatarInitials: React.FC<AvatarInitialsProps> = ({
   name,
-  size = 48,
+  size = radiusScale(48),
   backgroundColor = COLORS.tabBorderColor,
   textColor = COLORS.black,
   imgUrl,
@@ -35,33 +36,33 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
   const initials = getInitials(name);
 
   return imgUrl ? (
-   <TouchableOpacity onPress={onPress}>
-    <Image
-      source={{ uri: imgUrl }}
-      style={[
-        styles.avatar,
-        {
-          width: size,
-          height: size,
-          borderRadius: size / 2,
-        },
-      ]}
-    />
+    <TouchableOpacity onPress={onPress}>
+      <Image
+        source={{ uri: imgUrl }}
+        style={[
+          styles.avatar,
+          {
+            width: radiusScale(size),
+            height: radiusScale(size),
+            borderRadius: radiusScale(size) / 2,
+          },
+        ]}
+      />
     </TouchableOpacity>
   ) : (
     <TouchableOpacity
-    onPress={onPress}
+      onPress={onPress}
       style={[
         styles.avatar,
         {
-          width: size,
-          height: size,
-          borderRadius: size / 2,
+          width: radiusScale(size),
+          height: radiusScale(size),
+          borderRadius: radiusScale(size) / 2,
           backgroundColor,
         },
       ]}
     >
-      <Text style={[styles.text, { color: textColor, fontSize: size / 2.5 }]}>
+      <Text style={[styles.text, { color: textColor, fontSize: radiusScale(size) / 3 }]}>
         {initials}
       </Text>
     </TouchableOpacity>

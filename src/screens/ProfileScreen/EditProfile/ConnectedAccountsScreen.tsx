@@ -1,9 +1,9 @@
-import React, {useRef, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, View, ViewStyle} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../redux/slices';
-import {setPageProgress} from '../../../redux/slices/appFlowSlice';
+import React, { useRef, useState } from 'react';
+import { Platform, ScrollView, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/slices';
+import { setPageProgress } from '../../../redux/slices/appFlowSlice';
 import Header from '../../../component/Header/Header';
 import Button from '../../../component/Button';
 import IMAGES from '../../../assets/images';
@@ -14,23 +14,22 @@ import {
   COLORS,
   PROFILE,
 } from '../../../utils/constants';
-import DatepickerBottomSheet from '../../../component/BottomSheet/DatepickerBottomSheet';
-import {useNavigation} from '@react-navigation/native';
-import {fontScale, horizontalMarginScale, Hp, radiusScale, verticalMarginScale, Wp} from '../../../utils/dimensions';
-import {fontFamily} from '../../../utils/functions';
+import { useNavigation } from '@react-navigation/native';
+import { fontScale, horizontalMarginScale, Hp, radiusScale, verticalMarginScale, Wp } from '../../../utils/dimensions';
+import { fontFamily } from '../../../utils/functions';
 
 import AccountItem from './AccountItem';
 import SocialMediaBottomSheet from 'src/component/BottomSheet/SocialMediaBottomSheet';
-interface ConnectedAccountsScreenProps {}
+interface ConnectedAccountsScreenProps { }
 
 const items: any = [
-  {id: '1', title: PROFILE.INSTAGRAM, image: IMAGES.profileInsta},
-  {id: '2', title: PROFILE.TIKTOK, image: IMAGES.profileTiktok},
-  {id: '3', title: PROFILE.FACEBOOK, image: IMAGES.profileFacebook},
-  {id: '4', title: PROFILE.LINKEDIN, image: IMAGES.profileLinkedIn},
-  {id: '5', title: PROFILE.X, image: IMAGES.profileX},
-  {id: '6', title: PROFILE.YOUTUBE, image: IMAGES.profileYoutube},
-  {id: '7', title: PROFILE.SNAPCHAT, image: IMAGES.profileSnapchat},
+  { id: '1', title: PROFILE.INSTAGRAM, image: IMAGES.profileInsta },
+  { id: '2', title: PROFILE.TIKTOK, image: IMAGES.profileTiktok },
+  { id: '3', title: PROFILE.FACEBOOK, image: IMAGES.profileFacebook },
+  { id: '4', title: PROFILE.LINKEDIN, image: IMAGES.profileLinkedIn },
+  { id: '5', title: PROFILE.X, image: IMAGES.profileX },
+  { id: '6', title: PROFILE.YOUTUBE, image: IMAGES.profileYoutube },
+  { id: '7', title: PROFILE.SNAPCHAT, image: IMAGES.profileSnapchat },
 ];
 
 interface ConfigData {
@@ -38,7 +37,7 @@ interface ConfigData {
   title: string;
   subTitle: string;
   connectBtnBackground: string;
-  snapPoints?:any
+  snapPoints?: any
 }
 
 const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
@@ -72,7 +71,7 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
           title: PROFILE.CONNECT_INSTAGRAM,
           subTitle: 'Please enter your Instagram Handle below',
           connectBtnBackground: COLORS.pink,
-          snapPoints:[Platform.OS === 'android' ? '85%' : '80%']
+          snapPoints: [Platform.OS === 'android' ? '85%' : '80%']
         });
         break;
       case PROFILE.TIKTOK:
@@ -132,7 +131,7 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
     }
   };
 
-  const onConfirm = () => {};
+  const onConfirm = () => { };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -164,7 +163,7 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
             subTitle={configData.subTitle}
             snapPoints={configData.snapPoints}
             connectBtnBackground={configData.connectBtnBackground}
-            onPress={() => {}}
+            onPress={() => { }}
           />
         </View>
       </ScrollView>
@@ -186,23 +185,23 @@ const styles = StyleSheet.create({
 
   btnStyle: {
     width: Wp(85),
-    borderRadius:radiusScale(100),
+    borderRadius: radiusScale(100),
   },
   contentContainer: {
     flex: 1,
-    paddingVertical:horizontalMarginScale(10),
+    paddingVertical: horizontalMarginScale(10),
     paddingHorizontal: horizontalMarginScale(20),
   },
   listContainer: {
-    marginVertical:verticalMarginScale(16),
+    marginVertical: verticalMarginScale(16),
   },
   subTitle: {
     color: COLORS.light_gray,
-    fontSize:fontScale(13),
+    fontSize: fontScale(13),
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginVertical: Hp(1),
     textAlign: 'center',
-    marginBottom:verticalMarginScale(16),
+    marginBottom: verticalMarginScale(16),
   },
 });
 export default ConnectedAccountsScreen;

@@ -24,8 +24,6 @@ interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> { }
 const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
   navigation,
 }) => {
-  const { data, error, isLoading } = useGetFocusesQuery('');
-
   const dispatch = useDispatch();
   const selectedCreativeFocus = useSelector(
     (state: RootState) => state.appFlow.creativeFocus,
@@ -37,9 +35,6 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
   const [selectedCategories, setSelectedCategories] = useState<any[]>(
     selectedCreativeFocus,
   );
-
-
-  console.log("creativeFocus:", creativeFocus)
 
   const [isToastShown, setIsToastShown] = useState(false);
 

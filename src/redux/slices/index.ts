@@ -1,6 +1,6 @@
 import {combineReducers} from '@reduxjs/toolkit';
 import {createBaseApi} from '../../ApiManager/createBaseApi';
-import appFlowApiDataSlice from './appFlowApiDataSlice';
+import appFlowApiDataSlice from './appGlobalDataSlice';
 import appFlowSlice from './appFlowSlice';
 import authReducer from './authSlice';
 import safeAreaViewConfigSlice from './safeAreaViewConfigSlice';

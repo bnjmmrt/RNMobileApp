@@ -38,8 +38,9 @@ const MainNavigation: React.FC = () => {
         }
 
         if (
-          userInfo.roles[0].name !== 'non_member' &&
-          loginData?.token?.length === 0
+          userInfo.roles[0].name === 'non_member' &&
+          loginData?.token?.length === 0 && 
+          !loginData?.token?.id
         ) {
           setInitialAppStackScreen('BeforeAppStaticScreen');
         }

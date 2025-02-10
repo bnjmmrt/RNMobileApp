@@ -70,6 +70,7 @@ export const EndPoint = {
   create_user: 'v1/auth/create-user',
   user: 'v1/auth/user/',
   custom_lists: 'v1/auth/hosts/custom-lists',
+  current_user: 'v1/auth/current-user',
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

@@ -27,7 +27,7 @@ import { fontFamily } from 'src/utils/functions';
 
 const FollowingScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const {navigate,goBack}=useNavigation();
+  const { navigate, goBack } = useNavigation();
   const [pagination, setPagination] = useState({ take: 12, skip: 0 });
   const [hostList, setHostList] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -35,9 +35,9 @@ const FollowingScreen: React.FC = () => {
   const [followHost] = useFollowHostMutation();
   const [unfollowHost] = useUnfollowHostMutation();
 
-  const { data={
-    data:{
-      hosts:[{firstName:'This is a really long name for a Host',companyName:'Revolve',companyLogo:'https://i.imgur.com/Lrupihs.png'}]
+  const { data = {
+    data: {
+      hosts: [{ firstName: 'This is a really long name for a Host', companyName: 'Revolve', companyLogo: 'https://i.imgur.com/Lrupihs.png' }]
     }
   }, error, isLoading, isFetching, refetch } = useFetchHostListQuery({
     id: '12345', // Replace with dynamic user ID
@@ -116,13 +116,10 @@ const FollowingScreen: React.FC = () => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1,backgroundColor:COLORS.white }}>
-    <Header headerTitle={PROFILE.FOLLOWING} showProgressBar={false} onPress={goBack} />
-            <SearchInput
-            onSearchTextChange={handleSearch}
-            placeholder="Search Hosts.."
-              value={searchQuery}
-            />
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+      <Header headerTitle={PROFILE.FOLLOWING} showProgressBar={false} onPress={goBack} />
+
+
       <FlatList
         data={filteredHosts}
         ListEmptyComponent={
@@ -142,24 +139,33 @@ const FollowingScreen: React.FC = () => {
             </View>
           )
         }
+        ListHeaderComponent={
+          <View style={{ marginBottom: 12 }}>
+            <SearchInput
+              onSearchTextChange={handleSearch}
+              placeholder="Search Hosts.."
+              value={searchQuery}
+            />
+          </View>
+        }
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.itemContainer}>
-            <AvatarInitials onPress={()=>navigate(ROUTES.HostProfileScreen,{hostId:'dsk'})} imgUrl={item.companyLogo} size={48} />
+            <AvatarInitials onPress={() => navigate(ROUTES.HostProfileScreen, { hostId: 'dsk' })} imgUrl={item.companyLogo} size={48} />
             <Text style={styles.itemName}>{item.companyName}</Text>
             <ButtonSmall
               style={styles.smallBtnStyle}
               title={item.isFollowing ? 'Following' : 'Follow'}
               colorTheme={item.isFollowing ? 'dark' : 'dark'}
-              leftIcon={item.isFollowing?IMAGES.check:null}
-              borderType={item.isFollowing?"STRIPE":"SOLID"}
+              leftIcon={item.isFollowing ? IMAGES.check : null}
+              borderType={item.isFollowing ? "STRIPE" : "SOLID"}
               onPress={() => handleFollow(item.id, item.isFollowing)}
             />
           </View>
         )}
         refreshing={isRefreshing}
         onRefresh={handleRefresh}
-        contentContainerStyle={{paddingHorizontal:20,marginTop:12}}
+        contentContainerStyle={{ paddingHorizontal: 20 }}
         // onEndReached={hasMore ? loadMoreHosts : null}
         onEndReachedThreshold={0.5}
         ListFooterComponent={
@@ -174,12 +180,12 @@ const styles = StyleSheet.create({
   input: {
     padding: 12,
     borderWidth: 1,
-    height:48,
-    marginBottom:12,
+    height: 48,
+    marginBottom: 12,
     borderColor: COLORS.borderGray,
     borderRadius: 8,
     fontFamily: fontFamily.ABCDiatype_Regular,
-    marginHorizontal:20
+    marginHorizontal: 20
   },
   itemContainer: {
     borderRadius: 16,

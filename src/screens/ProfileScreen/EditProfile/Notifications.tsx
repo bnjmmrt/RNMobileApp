@@ -18,7 +18,7 @@ import {
 } from '../../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
 import {RootState} from '../../../redux/slices';
-import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale } from 'src/utils/dimensions';
+import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 
 interface NotificationsScreenProps {}
 
@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    paddingBottom: verticalMarginScale(20)
   },
   itemContainer: {marginTop:verticalMarginScale(20), paddingVertical:verticalMarginScale(10), paddingHorizontal:horizontalMarginScale(20)},
   item: {
@@ -117,10 +118,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: COLORS.lighter_gray,
-    paddingHorizontal:horizontalMarginScale(18),
-    paddingVertical:verticalMarginScale(16),
+    paddingHorizontal:horizontalMarginScale(16),
+    paddingVertical:verticalMarginScale(18),
     marginBottom:verticalMarginScale(4),
-    borderRadius:radiusScale(4)
+    borderRadius:radiusScale(4),
+    height:verticalScale(56)
   },
   topRadius:{
     borderTopLeftRadius:radiusScale(25),
@@ -133,9 +135,10 @@ const styles = StyleSheet.create({
   label: {
     fontSize: fontScale(14),
     color: COLORS.black,
+    fontWeight:'500'
   },
   switch: {
-    transform: [{scaleX: 0.6}, {scaleY: 0.6}], 
+    transform: [{scaleX: 0.7}, {scaleY: 0.7}], 
   },
 });
 export default NotificationsScreen;

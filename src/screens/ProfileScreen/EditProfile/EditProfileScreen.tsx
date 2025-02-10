@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -47,18 +47,19 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
   const birthday = useSelector((state: RootState) => state.appFlow.birthday);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>(birthday);
+  const [selectedDate, setSelectedDate] = useState<string>('02/05/1998');
   const [isToastShown, setIsToastShown] = useState(false);
   const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>();
 
   const getUserSettingAndDetails = async () => {
-    const response = apiRequest(
+    const response: any = await apiRequest(
       'get',
-      EndPoint.user_settings + loginData.userId,
+      EndPoint.user_settings + loginData?.id,
     );
-    if (response.data) {
+    console.log("getUserSettingAndDetails", response)
+    if (response.status === 200) {
       //dependiing on API response parse data and set
-      setUserDetails(response.data.userrData);
+      // setUserDetails(response.data.userData);
       dispatch(setNotificationSettings(response.data.notificationsSettings))
     }
   };
@@ -90,7 +91,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
       emailInputRef?.current.setEmailAddress(userDetails.email);
     }
 
-    getUserSettingAndDetails();
+    // getUserSettingAndDetails();
   }, []);
 
   const onConfirmClick = async () => {
@@ -202,7 +203,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
               <BaseCityComponent ref={baseCityRef} />
 
-              <Text style={[styles.label]}>{LABLE.CREATIVE_FOCUS}</Text>
+              <Text style={[styles.label,{marginTop:!baseCityRef.current?.validateBaseCity() ? verticalMarginScale(24):0}]}>{LABLE.CREATIVE_FOCUS}</Text>
               <CreativeFocusComponent
                 setIsToastShown={setIsToastShown}
                 getSelectedData={getSelectedCreativeFocus}
@@ -233,12 +234,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    paddingBottom: 10
+    // paddingBottom: 20
   },
   btnStyle: {
-    width: Wp(85),
-    height: 50,
+    // width: Wp(85),
+    // height: 50,
+    marginTop: verticalMarginScale(20),
+    marginBottom: verticalMarginScale(20),
     borderRadius: radiusScale(100),
+    bottom: Platform.OS === 'android' ? verticalMarginScale(20) : 0
   },
   contentContainer: {
     flex: 1,
@@ -250,6 +254,9 @@ const styles = StyleSheet.create({
     paddingVertical: horizontalMarginScale(2),
     fontSize: fontScale(14),
     paddingTop: verticalMarginScale(20),
+    color:COLORS.black,
+    fontWeight:'500',
+    lineHeight:16
   },
 });
 

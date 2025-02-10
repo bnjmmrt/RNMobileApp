@@ -1,4 +1,4 @@
-import React, {useRef, forwardRef, useState} from 'react';
+import React, { useRef, forwardRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,9 +8,10 @@ import {
   TouchableOpacity,
   Modal,
 } from 'react-native';
-import {COLORS} from '../../utils/constants';
+import { COLORS } from '../../utils/constants';
 import LinearGradient from 'react-native-linear-gradient';
 import { fontScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
+import IMAGES from '@images/index';
 
 interface ContactSupporrtBottomSheetProps {
   setIsShown: (ishown: boolean) => void;
@@ -41,7 +42,7 @@ const ContactSupporrtBottomSheet: React.FC<ContactSupporrtBottomSheetProps> = ({
           <View style={styles.header}>
             <Text style={styles.logo}>rumor</Text>
             <TouchableOpacity onPress={submit}>
-              <Text style={styles.closeIcon}>x</Text>
+              <Image source={IMAGES.close} tintColor={COLORS.white} />
             </TouchableOpacity>
           </View>
 
@@ -54,7 +55,7 @@ const ContactSupporrtBottomSheet: React.FC<ContactSupporrtBottomSheetProps> = ({
           </View>
 
           {/* Buttons */}
-          <View style={{padding: 10, bottom: 30}}>
+          <View style={{ padding: 10, bottom: 30 }}>
             <TouchableOpacity style={styles.button}>
               <Text style={styles.buttonText}>Messages</Text>
               <Text style={styles.icon}>💬</Text>
@@ -79,21 +80,21 @@ const styles = StyleSheet.create({
   modalContent: {
     width: '100%',
     backgroundColor: COLORS.white,
-    borderRadius:radiusScale(25),
+    borderRadius: radiusScale(25),
     overflow: 'hidden',
     top: '5%',
     height: '98%',
   },
-  textContainer: {padding:verticalMarginScale(20)},
+  textContainer: { padding: verticalMarginScale(20) },
   headerContainer: {
     backgroundColor: COLORS.black,
 
-    height:verticalScale(200),
+    height: verticalScale(200),
     // iOS Shadow
     shadowColor: COLORS.black,
-    shadowOffset: {width: 0, height:verticalScale(140)},
+    shadowOffset: { width: 0, height: verticalScale(140) },
     shadowOpacity: 0.6,
-    shadowRadius:radiusScale(20),
+    shadowRadius: radiusScale(20),
 
     // Android Shadow
     elevation: 8,
@@ -102,51 +103,51 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding:verticalMarginScale(20),
+    padding: verticalMarginScale(20),
   },
   logo: {
     color: COLORS.white,
-    fontSize:fontScale(22),
+    fontSize: fontScale(22),
     fontWeight: 'bold',
   },
   closeIcon: {
     color: COLORS.white,
-    fontSize:fontScale(22),
+    fontSize: fontScale(22),
   },
   greeting: {
     color: COLORS.white,
-    fontSize:fontScale(24),
+    fontSize: fontScale(24),
     fontWeight: 'bold',
-    marginTop:verticalMarginScale(20),
+    marginTop: verticalMarginScale(20),
   },
   wave: {
-    fontSize:fontScale(26),
+    fontSize: fontScale(26),
   },
   helpText: {
     color: COLORS.white,
-    fontSize:fontScale(22),
+    fontSize: fontScale(22),
     fontWeight: 'bold',
-    marginBottom:verticalMarginScale(20),
+    marginBottom: verticalMarginScale(20),
   },
   contentContainer: {
-    bottom:verticalMarginScale(30),
+    bottom: verticalMarginScale(30),
     padding: verticalMarginScale(10),
   },
   button: {
     backgroundColor: COLORS.white,
-    padding:verticalMarginScale(15),
-    borderRadius:radiusScale(10),
+    padding: verticalMarginScale(15),
+    borderRadius: radiusScale(10),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom:verticalMarginScale(10),
+    marginBottom: verticalMarginScale(10),
   },
   buttonText: {
-    fontSize:fontScale(18),
+    fontSize: fontScale(18),
     color: COLORS.black,
   },
   icon: {
-    fontSize:fontScale(18),
+    fontSize: fontScale(18),
   },
 });
 

@@ -7,17 +7,18 @@ import AvatarInitials from './AvatarInitials';
 
 interface HeaderComponentProps {
     rightImageStyle?: StyleProp<ImageStyle>;
-    isDarkTheme: boolean
+    isDarkTheme?: boolean;
+    hasGradient?: boolean;
 }
 
-const HeaderComponent: React.FC<HeaderComponentProps> = ({ rightImageStyle, isDarkTheme }) => {
+const HeaderComponent: React.FC<HeaderComponentProps> = ({ rightImageStyle, isDarkTheme, hasGradient = false }) => {
     const backgroundColor = isDarkTheme ? COLORS.black2 : COLORS.white;
     const tintColor = isDarkTheme ? COLORS.white : COLORS.black2;
     const backgroundColorNotification = isDarkTheme ? COLORS.dark_gray : COLORS.tabBorderColor;
 
 
     return (
-        <View style={[styles.container, { backgroundColor }]}>
+        <View style={[styles.container, { backgroundColor: hasGradient ? 'transparent' : backgroundColor }]}>
             <View style={styles.logoContainer}>
                 <Image
                     style={[styles.imgStyle, rightImageStyle]}

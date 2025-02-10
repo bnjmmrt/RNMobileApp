@@ -1,12 +1,12 @@
-import {Platform, StyleSheet} from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import {
   Wp,
   Hp,
   horizontalMarginScale,
   verticalMarginScale,
 } from '../../utils/dimensions';
-import {fontFamily} from '../../utils/functions';
-import {COLORS} from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
+import { COLORS } from '../../utils/constants';
 
 const EmailPhoneStyles = () => {
   return StyleSheet.create({
@@ -16,6 +16,7 @@ const EmailPhoneStyles = () => {
     },
     btnStyle: {
       width: '100%',
+      marginBottom: verticalMarginScale(15),
     },
     contentContainer: {
       flex: 1,
