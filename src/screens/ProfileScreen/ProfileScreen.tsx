@@ -52,7 +52,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const savePhotoBottomSheetRef = useRef<any>(null);
   const logoutBottomSheetRef = useRef<any>(null);
   const deleteAccountBottomSheetRef = useRef<any>(null);
-  const contactSupportBottomSheetRef = useRef<any>(null);
+
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const userDetails = useSelector((state: RootState) => state.appFlow);
   const [isShown, setIsShown] = useState(false);
@@ -140,11 +140,38 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
   ];
 
+
+  const hostItems: ListItem[] = [
+    { id: '1', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit },
+    {
+      id: '2',
+      title: PROFILE.CONNECTED_ACCOUNTS,
+      image: IMAGES.connectedAccount,
+    },
+    { id: '3', title: PROFILE.NOTIFICATION, image: IMAGES.notification },
+    { id: '4', title: PROFILE.FEEDBACK, image: IMAGES.feedback },
+    {
+      id: '5',
+      title: PROFILE.CONTACT_SUPPORT,
+      image: IMAGES.contact,
+      onPress: contactSupportModal,
+    },
+    {
+      id: '6',
+      title: PROFILE.APPLY_FOR_MEMBERSHIP,
+      image: IMAGES.membership,
+      
+    },
+    { id: '7', title: PROFILE.DELETE_ACCOUNT, image: '', onPress: deleteAccount },
+   
+  ];
+
+
   const hasFullAccess =
     loginData?.isSignUpCompleted || loginData?.token?.id
 
   useEffect(() => {
-    const listItems = hasFullAccess ? itemsExtras : items;
+    const listItems = hasFullAccess ?  itemsExtras :loginData?.roles[0].roleName==='host'? hostItems : items;
     setListItems(listItems);
   }, [loginData]);
 

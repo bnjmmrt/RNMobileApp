@@ -1,4 +1,4 @@
-import { TabItem } from "src/component/ActiveTabBar/DynamicTabBar";
+import {TabItem} from 'src/component/ActiveTabBar/DynamicTabBar';
 
 export const BUTTON_LABLE = {
   ENTER: 'Enter',
@@ -40,7 +40,7 @@ export const BUTTON_LABLE = {
   EVENTS: 'Events',
   SHOW_RESULTS: 'Show Results',
   CLEAR_FILTERS: 'Clear Filters',
-  FOLLOW: 'Follow'
+  FOLLOW: 'Follow',
 };
 export const LABLE = {
   WELCOME: 'Welcome to Rumors!',
@@ -111,7 +111,8 @@ export const LABLE = {
   ACCESS_THE_MOST_VALUABLE_CALENDAR: 'Access the most valuable calendar.',
   TWO_MINUTES_TO_COMPLETE: '~2 min to Complete',
   STREAMLINE_YOUR_LIFESTYLE: 'Streamline your lifestyle.',
-  MANAGE_YOUR_EVENTS: 'Manage your events, chats, and passes—all in one\nplace.',
+  MANAGE_YOUR_EVENTS:
+    'Manage your events, chats, and passes—all in one\nplace.',
   CONNECT_WITH_WORLD:
     "Connect with the world's top event organizers. Get discovered and invited to events that matter.",
   CONNECT_DIRECTLY_WITH_PEOPLE:
@@ -129,34 +130,44 @@ export const LABLE = {
     'We’ll review your application after we receive your message.',
   EMAIL_THE_CODE: 'Email the code to:',
   DONT_USE_INSTAGRAM: "Don't use Instagram?",
-  REFERRAL_CODE: "Referral Code",
+  REFERRAL_CODE: 'Referral Code',
   IF_YOU_HAVE_ANY_REFERRAL_CODE: 'If you have a referral code, enter it below.',
   ENTER_CODE: 'Enter Code',
   SELECT_A_REFERRAL: 'Select a Referral',
-  SEARCH_FRIENDS: "Search friends..",
+  SEARCH_FRIENDS: 'Search friends..',
   FRIENDS_WHO_ARE_MEMBERS: 'Friends who are members',
-  REQUEST_A_REFERRAL: 'Request a referral from a Rumor member to boost your application.',
-  CONTACTS: "Contacts",
-  INVITE_FRIENDS_TO: "Invite friends to fast track your membership approval.",
-  YOU_ARE_ON_WAITLIST: "You’re on\nthe waitlist.",
-  FULL_ACCESS_UNLOCK: "Full access will be unlocked once your application is approved.",
-  FASTRACK_YOUR_APPLICATION: "Want to fast-track your application?",
-  REQUEST_REFERRAL_FROM_RUMOR: "Request referrals from Rumor members.",
-  INVITE_YOUR_FRIEND: "Invite your friends to join Rumor.",
-  SELECT_YOUR_BIRTHDAY_BELOW: "Select your birthday below",
-  WELCOME_NOTE_LINE_1: 'Your application has been approved. You’re now part of a private network connecting you to experiences from the world\'s top event organizers.',
-  WELCOME_NOTE_LINE_2: 'At Rumor, we value positivity, respect, and meaningful connections. Please take a moment to review our',
-  WELCOME_NOTE_LINE_3: 'We’re excited to have you in our community and can’t wait for you to explore everything Rumor has to offer.',
+  REQUEST_A_REFERRAL:
+    'Request a referral from a Rumor member to boost your application.',
+  CONTACTS: 'Contacts',
+  INVITE_FRIENDS_TO: 'Invite friends to fast track your membership approval.',
+  YOU_ARE_ON_WAITLIST: 'You’re on\nthe waitlist.',
+  FULL_ACCESS_UNLOCK:
+    'Full access will be unlocked once your application is approved.',
+  FASTRACK_YOUR_APPLICATION: 'Want to fast-track your application?',
+  REQUEST_REFERRAL_FROM_RUMOR: 'Request referrals from Rumor members.',
+  INVITE_YOUR_FRIEND: 'Invite your friends to join Rumor.',
+  SELECT_YOUR_BIRTHDAY_BELOW: 'Select your birthday below',
+  WELCOME_NOTE_LINE_1:
+    "Your application has been approved. You’re now part of a private network connecting you to experiences from the world's top event organizers.",
+  WELCOME_NOTE_LINE_2:
+    'At Rumor, we value positivity, respect, and meaningful connections. Please take a moment to review our',
+  WELCOME_NOTE_LINE_3:
+    'We’re excited to have you in our community and can’t wait for you to explore everything Rumor has to offer.',
   LOGOUT: 'Log Out',
-  COMING_SOON: "Coming Soon…",
+  COMING_SOON: 'Coming Soon…',
   OTP_VERIFIED_SUCCESSFULLY: 'OTP verified successfully!',
-  SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN: 'Something went wrong, please try again',
-  ABOUT_THE_EVENT: "About the Event",
+  SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:
+    'Something went wrong, please try again',
+  ABOUT_THE_EVENT: 'About the Event',
   READ_MORE: 'Read More',
-  FEATURED_TALENT: "Featured Talent",
-  DUMMY_TEXT: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent bland",
-  PHONE_NUMBER: 'Phone Number'
-}
+  FEATURED_TALENT: 'Featured Talent',
+  DUMMY_TEXT:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent bland',
+  PHONE_NUMBER: 'Phone Number',
+  WEBSITE:'Website',
+  COMPANY_NAME:'Company Name',
+  BIO:'Bio'
+};
 
 export const PROFILE = {
   EDIT_PROFILE: 'Edit Profile',
@@ -198,6 +209,8 @@ export const PROFILE = {
     'Review referral requests from friends who want to join Rumor. Your decision will remain private.',
   REVIEW_VOUCH_REQUESTS:
     'Approve or decline requests from members seeking your vouch to join an experience. Your decision is private.',
+    COMPANY_NAME: 'Company Name',
+    APPLY_FOR_MEMBERSHIP: 'Apply for MemberShip',
 };
 
 export const ERROR_MESSAGE = {
@@ -209,6 +222,8 @@ export const ERROR_MESSAGE = {
   PLEASE_ENTER_A_VALID_REFERRAL_CODE: 'Please enter a valid referral code',
   AGE_REQUIREMENT_NOT_MET: 'Age requirement not met',
   FEEDBACK_ERROR: 'Please enter your Feedback.',
+  WEBSITE_ERROR: 'Please enter your URL.',
+  COMPANY_NAME_ERROR: 'Company Name is required',
 };
 
 export const COLORS = {
@@ -244,7 +259,7 @@ export const COLORS = {
   darkBlue: '#0A66C2',
   red: '#FF0000',
   yellow: '#FFFC00',
-  yellowLight: '#FEF8E9'
+  yellowLight: '#FEF8E9',
 };
 
 export const feedList = [
@@ -265,8 +280,8 @@ export const feedList = [
   'Sporting Events',
   'Seasonal Celebrations',
   'Talks & Workshops',
-  'Tech'
-]
+  'Tech',
+];
 
 export const EVENT_STATUS = {
   AWAITING: 'Awaiting response from host',
@@ -274,7 +289,7 @@ export const EVENT_STATUS = {
   DECLINED_BY_HOST: 'Request declined by host',
   DECLINED_BY_YOU: 'You declined this invitation',
   GOING: 'You are going',
-}
+};
 
 export const tabsData: TabItem[] = [
   {

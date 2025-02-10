@@ -94,6 +94,7 @@ const IMAGES = {
   list: require('./list.png'),
   alert_triangle_filled: require('./alert-triangle-filled.png'),
   check_verified: require('./check-verified.png'),
+  membership: require('./membership.png'),
 };
 
 export default IMAGES;

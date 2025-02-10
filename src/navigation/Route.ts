@@ -18,4 +18,5 @@ export const ROUTES = {
   UserDetail: 'UserDetail',
   ListDetail: 'ListDetail',
   EventDetailsScreen: 'EventDetailsScreen',
+  HostEditProfileScreen: 'HostEditProfileScreen',
 };

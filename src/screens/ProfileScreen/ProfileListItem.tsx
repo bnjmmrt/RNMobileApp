@@ -14,6 +14,8 @@ import { fontFamily } from '../../utils/functions';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { ROUTES } from '../../navigation/Route';
 import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
 
 interface ListItemProps {
   item: {
@@ -27,7 +29,8 @@ interface ListItemProps {
 
 const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
   const navigation = useNavigation<NavigationProp>();
-
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
+console.log("loginDataloginDataloginDataloginDataloginDataloginDataloginData",loginData)
   const redirectToProfileStack = (screenName: string, params = {}) => {
     navigation.navigate("ProfileStack", {
       screen: screenName,
@@ -39,7 +42,7 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
     switch (item.title) {
       case PROFILE.EDIT_PROFILE:
         console.log('Redirecting to Edit Profile...');
-        redirectToProfileStack(ROUTES.EditProfileScreen);
+        redirectToProfileStack(loginData?.roles[0].roleName==='host' ? ROUTES.HostEditProfileScreen: ROUTES.EditProfileScreen );
         break;
 
       case PROFILE.FOLLOWING:
@@ -90,6 +93,9 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
         onPress();
         break;
 
+        case PROFILE.APPLY_FOR_MEMBERSHIP:
+          navigation.navigate('AppFlowStack');
+          break;
       default:
         console.log('Unknown item clicked');
         break;

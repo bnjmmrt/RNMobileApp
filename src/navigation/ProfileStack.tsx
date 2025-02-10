@@ -9,6 +9,7 @@ import FeedbackScreen from '../screens/ProfileScreen/EditProfile/FeedbackScreen'
 import HostProfileScreen from 'src/screens/ProfileScreen/HostProfile/HostProfileScreen';
 import ReferralScreen from 'src/screens/ProfileScreen/ReferralsScreen/ReferralScreen';
 import FollowingScreen from 'src/screens/ProfileScreen/FollowingScreen/FollowingScreen';
+import HostEditProfileScreen from 'src/screens/ProfileScreen/EditProfile/HostEditProfileScreen';
 
 
 // Define the param list for the stack navigator
@@ -22,7 +23,7 @@ export type ProfileStackParamList = {
   HostProfileScreen: undefined;
   ReferralScreen: undefined;
   FollowingScreen: undefined;
-
+  HostEditProfileScreen:undefined
 };
 
 const Stack = createStackNavigator<ProfileStackParamList>();
@@ -81,7 +82,11 @@ export const ProfileStack: React.FC = () => {
         component={FollowingScreen}
         options={{ headerShown: false }}
       />
-
+      <Stack.Screen
+        name="HostEditProfileScreen"
+        component={HostEditProfileScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };
