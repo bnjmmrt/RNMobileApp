@@ -34,7 +34,7 @@ const list: Tag[] = [
   {id: 1, name: 'General', value: 'general'},
   {id: 2, name: 'Bug', value: 'bug'},
   {id: 3, name: 'New Feature Suggestions', value: 'new_feature_suggestion'},
-  {id: 4, name: 'New Event Suggestions', value: 'new_event_suggestion'},
+  // {id: 4, name: 'New Event Suggestions', value: 'new_event_suggestion'},
 ];
 const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   const dispatch = useDispatch();

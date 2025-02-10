@@ -34,12 +34,9 @@ import {
 } from '../../../utils/dimensions';
 import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
 import EmailInput from '../../../component/EmailComponent/EmailInput';
-import DatePickerComponent from './DatePickerComponent';
-import BaseCityComponent from './BaseCityComponent';
-import CreativeFocusComponent from './CreativeFocusComponent';
-import GenderComponent from './GenderComponent';
 import Toast from 'src/component/Toast/Toast';
 import {setNotificationSettings} from '../../../redux/slices/appSettingsSlice';
+import {setHostProfileData} from 'src/redux/slices/appGlobalDataSlice';
 
 interface HostEditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -49,78 +46,75 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
   const {apiRequest, loading, error} = useApi();
   const dispatch = useDispatch();
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const memberProfileData = useSelector(
-    (state: RootState) => state.appFlowApiData.memberProfileData,
-  );
   const [errorMessage, setErrorMessage] = useState('');
   const [bio, setBio] = useState('');
-
+  const [hostdetails, setHostDetails] = useState<any>();
   const companyNameRef = useRef<any>(null);
-  const bioRef = useRef<any>(null);
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
   const websiteRef = useRef<any>(null);
 
-  const [isToastShown, setIsToastShown] = useState(false);
-
   const getHostDetails = async () => {
     const response: any = await apiRequest(
       'get',
-      EndPoint.host_profile + loginData?.id,
+      `v1/auth/host/${loginData?.id}/profile`,
     );
-    console.log('getUserSettingAndDetails', response);
+    console.log('getHostDetails', response);
     if (response.status === 200) {
       //dependiing on API response parse data and set
-      // setUserDetails(response.data.userData);
-      dispatch(setNotificationSettings(response.data.notificationsSettings));
+      dispatch(setHostProfileData(response.data));
+      setHostDetails(response?.data);
     }
   };
   useEffect(() => {
     phoneNumberInputRef?.current.setDisabled(true);
-    phoneNumberInputRef?.current.setPhoneNumber(memberProfileData?.phoneNumber);
+    phoneNumberInputRef?.current.setPhoneNumber(hostdetails?.phoneNumber);
     // phoneNumberInputRef?.current.setCallingCode(
     //   memberProfileData.countryCallingCode,
     // );
     // phoneNumberInputRef?.current.setFlag(userDetails?.countryCodeFlag || '🇺🇸');
     emailInputRef?.current.setDisabled(true);
-    emailInputRef?.current.setEmailAddress(memberProfileData?.email);
+    emailInputRef?.current.setEmailAddress(hostdetails?.email);
 
-    // getUserSettingAndDetails();
+    getHostDetails();
   }, []);
 
   const onConfirmClick = async () => {
+    if (!bio) {
+      // setErrorMessage(ERROR_MESSAGE.FEEDBACK_ERROR);
+    }
     if (
       companyNameRef.current.validateInputs() &&
-      bioRef.current.validateInputs() &&
-      websiteRef.current.validateBirthDate() &&
-      !isToastShown
+      websiteRef.current.validateInputs()
     ) {
       const requestObject: any = {
-        bio: 'string',
+        bio: bio,
         companyLogo: 'string',
-        companyName: 'string',
-        email: 'string',
+        companyName: companyNameRef?.current.inputText,
+        email: emailInputRef?.current.emailAddress,
         eventsPerYear: 0,
-        firstName: 'string',
-        lastName: 'string',
-        phoneNumber: 'string',
+        firstName: hostdetails?.firstName,
+        lastName: hostdetails?.lastName,
+        phoneNumber:
+          phoneNumberInputRef?.current.callingCode +
+          phoneNumberInputRef?.current.phoneNumber,
         referredBy: 'string',
         socialMedia: {
-          facebook: 'string',
-          instagram: 'string',
-          linkedin: 'string',
-          tiktok: 'string',
-          x: 'string',
-          youtube: 'string',
+          facebook: hostdetails?.socialMedia.facebook,
+          instagram: hostdetails?.socialMedia.instagram,
+          linkedin: hostdetails?.socialMedia.linkedin,
+          tiktok: hostdetails?.socialMedia.tiktok,
+          x: hostdetails?.socialMedia.x,
+          youtube: hostdetails?.socialMedia.youtube,
         },
-        website: 'string',
+        website: websiteRef?.current.inputText,
       };
 
       console.log('requestObject', requestObject);
 
       const response: any = await apiRequest(
         'put',
-        EndPoint.user_profile + loginData?.userId,
+        `v1/auth/host/${loginData?.id}/profile`,
         requestObject,
       );
       console.log('response,response');
@@ -148,7 +142,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
             ref={companyNameRef}
             label={LABLE.COMPANY_NAME}
             errorMessage={ERROR_MESSAGE.COMPANY_NAME_ERROR}
-            defaultValue={memberProfileData?.companyName}
+            defaultValue={hostdetails?.companyName}
           />
           <Text style={[styles.label]}>{LABLE.BIO}</Text>
           <View
@@ -158,7 +152,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
             ]}>
             <TextInput
               style={styles.textArea}
-              placeholder="Description of Company"
+              placeholder={LABLE.COMPANY_DESCRIPTION}
               placeholderTextColor="#c4c4c4"
               multiline
               numberOfLines={6}
@@ -166,24 +160,21 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
               onChangeText={text => setBio(text)}
             />
           </View>
+          {errorMessage ? (
+            <Text style={[styles.errorText]}>{errorMessage}</Text>
+          ) : null}
           <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
           <EmailInput ref={emailInputRef} />
           <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
           <PhoneNumberInput ref={phoneNumberInputRef} />
 
           <Input
-            ref={companyNameRef}
+            ref={websiteRef}
             label={LABLE.WEBSITE}
-            errorMessage={ERROR_MESSAGE.FIRST_NAME}
-            defaultValue={memberProfileData?.websiteURL}
+            errorMessage={ERROR_MESSAGE.WEBSITE_ERROR}
+            defaultValue={hostdetails?.websiteURL}
           />
         </View>
-        {isToastShown && (
-          <Toast
-            message={'Please select at least one'}
-            onClose={() => setIsToastShown(false)}
-          />
-        )}
       </ScrollView>
       <Button
         disabled={false}
@@ -212,14 +203,13 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingVertical: verticalMarginScale(10),
     paddingHorizontal: horizontalMarginScale(20),
   },
   scrollContainer: {paddingBottom: verticalMarginScale(200)},
   label: {
     paddingVertical: horizontalMarginScale(2),
     fontSize: fontScale(14),
-    paddingTop: verticalMarginScale(20),
+    paddingTop: verticalMarginScale(24),
     color: COLORS.black,
     fontWeight: '500',
     lineHeight: 16,
@@ -242,6 +232,11 @@ const styles = StyleSheet.create({
   errorInputWrapper: {
     borderColor: COLORS.borderRed,
     backgroundColor: COLORS.bgRed,
+  },
+  errorText: {
+    fontSize: fontScale(12),
+    marginTop: verticalMarginScale(5),
+    color: COLORS.errorText,
   },
 });
 

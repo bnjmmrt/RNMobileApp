@@ -1,0 +1,235 @@
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {
+  LABLE,
+  BUTTON_LABLE,
+  ERROR_MESSAGE,
+  COLORS,
+  PROFILE,
+} from '../../../utils/constants';
+import Button from '../../../component/Button';
+import Input from '../../../component/Input/Input';
+import Header from '../../../component/Header/Header';
+// import {useGetPostsQuery} from '../../../redux/slices/apiSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../redux/slices';
+import useApi from '../../../axios/useApi';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+} from '../../../utils/dimensions';
+import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
+import EmailInput from '../../../component/EmailComponent/EmailInput';
+import Toast from 'src/component/Toast/Toast';
+import {setHostProfileData} from 'src/redux/slices/appGlobalDataSlice';
+import SocialMediaInput from 'src/component/Input/SocialMediaInput';
+import IMAGES from '@images/index';
+
+interface HostConnectedAccountsScreenProps
+  extends NativeStackScreenProps<any, any> {}
+
+const HostConnectedAccountsScreen: React.FC<
+  HostConnectedAccountsScreenProps
+> = ({navigation}) => {
+  const {apiRequest, loading, error} = useApi();
+  const dispatch = useDispatch();
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const hostProfileData = useSelector(
+    (state: RootState) => state.appFlowApiData.hostProfileData,
+  );
+  const [bio, setBio] = useState('');
+  const instagramRef = useRef<any>(null);
+  const tiktokRef = useRef<any>(null);
+  const facebookRef = useRef<any>(null);
+  const linkedinRef = useRef<any>(null);
+  const xRef = useRef<any>(null);
+  const youtubeRef = useRef<any>(null);
+
+  const [isToastShown, setIsToastShown] = useState(false);
+
+  const getHostDetails = async () => {
+    const response: any = await apiRequest(
+      'get',
+      `v1/auth/host/${loginData?.id}/profile`,
+    );
+    console.log('getHostDetails', response);
+    if (response.status === 200) {
+      //dependiing on API response parse data and set
+      dispatch(setHostProfileData(response.data));
+    }
+  };
+  useEffect(() => {
+    getHostDetails();
+  }, []);
+
+  const onConfirmClick = async () => {
+    const requestObject: any = {
+      bio: bio,
+      companyLogo: 'string',
+      companyName: hostProfileData?.companyName,
+      email: hostProfileData?.email,
+      eventsPerYear: 0,
+      firstName: hostProfileData?.firstName,
+      lastName: hostProfileData?.lastName,
+      phoneNumber: hostProfileData?.phoneNumber,
+      referredBy: 'string',
+      socialMedia: {
+        facebook: facebookRef?.current.inputText,
+        instagram: instagramRef?.current.inputText,
+        linkedin: linkedinRef?.current.inputText,
+        tiktok: tiktokRef?.current.inputText,
+        x: xRef?.current.inputText,
+        youtube: youtubeRef?.current.inputText,
+      },
+    };
+
+    console.log('requestObject', requestObject);
+
+    const response: any = await apiRequest(
+      'put',
+      `v1/auth/host/${loginData?.id}/profile`,
+      requestObject,
+    );
+    console.log('response,response');
+    if (response.data) {
+      //display success
+    }
+  };
+
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
+
+  return (
+    <View style={styles.container}>
+      <Header
+        headerTitle={PROFILE.EDIT_PROFILE}
+        onPress={handleBackPress}
+        showProgressBar={false}
+      />
+
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.contentContainer}>
+          <SocialMediaInput
+            image={IMAGES.profileInsta}
+            ref={instagramRef}
+            label={PROFILE.INSTAGRAM}
+            prefix="instagram.com/"
+            isIconShown={true}
+          />
+          <SocialMediaInput
+            image={IMAGES.host_tiktok}
+            ref={tiktokRef}
+            label={PROFILE.TIKTOK}
+            prefix="tiktok.com/@"
+            isIconShown={false}
+          />
+          <SocialMediaInput
+            image={IMAGES.fb}
+            ref={facebookRef}
+            label={PROFILE.FACEBOOK}
+            prefix="facebook.com/"
+            isIconShown={false}
+          />
+          <SocialMediaInput
+            image={IMAGES.linkdn}
+            ref={linkedinRef}
+            label={PROFILE.LINKEDIN}
+            prefix="linkedin.com/.in/"
+            isIconShown={false}
+          />
+          <SocialMediaInput
+            image={IMAGES.host_x}
+            ref={xRef}
+            label={PROFILE.X}
+            prefix="x.com/"
+            isIconShown={false}
+          />
+          <SocialMediaInput
+            image={IMAGES.yt}
+            ref={youtubeRef}
+            label={PROFILE.YOUTUBE}
+            prefix="youtube.com/@"
+            isIconShown={false}
+          />
+        </View>
+        {isToastShown && (
+          <Toast
+            message={'Please select at least one'}
+            onClose={() => setIsToastShown(false)}
+          />
+        )}
+      </ScrollView>
+      <Button
+        disabled={false}
+        style={styles.btnStyle}
+        title={BUTTON_LABLE.CONFIRM}
+        colorTheme="dark"
+        onPress={onConfirmClick}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+  },
+  btnStyle: {
+    marginTop: verticalMarginScale(20),
+    marginBottom: verticalMarginScale(20),
+    borderRadius: radiusScale(100),
+    bottom: Platform.OS === 'android' ? verticalMarginScale(20) : 0,
+  },
+  contentContainer: {
+    flex: 1,
+    paddingVertical: verticalMarginScale(10),
+  },
+  scrollContainer: {
+    paddingVertical: verticalMarginScale(16),
+    paddingHorizontal: horizontalMarginScale(20),
+  },
+  label: {
+    paddingVertical: horizontalMarginScale(2),
+    fontSize: fontScale(14),
+    paddingTop: verticalMarginScale(20),
+    color: COLORS.black,
+    fontWeight: '500',
+    lineHeight: 16,
+  },
+  textareaContainer: {
+    borderWidth: 1,
+    borderColor: COLORS.borderGray,
+    borderRadius: radiusScale(10),
+    padding: verticalMarginScale(10),
+    backgroundColor: COLORS.white,
+    // marginVertical: verticalMarginScale(10),
+    width: '100%',
+  },
+  textArea: {
+    textAlignVertical: 'top',
+    fontSize: fontScale(16),
+    color: '#333',
+    height: verticalScale(100),
+  },
+  errorInputWrapper: {
+    borderColor: COLORS.borderRed,
+    backgroundColor: COLORS.bgRed,
+  },
+});
+
+export default HostConnectedAccountsScreen;

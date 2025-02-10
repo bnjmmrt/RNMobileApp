@@ -166,7 +166,8 @@ export const LABLE = {
   PHONE_NUMBER: 'Phone Number',
   WEBSITE:'Website',
   COMPANY_NAME:'Company Name',
-  BIO:'Bio'
+  BIO:'Bio',
+  COMPANY_DESCRIPTION:'Description of Company'
 };
 
 export const PROFILE = {

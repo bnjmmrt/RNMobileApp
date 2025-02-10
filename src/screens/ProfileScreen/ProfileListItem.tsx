@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, {useState, forwardRef, useImperativeHandle} from 'react';
 import {
   View,
   Text,
@@ -7,15 +7,21 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import { Image } from 'react-native-animatable';
+import {Image} from 'react-native-animatable';
 import IMAGES from '../../assets/images';
-import { COLORS, PROFILE } from '../../utils/constants';
-import { fontFamily } from '../../utils/functions';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { ROUTES } from '../../navigation/Route';
-import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/redux/slices';
+import {COLORS, PROFILE} from '../../utils/constants';
+import {fontFamily} from '../../utils/functions';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {ROUTES} from '../../navigation/Route';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+} from 'src/utils/dimensions';
+import {useSelector} from 'react-redux';
+import {RootState} from 'src/redux/slices';
 
 interface ListItemProps {
   item: {
@@ -27,22 +33,27 @@ interface ListItemProps {
   onPress: () => void;
 }
 
-const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
+const ProfileListItem: React.FC<ListItemProps> = ({item, onPress}) => {
   const navigation = useNavigation<NavigationProp>();
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-console.log("loginDataloginDataloginDataloginDataloginDataloginDataloginData",loginData)
+
   const redirectToProfileStack = (screenName: string, params = {}) => {
-    navigation.navigate("ProfileStack", {
+    navigation.navigate('ProfileStack', {
       screen: screenName,
-      params
+      params,
     });
-  }
+  };
 
   const handleItemClick = (item: any) => {
+    let screenName;
     switch (item.title) {
       case PROFILE.EDIT_PROFILE:
+        screenName =
+          loginData?.roles[0].roleName === 'host'
+            ? ROUTES.HostEditProfileScreen
+            : ROUTES.EditProfileScreen;
         console.log('Redirecting to Edit Profile...');
-        redirectToProfileStack(loginData?.roles[0].roleName==='host' ? ROUTES.HostEditProfileScreen: ROUTES.EditProfileScreen );
+        redirectToProfileStack(screenName);
         break;
 
       case PROFILE.FOLLOWING:
@@ -59,7 +70,11 @@ console.log("loginDataloginDataloginDataloginDataloginDataloginDataloginData",lo
 
       case PROFILE.CONNECTED_ACCOUNTS:
         console.log('Redirecting to Connected Accounts...');
-        redirectToProfileStack(ROUTES.ConnectedAccountsScreen);
+        screenName =
+          loginData?.roles[0].roleName !== 'host'
+            ? ROUTES.HostConnectedAccountsScreen
+            : ROUTES.ConnectedAccountsScreen;
+        redirectToProfileStack(screenName);
         break;
 
       case PROFILE.MY_INTERESTS:
@@ -68,7 +83,7 @@ console.log("loginDataloginDataloginDataloginDataloginDataloginDataloginData",lo
           headerTitle: 'My Interests',
           btnTitle: 'Update',
           subTitle: PROFILE.MY_INTERESTS_DESC,
-          fromProfile: true
+          fromProfile: true,
         });
         break;
 
@@ -93,9 +108,9 @@ console.log("loginDataloginDataloginDataloginDataloginDataloginDataloginData",lo
         onPress();
         break;
 
-        case PROFILE.APPLY_FOR_MEMBERSHIP:
-          navigation.navigate('AppFlowStack');
-          break;
+      case PROFILE.APPLY_FOR_MEMBERSHIP:
+        navigation.navigate('AppFlowStack');
+        break;
       default:
         console.log('Unknown item clicked');
         break;
@@ -107,11 +122,11 @@ console.log("loginDataloginDataloginDataloginDataloginDataloginDataloginData",lo
       <TouchableOpacity
         style={[styles.inputWrapper]}
         onPress={() => handleItemClick(item)}>
-        {item.image && <Image source={item.image} style={styles.icon} /> }
+        {item.image && <Image source={item.image} style={styles.icon} />}
         <Text
           style={[
             styles.input,
-            { color: item.image ? COLORS.black : COLORS.errorText },
+            {color: item.image ? COLORS.black : COLORS.errorText},
           ]}>
           {item.title}
         </Text>
@@ -124,39 +139,39 @@ console.log("loginDataloginDataloginDataloginDataloginDataloginDataloginData",lo
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    paddingHorizontal:horizontalMarginScale(10),
+    paddingHorizontal: horizontalMarginScale(10),
     backgroundColor: COLORS.white,
-    marginBottom:verticalMarginScale(5),
+    marginBottom: verticalMarginScale(5),
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    height:verticalMarginScale(55),
-    borderWidth:verticalScale(1),
+    height: verticalMarginScale(55),
+    borderWidth: verticalScale(1),
     flex: 1,
     borderColor: COLORS.borderGray,
-    borderRadius:radiusScale(10),
+    borderRadius: radiusScale(10),
     backgroundColor: COLORS.white,
-    paddingHorizontal:horizontalMarginScale(20),
+    paddingHorizontal: horizontalMarginScale(20),
   },
   errorInputWrapper: {
     borderColor: COLORS.borderRed,
     backgroundColor: COLORS.bgRed,
   },
   icon: {
-    marginRight:horizontalMarginScale(10),
-    width:horizontalMarginScale(20),
-    height:verticalMarginScale(20),
+    marginRight: horizontalMarginScale(10),
+    width: horizontalMarginScale(20),
+    height: verticalMarginScale(20),
   },
   input: {
     flex: 1,
-    fontSize:fontScale(14),
+    fontSize: fontScale(14),
     color: COLORS.black,
     fontFamily: fontFamily.ABCDiatype_Regular,
   },
   errorText: {
-    fontSize:fontScale(12),
-    marginTop:verticalMarginScale(5),
+    fontSize: fontScale(12),
+    marginTop: verticalMarginScale(5),
     color: COLORS.errorText,
   },
 });
