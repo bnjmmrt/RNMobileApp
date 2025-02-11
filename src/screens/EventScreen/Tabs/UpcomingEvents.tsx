@@ -9,9 +9,10 @@ import { Hp } from '../../../utils/dimensions';
 interface UpcomingEventsProps {
   userId: string;
   searchText: string;
+  tab: any;
 }
 
-const UpcomingEvents: React.FC<UpcomingEventsProps> = ({ userId, searchText }) => {
+const UpcomingEvents: React.FC<UpcomingEventsProps> = ({ userId, searchText, tab }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [events, setEvents] = useState<any[]>([]);
@@ -60,7 +61,7 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({ userId, searchText }) =
         />
       ) : (
         <View style={{ height: Hp(55), alignItems: 'center', justifyContent: 'center' }}>
-          <EventEmptyRecord title="No Events Here" subTitle="No upcoming events." isLoading={isLoading} />
+          <EventEmptyRecord title={tab.title} subTitle={tab.subTitle} isLoading={isLoading} />
         </View>
       )}
     </View>

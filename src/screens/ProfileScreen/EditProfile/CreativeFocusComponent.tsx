@@ -14,8 +14,9 @@ interface CreativeFocusComponentProps {
 const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,setIsToastShown,getSelectedData}) => {
 
   //update this when get data from API
+  // [{"id": "2b8101ae-0fb0-4804-af05-c90563e9e6a9", "name": "Actor"},{"id": "aca29d03-7272-4661-9af4-2e90be2aedab", "name": "Entertainment"}, {"id": "21874710-2027-4458-a346-afe67d486a2f", "name": "Hospitality"}]
   const selectedCreativeFocus = useSelector(
-    (state: RootState) => [{"id": "2b8101ae-0fb0-4804-af05-c90563e9e6a9", "name": "Actor"},{"id": "aca29d03-7272-4661-9af4-2e90be2aedab", "name": "Entertainment"}, {"id": "21874710-2027-4458-a346-afe67d486a2f", "name": "Hospitality"}],
+    (state: RootState) => state.appFlowApiData.profileData?.focuses, // need to update from api
   );
   const creativeFocus = useSelector(
     (state: RootState) => state.appFlowApiData.creativeFocus,

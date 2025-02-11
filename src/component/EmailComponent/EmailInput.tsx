@@ -1,13 +1,13 @@
-import React, {useState, forwardRef, useImperativeHandle} from 'react';
-import {View, Text, StyleSheet, TextInput, Alert} from 'react-native';
-import {Image} from 'react-native-animatable';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
+import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
-import {COLORS, LABLE} from '../../utils/constants';
-import {useNavigation} from '@react-navigation/native';
+import { COLORS, LABLE } from '../../utils/constants';
+import { useNavigation } from '@react-navigation/native';
 import { verticalScale } from 'src/utils/dimensions';
 
 const EmailInput = forwardRef((_, ref) => {
-  const [emailAddress, setEmailAddress] = useState('');
+  const [emailAddress, setEmailAddress] = useState('sayyedshahbaz.ali+5@techalchemy.com');
   const [errorMessage, setErrorMessage] = useState('');
   const [disabled, setDisabled] = useState(false);
   const navigation = useNavigation();
@@ -52,7 +52,7 @@ const EmailInput = forwardRef((_, ref) => {
         ]}>
         <Image source={IMAGES.email} style={styles.icon} />
         <TextInput
-          style={[styles.input, disabled && {color: COLORS.light_gray}]}
+          style={[styles.input, disabled && { color: COLORS.light_gray }]}
           placeholder="example@gmail.com"
           keyboardType="email-address"
           focusable={true} // Enable input focus
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    height:verticalScale(56),
+    height: verticalScale(56),
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 10,

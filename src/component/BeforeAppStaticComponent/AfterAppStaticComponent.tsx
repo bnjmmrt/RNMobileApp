@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, StatusBar, SafeAreaView } from 'react-native';
 import { Hp, Wp } from '../../utils/dimensions';
-import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
+import { BUTTON_LABLE, COLORS, eventData, LABLE } from '../../utils/constants';
 import Button from '../Button';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
 import { ScrollView } from 'react-native';
@@ -17,6 +17,7 @@ import { EndPoint } from 'src/ApiManager/config';
 import { setIsFirstTimeLoggedIn, setMemberProfileData } from 'src/redux/slices/appGlobalDataSlice';
 import { RootState } from 'src/redux/slices';
 import GradientOverlay from 'src/screens/BeforeApplicationFlow/GradientOverlay';
+import { ROUTES } from 'src/navigation/Route';
 
 
 const AfterAppStaticComponent: React.FC<{}> = () => {
@@ -25,6 +26,7 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
   const { navigate } = useNavigation();
   const dispatch = useDispatch();
   const { apiRequest, loading, error } = useApi();
+
 
   const bottomSheetRef = useRef(null);
 
@@ -52,6 +54,14 @@ const fetchCurrentUser = async () => {
     await requestContactPermission();
     navigate('InviteReferralScreen')
   }
+
+  const handlEventPress = () => {
+    navigate(ROUTES.EventStack, {
+      screen: ROUTES.EventDetailsScreen,
+      params: eventData
+    });
+  };
+
   const onEnterReferralClick = () => {
     bottomSheetRef?.current?.open();
   }
@@ -123,7 +133,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     flexDirection: 'column', alignItems: 'center',
-    paddingTop: 30
+    // paddingTop: 30
   },
   btnStyle: {
     width: Wp(85),

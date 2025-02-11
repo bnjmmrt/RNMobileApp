@@ -36,7 +36,7 @@ import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 import {verticalScale} from 'src/utils/dimensions';
 import {resetAppFlowDetails} from 'src/redux/slices/appFlowSlice';
 import {setProfileData} from 'src/redux/slices/appGlobalDataSlice';
-import { setNotificationSettings } from 'src/redux/slices/appSettingsSlice';
+import {setNotificationSettings} from 'src/redux/slices/appSettingsSlice';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
@@ -76,18 +76,18 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     }, []),
   );
 
-    const getUserSettings = async () => {
-      const response: any = await apiRequest(
-        'get',
-        EndPoint.user_settings + loginData?.id,
-      );
-      // console.log("getUserSettingAndDetails", response)
-      if (response.status === 200) {
-        //dependiing on API response parse data and set
-        // setUserDetails(response.data.userData);
-        dispatch(setNotificationSettings(response.data.notificationsSettings))
-      }
-    };
+  const getUserSettings = async () => {
+    const response: any = await apiRequest(
+      'get',
+      EndPoint.user_settings + loginData?.id,
+    );
+    // console.log("getUserSettingAndDetails", response)
+    if (response.status === 200) {
+      //dependiing on API response parse data and set
+      // setUserDetails(response.data.userData);
+      dispatch(setNotificationSettings(response.data.notificationsSettings));
+    }
+  };
 
   const getHostProfile = async () => {
     const response: any = await apiRequest(
@@ -124,7 +124,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         getMemberNonMemberProfile();
         break;
     }
-   getUserSettings()
+    getUserSettings();
   }, []);
 
   const setWebUrl = (url: string) => {
@@ -256,7 +256,16 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         // setIsToastShown(false);
         dispatch(
           // setProfilePic(environment.IMAGE_URL + response.data.fileKeyId),
-          dispatch(setProfileData({...user,imageUrl:environment.IMAGE_URL + response.data.fileKeyId}))
+          dispatch(
+            setProfileData({
+              ...user,
+              imageUrl:
+                environment.BASE_URL +
+                EndPoint.view_image +
+                response.data.fileKeyId,
+            }),
+          ),
+          // setProfilePic(EndPoint.create_user + response.data.fileKeyId),
         );
       } else {
         //display error
