@@ -1,8 +1,7 @@
 import React, {useRef, useState} from 'react';
-import {Platform, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Platform, StyleSheet, Text,View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useDispatch, useSelector} from 'react-redux';
-import {setPageProgress} from '../../../redux/slices/appFlowSlice';
+import { useSelector} from 'react-redux';
 import Header from '../../../component/Header/Header';
 import {
   BUTTON_LABLE,
@@ -47,7 +46,6 @@ const list: Tag[] = [
   // {id: 4, name: 'New Event Suggestions', value: 'new_event_suggestion'},
 ];
 const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
-  const dispatch = useDispatch();
   const navigation = useNavigation();
   const {apiRequest, loading, error} = useApi();
   const confirmationRef = useRef<any>(null);
@@ -56,8 +54,8 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   const [selectedData, getSelectedData] = useState<Tag[]>();
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const feedbackRef = useRef<any>(null);
+
   const handleBackPress = () => {
-    dispatch(setPageProgress(3));
     navigation.goBack();
   };
 
@@ -81,8 +79,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
       console.log('feedback response', response);
       if (response.status === 200) {
         confirmationRef.current.open();
-        feedbackRef.current.inputText = '';
-        getSelectedData([]);
+        //  clearData()
       }
     } else {
       setIsToastShown(true);
@@ -126,6 +123,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
         title={PROFILE.FEEDBACK_MESSAGE}
         subTitle={PROFILE.FEEDBACK_CONFIRMATION_MESSAGE}
         btnLabel={BUTTON_LABLE.CLOSE}
+        back={handleBackPress}
       />
 
       <Button
