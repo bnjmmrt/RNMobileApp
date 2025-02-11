@@ -3,7 +3,14 @@ import {View, Text, StyleSheet} from 'react-native';
 import {Image} from 'react-native-animatable';
 import {COLORS} from '../../utils/constants';
 import {fontFamily} from '../../utils/functions';
-import {Wp, Hp, verticalMarginScale, horizontalMarginScale, radiusScale, fontScale} from '../../utils/dimensions';
+import {
+  Wp,
+  Hp,
+  verticalMarginScale,
+  horizontalMarginScale,
+  radiusScale,
+  fontScale,
+} from '../../utils/dimensions';
 import IMAGES from '../../assets/images';
 import type {SeriesItem} from './EventsFeed';
 
@@ -34,7 +41,9 @@ const FeedSeries: React.FC<FeedSeriesProps> = ({item, setSeries}) => {
           }
           style={styles.image1}
         />
-        <Text style={styles.seriesLabel}>Series</Text>
+        <View style={styles.seriesLabel}>
+          <Text>Series</Text>
+        </View>
       </View>
       <View style={styles.contentContainer}>
         <Text numberOfLines={1} style={styles.title}>

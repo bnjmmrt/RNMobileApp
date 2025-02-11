@@ -1,9 +1,16 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {Wp, Hp, horizontalMarginScale, fontScale, verticalMarginScale} from '../../utils/dimensions';
+import {
+  Wp,
+  Hp,
+  horizontalMarginScale,
+  fontScale,
+  verticalMarginScale,
+} from '../../utils/dimensions';
 import {Image} from 'react-native-animatable';
 import IMAGES from '../../assets/images';
 import {COLORS} from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
 
 interface NoResultsProps {
   loading: boolean;
@@ -49,6 +56,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: fontScale(32),
     fontWeight: '700',
+    fontFamily: fontFamily.RomieTrial_Bold,
     marginTop: verticalMarginScale(5),
     color: COLORS.black,
   },

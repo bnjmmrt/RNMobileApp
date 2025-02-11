@@ -122,7 +122,6 @@ const styles = StyleSheet.create({
     fontSize: fontScale(24),
     color: COLORS.black,
     fontFamily: fontFamily.RomieTrial_Bold,
-    fontWeight: '700',
     lineHeight: 32,
     textAlign: 'center',
     paddingTop: verticalMarginScale(36),

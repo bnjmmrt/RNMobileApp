@@ -103,12 +103,12 @@ const EventsFeed = () => {
   const handleClear = useCallback(() => {
     setSearchEnter(true);
     setEvents(allEvents);
-  }, [allEvents]);
+  }, []);
 
   const handleFilter = useCallback(() => {
     if (allowAccess) setFilterVisible(true);
     else setAllowAccessModal(true);
-  }, [allowAccess]);
+  }, []);
 
   const handleNotify = useCallback(() => {
     setResponseSubmitted(true);
@@ -118,16 +118,16 @@ const EventsFeed = () => {
   }, []);
 
   const handleLoadMore = useCallback(() => {
-    setPagination(prev => ({...prev, skip: prev.skip + prev.take}));
-  }, [setPagination]);
+    if (pagination.skip < allEvents.length) {
+      setPagination(prev => ({...prev, skip: prev.skip + prev.take}));
+    }
+  }, [allEvents]);
 
   useEffect(() => {
+    console.log('~~pagination~~', pagination);
     setEvents(prev => [
       ...prev,
-      ...allEvents.slice(
-        pagination.skip,
-        pagination.skip + pagination.take,
-      ),
+      ...allEvents.slice(pagination.skip, pagination.skip + pagination.take),
     ]);
   }, [pagination.skip]);
 
@@ -135,7 +135,11 @@ const EventsFeed = () => {
     const fetchEvents = async () => {
       try {
         const res: any = await apiGet(
-          `/events/users/${loginData.id}/events?longitude=${filter.location.longitude}&latitude=${filter.location.latitude}&eventTypeName=${filter.categories.join(',')}`,
+          `/events/users/${loginData.id}/events?longitude=${
+            filter.location.longitude
+          }&latitude=${
+            filter.location.latitude
+          }&eventTypeName=${filter.categories.join(',')}`,
         );
 
         const eventsRes = res.data.map((item: any) => ({
@@ -181,7 +185,7 @@ const EventsFeed = () => {
     };
 
     fetchEvents();
-  }, [loginData.id, filter]);
+  }, [filter]);
 
   useEffect(() => {
     const formatAllowAccess = async () => {
@@ -261,53 +265,44 @@ const EventsFeed = () => {
               ))}
             </ScrollView>
           )}
-          <ScrollView>
+          <View style={{height: 2000}}>
             {events.length === 0 ? (
               <NoResults loading={loading} />
             ) : (
-              <>
-                {searchEnter && featuredEvents.length > 0 && (
-                  <View style={styles.featuredContainer}>
-                    <Text style={styles.title}>Featured Events</Text>
-                    <ScrollView horizontal style={styles.scrollView}>
-                      {featuredEvents.map((event, index) => (
-                        <FeedItem
-                          key={event.id} // Changed to use a unique ID
-                          item={event}
-                          setDetail={setDetail}
-                          isFeatured
-                        />
-                      ))}
-                    </ScrollView>
-                  </View>
-                )}
-                <View style={styles.eventContainer}>
-                  <FlatList
-                    data={events}
-                    renderItem={({item}) =>
-                      item.events && searchEnter ? (
-                        <FeedSeries
-                          key={item.title}
-                          setSeries={setSeriesDetail}
-                          item={item}
-                        />
-                      ) : (
-                        <FeedItem
-                          key={item.id}
-                          setDetail={setDetail}
-                          item={item}
-                        />
-                      )
-                    }
-                    numColumns={2}
-                    keyExtractor={(_item, index) => index.toString()}
-                    onEndReached={handleLoadMore}
-                    onEndReachedThreshold={5}
-                  />
-                </View>
-              </>
+              <FlatList
+                data={events}
+                ListHeaderComponent={
+                  searchEnter && featuredEvents.length > 0 ? (
+                    <View style={styles.featuredContainer}>
+                      <Text style={styles.title}>Featured Events</Text>
+                      <ScrollView horizontal style={styles.scrollView}>
+                        {featuredEvents.map((event, index) => (
+                          <FeedItem
+                            key={event.id} // Changed to use a unique ID
+                            item={event}
+                            setDetail={setDetail}
+                            isFeatured
+                          />
+                        ))}
+                      </ScrollView>
+                    </View>
+                  ) : null
+                }
+                renderItem={({item}) =>
+                  item.events && searchEnter ? (
+                    <FeedSeries setSeries={setSeriesDetail} item={item} />
+                  ) : (
+                    <FeedItem setDetail={setDetail} item={item} />
+                  )
+                }
+                numColumns={2}
+                keyExtractor={(_item, index) => index.toString()}
+                onEndReached={handleLoadMore}
+                onEndReachedThreshold={0.5}
+                style={styles.flatList}
+              />
             )}
-          </ScrollView>
+          </View>
         </View>
       )}
 
@@ -366,15 +361,18 @@ const styles = StyleSheet.create({
   },
   filterScrollView: {
     marginHorizontal: horizontalMarginScale(16),
-    height: verticalScale(64),
+    // height: verticalScale(64),
+  },
+  flatList: {
+    paddingBottom: verticalMarginScale(900),
   },
   scrollView: {
     height: Hp(41),
   },
   container: {
     flex: 1,
-    alignItems: 'center',
     backgroundColor: COLORS.white,
+    // paddingBottom: verticalMarginScale(80),
   },
   contentContainer: {
     flex: 1,
@@ -382,8 +380,6 @@ const styles = StyleSheet.create({
   },
   eventContainer: {
     marginLeft: horizontalMarginScale(10),
-    flexDirection: 'row',
-    flexWrap: 'wrap',
   },
   btnStyle: {
     width: Wp(85),

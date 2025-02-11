@@ -93,16 +93,16 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
 
             <View style={styles.list}>
               {feedList.map(feed => (
-                <Text
+                <View
                   style={
                     feedFilters.includes(feed)
                       ? styles.selectedItem
                       : styles.item
                   }
                   key={feed}
-                  onPress={() => handleToggle(feed)}>
-                  {feed}
-                </Text>
+                  onTouchEnd={() => handleToggle(feed)}>
+                  <Text style={{color: feedFilters.includes(feed) ? COLORS.white : COLORS.black }}>{feed}</Text>
+                </View>
               ))}
             </View>
 

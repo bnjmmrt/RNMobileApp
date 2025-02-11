@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontScale(18),
-    fontFamily: fontFamily.ABCDiatype_Medium,
+    fontFamily: fontFamily.RomieTrial_Bold,
     color: COLORS.black,
     marginTop: verticalScale(16),
     marginBottom: verticalScale(4),
