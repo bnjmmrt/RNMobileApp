@@ -22,18 +22,21 @@ import {BUTTON_LABLE} from '../../utils/constants';
 interface LocationPickerModalProps {
   setLocation: (location: Address) => void;
   setIsShown: (ishown: boolean) => void;
+  handleSubmit?: (ishown: boolean) => void;
   submitVisible?: boolean;
 }
 
 const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
   setLocation,
   setIsShown,
+  handleSubmit,
   submitVisible,
 }) => {
   const [modalVisible, setModalVisible] = useState(true);
 
   const submit = () => {
     // setModalVisible(false);
+    handleSubmit?.(true);
     setIsShown(false);
   };
 

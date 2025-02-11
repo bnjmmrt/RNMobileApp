@@ -1,5 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {Modal, View, StyleSheet, Text, ScrollView, Image} from 'react-native';
+import {
+  Modal,
+  View,
+  StyleSheet,
+  Text,
+  ScrollView,
+  Image,
+  Platform,
+} from 'react-native';
 import {BUTTON_LABLE, COLORS, feedList} from '../../utils/constants';
 import {
   fontScale,
@@ -101,7 +109,14 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
                   }
                   key={feed}
                   onTouchEnd={() => handleToggle(feed)}>
-                  <Text style={{color: feedFilters.includes(feed) ? COLORS.white : COLORS.black }}>{feed}</Text>
+                  <Text
+                    style={{
+                      color: feedFilters.includes(feed)
+                        ? COLORS.white
+                        : COLORS.black,
+                    }}>
+                    {feed}
+                  </Text>
                 </View>
               ))}
             </View>
@@ -110,7 +125,10 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
               <Text style={styles.label}>Location</Text>
               <View
                 style={styles.container}
-                onTouchEnd={() => setLocationVisible(true)}>
+                onTouchEnd={() => {
+                  setLocationVisible(true);
+                  if (Platform.OS === 'ios') setFilterVisible(false);
+                }}>
                 <View style={[styles.inputWrapper]}>
                   <Image source={IMAGES.search} style={styles.icon} />
                   <Text>Currect Location ({filter.location.address})</Text>

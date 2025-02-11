@@ -135,9 +135,11 @@ const EventsFeed = () => {
     const fetchEvents = async () => {
       try {
         const res: any = await apiGet(
-          `/events/users/${loginData.id}/events?longitude=${
-            filter.location.longitude
-          }&latitude=${
+          `/events/users/${loginData.id}/events?minStartDate=${
+            filter.date[0] ? dayjs(filter.date[0]).format('YYYY-MM-DD') : ''
+          }&maxEndDate=${
+            filter.date[1] ? dayjs(filter.date[1]).format('YYYY-MM-DD') : ''
+          }&longitude=${filter.location.longitude}&latitude=${
             filter.location.latitude
           }&eventTypeName=${filter.categories.join(',')}`,
         );
@@ -335,6 +337,7 @@ const EventsFeed = () => {
       {locationVisible && (
         <LocationPickerModal
           setLocation={value => setFilter(prev => ({...prev, location: value}))}
+          handleSubmit={setFilterVisible}
           setIsShown={setLocationVisible}
           submitVisible
         />

@@ -48,8 +48,8 @@ const AppContent: React.FC = () => {
   if (!isConnected && isConnected !== null) {
     return <NoInternetScreen />;
   }
-  return <MainNavigation />;
-  // return <EventsFeed />;
+  // return <MainNavigation />;
+  return <EventsFeed />;
 };
 
 const App: React.FC = () => {
