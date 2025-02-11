@@ -4,6 +4,7 @@ import {COLORS} from '../../../utils/constants';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../redux/slices';
 import {fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, Wp} from '../../../utils/dimensions';
+import { setCreativeFocus } from 'src/redux/slices/appGlobalDataSlice';
 
 interface CreativeFocusComponentProps {
   list?:any[];
@@ -15,7 +16,7 @@ const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,set
   const dispatch = useDispatch();
 
   const selectedCreativeFocus = useSelector(
-    (state: RootState) => state.appFlowApiData.memberProfileData.focuses,
+    (state: RootState) => [{"id": "2b8101ae-0fb0-4804-af05-c90563e9e6a9", "name": "Actor"},{"id": "aca29d03-7272-4661-9af4-2e90be2aedab", "name": "Entertainment"}, {"id": "21874710-2027-4458-a346-afe67d486a2f", "name": "Hospitality"}],
   );
   const creativeFocus = useSelector(
     (state: RootState) => state.appFlowApiData.creativeFocus,
@@ -75,14 +76,14 @@ const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,set
             key={item.id}
             style={[
               styles.categoryButton,
-              selectedCategories.some(selected => selected.id === item.id) &&
+              selectedCategories?.some(selected => selected.id === item.id) &&
                 styles.selectedCategoryButton,
             ]}
             onPress={() => handleCategorySelect(item)}>
             <Text
               style={[
                 styles.categoryText,
-                selectedCategories.some(selected => selected.id === item.id) &&
+                selectedCategories?.some(selected => selected.id === item.id) &&
                   styles.selectedCategoryText,
               ]}>
               {item.name}

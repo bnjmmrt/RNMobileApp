@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, {useEffect, useRef, useState} from 'react';
+import {Platform, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   LABLE,
   BUTTON_LABLE,
@@ -13,11 +12,17 @@ import Button from '../../../component/Button';
 import Input from '../../../component/Input/Input';
 import Header from '../../../component/Header/Header';
 // import {useGetPostsQuery} from '../../../redux/slices/apiSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../redux/slices';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../redux/slices';
 import useApi from '../../../axios/useApi';
-import { EndPoint } from '../../../ApiManager/config';
-import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, Wp } from '../../../utils/dimensions';
+import {EndPoint} from '../../../ApiManager/config';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+  Wp,
+} from '../../../utils/dimensions';
 import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
 import EmailInput from '../../../component/EmailComponent/EmailInput';
 import DatePickerComponent from './DatePickerComponent';
@@ -25,56 +30,67 @@ import BaseCityComponent from './BaseCityComponent';
 import CreativeFocusComponent from './CreativeFocusComponent';
 import GenderComponent from './GenderComponent';
 import Toast from 'src/component/Toast/Toast';
-import { setNotificationSettings } from '../../../redux/slices/appSettingsSlice';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
-interface EditProfileScreenProps extends NativeStackScreenProps<any, any> { }
+interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
-const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => {
-  const { apiRequest, loading, error } = useApi();
+const genderList = [
+  {id: 0, gender: 'Male'},
+  {id: 1, gender: 'Female'},
+  {id: 2, gender: 'Non-binary'},
+  {id: 3, gender: 'Prefer not to say'},
+];
+const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
+  const {apiRequest, loading, error} = useApi();
   const dispatch = useDispatch();
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const memberProfileData = useSelector((state: RootState) => state.appFlowApiData.memberProfileData);
-  
+  const profileData = useSelector(
+    (state: RootState) => state.appFlowApiData?.profileData,
+  );
+
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
   const baseCityRef = useRef<any>(null);
   const birthDayRef = useRef<any>(null);
-  const [gender, selectedGender] = useState(memberProfileData.gender);
+
+  const getGenderId = (item: any) => {
+    switch (item) {
+      case 'MALE':
+        return 0;
+      case 'FEMALE':
+        return 1;
+      case 'NON-BINARY':
+        return 2;
+      default:
+        return 3;
+    }
+  };
+  const [genderId, setGender] = useState(getGenderId(profileData?.gender));
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>(memberProfileData?.dateOfBirth);
+  const [selectedDate, setSelectedDate] = useState<string>(
+    profileData?.dateOfBirth,
+  );
   const [isToastShown, setIsToastShown] = useState(false);
   const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>();
 
-  const getUserSettingAndDetails = async () => {
-    const response: any = await apiRequest(
-      'get',
-      EndPoint.user_settings + loginData?.id,
-    );
-    console.log("getUserSettingAndDetails", response)
-    if (response.status === 200) {
-      //dependiing on API response parse data and set
-      // setUserDetails(response.data.userData);
-      dispatch(setNotificationSettings(response.data.notificationsSettings))
-    }
-  };
   useEffect(() => {
     if (loginData?.isSignUpCompleted) {
       phoneNumberInputRef?.current.setDisabled(true);
-      phoneNumberInputRef?.current.setPhoneNumber(memberProfileData.phoneNumber);
+      phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
       // phoneNumberInputRef?.current.setCallingCode(
       //   memberProfileData.countryCallingCode,
       // );
-     // phoneNumberInputRef?.current.setFlag(userDetails.countryCodeFlag || '🇺🇸');
+      // phoneNumberInputRef?.current.setFlag(userDetails.countryCodeFlag || '🇺🇸');
       emailInputRef?.current.setDisabled(true);
-      emailInputRef?.current.setEmailAddress(memberProfileData.email);
+      emailInputRef?.current.setEmailAddress(profileData?.email);
     }
 
     if (loginData?.varifyStatus === 2) {
       phoneNumberInputRef?.current.setDisabled(true);
-      phoneNumberInputRef?.current.setPhoneNumber(memberProfileData.phoneNumber);
+      phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
       // phoneNumberInputRef?.current.setCallingCode(
       //   memberProfileData.countryCallingCode,
       // );
@@ -83,7 +99,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
 
     if (loginData?.varifyStatus === 1) {
       emailInputRef?.current.setDisabled(true);
-      emailInputRef?.current.setEmailAddress(memberProfileData.email);
+      emailInputRef?.current.setEmailAddress(profileData?.email);
     }
 
     // getUserSettingAndDetails();
@@ -99,11 +115,11 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
     ) {
       const fileUploadResponse: any = await apiRequest(
         'put',
-        EndPoint.user_profile_picture + loginData?.userId,
-        { profilePicture: memberProfileData.imageUrl },
+        EndPoint.user_profile_picture + loginData?.id,
+        {profilePicture: profileData?.imageUrl},
       );
-      console.log('fileUploadResponse,fileUploadResponse');
-      if (fileUploadResponse.data) {
+      console.log('fileUploadResponse,fileUploadResponse',fileUploadResponse);
+      if (fileUploadResponse.status===200) {
         const requestObject: any = {
           address: {
             address: baseCityRef.current.selectedCity.address,
@@ -113,26 +129,27 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
             placeId: baseCityRef.current.selectedCity.placeId,
             regionCode: '',
           },
-          birthDate:birthDayRef.current.selectedDate,
-          email: memberProfileData.email,
+          birthDate: birthDayRef.current.selectedDate,
+          email: profileData?.email,
           firstName: firstNameRef.current.inputText,
-          gender: gender,
+          gender: genderId,
           lastName: lastNameRef.current.inputText,
-          mobilePhone: memberProfileData.phoneNumber,
-          creativeFocus: selectedCreativeFocus
-            ? selectedCreativeFocus.map((item: any) => item.id)
-            : memberProfileData.creativeFocus.map((item: any) => item.id),
+          mobilePhone: profileData?.phoneNumber,
+          // creativeFocus: selectedCreativeFocus
+          //   ? selectedCreativeFocus.map((item: any) => item.id)
+          //   : profileData?.creativeFocus.map((item: any) => item.id),
         };
         console.log('requestObject', requestObject);
 
         const response: any = await apiRequest(
           'put',
-          EndPoint.user_profile + loginData?.userId,
+          EndPoint.user_profile + loginData?.id,
           requestObject,
         );
         console.log('response,response');
-        if (response.data) {
+        if (response.status===200) {
           //display success
+          FlashMessageComponent.show('success',"Profile Updated Successfully");
         }
       }
     }
@@ -156,13 +173,13 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
             ref={firstNameRef}
             label={LABLE.FIRST_NAME}
             errorMessage={ERROR_MESSAGE.FIRST_NAME}
-            defaultValue={memberProfileData.firstName}
+            defaultValue={profileData?.firstName}
           />
           <Input
             ref={lastNameRef}
             label={LABLE.LAST_NAME}
             errorMessage={ERROR_MESSAGE.LAST_NAME}
-            defaultValue={memberProfileData.lastName}
+            defaultValue={profileData?.lastName}
           />
           {loginData?.isSignUpCompleted ? (
             <>
@@ -190,7 +207,11 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
           {!loginData?.isSignUpCompleted && (
             <View>
               <Text style={[styles.label]}>{LABLE.GENDER}</Text>
-              <GenderComponent selectedGender={selectedGender} />
+              <GenderComponent
+                setGender={setGender}
+                selectedGender={genderId}
+                list={genderList}
+              />
 
               <Text style={[styles.label]}>{LABLE.BIRTHDAY}</Text>
               <DatePickerComponent ref={birthDayRef} birthDate={selectedDate} />
@@ -198,7 +219,17 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
               <BaseCityComponent ref={baseCityRef} />
 
-              <Text style={[styles.label,{marginTop:!baseCityRef.current?.validateBaseCity() ? verticalMarginScale(24):0}]}>{LABLE.CREATIVE_FOCUS}</Text>
+              <Text
+                style={[
+                  styles.label,
+                  {
+                    marginTop: !baseCityRef.current?.validateBaseCity()
+                      ? verticalMarginScale(24)
+                      : 0,
+                  },
+                ]}>
+                {LABLE.CREATIVE_FOCUS}
+              </Text>
               <CreativeFocusComponent
                 setIsToastShown={setIsToastShown}
                 getSelectedData={getSelectedCreativeFocus}
@@ -212,7 +243,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
             onClose={() => setIsToastShown(false)}
           />
         )}
-
       </ScrollView>
       <Button
         disabled={false}
@@ -220,6 +250,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
         title={BUTTON_LABLE.CONFIRM}
         colorTheme="dark"
         onPress={onConfirmClick}
+        loading={loading}
       />
     </View>
   );
@@ -232,26 +263,22 @@ const styles = StyleSheet.create({
     // paddingBottom: 20
   },
   btnStyle: {
-    // width: Wp(85),
-    // height: 50,
-    marginTop: verticalMarginScale(20),
-    marginBottom: verticalMarginScale(20),
     borderRadius: radiusScale(100),
-    bottom: Platform.OS === 'android' ? verticalMarginScale(20) : 0
+    bottom: verticalMarginScale(20),
   },
   contentContainer: {
     flex: 1,
     paddingVertical: verticalMarginScale(10),
     paddingHorizontal: horizontalMarginScale(20),
   },
-  scrollContainer: { paddingBottom: verticalMarginScale(200) },
+  scrollContainer: {paddingBottom: verticalMarginScale(200)},
   label: {
     paddingVertical: horizontalMarginScale(2),
     fontSize: fontScale(14),
     paddingTop: verticalMarginScale(20),
-    color:COLORS.black,
-    fontWeight:'500',
-    lineHeight:16
+    color: COLORS.black,
+    fontWeight: '500',
+    lineHeight: 16,
   },
 });
 
