@@ -5,8 +5,10 @@ import WelcomeScreenStyles from './WelcomeScreenStyles';
 import { COLORS, BUTTON_LABLE, LABLE } from '../../../utils/constants';
 import IMAGES from '../../../assets/images';
 import Button from '../../../component/Button';
+import { useNavigation } from '@react-navigation/native';
 
-const WelcomePage:React.FC<{navigation: any}> = ({ navigation }) => {
+const WelcomePage = () => {
+  const navigation = useNavigation()
   const styles = WelcomeScreenStyles();
   const userName = 'Zohan Khan';
   const openCommunityGuidelines = () => {

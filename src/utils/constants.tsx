@@ -164,11 +164,11 @@ export const LABLE = {
   DUMMY_TEXT:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent bland',
   PHONE_NUMBER: 'Phone Number',
-  WEBSITE:'Website',
-  COMPANY_NAME:'Company Name',
-  BIO:'Bio',
-  COMPANY_DESCRIPTION:'Description of Company',
-  ENTER_FEEDBACK:'Enter Feedback'
+  WEBSITE: 'Website',
+  COMPANY_NAME: 'Company Name',
+  BIO: 'Bio',
+  COMPANY_DESCRIPTION: 'Description of Company',
+  ENTER_FEEDBACK: 'Enter Feedback',
 };
 
 export const PROFILE = {
@@ -211,8 +211,8 @@ export const PROFILE = {
     'Review referral requests from friends who want to join Rumor. Your decision will remain private.',
   REVIEW_VOUCH_REQUESTS:
     'Approve or decline requests from members seeking your vouch to join an experience. Your decision is private.',
-    COMPANY_NAME: 'Company Name',
-    APPLY_FOR_MEMBERSHIP: 'Apply for MemberShip',
+  COMPANY_NAME: 'Company Name',
+  APPLY_FOR_MEMBERSHIP: 'Apply for MemberShip',
 };
 
 export const ERROR_MESSAGE = {
@@ -320,6 +320,11 @@ export const memberTabData: TabItem[] = [
   },
 ];
 
+export const ROLE = {
+  MEMBER: 'member',
+  NON_MEMBER: 'non-member',
+  HOST: 'host',
+}
 export const hostTabData: TabItem[] = [
   {
     id: '1',

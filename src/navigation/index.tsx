@@ -19,7 +19,7 @@ const MainNavigation: React.FC = () => {
     role === 'non_member'
       ? isRedirectToBeforeAppStaticScreen
         ? 'BottomTabBar'
-        : 'BeforeAppStaticScreen'
+        : 'BottomTabBar'
       : 'BottomTabBar';
 
   return (

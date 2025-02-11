@@ -35,7 +35,7 @@ import Toast from 'src/component/Toast/Toast';
 import SocialMediaInput from 'src/component/Input/SocialMediaInput';
 import IMAGES from '@images/index';
 import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import { setHostProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
 
 interface HostConnectedAccountsScreenProps
   extends NativeStackScreenProps<any, any> {}
@@ -47,7 +47,7 @@ const HostConnectedAccountsScreen: React.FC<
   const dispatch = useDispatch();
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const hostProfileData = useSelector(
-    (state: RootState) => state.appFlowApiData.hostProfileData,
+    (state: RootState) => state.appFlowApiData.profileData,
   );
   const instagramRef = useRef<any>(null);
   const tiktokRef = useRef<any>(null);
@@ -57,7 +57,7 @@ const HostConnectedAccountsScreen: React.FC<
   const youtubeRef = useRef<any>(null);
 
   const [isToastShown, setIsToastShown] = useState(false);
-console.log("hostProfileDatahostProfileDatahostProfileData",hostProfileData?.socialMedia)
+
 useEffect(()=>{
   
 },[])
@@ -94,7 +94,7 @@ useEffect(()=>{
     if (response.status === 200) {
       FlashMessageComponent.show('success', 'Profile updated successfully');
       //navigate if required
-      dispatch(setHostProfileData(response?.data))
+      dispatch(setProfileData(response?.data))
     }
   };
 

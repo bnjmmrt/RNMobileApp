@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, { useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {COLORS} from '../../../utils/constants';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/slices';
 import {fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, Wp} from '../../../utils/dimensions';
 
@@ -12,10 +12,11 @@ interface CreativeFocusComponentProps {
 }
 
 const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,setIsToastShown,getSelectedData}) => {
-  const dispatch = useDispatch();
 
+  //update this when get data from API
+  // [{"id": "2b8101ae-0fb0-4804-af05-c90563e9e6a9", "name": "Actor"},{"id": "aca29d03-7272-4661-9af4-2e90be2aedab", "name": "Entertainment"}, {"id": "21874710-2027-4458-a346-afe67d486a2f", "name": "Hospitality"}]
   const selectedCreativeFocus = useSelector(
-    (state: RootState) => state.appFlow.creativeFocus,
+    (state: RootState) => state.appFlowApiData.profileData?.focuses, // need to update from api
   );
   const creativeFocus = useSelector(
     (state: RootState) => state.appFlowApiData.creativeFocus,
@@ -26,7 +27,6 @@ const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,set
   );
 
   const [itemList,_setItemLiist]=useState(list ? list : creativeFocus)
-
 
   const getFilteredData=(list:any[],categoryId:string)=>{
     return list.filter((item: any) => item.id !== categoryId)
@@ -75,14 +75,14 @@ const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,set
             key={item.id}
             style={[
               styles.categoryButton,
-              selectedCategories.some(selected => selected.id === item.id) &&
+              selectedCategories?.some(selected => selected.id === item.id) &&
                 styles.selectedCategoryButton,
             ]}
             onPress={() => handleCategorySelect(item)}>
             <Text
               style={[
                 styles.categoryText,
-                selectedCategories.some(selected => selected.id === item.id) &&
+                selectedCategories?.some(selected => selected.id === item.id) &&
                   styles.selectedCategoryText,
               ]}>
               {item.name}

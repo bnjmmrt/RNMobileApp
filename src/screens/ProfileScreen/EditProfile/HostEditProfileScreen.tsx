@@ -34,10 +34,8 @@ import {
 } from '../../../utils/dimensions';
 import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
 import EmailInput from '../../../component/EmailComponent/EmailInput';
-import Toast from 'src/component/Toast/Toast';
-import {setNotificationSettings} from '../../../redux/slices/appSettingsSlice';
-import {setHostProfileData} from 'src/redux/slices/appGlobalDataSlice';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
 
 interface HostEditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -102,13 +100,14 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
         },
         website: websiteRef?.current.inputText,
       };
-console.log("requestobj",requestObject)
+    console.log("requestobj",requestObject)
       const response: any = await apiRequest(
         'put',
         `v1/auth/host/${loginData?.id}/profile`,
         requestObject,
       );
       if (response.status===200) {
+        setProfileData(response.data)
         FlashMessageComponent.show('success',"Profile updated successfully")
         //navigate if required
       }

@@ -16,6 +16,7 @@ import {
   SafeAreaViewConfig,
 } from 'src/redux/slices/safeAreaViewConfigSlice';
 import store from 'src/redux/store';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 // ErrorText component with TypeScript props
 interface ErrorTextProps {
@@ -407,4 +408,30 @@ export const validateAge = (selectedDate: string) => {
   eighteenYearsAgo.setFullYear(today.getFullYear() - 18);
 
   return selectedDateObj > eighteenYearsAgo;
+};
+
+export const extractCountryCode = (phoneNumber: string) => {
+  const phone = parsePhoneNumberFromString(phoneNumber);
+
+  if (!phone) return null;
+
+  const countryCode = phone.country; 
+  const flag = getCountryFlag(countryCode);
+
+  return {
+    country: countryCode,
+    countryCallingCode: phone.countryCallingCode,
+    flag: flag
+  };
+};
+
+
+const getCountryFlag = (countryCode: string) => {
+  return countryCode
+    ? countryCode
+        .toUpperCase()
+        .split('')
+        .map((char) => String.fromCodePoint(127397 + char.charCodeAt(0)))
+        .join('')
+    : '';
 };

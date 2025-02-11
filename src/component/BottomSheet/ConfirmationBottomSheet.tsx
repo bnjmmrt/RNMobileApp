@@ -13,11 +13,13 @@ interface ConfirmationBottomSheetProps {
   title: string;
   subTitle: string;
   btnLabel: string;
+  back?:() => void;
 }
 const ConfirmationBottomSheet = forwardRef(
   (props: ConfirmationBottomSheetProps, ref) => {
  
     const close = () => {
+      props.back && props?.back()
       ref.current.close();
     };
     return (

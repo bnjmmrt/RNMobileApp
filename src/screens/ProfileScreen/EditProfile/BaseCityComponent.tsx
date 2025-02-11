@@ -20,8 +20,9 @@ interface BaseCityComponentProps {}
 
 const BaseCityComponent =forwardRef((props, ref) => {
   const dispatch = useDispatch();
-  const baseCity = useSelector((state: RootState) => state.appFlow.baseCity);
-  const [selectedCity, setSelectedCity] = useState<Address>(baseCity);
+  const address = useSelector((state: RootState) => state.appFlowApiData.profileData?.address);
+  //need to get from store when response updated in api
+  const [selectedCity, setSelectedCity] = useState<Address>({"placeId": "ChIJkbeSa_BfYzARphNChaFPjNc",address:'India'});
 
   const [isShown, setIsShown] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -34,7 +35,7 @@ const BaseCityComponent =forwardRef((props, ref) => {
 
   // Validate inputs
   const validateBaseCity = () => {
-    if (!selectedCity.address) {
+    if (!selectedCity?.address) {
       setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_YOUR_BASE_CITY);
       return false;
     }
@@ -55,7 +56,7 @@ const BaseCityComponent =forwardRef((props, ref) => {
             placeholder={LABLE.SEARCH_FOR_A_LOCATION}
             leftImage={IMAGES.search}
             errorMessage={errorMessage}
-            defaultValue={selectedCity.address}
+            defaultValue={selectedCity?.address}
             onPress={openLocationPicker}
             style={styles.container}
           />

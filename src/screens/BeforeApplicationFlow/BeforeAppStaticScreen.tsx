@@ -2,7 +2,7 @@ import { CommonActions, useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { resetLoginData } from 'src/redux/slices/authSlice';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
@@ -16,6 +16,8 @@ import {
 } from '../../utils/dimensions';
 import useApi from 'src/axios/useApi';
 import { EndPoint } from 'src/ApiManager/config';
+import { setIsFirstTimeLoggedIn, setMemberProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import { RootState } from 'src/redux/slices';
 
 interface BeforeAppStaticScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -23,22 +25,11 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
   navigation,
 }) => {
   const dispatch = useDispatch();
-  const { apiRequest, loading, error } = useApi();
 
   useEffect(() => {
-    // fetchCurrentUser();
     changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.BLACK_SCHEME);
 
   }, []);
-
-  const fetchCurrentUser = async () => {
-    //token is reqired to run this API 
-    const response: any = await apiRequest('get', EndPoint.current_user);
-    console.log('fetchCurrentUser', response);
-    if (response.status === 200) {
-      //set User details in redux
-    }
-  };
 
   useFocusEffect(
     useCallback(() => {
