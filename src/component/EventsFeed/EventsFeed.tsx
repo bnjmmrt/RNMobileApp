@@ -280,7 +280,7 @@ const EventsFeed = () => {
                       <ScrollView horizontal style={styles.scrollView}>
                         {featuredEvents.map((event, index) => (
                           <FeedItem
-                            key={event.id} // Changed to use a unique ID
+                            key={event.id}
                             item={event}
                             setDetail={setDetail}
                             isFeatured
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
   },
   filterScrollView: {
     marginHorizontal: horizontalMarginScale(16),
-    // height: verticalScale(64),
+    height: verticalScale(48),
   },
   flatList: {
     paddingBottom: verticalMarginScale(900),
