@@ -1,10 +1,10 @@
 import IMAGES from '@images/index';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { FlatList, View } from 'react-native';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import SearchInput from 'src/component/SearchInput';
-import {AppStackParamList} from 'src/navigation/AppStack';
+import { AppStackParamList } from 'src/navigation/AppStack';
 import {
   horizontalMarginScale,
   Hp,
@@ -12,13 +12,13 @@ import {
 } from 'src/utils/dimensions';
 import UserListItem from '../UsersListItem';
 import createStyle from './style';
-import {useFetchAllUsersQuery} from 'src/redux/actions/usersApiAction';
-import {shallowEqual, useSelector} from 'react-redux';
-import {RootState} from 'src/redux/slices';
+import { useFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
+import { shallowEqual, useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
 
-interface AllUserProps {}
+interface AllUserProps { }
 
-const AllUsers: React.FC<AllUserProps> = ({}) => {
+const AllUsers: React.FC<AllUserProps> = ({ }) => {
   const styles = createStyle();
   const navigation = useNavigation<NavigationProp<AppStackParamList>>();
   const searchInputRef = useRef<any>(null);
@@ -28,7 +28,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const {data, isLoading} = useFetchAllUsersQuery({
+  const { data, isLoading } = useFetchAllUsersQuery({
     take: 10,
     skip: (currentPage - 1) * 10,
     searchValue: searchText,
@@ -63,7 +63,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   };
 
   const renderItem = useCallback(
-    ({item}: {item: number}) => {
+    ({ item }: { item: number }) => {
       const isSelected = selectedUsers.includes(item);
       return (
         <UserListItem
@@ -80,22 +80,22 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
     <View
       style={{
         marginTop: verticalMarginScale(8),
-        marginHorizontal: horizontalMarginScale(20),
       }}>
       <SearchInput
         ref={searchInputRef}
         onSearchTextChange={handleSearchTextChange}
         placeholder="Search..."
         rightIcon={IMAGES.filter_lines}
-        onPressRightIcon={() => {}}
+        onPressRightIcon={() => { }}
         rightIconText=""
       />
 
       <FlatList
         data={allUsers?.users || []}
+        style={{ marginHorizontal: horizontalMarginScale(20), marginTop: verticalMarginScale(10) }}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{gap: verticalMarginScale(16)}}
+        contentContainerStyle={{ gap: verticalMarginScale(16) }}
         ListHeaderComponent={<View />}
         ListFooterComponent={<View />}
         ListEmptyComponent={
@@ -108,6 +108,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
             <EventEmptyRecord
               title="No Users"
               subTitle="Please refine your search"
+              isLoading
             />
           </View>
         }

@@ -1,19 +1,19 @@
 import IMAGES from '@images/index';
 import React from 'react';
-import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
-import {shallowEqual, useSelector} from 'react-redux';
+import { Image, ScrollView, TouchableOpacity, View } from 'react-native';
+import { shallowEqual, useSelector } from 'react-redux';
 import AvatarInitials from 'src/component/AvatarInitials';
 import Button from 'src/component/Button';
-import {CustomText} from 'src/component/CustomText';
-import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { CustomText } from 'src/component/CustomText';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import {
   useLazyFetchUserDetailsQuery,
   useMarkUserFavMutation,
   UserDetailResponse,
   useUnmarkUserFavMutation,
 } from 'src/redux/actions/usersApiAction';
-import {RootState} from 'src/redux/slices';
-import {COLORS} from 'src/utils/constants';
+import { RootState } from 'src/redux/slices';
+import { COLORS } from 'src/utils/constants';
 import {
   horizontalMarginScale,
   radiusScale,
@@ -27,23 +27,23 @@ interface UserProfileProps {
   user: string;
 }
 
-const UserProfile: React.FC<UserProfileProps> = ({user}) => {
+const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
   const styles = createStyle();
   const [
     markUserFav,
-    {error: markUserFavError, isLoading: markUserFavLoading},
+    { error: markUserFavError, isLoading: markUserFavLoading },
   ] = useMarkUserFavMutation();
   const [
     unMarkUserFav,
-    {error: unMarkUserFavError, isLoading: unMarkUserFavLoading},
+    { error: unMarkUserFavError, isLoading: unMarkUserFavLoading },
   ] = useUnmarkUserFavMutation();
-  const [fetchUserDetails, {}] = useLazyFetchUserDetailsQuery();
+  const [fetchUserDetails, { }] = useLazyFetchUserDetailsQuery();
 
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const {userDetails} = useSelector((state: RootState) => {
+  const { userDetails } = useSelector((state: RootState) => {
     const queryResult = state.api.queries[
-      `fetchUserDetails(${JSON.stringify({user})})`
-    ] as {data: UserDetailResponse} | undefined;
+      `fetchUserDetails(${JSON.stringify({ user })})`
+    ] as { data: UserDetailResponse } | undefined;
 
     return {
       userDetails: queryResult?.data?.data ?? undefined,
@@ -55,7 +55,7 @@ const UserProfile: React.FC<UserProfileProps> = ({user}) => {
       let response;
       let payload = {
         targetUserId: user,
-        user: loginData.userId,
+        user: loginData.id,
       };
       if (userDetails?.isFavourite) {
         response = await unMarkUserFav(payload).unwrap();
@@ -64,7 +64,7 @@ const UserProfile: React.FC<UserProfileProps> = ({user}) => {
       }
 
       if (response.status === 200) {
-        fetchUserDetails({user: user});
+        fetchUserDetails({ user: user });
         FlashMessageComponent.show('success', 'User marked as favorite!');
       } else {
         FlashMessageComponent.show('error', 'Something went wrong!');
@@ -86,11 +86,10 @@ const UserProfile: React.FC<UserProfileProps> = ({user}) => {
           borderTopLeftRadius: radiusScale(16),
           borderTopRightRadius: radiusScale(16),
         }}>
-        <View style={{alignItems: 'center'}}>
+        <View style={{ alignItems: 'center' }}>
           <AvatarInitials
-            name={`${userDetails?.firstName || ''} ${
-              userDetails?.lastName || ''
-            }`}
+            name={`${userDetails?.firstName || ''} ${userDetails?.lastName || ''
+              }`}
             size={80}
             imgUrl={userDetails?.imageUrl}
           />
@@ -158,7 +157,7 @@ const UserProfile: React.FC<UserProfileProps> = ({user}) => {
           imageSource={
             userDetails?.isFavourite ? IMAGES.star_active : IMAGES.star_inactive
           }
-          leftImageStyle={{height: verticalScale(16), width: verticalScale(16)}}
+          leftImageStyle={{ height: verticalScale(16), width: verticalScale(16) }}
           style={styles.favButton}
           onPress={handleFavCta}
         />

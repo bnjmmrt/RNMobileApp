@@ -1,9 +1,12 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, Image, View, ImageStyle, StyleProp } from 'react-native';
-import { Hp, Wp } from '../utils/dimensions';
+import { fontScale, Hp, Wp } from '../utils/dimensions';
 import IMAGES from '../assets/images';
 import { COLORS } from '../utils/constants';
 import AvatarInitials from './AvatarInitials';
+import { fontFamily } from 'src/utils/functions';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
 
 interface HeaderComponentProps {
     rightImageStyle?: StyleProp<ImageStyle>;
@@ -15,6 +18,7 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({ rightImageStyle, isDa
     const backgroundColor = isDarkTheme ? COLORS.black2 : COLORS.white;
     const tintColor = isDarkTheme ? COLORS.white : COLORS.black2;
     const backgroundColorNotification = isDarkTheme ? COLORS.dark_gray : COLORS.tabBorderColor;
+    const role = useSelector((state: RootState) => state.auth.role);
 
 
     return (
@@ -25,6 +29,21 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({ rightImageStyle, isDa
                     source={IMAGES.rumorLogoDark}
                     tintColor={tintColor}
                 />
+                {role == 'host' &&
+                    <View style={{
+                        borderRadius: 20,
+                        borderWidth: 1,
+                        paddingHorizontal: 5,
+                        marginBottom: 25,
+                        marginStart: 5,
+                        backgroundColor: COLORS.black,
+                        borderColor: COLORS.black, // Add border color to make the border visible
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}>
+                        <Text style={{ color: COLORS.white, fontFamily: fontFamily.ABCDiatype_Medium, fontSize: fontScale(12) }}>Host</Text>
+                    </View>
+                }
             </View>
             <View style={[styles.iconsWrapper]}>
                 <TouchableOpacity style={[styles.iconButton, { backgroundColor: backgroundColorNotification }]}>

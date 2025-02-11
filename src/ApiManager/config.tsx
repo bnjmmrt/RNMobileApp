@@ -64,13 +64,14 @@ export const EndPoint = {
   user_profile: 'v1/auth/user-profile/',
   user_settings: 'v1/auth/user-settings/',
   user_interests: 'v1/platform/user-interests/',
-  get_user_status: 'v1/auth/get-user-with-roles-by-email',
+  get_user_status: 'v1/auth/get-user-with-roles-by-id',
 
   users_list: 'v1/auth/users-list',
   create_user: 'v1/auth/create-user',
   user: 'v1/auth/user/',
   custom_lists: 'v1/auth/hosts/custom-lists',
   current_user: 'v1/auth/current-user',
+  view_image: 'v1/files/view/',
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

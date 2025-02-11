@@ -1,8 +1,8 @@
-import {createBaseApi} from '../../ApiManager/createBaseApi';
+import { createBaseApi } from '../../ApiManager/createBaseApi';
 import { environment } from '../../../environments/environment';
 
-import {EndPoint} from '../../ApiManager/config';
-console.log("EndPoint.get_focuses",environment.DEV_URL+EndPoint.get_focuses)
+import { EndPoint } from '../../ApiManager/config';
+console.log("EndPoint.get_focuses", environment.BASE_URL + EndPoint.get_focuses)
 export const appFlowApiAction = createBaseApi.injectEndpoints({
   endpoints: builder => ({
 

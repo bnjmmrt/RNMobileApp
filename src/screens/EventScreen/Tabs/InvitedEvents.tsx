@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, FlatList, ActivityIndicator } from 'react-native';
-import { useFetchEventsQuery } from '../../../redux/actions/eventApiAction';
+import { useFetchAllEventsQuery, useFetchEventsQuery } from '../../../redux/actions/eventApiAction';
 import EventItem from '../EventItem';
 import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
 import { Hp } from '../../../utils/dimensions';
@@ -8,19 +8,24 @@ import { Hp } from '../../../utils/dimensions';
 interface InvitedEventsProps {
   userId: string;
   searchText: string;
+  tab: any;
 }
 
-const InvitedEvents: React.FC<InvitedEventsProps> = ({ userId, searchText }) => {
+const InvitedEvents: React.FC<InvitedEventsProps> = ({ userId, searchText, tab }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [events, setEvents] = useState<any[]>([]);
-  const { data, isLoading } = useFetchEventsQuery({
-    userId,
-    guestEventStatus: 'INVITED',
-    searchText: searchText,
-    take: 10,
-    skip: (currentPage - 1) * 10,
-  });
+  // const { data, isLoading } = useFetchEventsQuery({
+  //   userId,
+  //   guestEventStatus: 'INVITED',
+  //   searchText: searchText,
+  //   take: 10,
+  //   skip: (currentPage - 1) * 10,
+  // });
+
+  const { data, isLoading } = useFetchAllEventsQuery({ userId });
+
+
 
   useEffect(() => {
     if (data) {
@@ -62,7 +67,7 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({ userId, searchText }) => 
         />
       ) : (
         <View style={{ height: Hp(55), alignItems: 'center', justifyContent: 'center' }}>
-          <EventEmptyRecord title="No Events Here" subTitle="No upcoming events." isLoading={isLoading} />
+          <EventEmptyRecord title={tab.title} subTitle={tab.subTitle} isLoading={isLoading} />
         </View>
       )}
     </View>
