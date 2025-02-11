@@ -8,9 +8,10 @@ import { Hp } from '../../../utils/dimensions';
 interface AppliedEventsProps {
   userId: string;
   searchText: string;
+  tab: any;
 }
 
-const AppliedEvents: React.FC<AppliedEventsProps> = ({ userId, searchText }) => {
+const AppliedEvents: React.FC<AppliedEventsProps> = ({ userId, searchText, tab }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [events, setEvents] = useState<any[]>([]);
@@ -58,7 +59,7 @@ const AppliedEvents: React.FC<AppliedEventsProps> = ({ userId, searchText }) => 
         />
       ) : (
         <View style={{ height: Hp(55), alignItems: 'center', justifyContent: 'center' }}>
-          <EventEmptyRecord title="No Events Here" subTitle="No upcoming events." isLoading={isLoading} />
+          <EventEmptyRecord title={tab.title} subTitle={tab.subTitle} isLoading={isLoading} />
         </View>
       )}
     </View>

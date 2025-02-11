@@ -1,4 +1,4 @@
-import {createBaseApi} from '../../ApiManager/createBaseApi';
+import { createBaseApi } from '../../ApiManager/createBaseApi';
 
 export const eventApiAction = createBaseApi.injectEndpoints({
   endpoints: builder => ({
@@ -16,12 +16,39 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take: number;
         skip: number;
       }) => ({
-        url: `v1/events/users/${userId}/events?guestEventStatus=${guestEventStatus}&take=${take}&skip=${skip}&findInNameAndDescription=${searchText}`,
+        url: `v1/events/users/${userId}/events&take=${take}&skip=${skip}&findInNameAndDescription=${searchText}`,
         method: 'GET',
       }),
       providesTags: ['Event'], // Adjust the tag if needed for cache invalidation
     }),
+
+    fetchAllEvents: builder.query({
+      query: ({
+        userId,
+      }: {
+        userId: string;
+      }) => ({
+        url: `v1/events/users/${userId}/events`,
+        method: 'GET',
+      }),
+      providesTags: ['Events'], // Adjust the tag if needed for cache invalidation
+    }),
+
+    fetchEventDetails: builder.query({
+      query: ({
+        userId,
+        eventId,
+      }: {
+        userId: string;
+        eventId: string;
+      }) => ({
+        url: `v1/events/users/${userId}/events/${eventId}`,
+        method: 'GET',
+      }),
+      providesTags: ['EventDetails'], // Adjust the tag if needed for cache invalidation
+    }),
+
   }),
 });
 
-export const {useFetchEventsQuery} = eventApiAction;
+export const { useFetchEventsQuery, useFetchEventDetailsQuery, useFetchAllEventsQuery } = eventApiAction;

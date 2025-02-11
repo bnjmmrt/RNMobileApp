@@ -63,9 +63,7 @@ const hostTabs = [
 
 const BottomTabBar = () => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const email = 'sayyedshahbaz.ali@techalchemy.com'
-
-  const { userStatusData } = useGetUserStatus(email);
+  const { userStatusData } = useGetUserStatus();
 
   useEffect(() => {
     if (userStatusData) {

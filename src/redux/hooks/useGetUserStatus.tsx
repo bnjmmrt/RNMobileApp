@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useGetUserStatusQuery } from '../actions/loginApiAction';
 import { FlashMessageComponent } from '../../component/FlashMessageComponent/FlashMessageComponent';
+import { useSelector } from 'react-redux';
+import { RootState } from '../slices';
+import { skipToken } from '@reduxjs/toolkit/query';
 
-export const useGetUserStatus = (email?: string) => {
+export const useGetUserStatus = () => {
     const [isLoading, setIsLoading] = useState(false);
-    console.log("Sayyed api called param:", email)
-    const { data, error, isFetching, refetch } = useGetUserStatusQuery({ email });
-
+    const userId = useSelector((state: RootState) => state.auth.userId);
+    const { data, error, isFetching, refetch } = useGetUserStatusQuery(
+        userId ? { id: String(userId) } : skipToken
+    );
     useEffect(() => {
         if (isFetching) {
             setIsLoading(true);
@@ -15,7 +19,7 @@ export const useGetUserStatus = (email?: string) => {
         }
 
         if (error) {
-            FlashMessageComponent.show('error', 'Something went wrong, please try again!');
+            // FlashMessageComponent.show('error', 'Something went wrong, please try again!');
             console.error('Error fetching user status:', error);
         }
     }, [isFetching, error]);
@@ -26,7 +30,7 @@ export const useGetUserStatus = (email?: string) => {
                 onSuccess(data);
             }
         }).catch((err) => {
-            FlashMessageComponent.show('error', 'Error during refetch');
+            // FlashMessageComponent.show('error', 'Error during refetch');
             console.error('Refetch error:', err);
         });
     };
