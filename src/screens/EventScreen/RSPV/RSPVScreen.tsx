@@ -1,6 +1,6 @@
 import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
-import React, {useState, useRef} from 'react';
+import React, { useState, useRef } from 'react';
 import {
   SafeAreaView,
   View,
@@ -12,21 +12,22 @@ import {
 } from 'react-native';
 import BottomSheetComponent from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
-import {CustomText} from 'src/component/CustomText';
+import { CustomText } from 'src/component/CustomText';
 import Header from 'src/component/Header/Header';
 import Title from 'src/component/Title/Title';
 import Input from 'src/component/Input/Input';
-import {BUTTON_LABLE, COLORS} from 'src/utils/constants';
+import { BUTTON_LABLE, COLORS } from 'src/utils/constants';
 import RequestVouch from './RequestVouch';
 import useContactPermission from 'src/utils/hooks/useContactPermission';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {styles} from './RSPVScreenStyle';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { styles } from './RSPVScreenStyle';
 import {
   useDeleteApplicationMutation,
+  useGetQuizQuestionQuery,
   useSubmitApplicationMutation,
   useUpdateApplicationMutation,
 } from 'src/redux/actions/rspvApiAction';
-import {verticalScale} from 'src/utils/dimensions';
+import { verticalScale } from 'src/utils/dimensions';
 
 type Guest = {
   id: number;
@@ -34,28 +35,29 @@ type Guest = {
 };
 
 const optionList = [
-  {id: 0, label: 'Request a Vouch'},
-  {id: 1, label: 'Cancel Application'},
+  { id: 0, label: 'Request a Vouch' },
+  { id: 1, label: 'Cancel Application' },
 ];
 
 const RSPVScreen: React.FC = () => {
   const bottomSheetRef = useRef<any>(null);
-  const inputRefs = useRef<{[key: number]: any}>({});
-  const {goBack} = useNavigation();
+  const { params } = useRoute();
+
+  const inputRefs = useRef<{ [key: number]: any }>({});
+  const { goBack } = useNavigation();
+  const { name, location, startDate, status, quizQuestions, guestsCount, id } =
+    params?.event;
+
   const [selectedGuests, setSelectedGuests] = useState<any>(null);
   const [activeView, setActiveTab] = useState<string>('');
-  const {requestContactPermission} = useContactPermission();
-  const {params} = useRoute();
+  const { requestContactPermission } = useContactPermission();
   const guestInputRef = useRef(null);
-  const [submitApplication, {isLoading: isSubmitting}] =
+  const [submitApplication, { isLoading: isSubmitting }] =
     useSubmitApplicationMutation();
-  const [updateApplication, {isLoading: isUpdating}] =
+  const [updateApplication, { isLoading: isUpdating }] =
     useUpdateApplicationMutation();
-  const [deleteApplication, {isLoading: isDeleting}] =
+  const [deleteApplication, { isLoading: isDeleting }] =
     useDeleteApplicationMutation();
-
-  const {name, location, startDate, status, quizQuestions, guestsCount, id} =
-    params?.event;
 
   const handleSubmitApplication = async () => {
     if (!validateInputs()) return;
@@ -96,7 +98,7 @@ const RSPVScreen: React.FC = () => {
 
   const handleCancelApplication = async () => {
     try {
-      const response = await deleteApplication({eventId: id}).unwrap();
+      const response = await deleteApplication({ eventId: id }).unwrap();
       console.log('Application canceled:', response);
       bottomSheetRef?.current?.close();
     } catch (error) {
@@ -133,7 +135,7 @@ const RSPVScreen: React.FC = () => {
       <CustomText style={styles.successText}>
         Your application has been submitted!
       </CustomText>
-      <View style={[styles.yellowBox, {alignSelf: 'center'}]}>
+      <View style={[styles.yellowBox, { alignSelf: 'center' }]}>
         <Image source={IMAGES.loader} style={styles.loaderIcon} />
         <CustomText style={styles.waitingText}>
           Awaiting response from host
@@ -203,10 +205,10 @@ const RSPVScreen: React.FC = () => {
     }
   };
   const generateGuestList = (guestsCount: number): Guest[] => {
-    const guestList: Guest[] = [{id: 0, label: 'No Guests'}];
+    const guestList: Guest[] = [{ id: 0, label: 'No Guests' }];
 
     for (let i = 1; i <= guestsCount; i++) {
-      guestList.push({id: i, label: `${i} Guest${i > 1 ? 's' : ''}`});
+      guestList.push({ id: i, label: `${i} Guest${i > 1 ? 's' : ''}` });
     }
 
     return guestList;
@@ -221,7 +223,7 @@ const RSPVScreen: React.FC = () => {
       <FlatList
         data={guestList}
         keyExtractor={item => item.id.toString()}
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.guestButton}
             onPress={() => {
@@ -247,7 +249,7 @@ const RSPVScreen: React.FC = () => {
       <TouchableOpacity
         onPress={handleCancelApplication}
         style={styles.redButton}>
-        <Text style={[styles.optionText, {color: COLORS.white}]}>
+        <Text style={[styles.optionText, { color: COLORS.white }]}>
           Cancel Application
         </Text>
       </TouchableOpacity>
@@ -336,14 +338,14 @@ const RSPVScreen: React.FC = () => {
                   setActiveTab('options');
                   bottomSheetRef?.current?.open();
                 }}>
-                <Image source={IMAGES.downArrow} style={styles.downArrowIcon} />
+                <Image source={IMAGES.downArrow} style={styles.downArrowIcon} resizeMode='contain' />
               </TouchableOpacity>
             </View>
           )}
           {quizQuestions.map(q => (
             <Input
               key={q.id}
-              inputFieldContainerStyle={{height: verticalScale(48)}}
+              inputFieldContainerStyle={{ height: verticalScale(48) }}
               isRequired={q.required}
               ref={ref => (inputRefs.current[q.id] = ref)}
               label={q.question}
@@ -351,7 +353,7 @@ const RSPVScreen: React.FC = () => {
           ))}
           {guestsCount > 0 && (
             <Input
-              inputFieldContainerStyle={{height: verticalScale(48)}}
+              inputFieldContainerStyle={{ height: verticalScale(48) }}
               editable={false}
               isRequired={true}
               ref={guestInputRef}

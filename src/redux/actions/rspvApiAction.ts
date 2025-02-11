@@ -28,6 +28,12 @@ export const rspvApiAction = createBaseApi.injectEndpoints({
                 method: 'GET',
             }),
         }),
+        getQuizQuestion: builder.query({
+            query: ({ id }) => ({
+                url: `v1/events/${id}/quiz-question`,
+                method: 'GET',
+            }),
+        }),
     }),
 });
 
@@ -36,4 +42,5 @@ export const {
     useUpdateApplicationMutation,
     useDeleteApplicationMutation,
     useGetApplicationQuery,
+    useGetQuizQuestionQuery,
 } = rspvApiAction;

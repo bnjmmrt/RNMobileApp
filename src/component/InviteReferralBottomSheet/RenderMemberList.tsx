@@ -23,7 +23,7 @@ export const RenderMemberList = (data: any) => {
 
     const handleRequestSent = async () => {
         try {
-            const response = await requestMember({ userId: item.userId }).unwrap();
+            const response = await requestMember({ userId: item.id }).unwrap();
             console.log("API Response:", response);
         } catch (error) {
             console.error("API Error:", error);

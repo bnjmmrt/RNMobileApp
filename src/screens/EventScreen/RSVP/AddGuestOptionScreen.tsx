@@ -1,14 +1,14 @@
-import {useFocusEffect} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {changeSafeAreaViewConfig, fontFamily} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { changeSafeAreaViewConfig, fontFamily } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import TabBar from '../../../component/ActiveTabBar/TabBar';
 import BackButton from '../../../component/BackButton/BackButton';
 import Button from '../../../component/Button';
 
-import {BUTTON_LABLE, COLORS, LABLE} from '../../../utils/constants';
+import { BUTTON_LABLE, COLORS, LABLE } from '../../../utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -21,13 +21,20 @@ import {
 import Header from 'src/component/Header/Header';
 import Title from 'src/component/Title/Title';
 import IMAGES from '@images/index';
+import AddFromContacts from './AddFromContacts';
+import AddGuestScreen from './AddGuestScreen';
+import GuestForm from './GuestForm';
+import { addGuest } from 'src/redux/slices/rspvSlice';
+import { useDispatch } from 'react-redux';
 
-interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> {}
+interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> { }
 
 const AddGuestOptionScreen: React.FC<EmailPhoneScreenProps> = ({
   navigation,
 }) => {
   const [currentTab, setCurrentTab] = useState('01');
+  const dispatch = useDispatch();
+  const { navigate } = useNavigation();
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
   const [URL, setURL] = useState('');
@@ -74,13 +81,17 @@ const AddGuestOptionScreen: React.FC<EmailPhoneScreenProps> = ({
         showProgressBar={false}
       />
       <View style={styles.contentContainer}>
-        <Title subTitle={LABLE.ADD_A_PHOTO_SUBTITLE} />
+        <Title subTitle={LABLE.ADD_A_PHOTO_SUBTITLE} align='center' />
         <TabBar
           onTabChange={handleTabChange}
-          tabOneLabel="Add from Phone"
+          tabOneLabel="Add from Contacts"
           tabTwoLabel="Add Manualy"
         />
-        <View style={styles.contactContainer}>
+        {currentTab == '01' ? <AddFromContacts /> : <GuestForm onSubmit={(e) => {
+          dispatch(addGuest(e))
+          navigate('RSVPFormScreen')
+        }} />}
+        {/* <View style={styles.contactContainer}>
           <Image
             source={IMAGES.noRecord}
             style={styles.image}
@@ -95,7 +106,7 @@ const AddGuestOptionScreen: React.FC<EmailPhoneScreenProps> = ({
               {LABLE.SYNC_CONTACT_SEETTINGS}
             </Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     </View>
   );
@@ -112,7 +123,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     paddingBottom: verticalMarginScale(8),
-    alignItems: 'center',
   },
   spacer: {
     flex: 1,

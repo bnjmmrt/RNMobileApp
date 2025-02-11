@@ -1,6 +1,6 @@
 import IMAGES from '@images/index';
-import {useNavigation} from '@react-navigation/native';
-import React, {useRef, useState} from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -9,13 +9,18 @@ import {
   SafeAreaView,
   ScrollView,
   Platform,
+  TouchableOpacity,
+  FlatList,
 } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import AvatarInitials from 'src/component/AvatarInitials';
 import ConfirmationBottomSheet from 'src/component/BottomSheet/ConfirmationBottomSheet';
 import ListComponentBottomSheet from 'src/component/BottomSheet/ListComponentBottomSheet';
 import Button from 'src/component/Button';
 import CustomSelectableText from 'src/component/CustomSelectableText/CustomSelectableText';
 import Header from 'src/component/Header/Header';
 import Toast from 'src/component/Toast/Toast';
+import { deleteGuest, setResponse, setSelectedGuest } from 'src/redux/slices/rspvSlice';
 import {
   BUTTON_LABLE,
   COLORS,
@@ -32,20 +37,104 @@ import {
   verticalScale,
   Wp,
 } from 'src/utils/dimensions';
-import {fontFamily} from 'src/utils/functions';
+import { fontFamily } from 'src/utils/functions';
+import useContacts from 'src/utils/hooks/useContactPermission';
+import { SwipeableGuestList } from './SwipeableGuestList';
+import BottomSheetComponent from 'src/component/BottomSheet/BottomSheet';
+import { CustomText } from 'src/component/CustomText';
+import { styles } from './styles';
 
-const SwapDeleteComponent = () => {
-  return (
-    <View style={styles.swapDeletecontainer}>
-
-      <View style={styles.avatarContainer}>
-        <Text style={styles.avatarText}>{'IF'}</Text>
-      </View>
-  
-      <Text style={styles.name}>{'Anurag Harod'}</Text>
-    </View>
-  );
-};
+const optionList = [
+  { id: 1, label: 'Cancel Application' },
+];
+const invites = [{
+  "addedBy": "",
+  "addedByPicture": "",
+  "age": 0,
+  "category": [],
+  "checkIn": false,
+  "email": "akash.kothawade+1036@techalchemy.com",
+  "firstName": "sky",
+  "guestId": "f5ec8047-487d-4474-bc44-383f9dc61bba",
+  "guestStatus": "CONFIRMED",
+  "id": "f5ec8047-487d-4474-bc44-383f9dc61bba",
+  "invitationSource": -1,
+  "invitees": [],
+  "lastName": "test",
+  "phoneNumber": "+9087654567",
+  "profilePicture": "",
+  "source": "",
+  "status": "NO_STATUS",
+  "userId": "c8d62410-953f-4f5c-9c8f-666ea9b55b60",
+  "username": ""
+},
+{
+  "addedBy": "",
+  "addedByPicture": "",
+  "age": 0,
+  "category": [],
+  "checkIn": false,
+  "email": "akash.kothawade+1037@techalchemy.com",
+  "firstName": "sky 2",
+  "guestId": "e2f75fa8-fc02-4d68-881b-9a7028bcbafc",
+  "guestStatus": "CONFIRMED",
+  "id": "e2f75fa8-fc02-4d68-881b-9a7028bcbafc",
+  "invitationSource": -1,
+  "invitees": [],
+  "lastName": "test",
+  "phoneNumber": "+9087654567",
+  "profilePicture": "",
+  "source": "",
+  "status": "NO_STATUS",
+  "userId": "c1f56ccd-11e9-40e2-990b-8b4c419a52c4",
+  "username": ""
+},
+{
+  "addedBy": "",
+  "addedByPicture": "",
+  "age": 26,
+  "category": [],
+  "checkIn": false,
+  "email": "akash.kothawade+1014@techalchemy.com",
+  "firstName": "akash",
+  "guestId": "1e454374-f8ad-42e2-8320-0405ddd2f5b9",
+  "guestStatus": "DECLINED",
+  "id": "09a2fc69-a938-4dc8-8d82-b3c6c78b3606",
+  "invitationSource": "INVITED_BY_HOST",
+  "invitees": [],
+  "lastName": "kakak",
+  "maxAdditionalGuests": 4,
+  "numberAdditionalGuests": 4,
+  "phoneNumber": "+919898907028",
+  "profilePicture": "laksdf;lkajsdfljasdjfk",
+  "source": "",
+  "status": "NO_STATUS",
+  "userId": "1aeb0084-e6ad-4878-b1b0-feb1d84ddac9",
+  "username": ""
+},
+{
+  "addedBy": "",
+  "addedByPicture": "",
+  "age": 26,
+  "category": [],
+  "checkIn": false,
+  "email": "akash.kothawade+1024@techalchemy.com",
+  "firstName": "akash",
+  "guestId": "ccdcea43-f502-4b85-8bdb-f9da17598453",
+  "guestStatus": "DECLINED",
+  "id": "32aa189e-c978-442b-a73e-988a0ab25735",
+  "invitationSource": "INVITED_BY_HOST",
+  "invitees": [],
+  "lastName": "kakak",
+  "maxAdditionalGuests": 4,
+  "numberAdditionalGuests": 4,
+  "phoneNumber": "+919898909031",
+  "profilePicture": "laksdf;lkajsdfljasdjfk",
+  "source": "",
+  "status": "NO_STATUS",
+  "userId": "28052fa2-7237-4562-a5d1-8dcd281fe114",
+  "username": ""
+}]
 
 const EventCard = () => {
   return (
@@ -60,8 +149,16 @@ const EventCard = () => {
   );
 };
 
-const StatusBanner = () => {
-  return (
+const StatusBanner = ({ isGoing, onPress }) => {
+  return (isGoing ?
+    <TouchableOpacity onPress={onPress} style={styles.statusBanner}>
+      <View style={{ alignItems: 'center', flexDirection: 'row', flex: 1 }}>
+        <Image source={IMAGES.tickGoing} />
+        <Text style={styles.statusText}> {'You are going'}</Text>
+      </View>
+      <Image source={IMAGES.downArrow} style={{ width: 12, height: 12, resizeMode: 'contain' }} />
+    </TouchableOpacity>
+    :
     <View style={styles.statusBanner}>
       <Image source={IMAGES.tickInvited} />
       <Text style={styles.statusText}> {EVENT_STATUS.INVITED}</Text>
@@ -70,49 +167,46 @@ const StatusBanner = () => {
 };
 
 const reasons = [
-  {id: 1, name: 'Scheduling Conflict'},
-  {id: 2, name: 'Prior Commitment'},
-  {id: 3, name: 'Traveling'},
-  {id: 4, name: 'Event Location Inconvenient'},
-  {id: 5, name: 'Not Interested in This Event'},
-  {id: 6, name: 'Too Short of Notice'},
-  {id: 7, name: 'Weather Concerns'},
-  {id: 8, name: 'Other'},
+  { id: 1, name: 'Scheduling Conflict' },
+  { id: 2, name: 'Prior Commitment' },
+  { id: 3, name: 'Traveling' },
+  { id: 4, name: 'Event Location Inconvenient' },
+  { id: 5, name: 'Not Interested in This Event' },
+  { id: 6, name: 'Too Short of Notice' },
+  { id: 7, name: 'Weather Concerns' },
+  { id: 8, name: 'Other' },
 ];
 const guests = [
-  {id: 0, name: 'No Guests'},
-  {id: 1, name: 'Guest 1'},
-  {id: 2, name: 'Guest 2'},
-  {id: 3, name: 'Guest 3'},
-  {id: 4, name: 'Guest 4'},
+  { id: 0, name: 'No Guests' },
+  { id: 1, name: 'Guest 1' },
+  { id: 2, name: 'Guest 2' },
+  { id: 3, name: 'Guest 3' },
+  { id: 4, name: 'Guest 4' },
 ];
 const RSVPFormScreen = () => {
   const navigation = useNavigation();
+  const { params } = useRoute();
   const [isToastShown, setIsToastShown] = useState(false);
-
+  const [activeView, setActiveTab] = useState<string>('');
+  const { requestContactPermission } = useContacts();
+  const dispatch = useDispatch();
+  const bottomSheetRef = useRef<any>(null);
+  const [reasonSelected, setReasonSelected] = useState<any>('');
   const [showDropdown, setShowDropdown] = useState(false);
   const [showYesOptionDropdown, setYesOptionDropdown] = useState(false);
   const [selectedReason, setSelectedReason] = useState<any>({});
-  const [selectedGuest, setSelectedGuest] = useState<any>(guests[0]);
+  // const [selectedGuest, setSelectedGuest] = useState<any>(guests[0]);
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const reasonsRef = useRef<any>(null);
   const guestRef = useRef<any>(null);
   const confirmationRef = useRef<any>(null);
+  const rspv = useSelector(state => state.rspv);
+  const [showInfo, setShowInfo] = useState<boolean | null>(false);
 
   const handleBackPress = () => {
     navigation.goBack();
   };
 
-  const onNoClick = () => {
-    setSelectedButton('No');
-    setShowDropdown(true);
-    setYesOptionDropdown(false);
-  };
-  const onYesClick = () => {
-    setSelectedButton('Yes');
-    setShowDropdown(false);
-    setYesOptionDropdown(true);
-  };
   const onClickReason = () => {
     reasonsRef?.current.open();
   };
@@ -120,18 +214,104 @@ const RSVPFormScreen = () => {
   const onClickGuest = () => {
     guestRef?.current.open();
   };
-  const onAddGuest = () => {
-    //contact logic
-
+  const onAddGuest = async () => {
+    await requestContactPermission();
     navigation.navigate('AddGuestOptionScreen');
   };
   const submit = () => {
-    if (selectedButton === null) {
+    if (rspv?.response === null) {
       setIsToastShown(true);
     } else {
       confirmationRef.current.open();
     }
   };
+
+  const handleResponse = (response) => {
+    dispatch(setResponse(response));
+  };
+  const renderBottomSheetContent = () => {
+    switch (activeView) {
+      case 'options':
+        return renderOptions();
+      case 'cancel':
+        return renderCancelPopup();
+      default:
+        return null;
+    }
+  };
+  const renderCancelPopup = () => (
+    <View style={styles.cancelPopupContainer}>
+      <CustomText style={styles.eventTitle}>
+        Cancel your RSVP?
+      </CustomText>
+      <CustomText style={styles.descText}>
+        This action cannot be undone. If you cancel, your guests will be notified, and their passes will be revoked. To rejoin later, you’ll need to request a new invite from the host.   Please let us know why you can’t make it.
+      </CustomText>
+      {reasons.map(item => {
+        return (
+          <TouchableOpacity
+            key={item.id.toString()}
+            style={[styles.guestButton, reasonSelected === item && { borderWidth: 2, borderColor: COLORS.black, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 12 }]}
+            onPress={() => setReasonSelected(item)}>
+            {reasonSelected == item && <Image source={IMAGES.check} style={{ width: 16, height: 16 }} />}
+            <Text style={styles.guestButtonText}>{item.name}</Text>
+            {reasonSelected == item && <View />}
+
+          </TouchableOpacity>
+        );
+      })}
+      <TouchableOpacity
+        onPress={() => { }}
+        style={styles.redButton}>
+        <Text style={[styles.optionText, { color: COLORS.white }]}>
+          Cancel RSPV
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const renderOptions = () =>
+    optionList.map(item => (
+      <TouchableOpacity
+        key={item.id}
+        style={styles.guestButton}
+        onPress={() => {
+          setActiveTab(item?.id === 1 ? 'cancel' : 'vouch');
+          bottomSheetRef?.current?.open();
+        }}>
+        <Text style={styles.guestButtonText}>{item.label}</Text>
+      </TouchableOpacity>
+    ));
+
+  const getSnapPoints = (): string => {
+    switch (activeView) {
+      case 'guests':
+        return '30%';
+      case 'submit':
+        return '60%';
+      case 'options':
+        return '20%';
+      case 'cancel':
+        return '85%';
+      case 'leave':
+        return '40%';
+      default:
+        return '85%';
+    }
+  };
+  const combinedGuests = [
+    ...rspv.guests.map(guest => ({ ...guest, type: 'rspv' })),
+    ...invites.map(guest => ({ ...guest, type: 'invite' })),
+  ];
+
+  const renderItem = ({ item }) => (
+    <SwipeableGuestList
+      key={item.id}
+      guest={item}
+      onDelete={item.type === 'rspv' ? () => dispatch(deleteGuest(item.id)) : undefined}
+      onInfoClick={item.type === 'invite' ? () => setShowInfo(!showInfo) : undefined}
+    />
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -141,11 +321,14 @@ const RSVPFormScreen = () => {
         showProgressBar={false}
       />
 
-      <ScrollView style={styles.scrollContainer}>
+      <ScrollView style={styles.scrollContainer} nestedScrollEnabled>
         <EventCard />
-        <StatusBanner />
+        <StatusBanner isGoing={true} onPress={() => {
+          setActiveTab('options')
+          bottomSheetRef?.current.open()
+        }} />
 
-        <View style={[styles.card, {flexDirection: 'column'}]}>
+        {/* <View style={[styles.card, { flexDirection: 'column' }]}>
           <View>
             <Text style={styles.info}>Would you like to attend the event?</Text>
           </View>
@@ -153,35 +336,62 @@ const RSVPFormScreen = () => {
             <Button
               disabled={false}
               title={BUTTON_LABLE.YES}
-              onPress={onYesClick}
+              onPress={() => handleResponse('Yes')}
               style={
-                selectedButton == 'Yes'
+                rspv.response == 'Yes'
                   ? styles.smallButton
                   : styles.clearButton
               }
               clearButtonStyle={
-                selectedButton == 'No' ? styles.clearButton : styles.smallButton
+                rspv.response == 'No' ? styles.clearButton : styles.smallButton
               }
-              colorTheme={selectedButton == 'Yes' ? 'dark' : 'white'}
+              colorTheme={rspv.response == 'Yes' ? 'dark' : 'white'}
             />
             <Button
               disabled={false}
               title={BUTTON_LABLE.NO}
-              onPress={onNoClick}
+              onPress={() => handleResponse('No')}
               style={
-                selectedButton == 'No' ? styles.smallButton : styles.clearButton
+                rspv.response == 'No' ? styles.smallButton : styles.clearButton
               }
               clearButtonStyle={
-                selectedButton == 'Yes'
+                rspv.response == 'Yes'
                   ? styles.clearButton
                   : styles.smallButton
               }
-              colorTheme={selectedButton == 'No' ? 'dark' : 'white'}
+              colorTheme={rspv.response == 'No' ? 'dark' : 'white'}
             />
           </View>
+        </View> */}
+        <View style={{ gap: 6 }}>
+          <CustomText style={{ color: COLORS.light_gray }}>You have 0 guest passes available </CustomText>
+          <FlatList
+            data={combinedGuests}
+            renderItem={renderItem}
+            nestedScrollEnabled
+            keyExtractor={item => item.id.toString()}
+            ItemSeparatorComponent={() => <View style={{ height: 6 }} />}
+          />
         </View>
-        {showDropdown && (
-          <View style={{padding: verticalMarginScale(12)}}>
+        {showInfo &&
+          <>
+            <CustomText style={{ color: COLORS.black, marginTop: 12 }}>Guests can be declined for various reasons, such as:</CustomText>
+            <View style={{ padding: 6 }}>
+              <CustomText style={{ color: COLORS.black }}>•  The guest has already requested an invited or was already invited by the host.</CustomText>
+              <CustomText style={{ color: COLORS.black }}>•  The guest has already requested an invited or was already invited by the host.</CustomText>
+              <CustomText style={{ color: COLORS.black }}>•  The guest has already requested an invited or was already invited by the host.</CustomText>
+            </View>
+          </>
+        }
+        <Button
+          disabled={false}
+          style={[styles.clearButton, styles.btnBorder]}
+          title={BUTTON_LABLE.ADD_GUEST_DETAILS}
+          colorTheme="white"
+          onPress={onAddGuest}
+        />
+        {rspv.response == 'No' && (
+          <View style={{ padding: verticalMarginScale(12) }}>
             <Text style={styles.label}>Why can’t you attend?</Text>
             <CustomSelectableText
               placeholder={'Select...'}
@@ -189,36 +399,45 @@ const RSVPFormScreen = () => {
               errorMessage={''}
               defaultValue={selectedReason?.name}
               onPress={onClickReason}
-              style={{marginTop: verticalMarginScale(4)}}
+              style={{ marginTop: verticalMarginScale(4) }}
             />
             <Text style={styles.infoText}>{LABLE.RSVP_TEXT}</Text>
           </View>
         )}
-        {showYesOptionDropdown && (
+        {rspv.response == 'Yes' && (
           <>
             <View>
-              <Text style={[styles.infoText, {color: COLORS.black}]}>
+              <Text style={[styles.infoText, { color: COLORS.black }]}>
                 {LABLE.RSVP_QUESTION_DETAILS}
               </Text>
               <CustomSelectableText
                 placeholder={'No Guest'}
                 rightImage={IMAGES.downArrow}
                 errorMessage={''}
-                defaultValue={selectedGuest?.name}
+                defaultValue={rspv?.selectedGuest?.name}
                 onPress={onClickGuest}
                 style={styles.customSelectText}
               />
             </View>
-            {selectedGuest?.name != guests[0]?.name && (
-               <>
-                <SwapDeleteComponent />
-                <Button
+
+            {rspv?.selectedGuest?.name != guests[0]?.name && (
+              <>
+                <View style={{ gap: 6 }}>
+                  {rspv.guests.map(guest => (
+                    <SwipeableGuestList
+                      key={guest.id}
+                      guest={guest}
+                      onDelete={() => dispatch(deleteGuest(guest.id))}
+                    />
+                  ))}
+                </View>
+                {rspv?.selectedGuest?.id > rspv?.guests?.length && <Button
                   disabled={false}
                   style={[styles.clearButton, styles.btnBorder]}
                   title={BUTTON_LABLE.ADD_GUEST_DETAILS}
                   colorTheme="white"
                   onPress={onAddGuest}
-                />
+                />}
               </>
             )}
           </>
@@ -233,14 +452,24 @@ const RSVPFormScreen = () => {
         <ListComponentBottomSheet
           ref={guestRef}
           list={guests}
-          selectedItem={setSelectedGuest}
+          selectedItem={(guest) => dispatch(setSelectedGuest(guest))}
           snapPoints={[Platform.OS === 'android' ? '45%' : '40%']}
         />
-        <ConfirmationBottomSheet
+        {/* <ConfirmationBottomSheet
           ref={confirmationRef}
           title={LABLE.WE_WERE_SORRY_CANT_MAKE_IT}
           subTitle={LABLE.RSVP_SUBTITLE}
           status={LABLE.YOU_DECLINED_THIS_INVITATION}
+          btnLabel={LABLE.DISCOVER_MORE_EVENTS}
+          snapPoints={[Platform.OS === 'android' ? '40%' : '38%']}
+          btnStyle={[styles.clearButton, styles.btnBorder]}
+        /> */}
+        <ConfirmationBottomSheet
+          ref={confirmationRef}
+          title={LABLE.YOUR_RSPV_IS}
+          subTitle={LABLE.YOU_CAN_RETURN_TO_THE}
+          status={"You are going"}
+          isSuccess={true}
           btnLabel={LABLE.DISCOVER_MORE_EVENTS}
           snapPoints={[Platform.OS === 'android' ? '40%' : '38%']}
           btnStyle={[styles.clearButton, styles.btnBorder]}
@@ -266,136 +495,17 @@ const RSVPFormScreen = () => {
           />
         </View>
       )}
+      <BottomSheetComponent
+        ref={bottomSheetRef}
+        snapPoints={[getSnapPoints()]}>
+        <View style={styles.bottomSheetContent}>
+          {renderBottomSheetContent()}
+        </View>
+      </BottomSheetComponent>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {flex: 1, padding: verticalMarginScale(10)},
-  card: {
-    flexDirection: 'row',
-    backgroundColor: 'white',
-    // marginHorizontal: horizontalMarginScale(12),
-    padding: verticalMarginScale(10),
-    borderRadius: radiusScale(10),
-    borderWidth: horizontalScale(1),
-    borderColor: COLORS.lighter_gray,
-  },
-  scrollContainer: {
-    marginVertical: verticalMarginScale(16),
-    paddingHorizontal: 16,
-  },
-  image: {
-    width: horizontalScale(80),
-    height: verticalScale(110),
-    borderRadius: radiusScale(10),
-  },
-  statusBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#E7F1F5',
-    padding: verticalMarginScale(12),
-    borderRadius: radiusScale(8),
-    marginVertical: verticalMarginScale(16),
-    // marginHorizontal: horizontalMarginScale(12),
-  },
-  statusText: {
-    fontSize: fontScale(14),
-    color: COLORS.black,
-    marginLeft: verticalScale(5),
-    flex: 1,
-  },
-  info: {
-    marginLeft: horizontalMarginScale(10),
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: fontScale(24),
-    fontWeight: '700',
-    fontFamily: fontFamily.RomieTrial_Bold,
-  },
-  details: {
-    fontSize: fontScale(14),
-    color: 'gray',
-  },
-  infoText: {
-    marginTop: verticalScale(16),
-    fontSize: fontScale(12),
-    color: COLORS.light_gray,
-    lineHeight: verticalScale(14),
-  },
-  bottomText: {paddingHorizontal: verticalMarginScale(12), textAlign: 'center'},
-  label: {
-    fontSize: fontScale(14),
-    fontWeight: '500',
-    marginTop: verticalMarginScale(2),
-  },
-  btnStyle: {
-    width: Wp(85),
-    borderRadius: radiusScale(100),
-    alignSelf: 'center',
-    marginVertical: verticalMarginScale(10),
-  },
-  clearButton: {
-    borderWidth: horizontalScale(1.5),
-    backgroundColor: COLORS.white,
-    borderColor: COLORS.lighter_gray,
-    width: '48%',
-    height: verticalScale(50),
-  },
-  btnBorder: {
-    width: '100%',
-    borderWidth: horizontalScale(1.5),
-    borderColor: COLORS.black,
-  },
-  smallButton: {
-    width: '48%',
-  },
-  rsvpButtonsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    paddingVertical: verticalMarginScale(12),
-  },
-  toastWrapper: {
-    position: 'absolute',
-    bottom: verticalMarginScale(60),
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-  },
-  customSelectText: {
-    marginTop: verticalMarginScale(4),
-    marginBottom: verticalMarginScale(8),
-  },
 
-  swapDeletecontainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: verticalScale(1),
-    borderColor: COLORS.borderGray,
-    borderRadius: radiusScale(16),
-    padding: verticalMarginScale(16),
-    marginVertical: verticalMarginScale(8),
-    backgroundColor: COLORS.white,
-  },
-  avatarContainer: {
-    width: horizontalScale(40),
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#ccc', // Placeholder color
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  avatarText: {
-    fontSize: 14,
-    color: '#000', // Adjust for contrast
-    fontWeight: '600',
-  },
-  name: {
-    fontSize: 16,
-    color: '#000',
-  },
-});
 
 export default RSVPFormScreen;

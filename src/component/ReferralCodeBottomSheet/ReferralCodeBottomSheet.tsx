@@ -9,9 +9,13 @@ import Button from '../Button';
 import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
 import { useSubmitReferralCodeMutation } from '../../redux/actions/referralApiAction';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { RootState } from 'src/redux/slices';
+import { useSelector } from 'react-redux';
 
 const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   const inputRef = useRef(null);
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
+
   const [submitReferralCode, { isLoading }] = useSubmitReferralCodeMutation();
   const handleSubmit = async () => {
     const { inputText, validateInputs } = inputRef.current;
@@ -20,13 +24,13 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
       try {
         const response = await submitReferralCode({
           referralCode: inputText,
-          userId: 'userId',
+          userId: loginData?.userId,
         }).unwrap();
-
         FlashMessageComponent.show('success', 'Code submitted successfully!');
         ref.current?.close();
       } catch (error) {
-        inputRef.current.setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_A_VALID_REFERRAL_CODE);
+        console.log(error?.data?.error);
+        inputRef.current.setErrorMessage(error?.data?.error?.message);
       }
     }
   };

@@ -96,6 +96,9 @@ const IMAGES = {
   frame: require('./frame.png'),
   settings: require('./settings.png'),
   check_verified: require('./check-verified.png'),
+  trash: require('./trash.png'),
+  info: require('./info.png'),
+
 };
 
 export default IMAGES;

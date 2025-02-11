@@ -1,7 +1,7 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   LABLE,
   BUTTON_LABLE,
@@ -14,12 +14,12 @@ import Input from '../../../component/Input/Input';
 import Header from '../../../component/Header/Header';
 
 import useApi from '../../../axios/useApi';
-import {EndPoint} from '../../../ApiManager/config';
-import {useFocusEffect} from '@react-navigation/native';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { EndPoint } from '../../../ApiManager/config';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import {
-    fontScale,
+  fontScale,
   horizontalMarginScale,
   horizontalScale,
   radiusScale,
@@ -27,20 +27,26 @@ import {
   Wp,
 } from 'src/utils/dimensions';
 import PhoneNumberInput from 'src/component/PhonNumberComponent/PhoneNumberInput';
+import GuestForm from './GuestForm';
+import { useDispatch } from 'react-redux';
+import { addGuest } from 'src/redux/slices/rspvSlice';
 
-interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
-const AddGuestScreen: React.FC<MyDetailsScreenProps> = ({navigation}) => {
-  const {apiRequest, loading, error} = useApi();
+const AddGuestScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
+  const { apiRequest, loading, error } = useApi();
+  const { params } = useRoute();
+  const { navigate } = useNavigation();
+  const dispatch = useDispatch();
 
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
   const phoneNumberInputRef = useRef<any>(null);
 
   const onNextClick = () => {
-      firstNameRef.current.validateInputs() ;
-      lastNameRef.current.validateInputs() ;
-      phoneNumberInputRef.current.handleNextPress();
+    firstNameRef.current.validateInputs();
+    lastNameRef.current.validateInputs();
+    phoneNumberInputRef.current.handleNextPress();
     if (
       firstNameRef.current.validateInputs() &&
       lastNameRef.current.validateInputs() &&
@@ -70,29 +76,13 @@ const AddGuestScreen: React.FC<MyDetailsScreenProps> = ({navigation}) => {
       <View style={styles.viewContainer}>
         <View style={styles.contentContainer}>
           <Title subTitle={LABLE.ADD_A_PHOTO_SUBTITLE} align="center" />
-          <Input
-            ref={firstNameRef}
-            label={LABLE.FIRST_NAME}
-            errorMessage={ERROR_MESSAGE.FIRST_NAME}
-            //   defaultValue={userDetails.firstName}
-          />
-          <Input
-            ref={lastNameRef}
-            label={LABLE.LAST_NAME}
-            errorMessage={ERROR_MESSAGE.LAST_NAME}
-            //   defaultValue={userDetails.lastName}
-          />
-          <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
-          <PhoneNumberInput ref={phoneNumberInputRef} />
+          <GuestForm data={params?.data} hasPhone onSubmit={(e) => {
+            dispatch(addGuest(e))
+            navigation.pop(2);
+          }} />
         </View>
       </View>
-      <Button
-        disabled={false}
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.ADD}
-        colorTheme="dark"
-        onPress={onNextClick}
-      />
+
     </SafeAreaView>
   );
 };
@@ -109,7 +99,7 @@ const styles = StyleSheet.create({
   btnStyle: {
     width: '85%',
     borderRadius: radiusScale(100),
-    
+
   },
   contentContainer: {
     flex: 1,
@@ -118,7 +108,7 @@ const styles = StyleSheet.create({
   },
   label: {
     paddingVertical: horizontalMarginScale(2),
-    fontSize:fontScale(14),
+    fontSize: fontScale(14),
     paddingTop: verticalMarginScale(20),
   },
 });

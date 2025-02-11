@@ -112,5 +112,5 @@ export const styles = StyleSheet.create({
     cancelPopupContainer: { gap: verticalScale(8), marginTop: verticalScale(4) },
     leaveContainer: { paddingHorizontal: horizontalScale(12), gap: verticalScale(8) },
     scrollView: { flex: 1 },
-    downArrowIcon: { width: 15, height: 15 },
+    downArrowIcon: { width: 13, height: 13 },
 });

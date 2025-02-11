@@ -6,6 +6,8 @@ type PermissionStatus = boolean | null;
 type ContactItem = {
     name: string;
     phoneNumber: string;
+    firstName?: string;
+    lastName?: string;
 };
 
 const useContacts = () => {
@@ -18,6 +20,8 @@ const useContacts = () => {
                 .map((contact) => ({
                     name: `${contact.givenName} ${contact.familyName}`.trim(),
                     phoneNumber: contact.phoneNumbers[0]?.number.replace(/\D/g, '') || '',
+                    firstName: contact.givenName,
+                    lastName: contact.familyName
                 }))
                 .filter((contact) => contact.phoneNumber);
 
