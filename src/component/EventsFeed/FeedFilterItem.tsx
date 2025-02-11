@@ -1,6 +1,13 @@
 import IMAGES from '../../assets/images';
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
+import {
+  horizontalMarginScale,
+  horizontalScale,
+  radiusScale,
+  verticalMarginScale,
+} from '../../utils/dimensions';
+import {COLORS} from '../../utils/constants';
 
 interface FeedFilterItemProps {
   content: string;
@@ -29,22 +36,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    borderRadius: 100,
-    borderColor: '#E1E1E1',
+    borderRadius: radiusScale(100),
+    borderColor: COLORS.borderGray,
     borderWidth: 1,
-    paddingLeft: 16,
-    paddingRight: 8,
-    paddingVertical: 8,
-    backgroundColor: '#F1F1F1',
-    marginHorizontal: 8,
-    height: 48,
+    paddingLeft: horizontalMarginScale(16),
+    paddingRight: horizontalMarginScale(8),
+    paddingVertical: verticalMarginScale(8),
+    backgroundColor: COLORS.whiteFeedContainer,
+    marginHorizontal: horizontalMarginScale(8),
+    height: horizontalScale(36),
   },
   content: {
-    color: 'black',
+    color: COLORS.black,
     lineHeight: 16,
   },
   closeContainer: {
-    padding: 8,
+    paddingHorizontal: horizontalMarginScale(8),
+    paddingVertical: verticalMarginScale(8),
   },
 });
 

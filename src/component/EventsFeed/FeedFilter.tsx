@@ -1,7 +1,24 @@
 import React, {useEffect, useState} from 'react';
-import {Modal, View, StyleSheet, Text, ScrollView, Image} from 'react-native';
+import {
+  Modal,
+  View,
+  StyleSheet,
+  Text,
+  ScrollView,
+  Image,
+  Platform,
+} from 'react-native';
 import {BUTTON_LABLE, COLORS, feedList} from '../../utils/constants';
-import {Wp} from '../../utils/dimensions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  horizontalScale,
+  Hp,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+} from '../../utils/dimensions';
 import DateTimePicker from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
 import Button from '../Button';
@@ -32,6 +49,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
 }) => {
   const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false);
   const [feedFilters, setFeedFilters] = useState<string[]>(filter.categories);
+  const [alert, setAlert] = useState<boolean>(false);
 
   const handleToggle = (feed: string) => {
     if (feedFilters.includes(feed))
@@ -40,16 +58,22 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
   };
 
   const handleShowResults = () => {
+    if (filter.date[0] && !filter.date[1]) {
+      setAlert(true);
+      return null;
+    }
+
     setFilter(prev => ({
       ...prev,
       categories: feedFilters,
     }));
+
     setFilterVisible(false);
   };
 
   const handleClearFilters = () => {
     setFilter({
-      location: '',
+      location: {address: '', placeId: '', latitude: '', longitude: ''},
       categories: [],
       date: ['', ''],
     });
@@ -77,16 +101,23 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
 
             <View style={styles.list}>
               {feedList.map(feed => (
-                <Text
+                <View
                   style={
                     feedFilters.includes(feed)
                       ? styles.selectedItem
                       : styles.item
                   }
                   key={feed}
-                  onPress={() => handleToggle(feed)}>
-                  {feed}
-                </Text>
+                  onTouchEnd={() => handleToggle(feed)}>
+                  <Text
+                    style={{
+                      color: feedFilters.includes(feed)
+                        ? COLORS.white
+                        : COLORS.black,
+                    }}>
+                    {feed}
+                  </Text>
+                </View>
               ))}
             </View>
 
@@ -94,10 +125,13 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
               <Text style={styles.label}>Location</Text>
               <View
                 style={styles.container}
-                onTouchEnd={() => setLocationVisible(true)}>
+                onTouchEnd={() => {
+                  setLocationVisible(true);
+                  if (Platform.OS === 'ios') setFilterVisible(false);
+                }}>
                 <View style={[styles.inputWrapper]}>
                   <Image source={IMAGES.search} style={styles.icon} />
-                  <Text>Currect Location ({filter.location})</Text>
+                  <Text>Currect Location ({filter.location.address})</Text>
                 </View>
               </View>
             </View>
@@ -122,17 +156,18 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
                     <Image source={IMAGES.downArrow} style={styles.icon} />
                   </View>
                 </View>
+
+                {alert && (
+                  <Text style={styles.alert}>Please choose an End Date.</Text>
+                )}
+
                 {datePickerVisible && (
                   <View style={styles.datePicker}>
                     <DateTimePicker
                       mode="range"
                       startDate={filter.date[0]}
                       endDate={filter.date[1]}
-                      headerButtonStyle={{
-                        backgroundColor: '#D8D8D8',
-                        borderRadius: 100,
-                        padding: 8,
-                      }}
+                      headerButtonStyle={styles.headerButtonStyle}
                       selectedItemColor="black"
                       selectedRangeBackgroundColor="lightgray"
                       dayContainerStyle={styles.dayContainerStyle}
@@ -172,23 +207,23 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
 
 const styles = StyleSheet.create({
   modalBar: {
-    width: 48,
-    height: 4,
-    borderRadius: 50,
-    backgroundColor: '#D8D8D8',
+    width: horizontalScale(48),
+    height: verticalScale(4),
+    borderRadius: radiusScale(50),
+    backgroundColor: COLORS.tabBorderColor,
     top: -12,
     marginLeft: 'auto',
     marginRight: 'auto',
   },
   title: {
-    width: '100%',
-    fontSize: 24,
-    color: 'black',
-    fontFamily: 'Times New Roman',
+    width: Wp(100),
+    fontSize: fontScale(24),
+    color: COLORS.black,
+    fontFamily: fontFamily.RomieTrial_Bold,
     fontWeight: '700',
     lineHeight: 32,
     textAlign: 'center',
-    paddingBottom: 36,
+    paddingBottom: verticalMarginScale(36),
   },
   list: {
     display: 'flex',
@@ -197,76 +232,74 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   selectedItem: {
-    paddingTop: 12,
-    paddingBottom: 12,
-    paddingLeft: 16,
-    paddingRight: 16,
-    borderRadius: 50,
+    paddingVertical: verticalMarginScale(12),
+    paddingHorizontal: horizontalMarginScale(16),
+    borderRadius: radiusScale(50),
     borderWidth: 1,
-    color: 'white',
-    backgroundColor: '#1F1F1F',
-    borderColor: '#1F1F1F',
+    color: COLORS.white,
+    backgroundColor: COLORS.black,
+    borderColor: COLORS.black,
+  },
+  headerButtonStyle: {
+    backgroundColor: COLORS.tabBorderColor,
+    borderRadius: radiusScale(100),
+    paddingHorizontal: horizontalMarginScale(8),
+    paddingVertical: verticalMarginScale(8),
+  },
+  alert: {
+    color: COLORS.red,
   },
   item: {
-    paddingTop: 12,
-    paddingBottom: 12,
-    paddingLeft: 16,
-    paddingRight: 16,
-    borderRadius: 50,
+    paddingVertical: verticalMarginScale(12),
+    paddingHorizontal: horizontalMarginScale(16),
+    borderRadius: radiusScale(50),
     borderWidth: 1,
-    color: 'black',
-    backgroundColor: '#EEEEEE',
-    borderColor: '#E1E1E1',
+    color: COLORS.black,
+    backgroundColor: COLORS.lighter_gray,
+    borderColor: COLORS.borderGray,
   },
   label: {
-    marginTop: 36,
-    marginBottom: 4,
+    marginTop: verticalMarginScale(36),
+    marginBottom: verticalMarginScale(4),
   },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: COLORS.grayMiddle,
   },
   modalContent: {
-    width: '100%',
-    backgroundColor: 'white',
-    borderRadius: 25,
-    paddingVertical: 20,
+    width: Wp(100),
+    backgroundColor: COLORS.white,
+    borderRadius: radiusScale(25),
+    paddingVertical: verticalMarginScale(20),
     top: '5%',
-    height: '90%',
+    height: Hp(90),
   },
   scrollPadding: {
-    paddingHorizontal: 20,
-  },
-  locationItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    paddingHorizontal: horizontalMarginScale(20),
   },
   flag: {
-    fontSize: 20,
-    marginRight: 10,
+    fontSize: fontScale(20),
+    marginRight: horizontalMarginScale(10),
   },
   locationName: {
-    fontSize: 16,
+    fontSize: fontScale(16),
   },
   showResults: {
     width: Wp(85),
-    marginTop: 24,
-    borderRadius: 100,
+    marginTop: verticalMarginScale(24),
+    borderRadius: radiusScale(100),
   },
   clearFilters: {
     width: Wp(85),
-    marginTop: 8,
-    borderColor: 'black',
+    marginTop: verticalMarginScale(8),
+    borderColor: COLORS.black,
     borderWidth: 2,
-    borderRadius: 100,
+    borderRadius: radiusScale(100),
   },
   container: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.white,
   },
   inputValueWithLabel: {
     flexDirection: 'row',
@@ -278,37 +311,37 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    height: 60,
+    height: verticalScale(60),
     borderWidth: 1,
     borderColor: COLORS.borderGray,
-    borderRadius: 10,
-    backgroundColor: 'white',
-    paddingLeft: 12,
-    paddingRight: 6,
+    borderRadius: radiusScale(10),
+    backgroundColor: COLORS.white,
+    paddingLeft: horizontalMarginScale(12),
+    paddingRight: horizontalMarginScale(6),
   },
   datePicker: {
-    borderRadius: 12,
-    borderColor: '#E1E1E1',
+    borderRadius: radiusScale(12),
+    borderColor: COLORS.borderGray,
     borderWidth: 1,
-    marginTop: 6,
-    paddingBottom: 24,
-    paddingHorizontal: 12,
+    marginTop: verticalMarginScale(6),
+    paddingBottom: verticalMarginScale(24),
+    paddingHorizontal: horizontalMarginScale(12),
   },
   icon: {
-    width: 16,
-    height: 17,
-    marginRight: 6,
+    width: horizontalScale(12),
+    height: verticalScale(16),
+    marginRight: horizontalMarginScale(6),
   },
   input: {
     flex: 1,
-    fontSize: 14,
-    color: 'black',
+    fontSize: fontScale(14),
+    color: COLORS.black,
     fontFamily: fontFamily.ABCDiatype_Regular,
   },
   dayContainerStyle: {
     width: 40,
-    marginHorizontal: 'auto',
     height: 40,
+    marginHorizontal: 'auto',
   },
 });
 

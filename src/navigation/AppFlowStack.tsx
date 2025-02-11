@@ -28,7 +28,6 @@ export type AppFlowStackParamList = {
   ProfilePhotoScreen: undefined;
   IdentityVerification: undefined;
   ReferralsScreen: undefined;
-  WelcomeScreen: undefined;
 };
 
 const Stack = createStackNavigator<AppFlowStackParamList>();
@@ -38,7 +37,6 @@ export const AppFlowStack: React.FC = () => {
 
   const getInitialPage=()=>{
      switch(pageProgress){
-      // case 0: return "WelcomeScreen";
       case 1: return "MyDetailsScreen";
       case 2 : return "EnterEmailPhone";
       case 3 : return "GenderScreen";
@@ -55,12 +53,6 @@ export const AppFlowStack: React.FC = () => {
     <Stack.Navigator
       initialRouteName={getInitialPage()}
       screenOptions={({ route, navigation }) => ({})}>
-      <Stack.Screen
-        name="WelcomeScreen"
-        component={WelcomeScreen}
-        options={{ headerShown: false }}
-      />
-
       <Stack.Screen
         name="MyDetailsScreen"
         component={MyDetailsScreen}

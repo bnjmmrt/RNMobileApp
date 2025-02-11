@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   },
   tabStyle: {
     width: Wp(100) - verticalMarginScale(32),
-    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    backgroundColor: COLORS.grayMiddle,
     borderRadius: radiusScale(999),
     flexDirection: 'row',
     justifyContent: 'space-between',

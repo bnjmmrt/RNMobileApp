@@ -1,9 +1,16 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {Wp, Hp} from '../../utils/dimensions';
+import {
+  Wp,
+  Hp,
+  horizontalMarginScale,
+  fontScale,
+  verticalMarginScale,
+} from '../../utils/dimensions';
 import {Image} from 'react-native-animatable';
 import IMAGES from '../../assets/images';
 import {COLORS} from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
 
 interface NoResultsProps {
   loading: boolean;
@@ -40,16 +47,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    marginRight: 10,
+    marginRight: horizontalMarginScale(10),
   },
   text: {
-    fontSize: 14,
-    marginTop: 10,
+    fontSize: fontScale(14),
+    marginTop: verticalMarginScale(10),
   },
   titleText: {
-    fontSize: 32,
+    fontSize: fontScale(32),
     fontWeight: '700',
-    marginTop: 5,
+    fontFamily: fontFamily.RomieTrial_Bold,
+    marginTop: verticalMarginScale(5),
     color: COLORS.black,
   },
 });

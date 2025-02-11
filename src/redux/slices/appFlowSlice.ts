@@ -1,40 +1,45 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-export type Address={address:string,placeId:string}
+export interface Address {
+  address: string;
+  placeId: string;
+  latitude?: string;
+  longitude?: string;
+}
 export interface UserDetailsState {
   firstName: string;
   lastName: string;
   gender: number;
-  baseCity:Address ;
+  baseCity: Address;
   birthday: string;
   email: string;
   phone: string;
   creativeFocus: string[];
   interest: string[];
-  profilePic:any;
+  profilePic: any;
   pageProgress: number;
   isEmailVerified: boolean;
   isEmailPhoneBothVerified: boolean;
-  countryCodeFlag:string;
-  countryCallingCode:string
+  countryCodeFlag: string;
+  countryCallingCode: string;
 }
 
 const initialState: UserDetailsState = {
   firstName: '',
   lastName: '',
   gender: -1,
-  baseCity: {address:'',placeId:''},
+  baseCity: {address: '', placeId: ''},
   birthday: '',
   email: '',
   phone: '',
   creativeFocus: [],
   interest: [],
-  profilePic:'',
-  pageProgress: 0,
+  profilePic: '',
+  pageProgress: 1,
   isEmailVerified: false,
   isEmailPhoneBothVerified: false,
-  countryCodeFlag:'',
-  countryCallingCode:''
+  countryCodeFlag: '',
+  countryCallingCode: '',
 };
 
 const appFlowSlice = createSlice({
@@ -50,7 +55,10 @@ const appFlowSlice = createSlice({
     setGender(state, action: PayloadAction<number>) {
       state.gender = action.payload;
     },
-    setBaseCity(state, action: PayloadAction<{address:string,placeId:string}>) {
+    setBaseCity(
+      state,
+      action: PayloadAction<{address: string; placeId: string}>,
+    ) {
       state.baseCity.address = action.payload.address;
       state.baseCity.placeId = action.payload.placeId;
     },
@@ -90,7 +98,7 @@ const appFlowSlice = createSlice({
 
     getAppFlowDetails(state) {
       // return state object
-    return state
+      return state;
     },
     resetAppFlowDetails(state) {
       // Reset state to initial values

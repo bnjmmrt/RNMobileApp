@@ -3,9 +3,16 @@ import {View, Text, StyleSheet} from 'react-native';
 import {Image} from 'react-native-animatable';
 import {COLORS} from '../../utils/constants';
 import {fontFamily} from '../../utils/functions';
-import {Wp, Hp} from '../../utils/dimensions';
+import {
+  Wp,
+  Hp,
+  verticalMarginScale,
+  horizontalMarginScale,
+  radiusScale,
+  fontScale,
+} from '../../utils/dimensions';
 import IMAGES from '../../assets/images';
-import {SeriesItem} from './EventsFeed';
+import type {SeriesItem} from './EventsFeed';
 
 interface FeedSeriesProps {
   item: SeriesItem;
@@ -34,7 +41,9 @@ const FeedSeries: React.FC<FeedSeriesProps> = ({item, setSeries}) => {
           }
           style={styles.image1}
         />
-        <Text style={styles.seriesLabel}>Series</Text>
+        <View style={styles.seriesLabel}>
+          <Text>Series</Text>
+        </View>
       </View>
       <View style={styles.contentContainer}>
         <Text numberOfLines={1} style={styles.title}>
@@ -51,8 +60,8 @@ const FeedSeries: React.FC<FeedSeriesProps> = ({item, setSeries}) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    padding: 10,
-    paddingHorizontal: 11,
+    paddingVertical: verticalMarginScale(10),
+    paddingHorizontal: horizontalMarginScale(11),
     width: Wp(48),
     // height: Hp(25),
   },
@@ -64,25 +73,25 @@ const styles = StyleSheet.create({
   contentContainer: {
     flexDirection: 'column',
     flex: 1,
-    marginTop: 8,
-    paddingHorizontal: 8,
+    marginTop: verticalMarginScale(8),
+    paddingHorizontal: horizontalMarginScale(8),
   },
   seriesLabel: {
     position: 'absolute',
-    paddingHorizontal: 12,
-    paddingTop: 6,
-    paddingBottom: 8,
-    backgroundColor: 'white',
-    borderRadius: 100,
+    paddingHorizontal: horizontalMarginScale(12),
+    paddingTop: verticalMarginScale(6),
+    paddingBottom: verticalMarginScale(8),
+    backgroundColor: COLORS.white,
+    borderRadius: radiusScale(100),
     left: 12,
     top: 8,
-    color: 'black',
+    color: COLORS.black,
     zIndex: 3,
   },
   image: {
     height: Hp(33),
     width: Wp(41),
-    borderRadius: 10,
+    borderRadius: radiusScale(10),
     zIndex: 3,
   },
   image0: {
@@ -90,7 +99,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     height: Hp(33),
     width: Wp(37),
-    borderRadius: 10,
+    borderRadius: radiusScale(10),
     zIndex: 2,
   },
   image1: {
@@ -98,19 +107,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     height: Hp(33),
     width: Wp(33),
-    borderRadius: 10,
+    borderRadius: radiusScale(10),
     zIndex: 1,
   },
   title: {
-    fontSize: 18,
+    fontSize: fontScale(18),
     fontFamily: fontFamily.ABCDiatype_Medium,
     color: COLORS.black,
   },
   subtitle: {
     color: COLORS.light_gray,
-    fontSize: 12,
+    fontSize: fontScale(12),
     fontFamily: fontFamily.ABCDiatype_Regular,
-    marginTop: 1,
+    marginTop: verticalMarginScale(1),
   },
 });
 

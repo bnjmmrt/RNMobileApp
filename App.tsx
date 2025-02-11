@@ -15,13 +15,15 @@ import { useNetInfo } from '@react-native-community/netinfo';
 import { store, persistor } from './src/redux/store';
 import FlashMessage from 'react-native-flash-message';
 import { PersistGate } from 'redux-persist/integration/react';
-import { SafeAreaViewWrapper } from 'src/component/Wrappers/SafeAreaViewWrapper';
-import { EndPoint } from 'src/ApiManager/config';
+import { SafeAreaViewWrapper } from './src/component/Wrappers/SafeAreaViewWrapper';
+import { EndPoint } from './src/ApiManager/config';
 
-import useApi from 'src/axios/useApi';
+import useApi from './src/axios/useApi';
 import { useDispatch } from 'react-redux';
-import { setCreativeFocus } from 'src/redux/slices/appGlobalDataSlice';
-import { setInterests } from 'src/redux/slices/appGlobalDataSlice';
+import { setCreativeFocus } from './src/redux/slices/appFlowSlice';
+import { setInterests } from './src/redux/slices/appGlobalDataSlice';
+import EventsFeed from './src/component/EventsFeed/EventsFeed';
+
 const AppContent: React.FC = () => {
   // const { isInternetConnected } = useAuth();
   const { isConnected } = useNetInfo();
@@ -46,7 +48,8 @@ const AppContent: React.FC = () => {
   if (!isConnected && isConnected !== null) {
     return <NoInternetScreen />;
   }
-  return <MainNavigation />;
+  // return <MainNavigation />;
+  return <EventsFeed />;
 };
 
 const App: React.FC = () => {
