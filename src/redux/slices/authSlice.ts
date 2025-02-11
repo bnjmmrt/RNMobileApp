@@ -1,8 +1,10 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AuthState {
   loginData: any;
   token: string;
+  userId: string;
+  role: string;
 }
 
 const initialState: AuthState = {
@@ -17,10 +19,12 @@ const initialState: AuthState = {
         roleName: '',
       },
     ],
-    isGuest:false,
+    isGuest: false,
     token: '',
   },
   token: '',
+  userId: '',
+  role: 'non_member'
 };
 
 const authSlice = createSlice({
@@ -28,18 +32,23 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setLoginData(state, action: PayloadAction<any>) {
-      state.loginData = {...action.payload, isInvited: false};
+      state.loginData = { ...action.payload, isInvited: false };
     },
     setAuthToken(state, action: PayloadAction<any>) {
       state.token = action.payload;
     },
+    setUserId(state, action: PayloadAction<any>) {
+      state.userId = action.payload;
+    },
+    setRole(state, action: PayloadAction<any>) {
+      state.role = action.payload;
+    },
     resetLoginData() {
-      console.log('Sayyed rest Called');
       return initialState;
     },
   },
 });
 
-export const {setLoginData, setAuthToken, resetLoginData} = authSlice.actions;
+export const { setLoginData, setAuthToken, setUserId, setRole, resetLoginData } = authSlice.actions;
 
 export default authSlice.reducer;

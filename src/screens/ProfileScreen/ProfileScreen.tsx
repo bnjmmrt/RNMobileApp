@@ -203,7 +203,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
       if (response.data) {
         // setIsToastShown(false);
         dispatch(
-          setProfilePic(environment.IMAGE_URL + response.data.fileKeyId),
+          setProfilePic(EndPoint.create_user + response.data.fileKeyId),
         );
       } else {
         //display error

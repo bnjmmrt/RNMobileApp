@@ -11,7 +11,7 @@ import DynamicTabBar from '../../component/ActiveTabBar/DynamicTabBar';
 import HeaderComponent from '../../component/HeaderComponent';
 import SearchInput from '../../component/SearchInput';
 import { RootState } from '../../redux/slices';
-import { BUTTON_LABLE, COLORS, tabsData } from '../../utils/constants';
+import { BUTTON_LABLE, COLORS, hostTabData, memberTabData } from '../../utils/constants';
 import EventScreenStyle from './EventScreenStyle';
 import AppliedEvents from './Tabs/AppliedEvents';
 import InvitedEvents from './Tabs/InvitedEvents';
@@ -31,15 +31,18 @@ interface TabItem {
 const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const styles = EventScreenStyle();
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const role =
-    (loginData?.roles &&
-      loginData?.roles.length > 0 &&
-      loginData?.roles[0]?.roleName) ||
-    'non_member';
-  const userId = loginData?.guestId || '6267f02a-0c86-4752-9e62-8bada629d830';
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  const role = useSelector((state: RootState) => state.auth.role);
+
+  // const role =
+  //   (loginData?.roles &&
+  //     loginData?.roles.length > 0 &&
+  //     loginData?.roles[0]?.roleName) ||
+  //   'non_member';
   const searchInputRef = useRef<any>(null);
   const [searchText, setSearchText] = useState('');
-  const showEvents = loginData?.isInvited || role === 'member';
+  const showEvents = loginData?.isInvited || role === 'member' || role === 'host';
+  const tabs = role === 'host' ? hostTabData : memberTabData
 
   useFocusEffect(
     useCallback(() => {
@@ -55,7 +58,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
     }, [loginData?.isInvited]),
   );
 
-  const [currentTab, setCurrentTab] = useState<TabItem>(tabsData[1]);
+  const [currentTab, setCurrentTab] = useState<TabItem>(tabs[1]);
 
   const debouncedSearch = useCallback(
     debounce((text: string) => setSearchText(text), 500),
@@ -73,13 +76,13 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const renderTabContent = () => {
     switch (currentTab.label) {
       case BUTTON_LABLE.UPCOMING:
-        return <UpcomingEvents userId={userId} searchText={searchText} />;
+        return <UpcomingEvents userId={userId} searchText={searchText} tab={currentTab} />;
       case BUTTON_LABLE.INVITED:
-        return <InvitedEvents userId={userId} searchText={searchText} />;
+        return <InvitedEvents userId={userId} searchText={searchText} tab={currentTab} />;
       case BUTTON_LABLE.APPLIED:
-        return <AppliedEvents userId={userId} searchText={searchText} />;
+        return <AppliedEvents userId={userId} searchText={searchText} tab={currentTab} />;
       case BUTTON_LABLE.PAST:
-        return <PastEvents userId={userId} searchText={searchText} />;
+        return <PastEvents userId={userId} searchText={searchText} tab={currentTab} />;
       default:
         return null;
     }
@@ -106,7 +109,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
           />
           <DynamicTabBar
             onTabChange={handleTabChange}
-            tabs={tabsData}
+            tabs={tabs}
             activeTabIndex={showEvents ? 1 : 0}
           />
           <View style={styles.contentContainer}>{renderTabContent()}</View>

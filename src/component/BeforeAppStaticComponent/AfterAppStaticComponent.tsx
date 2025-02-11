@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { View, StyleSheet, StatusBar, SafeAreaView } from 'react-native';
 import { Hp, Wp } from '../../utils/dimensions';
-import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
+import { BUTTON_LABLE, COLORS, eventData, LABLE } from '../../utils/constants';
 import Button from '../Button';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
 import { ScrollView } from 'react-native';
@@ -12,11 +12,13 @@ import MiddleStaticComponent from '../TitleSubTitleComponent/MiddleStaticCompone
 import { useNavigation } from '@react-navigation/native';
 import useContacts from 'src/utils/hooks/useContactPermission';
 import GradientOverlay from 'src/screens/BeforeApplicationFlow/GradientOverlay';
+import { ROUTES } from 'src/navigation/Route';
 
 
 const AfterAppStaticComponent: React.FC<{}> = () => {
   const { requestContactPermission } = useContacts();
   const { navigate } = useNavigation();
+
 
   const bottomSheetRef = useRef(null);
 
@@ -24,6 +26,14 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
     await requestContactPermission();
     navigate('InviteReferralScreen')
   }
+
+  const handlEventPress = () => {
+    navigate(ROUTES.EventStack, {
+      screen: ROUTES.EventDetailsScreen,
+      params: eventData
+    });
+  };
+
   const onEnterReferralClick = () => {
     bottomSheetRef?.current?.open();
   }
@@ -95,7 +105,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     flexDirection: 'column', alignItems: 'center',
-    paddingTop: 30
+    // paddingTop: 30
   },
   btnStyle: {
     width: Wp(85),

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet, Text } from 'react-native';
 import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -14,6 +14,9 @@ import EventVenue from 'src/component/Event/EventVenue';
 import EventOverview from 'src/component/Event/EventOverview';
 import Button from 'src/component/Button';
 import { event_mock } from './eventMock';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+import { useFetchEventDetailsQuery } from 'src/redux/actions/eventApiAction';
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
@@ -25,9 +28,20 @@ type RouteParams = {
 
 
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) => {
-
   const route = useRoute<RouteProp<RouteParams>>();
-  console.log(route.params);
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  const { data, isLoading } = useFetchEventDetailsQuery({
+    userId,
+    eventId: route?.params?.id
+  });
+
+
+  console.log("Event details", route.params.id);
+
+  useEffect(() => {
+    console.log("Event data:", data)
+  }, [data])
+  console.log("Event details", route.params.id);
   const statusMap = [
     { id: "1", label: EVENT_STATUS.AWAITING },
     { id: "2", label: EVENT_STATUS.INVITED },
