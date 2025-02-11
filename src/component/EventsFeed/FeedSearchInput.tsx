@@ -10,7 +10,14 @@ import {Image} from 'react-native-animatable';
 import IMAGES from '../../assets/images';
 import {COLORS} from '../../utils/constants';
 import {fontFamily} from '../../utils/functions';
-import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalMarginScale, verticalScale } from '../../utils/dimensions';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+  horizontalScale,
+  verticalScale,
+  radiusScale,
+  fontScale,
+} from '../../utils/dimensions';
 
 interface FeedSearchInputProps {
   handleChange: (text: string) => void;

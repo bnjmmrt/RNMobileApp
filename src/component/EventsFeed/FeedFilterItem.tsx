@@ -1,13 +1,13 @@
 import IMAGES from '../../assets/images';
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
+import {COLORS} from '../../utils/constants';
 import {
   horizontalMarginScale,
+  verticalMarginScale,
   horizontalScale,
   radiusScale,
-  verticalMarginScale,
 } from '../../utils/dimensions';
-import {COLORS} from '../../utils/constants';
 
 interface FeedFilterItemProps {
   content: string;

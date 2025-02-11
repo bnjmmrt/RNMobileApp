@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState, useMemo} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, ScrollView, Text, Image, FlatList} from 'react-native';
 import {COLORS} from '../../utils/constants';
 import HeaderComponent from '../../component/HeaderComponent';
@@ -22,15 +22,16 @@ import FeedSeriesDetail from './FeedSeriesDetail';
 import FeedFilterItem from './FeedFilterItem';
 import type {DateType} from 'react-native-ui-datepicker';
 import {Address} from '../../redux/slices/appFlowSlice';
+import FeaturedFeedItem from './FeaturedFeedItem';
 import {
-  Wp,
-  Hp,
   horizontalMarginScale,
   verticalMarginScale,
+  horizontalScale,
+  verticalScale,
   radiusScale,
   fontScale,
-  verticalScale,
-  horizontalScale,
+  Hp,
+  Wp,
 } from '../../utils/dimensions';
 
 export interface EventItem {
@@ -267,7 +268,7 @@ const EventsFeed = () => {
               ))}
             </ScrollView>
           )}
-          <View style={{height: 2000}}>
+          <View>
             {events.length === 0 ? (
               <NoResults loading={loading} />
             ) : (
@@ -278,8 +279,8 @@ const EventsFeed = () => {
                     <View style={styles.featuredContainer}>
                       <Text style={styles.title}>Featured Events</Text>
                       <ScrollView horizontal style={styles.scrollView}>
-                        {featuredEvents.map((event, index) => (
-                          <FeedItem
+                        {featuredEvents.map((event) => (
+                          <FeaturedFeedItem
                             key={event.id}
                             item={event}
                             setDetail={setDetail}
@@ -370,7 +371,7 @@ const styles = StyleSheet.create({
     paddingBottom: verticalMarginScale(900),
   },
   scrollView: {
-    height: Hp(41),
+    height: verticalScale(485),
   },
   container: {
     flex: 1,

@@ -3,21 +3,21 @@ import {View, Text, StyleSheet, Modal, ScrollView} from 'react-native';
 import {Image} from 'react-native-animatable';
 import {COLORS} from '../../utils/constants';
 import {fontFamily} from '../../utils/functions';
-import {
-  Wp,
-  Hp,
-  verticalMarginScale,
-  horizontalMarginScale,
-  radiusScale,
-  horizontalScale,
-  verticalScale,
-  fontScale,
-} from '../../utils/dimensions';
 import IMAGES from '../../assets/images';
 import type {EventItem, SeriesItem} from './EventsFeed';
-import CollapsibleView from '../CollapsibleView';
 import {format} from 'date-fns';
 import FeedDetail from './FeedDetail';
+import FastImage from '@d11/react-native-fast-image';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+  horizontalScale,
+  verticalScale,
+  radiusScale,
+  fontScale,
+  Hp,
+  Wp,
+} from '../../utils/dimensions';
 
 interface FeedSeriesDetailProps {
   series: SeriesItem | null;
@@ -51,8 +51,10 @@ const FeedSeriesDetail: React.FC<FeedSeriesDetailProps> = ({
         <View style={styles.modalContent}>
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
             <View>
-              <Image
+              <FastImage
                 source={series.image || IMAGES.eventCoverPlaceholders1}
+                resizeMode={FastImage.resizeMode.cover}
+                defaultSource={IMAGES.eventCoverPlaceholders1}
                 style={styles.seriesImage}
               />
               <View
@@ -136,16 +138,16 @@ const EventItem: React.FC<EventItemProps> = ({event, setDetail}) => {
 
   return (
     <View style={styles.eventContainer} onTouchEnd={() => setDetail(event)}>
-      <Image
-        source={
-          event.image ? {uri: event.image} : IMAGES.eventCoverPlaceholders1
-        }
-        style={styles.eventImage}
-        alt="event"
+      <FastImage
+        source={event.image ? {uri: event.image} : IMAGES.eventCoverPlaceholders1}
+        resizeMode={FastImage.resizeMode.cover}
+        defaultSource={IMAGES.eventCoverPlaceholders1}
+        style={styles.icon}
       />
       <View style={styles.eventBody}>
         <Text style={styles.title}>{event.title}</Text>
-        <Text>{formatEventDate(event.startDate)}</Text>
+        <Text style={styles.content}>{formatEventDate(event.startDate)}</Text>
+        <Text style={styles.content}>{event.location}</Text>
       </View>
       <Image source={IMAGES.arrowRight} alt="arrow-right" />
     </View>
@@ -265,11 +267,17 @@ const styles = StyleSheet.create({
     borderTopColor: COLORS.borderGray,
   },
   title: {
-    fontSize: fontScale(18),
+    fontSize: fontScale(20),
+    lineHeight: 24,
     fontFamily: fontFamily.RomieTrial_Bold,
     color: COLORS.black,
     marginTop: verticalScale(16),
     marginBottom: verticalScale(4),
+  },
+  content: {
+    fontSize: fontScale(12),
+    lineHeight: 14,
+    fontWeight: '500',
   },
   readMore: {
     textDecorationLine: 'underline',
@@ -284,16 +292,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginTop: verticalScale(10),
-    paddingVertical: verticalScale(8),
-    paddingHorizontal: horizontalMarginScale(8),
+    paddingVertical: verticalScale(12),
+    paddingHorizontal: horizontalMarginScale(12),
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: radiusScale(12),
   },
-  eventImage: {
-    height: Hp(25),
-    width: Wp(25),
+  icon: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: verticalScale(121),
+    width: horizontalScale(82),
     borderRadius: radiusScale(12),
+    backgroundColor: COLORS.borderGray,
+    overflow: 'hidden',
   },
   eventBody: {
     flexDirection: 'column',
