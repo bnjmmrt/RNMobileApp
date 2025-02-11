@@ -1,38 +1,93 @@
 import IMAGES from '@images/index';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import React, {useCallback, useRef, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {ActivityIndicator, FlatList, View} from 'react-native';
 import Button from 'src/component/Button';
 import Header from 'src/component/Header/Header';
 import SearchInput from 'src/component/SearchInput';
-import {verticalMarginScale} from 'src/utils/dimensions';
+import {
+  horizontalMarginScale,
+  Hp,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
 import DeleteListUsersSheet from '../BottomSheets/DeleteListUsersSheet';
-import ListActionsSheet from '../BottomSheets/ListActionsSheet';
-import UserListItem from '../UsersListItem';
+import ListActionsSheet, {
+  listActionCurrentPageType,
+} from '../BottomSheets/ListActionsSheet';
+import UserListItem, {UserItemInterface} from '../UsersListItem';
 import createStyle from './style';
 import {AppStackParamList} from 'src/navigation/AppStack';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useFetchCustomListUsersQuery} from 'src/redux/actions/listsApiAction';
+import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
+import {changeSafeAreaViewConfig} from 'src/utils/functions';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import {COLORS} from 'src/utils/constants';
 
-interface ListDetailsProps extends NativeStackScreenProps<any, any> {}
+interface ListDetailsProps
+  extends NativeStackScreenProps<AppStackParamList, 'ListDetail'> {}
 
 const ListDetails: React.FC<ListDetailsProps> = ({route}) => {
   const styles = createStyle();
   const navigation = useNavigation<NavigationProp<AppStackParamList>>();
   const searchInputRef = useRef<any>(null);
-  const deleteListUsersSheetRef = useRef(null);
-  const listActionSheetRef = useRef(null);
+  const deleteListUsersSheetRef = useRef<BottomSheetMethods>(null);
+  const listActionSheetRef = useRef<BottomSheetMethods>(null);
 
-  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+  const [selectedActionSheetAction, setSelectedActionSheetAction] =
+    useState<listActionCurrentPageType>('');
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>('');
+  const [allUsers, setAllUsers] = useState<{
+    users: UserItemInterface[];
+    count: number;
+    name: string;
+    id: string;
+  }>({count: 0, users: [], id: '', name: ''});
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const onPressUser = () => {};
+  const {data, isLoading, refetch} = useFetchCustomListUsersQuery({
+    take: 10,
+    skip: (currentPage - 1) * 10,
+    listId: route.params.list,
+    searchValue: searchText,
+    listType: route.params.listType || 'custom',
+  });
 
-  const onSelectUser = (user: number) => {
-    if (selectedUsers.includes(user)) {
-      const newArray = selectedUsers.filter(u => u !== user);
+  useEffect(() => {
+    if (data) {
+      if (currentPage === 1) {
+        setAllUsers(data?.data);
+      } else {
+        setAllUsers(prev => ({
+          ...prev,
+          count: data.data.count,
+          users: [...prev?.users, ...data?.data?.users],
+        }));
+      }
+    }
+  }, [data]);
+
+  const loadMore = () => {
+    if (allUsers?.users?.length < data?.data?.count) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
+  const onSelectUser = (user: UserItemInterface) => {
+    const isSelected = selectedUsers.some(
+      selectedUser => selectedUser === user.listMappingId,
+    );
+    if (isSelected) {
+      const newArray = selectedUsers.filter(u => u !== user.listMappingId);
       setSelectedUsers(newArray);
     } else {
-      const newArray = [...selectedUsers, user];
+      const newArray = [...selectedUsers, user.listMappingId];
       setSelectedUsers(newArray);
     }
   };
@@ -41,47 +96,104 @@ const ListDetails: React.FC<ListDetailsProps> = ({route}) => {
     setSearchText(text);
   };
 
+  const onListActionSheetSuccess = () => {
+    if (selectedActionSheetAction === 'deleteList') {
+      navigation.goBack();
+    } else if (selectedActionSheetAction === 'duplicateList') {
+      navigation.goBack();
+    } else {
+      setCurrentPage(1);
+      refetch();
+    }
+    // setSelectedActionSheetAction('');
+  };
+
   const renderItem = useCallback(
-    ({item}: {item: number}) => {
-      const isSelected = selectedUsers.includes(item);
+    ({item}: {item: UserItemInterface}) => {
+      const isSelected = selectedUsers.some(
+        user => user === item.listMappingId,
+      );
       return (
         <UserListItem
           item={item}
           onSelectUser={onSelectUser}
           isSelected={isSelected}
+          showCheckbox={route.params.listType === 'custom'}
         />
       );
     },
     [selectedUsers],
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    }, []),
+  );
+
   return (
     <View style={styles.container}>
       <Header
-        headerTitle="List Name"
+        headerTitle={
+          route.params.listType === 'favorite'
+            ? 'My Favorites'
+            : route.params.listType === 'follower'
+            ? 'My Followers'
+            : allUsers.name
+        }
         showProgressBar={false}
         rightIcon={IMAGES.dots}
         onPressRightIcon={() => {
+          setSelectedActionSheetAction('');
           listActionSheetRef?.current?.open();
         }}
         showBackButton={true}
       />
-      <SearchInput
-        ref={searchInputRef}
-        onSearchTextChange={handleSearchTextChange}
-        placeholder="Search..."
-        rightIcon={IMAGES.filter_lines}
-      />
+      <View style={{marginHorizontal: horizontalMarginScale(20), flex: 1}}>
+        <SearchInput
+          ref={searchInputRef}
+          onSearchTextChange={handleSearchTextChange}
+          placeholder="Search..."
+          rightIcon={IMAGES.filter_lines}
+          mainContainerStyle={{marginHorizontal: 0}}
+        />
+        {isLoading ? (
+          <View
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <ActivityIndicator color={COLORS.black} />
+          </View>
+        ) : null}
 
-      <FlatList
-        data={[1, 2, 3, 4]}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-        style={{alignSelf: 'center', width: '90%'}}
-        contentContainerStyle={{gap: verticalMarginScale(16)}}
-        ListHeaderComponent={<View />}
-        ListFooterComponent={<View />}
-      />
+        <FlatList
+          data={allUsers.users || []}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={{gap: verticalMarginScale(16)}}
+          ListHeaderComponent={<View />}
+          ListFooterComponent={<View />}
+          onEndReached={loadMore}
+          onEndReachedThreshold={0.4}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <>
+              {!isLoading ? (
+                <View
+                  style={{
+                    height: Hp(55),
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <EventEmptyRecord
+                    title="Your List is Empty"
+                    subTitle={`Start building your list by adding users.\nClick the button below to begin.`}
+                    isLoading={false}
+                  />
+                </View>
+              ) : null}
+            </>
+          }
+        />
+      </View>
       {selectedUsers.length > 0 ? (
         <Button
           title="Remove from List"
@@ -93,8 +205,26 @@ const ListDetails: React.FC<ListDetailsProps> = ({route}) => {
         />
       ) : null}
 
-      <DeleteListUsersSheet ref={deleteListUsersSheetRef} />
-      <ListActionsSheet ref={listActionSheetRef} />
+      <DeleteListUsersSheet
+        ref={deleteListUsersSheetRef}
+        selectedUsers={selectedUsers}
+        listId={allUsers.id}
+        listName={allUsers.name}
+        onSuccess={() => {
+          setCurrentPage(1);
+          refetch();
+        }}
+      />
+      <ListActionsSheet
+        ref={listActionSheetRef}
+        from="listDetail"
+        selectedAction={selectedActionSheetAction}
+        setSelectedAction={setSelectedActionSheetAction}
+        selectedListId={allUsers.id || ''}
+        selectedListName={allUsers.name || ''}
+        onSuccess={onListActionSheetSuccess}
+        listType={route.params.listType}
+      />
     </View>
   );
 };

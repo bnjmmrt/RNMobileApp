@@ -1,5 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { environment } from '../../environments/environment';
+import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+import {environment} from '../../environments/environment';
 
 // Middleware for logging requests and responses
 const logMiddleware = async (args, api, extraOptions, baseQuery) => {
@@ -7,9 +7,9 @@ const logMiddleware = async (args, api, extraOptions, baseQuery) => {
     url,
     method = 'GET',
     body,
-  } = typeof args === 'string' ? { url: args } : args;
+  } = typeof args === 'string' ? {url: args} : args;
 
-  console.log(`[API Request] ${method} ${environment.BASE_URL}${url}`, { body });
+  console.log(`[API Request] ${method} ${environment.BASE_URL}${url}`, {body});
 
   const result = await baseQuery(args, api, extraOptions);
 
@@ -30,7 +30,7 @@ export const customBaseQuery = (args, api, extraOptions) =>
     extraOptions,
     fetchBaseQuery({
       baseUrl: environment.BASE_URL,
-      prepareHeaders: (headers, { getState }) => {
+      prepareHeaders: (headers, {getState}) => {
         const token = getState().auth?.token; // Replace with your token logic
         console.log('Token:', token);
         if (token) {
@@ -54,8 +54,9 @@ export const createBaseApi = createApi({
     'Users',
     'UserDetail',
     'CustomLists',
+    'CustomListDetail',
     'EventDetails',
-    'Events'
+    'Events',
   ], // Accept tagTypes as a parameter
   endpoints: () => ({}),
   keepUnusedDataFor: 60, // Optional: Adjust cache duration

@@ -99,7 +99,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     isRequired && <CustomText style={{color: COLORS.errorText}}> *</CustomText>;
 
   useEffect(() => {
-    if (defaultValue) {
+    if (defaultValue != undefined && defaultValue != null) {
       setInputText(defaultValue);
     }
   }, [defaultValue]);
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontSize: fontScale(14),
     fontWeight: '500',
-    lineHeight:16
+    lineHeight: 16,
   },
   inputContainer: {
     borderWidth: 1,

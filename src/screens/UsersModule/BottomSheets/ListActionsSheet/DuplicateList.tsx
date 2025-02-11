@@ -1,35 +1,92 @@
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
-import Input from 'src/component/Input/Input';
+import Input, {InputRefMethods} from 'src/component/Input/Input';
 import {verticalMarginScale} from 'src/utils/dimensions';
 import {styles} from './style';
+import {useDuplicateCustomListMutation} from 'src/redux/actions/listsApiAction';
+import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
+import {BottomSheetView} from '@gorhom/bottom-sheet';
 
-const DuplicateList = ({onSuccess}: {onSuccess: () => void}) => {
+const DuplicateList = ({
+  onSuccess,
+  showError,
+  listId,
+  listName,
+}: {
+  onSuccess: () => void;
+  showError: (message: string) => void;
+  listId: string;
+  listName?: string;
+}) => {
+  const listNameRef = useRef<InputRefMethods>(null);
+
+  const [customName, setCustomName] = useState<string>(listName || '');
+
+  const [
+    duplicateCustomList,
+    {error: duplicateCustomListError, isLoading: duplicateListLoading},
+  ] = useDuplicateCustomListMutation();
+
+  const resetForm = () => {
+    setCustomName('');
+  };
+
+  const onPressDuplicateList = async () => {
+    if (listNameRef?.current?.validateInputs()) {
+      try {
+        const response = await duplicateCustomList({
+          customName: customName,
+          listId: listId,
+          listType: 'custom',
+        }).unwrap();
+        if (response.status === 200) {
+          resetForm();
+          onSuccess();
+        } else {
+          showError('Something went wrong!');
+        }
+      } catch (error) {
+        const typedError = error as ApiErrorInterface;
+        showError(getErrorMessage(typedError));
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (listName) {
+      setCustomName(listName);
+    }
+  }, [listName]);
+
   return (
-    <View style={styles.actionContentWrapper}>
+    <BottomSheetView style={styles.actionContentWrapper}>
       <CustomText style={styles.title}>
         {'Do you want to duplicate this list? '}
       </CustomText>
       <CustomText style={styles.editListMessage}>
         {'All users in this list will also be added to the new list.'}
       </CustomText>
+
       <Input
-        placeholder=""
+        ref={listNameRef}
+        errorMessage={'Please enter list name'}
         label="List Name"
-        defaultValue=""
-        errorMessage=""
-        otherStyle={{marginBottom: verticalMarginScale(24), marginTop: 0}}
+        defaultValue={customName}
+        onChangeText={text => setCustomName(text)}
+        forBottomSheet={true}
+        otherStyle={{marginBottom: verticalMarginScale(24)}}
       />
 
       <Button
         title="Duplicate List"
         colorTheme="dark"
         style={styles.actionCta}
-        onPress={onSuccess}
+        onPress={onPressDuplicateList}
+        loading={duplicateListLoading}
       />
-    </View>
+    </BottomSheetView>
   );
 };
 
