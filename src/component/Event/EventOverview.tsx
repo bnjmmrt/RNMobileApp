@@ -11,12 +11,13 @@ interface EventOverviewProps {
 const MAX_LINES = 4;
 
 const EventOverview: React.FC<EventOverviewProps> = ({ item }) => {
+  console.log("Sayyed item details:", item)
   const [expanded, setExpanded] = useState(false);
 
   const handleToggle = () => setExpanded((prev) => !prev);
 
   // Check if "Read More" is needed
-  const shouldShowReadMore = LABLE.DUMMY_TEXT.split(' ').length > 30;
+  const shouldShowReadMore = item?.description?.split(' ').length > 30;
 
   return (
     <View style={styles.container}>
@@ -28,7 +29,7 @@ const EventOverview: React.FC<EventOverviewProps> = ({ item }) => {
         style={styles.subtitle}
         numberOfLines={expanded ? undefined : MAX_LINES}
       >
-        {LABLE.DUMMY_TEXT}
+        {item?.description}
       </Text>
 
       {!expanded && <View style={styles.divider} />}
