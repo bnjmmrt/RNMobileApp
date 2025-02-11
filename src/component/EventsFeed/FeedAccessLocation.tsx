@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
   },
   modal: {
     width: horizontalScale(270),
-    height: verticalScale(232),
     borderRadius: radiusScale(16),
     backgroundColor: COLORS.grayFeedLocation2,
   },
@@ -101,7 +100,8 @@ const styles = StyleSheet.create({
   section4: {
     borderTopColor: COLORS.grayFeedLocation3,
     borderTopWidth: 0.3,
-    paddingVertical: verticalMarginScale(8),
+    paddingTop: verticalMarginScale(8),
+    paddingBottom: verticalMarginScale(12),
   },
   title: {
     color: COLORS.black,
