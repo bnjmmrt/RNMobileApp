@@ -31,7 +31,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
   const route = useRoute<RouteProp<RouteParams>>();
   const userId = useSelector((state: RootState) => state.auth.userId);
   const { data, isLoading } = useFetchEventDetailsQuery({
-    userId,
     eventId: route?.params?.id
   });
 
@@ -69,7 +68,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
               style={styles.icon}
             />
           </View>
-          <Text style={styles.titleStyle}>{"Tao Desert Nights Desert Storm NYC House Party"}</Text>
+          <Text style={styles.titleStyle}>{route?.params?.name}</Text>
           <EventStatus status={1} />
           <FlatList
             data={images}
@@ -83,7 +82,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
             )}
           />
           <EventVenue item={route?.params?.item} />
-          <EventOverview item={route?.params?.item} />
+          <EventOverview item={route?.params} />
           <Button
             disabled={false}
             style={styles.btnStyle}
