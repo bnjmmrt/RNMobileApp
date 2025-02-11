@@ -13,9 +13,10 @@ interface ProfileTopViewProps {
     editPhotoClick: () => void;
     profilePic: any;
     name: string;
-    loading?: boolean
+    loading?: boolean;
+    role:string
 }
-const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick, profilePic, name, loading }) => {
+const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick, profilePic, name, loading,role }) => {
 
     // Handle the "Next" button press
     const handlEventPress = () => {
@@ -48,7 +49,7 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick, profile
             </View>
             <TitleSubtitle
                 title={name}
-                subTitle='Non-Member'
+                subTitle={role}
                 centerTextAlign={true}
                 titleFontSize={38}
                 subTitleMargin={5}

@@ -71,6 +71,8 @@ export const EndPoint = {
   user: 'v1/auth/user/',
   custom_lists: 'v1/auth/hosts/custom-lists',
   current_user: 'v1/auth/current-user',
+  get_user_with_role_by_id:'v1/auth/get-user-with-roles-by-id',
+  profile_notification_settings:'v1/auth/profile-notification-settings/',
   view_image: 'v1/files/view/',
 } as const;
 

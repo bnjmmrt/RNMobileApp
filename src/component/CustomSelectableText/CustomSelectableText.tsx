@@ -50,7 +50,7 @@ const CustomSelectableText: React.FC<CustomSelectableTextProps> = ({
         ]}>
         {leftImage && <Image source={leftImage} style={styles.leftImage} />}
         
-          {defaultValue ? <Text style={styles.inputText}>{defaultValue}</Text> : <Text style={styles.inputTextPlaceholder}>{placeholder}</Text>}
+          {defaultValue ? <Text style={[styles.inputText,{width:leftImage ? "90%": '96.5%'}]}>{defaultValue}</Text> : <Text style={styles.inputTextPlaceholder}>{placeholder}</Text>}
         
         {rightImage && <Image  source={rightImage} style={styles.leftImage} />}
       </TouchableOpacity>

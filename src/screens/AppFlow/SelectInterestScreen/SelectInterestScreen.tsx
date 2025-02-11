@@ -42,23 +42,22 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
   const interest = useSelector(
     (state: RootState) => state.appFlowApiData.interests,
   );
-  //give user selected interests from store
+  // give user selected interests from store
   const selectedInterests = useSelector(
     (state: RootState) => state.appFlow.interest,
   );
   const loginData = useSelector((state: RootState) => state.auth.loginData);
 
   const styles = SelectInterestScreenStyles();
-  const [selectedCategories, setSelectedCategories] =
-    useState<any[]>(selectedInterests);
+  const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
 
   const [isToastShown, setIsToastShown] = useState(false);
-  const getMyInterests = () => {
-    const response = apiRequest(
+  const getMyInterests = async() => {
+    const response:any = await apiRequest(
       'get',
-      EndPoint.user_interests + loginData.userId,
+      EndPoint.user_interests + loginData?.id,
     );
-    if(response.data){
+    if(response.status===200){
       //dependiing on API response parse data and set
       setSelectedCategories(response.data)
     }
@@ -70,15 +69,17 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
     };
     return apiRequest(
       'post',
-      EndPoint.user_interests + loginData.userId,
+      EndPoint.user_interests + loginData?.id,
       requestObject,
     );
   };
 
   useEffect(() => {
     //execute when naviagte from edit profile
-    if (configData.fromProfile && !selectedInterests.length) {
+    if (configData.fromProfile) {
       getMyInterests();
+    }else{
+      setInterest(selectedInterests)
     }
   }, []);
 
@@ -116,8 +117,8 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
       } else {
         setIsToastShown(false);
         const response: any = await updateMyInterests();
-        if (response.data) {
-          dispatch(setInterest(selectedCategories))
+        if (response.status===200) {
+          // dispatch(setInterest(selectedCategories))
            FlashMessageComponent.show('success', 'Details updated successfully!');
         }
       }
@@ -200,6 +201,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
             }
             colorTheme="dark"
             onPress={onNextClick}
+            loading={loading}
           />
       </FullScreenLoader>
     </SafeAreaView>
