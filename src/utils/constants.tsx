@@ -1,4 +1,4 @@
-import { TabItem } from "src/component/ActiveTabBar/DynamicTabBar";
+import { TabItem } from 'src/component/ActiveTabBar/DynamicTabBar';
 
 export const BUTTON_LABLE = {
   ENTER: 'Enter',
@@ -115,7 +115,8 @@ export const LABLE = {
   ACCESS_THE_MOST_VALUABLE_CALENDAR: 'Access the most valuable calendar.',
   TWO_MINUTES_TO_COMPLETE: '~2 min to Complete',
   STREAMLINE_YOUR_LIFESTYLE: 'Streamline your lifestyle.',
-  MANAGE_YOUR_EVENTS: 'Manage your events, chats, and passes—all in one\nplace.',
+  MANAGE_YOUR_EVENTS:
+    'Manage your events, chats, and passes—all in one\nplace.',
   CONNECT_WITH_WORLD:
     "Connect with the world's top event organizers. Get discovered and invited to events that matter.",
   CONNECT_DIRECTLY_WITH_PEOPLE:
@@ -150,9 +151,12 @@ export const LABLE = {
   REQUEST_REFERRAL_FROM_RUMOR: 'Request referrals from Rumor members.',
   INVITE_YOUR_FRIEND: 'Invite your friends to join Rumor.',
   SELECT_YOUR_BIRTHDAY_BELOW: 'Select your birthday below',
-  WELCOME_NOTE_LINE_1: 'Your application has been approved. You’re now part of a private network connecting you to experiences from the world\'s top event organizers.',
-  WELCOME_NOTE_LINE_2: 'At Rumor, we value positivity, respect, and meaningful connections. Please take a moment to review our',
-  WELCOME_NOTE_LINE_3: 'We’re excited to have you in our community and can’t wait for you to explore everything Rumor has to offer.',
+  WELCOME_NOTE_LINE_1:
+    "Your application has been approved. You’re now part of a private network connecting you to experiences from the world's top event organizers.",
+  WELCOME_NOTE_LINE_2:
+    'At Rumor, we value positivity, respect, and meaningful connections. Please take a moment to review our',
+  WELCOME_NOTE_LINE_3:
+    'We’re excited to have you in our community and can’t wait for you to explore everything Rumor has to offer.',
   LOGOUT: 'Log Out',
   COMING_SOON: 'Coming Soon…',
   OTP_VERIFIED_SUCCESSFULLY: 'OTP verified successfully!',
@@ -178,8 +182,13 @@ export const LABLE = {
   ADD_GUEST: 'Add Guest',
   ADD_GUSET_SUBTITLE: 'Your changes will only be saved in Rumor and will not impact your device’s contact list.',
   YOUR_RSPV_IS: 'Your RSVP is confirmed!',
-  YOU_CAN_RETURN_TO_THE: 'You can return to the event page anytime for more details or to access your event confirmation.'
-}
+  YOU_CAN_RETURN_TO_THE: 'You can return to the event page anytime for more details or to access your event confirmation.',
+  WEBSITE: 'Website',
+  COMPANY_NAME: 'Company Name',
+  BIO: 'Bio',
+  COMPANY_DESCRIPTION: 'Description of Company',
+  ENTER_FEEDBACK: 'Enter Feedback'
+};
 
 export const PROFILE = {
   EDIT_PROFILE: 'Edit Profile',
@@ -221,6 +230,8 @@ export const PROFILE = {
     'Review referral requests from friends who want to join Rumor. Your decision will remain private.',
   REVIEW_VOUCH_REQUESTS:
     'Approve or decline requests from members seeking your vouch to join an experience. Your decision is private.',
+  COMPANY_NAME: 'Company Name',
+  APPLY_FOR_MEMBERSHIP: 'Apply for MemberShip',
 };
 
 export const ERROR_MESSAGE = {
@@ -232,6 +243,8 @@ export const ERROR_MESSAGE = {
   PLEASE_ENTER_A_VALID_REFERRAL_CODE: 'Please enter a valid referral code',
   AGE_REQUIREMENT_NOT_MET: 'Age requirement not met',
   FEEDBACK_ERROR: 'Please enter your Feedback.',
+  WEBSITE_ERROR: 'Please enter your URL.',
+  COMPANY_NAME_ERROR: 'Company Name is required',
 };
 
 export const COLORS = {
@@ -267,7 +280,7 @@ export const COLORS = {
   darkBlue: '#0A66C2',
   red: '#FF0000',
   yellow: '#FFFC00',
-  yellowLight: '#FEF8E9'
+  yellowLight: '#FEF8E9',
 };
 
 export const feedList = [
@@ -300,7 +313,7 @@ export const EVENT_STATUS = {
 };
 
 
-export const tabsData: TabItem[] = [
+export const memberTabData: TabItem[] = [
   {
     id: '1',
     label: BUTTON_LABLE.UPCOMING,
@@ -326,3 +339,191 @@ export const tabsData: TabItem[] = [
     subTitle: 'No past events.',
   },
 ];
+
+export const hostTabData: TabItem[] = [
+  {
+    id: '1',
+    label: BUTTON_LABLE.UPCOMING,
+    title: 'No Events Here',
+    subTitle: 'No upcoming events.',
+  },
+  {
+    id: '2',
+    label: BUTTON_LABLE.PAST,
+    title: 'No Events Here',
+    subTitle: 'No past events.',
+  },
+];
+
+export const eventData = {
+  "data": {
+    "admissionType": {
+      "description": "new admission",
+      "enabled": true,
+      "id": "a19a0a19-dfdd-49d4-8029-ac7ec582bedd",
+      "name": "birthday party"
+    },
+    "ageLimit": {
+      "description": "21 years old or more",
+      "enabled": true,
+      "id": "e8327ba6-817c-45bf-a309-66ef89f06a6f",
+      "maxAge": 120,
+      "minAge": 21,
+      "name": "21+"
+    },
+    "autoPublished": false,
+    "capacity": 888,
+    "collaborators": [
+      {
+        "addGuestsToDrafts": true,
+        "chatWithAllGuests": true,
+        "chatWithGuestsByCollaborator": true,
+        "checkInGuests": true,
+        "displayName": "",
+        "displayNameListEvent": true,
+        "editEventDetailsSettings": true,
+        "email": "payal.ghusalikar97@gmail.com",
+        "generateEventReports": true,
+        "id": "01478117-90de-42b7-b4b4-2cb7676ef0d7",
+        "inviteGuestsToEvent": true,
+        "limitInvitations": true,
+        "manageDedicatedSignUpForm": true,
+        "manageInAppRsvpRequests": true,
+        "name": "NA NA",
+        "postAnnouncementsByCollaborator": true,
+        "postAnnouncementsToAllGuests": true,
+        "role": {
+          "id": "43c05579-5113-483c-bcb6-e6d2d8e604c4",
+          "name": "co_host"
+        },
+        "tickets": [
+          {
+            "id": "f03664af-51bb-4781-8c67-fc3ef6bfabfb",
+            "limitInvitationsNumber": 70,
+            "name": "VIPTicket"
+          }
+        ],
+        "viewFullGuestList": true
+      },
+      {
+        "addGuestsToDrafts": true,
+        "chatWithAllGuests": true,
+        "chatWithGuestsByCollaborator": true,
+        "checkInGuests": true,
+        "displayName": "",
+        "displayNameListEvent": true,
+        "editEventDetailsSettings": true,
+        "email": "payal.ghusalikar+1@techalchemy.com",
+        "generateEventReports": true,
+        "id": "ae56f762-ced7-4e30-b190-1891353a1898",
+        "inviteGuestsToEvent": true,
+        "limitInvitations": true,
+        "manageDedicatedSignUpForm": true,
+        "manageInAppRsvpRequests": true,
+        "name": "NA NA",
+        "postAnnouncementsByCollaborator": true,
+        "postAnnouncementsToAllGuests": true,
+        "role": {
+          "id": "c1c72579-f2f9-4b4c-b5d7-6566b99d5f9d",
+          "name": "promoter"
+        },
+        "tickets": [
+          {
+            "id": "f03664af-51bb-4781-8c67-fc3ef6bfabfb",
+            "limitInvitationsNumber": 50,
+            "name": "VIPTicket"
+          },
+          {
+            "id": "478820cb-59d6-49a8-a647-22b6f3082152",
+            "limitInvitationsNumber": -1,
+            "name": "GeneralTicket"
+          }
+        ],
+        "viewFullGuestList": true
+      }
+    ],
+    "currentGuestStatus": "INVITED",
+    "description": "Testing for get event by Id for a user",
+    "enabled": true,
+    "endDate": "2025-02-12 17:12:33+00",
+    "eventType": {
+      "description": "Is an Art Shows event type",
+      "enabled": true,
+      "id": "81c9c68f-fae1-4fc8-8b3a-36b068e412be",
+      "name": "Art Shows"
+    },
+    "featuredEventSection": {
+      "id": "9fcf2fd1-e752-4385-a960-3d61be784f7e",
+      "index": 0,
+      "name": "Feature Events"
+    },
+    "furtherInstructions": "Please reach before time",
+    "guestId": "5b7078f9-3d07-4f9e-bc3d-836a098122c5",
+    "guestsCount": 0,
+    "id": "d1a1a562-38f7-4f7a-99bf-a63922a7d034",
+    "imageCover": "",
+    "imageFlyer": "kaustubh",
+    "invitationDeclinedBy": "ca9fe34d-2589-456b-89f7-0ded35c0c7ff",
+    "isPrivate": true,
+    "limitOnePlus": 3,
+    "location": {
+      "city": "San Francisco",
+      "id": "febf18b5-c9ef-48a0-900f-68c1fb73ad07",
+      "latitude": 37.7749,
+      "location": "123 Main St",
+      "longitude": -122.4194
+    },
+    "name": "Art and Artist",
+    "owner": {
+      "email": "kaustubh.tupe+4@techalchemy.com",
+      "firstName": "Kaustubh",
+      "id": "ca9fe34d-2589-456b-89f7-0ded35c0c7ff",
+      "lastName": "Tupe"
+    },
+    "publishDate": "2025-02-09 17:12:33+00",
+    "qrCodeUtilization": 0,
+    "quizQuestions": [
+      {
+        "enabled": true,
+        "id": "5413643b-168b-4ebe-9208-c181acd76cfb",
+        "order": 1,
+        "question": "What is your name?",
+        "required": true
+      }
+    ],
+    "rsvpDeadline": "",
+    "showLocation": true,
+    "startDate": "2025-02-11 17:12:33+00",
+    "talents": [
+      {
+        "contact": "",
+        "description": "Melodious voice",
+        "enabled": true,
+        "id": "ebc87129-8567-4ee7-8361-a55969704591",
+        "imageKeyUrl": "some_image_string_signed_url_upload",
+        "name": "Shreya Ghoshal",
+        "socialNetwork": ""
+      }
+    ],
+    "ticketTypes": [
+      {
+        "capacity": 4,
+        "description": "checking",
+        "enabled": true,
+        "id": "f03664af-51bb-4781-8c67-fc3ef6bfabfb",
+        "name": "VIPTicket"
+      },
+      {
+        "capacity": 500,
+        "description": "fourth ticket description",
+        "enabled": true,
+        "id": "478820cb-59d6-49a8-a647-22b6f3082152",
+        "name": "GeneralTicket"
+      }
+    ],
+    "timeZone": "UTC",
+    "useQr": false,
+    "userId": "5774aa32-abe5-45a8-a27f-e743ca61f291"
+  },
+  "status": 200
+}

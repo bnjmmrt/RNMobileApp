@@ -1,38 +1,33 @@
-import React, {forwardRef, useImperativeHandle, useRef, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../redux/slices';
+import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
 import IMAGES from '../../../assets/images';
-import {LABLE, ERROR_MESSAGE, COLORS} from '../../../utils/constants';
-import DatepickerBottomSheet from '../../../component/BottomSheet/DatepickerBottomSheet';
-import {formatDate, validateAge} from '../../../utils/functions';
+import { LABLE, ERROR_MESSAGE, COLORS } from '../../../utils/constants';
+import DatepickerBottomSheet from '../../../component/BottomSheet/CustomDatepickerBottomSheet';
+import { formatDate, validateAge } from '../../../utils/functions';
 import { horizontalMarginScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 
 interface DatePickerComponentProps {
-  birthDate:string
+  birthDate: string
 }
 
-const DatePickerComponent = forwardRef((props:DatePickerComponentProps, ref) => {
+const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) => {
   const dispatch = useDispatch();
   const bottomSheetRef = useRef<any>(null);
-  // const birthday = useSelector((state: RootState) => state.appFlow.birthday);
   const [selectedDate, setSelectedDate] = useState<string>(props.birthDate); // Initialize with birthday from Redux
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [date, setDate] = useState<any>(new Date());
 
   const openDatePicker = () => {
     bottomSheetRef.current?.open();
   };
   useImperativeHandle(ref, () => ({
-    validateBirthDate,selectedDate
+    validateBirthDate, selectedDate
   }));
-  const handleDateChange = (date: Date) => {
 
+  const handleDateChange = (date: string) => {
     setErrorMessage(null);
-    const formattedDate = formatDate(date);
-    setSelectedDate(formattedDate);
-   
+    setSelectedDate(date);
   };
 
   const validateBirthDate = () => {
@@ -61,8 +56,7 @@ const DatePickerComponent = forwardRef((props:DatePickerComponentProps, ref) => 
       <DatepickerBottomSheet
         ref={bottomSheetRef}
         setSelectedDate={handleDateChange}
-        date={date}
-        setDate={setDate}
+        date={selectedDate}
       />
     </>
   );
@@ -71,9 +65,9 @@ const DatePickerComponent = forwardRef((props:DatePickerComponentProps, ref) => 
 const styles = StyleSheet.create({
   container: {
     marginTop: 0,
-    height:verticalScale(60),
+    height: verticalScale(60),
   },
-  calenderImage: {marginRight:verticalMarginScale(6), width:horizontalMarginScale(16), height:verticalMarginScale(16)},
+  calenderImage: { marginRight: verticalMarginScale(6), width: horizontalMarginScale(16), height: verticalMarginScale(16) },
   iconContainer: {},
 });
 export default DatePickerComponent;

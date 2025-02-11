@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect, useRef} from 'react';
-import {View, KeyboardAvoidingView, Platform} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {LABLE, BUTTON_LABLE} from '../../utils/constants';
+import React, { useCallback, useEffect, useRef } from 'react';
+import { View, KeyboardAvoidingView, Platform } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { LABLE, BUTTON_LABLE } from '../../utils/constants';
 import VerifyOtpStyles from './VerifyOtpStyles';
 import BackButton from '../../component/BackButton/BackButton';
 import Button from '../../component/Button';
@@ -13,15 +13,15 @@ import {
   CommonActions,
   useFocusEffect,
 } from '@react-navigation/native';
-import {setAuthToken, setLoginData} from '../../redux/slices/authSlice';
-import {useDispatch} from 'react-redux';
+import { setAuthToken, setLoginData, setRole, setUserId } from '../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
 import FullScreenLoader from '../../component/FullScreenLoader';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
-import {useSendOtp} from '../../redux//hooks/useSendOtp';
-import {useVerifyOtp} from '../../redux/hooks/useVerifyOtp';
-import {setEmail, setPhone} from '../../redux/slices/appFlowSlice';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { useSendOtp } from '../../redux//hooks/useSendOtp';
+import { useVerifyOtp } from '../../redux/hooks/useVerifyOtp';
+import { setEmail, setPhone } from '../../redux/slices/appFlowSlice';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -33,15 +33,15 @@ type RouteParams = {
   };
 };
 
-const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
+const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const styles = VerifyOtpStyles();
-  const otpInputRef = useRef<{handleNextPress: () => void}>(null);
+  const otpInputRef = useRef<{ handleNextPress: () => void }>(null);
   const route = useRoute<RouteProp<RouteParams>>();
-  const {sendOtp, isMemberExist, isGuest} = useSendOtp(
+  const { sendOtp, isMemberExist, isGuest } = useSendOtp(
     route.params.email,
     route.params.phone,
   );
-  const {verifyOtp, isLoading} = useVerifyOtp(
+  const { verifyOtp, isLoading } = useVerifyOtp(
     isMemberExist,
     isGuest,
     route.params.email,
@@ -62,6 +62,8 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
 
   const redirectToHome = (data: any) => {
     dispatch(setLoginData(data));
+    dispatch(setUserId(data?.id));
+    dispatch(setRole(data?.roles[0]?.roleName));
     dispatch(setAuthToken(data?.token || ''));
     dispatch(setEmail(route.params.email || ''));
     dispatch(setPhone(route.params.phone || ''));
@@ -73,14 +75,14 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{name: 'AppStack', params: {screen: screenName}}],
+          routes: [{ name: 'AppStack', params: { screen: screenName } }],
         }),
       );
     } else {
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{name: 'AppStack', params: {screen: 'BottomTabBar'}}],
+          routes: [{ name: 'AppStack', params: { screen: 'BottomTabBar' } }],
         }),
       );
     }
@@ -111,16 +113,15 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({navigation}) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{flex: 1}}>
+      style={{ flex: 1 }}>
       <FullScreenLoader loading={isLoading}>
         <View style={styles.container}>
           <BackButton onPress={handleBackPress} />
           <View style={styles.contentContainer}>
             <TitleSubtitle
               title={LABLE.ENTER_YOUR_VERIFICATION_CODE}
-              subTitle={`${LABLE.SEND_TO}${
-                route.params.isEmail ? route.params.email : route.params.phone
-              }`}
+              subTitle={`${LABLE.SEND_TO}${route.params.isEmail ? route.params.email : route.params.phone
+                }`}
             />
             <OTPComponent
               ref={otpInputRef}

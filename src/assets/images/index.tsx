@@ -98,7 +98,9 @@ const IMAGES = {
   check_verified: require('./check-verified.png'),
   trash: require('./trash.png'),
   info: require('./info.png'),
-
+  membership: require('./membership.png'),
+  host_tiktok: require('./host_tiktok.png'),
+  host_x: require('./host_x.png'),
 };
 
 export default IMAGES;

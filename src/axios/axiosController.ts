@@ -2,11 +2,11 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } f
 import { environment } from '../../environments/environment';
 import { getItem, TagKey } from '../utils/functions';
 import { FlashMessageComponent } from '../component/FlashMessageComponent/FlashMessageComponent';
-import {store} from 'src/redux/store';
+import { store } from 'src/redux/store';
 
 // Create an Axios instance with type annotations
 export const axiosController: AxiosInstance = axios.create({
-  baseURL: environment.DEV_URL,
+  baseURL: environment.BASE_URL,
   timeout: 10000, // Timeout in ms
   headers: {
     'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ axiosController.interceptors.request.use(
     const fullUrl = config.baseURL ? `${config.baseURL}${config.url}` : config.url;
     console.log('Request URL:', fullUrl);
     console.log('Request Method:', config.method);
-     console.log('Request Headers:', config.headers);
+    console.log('Request Headers:', config.headers);
     if (config.params) {
       console.log('Request Params:', config.params);
     }

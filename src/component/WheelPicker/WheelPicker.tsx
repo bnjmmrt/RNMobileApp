@@ -3,26 +3,27 @@ import {
   StyleSheet,
   View,
   Text,
-  Dimensions,
   StyleProp,
   ViewStyle,
   TextStyle,
-  Platform,
 } from 'react-native';
-import WheelScrollPicker from 'react-native-wheel-scrollview-picker';
+import WheelScrollPicker from './WheelScrollPicker';
+import { COLORS } from 'src/utils/constants';
+import { fontScale } from 'src/utils/dimensions';
+import { fontFamily } from 'src/utils/functions';
 
 interface WheelPickerProps {
-  data: string[]; // Array of string values to be displayed in the picker
-  selectedValue: string; // Currently selected value
-  onValueChange?: (value: string, index: number) => void; // Callback when value changes
-  style?: StyleProp<ViewStyle>; // Custom style for the picker container
-  itemStyle?: StyleProp<ViewStyle>; // Custom style for picker items
-  contentStyle?: StyleProp<TextStyle>; // Custom style for item text content
-  wrapperHeight?: number; // Height of the picker wrapper
-  highlightBorderWidth?: number; // Width of the highlight border
-  highlightColor?: string; // Color of the highlight border
-  itemHeight?: number; // Height of individual picker items
-  [key: string]: any; // Allow other props to pass through
+  data: string[];
+  selectedValue: string;
+  onValueChange?: (value: string, index: number) => void;
+  style?: StyleProp<ViewStyle>;
+  itemStyle?: StyleProp<ViewStyle>;
+  contentStyle?: StyleProp<TextStyle>;
+  wrapperHeight?: number;
+  highlightBorderWidth?: number;
+  highlightColor?: string;
+  itemHeight?: number;
+  [key: string]: any;
 }
 
 const WheelPicker: React.FC<WheelPickerProps> = ({
@@ -42,6 +43,7 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
     <View style={[styles.container, style]}>
       <WheelScrollPicker
         dataSource={data}
+        loop={false}
         selectedIndex={data.indexOf(selectedValue)}
         onValueChange={(value: string, index: number) => {
           if (onValueChange) {
@@ -49,7 +51,7 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
           }
         }}
         wrapperBackground="#FFF"
-        highlightColor={highlightColor}
+        highlightColor={highlightColor || COLORS.text}
         highlightBorderWidth={highlightBorderWidth}
         wrapperHeight={wrapperHeight}
         itemHeight={itemHeight}
@@ -59,11 +61,10 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
           <View key={index} style={contentStyle}>
             <Text
               style={{
-                fontSize: 18,
-                color: selectedValue === item ? '#000000' : '#8A8A93',
-                // fontWeight: selectedValue === item ? 'bold' : '400',
+                fontSize: fontScale(20),
+                fontFamily: fontFamily.ABCDiatype_Light,
+                color: selectedValue === item ? COLORS.black : COLORS.text,
                 textAlign: 'center',
-                fontWeight: selectedValue === item ? Platform.OS === 'ios' ? 'bold' : '500' : '500'
               }}
             >
               {item}
@@ -77,7 +78,6 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: 130,
     justifyContent: 'center',
     alignItems: 'center',
   },
