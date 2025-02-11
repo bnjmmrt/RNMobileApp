@@ -23,6 +23,7 @@ import {
 import useApi from 'src/axios/useApi';
 import {EndPoint} from 'src/ApiManager/config';
 import {setNotificationSettings} from 'src/redux/slices/appSettingsSlice';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 interface NotificationsScreenProps {}
 
@@ -87,11 +88,12 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = () => {
     const response: any = await apiRequest(
       'put',
       EndPoint.profile_notification_settings + loginData?.id,
-      requestData,
+      {...requestData,muteDuration:'24h'},
     );
 
     if (response.status === 200) {
       dispatch(setNotificationSettings(response.data.notificationsSettings));
+      FlashMessageComponent.show('success','Settings updated successfully')
     }
   };
 

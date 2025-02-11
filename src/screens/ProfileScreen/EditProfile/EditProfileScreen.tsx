@@ -31,6 +31,7 @@ import CreativeFocusComponent from './CreativeFocusComponent';
 import GenderComponent from './GenderComponent';
 import Toast from 'src/component/Toast/Toast';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { extractCountryCode } from 'src/utils/functions';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -77,13 +78,15 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>();
 
   useEffect(() => {
+    const phoneNumberDetails=extractCountryCode(profileData?.phoneNumber)
     if (loginData?.isSignUpCompleted) {
       phoneNumberInputRef?.current.setDisabled(true);
       phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
       // phoneNumberInputRef?.current.setCallingCode(
-      //   memberProfileData.countryCallingCode,
+      //   phoneNumberDetails?.countryCallingCode,
       // );
-      // phoneNumberInputRef?.current.setFlag(userDetails.countryCodeFlag || '🇺🇸');
+      phoneNumberInputRef?.current.setCallingCode(null);
+       phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag );
       emailInputRef?.current.setDisabled(true);
       emailInputRef?.current.setEmailAddress(profileData?.email);
     }
@@ -91,10 +94,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
     if (loginData?.varifyStatus === 2) {
       phoneNumberInputRef?.current.setDisabled(true);
       phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
-      // phoneNumberInputRef?.current.setCallingCode(
-      //   memberProfileData.countryCallingCode,
-      // );
-      // phoneNumberInputRef?.current.setFlag(memberProfileData.countryCodeFlag || '🇺🇸');
+      phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
+      phoneNumberInputRef?.current.setCallingCode(null);
     }
 
     if (loginData?.varifyStatus === 1) {
