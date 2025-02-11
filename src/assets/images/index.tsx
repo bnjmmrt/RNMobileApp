@@ -94,6 +94,9 @@ const IMAGES = {
   list: require('./list.png'),
   alert_triangle_filled: require('./alert-triangle-filled.png'),
   check_verified: require('./check-verified.png'),
+  membership: require('./membership.png'),
+  host_tiktok: require('./host_tiktok.png'),
+  host_x: require('./host_x.png'),
 };
 
 export default IMAGES;

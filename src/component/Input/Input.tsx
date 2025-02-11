@@ -121,7 +121,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
         style={[
           styles.inputContainer,
           multiline ? styles.multilineInputContainer : null,
-          errorMessage ? styles.errorInputWrapper : null,
+          errorMessage  ? multiline ? [styles.errorInputWrapper,styles.multilineInputContainer]:styles.errorInputWrapper : null,
           inputFieldContainerStyle,
         ]}>
         {leftImage && <Image source={leftImage} style={styles.leftImage} />}
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     marginTop: verticalMarginScale(24),
   },
   label: {
-    paddingVertical: horizontalMarginScale(2),
+    paddingBottom: horizontalMarginScale(2),
     color: COLORS.black,
     fontSize: fontScale(14),
     fontWeight: '500',
