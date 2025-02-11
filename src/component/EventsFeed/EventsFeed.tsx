@@ -103,7 +103,7 @@ const EventsFeed = () => {
   const handleClear = useCallback(() => {
     setSearchEnter(true);
     setEvents(allEvents);
-  }, []);
+  }, [allEvents]);
 
   const handleFilter = useCallback(() => {
     if (allowAccess) setFilterVisible(true);
