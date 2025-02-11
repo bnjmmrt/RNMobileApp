@@ -28,7 +28,7 @@ const MainNavigation: React.FC = () => {
         if (isVerified === 0) {
           setInitialRouteName('AuthStack');
         } else if (
-          (userInfo.roles[0].name === 'member' ||
+          (loginData.roles[0].roleName === 'member' ||
             userInfo.roles[0].status === 'ACTIVE') &&
           !userInfo.isFirstTimeLoggedIn
         ) {
