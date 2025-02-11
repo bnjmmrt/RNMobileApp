@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, StatusBar, SafeAreaView } from 'react-native';
 import { Hp, Wp } from '../../utils/dimensions';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import Button from '../Button';
@@ -16,6 +16,7 @@ import useApi from 'src/axios/useApi';
 import { EndPoint } from 'src/ApiManager/config';
 import { setIsFirstTimeLoggedIn, setMemberProfileData } from 'src/redux/slices/appGlobalDataSlice';
 import { RootState } from 'src/redux/slices';
+import GradientOverlay from 'src/screens/BeforeApplicationFlow/GradientOverlay';
 
 
 const AfterAppStaticComponent: React.FC<{}> = () => {
@@ -57,11 +58,17 @@ const fetchCurrentUser = async () => {
 
   return (
 
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
+      <GradientOverlay />
       <ScrollView >
         <View style={styles.contentContainer}>
 
-          <HeaderComponent isDarkTheme={true} />
+          <HeaderComponent isDarkTheme={true} hasGradient={true} />
 
           <View style={{ height: Hp(5) }} />
 
@@ -100,7 +107,7 @@ const fetchCurrentUser = async () => {
       </ScrollView>
       <ReferralCodeBottomSheet ref={bottomSheetRef} />
 
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -111,11 +118,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: COLORS.black2
+    // backgroundColor: COLORS.black2,
   },
   contentContainer: {
     flex: 1,
-    flexDirection: 'column', alignItems: 'center'
+    flexDirection: 'column', alignItems: 'center',
+    paddingTop: 30
   },
   btnStyle: {
     width: Wp(85),

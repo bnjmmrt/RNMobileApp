@@ -233,7 +233,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             <ProfileTopView
               editPhotoClick={editPhotoClick}
               profilePic={memberProfileData?.imageUrl}
-              name={`${memberProfileData.firstName} ${memberProfileData.lastName}`}
+              name={`${memberProfileData?.firstName} ${memberProfileData?.lastName}`}
               loading={loading}
             />
             {listItems.map(item => {
