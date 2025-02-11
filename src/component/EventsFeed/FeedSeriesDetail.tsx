@@ -66,12 +66,16 @@ const FeedSeriesDetail: React.FC<FeedSeriesDetailProps> = ({
                 {series.title}
               </Text>
               <View style={styles.revolveFollow}>
-                <Text style={styles.revolve}>REVOLVE</Text>
+                <View style={styles.revolve}>
+                  <Text style={styles.revolveText}>REVOLVE</Text>
+                </View>
                 <View style={styles.hostContainer}>
                   <Text style={styles.hostName}>Revolve</Text>
                   <Text style={styles.hostRole}>Host</Text>
                 </View>
-                <Text style={styles.followButton}>Follow</Text>
+                <View style={styles.followButton}>
+                  <Text style={styles.followButtonText}>Follow</Text>
+                </View>
               </View>
               <View style={styles.seriesBox}>
                 <Text style={styles.label}>About the Series</Text>
@@ -158,12 +162,12 @@ const styles = StyleSheet.create({
   modalContent: {
     width: Wp(100),
     backgroundColor: COLORS.white,
-    paddingVertical: verticalMarginScale(20),
+    paddingVertical: verticalMarginScale(32),
     height: Hp(100),
     paddingHorizontal: horizontalMarginScale(16),
   },
   scrollViewContent: {
-    paddingBottom: verticalMarginScale(20),
+    paddingVertical: verticalMarginScale(20),
   },
   seriesImage: {
     height: Hp(33),
@@ -193,12 +197,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 40,
     height: 40,
-    fontSize: fontScale(7),
-    paddingTop: verticalMarginScale(14),
     borderRadius: radiusScale(100),
     backgroundColor: COLORS.black,
+  },
+  revolveText: {
     color: COLORS.white,
     textAlign: 'center',
+    fontSize: fontScale(7),
   },
   readMoreCard: {
     display: 'flex',
@@ -224,6 +229,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizontalMarginScale(16),
     marginLeft: horizontalMarginScale(8),
     backgroundColor: COLORS.black,
+  },
+  followButtonText: {
     color: COLORS.white,
   },
   leftArrowBtn: {
