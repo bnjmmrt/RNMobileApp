@@ -70,15 +70,17 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
     }));
 
     setFilterVisible(false);
+    setDatePickerVisible(false)
   };
 
   const handleClearFilters = () => {
     setFilter({
       location: { address: '', placeId: '', latitude: '', longitude: '' },
       categories: [],
-      date: ['', ''],
+      date: [],
     });
     setFeedFilters([]);
+    setFilterVisible(false);
   };
 
   useEffect(() => {

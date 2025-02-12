@@ -18,7 +18,6 @@ const handlEventPress = () => {
 };
 
 const EventVenue: React.FC<EventVenueProps> = ({ item }) => {
-  console.log("Sayyed item:", item)
   const dates = formatToDeviceTimeZone(item?.startDate, item?.endDate);
 
 

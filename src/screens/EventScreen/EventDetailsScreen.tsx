@@ -66,11 +66,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
           <View style={{}}>
             <FastImage
               source={{ uri: route?.params?.imageCover }}
-              resizeMode={isLoaded ? FastImage.resizeMode.cover : FastImage.resizeMode.center}
-              defaultSource={IMAGES.iconRumor} // Placeholder
+              resizeMode={FastImage.resizeMode.cover}
+              defaultSource={IMAGES.eventCoverPlaceholders1} // Placeholder
               style={styles.icon}
-              onLoad={() => setIsLoaded(true)}
-              onError={() => setIsLoaded(false)} // Ensure resizeMode stays center if the image fails to load
             />
           </View>
           <Text style={styles.titleStyle}>{route?.params?.name}</Text>

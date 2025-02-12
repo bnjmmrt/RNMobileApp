@@ -11,7 +11,6 @@ interface EventOverviewProps {
 const MAX_LINES = 4;
 
 const EventOverview: React.FC<EventOverviewProps> = ({ item }) => {
-  console.log("Sayyed item details:", item)
   const [expanded, setExpanded] = useState(false);
 
   const handleToggle = () => setExpanded((prev) => !prev);

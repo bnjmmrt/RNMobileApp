@@ -26,7 +26,6 @@ const statusStyles = {
 // ];
 
 const EventStatus: React.FC<EventStatusProps> = ({ status }) => {
-  console.log("Sayyed Event status:", status)
 
   // Function to get the corresponding style based on status
   const statusNumber = getStatusNumber(status);

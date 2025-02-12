@@ -10,7 +10,6 @@ import { fontFamily, retrieveData } from '../../utils/functions';
 import FeedItem from './FeedItem';
 import dayjs from 'dayjs';
 import NoResults from './NoResults';
-import { apiGet } from '../../ApiManager/MainApi';
 import FeedSearchInput from './FeedSearchInput';
 import FeedAccessLocation from './FeedAccessLocation';
 import FeedFilter from './FeedFilter';
@@ -33,6 +32,8 @@ import {
   Hp,
   Wp,
 } from '../../utils/dimensions';
+import { debounce } from 'lodash';
+import { getUserEvents } from 'src/ApiManager/Endpoint';
 
 export interface EventItem {
   id: string;
@@ -45,7 +46,7 @@ export interface EventItem {
 }
 
 export interface SeriesItem {
-  title: string;
+  name: string;
   image: { uri: string };
   about: string;
   period: string;
@@ -55,7 +56,7 @@ export interface SeriesItem {
 export interface Filter {
   location: Address;
   categories: string[];
-  date: [DateType, DateType];
+  date: string[];
 }
 
 export interface Pagination {
@@ -79,17 +80,35 @@ const EventsFeed = () => {
   const [seriesDetail, setSeriesDetail] = useState<SeriesItem | null>(null);
   const [responseSubmitted, setResponseSubmitted] = useState<boolean>(false);
   const [pagination, setPagination] = useState<Pagination>({ take: 7, skip: 0 });
+  const userId = useSelector((state: RootState) => state.auth.userId);
+
   const [filter, setFilter] = useState<Filter>({
     location: { address: '', placeId: '', latitude: '', longitude: '' },
     categories: [],
-    date: ['', ''],
+    date: [],
   });
 
   const isInvited = loginData?.isInvited || false;
 
+  const debouncedSearch = useCallback(
+    debounce((text: string) => setSearchTerm(text), 500),
+    [],
+  );
   const handleSearchChange = useCallback((text: string) => {
-    setSearchTerm(text);
+    // setSearchTerm(text);
+    debouncedSearch(text);
+
   }, []);
+
+  useEffect(() => {
+    setSearchEnter(searchTerm === '');
+
+    setEvents(
+      allEvents.filter(value =>
+        value.name.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
+    );
+  }, [searchTerm, allEvents])
 
   const handleSearch = useCallback(() => {
     setSearchEnter(searchTerm === '');
@@ -135,47 +154,11 @@ const EventsFeed = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res: any = await apiGet(
-          `/events/users/${loginData.id}/events?minStartDate=${filter.date[0] ? dayjs(filter.date[0]).format('YYYY-MM-DD') : ''
-          }&maxEndDate=${filter.date[1] ? dayjs(filter.date[1]).format('YYYY-MM-DD') : ''
-          }&longitude=${filter.location.longitude}&latitude=${filter.location.latitude
-          }&eventTypeName=${filter.categories.join(',')}`,
-        );
-
-        const eventsRes = res.data.map((item: any) => ({
-          id: item.id,
-          title: item.name,
-          startDate: item.startDate,
-          endDate: item.endDate,
-          type: item.name,
-          location: item?.location?.location || '',
-          image: item.imageCover || item.imageFlyer,
-        }));
-
-        const featuredEventsRes = res.data
-          .filter((item: any) => item.featuredEventSection)
-          .map((item: any) => ({
-            id: item.id,
-            title: item.name,
-            startDate: item.startDate,
-            endDate: item.endDate,
-            type: item.name,
-            location: item?.location?.location || '',
-            image: item.imageCover || item.imageFlyer,
-          }));
-
+        const res: any = await getUserEvents(userId, filter)
+        const eventsRes = res.data
+        const featuredEventsRes = res.data.filter((item: any) => item.featuredEventSection)
         setFeaturedEvents(featuredEventsRes);
-        setEvents([
-          // {
-          //   title: 'Lakers Season 2025',
-          //   image: IMAGES.eventCoverPlaceholders,
-          //   about:
-          //     'The highly anticipated Revolve Festival officially kicks off the 2023 Coachella festival season in spectacular style, drawing attention from music and fashion enthusiasts alike. This iconic event makes a show-stopping return to the desert, delivering its most extravagant and memorable celebration yet. With a lineup of star-studded performances, exclusive experiences, and cutting-edge fashion moments, Revolve Festival solidifies its place as a must-attend event, setting the tone for an unforgettable festival season.',
-          //   period: 'Jan 10 - May 20, 2025',
-          //   events: eventsRes,
-          // },
-          ...eventsRes.slice(0, pagination.take),
-        ]);
+        setEvents([...eventsRes.slice(0, pagination.take)]);
         setAllEvents(eventsRes);
       } catch (error) {
         console.error('Failed to fetch events:', error);
@@ -200,6 +183,65 @@ const EventsFeed = () => {
     formatAllowAccess();
   }, []);
 
+  const renderFilters = () => {
+    const { categories, location, date } = filter;
+
+    // Ensure `hasFilters` includes date condition independently
+    const hasFilters =
+      categories.length > 0 ||
+      location.address ||
+      location.placeId ||
+      location.longitude ||
+      location.latitude ||
+      (date && date.length > 1); // Ensure `date` exists and has more than 1 value
+
+    if (!hasFilters) return null;
+
+    const clearLocation = () => {
+      setFilter(prev => ({
+        ...prev,
+        location: { address: '', placeId: '', longitude: '', latitude: '' },
+      }));
+    };
+
+    const clearDate = () => {
+      setFilter(prev => ({ ...prev, date: [] }));
+    };
+
+    const clearCategory = category => {
+      setFilter(prev => ({
+        ...prev,
+        categories: prev.categories.filter(cat => cat !== category),
+      }));
+    };
+
+    return (
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={[styles.filterScrollView]}
+      // contentContainerStyle={{ alignItems: 'center', paddingHorizontal: 8 }}
+      >
+        {/* Location Filter */}
+        {location.address && <FeedFilterItem content={location.address} handleClear={clearLocation} />}
+
+        {/* Date Filter - Ensure it's rendering when `date.length > 1` */}
+        {date && date.length > 1 &&
+          <FeedFilterItem
+            content={`${dayjs(date[0]).format('MMM DD, YYYY')} - ${dayjs(date[1]).format('MMM DD, YYYY')}`}
+            handleClear={clearDate}
+          />
+        }
+
+        {/* Categories Filter */}
+        {categories.map((category, index) => (
+          <FeedFilterItem key={index} content={category} handleClear={() => clearCategory(category)} />
+        ))}
+      </ScrollView>
+    );
+  };
+
+
   return (
     <View style={styles.container}>
       {isInvited ? (
@@ -218,54 +260,9 @@ const EventsFeed = () => {
               (filter.date[0] && filter.date[1] ? 1 : 0)
             }
           />
-          {(filter.categories.length > 0 ||
-            filter.location.address ||
-            filter.location.placeId ||
-            filter.location.longitude ||
-            filter.location.latitude ||
-            (filter.date[0] && filter.date[1])) && (
-              <ScrollView horizontal style={styles.filterScrollView}>
-                <FeedFilterItem
-                  content={filter.location.address}
-                  handleClear={() =>
-                    setFilter(prev => ({
-                      ...prev,
-                      location: {
-                        address: '',
-                        placeId: '',
-                        longitude: '',
-                        latitude: '',
-                      },
-                    }))
-                  }
-                />
-                {filter.date[0] && filter.date[1] && (
-                  <FeedFilterItem
-                    content={`${dayjs(filter.date[0]).format(
-                      'MMM DD, YYYY',
-                    )} - ${dayjs(filter.date[1]).format('MMM DD, YYYY')}`}
-                    handleClear={() =>
-                      setFilter(prev => ({ ...prev, date: ['', ''] }))
-                    }
-                  />
-                )}
-                {filter.categories.map((category, categoryIndex) => (
-                  <FeedFilterItem
-                    content={category}
-                    handleClear={() =>
-                      setFilter(prev => ({
-                        ...prev,
-                        categories: prev.categories.filter(
-                          cat => cat !== category,
-                        ),
-                      }))
-                    }
-                    key={categoryIndex}
-                  />
-                ))}
-              </ScrollView>
-            )}
           <View>
+            {renderFilters()}
+
             {events.length === 0 ? (
               <NoResults loading={loading} />
             ) : (
@@ -364,6 +361,7 @@ const styles = StyleSheet.create({
   filterScrollView: {
     marginHorizontal: horizontalMarginScale(16),
     height: verticalScale(48),
+    flexGrow: 1,
   },
   flatList: {
     paddingBottom: verticalMarginScale(900),

@@ -13,19 +13,29 @@ import {
   radiusScale,
   fontScale,
 } from '../../utils/dimensions';
+import { ROUTES } from 'src/navigation/Route';
+import { useNavigation } from '@react-navigation/native';
 
 interface FeedItemProps {
   item: EventItem;
   isFeatured?: boolean;
-  setDetail: React.Dispatch<React.SetStateAction<EventItem | null>>;
 }
 
-const FeedItem: React.FC<FeedItemProps> = ({ item, setDetail }) => {
+const FeedItem: React.FC<FeedItemProps> = ({ item }) => {
+  const navigation = useNavigation();
+
+  const handlEventPress = () => {
+    navigation.navigate(ROUTES.EventStack, {
+      screen: ROUTES.EventDetailsScreen,
+      params: item
+    });
+  };
+
   return (
-    <TouchableOpacity style={styles.container} onPress={() => setDetail(item)}>
+    <TouchableOpacity style={styles.container} onPress={() => handlEventPress()}>
       <View style={[styles.imageContainer]}>
         <FastImage
-          source={{ uri: item.image }}
+          source={{ uri: item?.imageCover || item?.imageFlyer }}
           resizeMode={FastImage.resizeMode.cover}
           defaultSource={IMAGES.eventCoverPlaceholders1}
           style={styles.icon}
@@ -33,7 +43,7 @@ const FeedItem: React.FC<FeedItemProps> = ({ item, setDetail }) => {
       </View>
       <View style={styles.contentContainer}>
         <Text numberOfLines={1} style={styles.title}>
-          {item.title}
+          {item.name}
         </Text>
         <Text numberOfLines={1} style={styles.subtitle}>
           {item.startDate}

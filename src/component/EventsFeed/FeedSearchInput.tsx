@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,10 +6,10 @@ import {
   TouchableOpacity,
   Text,
 } from 'react-native';
-import {Image} from 'react-native-animatable';
+import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
-import {COLORS} from '../../utils/constants';
-import {fontFamily} from '../../utils/functions';
+import { COLORS } from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
 import {
   horizontalMarginScale,
   verticalMarginScale,
@@ -28,7 +28,6 @@ interface FeedSearchInputProps {
 }
 
 const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
-  handleChange,
   handleSearch,
   handleClear,
   handleFilter,
@@ -39,7 +38,6 @@ const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
 
   const handleTextChange = (text: string) => {
     setSearchText(text);
-    handleChange(text);
   };
 
   const handleClearClick = () => {
