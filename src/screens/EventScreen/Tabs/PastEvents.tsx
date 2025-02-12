@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, ActivityIndicator } from 'react-native';
-import { useFetchEventsQuery } from '../../../redux/actions/eventApiAction';
+import { useFetchEventsQuery, useFetchHostEventsQuery } from '../../../redux/actions/eventApiAction';
 import EventItem from '../EventItem';
 import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
 import { Hp } from '../../../utils/dimensions';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
 
 interface PastEventsProps {
   userId: string;
@@ -15,13 +17,39 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [events, setEvents] = useState<any[]>([]);
-  const { data, isLoading } = useFetchEventsQuery({
-    userId,
-    guestEventStatus: 'PAST',
-    searchText: searchText,
-    take: 10,
-    skip: (currentPage - 1) * 10,
-  });
+  const role = useSelector((state: RootState) => state.auth.role);
+
+  const useFetchEvents =
+    role === 'host'
+      ? useFetchHostEventsQuery
+      : useFetchEventsQuery;
+
+  // Ensure argument structure remains consistent
+  const queryArgs =
+    role === 'host'
+      ? ({
+        status: 'UPCOMING',
+        searchText,
+        take: 10,
+        skip: (currentPage - 1) * 10,
+      } as const) // Type assertion to prevent union mismatch
+      : ({
+        userId,
+        guestEventStatus: 'UPCOMING',
+        searchText,
+        take: 10,
+        skip: (currentPage - 1) * 10,
+      } as const); // Type assertion
+
+  const { data, isLoading } = useFetchEvents(queryArgs);
+
+  // const { data, isLoading } = useFetchEventsQuery({
+  //   userId,
+  //   guestEventStatus: 'PAST',
+  //   searchText: searchText,
+  //   take: 10,
+  //   skip: (currentPage - 1) * 10,
+  // });
 
   useEffect(() => {
     if (data) {

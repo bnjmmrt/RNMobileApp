@@ -1,29 +1,29 @@
 import IMAGES from '@images/index';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, RefreshControl, View} from 'react-native';
-import {useDispatch} from 'react-redux';
-import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { FlatList, RefreshControl, View } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
-import {InputRefMethods} from 'src/component/Input/Input';
+import { InputRefMethods } from 'src/component/Input/Input';
 import SearchInput from 'src/component/SearchInput';
-import {useFetchAllUsersQuery} from 'src/redux/actions/usersApiAction';
-import {changeBottomTabsVisibility} from 'src/redux/slices/bottomTabsConfigSlice';
+import { useFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
+import { changeBottomTabsVisibility } from 'src/redux/slices/bottomTabsConfigSlice';
 import {
   horizontalMarginScale,
   Hp,
   verticalMarginScale,
 } from 'src/utils/dimensions';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import UserActionsSheet, {
   UserActionCurrentPageType,
 } from '../BottomSheets/UserActionsSheet';
-import UserListItem, {UserItemInterface} from '../UsersListItem';
+import UserListItem, { UserItemInterface } from '../UsersListItem';
 
-interface AllUserProps {}
+interface AllUserProps { }
 
-const AllUsers: React.FC<AllUserProps> = ({}) => {
+const AllUsers: React.FC<AllUserProps> = ({ }) => {
   const dispatch = useDispatch();
   const searchInputRef = useRef<InputRefMethods>(null);
   const actionSheetRef = useRef<BottomSheetMethods>(null);
@@ -31,7 +31,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   const [allUsers, setAllUsers] = useState<{
     users: UserItemInterface[];
     totalCount: number;
-  }>({totalCount: 0, users: []});
+  }>({ totalCount: 0, users: [] });
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,7 +39,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
     useState<UserActionCurrentPageType>('');
 
-  const {data, isLoading, refetch} = useFetchAllUsersQuery({
+  const { data, isLoading, refetch } = useFetchAllUsersQuery({
     take: 10,
     skip: (currentPage - 1) * 10,
     searchValue: searchText,
@@ -79,7 +79,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   };
 
   const renderItem = useCallback(
-    ({item}: {item: UserItemInterface}) => {
+    ({ item }: { item: UserItemInterface }) => {
       const isSelected = selectedUsers.some(user => user === item.id);
       return (
         <UserListItem
@@ -94,20 +94,20 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
 
   useEffect(() => {
     if (selectedUsers.length > 0) {
-      dispatch(changeBottomTabsVisibility({showBottomTabs: false}));
+      dispatch(changeBottomTabsVisibility({ showBottomTabs: false }));
       changeSafeAreaViewConfig({
         ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
         showBottomSafeAreaView: true,
       });
     } else {
-      dispatch(changeBottomTabsVisibility({showBottomTabs: true}));
+      dispatch(changeBottomTabsVisibility({ showBottomTabs: true }));
       changeSafeAreaViewConfig({
         ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
         showBottomSafeAreaView: false,
       });
     }
     return () => {
-      dispatch(changeBottomTabsVisibility({showBottomTabs: true}));
+      dispatch(changeBottomTabsVisibility({ showBottomTabs: true }));
       changeSafeAreaViewConfig({
         ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
         showBottomSafeAreaView: false,
@@ -138,9 +138,9 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
         onSearchTextChange={handleSearchTextChange}
         placeholder="Search..."
         rightIcon={IMAGES.filter_lines}
-        onPressRightIcon={() => {}}
+        onPressRightIcon={() => { }}
         rightIconText=""
-        mainContainerStyle={{marginHorizontal: 0}}
+        mainContainerStyle={{ marginHorizontal: 15 }}
       />
 
       <FlatList
@@ -151,21 +151,21 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
         }}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{gap: verticalMarginScale(16)}}
-        ListHeaderComponent={
-          <SearchInput
-            ref={searchInputRef}
-            onSearchTextChange={handleSearchTextChange}
-            placeholder="Search..."
-            rightIcon={IMAGES.filter_lines}
-            onPressRightIcon={() => {}}
-            rightIconText=""
-            mainContainerStyle={{marginHorizontal: 0}}
-            defaultValue={searchText}
-          />
-        }
+        contentContainerStyle={{ gap: verticalMarginScale(16) }}
+        // ListHeaderComponent={
+        //   <SearchInput
+        //     ref={searchInputRef}
+        //     onSearchTextChange={handleSearchTextChange}
+        //     placeholder="Search..."
+        //     rightIcon={IMAGES.filter_lines}
+        //     onPressRightIcon={() => {}}
+        //     rightIconText=""
+        //     mainContainerStyle={{marginHorizontal: 0}}
+        //     defaultValue={searchText}
+        //   />
+        // }
         ListFooterComponent={
-          <View style={{marginBottom: verticalMarginScale(150)}} />
+          <View style={{ marginBottom: verticalMarginScale(150) }} />
         }
         ListEmptyComponent={
           <View
@@ -196,7 +196,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
             actionSheetRef?.current?.open();
           }}
           colorTheme="dark"
-          style={{position: 'absolute', bottom: 0}}
+          style={{ position: 'absolute', bottom: 0 }}
         />
       ) : null}
       <UserActionsSheet

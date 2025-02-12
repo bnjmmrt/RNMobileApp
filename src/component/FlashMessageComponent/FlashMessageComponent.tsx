@@ -1,6 +1,6 @@
-import {showMessage} from 'react-native-flash-message';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { showMessage } from 'react-native-flash-message';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
 export type MessageType = 'success' | 'error' | 'info' | 'warning';
 
@@ -27,10 +27,10 @@ export const getFlashMessageBackgroundColor = (type: MessageType) => {
 
 export const FlashMessageComponent = {
   show: (type: MessageType, message: string) => {
-    changeSafeAreaViewConfig({
-      ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-      topSafeAreaViewColor: getFlashMessageBackgroundColor(type),
-    });
+    // changeSafeAreaViewConfig({
+    //   ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+    //   topSafeAreaViewColor: getFlashMessageBackgroundColor(type),
+    // });
     showMessage({
       message,
       type: 'default',
@@ -38,8 +38,8 @@ export const FlashMessageComponent = {
       color: '#fff',
     });
 
-    setTimeout(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
-    }, 2200);
+    // setTimeout(() => {
+    //   changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    // }, 2200);
   },
 };

@@ -1,6 +1,6 @@
-import { CommonActions, useFocusEffect } from '@react-navigation/native';
+import { CommonActions, RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetLoginData } from 'src/redux/slices/authSlice';
@@ -21,15 +21,14 @@ import { RootState } from 'src/redux/slices';
 
 interface BeforeAppStaticScreenProps extends NativeStackScreenProps<any, any> { }
 
+
 const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
   navigation,
 }) => {
   const dispatch = useDispatch();
+  const route = useRoute();
+  const [isFromProfile, setIsFromProfile] = useState(route?.params?.isFromProfile || false)
 
-  useEffect(() => {
-    changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.BLACK_SCHEME);
-
-  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -50,7 +49,7 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
     <View style={styles.container}>
       <BeforeAppStaticComponent isChatScreen={false} />
 
-      <TouchableOpacity
+      {!isFromProfile && <TouchableOpacity
         onPress={redirectToHome}
         style={{
           top: horizontalMarginScale(20),
@@ -60,7 +59,19 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
         <View style={styles.iconWrapper}>
           <Image source={IMAGES.cross} />
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity>}
+
+      {isFromProfile && <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{
+          top: horizontalMarginScale(20),
+          left: horizontalMarginScale(20),
+          position: 'absolute',
+        }}>
+        <View style={styles.iconWrapper}>
+          <Image source={IMAGES.leftArrow} />
+        </View>
+      </TouchableOpacity>}
     </View>
   );
 };

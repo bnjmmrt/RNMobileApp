@@ -16,10 +16,28 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take: number;
         skip: number;
       }) => ({
-        url: `v1/events/users/${userId}/events&take=${take}&skip=${skip}&findInNameAndDescription=${searchText}`,
+        url: `v1/events/users/${userId}/events?guestEventStatus=${guestEventStatus}s&take=${take}&skip=${skip}&findInNameAndDescription=${searchText}`,
         method: 'GET',
       }),
       providesTags: ['Event'], // Adjust the tag if needed for cache invalidation
+    }),
+
+    fetchHostEvents: builder.query({
+      query: ({
+        status,
+        searchText,
+        take,
+        skip,
+      }: {
+        status: string;
+        searchText: string;
+        take: number;
+        skip: number;
+      }) => ({
+        url: `v1/events/hosts/events?take=${take}&skip=${skip}&status=${status}&eventName=${searchText}`,
+        method: 'GET',
+      }),
+      providesTags: ['HostEvents'], // Adjust the tag if needed for cache invalidation
     }),
 
     fetchAllEvents: builder.query({
@@ -49,4 +67,4 @@ export const eventApiAction = createBaseApi.injectEndpoints({
   }),
 });
 
-export const { useFetchEventsQuery, useFetchEventDetailsQuery, useFetchAllEventsQuery } = eventApiAction;
+export const { useFetchEventsQuery, useFetchEventDetailsQuery, useFetchAllEventsQuery, useFetchHostEventsQuery } = eventApiAction;
