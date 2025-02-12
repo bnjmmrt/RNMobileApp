@@ -44,6 +44,7 @@ export const styles = StyleSheet.create({
     info: {
         marginLeft: horizontalMarginScale(10),
         justifyContent: 'center',
+        width: '80%'
     },
     title: {
         fontSize: fontScale(24),

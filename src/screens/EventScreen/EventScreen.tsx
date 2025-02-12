@@ -94,7 +94,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
         ...styles.container,
         backgroundColor: showEvents ? COLORS.white : COLORS.black2,
       }}>
-      {showEvents ? (
+      {true ? (
         <View
           style={{
             backgroundColor: COLORS.white,

@@ -35,12 +35,12 @@ type Guest = {
     name: string;
 };
 
-const EventCard = () => {
+export const EventCard = ({ name }) => {
     return (
         <View style={styles.card}>
             <Image source={IMAGES.frame} style={styles.image} />
             <View style={styles.info}>
-                <CustomText style={styles.title}>Revolve Festival</CustomText>
+                <CustomText style={styles.title}>{name}</CustomText>
                 <CustomText style={styles.details}>Fri, April 13, 9:00PM - 11:00PM EST</CustomText>
                 <CustomText style={styles.details}>Los Angeles, California</CustomText>
             </View>

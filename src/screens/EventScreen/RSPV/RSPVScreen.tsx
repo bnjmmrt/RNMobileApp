@@ -1,6 +1,6 @@
 import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   SafeAreaView,
   View,
@@ -23,11 +23,15 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { styles } from './RSPVScreenStyle';
 import {
   useDeleteApplicationMutation,
+  useGetQuizQuestionAnswerQuery,
   useGetQuizQuestionQuery,
   useSubmitApplicationMutation,
   useUpdateApplicationMutation,
 } from 'src/redux/actions/rspvApiAction';
 import { verticalScale } from 'src/utils/dimensions';
+import { EventCard } from '../RSVP/RSVPInvitedUpcoming';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
 
 type Guest = {
   id: number;
@@ -42,12 +46,22 @@ const optionList = [
 const RSPVScreen: React.FC = () => {
   const bottomSheetRef = useRef<any>(null);
   const { params } = useRoute();
-
   const inputRefs = useRef<{ [key: number]: any }>({});
   const { goBack } = useNavigation();
-  const { name, location, startDate, status, quizQuestions, guestsCount, id } =
-    params?.event;
+  const userId = useSelector((state: RootState) => state.auth.userId);
 
+  const { name, location, startDate, status, quizQuestions, limitOnePlus, id, currentGuestStatus } =
+    params?.event;
+  const { data, isLoading, isSuccess } = useGetQuizQuestionAnswerQuery(
+    {
+      userId,
+      eventId: id,
+    },
+    { refetchOnMountOrArgChange: true }
+  );
+  console.log(data?.data.questions)
+
+  const [eventQuestions, setEventQuestions] = useState([]);
   const [selectedGuests, setSelectedGuests] = useState<any>(null);
   const [activeView, setActiveTab] = useState<string>('');
   const { requestContactPermission } = useContactPermission();
@@ -59,13 +73,50 @@ const RSPVScreen: React.FC = () => {
   const [deleteApplication, { isLoading: isDeleting }] =
     useDeleteApplicationMutation();
 
-  const handleSubmitApplication = async () => {
-    if (!validateInputs()) return;
 
+  useEffect(() => {
+    if (isSuccess) {
+      if (currentGuestStatus === "APPLIED") {
+        setEventQuestions(data?.data?.questions)
+      }
+      else {
+        setEventQuestions(quizQuestions)
+      }
+    }
+
+
+  }, [isSuccess])
+
+  useEffect(() => {
+    if (quizQuestions.length == 0 && limitOnePlus == 0) {
+      onSumbitCall();
+    }
+  }, [])
+
+  const onSumbitCall = async () => {
     try {
       const response = await submitApplication({
         eventId: id,
-        answers: quizQuestions.map(q => ({
+        answers: eventQuestions.map(q => ({
+          questionId: q.id,
+          answer: inputRefs.current[q.id]?.inputText || '',
+        })),
+        guests: selectedGuests ? selectedGuests.id : 0,
+      }).unwrap();
+      console.log('Application submitted:', response);
+      setActiveTab('submit');
+      bottomSheetRef.current?.open();
+    } catch (error) {
+      console.error('Error submitting application:', error);
+    }
+  }
+
+  const handleSubmitApplication = async () => {
+    if (!validateInputs()) return;
+    try {
+      const response = await submitApplication({
+        eventId: id,
+        answers: eventQuestions.map(q => ({
           questionId: q.id,
           answer: inputRefs.current[q.id]?.inputText || '',
         })),
@@ -80,17 +131,21 @@ const RSPVScreen: React.FC = () => {
   };
 
   const handleUpdateApplication = async () => {
+    if (!validateInputs()) return;
     try {
       const response = await updateApplication({
         eventId: id,
-        answers: quizQuestions.map(q => ({
-          questionId: q.id,
-          answer: inputRefs.current[q.id]?.inputText || '',
+        answers: eventQuestions.map(q => ({
+          questionId: q.questionId,
+          answer: inputRefs.current[q.questionId]?.inputText || '',
         })),
         guests: selectedGuests ? selectedGuests.id : 0,
       }).unwrap();
 
       console.log('Application updated:', response);
+      goBack();
+      setActiveTab('submit');
+      bottomSheetRef.current?.open();
     } catch (error) {
       console.error('Error updating application:', error);
     }
@@ -108,19 +163,20 @@ const RSPVScreen: React.FC = () => {
 
   const validateInputs = (): boolean => {
     let isValid = true;
+    console.log(eventQuestions);
 
-    quizQuestions.forEach(q => {
+    eventQuestions.forEach(q => {
       if (q.required) {
-        const inputValue = inputRefs.current[q.id]?.inputText;
+        const inputValue = inputRefs.current[q.questionId]?.inputText;
         if (!inputValue) {
-          inputRefs.current[q.id]?.setErrorMessage(
+          inputRefs.current[q.questionId]?.setErrorMessage(
             'Please complete required field',
           );
           isValid = false;
         }
       }
     });
-    if (guestsCount > 0 && !selectedGuests) {
+    if (limitOnePlus > 0 && !selectedGuests) {
       guestInputRef.current?.setErrorMessage(
         'Please select the number of guests',
       );
@@ -174,7 +230,7 @@ const RSPVScreen: React.FC = () => {
       case 'submit':
         return renderApplicationSubmitted();
       case 'guests':
-        return renderNumberOfGuests(guestsCount);
+        return renderNumberOfGuests(limitOnePlus);
       case 'vouch':
         return <RequestVouch />;
       case 'options':
@@ -204,18 +260,18 @@ const RSPVScreen: React.FC = () => {
         return '85%';
     }
   };
-  const generateGuestList = (guestsCount: number): Guest[] => {
+  const generateGuestList = (limitOnePlus: number): Guest[] => {
     const guestList: Guest[] = [{ id: 0, label: 'No Guests' }];
 
-    for (let i = 1; i <= guestsCount; i++) {
+    for (let i = 1; i <= limitOnePlus; i++) {
       guestList.push({ id: i, label: `${i} Guest${i > 1 ? 's' : ''}` });
     }
 
     return guestList;
   };
 
-  const renderNumberOfGuests = (guestsCount: number) => {
-    const guestList = generateGuestList(guestsCount);
+  const renderNumberOfGuests = (limitOnePlus: number) => {
+    const guestList = generateGuestList(limitOnePlus);
 
     if (guestList.length === 0) return null; // Don't render if no guests
 
@@ -297,6 +353,9 @@ const RSPVScreen: React.FC = () => {
       />
     </View>
   );
+  if (isLoading) {
+    return null
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -310,7 +369,7 @@ const RSPVScreen: React.FC = () => {
       />
       <ScrollView style={styles.scrollView}>
         <View style={styles.contentContainer}>
-          <View style={styles.eventContainer}>
+          {/* <View style={styles.eventContainer}>
             <FastImage
               source={IMAGES.eventCoverPlaceholders}
               style={styles.eventImage}
@@ -324,8 +383,9 @@ const RSPVScreen: React.FC = () => {
                 {location?.location} , {location?.city}
               </CustomText>
             </View>
-          </View>
-          {status != 0 && (
+          </View> */}
+          <EventCard name={name} location={location} />
+          {currentGuestStatus != "NO_STATUS" && (
             <View style={styles.yellowBoxRightButton}>
               <View style={styles.waitingResponseContainer}>
                 <Image source={IMAGES.loader} style={styles.loaderIcon} />
@@ -342,16 +402,17 @@ const RSPVScreen: React.FC = () => {
               </TouchableOpacity>
             </View>
           )}
-          {quizQuestions.map(q => (
+          {eventQuestions && eventQuestions.map(q => (
             <Input
-              key={q.id}
+              key={q.questionId}
+              defaultValue={q?.answer}
               inputFieldContainerStyle={{ height: verticalScale(48) }}
               isRequired={q.required}
-              ref={ref => (inputRefs.current[q.id] = ref)}
+              ref={ref => (inputRefs.current[q.questionId] = ref)}
               label={q.question}
             />
           ))}
-          {guestsCount > 0 && (
+          {limitOnePlus > 0 && (
             <Input
               inputFieldContainerStyle={{ height: verticalScale(48) }}
               editable={false}
@@ -381,14 +442,14 @@ const RSPVScreen: React.FC = () => {
         disabled={false}
         style={styles.btnStyle}
         title={
-          status != 0
+          currentGuestStatus != "NO_STATUS"
             ? BUTTON_LABLE.UPDATE_APPLICATION
             : BUTTON_LABLE.SUBMTI_APPLICATION
         }
         colorTheme="dark"
         loading={isSubmitting || isUpdating}
         onPress={
-          status != 0 ? handleSubmitApplication : handleUpdateApplication
+          currentGuestStatus == "NO_STATUS" ? handleSubmitApplication : handleUpdateApplication
         }
       />
     </SafeAreaView>

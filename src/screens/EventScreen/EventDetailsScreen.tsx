@@ -30,11 +30,10 @@ type RouteParams = {
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) => {
   const route = useRoute<RouteProp<RouteParams>>();
   const userId = useSelector((state: RootState) => state.auth.userId);
-  const { data, isLoading } = useFetchEventDetailsQuery({
-    eventId: route?.params?.id
-  });
-
-
+  const { data, isLoading, refetch } = useFetchEventDetailsQuery(
+    { eventId: route?.params?.id },
+    { refetchOnMountOrArgChange: true }
+  );
   console.log("Event details", route.params.id);
 
   useEffect(() => {
@@ -48,12 +47,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
     { id: "4", label: EVENT_STATUS.DECLINED_BY_YOU },
     { id: "5", label: EVENT_STATUS.GOING },
   ];
-  const [images, setImages] = useState(statusMap)
+  const [images, setImages] = useState(statusMap);
 
   // const styles = EventDetailsScreenStyle();
 
   const onNextClick = () => {
-    navigation.navigate('RSPVScreen', { event: event_mock.data })
+    data && navigation.navigate('RSPVScreen', { event: data.data })
   }
 
   return (
@@ -86,7 +85,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
           <Button
             disabled={false}
             style={styles.btnStyle}
-            title={BUTTON_LABLE.RSVP}
+            title={data?.data?.currentGuestStatus == "APPLIED" ? "Update Application" : BUTTON_LABLE.RSVP}
             colorTheme="dark"
             onPress={onNextClick}
           />
