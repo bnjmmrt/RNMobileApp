@@ -29,10 +29,7 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({ userId, searchText, tab }
 
   useEffect(() => {
     if (data) {
-      console.log("sayyed Invited events data", data);
       setEvents((prev) => (currentPage === 1 ? data.data : [...prev, ...data.data]));
-    } else {
-      console.log("sayyed Upcoming events data not found");
     }
   }, [data]);
 

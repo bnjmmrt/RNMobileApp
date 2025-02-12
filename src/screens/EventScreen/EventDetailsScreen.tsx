@@ -18,6 +18,9 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import { useFetchEventDetailsQuery } from 'src/redux/actions/eventApiAction';
 import IMAGES from '@images/index';
+import EventTalent from 'src/component/Event/EventTalent';
+import { ROUTES } from 'src/navigation/Route';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
@@ -30,17 +33,38 @@ type RouteParams = {
 
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) => {
   const route = useRoute<RouteProp<RouteParams>>();
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isDeclinedByMe, setIsDeclinedByMe] = useState(false);
+  const [isDeclinedByHost, setIsDeclinedByHost] = useState(false);
+  const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
+  const [collaborators, setCollaborators] = useState([]);
+  const [talents, setTalents] = useState([]);
+
   const { data, isLoading } = useFetchEventDetailsQuery({
     eventId: route?.params?.id
   });
 
 
-  console.log("Event details", route.params.id);
+  useEffect(() => {
+    if (guestStatus === 'DECLINED') {
+      setIsDeclinedByMe(data?.data?.invitationDeclinedBy == userId)
+      setIsDeclinedByHost(data?.data?.invitationDeclinedBy !== userId)
+    }
+  }, [guestStatus])
+
 
   useEffect(() => {
     console.log("Event data:", data)
+    if (data && data.data && data?.data?.collaborators) {
+      setCollaborators(data.data.collaborators)
+    }
+
+    if (data && data.data && data?.data?.talents) {
+      setTalents(data.data.talents)
+    }
+
+    setGuestStatus(data?.data?.currentGuestStatus)
+
   }, [data])
   console.log("Event details", route.params.id);
   const statusMap = [
@@ -58,6 +82,15 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
     navigation.navigate('RSPVScreen', { event: event_mock.data })
   }
 
+  const onDiscoverMoreClick = () => {
+    navigation.goBack()
+  }
+
+  const onViewTicketClick = () => {
+    FlashMessageComponent.show('success', "in Progress...")
+  }
+
+
   return (
     <View style={{ ...styles.container }}>
 
@@ -72,9 +105,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
             />
           </View>
           <Text style={styles.titleStyle}>{route?.params?.name}</Text>
-          <EventStatus status={route?.params?.status} />
+          <EventStatus status={data?.data?.currentGuestStatus} isDeclinedByMe={isDeclinedByMe} />
           <FlatList
-            data={images}
+            data={collaborators}
             horizontal
             pagingEnabled={false}
             // style={{ marginVertical: 20 }}
@@ -86,20 +119,50 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
           />
           <EventVenue item={route?.params} />
           <EventOverview item={route?.params} />
+          {talents.length > 0 && <EventTalent talents={talents} />}
 
         </View>
 
       </ScrollView>
 
-      <View style={{ margin: 20 }}>
+      {!isDeclinedByHost && <View style={{ margin: 20 }}>
         <Button
           disabled={false}
           style={styles.btnStyle}
-          title={BUTTON_LABLE.RSVP}
+          title={guestStatus == 'APPLIED' ? BUTTON_LABLE.UPDATE_APPLICATION : BUTTON_LABLE.RSVP}
           colorTheme="dark"
           onPress={onNextClick}
         />
       </View>
+      }
+
+      {isDeclinedByHost && <View style={{ margin: 20 }}>
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.DISCOVER_MORE_EVENTS}
+          colorTheme="dark"
+          onPress={onDiscoverMoreClick}
+        />
+      </View>}
+
+
+      {guestStatus == 'CONFIRMED' && <View style={{ margin: 20 }}>
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.VIEW_TICKET}
+          colorTheme="dark"
+          onPress={onViewTicketClick}
+        />
+        <Button
+          disabled={false}
+          style={styles.btnStyleLight}
+          title={BUTTON_LABLE.UPDATE_RSVP}
+          colorTheme="light"
+          onPress={onNextClick}
+        />
+      </View>}
 
       <BackButtonOverlay onPress={() => navigation.goBack()} />
     </View>
@@ -111,6 +174,14 @@ const styles = StyleSheet.create({
   btnStyle: {
     borderRadius: 100,
     marginVertical: 10,
+    height: 50,
+  },
+
+  btnStyleLight: {
+    borderRadius: 100,
+    marginVertical: 10,
+    borderWidth: 1,
+    borderColor: COLORS.black,
     height: 50,
   },
   container: {
