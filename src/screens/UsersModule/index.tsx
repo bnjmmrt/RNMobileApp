@@ -4,17 +4,18 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useCallback, useRef, useState} from 'react';
 import {View} from 'react-native';
 import DynamicTabBar, {TabItem} from 'src/component/ActiveTabBar/DynamicTabBar';
+import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
 import Header from 'src/component/Header/Header';
 import {BUTTON_LABLE, COLORS} from 'src/utils/constants';
 import {changeSafeAreaViewConfig} from 'src/utils/functions';
 import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 import AllUsers from './AllUsers';
 import AddNewUserSheet from './BottomSheets/AddNewUserSheet';
+import ListActionsSheet, {
+  listActionCurrentPageType,
+} from './BottomSheets/ListActionsSheet';
 import Lists from './Lists';
 import UsersScreenStyle from './style';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
-import AddNewCustomListSheet from './BottomSheets/AddNewCustomListSheet';
 
 const tabsData: TabItem[] = [
   {
@@ -35,22 +36,28 @@ interface UserModuleProps extends NativeStackScreenProps<any, any> {}
 
 const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
   const addNewUserSheetRef = useRef<BottomSheetMethods>(null);
-  const addNewListSheetRef = useRef<BottomSheetMethods>(null);
-
+  const listActionSheetRef = useRef<BottomSheetMethods>(null);
   const styles = UsersScreenStyle();
 
-  const [currentTab, setCurrentTab] = useState<TabItem>(tabsData[0]);
+  const [currentTab, setCurrentTab] = useState<TabItem | null>(tabsData[0]);
+  const [selectedActionSheetAction, setSelectedActionSheetAction] =
+    useState<listActionCurrentPageType>('');
 
   const handleTabChange = (tab: TabItem) => {
     setCurrentTab(tab);
   };
 
   const onPressHeaderPlus = () => {
-    if (currentTab.id === '1') {
-      addNewUserSheetRef?.current?.open();
-    }
-    if (currentTab.id === '2') {
-      addNewListSheetRef?.current?.open();
+    if (currentTab) {
+      if (currentTab.id === '1') {
+        addNewUserSheetRef?.current?.open();
+      }
+      if (currentTab.id === '2') {
+        console.log('llll');
+
+        setSelectedActionSheetAction('createList');
+        listActionSheetRef?.current?.open();
+      }
     }
   };
 
@@ -64,7 +71,7 @@ const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
   );
 
   return (
-    <View style={[styles.container]}>
+    <View style={styles.container}>
       <Header
         headerTitle="Users"
         showProgressBar={false}
@@ -75,10 +82,22 @@ const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
       />
       <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
 
-      {currentTab.id === '1' ? <AllUsers /> : null}
-      {currentTab.id === '2' ? <Lists /> : null}
+      {currentTab?.id === '1' ? <AllUsers /> : null}
+      {currentTab?.id === '2' ? <Lists /> : null}
+
       <AddNewUserSheet ref={addNewUserSheetRef} />
-      <AddNewCustomListSheet ref={addNewListSheetRef} />
+      <ListActionsSheet
+        ref={listActionSheetRef}
+        from="customLists"
+        selectedAction={selectedActionSheetAction}
+        setSelectedAction={setSelectedActionSheetAction}
+        onSuccess={() => {
+          setCurrentTab(null);
+          setTimeout(() => {
+            setCurrentTab(tabsData[1]);
+          }, 100);
+        }}
+      />
     </View>
   );
 };

@@ -212,7 +212,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     {id: '7', title: PROFILE.DELETE_ACCOUNT, image: '', onPress: deleteAccount},
   ];
 
-  const hasFullAccess = loginData?.isSignUpCompleted || loginData?.token?.id;
+  const hasFullAccess = loginData?.isSignUpCompleted || loginData?.roles[0].roleName===ROLE.MEMBER;
 
   useEffect(() => {
     const listItems = hasFullAccess

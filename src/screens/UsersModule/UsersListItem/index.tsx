@@ -8,16 +8,32 @@ import {AppStackParamList} from 'src/navigation/AppStack';
 import {ROUTES} from 'src/navigation/Route';
 import UserListItemStyle from './style';
 
+export interface UserItemInterface {
+  age: number;
+  categories: [];
+  city: string;
+  followerCount: string;
+  gender: string;
+  id: string;
+  interests: string[];
+  isFavourite: boolean;
+  name: string;
+  profilePicture: string;
+  type: string;
+  listMappingId: string;
+}
 interface UserListItemProps {
-  item: number;
+  item: UserItemInterface;
   isSelected: boolean;
-  onSelectUser: (user: number) => void;
+  onSelectUser: (user: UserItemInterface) => void;
+  showCheckbox?: boolean;
 }
 
 const UserListItem: React.FC<UserListItemProps> = ({
   item,
   isSelected = false,
   onSelectUser = () => {},
+  showCheckbox = true,
 }) => {
   const styles = UserListItemStyle();
   const navigation = useNavigation<NavigationProp<AppStackParamList>>();
@@ -37,13 +53,15 @@ const UserListItem: React.FC<UserListItemProps> = ({
         />
         <CustomText style={styles.username}>{item.name}</CustomText>
       </View>
-      <TouchableOpacity onPress={() => onSelectUser(item)}>
-        <Image
-          source={
-            isSelected ? IMAGES.checkbox_active : IMAGES.checkbox_inactive
-          }
-        />
-      </TouchableOpacity>
+      {showCheckbox ? (
+        <TouchableOpacity onPress={() => onSelectUser(item)}>
+          <Image
+            source={
+              isSelected ? IMAGES.checkbox_active : IMAGES.checkbox_inactive
+            }
+          />
+        </TouchableOpacity>
+      ) : null}
     </TouchableOpacity>
   );
 };

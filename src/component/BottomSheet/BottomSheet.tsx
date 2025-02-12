@@ -1,23 +1,26 @@
-import BottomSheet, { BottomSheetFooter } from '@gorhom/bottom-sheet';
+import {
+  BottomSheetBackdrop,
+  BottomSheetFooter,
+  BottomSheetModal,
+  useBottomSheetModal,
+} from '@gorhom/bottom-sheet';
+import {
+  BottomSheetBackdropProps,
+  BottomSheetDefaultBackdropProps,
+} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
 import React, {
   forwardRef,
   useCallback,
+  useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import {
-  StyleSheet,
-  Modal,
-  View,
-  TouchableOpacity,
-  Pressable,
-  Platform,
-} from 'react-native';
-import { Hp, Wp } from '../../utils/dimensions';
-import { COLORS } from '../../utils/constants';
+import {BackHandler, Platform, StyleSheet, View} from 'react-native';
 import FlashMessage from 'react-native-flash-message';
+import {COLORS} from '../../utils/constants';
+import {Wp} from '../../utils/dimensions';
 import {
   getFlashMessageBackgroundColor,
   MessageType,
@@ -58,16 +61,17 @@ const BottomSheetComponent = forwardRef<
     ref,
   ) => {
     const flashMessageRef = useRef<FlashMessage | null>(null);
-    const [isVisible, setIsVisible] = useState(false);
-    const sheetRef = useRef<BottomSheet>(null);
+    const sheetRef = useRef<BottomSheetModal>(null);
+    const {dismissAll} = useBottomSheetModal();
+
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
 
     useImperativeHandle(ref, () => ({
       open: () => {
-        setIsVisible(true);
+        sheetRef.current?.present();
       },
       close: () => {
-        sheetRef.current?.close();
-        setIsVisible(false);
+        dismissAll();
       },
       showFlashMessage: showFlashMessage,
     }));
@@ -83,19 +87,16 @@ const BottomSheetComponent = forwardRef<
 
     const handleSheetChange = useCallback(
       (index: number) => {
+        setIsSheetOpen(index !== -1);
         onChange?.(index);
       },
       [onChange],
     );
 
     const handleClosePress = useCallback(() => {
-      setIsVisible(false);
+      dismissAll();
       onClose?.();
     }, [onClose]);
-
-    const closeSheet = () => {
-      sheetRef.current?.close();
-    };
 
     const snapPointsMemo = useMemo(() => snapPoints, [snapPoints]);
     const renderFooter = useCallback(
@@ -107,49 +108,68 @@ const BottomSheetComponent = forwardRef<
       [footer],
     );
 
+    useEffect(() => {
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        () => {
+          if (isSheetOpen) {
+            handleClosePress();
+            return true;
+          }
+          return false;
+        },
+      );
+
+      return () => backHandler.remove();
+    }, [isSheetOpen]);
+
     return (
-      <Modal
-        transparent
-        visible={isVisible}
-        animationType="fade"
-        onRequestClose={handleClosePress}>
-        <View style={styles.modalContainer} >
-          <BottomSheet
-            ref={sheetRef}
-            snapPoints={snapPointsMemo}
-            footerComponent={renderFooter}
-            enableDynamicSizing={enableDynamicSizing}
-            enableContentPanningGesture={false}
-            enablePanDownToClose={true}
-            handleIndicatorStyle={[
-              styles.indicatorStyle,
-              {
-                backgroundColor: COLORS.tabBorderColor,
-              },
-            ]}
-            onClose={handleClosePress}
-            onChange={handleSheetChange}
-            backgroundStyle={{
-              backgroundColor: backgroundColor ? backgroundColor : COLORS.white,
-              borderTopLeftRadius: 30,
-              borderTopRightRadius: 30,
-            }}
-            keyboardBehavior="interactive"
-            keyboardBlurBehavior="restore">
-            {children}
-          </BottomSheet>
-        </View>
+      <BottomSheetModal
+        index={0}
+        ref={sheetRef}
+        snapPoints={snapPointsMemo}
+        footerComponent={renderFooter}
+        enableDynamicSizing={enableDynamicSizing}
+        enableContentPanningGesture={false}
+        enablePanDownToClose={true}
+        backdropComponent={(props: BottomSheetBackdropProps) => (
+          <BottomSheetBackdrop
+            {...props}
+            appearsOnIndex={0}
+            disappearsOnIndex={-1}
+            opacity={0.48}
+          />
+        )}
+        handleIndicatorStyle={[
+          styles.indicatorStyle,
+          {
+            backgroundColor: COLORS.tabBorderColor,
+          },
+        ]}
+        onDismiss={handleClosePress}
+        onChange={handleSheetChange}
+        backgroundStyle={{
+          backgroundColor: backgroundColor ? backgroundColor : COLORS.white,
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
+        }}
+        keyboardBehavior={Platform.OS === 'ios' ? 'interactive' : 'fillParent'}
+        android_keyboardInputMode="adjustResize"
+        keyboardBlurBehavior="restore"
+        enableDismissOnClose={true}>
+        {children}
         <FlashMessage ref={flashMessageRef} position={'top'} />
-      </Modal>
+      </BottomSheetModal>
     );
   },
 );
 
 const styles = StyleSheet.create({
   modalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
+    // flex: 1,
+    // justifyContent: 'flex-end',
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // Optional: Dimmed background
+    opacity: 1,
   },
   indicatorStyle: {
     width: Wp(13),

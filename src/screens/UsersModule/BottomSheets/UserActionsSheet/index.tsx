@@ -1,4 +1,10 @@
-import React, {forwardRef, useImperativeHandle, useRef, useState} from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import {View} from 'react-native';
 import {shallowEqual, useSelector} from 'react-redux';
 import BottomSheetComponent, {
@@ -17,20 +23,45 @@ import ReportUser from './ReportUser';
 import {styles} from './style';
 import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import {verticalScale} from 'src/utils/dimensions';
+import {UserItemInterface} from '../../UsersListItem';
+import {BottomSheetView} from '@gorhom/bottom-sheet';
+import {useLazyFetchAllCustomListsQuery} from 'src/redux/actions/listsApiAction';
 
-const UserActionsSheet = forwardRef<BottomSheetMethods, {user: string}>(
-  ({user}, ref) => {
+export type actionSheetFromType = 'usersList' | 'customLists' | 'userDetail';
+export type UserActionCurrentPageType =
+  | 'addToList'
+  | 'createList'
+  | 'markSpam'
+  | 'unmarkSpam'
+  | 'report'
+  | '';
+export interface UserListActionPropsInterface {
+  from: actionSheetFromType;
+  user?: string;
+  selectedUsers?: string[];
+  onSuccess?: () => void;
+  selectedAction: UserActionCurrentPageType;
+  setSelectedAction: React.Dispatch<
+    React.SetStateAction<UserActionCurrentPageType>
+  >;
+}
+
+const UserActionsSheet = forwardRef<
+  BottomSheetMethods,
+  UserListActionPropsInterface
+>(
+  (
+    {user, from, selectedUsers, onSuccess, selectedAction, setSelectedAction},
+    ref,
+  ) => {
     const sheetRef = useRef<BottomSheetMethods>(null);
+
     useImperativeHandle(ref, () => ({
       open: () => sheetRef.current?.open(),
       close: () => sheetRef.current?.close(),
       showFlashMessage: (type, message) =>
         sheetRef.current?.showFlashMessage(type, message),
     }));
-
-    const [selectedAction, setSelectedAction] = useState<
-      'addToList' | 'createList' | 'markSpam' | 'unmarkSpam' | 'report' | ''
-    >('');
 
     const {userDetails} = useSelector((state: RootState) => {
       const queryResult = state.api.queries[
@@ -41,27 +72,40 @@ const UserActionsSheet = forwardRef<BottomSheetMethods, {user: string}>(
         userDetails: queryResult?.data?.data ?? undefined,
       };
     }, shallowEqual);
+
     const [fetchUserDetails, {}] = useLazyFetchUserDetailsQuery();
 
     const snapPoints =
       selectedAction === 'report'
-        ? [`${verticalScale(50)}%`]
+        ? [`${verticalScale(60)}%`]
         : selectedAction === 'markSpam'
-        ? ['30%']
+        ? [`${verticalScale(40)}%`]
         : selectedAction === 'addToList'
-        ? ['50%', '90%']
+        ? [`${verticalScale(60)}%`]
         : selectedAction === 'createList'
-        ? [`${verticalScale(35)}%`]
+        ? [`${verticalScale(45)}%`]
         : ['25%'];
 
-    const onSpamSuccess = () => {
-      setSelectedAction('');
+    const onCreateListSuccess = () => {
+      closeSheet();
+      if (onSuccess) {
+        onSuccess();
+      }
+    };
+
+    const onAddUserToListSuccess = () => {
+      if (onSuccess) {
+        onSuccess();
+      }
+      closeSheet();
     };
 
     const closeSheet = () => {
       setSelectedAction('');
       sheetRef?.current?.close();
-      fetchUserDetails({user: user});
+      if (from === 'userDetail' && user) {
+        fetchUserDetails({user: user});
+      }
     };
 
     const showError = (message: string) => {
@@ -77,13 +121,14 @@ const UserActionsSheet = forwardRef<BottomSheetMethods, {user: string}>(
       <BottomSheetComponent
         ref={sheetRef}
         snapPoints={snapPoints} // Adjustable snap points
+        enableDynamicSizing={selectedAction !== 'addToList' ? true : false}
         onClose={() => {
           closeSheet();
           setSelectedAction('');
         }}>
-        <>
+        <BottomSheetView style={{flex: 1}}>
           {selectedAction === '' ? (
-            <View style={styles.actionButtonContainer}>
+            <BottomSheetView style={styles.actionButtonContainer}>
               <Button
                 title="Add to list"
                 onPress={() => {
@@ -105,39 +150,43 @@ const UserActionsSheet = forwardRef<BottomSheetMethods, {user: string}>(
                 }}
                 style={styles.actionButton}
               />
-            </View>
+            </BottomSheetView>
           ) : null}
           {selectedAction === 'report' ? (
             <ReportUser
               onPressBack={() => setSelectedAction('')}
               showError={showError}
               showSuccess={showSuccess}
-              user={user}
+              user={user || ''}
             />
           ) : null}
           {selectedAction === 'markSpam' ? (
             <MarkAsSpam
               showError={showError}
               showSuccess={showSuccess}
-              user={user}
+              user={user || ''}
             />
           ) : null}
           {selectedAction === 'addToList' ? (
             <AddToList
-              onPressBack={() => setSelectedAction('')}
-              onSuccess={() => onSpamSuccess()}
+              onSuccess={() => onAddUserToListSuccess()}
               onPressCreateList={() => {
                 setSelectedAction('createList');
               }}
+              showError={showError}
+              selectedUsers={selectedUsers}
             />
           ) : null}
           {selectedAction === 'createList' ? (
             <CreateList
               onPressBack={() => setSelectedAction('addToList')}
-              onSuccess={() => onSpamSuccess()}
+              onSuccess={() => onCreateListSuccess()}
+              showError={showError}
+              selectedUsers={selectedUsers}
+              from={from}
             />
           ) : null}
-        </>
+        </BottomSheetView>
       </BottomSheetComponent>
     );
   },

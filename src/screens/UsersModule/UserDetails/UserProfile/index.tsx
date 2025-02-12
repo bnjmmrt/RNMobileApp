@@ -22,6 +22,7 @@ import {
 } from 'src/utils/dimensions';
 import UserDetailCard from '../UserDetailCard';
 import createStyle from './style';
+import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
 
 interface UserProfileProps {
   user: string;
@@ -67,13 +68,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
         fetchUserDetails({ user: user });
         FlashMessageComponent.show('success', 'User marked as favorite!');
       } else {
-        FlashMessageComponent.show('error', 'Something went wrong!');
+        const typedError = response as ApiErrorInterface;
+        FlashMessageComponent.show('error', getErrorMessage(typedError));
       }
     } catch (error) {
-      FlashMessageComponent.show(
-        'error',
-        error?.data?.error?.message || 'Something went wrong!',
-      );
+      const typedError = error as ApiErrorInterface;
+      FlashMessageComponent.show('error', getErrorMessage(typedError));
     }
   };
 
@@ -146,9 +146,11 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
               <Image source={IMAGES.alert_triangle_filled} />
             </TouchableOpacity>
           ) : null}
-          <TouchableOpacity style={styles.userActionButton}>
-            <Image source={IMAGES.user_check} />
-          </TouchableOpacity>
+          {userDetails?.isFollow ? (
+            <TouchableOpacity style={styles.userActionButton}>
+              <Image source={IMAGES.user_check} />
+            </TouchableOpacity>
+          ) : null}
         </View>
       </UserDetailCard>
       <View style={styles.favButtonWrapper}>
@@ -160,6 +162,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
           leftImageStyle={{ height: verticalScale(16), width: verticalScale(16) }}
           style={styles.favButton}
           onPress={handleFavCta}
+          loading={markUserFavLoading || unMarkUserFavLoading}
         />
       </View>
     </View>

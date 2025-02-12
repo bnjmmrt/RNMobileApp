@@ -125,7 +125,7 @@ const UserOverview: React.FC<UserOverviewProps> = ({user}) => {
         <InfoRow title={userDetails?.email} icon={IMAGES.contact} />
       ) : null}
 
-      {userDetails?.socialStats && totalFollowers ? (
+      {userDetails?.socialStats ? (
         <>
           <CustomText style={styles.sectionTitle}>
             {'Social Media Presence'}
@@ -141,19 +141,15 @@ const UserOverview: React.FC<UserOverviewProps> = ({user}) => {
         </>
       ) : null}
 
-      {totalFollowers ? (
-        <>
-          <CustomText style={styles.sectionTitle}>
-            {'Total Following'}
+      <>
+        <CustomText style={styles.sectionTitle}>{'Total Following'}</CustomText>
+        <View style={styles.totalFollowingContainer}>
+          <CustomText style={styles.totalFollowing}>
+            {totalFollowers || 0}
           </CustomText>
-          <View style={styles.totalFollowingContainer}>
-            <CustomText style={styles.totalFollowing}>
-              {totalFollowers}
-            </CustomText>
-            {/* <CustomText style={styles.totalFollowingUnit}>{'M'}</CustomText> */}
-          </View>
-        </>
-      ) : null}
+          {/* <CustomText style={styles.totalFollowingUnit}>{'M'}</CustomText> */}
+        </View>
+      </>
     </UserDetailCard>
   );
 };

@@ -5,12 +5,17 @@ import {
   radiusScale,
   verticalMarginScale,
 } from 'src/utils/dimensions';
-import ListItem from '../../ListItem';
+import ListItem, {ListItemProps} from '../../ListItem';
 import UserDetailCard from '../UserDetailCard';
 import createStyle from './style';
 import {CustomText} from 'src/component/CustomText';
 import ButtonSmall from 'src/component/ButtonSmall';
 import IMAGES from '@images/index';
+import {shallowEqual, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/slices';
+import {UserDetailResponse} from 'src/redux/actions/usersApiAction';
+import {UserItemInterface} from '../../UsersListItem';
+import {ListItemInterface} from '../../Lists';
 
 const dummyListData = [
   {
@@ -29,14 +34,34 @@ interface UserListsProps {
 
 const UserLists: React.FC<UserListsProps> = ({user}) => {
   const styles = createStyle();
+
+  const {userDetails} = useSelector((state: RootState) => {
+    const queryResult = state.api.queries[
+      `fetchUserDetails(${JSON.stringify({user})})`
+    ] as {data: UserDetailResponse} | undefined;
+
+    return {
+      userDetails: queryResult?.data?.data ?? undefined,
+    };
+  }, shallowEqual);
+
   const renderUsersListRow = useCallback(
-    ({item, index}: {item: any; index: number}) => {
+    ({
+      item,
+      index,
+    }: {
+      item: {customName: string; id: string; totalCount: number};
+      index: number;
+    }) => {
       return (
         <ListItem
-          showDelete={false}
-          title={item.name}
+          title={item.customName}
           index={index}
+          showDelete={false}
           containerStyle={styles.usersListRowContainer}
+          id={item.id}
+          userCount={item.totalCount}
+          from="customListDetail"
         />
       );
     },
@@ -46,7 +71,7 @@ const UserLists: React.FC<UserListsProps> = ({user}) => {
   return (
     <UserDetailCard title={'Lists'}>
       <FlatList
-        data={dummyListData}
+        data={userDetails?.customLists || []}
         renderItem={renderUsersListRow}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{gap: verticalMarginScale(8)}}

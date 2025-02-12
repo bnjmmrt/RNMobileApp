@@ -1,15 +1,49 @@
 import React from 'react';
-import {TextInput, View} from 'react-native';
+import {View} from 'react-native';
 import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
-import Header from 'src/component/Header/Header';
+import {useDeleteCustomListMutation} from 'src/redux/actions/listsApiAction';
 import {styles} from './style';
-import Input from 'src/component/Input/Input';
-import {verticalMarginScale} from 'src/utils/dimensions';
+import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
+import {BottomSheetView} from '@gorhom/bottom-sheet';
 
-const DeleteList = ({onSuccess}: {onSuccess: () => void}) => {
+const DeleteList = ({
+  onSuccess,
+  listId,
+  showError,
+}: {
+  onSuccess: () => void;
+  listId: string;
+  showError: (message: string) => void;
+}) => {
+  const [
+    deleteCustomList,
+    {error: deleteCustomListError, isLoading: deleteCustomListLoading},
+  ] = useDeleteCustomListMutation();
+
+  const onPressDeleteList = async () => {
+    if (!listId) {
+      showError('Please select a list first to delete!');
+      return;
+    }
+    const payload = {
+      listId: listId,
+    };
+    try {
+      const response = await deleteCustomList(payload).unwrap();
+      if (response.status === 200) {
+        onSuccess();
+      } else {
+        showError('Something went wrong!');
+      }
+    } catch (error) {
+      const typedError = error as ApiErrorInterface;
+      showError(getErrorMessage(typedError));
+    }
+  };
+
   return (
-    <View style={styles.actionContentWrapper}>
+    <BottomSheetView style={styles.actionContentWrapper}>
       <CustomText style={styles.title}>
         {'Are you sure you want to delete this list?'}
       </CustomText>
@@ -23,9 +57,10 @@ const DeleteList = ({onSuccess}: {onSuccess: () => void}) => {
         title="Delete List"
         colorTheme="dark"
         style={[styles.actionCta, styles.deleteCta]}
-        onPress={() => {}}
+        onPress={onPressDeleteList}
+        loading={deleteCustomListLoading}
       />
-    </View>
+    </BottomSheetView>
   );
 };
 
