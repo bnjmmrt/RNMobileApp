@@ -1,6 +1,6 @@
 import IMAGES from '@images/index';
-import { useNavigation } from '@react-navigation/native';
-import React, { useState, useEffect } from 'react';
+import {useNavigation} from '@react-navigation/native';
+import React, {useState, useEffect} from 'react';
 import {
   FlatList,
   SafeAreaView,
@@ -10,54 +10,70 @@ import {
   TextInput,
   ActivityIndicator,
 } from 'react-native';
+import {useSelector} from 'react-redux';
+import {EndPoint} from 'src/ApiManager/config';
+import useApi from 'src/axios/useApi';
 import AvatarInitials from 'src/component/AvatarInitials';
 import ButtonSmall from 'src/component/ButtonSmall';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import Header from 'src/component/Header/Header';
 import SearchInput from 'src/component/SearchInput';
-import { ROUTES } from 'src/navigation/Route';
-import {
-  useFetchHostListQuery,
-  useFollowHostMutation,
-  useUnfollowHostMutation,
-} from 'src/redux/actions/referralApiAction';
-import { COLORS, PROFILE } from 'src/utils/constants';
-import { Hp } from 'src/utils/dimensions';
-import { fontFamily } from 'src/utils/functions';
+import {ROUTES} from 'src/navigation/Route';
+import {RootState} from 'src/redux/slices';
+import {COLORS, PROFILE} from 'src/utils/constants';
+import {Hp} from 'src/utils/dimensions';
+import {fontFamily} from 'src/utils/functions';
 
 const FollowingScreen: React.FC = () => {
+  const {apiRequest, loading} = useApi();
   const [searchQuery, setSearchQuery] = useState('');
-  const { navigate, goBack } = useNavigation();
-  const [pagination, setPagination] = useState({ take: 12, skip: 0 });
-  const [hostList, setHostList] = useState([]);
+  const {navigate, goBack} = useNavigation();
+  const [pagination, setPagination] = useState({take: 12, skip: 0});
+  const [hostList, setHostList] = useState<any[]>([
+    {
+      id: 'cvsgs-sdggddvd',
+      firstName: 'This is a really long name for a Host',
+      companyName: 'Revolve',
+      companyLogo: 'https://i.imgur.com/Lrupihs.png',
+      isFollowing:false
+    },
+  ]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [followHost] = useFollowHostMutation();
-  const [unfollowHost] = useUnfollowHostMutation();
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
 
-  const { data = {
-    data: {
-      hosts: [{ firstName: 'This is a really long name for a Host', companyName: 'Revolve', companyLogo: 'https://i.imgur.com/Lrupihs.png' }]
-    }
-  }, error, isLoading, isFetching, refetch } = useFetchHostListQuery({
-    id: '12345', // Replace with dynamic user ID
-    take: pagination.take,
-    skip: pagination.skip,
-  });
-
-  useEffect(() => {
-    if (data?.data?.hosts) {
-      const newHosts = data.data.hosts.map((host) => ({
-        ...host,
-        isFollowing: true,
-      }));
-      if (newHosts.length < pagination.take) {
-        setHasMore(false); // No more data to load
+  const getFollowings = async () => {
+    const response: any = await apiRequest(
+      'get',
+      `${EndPoint.hosts_followed}${loginData?.id}?take=${pagination.take}&skip=${pagination.skip}`,
+    );
+    if (response.status === 200) {
+      const hostsData = response?.data.hosts;
+      if (hostsData?.length) {
+        const newHosts = hostsData.map((host: any) => ({
+          ...host,
+          isFollowing: true,
+        }));
+        if (newHosts.length < pagination.take) {
+          setHasMore(false); // No more data to load
+        }
+        setHostList(prev => [...prev, ...newHosts]);
+      } else {
+        setHasMore(false);
       }
-      setHostList((prev) => [...prev, ...newHosts]);
-    } else {
-      setHasMore(false); // No data
     }
+  };
+
+  const followUnfollow = async (hostId: string) => {
+    const response: any = await apiRequest(
+      'post',
+      `v1/auth/host/${hostId}/follow`, { userId: loginData?.id },
+    );
+    return response?.status;
+  };
+  
+  useEffect(() => {
+    getFollowings();
   }, []);
 
   const handleSearch = (query: string) => {
@@ -66,15 +82,15 @@ const FollowingScreen: React.FC = () => {
 
   const handleRefresh = () => {
     setIsRefreshing(true);
-    setPagination({ take: 12, skip: 0 });
+    setPagination({take: 12, skip: 0});
     setHostList([]);
     setHasMore(true);
-    refetch().finally(() => setIsRefreshing(false));
+    getFollowings().finally(() => setIsRefreshing(false));
   };
 
   const loadMoreHosts = () => {
-    if (!isFetching && hasMore) {
-      setPagination((prev) => ({
+    if (!loading && hasMore) {
+      setPagination(prev => ({
         ...prev,
         skip: prev.skip + prev.take,
       }));
@@ -82,32 +98,21 @@ const FollowingScreen: React.FC = () => {
   };
 
   const handleFollow = async (hostId: string, isFollowing: boolean) => {
-    try {
-      if (isFollowing) {
-        // await unfollowHost({ hostId, userId: '12345' }).unwrap();
-        setHostList((prev) =>
-          prev.map((host) =>
-            host.id === hostId ? { ...host, isFollowing: false } : host
-          )
-        );
-      } else {
-        // await followHost({ hostId, userId: '12345' }).unwrap();
-        setHostList((prev) =>
-          prev.map((host) =>
-            host.id === hostId ? { ...host, isFollowing: true } : host
-          )
-        );
-      }
-    } catch (error) {
-      console.error('Error handling follow/unfollow:', error);
-    }
+        const status = await followUnfollow(hostId);
+        if (status === 200) {
+          setHostList(prev =>
+            prev.map(host =>
+              host.id === hostId ? {...host, isFollowing: !isFollowing} : host,
+            ),
+          );
+        }
   };
 
-  const filteredHosts = hostList.filter((host) =>
-    host.companyName.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredHosts = hostList.filter(host =>
+    host.companyName.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  if (isLoading && hostList.length === 0) {
+  if (loading && hostList.length === 0) {
     return (
       <View style={styles.loader}>
         <ActivityIndicator size="large" />
@@ -116,22 +121,23 @@ const FollowingScreen: React.FC = () => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
-      <Header headerTitle={PROFILE.FOLLOWING} showProgressBar={false} onPress={goBack} />
-
-
+    <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
+      <Header
+        headerTitle={PROFILE.FOLLOWING}
+        showProgressBar={false}
+        onPress={goBack}
+      />
       <FlatList
         data={filteredHosts}
         ListEmptyComponent={
-          !isLoading && (
+          !loading && (
             <View
               style={{
                 alignItems: 'center',
                 justifyContent: 'center',
                 height: Hp(60),
                 flexDirection: 'row',
-              }}
-            >
+              }}>
               <EventEmptyRecord
                 title="No Following"
                 subTitle="You are not following any hosts."
@@ -140,36 +146,43 @@ const FollowingScreen: React.FC = () => {
           )
         }
         ListHeaderComponent={
-          <View style={{ marginBottom: 12 }}>
+          <View style={{marginBottom: 16}}>
             <SearchInput
               onSearchTextChange={handleSearch}
               placeholder="Search Hosts.."
               value={searchQuery}
+              mainContainerStyle={{ marginHorizontal: 0}}
             />
           </View>
         }
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
+        keyExtractor={(item: any) => item.id}
+        renderItem={({item}) => (
           <View style={styles.itemContainer}>
-            <AvatarInitials onPress={() => navigate(ROUTES.HostProfileScreen, { hostId: 'dsk' })} imgUrl={item.companyLogo} size={48} />
-            <Text style={styles.itemName}>{item.companyName}</Text>
+            <AvatarInitials
+              onPress={() =>
+                navigate(ROUTES.HostProfileScreen, {hostId: 'dsk'})
+              }
+              imgUrl={item?.companyLogo}
+              size={48}
+            />
+            <Text style={styles.itemName}>{item?.companyName}</Text>
             <ButtonSmall
               style={styles.smallBtnStyle}
-              title={item.isFollowing ? 'Following' : 'Follow'}
-              colorTheme={item.isFollowing ? 'dark' : 'dark'}
-              leftIcon={item.isFollowing ? IMAGES.check : null}
-              borderType={item.isFollowing ? "STRIPE" : "SOLID"}
-              onPress={() => handleFollow(item.id, item.isFollowing)}
+              title={item?.isFollowing ? 'Following' : 'Follow'}
+              colorTheme={item?.isFollowing ? 'dark' : 'dark'}
+              leftIcon={item?.isFollowing ? IMAGES.check : null}
+              borderType={item?.isFollowing ? 'STRIPE' : 'SOLID'}
+              onPress={() => handleFollow(item?.id, item?.isFollowing)}
             />
           </View>
         )}
         refreshing={isRefreshing}
         onRefresh={handleRefresh}
-        contentContainerStyle={{ paddingHorizontal: 20 }}
+        contentContainerStyle={{paddingHorizontal: 20}}
         // onEndReached={hasMore ? loadMoreHosts : null}
         onEndReachedThreshold={0.5}
         ListFooterComponent={
-          isFetching && hasMore && <ActivityIndicator size="small" />
+          loading && hasMore && <ActivityIndicator size="small" />
         }
       />
     </SafeAreaView>
@@ -185,7 +198,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.borderGray,
     borderRadius: 8,
     fontFamily: fontFamily.ABCDiatype_Regular,
-    marginHorizontal: 20
+    marginHorizontal: 20,
   },
   itemContainer: {
     borderRadius: 16,

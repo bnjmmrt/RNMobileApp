@@ -1,36 +1,101 @@
-import React, { useRef, useState } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {FlatList, SafeAreaView, StyleSheet, View} from 'react-native';
 import TabBar from 'src/component/ActiveTabBar/TabBar';
 import Header from 'src/component/Header/Header';
-import { BUTTON_LABLE, COLORS, PROFILE } from 'src/utils/constants';
-import { Text } from 'react-native';
-import { fontFamily } from 'src/utils/functions';
+import {BUTTON_LABLE, COLORS, PROFILE} from 'src/utils/constants';
+import {Text} from 'react-native';
+import {fontFamily} from 'src/utils/functions';
 import ReferralRequestItem from './ReferralRequestItem';
 import Button from 'src/component/Button';
 import InviteFriendsSheet from './InviteFriendsSheet';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
-import { fontScale, horizontalMarginScale, Hp, radiusScale, verticalMarginScale, Wp } from 'src/utils/dimensions';
-import { useNavigation } from '@react-navigation/native';
+import {
+  fontScale,
+  horizontalMarginScale,
+  Hp,
+  radiusScale,
+  verticalMarginScale,
+  Wp,
+} from 'src/utils/dimensions';
+import {useNavigation} from '@react-navigation/native';
 import useContacts from 'src/utils/hooks/useContactPermission';
+import useApi from 'src/axios/useApi';
+import {EndPoint} from 'src/ApiManager/config';
+import {useSelector} from 'react-redux';
+import {RootState} from 'src/redux/slices';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 const ReferralScreen: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'referrals' | 'vouches'>('referrals');
-  const inviteFriendSheetRef = useRef(null);
-  const { goBack } = useNavigation();
-  const { requestContactPermission } = useContacts();
+  const {apiRequest, loading} = useApi();
+  const [activeTab, setActiveTab] = useState<'referrals' | 'vouches'>(
+    'referrals',
+  );
+  const loginData = useSelector((state: RootState) => state.auth?.loginData);
+  const inviteFriendSheetRef = useRef<any>(null);
+  const {goBack} = useNavigation();
+  const {requestContactPermission} = useContacts();
 
-  const referralsData = [
-    { id: 1, name: 'Sarah Michaels' },
-    { id: 2, name: 'John Doe' },
-  ];
+  const [referrelRequests, setReferrelRequests] = useState<any[]>([]);
 
-  const vouchRequestsData = [
-    { id: 1, name: 'Emily Johnson' },
-    { id: 2, name: 'Michael Brown' },
-  ];
+  const [vouchRequests, setVouchRequests] = useState<any[]>([]);
+
+  const getReferredRequest = async () => {
+    const response: any = await apiRequest('get', EndPoint.referral_requests);
+
+    if (response?.status === 200) {
+      setReferrelRequests(response?.data);
+    }
+  };
+
+  const getVouchRequest = async () => {
+    const response: any = await apiRequest('get', EndPoint.vouch_requests);
+
+    if (response.status === 200) {
+      setVouchRequests(response?.data);
+    }
+  };
+
+  const updateReferrel = async (id: string, status: boolean) => {
+    const response: any = await apiRequest(
+      'put',
+      EndPoint.referral_requests + '/' + id,{isApproved: status}
+    );
+    if(response?.status!==200){
+      FlashMessageComponent.show('error',"Something went wrong, please try later")
+     }
+   
+  };
+
+  const updateVouch = async (id: string, status: boolean) => {
+    const response: any = await apiRequest(
+      'put',
+      EndPoint.vouch_requests + '/' + id,{ isApproved: status},
+    );
+    if(response?.status!==200){
+     FlashMessageComponent.show('error',"Something went wrong, please try later")
+    }
+  };
+
+  useEffect(() => {
+    getReferredRequest();
+  }, []);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab === '01' ? 'referrals' : 'vouches');
+    tab === '01' ? getReferredRequest() : getVouchRequest();
+  };
+
+  const handleApproveDeclineClick = async (flag: boolean, id: string) => {
+  
+    if (activeTab === 'referrals') {
+     await updateReferrel(id, flag);
+    } else {
+     await updateVouch(id, flag);
+    }
+  };
 
   const renderContent = () => {
-    const data = activeTab === 'referrals' ? referralsData : vouchRequestsData;
+    const data = activeTab === 'referrals' ? referrelRequests : vouchRequests;
     const subtitle =
       activeTab === 'referrals'
         ? PROFILE.REVIEW_REFERRAL_REQUESTS
@@ -40,25 +105,36 @@ const ReferralScreen: React.FC = () => {
       <>
         <FlatList
           data={data}
-          ListEmptyComponent={<View style={{ alignItems: 'center', justifyContent: 'center', height: Hp('50%'), flexDirection: 'row' }}>
-            <EventEmptyRecord title={activeTab === 'referrals' ? "You have no referral requests at this time." : "You have no vouch requests at this time."} />
-          </View>}
-          ListHeaderComponent={<Text style={styles.sectionSubtitle}>{subtitle}</Text>}
-          contentContainerStyle={{ gap: 12, marginTop: verticalMarginScale(16), paddingBottom: 60 }}
+          ListEmptyComponent={
+            <View style={styles.listEmptyCopmponentStyle}>
+              <EventEmptyRecord
+                title={
+                  activeTab === 'referrals'
+                    ? 'You have no referral requests at this time.'
+                    : 'You have no vouch requests at this time.'
+                }
+              />
+            </View>
+          }
+          ListHeaderComponent={
+            <Text style={styles.sectionSubtitle}>{subtitle}</Text>
+          }
+          contentContainerStyle={styles.contentContainerStyle}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
+          renderItem={({item}) => (
             <ReferralRequestItem
-              name={item.name}
+              name={item.requesterName}
+              image={item?.requesterProfileImage}
               message={
                 activeTab === 'referrals'
                   ? 'has requested your referral.'
-                  : 'has requested your vouch.'
+                  : `has requested your vouch for [${item?.eventName}]`
               }
-              onApproveApi={() => new Promise((resolve) => setTimeout(resolve, 1000))}
-              onDeclineApi={() => new Promise((resolve) => setTimeout(resolve, 1000))}
+              onApproveApi={() => handleApproveDeclineClick(true, item?.id)}
+              onDeclineApi={() => handleApproveDeclineClick(false, item?.id)}
             />
           )}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={item => item.id.toString()}
         />
       </>
     );
@@ -72,14 +148,16 @@ const ReferralScreen: React.FC = () => {
         onPress={goBack}
       />
       <TabBar
-        onTabChange={(tab) => setActiveTab(tab === "01" ? 'referrals' : 'vouches')}
+        onTabChange={handleTabChange}
         tabOneLabel="Referral Requests"
         tabTwoLabel="Vouch Requests"
         countOne={4}
         countTwo={2}
         width={Wp(88)}
       />
-      <View style={{ paddingHorizontal: horizontalMarginScale(20), flex: 1 }}>{renderContent()}</View>
+      <View style={{paddingHorizontal: horizontalMarginScale(20), flex: 1}}>
+        {renderContent()}
+      </View>
       <Button
         disabled={false}
         style={styles.btnStyle}
@@ -87,7 +165,7 @@ const ReferralScreen: React.FC = () => {
         colorTheme="dark"
         onPress={async () => {
           await requestContactPermission();
-          inviteFriendSheetRef.current.open();
+          inviteFriendSheetRef?.current.open();
         }}
       />
       <InviteFriendsSheet ref={inviteFriendSheetRef} />
@@ -106,6 +184,17 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.ABCDiatype_Regular,
     textAlign: 'center',
     marginBottom: verticalMarginScale(12),
+  },
+  contentContainerStyle: {
+    gap: 12,
+    marginTop: verticalMarginScale(16),
+    paddingBottom: 60,
+  },
+  listEmptyCopmponentStyle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: Hp('50%'),
+    flexDirection: 'row',
   },
   messageText: {
     fontSize: 14,

@@ -317,7 +317,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
             <ProfileTopView
               editPhotoClick={editPhotoClick}
               profilePic={user?.imageUrl}
-              name={`${user?.firstName} ${user?.lastName}`}
+              name={ user?.firstName ? `${user?.firstName} ${user?.lastName}`:''}
               loading={loading}
               role={loginData?.roles[0].roleName}
             />
