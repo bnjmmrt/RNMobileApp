@@ -4,18 +4,19 @@ import {format} from 'date-fns';
 import Button from '../Button';
 import IMAGES from '../../assets/images';
 import {EventItem} from './EventsFeed';
-import {
-  fontScale,
-  horizontalMarginScale,
-  horizontalScale,
-  Hp,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-  Wp,
-} from '../../utils/dimensions';
 import {COLORS} from '../../utils/constants';
 import {fontFamily} from '../../utils/functions';
+import FastImage from '@d11/react-native-fast-image';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+  horizontalScale,
+  verticalScale,
+  radiusScale,
+  fontScale,
+  Hp,
+  Wp,
+} from '../../utils/dimensions';
 
 interface FeedDetailProps {
   detail: EventItem | null;
@@ -57,12 +58,14 @@ const FeedDetail: React.FC<FeedDetailProps> = ({
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <View style={styles.modalBar} />
-          <Image
+          <FastImage
             source={
               detail.image
                 ? {uri: detail.image}
                 : IMAGES.eventCoverPlaceholders1
             }
+            resizeMode={FastImage.resizeMode.cover}
+            defaultSource={IMAGES.eventCoverPlaceholders1}
             style={styles.image}
           />
           <Text style={styles.title}>{detail.title}</Text>

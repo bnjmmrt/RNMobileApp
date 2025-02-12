@@ -1,8 +1,16 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import {fontScale, horizontalMarginScale, horizontalScale, Hp, radiusScale, verticalMarginScale, verticalScale, Wp} from '../../utils/dimensions';
 import {storeData} from '../../utils/functions';
-import { COLORS } from '../../utils/constants';
+import {COLORS} from '../../utils/constants';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+  horizontalScale,
+  radiusScale,
+  fontScale,
+  Hp,
+  Wp,
+} from '../../utils/dimensions';
 
 interface FeedAccessLocationProps {
   allowAccessModal: boolean;

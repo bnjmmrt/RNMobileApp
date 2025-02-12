@@ -9,16 +9,6 @@ import {
   Platform,
 } from 'react-native';
 import {BUTTON_LABLE, COLORS, feedList} from '../../utils/constants';
-import {
-  fontScale,
-  horizontalMarginScale,
-  horizontalScale,
-  Hp,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-  Wp,
-} from '../../utils/dimensions';
 import DateTimePicker from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
 import Button from '../Button';
@@ -26,6 +16,16 @@ import {fontFamily} from '../../utils/functions';
 import IMAGES from '../../assets/images';
 import moment from 'moment';
 import type {Filter} from './EventsFeed';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+  horizontalScale,
+  verticalScale,
+  radiusScale,
+  fontScale,
+  Hp,
+  Wp,
+} from '../../utils/dimensions';
 
 interface FeedFilterProps {
   filter: Filter;

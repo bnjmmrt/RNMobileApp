@@ -1,18 +1,18 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {Image} from 'react-native-animatable';
 import {COLORS} from '../../utils/constants';
 import {fontFamily} from '../../utils/functions';
-import {
-  Wp,
-  Hp,
-  verticalMarginScale,
-  horizontalMarginScale,
-  radiusScale,
-  fontScale,
-} from '../../utils/dimensions';
 import IMAGES from '../../assets/images';
 import type {SeriesItem} from './EventsFeed';
+import FastImage from '@d11/react-native-fast-image';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+  radiusScale,
+  fontScale,
+  Hp,
+  Wp,
+} from '../../utils/dimensions';
 
 interface FeedSeriesProps {
   item: SeriesItem;
@@ -20,25 +20,33 @@ interface FeedSeriesProps {
 }
 
 const FeedSeries: React.FC<FeedSeriesProps> = ({item, setSeries}) => {
-  console.log(item);
   return (
     <View style={styles.container} onTouchEnd={() => setSeries(item)}>
       <View style={[styles.imageContainer]}>
-        <Image source={item.image} style={styles.image} />
-        <Image
+        <FastImage
+          source={item.image}
+          resizeMode={FastImage.resizeMode.cover}
+          defaultSource={IMAGES.eventCoverPlaceholders1}
+          style={styles.image}
+        />
+        <FastImage
           source={
             item.events?.[0]?.image
               ? {uri: item.events[0].image}
               : IMAGES.eventCoverPlaceholders1
           }
+          resizeMode={FastImage.resizeMode.cover}
+          defaultSource={IMAGES.eventCoverPlaceholders1}
           style={styles.image0}
         />
-        <Image
+        <FastImage
           source={
             item.events?.[1]?.image
               ? {uri: item.events[1].image}
               : IMAGES.eventCoverPlaceholders1
           }
+          resizeMode={FastImage.resizeMode.cover}
+          defaultSource={IMAGES.eventCoverPlaceholders1}
           style={styles.image1}
         />
         <View style={styles.seriesLabel}>
@@ -111,7 +119,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   title: {
-    fontSize: fontScale(18),
+    fontSize: fontScale(16),
     fontFamily: fontFamily.ABCDiatype_Medium,
     color: COLORS.black,
   },

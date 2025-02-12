@@ -10,7 +10,14 @@ import {Image} from 'react-native-animatable';
 import IMAGES from '../../assets/images';
 import {COLORS} from '../../utils/constants';
 import {fontFamily} from '../../utils/functions';
-import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalMarginScale, verticalScale } from '../../utils/dimensions';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+  horizontalScale,
+  verticalScale,
+  radiusScale,
+  fontScale,
+} from '../../utils/dimensions';
 
 interface FeedSearchInputProps {
   handleChange: (text: string) => void;
@@ -102,9 +109,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 36,
+    width: 'auto',
+    minWidth: 36,
     height: 36,
     gap: 4,
+    paddingHorizontal: horizontalMarginScale(8),
     marginLeft: horizontalMarginScale(6),
     backgroundColor: COLORS.tabBorderColor,
     borderRadius: radiusScale(100),
