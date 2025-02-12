@@ -32,7 +32,7 @@ const EventOverview: React.FC<EventOverviewProps> = ({ item }) => {
         {item?.description}
       </Text>
 
-      {!expanded && <View style={styles.divider} />}
+      {!expanded || shouldShowReadMore && <View style={styles.divider} />}
 
       {shouldShowReadMore && !expanded && (
         <TouchableOpacity onPress={handleToggle} style={styles.toggleContainer}>
@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.borderGray,
     borderRadius: 15,
-    marginVertical: 10,
     padding: 15,
     backgroundColor: COLORS.white,
   },

@@ -1,9 +1,9 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {COLORS} from '../../utils/constants';
-import {fontFamily} from '../../utils/functions';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { COLORS } from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
 import IMAGES from '../../assets/images';
-import type {EventItem} from './EventsFeed';
+import type { EventItem } from './EventsFeed';
 import FastImage from '@d11/react-native-fast-image';
 import {
   horizontalMarginScale,
@@ -20,12 +20,12 @@ interface FeedItemProps {
   setDetail: React.Dispatch<React.SetStateAction<EventItem | null>>;
 }
 
-const FeedItem: React.FC<FeedItemProps> = ({item, setDetail}) => {
+const FeedItem: React.FC<FeedItemProps> = ({ item, setDetail }) => {
   return (
-    <View style={styles.container} onTouchEnd={() => setDetail(item)}>
+    <TouchableOpacity style={styles.container} onPress={() => setDetail(item)}>
       <View style={[styles.imageContainer]}>
         <FastImage
-          source={{uri: item.image}}
+          source={{ uri: item.image }}
           resizeMode={FastImage.resizeMode.cover}
           defaultSource={IMAGES.eventCoverPlaceholders1}
           style={styles.icon}
@@ -39,7 +39,7 @@ const FeedItem: React.FC<FeedItemProps> = ({item, setDetail}) => {
           {item.startDate}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizontalMarginScale(8),
   },
   icon: {
-    height: verticalScale(417),
+    height: verticalScale(317),
     width: horizontalScale(217),
     borderRadius: radiusScale(10),
   },
