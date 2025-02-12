@@ -61,11 +61,13 @@ const App: React.FC = () => {
         <SafeAreaViewWrapper>
           <GestureHandlerRootView style={{ flex: 1 }}>
             <NavigationContainer theme={MyTheme}>
-              {/* <AppContext.Provider value={appContext}> */}
-              {/* <SafeAreaProvider style={styles.container}> */}
-              <AppContent />
-              {/* </SafeAreaProvider> */}
-              {/* </AppContext.Provider> */}
+              <BottomSheetModalProvider>
+                {/* <AppContext.Provider value={appContext}> */}
+                {/* <SafeAreaProvider style={styles.container}> */}
+                <AppContent />
+                {/* </SafeAreaProvider> */}
+                {/* </AppContext.Provider> */}
+              </BottomSheetModalProvider>
             </NavigationContainer>
           </GestureHandlerRootView>
         </SafeAreaViewWrapper>

@@ -1,53 +1,140 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, View} from 'react-native';
 import Button from 'src/component/Button';
 import {styles} from './style';
+import {
+  useAddUsersToCustomListMutation,
+  useFetchAllCustomListsQuery,
+} from 'src/redux/actions/listsApiAction';
+import {ListInterface, ListItemInterface} from '../../Lists';
+import {COLORS} from 'src/utils/constants';
+import {verticalMarginScale, verticalScale} from 'src/utils/dimensions';
+import {BottomSheetFlatList, BottomSheetView} from '@gorhom/bottom-sheet';
+import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
 
 const AddToList = ({
-  onPressBack,
+  showError,
   onSuccess,
   onPressCreateList,
+  selectedUsers,
 }: {
-  onPressBack: () => void;
+  showError: (message: string) => void;
   onSuccess: () => void;
   onPressCreateList: () => void;
+  selectedUsers?: string[];
 }) => {
+  const [allCustomLists, setAllCustomLists] = useState<ListInterface>({
+    count: 0,
+    list: [],
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedList, setSelectedList] = useState<ListItemInterface | null>(
+    null,
+  );
+
+  const {data, isLoading} = useFetchAllCustomListsQuery({
+    take: 10,
+    skip: (currentPage - 1) * 10,
+  });
+
+  const [
+    addUsersToList,
+    {error: addUsersToListError, isLoading: addUsersToListLoading},
+  ] = useAddUsersToCustomListMutation();
+
+  const onPressAddToList = async () => {
+    if (!selectedList) {
+      showError('Please select a list first!');
+      return;
+    }
+    if (selectedUsers?.length === 0) {
+      showError('Please select users to add in list!');
+      return;
+    }
+    if (!selectedList?.id) {
+      showError('Selected list has no id!');
+      return;
+    }
+    const payload = {
+      customName: selectedList?.name,
+      userIds: selectedUsers || [],
+      listId: selectedList?.id,
+    };
+    try {
+      const response = await addUsersToList(payload).unwrap();
+      if (response.status === 200) {
+        onSuccess();
+      } else {
+        const typedError = response as ApiErrorInterface;
+        showError(getErrorMessage(typedError));
+      }
+    } catch (error) {
+      const typedError = error as ApiErrorInterface;
+      showError(getErrorMessage(typedError));
+    }
+  };
+
+  const loadMore = () => {
+    if (allCustomLists.list?.length < data.data.list?.count) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
   const renderListRow = useCallback(
-    ({item, index}: {item: any; index: number}) => {
+    ({item, index}: {item: ListItemInterface; index: number}) => {
+      const isSelected = item.id === selectedList?.id;
       return (
         <Button
-          title={'List ' + (index + 1)}
-          style={[styles.actionButton]}
-          onPress={onSuccess}
+          title={item.name}
+          style={[
+            styles.actionButton,
+            isSelected && {borderColor: COLORS.black},
+          ]}
+          onPress={() => setSelectedList(isSelected ? null : item)}
         />
       );
     },
-    [],
+    [selectedList],
   );
 
+  useEffect(() => {
+    if (data) {
+      setAllCustomLists(prev =>
+        currentPage === 1 ? data.data : [...prev.list, ...data.data.list],
+      );
+    }
+  }, [data]);
+
   return (
-    <View style={styles.actionContentWrapper}>
-      <FlatList
-        data={[1, 1, 1, 1]}
+    <BottomSheetView style={{flex: 1}}>
+      <BottomSheetFlatList
+        data={allCustomLists.list || []}
         renderItem={renderListRow}
         keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{gap: 8}}
-        style={{marginBottom: 24, marginTop: 16}}
+        contentContainerStyle={{gap: verticalScale(8)}}
+        // style={{flex: 1}}
+        scrollEnabled
+        onEndReached={loadMore}
+        ListFooterComponent={
+          <View style={{marginBottom: verticalMarginScale(20)}} />
+        }
+        ListHeaderComponent={<></>}
       />
-
-      <Button
-        title="Add to List"
-        colorTheme="dark"
-        style={styles.actionCta}
-        onPress={onSuccess}
-      />
-      <Button
-        title="Create a List"
-        // colorTheme="dark"
-        style={[styles.actionCta, styles.createListCta]}
-        onPress={onPressCreateList}
-      />
-    </View>
+      <BottomSheetView style={{marginBottom: verticalMarginScale(10)}}>
+        <Button
+          title="Add to List"
+          colorTheme="dark"
+          style={styles.actionCta}
+          onPress={onPressAddToList}
+          loading={addUsersToListLoading}
+        />
+        <Button
+          title="Create a List"
+          style={[styles.actionCta, styles.createListCta]}
+          onPress={onPressCreateList}
+        />
+      </BottomSheetView>
+    </BottomSheetView>
   );
 };
 

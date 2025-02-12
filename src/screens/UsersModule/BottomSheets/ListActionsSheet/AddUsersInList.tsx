@@ -1,48 +1,119 @@
 import IMAGES from '@images/index';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, Image, TouchableOpacity, View} from 'react-native';
 import AvatarInitials from 'src/component/AvatarInitials';
 import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
 import SearchInput from 'src/component/SearchInput';
-import {verticalMarginScale} from 'src/utils/dimensions';
+import {useAddUsersToCustomListMutation} from 'src/redux/actions/listsApiAction';
+import {useFetchAllUsersQuery} from 'src/redux/actions/usersApiAction';
+import {horizontalMarginScale, verticalMarginScale} from 'src/utils/dimensions';
+import {UserItemInterface} from '../../UsersListItem';
 import {styles} from './style';
+import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
+import {BottomSheetFlatList, BottomSheetView} from '@gorhom/bottom-sheet';
 
-const AddUsersInList = ({onSuccess}: {onSuccess: () => void}) => {
-  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+const AddUsersInList = ({
+  onSuccess,
+  showError,
+  listId,
+  listName,
+}: {
+  onSuccess: () => void;
+  showError: (message: string) => void;
+  listId: string;
+  listName: string;
+}) => {
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [searchText, setSearchText] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [allUsers, setAllUsers] = useState<{
+    users: UserItemInterface[];
+    totalCount: number;
+  }>({totalCount: 0, users: []});
 
-  const onSelectUser = (user: number) => {
-    if (selectedUsers.includes(user)) {
-      const newArray = selectedUsers.filter(u => u !== user);
+  const {data, isLoading} = useFetchAllUsersQuery({
+    take: 10,
+    skip: (currentPage - 1) * 10,
+    searchValue: searchText,
+  });
+
+  const [
+    addUsersToList,
+    {error: addUsersToListError, isLoading: addUsersToListLoading},
+  ] = useAddUsersToCustomListMutation();
+
+  const loadMore = () => {
+    if (allUsers?.users?.length < data?.data?.totalCount && !isLoading) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
+  const onSelectUser = (user: UserItemInterface) => {
+    const isSelected = selectedUsers.some(
+      selectedUser => selectedUser === user.id,
+    );
+    if (isSelected) {
+      const newArray = selectedUsers.filter(u => u !== user.id);
       setSelectedUsers(newArray);
     } else {
-      const newArray = [...selectedUsers, user];
+      const newArray = [...selectedUsers, user.id];
       setSelectedUsers(newArray);
     }
   };
 
+  const handleSearchTextChange = (text: string) => {
+    setSearchText(text);
+  };
+
+  const onPressAddToList = async () => {
+    if (!listId) {
+      showError('Please select a list first!');
+      return;
+    }
+
+    if (selectedUsers?.length === 0) {
+      showError('Please select users to add in list!');
+      return;
+    }
+    const payload = {
+      customName: listName,
+      userIds: selectedUsers || [],
+      listId: listId,
+    };
+    try {
+      const response = await addUsersToList(payload).unwrap();
+      if (response.status === 200) {
+        onSuccess();
+      } else {
+        showError('Something went wrong!');
+      }
+    } catch (error) {
+      const typedError = error as ApiErrorInterface;
+      showError(getErrorMessage(typedError));
+    }
+  };
+
   const renderListRow = useCallback(
-    ({item, index}: {item: any; index: number}) => {
-      const isSelected = selectedUsers.includes(item);
+    ({item, index}: {item: UserItemInterface; index: number}) => {
+      const isSelected = selectedUsers.some(user => user === item.id);
       return (
         <TouchableOpacity
           style={styles.userContainer}
           onPress={() => onSelectUser(item)}>
           <View style={styles.userInfoContainer}>
-            <TouchableOpacity onPress={() => {}}>
-              <Image
-                source={
-                  isSelected ? IMAGES.checkbox_active : IMAGES.checkbox_inactive
-                }
-              />
-            </TouchableOpacity>
-            <AvatarInitials
-              name="Vijay Soni"
-              backgroundColor="red"
-              size={32}
-              textColor="white"
+            <Image
+              source={
+                isSelected ? IMAGES.checkbox_active : IMAGES.checkbox_inactive
+              }
             />
-            <CustomText style={styles.username}>{'Vijay Soni'}</CustomText>
+
+            <AvatarInitials
+              name={item.name}
+              size={32}
+              imgUrl={item.profilePicture}
+            />
+            <CustomText style={styles.username}>{item.name}</CustomText>
           </View>
           <TouchableOpacity style={styles.userArrowWrapper}>
             <Image source={IMAGES.arrowRight} />
@@ -53,30 +124,63 @@ const AddUsersInList = ({onSuccess}: {onSuccess: () => void}) => {
     [selectedUsers],
   );
 
+  useEffect(() => {
+    if (data) {
+      if (currentPage === 1) {
+        setAllUsers(data.data);
+      } else {
+        setAllUsers(prev => ({
+          totalCount: data.data.totalCount,
+          users: [...prev.users, ...data.data.users],
+        }));
+      }
+    }
+  }, [data]);
+
   return (
-    <View>
+    <BottomSheetView style={{flex: 1}}>
       <CustomText style={styles.addUserTitle}>
         {'Select Users to Add to List'}
       </CustomText>
-      <SearchInput placeholder="Search" />
-      <FlatList
-        data={[1, 2, 3, 4, 5]}
+      <BottomSheetFlatList
+        data={allUsers?.users || []}
         renderItem={renderListRow}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{gap: verticalMarginScale(8)}}
         style={{
-          marginBottom: verticalMarginScale(24),
-          marginTop: verticalMarginScale(16),
+          marginBottom: verticalMarginScale(12),
+          marginHorizontal: horizontalMarginScale(12),
+          flexGrow: 1,
         }}
+        ListHeaderComponent={
+          <SearchInput
+            placeholder="Search"
+            mainContainerStyle={{
+              marginBottom: verticalMarginScale(8),
+              marginHorizontal: 0,
+            }}
+          />
+        }
+        showsVerticalScrollIndicator={false}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.4}
       />
 
       <Button
         title="Add Selected Users to List"
         colorTheme="dark"
-        style={styles.actionCta}
-        onPress={onSuccess}
+        style={[
+          styles.actionCta,
+          {
+            marginBottom: verticalMarginScale(22),
+            // position: 'absolute',
+            // bottom: verticalMarginScale(22),
+          },
+        ]}
+        onPress={onPressAddToList}
+        loading={addUsersToListLoading}
       />
-    </View>
+    </BottomSheetView>
   );
 };
 

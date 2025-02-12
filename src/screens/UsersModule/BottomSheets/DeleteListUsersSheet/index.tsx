@@ -1,17 +1,74 @@
-import React, {forwardRef} from 'react';
+import React, {forwardRef, useImperativeHandle, useRef} from 'react';
 import {View} from 'react-native';
-import BottomSheetComponent from 'src/component/BottomSheet/BottomSheet';
+import BottomSheetComponent, {
+  BottomSheetMethods,
+} from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
 import {styles} from './style';
+import {useRemoveUsersFromCustomListMutation} from 'src/redux/actions/listsApiAction';
+import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
+import {BottomSheetView} from '@gorhom/bottom-sheet';
 
-const DeleteListUsersSheet = forwardRef((props, ref) => {
+interface DeleteListUsersPropsInterface {
+  listName: string;
+  listId: string;
+  selectedUsers: string[];
+  onSuccess: () => void;
+}
+
+const DeleteListUsersSheet = forwardRef<
+  BottomSheetMethods,
+  DeleteListUsersPropsInterface
+>(({listName, listId, selectedUsers = [], onSuccess}, ref) => {
+  const sheetRef = useRef<BottomSheetMethods>(null);
+  useImperativeHandle(ref, () => ({
+    open: () => sheetRef.current?.open(),
+    close: () => sheetRef.current?.close(),
+    showFlashMessage: (type, message) =>
+      sheetRef.current?.showFlashMessage(type, message),
+  }));
+
+  const [
+    removeUsersFromList,
+    {error: removeUsersFromListError, isLoading: removeUsersFromListLoading},
+  ] = useRemoveUsersFromCustomListMutation();
+
+  const onPressRemoveUsers = async () => {
+    if (selectedUsers?.length === 0) {
+      sheetRef.current?.showFlashMessage(
+        'error',
+        'Please select users to add in list!',
+      );
+      return;
+    }
+
+    const payload = {
+      customName: listName,
+      userIds: selectedUsers || [],
+      listId: listId,
+    };
+    try {
+      const response = await removeUsersFromList(payload).unwrap();
+      if (response.status === 200) {
+        onSuccess();
+        sheetRef.current?.close();
+      } else {
+        sheetRef.current?.showFlashMessage('error', 'Something went wrong!');
+      }
+    } catch (error) {
+      const typedError = error as ApiErrorInterface;
+      sheetRef.current?.showFlashMessage('error', getErrorMessage(typedError));
+    }
+  };
+
   return (
     <BottomSheetComponent
-      ref={ref}
-      snapPoints={['30%']} // Adjustable snap points
+      ref={sheetRef}
+      snapPoints={['50%']} // Adjustable snap points
+      enableDynamicSizing
       onClose={() => console.log('Bottom sheet closed')}>
-      <View style={styles.actionContentWrapper}>
+      <BottomSheetView style={styles.actionContentWrapper}>
         <CustomText style={styles.title}>{'Remove user from list?'}</CustomText>
         <CustomText style={styles.message}>
           {'Are you sure you want to remove [User Name] from this list?'}
@@ -21,9 +78,10 @@ const DeleteListUsersSheet = forwardRef((props, ref) => {
           title="Remove"
           colorTheme="dark"
           style={styles.actionCta}
-          onPress={() => {}}
+          onPress={onPressRemoveUsers}
+          loading={removeUsersFromListLoading}
         />
-      </View>
+      </BottomSheetView>
     </BottomSheetComponent>
   );
 });

@@ -19,6 +19,7 @@ import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMe
 import AvatarInitials from 'src/component/AvatarInitials';
 import IMAGES from '@images/index';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
+import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
 
 const AddNewUserSheet = forwardRef<BottomSheetMethods>(({}, ref) => {
   const sheetRef = useRef<BottomSheetMethods>(null);
@@ -84,7 +85,11 @@ const AddNewUserSheet = forwardRef<BottomSheetMethods>(({}, ref) => {
           }, 1000);
         }
       } catch (error) {
-        sheetRef?.current?.showFlashMessage('error', 'Something went wrong!');
+        const typedError = error as ApiErrorInterface;
+        sheetRef.current?.showFlashMessage(
+          'error',
+          getErrorMessage(typedError),
+        );
       }
     }
   };
@@ -92,7 +97,8 @@ const AddNewUserSheet = forwardRef<BottomSheetMethods>(({}, ref) => {
   return (
     <BottomSheetComponent
       ref={sheetRef}
-      snapPoints={[`${verticalScale(65)}%`]} // Adjustable snap points
+      snapPoints={[`${verticalScale(80)}%`]} // Adjustable snap points
+      enableDynamicSizing
       onClose={() => {}}>
       <BottomSheetScrollView style={styles.container}>
         <CustomText style={styles.title}>{'Add New User'}</CustomText>

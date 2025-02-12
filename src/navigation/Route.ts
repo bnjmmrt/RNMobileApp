@@ -19,5 +19,5 @@ export const ROUTES = {
   ListDetail: 'ListDetail',
   EventDetailsScreen: 'EventDetailsScreen',
   HostEditProfileScreen: 'HostEditProfileScreen',
-  HostConnectedAccountsScreen:'HostConnectedAccountsScreen'
-};
+  HostConnectedAccountsScreen: 'HostConnectedAccountsScreen',
+} as const;

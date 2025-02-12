@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {View} from 'react-native';
+import {Keyboard, View} from 'react-native';
 import {shallowEqual, useSelector} from 'react-redux';
 import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
@@ -13,6 +13,7 @@ import {RootState} from 'src/redux/slices';
 import {verticalMarginScale, verticalScale} from 'src/utils/dimensions';
 import {styles} from './style';
 import {BottomSheetScrollView, BottomSheetView} from '@gorhom/bottom-sheet';
+import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
 
 const ReportUser = ({
   onPressBack,
@@ -40,6 +41,7 @@ const ReportUser = ({
   }, shallowEqual);
 
   const onPressCta = async () => {
+    Keyboard.dismiss();
     messageRef?.current?.validateInputs();
     if (messageRef?.current?.validateInputs()) {
       if (userDetails) {
@@ -52,10 +54,12 @@ const ReportUser = ({
           if (response.status === 200) {
             showSuccess(`${userDetails.firstName} reported successfully!`);
           } else {
-            showError('Something went wrong!');
+            const typedError = response as ApiErrorInterface;
+            showError(getErrorMessage(typedError));
           }
         } catch (error) {
-          showError('Something went wrong!');
+          const typedError = error as ApiErrorInterface;
+          showError(getErrorMessage(typedError));
         }
       }
     }
@@ -69,7 +73,7 @@ const ReportUser = ({
         showProgressBar={false}
         onPress={onPressBack}
       />
-      <View style={styles.actionContentWrapper}>
+      <BottomSheetView style={styles.actionContentWrapper}>
         <CustomText style={styles.reportMessage}>
           {
             'Please share more details in the report message below. Your report will be shared with the Rumor Admin team for review.'
@@ -93,7 +97,7 @@ const ReportUser = ({
           onPress={onPressCta}
           loading={isLoading}
         />
-      </View>
+      </BottomSheetView>
     </BottomSheetScrollView>
   );
 };
