@@ -30,8 +30,8 @@ import BaseCityComponent from './BaseCityComponent';
 import CreativeFocusComponent from './CreativeFocusComponent';
 import GenderComponent from './GenderComponent';
 import Toast from 'src/component/Toast/Toast';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import { extractCountryCode } from 'src/utils/functions';
+import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import {extractCountryCode} from 'src/utils/functions';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -78,7 +78,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>();
 
   useEffect(() => {
-    const phoneNumberDetails=extractCountryCode(profileData?.phoneNumber)
+    const phoneNumberDetails = extractCountryCode(profileData?.phoneNumber);
     if (loginData?.isSignUpCompleted) {
       phoneNumberInputRef?.current.setDisabled(true);
       phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
@@ -86,7 +86,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
       //   phoneNumberDetails?.countryCallingCode,
       // );
       phoneNumberInputRef?.current.setCallingCode(null);
-       phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag );
+      phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
       emailInputRef?.current.setDisabled(true);
       emailInputRef?.current.setEmailAddress(profileData?.email);
     }
@@ -119,8 +119,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
         EndPoint.user_profile_picture + loginData?.id,
         {profilePicture: profileData?.imageUrl},
       );
-      console.log('fileUploadResponse,fileUploadResponse',fileUploadResponse);
-      if (fileUploadResponse.status===200) {
+      console.log('fileUploadResponse,fileUploadResponse', fileUploadResponse);
+      if (fileUploadResponse.status === 200) {
         const requestObject: any = {
           address: {
             address: baseCityRef.current.selectedCity.address,
@@ -148,9 +148,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
           requestObject,
         );
         console.log('response,response');
-        if (response.status===200) {
+        if (response.status === 200) {
           //display success
-          FlashMessageComponent.show('success',"Profile Updated Successfully");
+          FlashMessageComponent.show('success', 'Profile Updated Successfully');
         }
       }
     }
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingVertical: verticalMarginScale(10),
+    // paddingVertical: verticalMarginScale(10),
     paddingHorizontal: horizontalMarginScale(20),
   },
   scrollContainer: {paddingBottom: verticalMarginScale(200)},

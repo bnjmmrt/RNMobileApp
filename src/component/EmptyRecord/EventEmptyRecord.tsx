@@ -8,8 +8,8 @@ import { fontFamily } from '../../utils/functions';
 
 interface EventEmptyRecordProps {
     title: string;
-    subTitle: string;
-    isLoading: boolean;
+    subTitle?: string;
+    isLoading?: boolean;
 }
 
 const EventEmptyRecord: React.FC<EventEmptyRecordProps> = ({

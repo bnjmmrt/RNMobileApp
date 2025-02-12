@@ -13,7 +13,7 @@ import useApi from './src/axios/useApi';
 import EventsFeed from './src/component/EventsFeed/EventsFeed';
 import NoInternetScreen from './src/component/NoInternetScreen';
 import { SafeAreaViewWrapper } from './src/component/Wrappers/SafeAreaViewWrapper';
-import { setCreativeFocus } from './src/redux/slices/appFlowSlice';
+import { setCreativeFocus } from './src/redux/slices/appGlobalDataSlice';
 import { setInterests } from './src/redux/slices/appGlobalDataSlice';
 import { persistor, store } from './src/redux/store';
 import MainNavigation from 'src/navigation';

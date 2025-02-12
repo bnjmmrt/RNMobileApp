@@ -71,7 +71,7 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
           title: PROFILE.CONNECT_INSTAGRAM,
           subTitle: 'Please enter your Instagram Handle below',
           connectBtnBackground: COLORS.pink,
-          snapPoints: [Platform.OS === 'android' ? '85%' : '80%']
+          snapPoints: [Platform.OS === 'android' ? '85%' : '85%']
         });
         break;
       case PROFILE.TIKTOK:

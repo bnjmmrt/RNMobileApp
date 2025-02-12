@@ -440,7 +440,7 @@ export const extractCountryCode = (phoneNumber: string) => {
 
   if (!phone) return null;
 
-  const countryCode = phone.country;
+  const countryCode:any = phone.country; 
   const flag = getCountryFlag(countryCode);
 
   return {
