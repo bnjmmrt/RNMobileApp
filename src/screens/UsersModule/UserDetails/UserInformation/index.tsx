@@ -16,6 +16,7 @@ import {
   UserDetailResponse,
 } from 'src/redux/actions/usersApiAction';
 import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
 
 interface UserInformationProps {
   user: string;
@@ -48,14 +49,19 @@ const UserInformation: React.FC<UserInformationProps> = ({user}) => {
       };
 
       try {
-        // const requestParam = { email, phoneNumber: phone };
         const response = await addUserNote(payload).unwrap();
 
         if (response.status === 200) {
           FlashMessageComponent.show('success', 'User notes updated');
           fetchUserDetails({user: user});
+        } else {
+          const typedError = response as ApiErrorInterface;
+          FlashMessageComponent.show('error', getErrorMessage(typedError));
         }
-      } catch (error) {}
+      } catch (error) {
+        const typedError = error as ApiErrorInterface;
+        FlashMessageComponent.show('error', getErrorMessage(typedError));
+      }
     }
   };
 

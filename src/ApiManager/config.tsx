@@ -69,11 +69,16 @@ export const EndPoint = {
   users_list: 'v1/auth/users-list',
   create_user: 'v1/auth/create-user',
   user: 'v1/auth/user/',
-  custom_lists: 'v1/auth/hosts/custom-lists',
   current_user: 'v1/auth/current-user',
-  get_user_with_role_by_id:'v1/auth/get-user-with-roles-by-id',
-  profile_notification_settings:'v1/auth/profile-notification-settings/',
+  get_user_with_role_by_id: 'v1/auth/get-user-with-roles-by-id',
+  profile_notification_settings: 'v1/auth/profile-notification-settings/',
   view_image: 'v1/files/view/',
+
+  hosts_custom_lists: 'v1/auth/hosts/custom-lists',
+  hosts_favorites_lists: 'v1/auth/hosts/favorites',
+  hosts_followers_lists: 'v1/auth/hosts/followers',
+  custom_lists_duplicate: 'v1/auth/hosts/custom-lists/duplicate',
+  host_custom_lists: 'v1/auth/host/custom-lists',
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

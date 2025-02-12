@@ -10,13 +10,13 @@ import {
   View,
 } from 'react-native';
 import settings from '../ApiManager/config';
-import { parse, format } from 'date-fns';
+import {parse, format} from 'date-fns';
 import {
   configStatusBar,
   SafeAreaViewConfig,
 } from 'src/redux/slices/safeAreaViewConfigSlice';
 import store from 'src/redux/store';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import {parsePhoneNumberFromString} from 'libphonenumber-js';
 
 // ErrorText component with TypeScript props
 interface ErrorTextProps {
@@ -54,7 +54,7 @@ export const fontFamily = {
   RomieTrial: 'RomieTrial',
 };
 
-export const ErrorText: React.FC<ErrorTextProps> = ({ msg }) => {
+export const ErrorText: React.FC<ErrorTextProps> = ({msg}) => {
   return (
     <Text
       style={{
@@ -278,7 +278,7 @@ export const handleFormatDate = (
 };
 
 export const formatEventDates = (startDate: string, endDate: string) => {
-  return startDate + " " + endDate
+  return startDate + ' ' + endDate;
   // // Helper function to parse the date
   // function parseDate(dateString) {
   //   const [datePart, timePart] = dateString.split(' ');
@@ -425,17 +425,30 @@ export const extractCountryCode = (phoneNumber: string) => {
   return {
     country: countryCode,
     countryCallingCode: phone.countryCallingCode,
-    flag: flag
+    flag: flag,
   };
 };
-
 
 const getCountryFlag = (countryCode: string) => {
   return countryCode
     ? countryCode
-      .toUpperCase()
-      .split('')
-      .map((char) => String.fromCodePoint(127397 + char.charCodeAt(0)))
-      .join('')
+        .toUpperCase()
+        .split('')
+        .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
+        .join('')
     : '';
+};
+export interface ApiErrorInterface {
+  data: {error: {message: string; type: string} | string};
+}
+export const getErrorMessage = (error: ApiErrorInterface) => {
+  let message = 'Something went wrong!';
+  if (typeof error.data.error === 'object') {
+    if (error.data.error.message) {
+      message = error.data.error.message;
+    }
+  } else if (typeof error.data.error === 'string') {
+    message = error.data.error;
+  }
+  return message;
 };

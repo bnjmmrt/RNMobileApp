@@ -12,10 +12,16 @@ import {
   ImageStyle,
   ActivityIndicator,
 } from 'react-native';
-import { Hp, radiusScale, verticalMarginScale, verticalScale, Wp } from '../utils/dimensions';
-import { fontFamily } from '../utils/functions';
-import { COLORS } from '../utils/constants';
-import { CustomText } from './CustomText';
+import {
+  Hp,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+} from '../utils/dimensions';
+import {fontFamily} from '../utils/functions';
+import {COLORS} from '../utils/constants';
+import {CustomText} from './CustomText';
 
 interface ButtonProps {
   title: string;
@@ -47,30 +53,55 @@ const Button: React.FC<ButtonProps> = ({
   disabled,
   loading,
   clearButtonStyle,
-  buttonType = 'solid'
+  buttonType = 'solid',
 }) => {
-
   const colorbackground = colorTheme === 'dark' ? COLORS.black : COLORS.white;
-  const textColor = buttonType === 'stripe' ? COLORS.black : (colorTheme === 'dark' ? COLORS.white : COLORS.black);
+  const textColor =
+    buttonType === 'stripe'
+      ? COLORS.black
+      : colorTheme === 'dark'
+      ? COLORS.white
+      : COLORS.black;
 
   return (
     <TouchableOpacity
       disabled={disabled}
-      style={[styles.button,
-      {
-        backgroundColor: disabled ? COLORS.disable : buttonType === 'stripe' ? COLORS.white : colorbackground,
-        borderWidth: buttonType === 'stripe' ? 2 : 0,
-        borderColor: buttonType === 'stripe' ? COLORS.black : 'transparent'
-      },
-        style, clearButtonStyle]}
-      onPress={onPress}
-    >
-      {loading ? <ActivityIndicator /> :
+      style={[
+        styles.button,
+        {
+          backgroundColor: disabled
+            ? COLORS.disable
+            : buttonType === 'stripe'
+            ? COLORS.white
+            : colorbackground,
+          borderWidth: buttonType === 'stripe' ? 2 : 0,
+          borderColor: buttonType === 'stripe' ? COLORS.black : 'transparent',
+        },
+        style,
+        clearButtonStyle,
+      ]}
+      onPress={onPress}>
+      {loading ? (
+        <ActivityIndicator color={textColor} />
+      ) : (
         <>
-          {imageSource && <Image source={imageSource} style={[styles.image, leftImageStyle]} />}
-          <Text style={[styles.text, { color: textColor }, textStyle]}>{title}</Text>
-          {rightImageSource && <Image source={rightImageSource} style={[styles.image, rightImageStyle]} />}
-        </>}
+          {imageSource && (
+            <Image
+              source={imageSource}
+              style={[styles.image, leftImageStyle]}
+            />
+          )}
+          <Text style={[styles.text, {color: textColor}, textStyle]}>
+            {title}
+          </Text>
+          {rightImageSource && (
+            <Image
+              source={rightImageSource}
+              style={[styles.image, rightImageStyle]}
+            />
+          )}
+        </>
+      )}
     </TouchableOpacity>
   );
 };
@@ -87,7 +118,7 @@ const styles = StyleSheet.create({
   },
   text: {
     marginHorizontal: 10,
-    fontFamily: fontFamily.ABCDiatype_Medium
+    fontFamily: fontFamily.ABCDiatype_Medium,
   },
   image: {
     width: Hp(3),
