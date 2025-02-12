@@ -1,23 +1,23 @@
-import React, {useCallback, useState} from 'react';
-import {View, Text, StyleSheet, Modal, ScrollView} from 'react-native';
-import {Image} from 'react-native-animatable';
-import {COLORS} from '../../utils/constants';
-import {fontFamily} from '../../utils/functions';
-import IMAGES from '../../assets/images';
-import type {EventItem, SeriesItem} from './EventsFeed';
-import {format} from 'date-fns';
-import FeedDetail from './FeedDetail';
-import FastImage from '@d11/react-native-fast-image';
+import React, { useCallback, useState } from 'react';
+import { View, Text, StyleSheet, Modal, ScrollView, TouchableOpacity } from 'react-native';
+import { Image } from 'react-native-animatable';
+import { COLORS } from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
 import {
-  horizontalMarginScale,
+  Wp,
+  Hp,
   verticalMarginScale,
+  horizontalMarginScale,
+  radiusScale,
   horizontalScale,
   verticalScale,
-  radiusScale,
   fontScale,
-  Hp,
-  Wp,
 } from '../../utils/dimensions';
+import IMAGES from '../../assets/images';
+import type { EventItem, SeriesItem } from './EventsFeed';
+import { format } from 'date-fns';
+import FeedDetail from './FeedDetail';
+import FastImage from '@d11/react-native-fast-image';
 
 interface FeedSeriesDetailProps {
   series: SeriesItem | null;
@@ -57,11 +57,11 @@ const FeedSeriesDetail: React.FC<FeedSeriesDetailProps> = ({
                 defaultSource={IMAGES.eventCoverPlaceholders1}
                 style={styles.seriesImage}
               />
-              <View
+              <TouchableOpacity
                 style={styles.leftArrowBtn}
-                onTouchEnd={() => setSeries(null)}>
+                onPress={() => setSeries(null)}>
                 <Image source={IMAGES.leftArrow} alt="left arrow" />
-              </View>
+              </TouchableOpacity>
             </View>
             <View style={styles.contentContainer}>
               <Text numberOfLines={1} style={styles.title}>
@@ -84,9 +84,9 @@ const FeedSeriesDetail: React.FC<FeedSeriesDetailProps> = ({
                 <Text style={styles.description} numberOfLines={readMore}>
                   {series.about}
                 </Text>
-                <View
+                <TouchableOpacity
                   style={styles.readMoreCard}
-                  onTouchEnd={() =>
+                  onPress={() =>
                     setReadMore(prev => (prev ? undefined : 5))
                   }>
                   <Text style={styles.readMore}>Read More</Text>
@@ -94,7 +94,7 @@ const FeedSeriesDetail: React.FC<FeedSeriesDetailProps> = ({
                     source={readMore ? IMAGES.downArrow : IMAGES.upArrow}
                     style={styles.arrow}
                   />
-                </View>
+                </TouchableOpacity>
               </View>
               {series.events.map((event, index) => (
                 <EventItem event={event} setDetail={setDetail} key={index} />
@@ -125,7 +125,7 @@ interface EventItemProps {
   setDetail: React.Dispatch<React.SetStateAction<EventItem | null>>;
 }
 
-const EventItem: React.FC<EventItemProps> = ({event, setDetail}) => {
+const EventItem: React.FC<EventItemProps> = ({ event, setDetail }) => {
   const formatEventDate = (dateString: string): string => {
     if (dateString === 'Invalid Date') return dateString;
     const [year, month, day] = [
@@ -137,9 +137,9 @@ const EventItem: React.FC<EventItemProps> = ({event, setDetail}) => {
   };
 
   return (
-    <View style={styles.eventContainer} onTouchEnd={() => setDetail(event)}>
+    <TouchableOpacity style={styles.eventContainer} onPress={() => setDetail(event)}>
       <FastImage
-        source={event.image ? {uri: event.image} : IMAGES.eventCoverPlaceholders1}
+        source={event.image ? { uri: event.image } : IMAGES.eventCoverPlaceholders1}
         resizeMode={FastImage.resizeMode.cover}
         defaultSource={IMAGES.eventCoverPlaceholders1}
         style={styles.icon}
@@ -150,7 +150,7 @@ const EventItem: React.FC<EventItemProps> = ({event, setDetail}) => {
         <Text style={styles.content}>{event.location}</Text>
       </View>
       <Image source={IMAGES.arrowRight} alt="arrow-right" />
-    </View>
+    </TouchableOpacity>
   );
 };
 

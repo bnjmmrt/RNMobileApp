@@ -1,4 +1,4 @@
-import {TabItem} from 'src/component/ActiveTabBar/DynamicTabBar';
+import { TabItem } from 'src/component/ActiveTabBar/DynamicTabBar';
 
 export const BUTTON_LABLE = {
   ENTER: 'Enter',
@@ -346,6 +346,24 @@ export const hostTabData: TabItem[] = [
     subTitle: 'No past events.',
   },
 ];
+
+export const StatusEnum = {
+  NO_STATUS: 0,
+  DRAFT: 1,
+  INVITED: 2,
+  CONFIRMED: 3,
+  DECLINED: 4,
+  APPLIED: 5,
+  REFUSED: 6,
+  REVIEW: 7,
+  UNRECOGNIZED: -1,
+};
+
+// Function to get the status number
+// Function to get the status number
+export const getStatusNumber = (status: string): number => {
+  return StatusEnum[status as keyof typeof StatusEnum] ?? StatusEnum.NO_STATUS;
+};
 
 export const eventData = {
   "data": {

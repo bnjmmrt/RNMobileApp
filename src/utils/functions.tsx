@@ -384,6 +384,10 @@ export const formatDate = (date: Date) => {
     .replace(/\//g, '/');
 };
 
+
+
+
+
 export const changeSafeAreaViewConfig = (config: SafeAreaViewConfig) => {
   store.store.dispatch(configStatusBar(config));
   if (Platform.OS == 'android') {
@@ -415,7 +419,7 @@ export const extractCountryCode = (phoneNumber: string) => {
 
   if (!phone) return null;
 
-  const countryCode = phone.country; 
+  const countryCode = phone.country;
   const flag = getCountryFlag(countryCode);
 
   return {
@@ -429,9 +433,9 @@ export const extractCountryCode = (phoneNumber: string) => {
 const getCountryFlag = (countryCode: string) => {
   return countryCode
     ? countryCode
-        .toUpperCase()
-        .split('')
-        .map((char) => String.fromCodePoint(127397 + char.charCodeAt(0)))
-        .join('')
+      .toUpperCase()
+      .split('')
+      .map((char) => String.fromCodePoint(127397 + char.charCodeAt(0)))
+      .join('')
     : '';
 };
