@@ -1,13 +1,13 @@
 import IMAGES from '../../assets/images';
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import {
   horizontalMarginScale,
+  verticalMarginScale,
   horizontalScale,
   radiusScale,
-  verticalMarginScale,
 } from '../../utils/dimensions';
-import {COLORS} from '../../utils/constants';
+import { COLORS } from '../../utils/constants';
 
 interface FeedFilterItemProps {
   content: string;
@@ -23,9 +23,9 @@ const FeedFilterItem: React.FC<FeedFilterItemProps> = ({
   return (
     <View style={styles.container}>
       <Text style={styles.content}>{content}</Text>
-      <View onTouchEnd={handleClear} style={styles.closeContainer}>
+      <TouchableOpacity onPress={handleClear} style={styles.closeContainer}>
         <Image source={IMAGES.filterClose} alt="close" />
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

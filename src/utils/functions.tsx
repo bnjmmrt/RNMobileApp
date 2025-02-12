@@ -384,6 +384,10 @@ export const formatDate = (date: Date) => {
     .replace(/\//g, '/');
 };
 
+
+
+
+
 export const changeSafeAreaViewConfig = (config: SafeAreaViewConfig) => {
   store.store.dispatch(configStatusBar(config));
   if (Platform.OS == 'android') {

@@ -2,11 +2,12 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import { fontFamily, formatEventDates } from '../../utils/functions';
-import { Wp, Hp } from '../../utils/dimensions';
+import { Wp, Hp, horizontalScale, verticalScale } from '../../utils/dimensions';
 import ButtonSmall from '../../component/ButtonSmall';
 import FastImage from '@d11/react-native-fast-image';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from 'src/navigation/Route';
+import IMAGES from '@images/index';
 
 interface EventItemProps {
   item: {};
@@ -30,7 +31,8 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
       <View style={[styles.imageContainer]}>
         <FastImage
           source={{ uri: item?.imageCover }}
-          resizeMode={FastImage.resizeMode.cover}
+          resizeMode={FastImage.resizeMode.center}
+          defaultSource={IMAGES.iconRumor} // Your local placeholder image
           style={styles.icon}
         />
       </View>
@@ -71,7 +73,7 @@ const styles = StyleSheet.create({
     height: Hp(24),
     backgroundColor: COLORS.white,
     borderColor: COLORS.borderGray,
-    alignItems: 'center',
+    // alignItems: 'center',
     borderRadius: 10,
     borderWidth: 1,
     marginBottom: 10,
@@ -83,6 +85,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flexDirection: 'column',
     paddingHorizontal: 10,
+    paddingVertical: 15,
     flex: 1,
     backgroundColor: COLORS.white,
   },
@@ -91,10 +94,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.bgRed,
   },
   icon: {
-    // marginRight: 10,
     borderRadius: 10,
-    height: Hp(21),
-    width: Wp(30),
+    height: horizontalScale(175),
+    width: verticalScale(120),
+    backgroundColor: COLORS.borderGray
   },
   titleStyle: {
     fontSize: 22,

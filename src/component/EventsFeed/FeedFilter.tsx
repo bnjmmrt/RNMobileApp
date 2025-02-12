@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   View,
@@ -7,25 +7,26 @@ import {
   ScrollView,
   Image,
   Platform,
+  TouchableOpacity,
 } from 'react-native';
-import {BUTTON_LABLE, COLORS, feedList} from '../../utils/constants';
-import {
-  fontScale,
-  horizontalMarginScale,
-  horizontalScale,
-  Hp,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-  Wp,
-} from '../../utils/dimensions';
+import { BUTTON_LABLE, COLORS, feedList } from '../../utils/constants';
 import DateTimePicker from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
 import Button from '../Button';
-import {fontFamily} from '../../utils/functions';
+import { fontFamily } from '../../utils/functions';
 import IMAGES from '../../assets/images';
 import moment from 'moment';
-import type {Filter} from './EventsFeed';
+import type { Filter } from './EventsFeed';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+  horizontalScale,
+  verticalScale,
+  radiusScale,
+  fontScale,
+  Hp,
+  Wp,
+} from '../../utils/dimensions';
 
 interface FeedFilterProps {
   filter: Filter;
@@ -73,7 +74,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
 
   const handleClearFilters = () => {
     setFilter({
-      location: {address: '', placeId: '', latitude: '', longitude: ''},
+      location: { address: '', placeId: '', latitude: '', longitude: '' },
       categories: [],
       date: ['', ''],
     });
@@ -101,14 +102,14 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
 
             <View style={styles.list}>
               {feedList.map(feed => (
-                <View
+                <TouchableOpacity
                   style={
                     feedFilters.includes(feed)
                       ? styles.selectedItem
                       : styles.item
                   }
                   key={feed}
-                  onTouchEnd={() => handleToggle(feed)}>
+                  onPress={() => handleToggle(feed)}>
                   <Text
                     style={{
                       color: feedFilters.includes(feed)
@@ -117,15 +118,15 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
                     }}>
                     {feed}
                   </Text>
-                </View>
+                </TouchableOpacity>
               ))}
             </View>
 
             <View>
               <Text style={styles.label}>Location</Text>
-              <View
+              <TouchableOpacity
                 style={styles.container}
-                onTouchEnd={() => {
+                onPress={() => {
                   setLocationVisible(true);
                   if (Platform.OS === 'ios') setFilterVisible(false);
                 }}>
@@ -133,29 +134,27 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
                   <Image source={IMAGES.search} style={styles.icon} />
                   <Text>Currect Location ({filter.location.address})</Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             </View>
 
             <View>
               <Text style={styles.label}>Date Range</Text>
               <View style={styles.container}>
-                <View
+                <TouchableOpacity
                   style={[styles.inputWrapper]}
-                  onTouchEnd={() => setDatePickerVisible(prev => !prev)}>
+                  onPress={() => setDatePickerVisible(prev => !prev)}>
                   <Image source={IMAGES.calendar} style={styles.icon} />
                   <View style={styles.inputValueWithLabel}>
-                    <Text>{`${
-                      filter.date[0]
-                        ? dayjs(filter.date[0]).format('MM/DD/YY')
-                        : ''
-                    } - ${
-                      filter.date[1]
+                    <Text>{`${filter.date[0]
+                      ? dayjs(filter.date[0]).format('MM/DD/YY')
+                      : ''
+                      } - ${filter.date[1]
                         ? dayjs(filter.date[1]).format('MM/DD/YY')
                         : ''
-                    }`}</Text>
+                      }`}</Text>
                     <Image source={IMAGES.downArrow} style={styles.icon} />
                   </View>
-                </View>
+                </TouchableOpacity>
 
                 {alert && (
                   <Text style={styles.alert}>Please choose an End Date.</Text>
@@ -171,13 +170,13 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
                       selectedItemColor="black"
                       selectedRangeBackgroundColor="lightgray"
                       dayContainerStyle={styles.dayContainerStyle}
-                      onChange={({startDate, endDate}) =>
+                      onChange={({ startDate, endDate }) =>
                         setFilter(prev => ({
                           ...prev,
                           date: [startDate, endDate],
                         }))
                       }
-                      headerContainerStyle={{marginTop: 16}}
+                      headerContainerStyle={{ marginTop: 16 }}
                     />
                   </View>
                 )}

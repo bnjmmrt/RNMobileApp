@@ -4,7 +4,7 @@ import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
 import { fontFamily } from 'src/utils/functions';
-import { Hp, Wp } from 'src/utils/dimensions';
+import { fontScale, Hp, verticalScale, Wp } from 'src/utils/dimensions';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import BackButtonOverlay from 'src/component/BackButton/BackButtonOverlay';
 import EventStatus from 'src/component/Event/EventStatus';
@@ -17,6 +17,7 @@ import { event_mock } from './eventMock';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import { useFetchEventDetailsQuery } from 'src/redux/actions/eventApiAction';
+import IMAGES from '@images/index';
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
@@ -29,6 +30,7 @@ type RouteParams = {
 
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) => {
   const route = useRoute<RouteProp<RouteParams>>();
+  const [isLoaded, setIsLoaded] = useState(false);
   const userId = useSelector((state: RootState) => state.auth.userId);
   const { data, isLoading } = useFetchEventDetailsQuery({
     eventId: route?.params?.id
@@ -64,35 +66,43 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
           <View style={{}}>
             <FastImage
               source={{ uri: route?.params?.imageCover }}
-              resizeMode={FastImage.resizeMode.cover}
+              resizeMode={isLoaded ? FastImage.resizeMode.cover : FastImage.resizeMode.center}
+              defaultSource={IMAGES.iconRumor} // Placeholder
               style={styles.icon}
+              onLoad={() => setIsLoaded(true)}
+              onError={() => setIsLoaded(false)} // Ensure resizeMode stays center if the image fails to load
             />
           </View>
           <Text style={styles.titleStyle}>{route?.params?.name}</Text>
-          <EventStatus status={1} />
+          <EventStatus status={route?.params?.status} />
           <FlatList
             data={images}
             horizontal
             pagingEnabled={false}
-            style={{ marginVertical: 20 }}
+            // style={{ marginVertical: 20 }}
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item, index) => `${item.id}-${index}`}
             renderItem={({ item }) => (
               <EventHostItem item={item} />
             )}
           />
-          <EventVenue item={route?.params?.item} />
+          <EventVenue item={route?.params} />
           <EventOverview item={route?.params} />
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={BUTTON_LABLE.RSVP}
-            colorTheme="dark"
-            onPress={onNextClick}
-          />
+
         </View>
 
       </ScrollView>
+
+      <View style={{ margin: 20 }}>
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.RSVP}
+          colorTheme="dark"
+          onPress={onNextClick}
+        />
+      </View>
+
       <BackButtonOverlay onPress={() => navigation.goBack()} />
     </View>
   );
@@ -118,6 +128,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     paddingHorizontal: 15,
     paddingVertical: 5,
+    gap: verticalScale(20),
     flex: 1,
     backgroundColor: COLORS.white,
   },
@@ -126,9 +137,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.bgRed,
   },
   icon: {
-    // marginRight: 10,
+    backgroundColor: COLORS.borderGray,
     borderRadius: 20,
-    height: Hp(60),
+    height: verticalScale(528),
     flex: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -137,10 +148,9 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   titleStyle: {
-    fontSize: 30,
+    fontSize: fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
-    marginBottom: 5,
-    padding: 10,
+    paddingHorizontal: 10,
 
   },
   subtitle: {
