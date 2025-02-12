@@ -31,8 +31,8 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
       <View style={[styles.imageContainer]}>
         <FastImage
           source={{ uri: item?.imageCover }}
-          resizeMode={FastImage.resizeMode.center}
-          defaultSource={IMAGES.iconRumor} // Your local placeholder image
+          resizeMode={FastImage.resizeMode.cover}
+          defaultSource={IMAGES.eventCoverPlaceholders1} // Your local placeholder image
           style={styles.icon}
         />
       </View>

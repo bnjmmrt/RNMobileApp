@@ -10,13 +10,13 @@ import {
   View,
 } from 'react-native';
 import settings from '../ApiManager/config';
-import {parse, format} from 'date-fns';
+import { parse, format } from 'date-fns';
 import {
   configStatusBar,
   SafeAreaViewConfig,
 } from 'src/redux/slices/safeAreaViewConfigSlice';
 import store from 'src/redux/store';
-import {parsePhoneNumberFromString} from 'libphonenumber-js';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 // ErrorText component with TypeScript props
 interface ErrorTextProps {
@@ -54,7 +54,7 @@ export const fontFamily = {
   RomieTrial: 'RomieTrial',
 };
 
-export const ErrorText: React.FC<ErrorTextProps> = ({msg}) => {
+export const ErrorText: React.FC<ErrorTextProps> = ({ msg }) => {
   return (
     <Text
       style={{
@@ -104,6 +104,19 @@ export const objectToQueryString = (
     }
   }
   return str.length > 0 ? `?${str.join('&')}` : '';
+};
+
+export const objectToQueryStringFilter = (params: Record<string, string | number | boolean | string[]>): string => {
+  const queryString = Object.entries(params)
+    .filter(([_, value]) => value !== undefined && value !== null && value !== '') // Filter out empty values
+    .map(([key, value]) =>
+      Array.isArray(value)
+        ? `${key}=${value.join(',')}` // Handle array values
+        : `${key}=${encodeURIComponent(value)}`
+    )
+    .join('&');
+
+  return queryString ? `?${queryString}` : '';
 };
 
 // AsyncStorage utility functions with type safety
@@ -432,14 +445,14 @@ export const extractCountryCode = (phoneNumber: string) => {
 const getCountryFlag = (countryCode: string) => {
   return countryCode
     ? countryCode
-        .toUpperCase()
-        .split('')
-        .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
-        .join('')
+      .toUpperCase()
+      .split('')
+      .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
+      .join('')
     : '';
 };
 export interface ApiErrorInterface {
-  data: {error: {message: string; type: string} | string};
+  data: { error: { message: string; type: string } | string };
 }
 export const getErrorMessage = (error: ApiErrorInterface) => {
   let message = 'Something went wrong!';

@@ -15,6 +15,8 @@ import {
   Hp,
   Wp,
 } from '../../utils/dimensions';
+import { useNavigation } from '@react-navigation/native';
+import { ROUTES } from 'src/navigation/Route';
 
 
 interface FeedItemProps {
@@ -24,25 +26,27 @@ interface FeedItemProps {
 }
 
 const FeedItem: React.FC<FeedItemProps> = ({ item, isFeatured, setDetail }) => {
+  const navigation = useNavigation();
+
+  const handlEventPress = () => {
+    navigation.navigate(ROUTES.EventStack, {
+      screen: ROUTES.EventDetailsScreen,
+      params: item
+    });
+  };
   return (
-    <TouchableOpacity style={styles.container} onPress={() => setDetail(item)}>
+    <TouchableOpacity style={styles.container} onPress={() => handlEventPress()}>
       <View style={[styles.imageContainer]}>
         <FastImage
-          source={{ uri: item?.image }}
-          resizeMode={FastImage.resizeMode.center}
-          defaultSource={IMAGES.iconRumor} // Your local placeholder image
+          source={{ uri: item.imageCover || item.imageFlyer }}
+          resizeMode={FastImage.resizeMode.cover}
+          defaultSource={IMAGES.eventCoverPlaceholders1}
           style={styles.icon}
         />
-        {/* <Image
-          source={
-            item.image ? { uri: item.image } : IMAGES.eventCoverPlaceholders1
-          }
-          style={styles.icon}
-        /> */}
       </View>
       <View style={styles.contentContainer}>
         <Text numberOfLines={1} style={styles.title}>
-          {item.title}
+          {item.name}
         </Text>
         <Text numberOfLines={1} style={styles.subtitle}>
           {item.startDate}

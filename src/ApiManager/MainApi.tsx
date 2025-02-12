@@ -115,6 +115,7 @@ export const apiPut = async (url: any, apiData: {}) => {
 };
 
 export const apiGet = async (url: any) => {
+  console.log()
   return new Promise(async (res, rej) => {
 
     axios.get(getApiBaseUrl() + url, await getHeaders())
