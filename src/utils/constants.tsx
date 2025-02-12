@@ -9,11 +9,13 @@ export const BUTTON_LABLE = {
   RESEND: 'Resend',
   SUBMTI_APPLICATION: 'Submit Application',
   UPDATE_APPLICATION: 'Update Application',
+  UPDATE_RSVP: 'Update RSVP',
   UPCOMING: 'Upcoming',
   INVITED: 'Invited',
   APPLIED: 'Applied',
   PAST: 'Past',
   VIEW_EVENT: 'View Event',
+  VIEW_TICKET: 'View Ticket',
   APPLY_FOR_MEMBERSHIP: 'Apply for Membership',
   GO_TO_INSTAGRAM: 'Go to Instagram',
   SEND_EMAIL: 'Send Email',
@@ -41,6 +43,7 @@ export const BUTTON_LABLE = {
   SHOW_RESULTS: 'Show Results',
   CLEAR_FILTERS: 'Clear Filters',
   FOLLOW: 'Follow',
+  DISCOVER_MORE_EVENTS: 'Discover More Events',
 };
 export const LABLE = {
   WELCOME: 'Welcome to Rumors!',
@@ -159,6 +162,7 @@ export const LABLE = {
   SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:
     'Something went wrong, please try again',
   ABOUT_THE_EVENT: 'About the Event',
+  FEATURE_TALENT: 'Featured Talent',
   READ_MORE: 'Read More',
   FEATURED_TALENT: 'Featured Talent',
   DUMMY_TEXT:
@@ -353,6 +357,7 @@ export const StatusEnum = {
   INVITED: 2,
   CONFIRMED: 3,
   DECLINED: 4,
+  REJECTED: 9,
   APPLIED: 5,
   REFUSED: 6,
   REVIEW: 7,

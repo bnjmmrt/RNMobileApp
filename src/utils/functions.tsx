@@ -92,6 +92,14 @@ export function printLog(msg: string, value: any = ''): void {
   }
 }
 
+export const capitalizeFirstLetter = (text: string) => {
+  if (typeof text !== 'string') {
+    console.warn("Input is not a string");
+    return "";
+  }
+  return text.charAt(0).toUpperCase() + text.slice(1);
+};
+
 export const objectToQueryString = (
   obj: Record<string, string | number | boolean>,
 ): string => {

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useMemberLoginMutation } from '../../redux/actions/loginApiAction';
 import { FlashMessageComponent } from '../../component/FlashMessageComponent/FlashMessageComponent';
 
-export const useVerifyOtp = (isMemberExist: boolean,isGuest: boolean, email?: string, phone?: string, isEmail?: boolean) => {
+export const useVerifyOtp = (isMemberExist: boolean, isGuest: boolean, email?: string, phone?: string, isEmail?: boolean) => {
     const [isLoading, setIsLoading] = useState(false);
     const [memberLogin] = useMemberLoginMutation();
 
@@ -13,7 +13,7 @@ export const useVerifyOtp = (isMemberExist: boolean,isGuest: boolean, email?: st
             const response = await memberLogin(requestParam).unwrap();
 
             if (response.status === 200) {
-                const data = { ...response.data, varifyStatus: isEmail ? 1 : 2, isInvited: email == 'sayyedshahbaz.ali@techalchemy.com'  };
+                const data = { ...response.data, varifyStatus: isEmail ? 1 : 2 };
                 onSuccess(data);
             }
         } catch (error) {

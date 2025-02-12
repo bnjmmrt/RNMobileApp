@@ -1,18 +1,20 @@
 import React from 'react';
 import { Text, StyleSheet, View, Image } from 'react-native';
-import { fontFamily } from '../../utils/functions';
+import { capitalizeFirstLetter, fontFamily } from '../../utils/functions';
 import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
 import IMAGES from '@images/index';
 import { Hp, Wp } from 'src/utils/dimensions';
 import ButtonSmall from '../ButtonSmall';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
+import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
 
 interface EventHostItemProps {
   item: {};
 }
 
-const handlEventPress = () => {
+const handlEventPress = () => { 
   // navigation.navigate('EventDetailsScreen', {item});
+  FlashMessageComponent.show('success', "in Prrogress..")
 };
 
 const EventHostItem: React.FC<EventHostItemProps> = ({ item }) => {
@@ -22,9 +24,8 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item }) => {
     <View style={[styles.container]}>
       <Image source={IMAGES.backgroundLogin} style={styles.image} />
       <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 10 }}>
-        <Text style={styles.title}>{"Revolve"}</Text>
-        <Text style={styles.subtitle}>{"Host"}</Text>
-
+        <Text style={styles.title}>{capitalizeFirstLetter(item?.name)}</Text>
+        <Text style={styles.subtitle}>{capitalizeFirstLetter(item?.role?.name)}</Text>
       </View>
 
       <ButtonSmall
