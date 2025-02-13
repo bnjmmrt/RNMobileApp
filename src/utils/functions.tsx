@@ -392,7 +392,7 @@ export const isAndroid = (): boolean => platform === 'android';
 
 export const convertDateFormat = (dateString: string): string => {
   const [day, month, year] = dateString.split('/');
-  return `${year}-${month}-${day}`;
+  return `${year}-${day}-${month}`;
 };
 
 export const formatDate = (date: Date) => {
@@ -440,7 +440,7 @@ export const extractCountryCode = (phoneNumber: string) => {
 
   if (!phone) return null;
 
-  const countryCode:any = phone.country; 
+  const countryCode: any = phone.country;
   const flag = getCountryFlag(countryCode);
 
   return {

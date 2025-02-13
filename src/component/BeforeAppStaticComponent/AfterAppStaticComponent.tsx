@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, StatusBar, SafeAreaView } from 'react-native';
 import { Hp, Wp } from '../../utils/dimensions';
-import { BUTTON_LABLE, COLORS, eventData, LABLE } from '../../utils/constants';
+import { BUTTON_LABLE, COLORS, eventData, LABLE, ROLE } from '../../utils/constants';
 import Button from '../Button';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
 import { ScrollView } from 'react-native';
@@ -9,37 +9,54 @@ import { fontFamily } from '../../utils/functions';
 import HeaderComponent from '../HeaderComponent';
 import ReferralCodeBottomSheet from '../ReferralCodeBottomSheet/ReferralCodeBottomSheet';
 import MiddleStaticComponent from '../TitleSubTitleComponent/MiddleStaticComponent';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import useContacts from 'src/utils/hooks/useContactPermission';
 import { useDispatch, useSelector } from 'react-redux';
 import useApi from 'src/axios/useApi';
 import { RootState } from 'src/redux/slices';
 import GradientOverlay from 'src/screens/BeforeApplicationFlow/GradientOverlay';
 import { ROUTES } from 'src/navigation/Route';
+import { EndPoint } from 'src/ApiManager/config';
+import { setRole } from 'src/redux/slices/authSlice';
 
 
 const AfterAppStaticComponent: React.FC<{}> = () => {
   const { requestContactPermission } = useContacts();
   const { navigate } = useNavigation();
-  const dispatch = useDispatch();
   const { apiRequest, loading, error } = useApi();
-
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  const role = useSelector((state: RootState) => state.auth.role);
 
   const bottomSheetRef = useRef(null);
-
-  
+  const dispatch = useDispatch();
 
   const onAccessContactClick = async () => {
     await requestContactPermission();
     navigate('InviteReferralScreen')
   }
 
-  const handlEventPress = () => {
-    navigate(ROUTES.EventStack, {
-      screen: ROUTES.EventDetailsScreen,
-      params: eventData
-    });
-  };
+  useFocusEffect(
+    useCallback(() => {
+      const fetchUserById = async () => {
+        try {
+          const response: any = await apiRequest('post', EndPoint.get_user_with_role_by_id, { id: userId });
+          if (response.status === 200) {
+            if (role == response.data.roles[0].name) {
+
+            } else {
+              navigate(ROUTES.WelcomeScreen, { userName: response?.data.name })
+              dispatch(setRole(response?.data?.roles[0].name))
+            }
+
+          }
+        } catch (error) {
+          console.error("Error fetching user:", error);
+        }
+      };
+
+      role == ROLE.NON_MEMBER && fetchUserById();
+    }, [])
+  );
 
   const onEnterReferralClick = () => {
     bottomSheetRef?.current?.open();
@@ -47,7 +64,7 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
 
   return (
 
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar
         translucent
         backgroundColor="transparent"
@@ -96,7 +113,9 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
       </ScrollView>
       <ReferralCodeBottomSheet ref={bottomSheetRef} />
 
-    </SafeAreaView>
+    </View>
+
+
   );
 };
 
