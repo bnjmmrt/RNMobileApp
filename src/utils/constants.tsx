@@ -45,6 +45,7 @@ export const BUTTON_LABLE = {
   FOLLOW: 'Follow',
   DISCOVER_MORE_EVENTS: 'Discover More Events',
 };
+
 export const LABLE = {
   WELCOME: 'Welcome to Rumors!',
   RUMORAPP: 'RUMORAPP',
@@ -333,7 +334,7 @@ export const memberTabData: TabItem[] = [
 
 export const ROLE = {
   MEMBER: 'member',
-  NON_MEMBER: 'non-member',
+  NON_MEMBER: 'non_member',
   HOST: 'host',
 }
 export const hostTabData: TabItem[] = [
