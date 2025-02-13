@@ -37,6 +37,7 @@ import {verticalScale} from 'src/utils/dimensions';
 import {resetAppFlowDetails} from 'src/redux/slices/appFlowSlice';
 import {setProfileData} from 'src/redux/slices/appGlobalDataSlice';
 import {setNotificationSettings} from 'src/redux/slices/appSettingsSlice';
+import CalenderEventsBottomSheet from 'src/component/BottomSheet/CalenderEventsBottomSheet';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
@@ -59,6 +60,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const savePhotoBottomSheetRef = useRef<any>(null);
   const logoutBottomSheetRef = useRef<any>(null);
   const deleteAccountBottomSheetRef = useRef<any>(null);
+  const canelderEventsBottomSheetRef = useRef<any>(null);
 
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   // const memberProfileData = useSelector((state: RootState) => state.appFlowApiData.memberProfileData);
@@ -224,7 +226,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   }, [loginData]);
 
   const handleLogoutPress = () => {
-    logoutBottomSheetRef.current?.open();
+    canelderEventsBottomSheetRef.current?.open();
   };
 
   const editPhotoClick = () => {
@@ -374,6 +376,15 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
           <EditPictureBottomSheet
             ref={logoutBottomSheetRef}
             title="Are you sure you want to log out?"
+            onPress={logOut}
+            submitButtonText={BUTTON_LABLE.CONFIRM}
+            cancelButtonText={BUTTON_LABLE.CANCEL}
+            snapPoints={[Platform.OS == 'android' ? '40%' : '30%']}
+            image={null}
+          />
+           <CalenderEventsBottomSheet
+            ref={canelderEventsBottomSheetRef}
+            title="Add to Calendar"
             onPress={logOut}
             submitButtonText={BUTTON_LABLE.CONFIRM}
             cancelButtonText={BUTTON_LABLE.CANCEL}

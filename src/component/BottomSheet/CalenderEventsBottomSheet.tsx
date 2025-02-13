@@ -1,0 +1,106 @@
+import React, { useRef, forwardRef, useState } from 'react';
+import { View, StyleSheet, Text, Image } from 'react-native';
+import BottomSheetComponent from './BottomSheet';
+import { COLORS } from '../../utils/constants';
+import Button from '../Button';
+import { fontFamily } from '../../utils/functions';
+import { EndPoint } from '../../ApiManager/config';
+import useApi from '../../axios/useApi';
+import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalScale } from 'src/utils/dimensions';
+
+interface CalenderEventsBottomSheetProps {
+  onPress: () => void;
+  title?: string;
+  submitButtonText: string;
+  cancelButtonText: string;
+  snapPoints: any;
+  image: any | null;
+}
+const CalenderEventsBottomSheet = forwardRef(
+  (props: CalenderEventsBottomSheetProps, ref) => {
+    const inputRef = useRef(null);
+    // const [image, setImage] = useState<string>(image);
+
+    const cancelClick = () => {
+      ref.current?.close();
+    };
+
+    return (
+      <BottomSheetComponent
+        ref={ref}
+        snapPoints={props.snapPoints}
+        onClose={() => console.log(ref)}>
+        <View style={styles.container}>
+          {props.title && <Text style={styles.title}>{props.title}</Text>}
+
+          {props.image && (
+            <View style={styles.profilePhotoContainer}>
+              <Image
+                style={styles.profilePhotoContainer}
+                source={{ uri: props.image }}
+                resizeMode="cover"
+              />
+            </View>
+          )}
+
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={'Add to Apple Calendar'}
+            colorTheme="dark"
+            onPress={props.onPress}
+          />
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={props.submitButtonText}
+            colorTheme="dark"
+            onPress={props.onPress}
+          />
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={props.cancelButtonText}
+            colorTheme="dark"
+            onPress={cancelClick}
+            clearButtonStyle={styles.clearButton}
+            textStyle={{ color: '#000' }}
+          />
+        </View>
+      </BottomSheetComponent>
+    );
+  },
+);
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: horizontalMarginScale(20),
+    gap: 12,
+  },
+  btnStyle: {
+    borderRadius: fontScale(100),
+  },
+  clearButton: {
+    borderWidth: horizontalScale(1),
+    backgroundColor: COLORS.white,
+    borderColor: COLORS.black,
+  },
+  title: {
+    fontSize: fontScale(24),
+    fontFamily: fontFamily.RomieTrial_Bold,
+    textAlign: 'center',
+  },
+  profilePhotoContainer: {
+    height: verticalScale(196),
+    width: verticalScale(196),
+    borderRadius: radiusScale(100),
+    borderWidth: horizontalScale(1),
+    backgroundColor: COLORS.tabBorderColor,
+    borderColor: COLORS.borderGray,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+export default CalenderEventsBottomSheet;
