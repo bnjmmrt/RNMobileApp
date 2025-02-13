@@ -35,7 +35,7 @@ import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { verticalScale } from 'src/utils/dimensions';
 import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
-import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import { resetProfileData, setProfileData } from 'src/redux/slices/appGlobalDataSlice';
 import { setNotificationSettings } from 'src/redux/slices/appSettingsSlice';
 
 // Define the type for navigation props
@@ -63,6 +63,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const role = useSelector((state: RootState) => state.auth.role);
 
   const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const profileData = useSelector(
+    (state: RootState) => state.appFlowApiData?.profileData,
+  );
   // const memberProfileData = useSelector((state: RootState) => state.appFlowApiData.memberProfileData);
   const [isShown, setIsShown] = useState(false);
   const [user, setUser] = useState<any>();
@@ -213,10 +216,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     { id: '7', title: PROFILE.DELETE_ACCOUNT, image: '', onPress: deleteAccount },
   ];
 
-  const hasFullAccess = loginData?.isSignUpCompleted || loginData?.roles[0].roleName === ROLE.MEMBER;
+  // const hasFullAccess = loginData?.isSignUpCompleted || loginData?.roles[0].roleName === ROLE.MEMBER;
 
   useEffect(() => {
-    const listItems = hasFullAccess
+    const listItems = loginData?.roles[0].roleName === ROLE.MEMBER
       ? itemsExtras
       : loginData?.roles[0]?.roleName === ROLE.HOST
       ? hostItems
@@ -292,6 +295,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       index: 0,
       routes: [{ name: 'AuthStack' }],
     });
+    dispatch(resetProfileData())
     dispatch(resetLoginData());
     dispatch(setAuthToken(null));
     dispatch(resetAppFlowDetails());
@@ -317,8 +321,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           <ScrollView>
             <ProfileTopView
               editPhotoClick={editPhotoClick}
-              profilePic={user?.imageUrl}
-              name={user?.firstName ? `${user?.firstName} ${user?.lastName}` : ''}
+              profilePic={profileData?.imageUrl}
+              name={profileData?.firstName ? `${profileData?.firstName} ${profileData?.lastName}` : ''}
               loading={loading}
               role={loginData?.roles[0].roleName}
             />
