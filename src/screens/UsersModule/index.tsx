@@ -67,7 +67,7 @@ const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
         ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
         showBottomSafeAreaView: false,
       });
-    }, []),
+    }, [currentTab?.id]),
   );
 
   return (
@@ -85,7 +85,15 @@ const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
       {currentTab?.id === '1' ? <AllUsers /> : null}
       {currentTab?.id === '2' ? <Lists /> : null}
 
-      <AddNewUserSheet ref={addNewUserSheetRef} />
+      <AddNewUserSheet
+        ref={addNewUserSheetRef}
+        onSuccess={() => {
+          setCurrentTab(null);
+          setTimeout(() => {
+            setCurrentTab(tabsData[0]);
+          }, 100);
+        }}
+      />
       <ListActionsSheet
         ref={listActionSheetRef}
         from="customLists"
@@ -97,6 +105,7 @@ const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
             setCurrentTab(tabsData[1]);
           }, 100);
         }}
+        listType="custom"
       />
     </View>
   );

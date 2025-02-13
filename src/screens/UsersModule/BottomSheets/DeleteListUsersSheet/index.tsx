@@ -9,6 +9,7 @@ import {styles} from './style';
 import {useRemoveUsersFromCustomListMutation} from 'src/redux/actions/listsApiAction';
 import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
 import {BottomSheetView} from '@gorhom/bottom-sheet';
+import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 interface DeleteListUsersPropsInterface {
   listName: string;
@@ -36,7 +37,7 @@ const DeleteListUsersSheet = forwardRef<
 
   const onPressRemoveUsers = async () => {
     if (selectedUsers?.length === 0) {
-      sheetRef.current?.showFlashMessage(
+      FlashMessageComponent.show(
         'error',
         'Please select users to add in list!',
       );
@@ -54,11 +55,11 @@ const DeleteListUsersSheet = forwardRef<
         onSuccess();
         sheetRef.current?.close();
       } else {
-        sheetRef.current?.showFlashMessage('error', 'Something went wrong!');
+        FlashMessageComponent.show('error', 'Something went wrong!');
       }
     } catch (error) {
       const typedError = error as ApiErrorInterface;
-      sheetRef.current?.showFlashMessage('error', getErrorMessage(typedError));
+      FlashMessageComponent.show('error', getErrorMessage(typedError));
     }
   };
 

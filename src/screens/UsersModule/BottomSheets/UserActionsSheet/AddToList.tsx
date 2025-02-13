@@ -75,7 +75,7 @@ const AddToList = ({
   };
 
   const loadMore = () => {
-    if (allCustomLists.list?.length < data.data.list?.count) {
+    if (allCustomLists.list?.length < data?.data?.list?.count) {
       setCurrentPage(prev => prev + 1);
     }
   };
@@ -108,7 +108,7 @@ const AddToList = ({
   return (
     <BottomSheetView style={{flex: 1}}>
       <BottomSheetFlatList
-        data={allCustomLists.list || []}
+        data={allCustomLists?.list?.slice(2) || []}
         renderItem={renderListRow}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{gap: verticalScale(8)}}

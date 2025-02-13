@@ -8,6 +8,7 @@ import ListActionsSheet, {
 } from '../BottomSheets/ListActionsSheet';
 import ListItem from '../ListItem';
 import createStyle from './style';
+import GradientSeprator from 'src/component/GradientSeprator';
 
 export interface ListUserItemInterface {
   age: number;
@@ -98,7 +99,7 @@ const Lists: React.FC<ListsProps> = ({}) => {
               index === 0 ? 'follower' : index === 1 ? 'favorite' : 'custom'
             }
           />
-          {index === 1 ? <View style={styles.seprator} /> : null}
+          {index === 1 ? <GradientSeprator style={styles.seprator} /> : null}
         </>
       );
     },
@@ -127,6 +128,7 @@ const Lists: React.FC<ListsProps> = ({}) => {
         setSelectedAction={setSelectedActionSheetAction}
         selectedListId={selectedList || ''}
         onSuccess={onListActionSheetSuccess}
+        listType="custom"
       />
     </View>
   );

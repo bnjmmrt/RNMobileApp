@@ -37,10 +37,6 @@ const createStyle = () => {
     },
 
     seprator: {
-      height: 1,
-      backgroundColor: COLORS.borderGray,
-      width: '70%',
-      alignSelf: 'center',
       marginTop: verticalMarginScale(16),
     },
   });
