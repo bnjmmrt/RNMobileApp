@@ -155,6 +155,19 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     setIsShown(true);
   };
 
+  const roleText = (role: string) => {
+    switch (role.toLowerCase()) {
+      case 'memeber':
+        return 'Member'
+      case 'non_member':
+        return 'Non-Member'
+      case 'host':
+        return 'Host'
+      default:
+        return 'Non-Member'
+    }
+  };
+
   const items: ListItem[] = [
     {id: '1', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit},
     {id: '2', title: PROFILE.NOTIFICATION, image: IMAGES.notification},
@@ -220,12 +233,20 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   // const hasFullAccess = loginData?.isSignUpCompleted || loginData?.roles[0].roleName === ROLE.MEMBER;
 
   useEffect(() => {
-    const listItems =
-      loginData?.roles[0].roleName === ROLE.MEMBER
-        ? itemsExtras
-        : loginData?.roles[0]?.roleName === ROLE.HOST
-        ? hostItems
-        : items;
+    let listItems = itemsExtras;
+    if(loginData.isInvited && role.toLocaleLowerCase() === 'non_member') {
+      listItems = items;
+    } else if (role.toLocaleLowerCase() === 'host') {
+      listItems = hostItems
+    } else {
+      listItems = itemsExtras
+    }
+    // const listItems =
+    //   loginData?.roles[0].roleName === ROLE.MEMBER || loginData?.roles[0].roleName === ROLE.NON_MEMBER
+    //     ? itemsExtras
+    //     : loginData?.roles[0]?.roleName === ROLE.HOST
+    //     ? hostItems
+    //     : items;
     setListItems(listItems);
   }, [loginData]);
 
@@ -340,7 +361,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                   : ''
               }
               loading={loading}
-              role={loginData?.roles[0].roleName}
+              // role={loginData?.roles[0].roleName}
+              role={roleText(role)}
             />
             {listItems.map(item => {
               return (

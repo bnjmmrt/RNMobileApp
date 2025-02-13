@@ -66,31 +66,38 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
 
   useEffect(() => {
     const phoneNumberDetails = extractCountryCode(profileData?.phoneNumber);
-    if (loginData?.isSignUpCompleted) {
-      phoneNumberInputRef?.current.setDisabled(true);
-      phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
-      // phoneNumberInputRef?.current.setCallingCode(
-      //   phoneNumberDetails?.countryCallingCode,
-      // );
-      phoneNumberInputRef?.current.setCallingCode(null);
-      phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
-      emailInputRef?.current.setDisabled(true);
-      emailInputRef?.current.setEmailAddress(profileData?.email);
-    }
 
-    if (loginData?.varifyStatus === 2) {
-      emailInputRef?.current.setDisabled(true);
-      emailInputRef?.current.setEmailAddress(profileData?.email);
-      phoneNumberInputRef?.current.setDisabled(true);
-      phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
-      phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
-      phoneNumberInputRef?.current.setCallingCode(null);
-    }
+    emailInputRef?.current.setDisabled(true);
+    emailInputRef?.current.setEmailAddress(profileData?.email);
+    phoneNumberInputRef?.current.setDisabled(true);
+    phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
+    phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
+    phoneNumberInputRef?.current.setCallingCode(null);
+    // if (loginData?.isSignUpCompleted) {
+    //   phoneNumberInputRef?.current.setDisabled(true);
+    //   phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
+    //   // phoneNumberInputRef?.current.setCallingCode(
+    //   //   phoneNumberDetails?.countryCallingCode,
+    //   // );
+    //   phoneNumberInputRef?.current.setCallingCode(null);
+    //   phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
+    //   emailInputRef?.current.setDisabled(true);
+    //   emailInputRef?.current.setEmailAddress(profileData?.email);
+    // }
 
-    if (loginData?.varifyStatus === 1) {
-      emailInputRef?.current.setDisabled(true);
-      emailInputRef?.current.setEmailAddress(profileData?.email);
-    }
+    // if (loginData?.varifyStatus === 2) {
+    //   emailInputRef?.current.setDisabled(true);
+    //   emailInputRef?.current.setEmailAddress(profileData?.email);
+    //   phoneNumberInputRef?.current.setDisabled(true);
+    //   phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
+    //   phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
+    //   phoneNumberInputRef?.current.setCallingCode(null);
+    // }
+
+    // if (loginData?.varifyStatus === 1) {
+    //   emailInputRef?.current.setDisabled(true);
+    //   emailInputRef?.current.setEmailAddress(profileData?.email);
+    // }
 
     // getUserSettingAndDetails();
   }, []);
@@ -204,7 +211,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
             </>
           )} */}
 
-          {!loginData?.isSignUpCompleted && (
+          {!loginData?.isInvited && (
             <View>
               <Text style={[styles.label]}>{LABLE.GENDER}</Text>
               <GenderComponent
@@ -214,7 +221,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
               />
 
               <Text style={[styles.label]}>{LABLE.BIRTHDAY}</Text>
-              <DatePickerComponent ref={birthDayRef} birthDate={new Date(selectedDate)} />
+              <DatePickerComponent ref={birthDayRef} birthDate={selectedDate} />
 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
               <BaseCityComponent ref={baseCityRef} />
