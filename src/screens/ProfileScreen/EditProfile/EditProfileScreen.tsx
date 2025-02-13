@@ -44,6 +44,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const profileData = useSelector(
     (state: RootState) => state.appFlowApiData?.profileData,
   );
+  const userId = useSelector((state: RootState) => state.auth.userId);
 
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
@@ -128,7 +129,10 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
       );
       console.log('response,response',response);
       if (response.status === 200) {
-         dispatch(setProfileData(response?.data));
+        const responseUser: any = await apiRequest('get', EndPoint.user + userId);
+            if (responseUser.status === 200) {
+              dispatch(setProfileData(response?.data));
+            }
         FlashMessageComponent.show('success', 'Profile Updated Successfully');
         handleBackPress()
       }
