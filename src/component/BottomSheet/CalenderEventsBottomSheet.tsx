@@ -1,16 +1,23 @@
-import React, { useRef, forwardRef, useState } from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
+import React, {useRef, forwardRef, useState} from 'react';
+import {View, StyleSheet, Text, Image, Platform} from 'react-native';
 import BottomSheetComponent from './BottomSheet';
-import { COLORS } from '../../utils/constants';
+import {BUTTON_LABLE, COLORS} from '../../utils/constants';
 import Button from '../Button';
-import { fontFamily } from '../../utils/functions';
-import { EndPoint } from '../../ApiManager/config';
+import {fontFamily} from '../../utils/functions';
+import {EndPoint} from '../../ApiManager/config';
 import useApi from '../../axios/useApi';
-import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalScale } from 'src/utils/dimensions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  horizontalScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+} from 'src/utils/dimensions';
 
 interface CalenderEventsBottomSheetProps {
   onPress: () => void;
-  title?: string;
+  // title?: string;
   submitButtonText: string;
   cancelButtonText: string;
   snapPoints: any;
@@ -28,43 +35,52 @@ const CalenderEventsBottomSheet = forwardRef(
     return (
       <BottomSheetComponent
         ref={ref}
-        snapPoints={props.snapPoints}
+        snapPoints={[Platform.OS == 'android' ? '40%' : '40%']}
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
-          {props.title && <Text style={styles.title}>{props.title}</Text>}
+          <Text style={styles.title}>{'Add To Caleneder'}</Text>
+
+          <Text style={[styles.subTitle]}>
+            {' '}
+            {'Never miss a moment.\nSync this event to your calendar.'}
+          </Text>
 
           {props.image && (
             <View style={styles.profilePhotoContainer}>
               <Image
                 style={styles.profilePhotoContainer}
-                source={{ uri: props.image }}
+                source={{uri: props.image}}
                 resizeMode="cover"
               />
             </View>
           )}
 
+          {Platform.OS === 'ios' ? (
+            <Button
+              disabled={false}
+              style={styles.btnStyle}
+              title={'Add to Apple Calendar'}
+              colorTheme="dark"
+              onPress={props.onPress}
+            />
+          ) : (
+            <Button
+              disabled={false}
+              style={styles.btnStyle}
+              title={'Add to Google Calendar'}
+              colorTheme="dark"
+              onPress={props.onPress}
+            />
+          )}
+
           <Button
             disabled={false}
             style={styles.btnStyle}
-            title={'Add to Apple Calendar'}
-            colorTheme="dark"
-            onPress={props.onPress}
-          />
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={props.submitButtonText}
-            colorTheme="dark"
-            onPress={props.onPress}
-          />
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={props.cancelButtonText}
+            title={BUTTON_LABLE.CLEAR}
             colorTheme="dark"
             onPress={cancelClick}
             clearButtonStyle={styles.clearButton}
-            textStyle={{ color: '#000' }}
+            textStyle={{color: '#000'}}
           />
         </View>
       </BottomSheetComponent>
@@ -75,19 +91,27 @@ const CalenderEventsBottomSheet = forwardRef(
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: horizontalMarginScale(20),
-    gap: 12,
+    paddingVertical: verticalMarginScale(16),
+    gap: 8,
   },
   btnStyle: {
     borderRadius: fontScale(100),
   },
   clearButton: {
     borderWidth: horizontalScale(1),
-    backgroundColor: COLORS.white,
-    borderColor: COLORS.black,
+    backgroundColor: COLORS.tabBorderColor,
+    // borderColor: COLORS.black,
   },
   title: {
     fontSize: fontScale(24),
     fontFamily: fontFamily.RomieTrial_Bold,
+    textAlign: 'center',
+  },
+  subTitle: {
+    color: COLORS.light_gray,
+    fontSize: fontScale(14),
+    fontFamily: fontFamily.ABCDiatype_Regular,
+    marginVertical: verticalMarginScale(2),
     textAlign: 'center',
   },
   profilePhotoContainer: {

@@ -226,7 +226,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   }, [loginData]);
 
   const handleLogoutPress = () => {
-    canelderEventsBottomSheetRef.current?.open();
+    logoutBottomSheetRef.current?.open();
   };
 
   const editPhotoClick = () => {
@@ -388,7 +388,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
             onPress={logOut}
             submitButtonText={BUTTON_LABLE.CONFIRM}
             cancelButtonText={BUTTON_LABLE.CANCEL}
-            snapPoints={[Platform.OS == 'android' ? '40%' : '30%']}
+            snapPoints={[Platform.OS == 'android' ? '38%' : '40%']}
             image={null}
           />
           <DeleteAccountBottomSheet

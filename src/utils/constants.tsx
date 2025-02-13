@@ -44,6 +44,7 @@ export const BUTTON_LABLE = {
   CLEAR_FILTERS: 'Clear Filters',
   FOLLOW: 'Follow',
   DISCOVER_MORE_EVENTS: 'Discover More Events',
+  CLEAR:"Clear"
 };
 
 export const LABLE = {
