@@ -79,6 +79,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
     }
 
     if (loginData?.varifyStatus === 2) {
+      emailInputRef?.current.setDisabled(true);
+      emailInputRef?.current.setEmailAddress(profileData?.email);
       phoneNumberInputRef?.current.setDisabled(true);
       phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
       phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
@@ -143,6 +145,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
     navigation.navigate('ProfileScreen');
   };
 
+  console.log('loginDDDDD', loginData)
+
   return (
     <View style={styles.container}>
       <Header
@@ -165,7 +169,19 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
             errorMessage={ERROR_MESSAGE.LAST_NAME}
             defaultValue={profileData?.lastName}
           />
-          {loginData?.isSignUpCompleted ? (
+          {profileData?.email && profileData?.email !== "" && (
+            <>
+              <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
+              <EmailInput ref={emailInputRef} />
+            </>
+          )}
+          {profileData?.phoneNumber && profileData?.phoneNumber !== "" && (
+            <>
+              <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
+              <PhoneNumberInput ref={phoneNumberInputRef} />
+            </>
+          )}
+          {/* {loginData?.isSignUpCompleted ? (
             <>
               <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
               <EmailInput ref={emailInputRef} />
@@ -186,7 +202,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
                 </>
               )}
             </>
-          )}
+          )} */}
 
           {!loginData?.isSignUpCompleted && (
             <View>
