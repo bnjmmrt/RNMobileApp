@@ -140,7 +140,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   };
 
   const handleBackPress = () => {
-    navigation.goBack();
+    navigation.navigate('ProfileScreen');
   };
 
   return (
@@ -198,7 +198,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
               />
 
               <Text style={[styles.label]}>{LABLE.BIRTHDAY}</Text>
-              <DatePickerComponent ref={birthDayRef} birthDate={selectedDate} />
+              <DatePickerComponent ref={birthDayRef} birthDate={new Date(selectedDate)} />
 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
               <BaseCityComponent ref={baseCityRef} />
