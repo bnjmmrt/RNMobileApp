@@ -45,7 +45,10 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
   const {apiRequest, loading, error} = useApi();
   const dispatch = useDispatch();
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const [hostdetails, setHostDetails] = useState<any>();
+  const profileData = useSelector(
+      (state: RootState) => state.appFlowApiData?.profileData,
+    );
+  // const [hostdetails, setHostDetails] = useState<any>();
   const companyNameRef = useRef<any>(null);
   const bioRef = useRef<any>(null);
   const phoneNumberInputRef = useRef<any>(null);
@@ -60,8 +63,8 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
     console.log('getHostDetails', response);
     if (response.status === 200) {
    
-      dispatch(setHostProfileData(response.data));
-      setHostDetails(response?.data);
+      dispatch(setProfileData(response.data));
+      // setHostDetails(response?.data);
 
       phoneNumberInputRef?.current.setPhoneNumber(response?.data.phoneNumber);
       emailInputRef?.current.setEmailAddress(response?.data.email);
@@ -84,19 +87,19 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
         bio: bioRef?.current.inputText,
         companyLogo: 'string',
         companyName: companyNameRef?.current.inputText,
-        email: hostdetails?.email,
+        email: profileData?.email,
         eventsPerYear: 0,
-        firstName: hostdetails?.firstName,
-        lastName: hostdetails?.lastName,
-        phoneNumber: '+917262811869',
+        firstName: profileData?.firstName,
+        lastName: profileData?.lastName,
+        phoneNumber: profileData?.phoneNumber,
         referredBy: 'string',
         socialMedia: {
-          facebook: hostdetails?.socialMedia.facebook,
-          instagram: hostdetails?.socialMedia.instagram,
-          linkedin: hostdetails?.socialMedia.linkedin,
-          tiktok: hostdetails?.socialMedia.tiktok,
-          x: hostdetails?.socialMedia.x,
-          youtube: hostdetails?.socialMedia.youtube,
+          facebook: profileData?.socialMedia.facebook,
+          instagram: profileData?.socialMedia.instagram,
+          linkedin: profileData?.socialMedia.linkedin,
+          tiktok: profileData?.socialMedia.tiktok,
+          x: profileData?.socialMedia.x,
+          youtube: profileData?.socialMedia.youtube,
         },
         website: websiteRef?.current.inputText,
       };
@@ -132,13 +135,13 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
             ref={companyNameRef}
             label={LABLE.COMPANY_NAME}
             errorMessage={ERROR_MESSAGE.COMPANY_NAME_ERROR}
-            defaultValue={hostdetails?.companyName}
+            defaultValue={profileData?.companyName}
           />
            <Input
             ref={bioRef}
             label={LABLE.BIO}
             errorMessage={''}
-            defaultValue={hostdetails?.bio}
+            defaultValue={profileData?.bio}
             multiline={true}
           />
           <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
@@ -150,7 +153,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
             ref={websiteRef}
             label={LABLE.WEBSITE}
             errorMessage={ERROR_MESSAGE.WEBSITE_ERROR}
-            defaultValue={hostdetails?.website}
+            defaultValue={profileData?.website}
           />
         </View>
       </ScrollView>

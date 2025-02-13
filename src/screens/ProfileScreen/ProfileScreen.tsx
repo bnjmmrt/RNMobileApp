@@ -102,7 +102,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     // console.log('getHostDetails', response);
     if (response.status === 200) {
       dispatch(setProfileData(response.data));
-      setUser(response?.data);
+      // setUser(response?.data);
     }
   };
 
@@ -113,7 +113,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     );
     if (response.status === 200) {
       dispatch(setProfileData(response?.data));
-      setUser(response?.data);
+      // setUser(response?.data);
     }
   };
 
@@ -262,7 +262,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           // setProfilePic(environment.IMAGE_URL + response.data.fileKeyId),
           dispatch(
             setProfileData({
-              ...user,
+              ...profileData,
               imageUrl:
                 environment.BASE_URL +
                 EndPoint.view_image +
