@@ -32,7 +32,8 @@ import CreativeFocusComponent from './CreativeFocusComponent';
 import GenderComponent from './GenderComponent';
 import Toast from 'src/component/Toast/Toast';
 import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import {extractCountryCode} from 'src/utils/functions';
+import {convertDateFormat, extractCountryCode} from 'src/utils/functions';
+import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -43,7 +44,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const profileData = useSelector(
     (state: RootState) => state.appFlowApiData?.profileData,
   );
- 
+
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
   const phoneNumberInputRef = useRef<any>(null);
@@ -52,7 +53,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const birthDayRef = useRef<any>(null);
 
   const getGender = (gender: string) => {
-    return genderList.find(item=>item.value===gender)
+    return genderList.find(item => item.value === gender);
   };
 
   const [gender, setGender] = useState<any>(getGender(profileData.gender));
@@ -99,44 +100,37 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
       baseCityRef.current.validateBaseCity() &&
       !isToastShown
     ) {
-      const fileUploadResponse: any = await apiRequest(
-        'put',
-        EndPoint.user_profile_picture + loginData?.id,
-        {profilePicture: profileData?.imageUrl},
-      );
-      
-      if (fileUploadResponse.status === 200) {
-        const requestObject: any = {
-          address: {
-            address: baseCityRef.current.selectedCity.address,
-            city: '',
-            latitude: '',
-            longitude: '',
-            placeId: baseCityRef.current.selectedCity.placeId,
-            regionCode: '',
-          },
-          birthDate: birthDayRef.current.selectedDate,
-          email: profileData?.email,
-          firstName: firstNameRef.current.inputText,
-          gender: gender?.value,
-          lastName: lastNameRef.current.inputText,
-          mobilePhone: profileData?.phoneNumber,
-          creativeFocus: selectedCreativeFocus
-            ? selectedCreativeFocus.map((item: any) => item.id)
-            : profileData?.creativeFocus.map((item: any) => item.id),
-        };
-        console.log('requestObject', requestObject);
+      const requestObject: any = {
+        address: {
+          address: baseCityRef.current.selectedCity.address,
+          city: '',
+          latitude: '',
+          longitude: '',
+          placeId: baseCityRef.current.selectedCity.placeId,
+          regionCode: '',
+        },
+        birthDate: convertDateFormat(birthDayRef.current.selectedDate),
+        // email: profileData?.email,
+        firstName: firstNameRef.current.inputText,
+        gender: gender?.value,
+        lastName: lastNameRef.current.inputText,
+        // mobilePhone: profileData?.phoneNumber,
+        focusIds: selectedCreativeFocus
+          ? selectedCreativeFocus.map((item: any) => item.id)
+          : profileData?.creativeFocus.map((item: any) => item.id),
+      };
+      console.log('requestObject', requestObject);
 
-        const response: any = await apiRequest(
-          'put',
-          EndPoint.user_profile + loginData?.id,
-          requestObject,
-        );
-        console.log('response,response');
-        if (response.status === 200) {
-          //display success
-          FlashMessageComponent.show('success', 'Profile Updated Successfully');
-        }
+      const response: any = await apiRequest(
+        'put',
+        EndPoint.user_profile + loginData?.id,
+        requestObject,
+      );
+      console.log('response,response',response);
+      if (response.status === 200) {
+         dispatch(setProfileData(response?.data));
+        FlashMessageComponent.show('success', 'Profile Updated Successfully');
+        handleBackPress()
       }
     }
   };

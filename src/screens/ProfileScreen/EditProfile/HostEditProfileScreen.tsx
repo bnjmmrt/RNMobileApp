@@ -63,7 +63,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
     console.log('getHostDetails', response);
     if (response.status === 200) {
    
-      dispatch(setProfileData(response.data));
+      dispatch(setProfileData({...profileData,...response.data}));
       // setHostDetails(response?.data);
 
       phoneNumberInputRef?.current.setPhoneNumber(response?.data.phoneNumber);
@@ -110,9 +110,9 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
         requestObject,
       );
       if (response.status===200) {
-        setProfileData(response.data)
+        // setProfileData(response.data)
         FlashMessageComponent.show('success',"Profile updated successfully")
-        //navigate if required
+        handleBackPress()
       }
     }
   };
