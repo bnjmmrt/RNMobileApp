@@ -1,36 +1,46 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {COLORS} from '../../../utils/constants';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/slices';
-import {fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, Wp} from '../../../utils/dimensions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+  Wp,
+} from '../../../utils/dimensions';
 
 interface CreativeFocusComponentProps {
-  list?:any[];
-  setIsToastShown:(isShown:boolean)=>void;
-  getSelectedData:(data:any[])=>void;
+  list?: any[];
+  setIsToastShown: (isShown: boolean) => void;
+  getSelectedData: (data: any[]) => void;
 }
 
-const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,setIsToastShown,getSelectedData}) => {
-  const dispatch = useDispatch();
-
+const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({
+  list,
+  setIsToastShown,
+  getSelectedData,
+}) => {
+  //update this when get data from API
+  // [{"id": "2b8101ae-0fb0-4804-af05-c90563e9e6a9", "name": "Actor"},{"id": "aca29d03-7272-4661-9af4-2e90be2aedab", "name": "Entertainment"}, {"id": "21874710-2027-4458-a346-afe67d486a2f", "name": "Hospitality"}]
   const selectedCreativeFocus = useSelector(
-    (state: RootState) => state.appFlow.creativeFocus,
+    (state: RootState) => state.appFlowApiData.profileData?.focuses, // need to update from api
   );
   const creativeFocus = useSelector(
     (state: RootState) => state.appFlowApiData.creativeFocus,
   );
 
   const [selectedCategories, setSelectedCategories] = useState<any[]>(
-   list ? [] : selectedCreativeFocus,
+    list ? [] : selectedCreativeFocus ?? [],
   );
 
-  const [itemList,_setItemLiist]=useState(list ? list : creativeFocus)
+  const [itemList, _setItemLiist] = useState(list ? list : creativeFocus);
 
-
-  const getFilteredData=(list:any[],categoryId:string)=>{
-    return list.filter((item: any) => item.id !== categoryId)
-  }
+  const getFilteredData = (list: any[] | undefined, categoryId: string) => {
+    if (!Array.isArray(list)) return [];
+    return list.filter((item: any) => item.id !== categoryId);
+  };
   const handleCategorySelect = (category: any) => {
     if (list?.length) {
       // When list data is available, allow only one selection
@@ -39,27 +49,27 @@ const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,set
         setSelectedCategories([]);
         getSelectedData([]);
         setIsToastShown(true);
-        
       } else {
         // Select the current category
         setSelectedCategories([category]);
         getSelectedData([category]);
         setIsToastShown(false);
-       
       }
     } else {
       // Original logic for multiple selection
-      const filteredList=getFilteredData(selectedCategories,category.id)
+      const filteredList = getFilteredData(
+        selectedCategories ?? [],
+        category.id,
+      );
       if (selectedCategories.find(item => item.id === category.id)) {
         // Remove category if already selected
         setSelectedCategories(filteredList);
-        
-        getSelectedData( filteredList);
+
+        getSelectedData(filteredList);
         if (filteredList.length === 0) {
           setIsToastShown(true);
         }
       } else if (selectedCategories.length < 3) {
-       
         setIsToastShown(false);
         setSelectedCategories([...selectedCategories, category]);
         getSelectedData([...selectedCategories, category]);
@@ -75,14 +85,14 @@ const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,set
             key={item.id}
             style={[
               styles.categoryButton,
-              selectedCategories.some(selected => selected.id === item.id) &&
+              selectedCategories?.some(selected => selected.id === item.id) &&
                 styles.selectedCategoryButton,
             ]}
             onPress={() => handleCategorySelect(item)}>
             <Text
               style={[
                 styles.categoryText,
-                selectedCategories.some(selected => selected.id === item.id) &&
+                selectedCategories?.some(selected => selected.id === item.id) &&
                   styles.selectedCategoryText,
               ]}>
               {item.name}
@@ -95,23 +105,22 @@ const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({list,set
 };
 
 const styles = StyleSheet.create({
- 
   contentContainer: {
     flex: 1,
-    paddingHorizontal:horizontalMarginScale(20),
-    paddingVertical:verticalMarginScale(10),
+    paddingHorizontal: horizontalMarginScale(20),
+    paddingVertical: verticalMarginScale(10),
   },
   categoryContainer: {
-    marginTop:verticalMarginScale(6),
+    marginTop: verticalMarginScale(6),
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
   categoryButton: {
     borderWidth: 1,
     borderColor: '#D1D1D1',
-    borderRadius:radiusScale(20),
-    paddingVertical:verticalMarginScale(10),
-    paddingHorizontal:horizontalMarginScale(15),
+    borderRadius: radiusScale(20),
+    paddingVertical: verticalMarginScale(10),
+    paddingHorizontal: horizontalMarginScale(15),
     margin: verticalMarginScale(2),
     backgroundColor: COLORS.lighter_gray,
   },
@@ -120,7 +129,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.black,
   },
   categoryText: {
-    fontSize:fontScale(14),
+    fontSize: fontScale(14),
     color: COLORS.black,
   },
   selectedCategoryText: {
@@ -128,7 +137,7 @@ const styles = StyleSheet.create({
   },
   btnStyle: {
     width: Wp(85),
-    borderRadius:radiusScale(100),
+    borderRadius: radiusScale(100),
   },
 });
 export default CreativeFocusComponent;

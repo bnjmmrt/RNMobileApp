@@ -1,54 +1,105 @@
-import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {FlatList, View} from 'react-native';
-import DeleteListSheet from '../BottomSheets/DeleteListSheet';
+import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
+import {useFetchAllCustomListsQuery} from 'src/redux/actions/listsApiAction';
+import {verticalScale} from 'src/utils/dimensions';
+import ListActionsSheet, {
+  listActionCurrentPageType,
+} from '../BottomSheets/ListActionsSheet';
 import ListItem from '../ListItem';
 import createStyle from './style';
-import {AppStackParamList} from 'src/navigation/AppStack';
-import {useFetchAllUsersQuery} from 'src/redux/actions/usersApiAction';
 
+export interface ListUserItemInterface {
+  age: number;
+  categories: string[];
+  city: string;
+  followerCount: string;
+  gender: number;
+  id: string;
+  interests: string[];
+  isFavourite: boolean;
+  listMappingId: string;
+  name: string;
+  profilePicture: string;
+  type: string;
+}
+export interface ListItemInterface {
+  count: number;
+  totalCount?: number;
+  id: string;
+  name: string;
+  users: ListUserItemInterface[];
+}
+export interface ListInterface {
+  count: number;
+  list: ListItemInterface[];
+}
 interface ListsProps {}
 
 const Lists: React.FC<ListsProps> = ({}) => {
   const styles = createStyle();
-  const navigation = useNavigation<NavigationProp<AppStackParamList>>();
-  const deleteListSheetRef = useRef(null);
+  const actionSheetRef = useRef<BottomSheetMethods>(null);
 
-  const [allCustomLists, setAllCustomLists] = useState<any[]>([]);
+  const [allCustomLists, setAllCustomLists] = useState<ListInterface>({
+    list: [],
+    count: 0,
+  });
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedActionSheetAction, setSelectedActionSheetAction] =
+    useState<listActionCurrentPageType>('');
+  const [selectedList, setSelectedList] = useState<string | null>(null);
 
-  const {data, isLoading} = useFetchAllUsersQuery({
+  const {data, isLoading, refetch} = useFetchAllCustomListsQuery({
     take: 10,
     skip: (currentPage - 1) * 10,
   });
 
   useEffect(() => {
     if (data) {
-      setAllCustomLists(prev =>
-        currentPage === 1 ? data.data : [...prev, ...data.data],
-      );
+      if (currentPage === 1) {
+        setAllCustomLists(data.data);
+      } else {
+        setAllCustomLists(prev => ({
+          count: data.data.count,
+          list: [...prev.list, ...data.data.list],
+        }));
+      }
     }
   }, [data]);
 
-  console.log(allCustomLists);
-
   const loadMore = () => {
-    if (data?.totalCount < data?.users?.length && !isLoading) {
+    if (allCustomLists?.list?.length < data?.data?.count) {
       setCurrentPage(prev => prev + 1);
     }
   };
 
+  const onListActionSheetSuccess = () => {
+    actionSheetRef?.current?.close();
+    setCurrentPage(1);
+    refetch();
+  };
+
   const renderItem = useCallback(
-    ({item, index}: {item: number; index: number}) => {
+    ({item, index}: {item: ListItemInterface; index: number}) => {
       return (
-        <ListItem
-          showDelete={true}
-          index={index}
-          title={'List ' + (index + 1)}
-          onPressDelete={() => {
-            deleteListSheetRef?.current?.open();
-          }}
-        />
+        <>
+          <ListItem
+            id={item.id}
+            index={index}
+            title={item.name}
+            userCount={item.count}
+            showDelete={index > 1}
+            onPressDelete={() => {
+              setSelectedList(item.id);
+              setSelectedActionSheetAction('deleteList');
+              actionSheetRef?.current?.open();
+            }}
+            listType={
+              index === 0 ? 'follower' : index === 1 ? 'favorite' : 'custom'
+            }
+          />
+          {index === 1 ? <View style={styles.seprator} /> : null}
+        </>
       );
     },
     [],
@@ -56,21 +107,27 @@ const Lists: React.FC<ListsProps> = ({}) => {
 
   return (
     <View style={styles.container}>
-      <View style={{gap: 8}}>
-        <ListItem showDelete={false} index={12} title="My Followers" />
-        <ListItem showDelete={false} index={13} title="My Favorites" />
-      </View>
-      <View style={styles.seprator} />
       <FlatList
-        data={[1, 2, 3, 4]}
+        data={allCustomLists?.list || []}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         style={{gap: 10}}
         contentContainerStyle={{gap: 16}}
-        ListFooterComponent={<View />}
+        ListFooterComponent={
+          <View style={{marginBottom: verticalScale(150)}} />
+        }
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.4}
+        showsVerticalScrollIndicator={false}
       />
-
-      <DeleteListSheet ref={deleteListSheetRef} />
+      <ListActionsSheet
+        ref={actionSheetRef}
+        from="customLists"
+        selectedAction={selectedActionSheetAction}
+        setSelectedAction={setSelectedActionSheetAction}
+        selectedListId={selectedList || ''}
+        onSuccess={onListActionSheetSuccess}
+      />
     </View>
   );
 };

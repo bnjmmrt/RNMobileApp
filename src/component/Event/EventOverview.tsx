@@ -11,7 +11,6 @@ interface EventOverviewProps {
 const MAX_LINES = 4;
 
 const EventOverview: React.FC<EventOverviewProps> = ({ item }) => {
-  console.log("Sayyed item details:", item)
   const [expanded, setExpanded] = useState(false);
 
   const handleToggle = () => setExpanded((prev) => !prev);
@@ -32,7 +31,7 @@ const EventOverview: React.FC<EventOverviewProps> = ({ item }) => {
         {item?.description}
       </Text>
 
-      {!expanded && <View style={styles.divider} />}
+      {!expanded || shouldShowReadMore && <View style={styles.divider} />}
 
       {shouldShowReadMore && !expanded && (
         <TouchableOpacity onPress={handleToggle} style={styles.toggleContainer}>
@@ -55,7 +54,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.borderGray,
     borderRadius: 15,
-    marginVertical: 10,
     padding: 15,
     backgroundColor: COLORS.white,
   },

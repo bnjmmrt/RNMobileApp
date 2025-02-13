@@ -1,32 +1,32 @@
-import React, {
-  useState,
-  forwardRef,
-  useImperativeHandle,
-  useEffect,
-} from 'react';
+import {BottomSheetTextInput} from '@gorhom/bottom-sheet';
+import {useNavigation} from '@react-navigation/native';
+import {CountryCode, isValidPhoneNumber} from 'libphonenumber-js';
+import React, {forwardRef, useImperativeHandle, useState} from 'react';
 import {
-  View,
-  Text,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
-  Alert,
+  View,
+  ViewStyle,
 } from 'react-native';
-import { Image } from 'react-native-animatable';
-import { CountryPicker } from '../../component/PhonNumberComponent/CountryPicker';
+import {Image} from 'react-native-animatable';
+import {useDispatch} from 'react-redux';
 import IMAGES from '../../assets/images';
-import { LABLE } from '../../utils/constants';
-import { fontFamily } from '../../utils/functions';
-import { COLORS } from '../../utils/constants';
-import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js';
-import { useNavigation } from '@react-navigation/native';
-import { Hp, verticalScale } from '../../utils/dimensions';
-import { useDispatch } from 'react-redux';
+import {CountryPicker} from '../../component/PhonNumberComponent/CountryPicker';
 import {
   setCountryCallingCode,
   setCountryCodeFlag,
 } from '../../redux/slices/appFlowSlice';
-import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import {COLORS, LABLE} from '../../utils/constants';
+import {
+  fontScale,
+  horizontalMarginScale,
+  Hp,
+  verticalScale,
+} from '../../utils/dimensions';
+import {fontFamily} from '../../utils/functions';
+import {CustomText} from '../CustomText';
 
 type TranslatedNames = Record<string, string>;
 
@@ -119,7 +119,9 @@ const PhoneNumberInput = forwardRef(
     const InputComponent = forBottomSheet ? BottomSheetTextInput : TextInput;
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, otherStyle]}>
+        {/* Dynamic Label */}
+        {label && <CustomText style={[styles.label]}>{label}</CustomText>}
         <View
           style={[
             errorMessage !== ''
@@ -139,7 +141,7 @@ const PhoneNumberInput = forwardRef(
           <InputComponent
             style={styles.input}
             placeholder="Enter phone number"
-            keyboardType='phone-pad'
+            keyboardType="phone-pad"
             returnKeyType="done"
             value={phoneNumber}
             maxLength={12}
@@ -175,8 +177,15 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
   },
+  label: {
+    paddingVertical: horizontalMarginScale(2),
+    color: COLORS.black,
+    fontSize: fontScale(14),
+    fontWeight: '500',
+    fontFamily: fontFamily.ABCDiatype_Medium,
+  },
   inputWrapper: {
-    height:verticalScale(56),
+    height: verticalScale(56),
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 10,
@@ -186,7 +195,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   errorInputWrapper: {
-    height:verticalScale(56),
+    height: verticalScale(56),
     borderWidth: 1,
     borderColor: COLORS.borderRed,
     borderRadius: 10,

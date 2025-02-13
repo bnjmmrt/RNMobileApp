@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,10 +6,18 @@ import {
   TouchableOpacity,
   Text,
 } from 'react-native';
-import {Image} from 'react-native-animatable';
+import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
-import {COLORS} from '../../utils/constants';
-import {fontFamily} from '../../utils/functions';
+import { COLORS } from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+  horizontalScale,
+  verticalScale,
+  radiusScale,
+  fontScale,
+} from '../../utils/dimensions';
 
 interface FeedSearchInputProps {
   handleChange: (text: string) => void;
@@ -20,7 +28,6 @@ interface FeedSearchInputProps {
 }
 
 const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
-  handleChange,
   handleSearch,
   handleClear,
   handleFilter,
@@ -31,7 +38,6 @@ const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
 
   const handleTextChange = (text: string) => {
     setSearchText(text);
-    handleChange(text);
   };
 
   const handleClearClick = () => {
@@ -71,26 +77,26 @@ const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    paddingHorizontal: 20,
-    marginBottom: 20,
+    paddingHorizontal: horizontalScale(20),
+    marginBottom: verticalMarginScale(20),
     backgroundColor: COLORS.white,
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 50,
+    height: horizontalScale(50),
     borderWidth: 1,
     flex: 1,
     borderColor: COLORS.borderGray,
-    borderRadius: 10,
+    borderRadius: radiusScale(10),
     backgroundColor: COLORS.white,
-    paddingHorizontal: 20,
+    paddingHorizontal: horizontalMarginScale(20),
   },
   inputWrapperFocused: {
-    borderColor: '#222222',
+    borderColor: COLORS.grayFeed,
   },
   icon: {
-    marginRight: 10,
+    marginRight: horizontalMarginScale(10),
   },
   clearIcon: {
     width: 16,
@@ -101,26 +107,28 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 30,
+    width: 'auto',
+    minWidth: 36,
+    height: 36,
     gap: 4,
-    paddingHorizontal: 8,
-    marginLeft: 6,
-    backgroundColor: '#D8D8D8',
-    borderRadius: 100,
-    color: 'black',
+    paddingHorizontal: horizontalMarginScale(8),
+    marginLeft: horizontalMarginScale(6),
+    backgroundColor: COLORS.tabBorderColor,
+    borderRadius: radiusScale(100),
+    color: COLORS.black,
   },
   filterIcon: {
-    width: 16,
-    height: 16,
+    width: horizontalScale(16),
+    height: verticalScale(16),
   },
   input: {
     flex: 1,
-    fontSize: 14,
+    fontSize: fontScale(14),
     color: COLORS.black,
     fontFamily: fontFamily.ABCDiatype_Regular,
   },
   black: {
-    color: 'black',
+    color: COLORS.black,
   },
 });
 

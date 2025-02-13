@@ -3,15 +3,14 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 interface AppFlowApiDataState {
   creativeFocus: any[];
   interests: any[];
-  memberProfileData:any;
-  hostProfileData:any
+  profileData:any;
+  
 }
 
 const initialState: AppFlowApiDataState = {
   creativeFocus: [],
   interests: [],
-  memberProfileData:{},
-  hostProfileData:{}
+  profileData:{}
 };
 
 const appFlowApiDataSlice = createSlice({
@@ -24,11 +23,9 @@ const appFlowApiDataSlice = createSlice({
     setInterests(state, action: PayloadAction<any[]>) {
       state.interests = action.payload;
     },
-    setMemberProfileData(state, action: PayloadAction<any>) {
-      state.memberProfileData = action.payload;
-    },
-    setHostProfileData(state, action: PayloadAction<any>) {
-      state.hostProfileData = action.payload;
+ 
+    setProfileData(state, action: PayloadAction<any>) {
+      state.profileData = action.payload;
     },
     resetAppGlobalData(state) {
       // Reset state to initial values
@@ -37,7 +34,7 @@ const appFlowApiDataSlice = createSlice({
   },
 });
 
-export const {setCreativeFocus, setInterests, resetAppGlobalData,setMemberProfileData,setHostProfileData} =
+export const {setCreativeFocus, setInterests, resetAppGlobalData,setProfileData} =
   appFlowApiDataSlice.actions;
 
 export default appFlowApiDataSlice.reducer;

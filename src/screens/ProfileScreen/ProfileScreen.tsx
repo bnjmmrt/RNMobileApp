@@ -2,7 +2,13 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, TouchableOpacity, ScrollView, Platform} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker';
-import {BUTTON_LABLE, COLORS, LABLE, PROFILE} from '../../utils/constants';
+import {
+  BUTTON_LABLE,
+  COLORS,
+  LABLE,
+  PROFILE,
+  ROLE,
+} from '../../utils/constants';
 import IMAGES from '../../assets/images/index';
 import ProfileScreenStyle from './ProfileScreenStyle';
 import {SafeAreaView} from 'react-native';
@@ -22,14 +28,15 @@ import {EndPoint} from '../../ApiManager/config';
 import {setProfilePic} from '../../redux/slices/appFlowSlice';
 import {environment} from '../../../environments/environment';
 import ContactSupporrtBottomSheet from 'src/component/BottomSheet/ContactSupporrtBottomSheet';
-import {setAuthToken, setLoginData} from 'src/redux/slices/authSlice';
-import {ROUTES} from 'src/navigation/Route';
+import {setAuthToken} from 'src/redux/slices/authSlice';
 import {CommonActions, useFocusEffect} from '@react-navigation/native';
 import {resetLoginData} from 'src/redux/slices/authSlice';
 import {changeSafeAreaViewConfig} from 'src/utils/functions';
 import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 import {verticalScale} from 'src/utils/dimensions';
 import {resetAppFlowDetails} from 'src/redux/slices/appFlowSlice';
+import {setProfileData} from 'src/redux/slices/appGlobalDataSlice';
+import {setNotificationSettings} from 'src/redux/slices/appSettingsSlice';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
@@ -54,11 +61,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const deleteAccountBottomSheetRef = useRef<any>(null);
 
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const userDetails = useSelector((state: RootState) => state.appFlow);
+  // const memberProfileData = useSelector((state: RootState) => state.appFlowApiData.memberProfileData);
   const [isShown, setIsShown] = useState(false);
-  const profilePic = useSelector(
-    (state: RootState) => state.appFlow.profilePic,
-  );
+  const [user, setUser] = useState<any>();
   const bottomSheetRef = useRef(null);
 
   useFocusEffect(
@@ -71,9 +76,56 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     }, []),
   );
 
-  // useEffect(() => {
-  //   URL.length > 0 && bottomSheetRef?.current?.open();
-  // }, [URL]);
+  const getUserSettings = async () => {
+    const response: any = await apiRequest(
+      'get',
+      EndPoint.user_settings + loginData?.id,
+    );
+    // console.log("getUserSettingAndDetails", response)
+    if (response.status === 200) {
+      //dependiing on API response parse data and set
+      // setUserDetails(response.data.userData);
+      dispatch(setNotificationSettings(response.data.notificationsSettings));
+    }
+  };
+
+  const getHostProfile = async () => {
+    const response: any = await apiRequest(
+      'get',
+      `v1/auth/host/${loginData?.id}/profile`,
+    );
+    // console.log('getHostDetails', response);
+    if (response.status === 200) {
+      dispatch(setProfileData(response.data));
+      setUser(response?.data);
+    }
+  };
+
+  const getMemberNonMemberProfile = async () => {
+    const response: any = await apiRequest(
+      'get',
+      EndPoint.user + loginData?.id,
+    );
+    // console.log('getMemberNonMemberProfile', response);
+    if (response.status === 200) {
+      dispatch(setProfileData(response?.data));
+      setUser(response?.data);
+    }
+  };
+
+  useEffect(() => {
+    switch (loginData?.roles[0].roleName) {
+      // case ROLE.MEMBER:
+      //   break;
+      case ROLE.HOST:
+        getHostProfile();
+        break;
+      default:
+        getMemberNonMemberProfile();
+        break;
+    }
+    getUserSettings();
+  }, []);
 
   const setWebUrl = (url: string) => {
     console.log('setUrl', url);
@@ -160,12 +212,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     {id: '7', title: PROFILE.DELETE_ACCOUNT, image: '', onPress: deleteAccount},
   ];
 
-  const hasFullAccess = loginData?.isSignUpCompleted || loginData?.token?.id;
+  const hasFullAccess = loginData?.isSignUpCompleted || loginData?.roles[0].roleName===ROLE.MEMBER;
 
   useEffect(() => {
     const listItems = hasFullAccess
       ? itemsExtras
-      : loginData?.roles[0].roleName === 'host'
+      : loginData?.roles[0].roleName === ROLE.HOST
       ? hostItems
       : items;
     setListItems(listItems);
@@ -203,7 +255,17 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
       if (response.data) {
         // setIsToastShown(false);
         dispatch(
-          setProfilePic(EndPoint.create_user + response.data.fileKeyId),
+          // setProfilePic(environment.IMAGE_URL + response.data.fileKeyId),
+          dispatch(
+            setProfileData({
+              ...user,
+              imageUrl:
+                environment.BASE_URL +
+                EndPoint.view_image +
+                response.data.fileKeyId,
+            }),
+          ),
+          // setProfilePic(EndPoint.create_user + response.data.fileKeyId),
         );
       } else {
         //display error
@@ -254,9 +316,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
           <ScrollView>
             <ProfileTopView
               editPhotoClick={editPhotoClick}
-              profilePic={userDetails?.profilePic}
-              name={`${userDetails.firstName} ${userDetails.lastName}`}
+              profilePic={user?.imageUrl}
+              name={ user?.firstName ? `${user?.firstName} ${user?.lastName}`:''}
               loading={loading}
+              role={loginData?.roles[0].roleName}
             />
             {listItems.map(item => {
               return (

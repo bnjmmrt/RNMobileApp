@@ -9,11 +9,13 @@ export const BUTTON_LABLE = {
   RESEND: 'Resend',
   SUBMTI_APPLICATION: 'Submit Application',
   UPDATE_APPLICATION: 'Update Application',
+  UPDATE_RSVP: 'Update RSVP',
   UPCOMING: 'Upcoming',
   INVITED: 'Invited',
   APPLIED: 'Applied',
   PAST: 'Past',
   VIEW_EVENT: 'View Event',
+  VIEW_TICKET: 'View Ticket',
   APPLY_FOR_MEMBERSHIP: 'Apply for Membership',
   GO_TO_INSTAGRAM: 'Go to Instagram',
   SEND_EMAIL: 'Send Email',
@@ -44,7 +46,8 @@ export const BUTTON_LABLE = {
   YES: 'Yes',
   NO: 'No',
   ADD_GUEST_DETAILS: 'Add Guest Details',
-  ADD: 'Add'
+  ADD: 'Add',
+  DISCOVER_MORE_EVENTS: 'Discover More Events',
 };
 export const LABLE = {
   WELCOME: 'Welcome to Rumors!',
@@ -163,6 +166,7 @@ export const LABLE = {
   SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:
     'Something went wrong, please try again',
   ABOUT_THE_EVENT: 'About the Event',
+  FEATURE_TALENT: 'Featured Talent',
   READ_MORE: 'Read More',
   FEATURED_TALENT: 'Featured Talent',
   DUMMY_TEXT:
@@ -187,7 +191,7 @@ export const LABLE = {
   COMPANY_NAME: 'Company Name',
   BIO: 'Bio',
   COMPANY_DESCRIPTION: 'Description of Company',
-  ENTER_FEEDBACK: 'Enter Feedback'
+  ENTER_FEEDBACK: 'Enter Feedback',
 };
 
 export const PROFILE = {
@@ -281,6 +285,13 @@ export const COLORS = {
   red: '#FF0000',
   yellow: '#FFFC00',
   yellowLight: '#FEF8E9',
+  grayMiddle: '#000000BF',
+  blueLocation: '#007AFF',
+  whiteFeedContainer: '#F1F1F1',
+  grayFeed: '#222222',
+  grayFeedLocation1: '#00000033',
+  grayFeedLocation2: '#E0E0E0FA',
+  grayFeedLocation3: '#54545657',
 };
 
 export const feedList = [
@@ -340,6 +351,11 @@ export const memberTabData: TabItem[] = [
   },
 ];
 
+export const ROLE = {
+  MEMBER: 'member',
+  NON_MEMBER: 'non-member',
+  HOST: 'host',
+}
 export const hostTabData: TabItem[] = [
   {
     id: '1',
@@ -354,6 +370,25 @@ export const hostTabData: TabItem[] = [
     subTitle: 'No past events.',
   },
 ];
+
+export const StatusEnum = {
+  NO_STATUS: 0,
+  DRAFT: 1,
+  INVITED: 2,
+  CONFIRMED: 3,
+  DECLINED: 4,
+  REJECTED: 9,
+  APPLIED: 5,
+  REFUSED: 6,
+  REVIEW: 7,
+  UNRECOGNIZED: -1,
+};
+
+// Function to get the status number
+// Function to get the status number
+export const getStatusNumber = (status: string): number => {
+  return StatusEnum[status as keyof typeof StatusEnum] ?? StatusEnum.NO_STATUS;
+};
 
 export const eventData = {
   "data": {

@@ -1,12 +1,23 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Image } from 'react-native-animatable';
-import { format } from 'date-fns';
+import IMAGES from '../../assets/images';
+import type { EventItem } from './EventsFeed';
+import FastImage from '@d11/react-native-fast-image';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { COLORS } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
-import { Wp, Hp } from '../../utils/dimensions';
-import IMAGES from '../../assets/images';
-import { EventItem } from './EventsFeed';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+  radiusScale,
+  fontScale,
+  horizontalScale,
+  verticalScale,
+  Hp,
+  Wp,
+} from '../../utils/dimensions';
+import { useNavigation } from '@react-navigation/native';
+import { ROUTES } from 'src/navigation/Route';
+
 
 interface FeedItemProps {
   item: EventItem;
@@ -15,70 +26,69 @@ interface FeedItemProps {
 }
 
 const FeedItem: React.FC<FeedItemProps> = ({ item, isFeatured, setDetail }) => {
+  const navigation = useNavigation();
+
+  const handlEventPress = () => {
+    navigation.navigate(ROUTES.EventStack, {
+      screen: ROUTES.EventDetailsScreen,
+      params: item
+    });
+  };
   return (
-    <View style={styles.container} onTouchEnd={() => setDetail(item)}>
+    <TouchableOpacity style={styles.container} onPress={() => handlEventPress()}>
       <View style={[styles.imageContainer]}>
-        <Image
-          source={
-            item.image ? { uri: item.image } : IMAGES.eventCoverPlaceholders1
-          }
+        <FastImage
+          source={{ uri: item.imageCover || item.imageFlyer }}
+          resizeMode={FastImage.resizeMode.cover}
+          defaultSource={IMAGES.eventCoverPlaceholders1}
           style={styles.icon}
         />
       </View>
       <View style={styles.contentContainer}>
         <Text numberOfLines={1} style={styles.title}>
-          {item.title}
+          {item.name}
         </Text>
-        <Text numberOfLines={1} style={styles.subtitle}>{item.startDate}
-          {/* {item.startDate === 'Invalid Date'
-            ? item.startDate
-            : format(
-                new Date(
-                  `${item.startDate.slice(0, 10)}`,
-                ),
-                'MMM d, p',
-              )} */}
+        <Text numberOfLines={1} style={styles.subtitle}>
+          {item.startDate}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    padding: 10,
-    paddingHorizontal: 11,
+    paddingVertical: verticalMarginScale(10),
+    paddingHorizontal: horizontalMarginScale(11),
     width: Wp(48),
-    // height: Hp(25),
   },
   imageContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    // height: 100,
   },
   contentContainer: {
     flexDirection: 'column',
     flex: 1,
-    marginTop: 8,
-    paddingHorizontal: 8,
+    marginTop: verticalMarginScale(8),
+    paddingHorizontal: horizontalMarginScale(8),
   },
   icon: {
-    // marginRight: 10,
-    height: Hp(33),
-    width: Wp(41),
     borderRadius: 10,
+    height: horizontalScale(245),
+    width: verticalScale(166),
+    backgroundColor: COLORS.borderGray
   },
   title: {
-    fontSize: 18,
+    fontSize: fontScale(16),
     fontFamily: fontFamily.ABCDiatype_Medium,
     color: COLORS.black,
   },
   subtitle: {
     color: COLORS.light_gray,
-    fontSize: 12,
+    fontSize: fontScale(12),
     fontFamily: fontFamily.ABCDiatype_Regular,
-    marginTop: 1,
+    marginTop: verticalMarginScale(1),
   },
 });
 

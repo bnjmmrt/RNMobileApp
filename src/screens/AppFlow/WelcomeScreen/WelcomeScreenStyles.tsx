@@ -7,7 +7,7 @@ const WelcomeScreenStyles = () => {
   return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: COLORS.black,
+      backgroundColor: COLORS.black2,
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',

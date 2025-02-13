@@ -3,38 +3,54 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {Image, TouchableOpacity, View, ViewStyle} from 'react-native';
 import {CustomText} from 'src/component/CustomText';
-import {OnboardingStackkParamList} from 'src/navigation/OnboardingStack';
 import {ROUTES} from 'src/navigation/Route';
 import createStyle from './style';
 import {horizontalMarginScale} from 'src/utils/dimensions';
+import {AppStackParamList, customListType} from 'src/navigation/AppStack';
 
-interface ListItemProps {
-  showDelete: boolean;
+export interface ListItemProps {
+  id: string;
   index: number;
   title: string;
+  userCount: number;
+  showDelete: boolean;
   onPressDelete?: () => void;
   containerStyle?: ViewStyle;
+  from?: 'customList' | 'customListDetail';
+  listType: customListType;
 }
 
 const ListItem: React.FC<ListItemProps> = ({
-  showDelete,
+  id,
   index,
   title,
+  userCount,
+  showDelete,
   onPressDelete,
   containerStyle,
+  from = 'customList',
+  listType,
 }) => {
   const styles = createStyle();
-  const navigation = useNavigation<NavigationProp<OnboardingStackkParamList>>();
+  const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
   const onPressList = () => {
-    navigation.navigate(ROUTES.ListDetail, {list: 1});
+    navigation.navigate(ROUTES.ListDetail, {list: id, listType: listType});
   };
 
   return (
     <TouchableOpacity
       style={[styles.usersListRowContainer, containerStyle]}
       onPress={onPressList}>
-      <CustomText style={styles.usersListName}>{title}</CustomText>
+      <CustomText style={styles.usersListName}>
+        {from === 'customList'
+          ? index === 0
+            ? 'My Followers'
+            : index === 1
+            ? 'My Favorites'
+            : title
+          : title}
+      </CustomText>
       <View
         style={{
           flexDirection: 'row',
@@ -43,7 +59,7 @@ const ListItem: React.FC<ListItemProps> = ({
         }}>
         <View style={styles.usersListUserCountWrapper}>
           <CustomText style={styles.usersListUserCount}>
-            {10000 + ' users'}
+            {userCount + ' users'}
           </CustomText>
         </View>
         {showDelete ? (

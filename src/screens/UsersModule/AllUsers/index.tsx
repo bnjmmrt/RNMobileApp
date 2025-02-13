@@ -1,70 +1,86 @@
 import IMAGES from '@images/index';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, RefreshControl, View } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
+import Button from 'src/component/Button';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import { InputRefMethods } from 'src/component/Input/Input';
 import SearchInput from 'src/component/SearchInput';
-import { AppStackParamList } from 'src/navigation/AppStack';
+import { useFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
+import { changeBottomTabsVisibility } from 'src/redux/slices/bottomTabsConfigSlice';
 import {
   horizontalMarginScale,
   Hp,
   verticalMarginScale,
 } from 'src/utils/dimensions';
-import UserListItem from '../UsersListItem';
-import createStyle from './style';
-import { useFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
-import { shallowEqual, useSelector } from 'react-redux';
-import { RootState } from 'src/redux/slices';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import UserActionsSheet, {
+  UserActionCurrentPageType,
+} from '../BottomSheets/UserActionsSheet';
+import UserListItem, { UserItemInterface } from '../UsersListItem';
 
 interface AllUserProps { }
 
 const AllUsers: React.FC<AllUserProps> = ({ }) => {
-  const styles = createStyle();
-  const navigation = useNavigation<NavigationProp<AppStackParamList>>();
-  const searchInputRef = useRef<any>(null);
+  const dispatch = useDispatch();
+  const searchInputRef = useRef<InputRefMethods>(null);
+  const actionSheetRef = useRef<BottomSheetMethods>(null);
 
-  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+  const [allUsers, setAllUsers] = useState<{
+    users: UserItemInterface[];
+    totalCount: number;
+  }>({ totalCount: 0, users: [] });
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>('');
-  const [allUsers, setAllUsers] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data, isLoading } = useFetchAllUsersQuery({
+  const [selectedActionSheetAction, setSelectedActionSheetAction] =
+    useState<UserActionCurrentPageType>('');
+
+  const { data, isLoading, refetch } = useFetchAllUsersQuery({
     take: 10,
     skip: (currentPage - 1) * 10,
     searchValue: searchText,
   });
 
-  useEffect(() => {
-    if (data) {
-      setAllUsers(prev =>
-        currentPage === 1 ? data.data : [...prev, ...data.data],
-      );
-    }
-  }, [data]);
+  const onRefreshPage = () => {
+    setCurrentPage(1);
+    refetch();
+  };
 
   const loadMore = () => {
-    if (data?.totalCount < data?.users?.length && !isLoading) {
+    if (allUsers?.users?.length < data?.data?.totalCount && !isLoading) {
       setCurrentPage(prev => prev + 1);
     }
   };
 
-  const onSelectUser = (user: number) => {
-    if (selectedUsers.includes(user)) {
-      const newArray = selectedUsers.filter(u => u !== user);
+  const onSelectUser = (user: UserItemInterface) => {
+    const isSelected = selectedUsers.some(
+      selectedUser => selectedUser === user.id,
+    );
+    if (isSelected) {
+      const newArray = selectedUsers.filter(u => u !== user.id);
       setSelectedUsers(newArray);
     } else {
-      const newArray = [...selectedUsers, user];
+      const newArray = [...selectedUsers, user.id];
       setSelectedUsers(newArray);
     }
   };
 
   const handleSearchTextChange = (text: string) => {
+    setCurrentPage(1);
     setSearchText(text);
   };
 
+  const onAddUserToListSuccess = () => {
+    setSelectedUsers([]);
+  };
+
   const renderItem = useCallback(
-    ({ item }: { item: number }) => {
-      const isSelected = selectedUsers.includes(item);
+    ({ item }: { item: UserItemInterface }) => {
+      const isSelected = selectedUsers.some(user => user === item.id);
       return (
         <UserListItem
           item={item}
@@ -75,6 +91,42 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
     },
     [selectedUsers],
   );
+
+  useEffect(() => {
+    if (selectedUsers.length > 0) {
+      dispatch(changeBottomTabsVisibility({ showBottomTabs: false }));
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+        showBottomSafeAreaView: true,
+      });
+    } else {
+      dispatch(changeBottomTabsVisibility({ showBottomTabs: true }));
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+        showBottomSafeAreaView: false,
+      });
+    }
+    return () => {
+      dispatch(changeBottomTabsVisibility({ showBottomTabs: true }));
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+        showBottomSafeAreaView: false,
+      });
+    };
+  }, [selectedUsers]);
+
+  useEffect(() => {
+    if (data) {
+      if (currentPage === 1) {
+        setAllUsers(data.data);
+      } else {
+        setAllUsers(prev => ({
+          totalCount: data.data.totalCount,
+          users: [...prev.users, ...data.data.users],
+        }));
+      }
+    }
+  }, [data]);
 
   return (
     <View
@@ -88,16 +140,33 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
         rightIcon={IMAGES.filter_lines}
         onPressRightIcon={() => { }}
         rightIconText=""
+        mainContainerStyle={{ marginHorizontal: 15 }}
       />
 
       <FlatList
         data={allUsers?.users || []}
-        style={{ marginHorizontal: horizontalMarginScale(20), marginTop: verticalMarginScale(10) }}
+        style={{
+          marginHorizontal: horizontalMarginScale(20),
+          marginTop: verticalMarginScale(10),
+        }}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{ gap: verticalMarginScale(16) }}
-        ListHeaderComponent={<View />}
-        ListFooterComponent={<View />}
+        // ListHeaderComponent={
+        //   <SearchInput
+        //     ref={searchInputRef}
+        //     onSearchTextChange={handleSearchTextChange}
+        //     placeholder="Search..."
+        //     rightIcon={IMAGES.filter_lines}
+        //     onPressRightIcon={() => {}}
+        //     rightIconText=""
+        //     mainContainerStyle={{marginHorizontal: 0}}
+        //     defaultValue={searchText}
+        //   />
+        // }
+        ListFooterComponent={
+          <View style={{ marginBottom: verticalMarginScale(150) }} />
+        }
         ListEmptyComponent={
           <View
             style={{
@@ -108,12 +177,35 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
             <EventEmptyRecord
               title="No Users"
               subTitle="Please refine your search"
-              isLoading
+              isLoading={isLoading}
             />
           </View>
         }
         onEndReached={loadMore}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={0.4}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
+        }
+      />
+      {selectedUsers.length > 0 ? (
+        <Button
+          title="Add to List"
+          onPress={() => {
+            setSelectedActionSheetAction('addToList');
+            actionSheetRef?.current?.open();
+          }}
+          colorTheme="dark"
+          style={{ position: 'absolute', bottom: 0 }}
+        />
+      ) : null}
+      <UserActionsSheet
+        ref={actionSheetRef}
+        from="usersList"
+        selectedUsers={selectedUsers}
+        onSuccess={onAddUserToListSuccess}
+        selectedAction={selectedActionSheetAction}
+        setSelectedAction={setSelectedActionSheetAction}
       />
     </View>
   );

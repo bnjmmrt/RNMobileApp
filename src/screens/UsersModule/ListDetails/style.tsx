@@ -24,7 +24,7 @@ const createStyle = () => {
     removeCta: {
       borderRadius: radiusScale(99),
       position: 'absolute',
-      bottom: 0,
+      bottom: verticalMarginScale(10),
     },
   });
 };

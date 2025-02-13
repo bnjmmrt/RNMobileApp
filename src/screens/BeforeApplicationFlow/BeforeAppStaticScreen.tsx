@@ -1,8 +1,8 @@
-import { CommonActions, useFocusEffect } from '@react-navigation/native';
+import { CommonActions, RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { resetLoginData } from 'src/redux/slices/authSlice';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
@@ -16,29 +16,19 @@ import {
 } from '../../utils/dimensions';
 import useApi from 'src/axios/useApi';
 import { EndPoint } from 'src/ApiManager/config';
+import { setIsFirstTimeLoggedIn, setMemberProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import { RootState } from 'src/redux/slices';
 
 interface BeforeAppStaticScreenProps extends NativeStackScreenProps<any, any> { }
+
 
 const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
   navigation,
 }) => {
   const dispatch = useDispatch();
-  const { apiRequest, loading, error } = useApi();
+  const route = useRoute();
+  const [isFromProfile, setIsFromProfile] = useState(route?.params?.isFromProfile || false)
 
-  useEffect(() => {
-    // fetchCurrentUser();
-    changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.BLACK_SCHEME);
-
-  }, []);
-
-  const fetchCurrentUser = async () => {
-    //token is reqired to run this API 
-    const response: any = await apiRequest('get', EndPoint.current_user);
-    console.log('fetchCurrentUser', response);
-    if (response.status === 200) {
-      //set User details in redux
-    }
-  };
 
   useFocusEffect(
     useCallback(() => {
@@ -59,7 +49,7 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
     <View style={styles.container}>
       <BeforeAppStaticComponent isChatScreen={false} />
 
-      <TouchableOpacity
+      {!isFromProfile && <TouchableOpacity
         onPress={redirectToHome}
         style={{
           top: horizontalMarginScale(20),
@@ -69,7 +59,19 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
         <View style={styles.iconWrapper}>
           <Image source={IMAGES.cross} />
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity>}
+
+      {isFromProfile && <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{
+          top: horizontalMarginScale(20),
+          left: horizontalMarginScale(20),
+          position: 'absolute',
+        }}>
+        <View style={styles.iconWrapper}>
+          <Image source={IMAGES.leftArrow} />
+        </View>
+      </TouchableOpacity>}
     </View>
   );
 };

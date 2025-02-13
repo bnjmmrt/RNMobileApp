@@ -1,10 +1,22 @@
 import React from 'react';
-import { Modal, View, StyleSheet, Text, Image } from 'react-native';
-import { format } from 'date-fns';
+import {Modal, View, StyleSheet, Text, Image} from 'react-native';
+import {format} from 'date-fns';
 import Button from '../Button';
 import IMAGES from '../../assets/images';
-import { EventItem } from './EventsFeed';
-import { Hp, Wp } from '../../utils/dimensions';
+import {EventItem} from './EventsFeed';
+import {COLORS} from '../../utils/constants';
+import {fontFamily} from '../../utils/functions';
+import FastImage from '@d11/react-native-fast-image';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+  horizontalScale,
+  verticalScale,
+  radiusScale,
+  fontScale,
+  Hp,
+  Wp,
+} from '../../utils/dimensions';
 
 interface FeedDetailProps {
   detail: EventItem | null;
@@ -18,7 +30,16 @@ const FeedDetail: React.FC<FeedDetailProps> = ({
   handleNotify,
 }) => {
   const formatDate = (dateString: string) => {
-    return format(new Date(`${dateString.slice(0, 10)}`), 'MMM d yyyy');
+    console.log(dateString);
+    return format(
+      new Date(
+        `${dateString.slice(6, 10)}-${dateString.slice(
+          0,
+          2,
+        )}-${dateString.slice(3, 5)}`,
+      ),
+      'MMM d yyyy',
+    );
   };
 
   const handleYes = () => {
@@ -37,12 +58,14 @@ const FeedDetail: React.FC<FeedDetailProps> = ({
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <View style={styles.modalBar} />
-          <Image
+          <FastImage
             source={
               detail.image
-                ? { uri: detail.image }
+                ? {uri: detail.image}
                 : IMAGES.eventCoverPlaceholders1
             }
+            resizeMode={FastImage.resizeMode.cover}
+            defaultSource={IMAGES.eventCoverPlaceholders1}
             style={styles.image}
           />
           <Text style={styles.title}>{detail.title}</Text>
@@ -80,68 +103,70 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: COLORS.grayMiddle,
   },
   modalContent: {
-    width: '100%',
-    backgroundColor: 'white',
-    borderRadius: 25,
-    paddingVertical: 20,
+    width: Wp(100),
+    backgroundColor: COLORS.white,
+    borderRadius: radiusScale(25),
+    paddingVertical: verticalMarginScale(20),
     top: '10%',
-    height: '80%',
+    height: Hp(80),
   },
   modalBar: {
-    width: 48,
-    height: 4,
-    borderRadius: 50,
-    backgroundColor: '#D8D8D8',
+    width: horizontalScale(48),
+    height: verticalScale(4),
+    borderRadius: radiusScale(50),
+    backgroundColor: COLORS.tabBorderColor,
     alignSelf: 'center',
-    marginBottom: 12,
+    marginBottom: verticalMarginScale(12),
   },
   title: {
-    fontSize: 24,
-    color: 'black',
-    fontFamily: 'Times New Roman',
-    fontWeight: '700',
+    fontSize: fontScale(24),
+    color: COLORS.black,
+    fontFamily: fontFamily.RomieTrial_Bold,
     lineHeight: 32,
     textAlign: 'center',
-    paddingTop: 36,
+    paddingTop: verticalMarginScale(36),
   },
   dateText: {
-    paddingVertical: 6,
+    paddingVertical: verticalMarginScale(6),
     textAlign: 'center',
   },
   messageText: {
-    paddingVertical: 6,
+    paddingVertical: verticalMarginScale(6),
     textAlign: 'center',
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 12,
+    marginTop: verticalMarginScale(12),
     gap: 8,
   },
   infoText: {
     textAlign: 'center',
-    fontSize: 12,
-    paddingHorizontal: 18,
-    paddingTop: 8,
+    fontSize: fontScale(12),
+    paddingHorizontal: horizontalMarginScale(18),
+    paddingTop: verticalMarginScale(8),
   },
   image: {
     width: Wp(96),
     height: Hp(40),
-    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: COLORS.borderGray,
+    borderRadius: radiusScale(16),
+    objectFit: 'contain',
     alignSelf: 'center',
   },
   showResults: {
     width: Wp(45),
-    borderRadius: 100,
+    borderRadius: radiusScale(100),
   },
   clearFilters: {
     width: Wp(45),
-    borderColor: 'black',
+    borderColor: COLORS.black,
     borderWidth: 2,
-    borderRadius: 100,
+    borderRadius: radiusScale(100),
   },
 });
 

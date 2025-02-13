@@ -19,16 +19,17 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
   const { isSignUpCompleted, token, isInvited, roles } = useSelector(
     (state: RootState) => state.auth.loginData,
   );
+  const role = useSelector((state: RootState) => state.auth.role);
 
   // Memoize styles to avoid unnecessary recalculations
   const styles = useMemo(() => DiscoverScreenStyle(), []);
-  const isMember = false //roles[0]?.roleName == 'member' || 'non_member';
-  const hasFullAccess = isSignUpCompleted || token.length > 0;
+  const isNotMember = role == 'non_member';
+  // const hasFullAccess = isSignUpCompleted || token.length > 0;
 
   useFocusEffect(
     useCallback(() => {
       changeSafeAreaViewConfig(
-        isMember
+        !isNotMember
           ? {
             ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
             showBottomSafeAreaView: false,
@@ -45,9 +46,9 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
     <View
       style={{
         ...styles.container,
-        backgroundColor: isMember ? COLORS.white : COLORS.black2,
+        backgroundColor: isNotMember ? COLORS.black2 : COLORS.white,
       }}>
-      {isMember ? (
+      {!isNotMember ? (
         <EventsFeed />
       ) : (
         <AfterAppStaticComponent

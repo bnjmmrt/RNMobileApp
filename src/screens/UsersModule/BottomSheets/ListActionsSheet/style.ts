@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
   editListMessage: {
     textAlign: 'center',
     color: COLORS.light_gray,
-    marginBottom: verticalMarginScale(32),
+    marginBottom: verticalMarginScale(8),
     marginTop: verticalMarginScale(16),
   },
 
@@ -75,7 +75,6 @@ export const styles = StyleSheet.create({
     paddingHorizontal: horizontalMarginScale(8),
     backgroundColor: COLORS.lighter_gray,
     borderRadius: radiusScale(8),
-    marginHorizontal: horizontalMarginScale(12),
   },
   userInfoContainer: {
     flex: 1,

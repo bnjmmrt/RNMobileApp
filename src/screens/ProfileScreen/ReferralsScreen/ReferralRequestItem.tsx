@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { Image } from 'react-native';
 import AvatarInitials from 'src/component/AvatarInitials';
 import StatusButton from 'src/component/StatusButton/StatusButton';
 import { COLORS } from 'src/utils/constants';
@@ -9,11 +10,12 @@ import { fontFamily } from 'src/utils/functions';
 interface ReferralRequestItemProps {
     name: string;
     message: string;
+    image:string;
     onApproveApi: () => Promise<void>;
-    onDeclineApi: () => Promise<void>;
+    onDeclineApi: () =>  Promise<void>;
 }
 
-const ReferralRequestItem: React.FC<ReferralRequestItemProps> = ({ name, message, onApproveApi, onDeclineApi }) => {
+const ReferralRequestItem: React.FC<ReferralRequestItemProps> = ({ name,image, message, onApproveApi, onDeclineApi }) => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [status, setStatus] = useState<'approve' | 'reject' | null>(null);
 
@@ -40,7 +42,8 @@ const ReferralRequestItem: React.FC<ReferralRequestItemProps> = ({ name, message
     return (
         <View style={[styles.container, isSubmitted && styles.row]}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                <AvatarInitials name={name} size={radiusScale(48)} />
+               { !image && <AvatarInitials name={name} size={radiusScale(48)} />}
+               { image && <Image source={{uri:image}} width={48} height={48} style={{borderRadius:radiusScale(100)}} />}
                 {!isSubmitted && <View style={{ width: '85%' }}><Text style={styles.messageText}>{name} {message}</Text></View>}
             </View>
             <View style={[styles.content, isSubmitted && styles.contentRow]}>

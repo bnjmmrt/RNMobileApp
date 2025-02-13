@@ -16,6 +16,7 @@ import {
   SafeAreaViewConfig,
 } from 'src/redux/slices/safeAreaViewConfigSlice';
 import store from 'src/redux/store';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 // ErrorText component with TypeScript props
 interface ErrorTextProps {
@@ -91,6 +92,14 @@ export function printLog(msg: string, value: any = ''): void {
   }
 }
 
+export const capitalizeFirstLetter = (text: string) => {
+  if (typeof text !== 'string') {
+    console.warn("Input is not a string");
+    return "";
+  }
+  return text.charAt(0).toUpperCase() + text.slice(1);
+};
+
 export const objectToQueryString = (
   obj: Record<string, string | number | boolean>,
 ): string => {
@@ -103,6 +112,19 @@ export const objectToQueryString = (
     }
   }
   return str.length > 0 ? `?${str.join('&')}` : '';
+};
+
+export const objectToQueryStringFilter = (params: Record<string, string | number | boolean | string[]>): string => {
+  const queryString = Object.entries(params)
+    .filter(([_, value]) => value !== undefined && value !== null && value !== '') // Filter out empty values
+    .map(([key, value]) =>
+      Array.isArray(value)
+        ? `${key}=${value.join(',')}` // Handle array values
+        : `${key}=${encodeURIComponent(value)}`
+    )
+    .join('&');
+
+  return queryString ? `?${queryString}` : '';
 };
 
 // AsyncStorage utility functions with type safety
@@ -277,7 +299,7 @@ export const handleFormatDate = (
 };
 
 export const formatEventDates = (startDate: string, endDate: string) => {
-  return startDate + " " + endDate
+  return startDate + ' ' + endDate;
   // // Helper function to parse the date
   // function parseDate(dateString) {
   //   const [datePart, timePart] = dateString.split(' ');
@@ -383,6 +405,10 @@ export const formatDate = (date: Date) => {
     .replace(/\//g, '/');
 };
 
+
+
+
+
 export const changeSafeAreaViewConfig = (config: SafeAreaViewConfig) => {
   store.store.dispatch(configStatusBar(config));
   if (Platform.OS == 'android') {
@@ -407,4 +433,43 @@ export const validateAge = (selectedDate: string) => {
   eighteenYearsAgo.setFullYear(today.getFullYear() - 18);
 
   return selectedDateObj > eighteenYearsAgo;
+};
+
+export const extractCountryCode = (phoneNumber: string) => {
+  const phone = parsePhoneNumberFromString(phoneNumber);
+
+  if (!phone) return null;
+
+  const countryCode:any = phone.country; 
+  const flag = getCountryFlag(countryCode);
+
+  return {
+    country: countryCode,
+    countryCallingCode: phone.countryCallingCode,
+    flag: flag,
+  };
+};
+
+const getCountryFlag = (countryCode: string) => {
+  return countryCode
+    ? countryCode
+      .toUpperCase()
+      .split('')
+      .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
+      .join('')
+    : '';
+};
+export interface ApiErrorInterface {
+  data: { error: { message: string; type: string } | string };
+}
+export const getErrorMessage = (error: ApiErrorInterface) => {
+  let message = 'Something went wrong!';
+  if (typeof error.data.error === 'object') {
+    if (error.data.error.message) {
+      message = error.data.error.message;
+    }
+  } else if (typeof error.data.error === 'string') {
+    message = error.data.error;
+  }
+  return message;
 };

@@ -9,6 +9,8 @@ import {
 } from 'src/redux/actions/usersApiAction';
 import {RootState} from 'src/redux/slices';
 import {styles} from './style';
+import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
+import {BottomSheetView} from '@gorhom/bottom-sheet';
 
 const MarkAsSpam = ({
   showError,
@@ -46,10 +48,12 @@ const MarkAsSpam = ({
             } as spam`,
           );
         } else {
-          showError('Something went wrong!');
+          const typedError = response as ApiErrorInterface;
+          showError(getErrorMessage(typedError));
         }
       } catch (error) {
-        showError('Something went wrong!');
+        const typedError = error as ApiErrorInterface;
+        showError(getErrorMessage(typedError));
       }
     }
   };
@@ -58,22 +62,20 @@ const MarkAsSpam = ({
     ? 'Are you sure you want to unmark this user as spam?\nFuture requests from this user will no longer be moved to the declined tab automatically.'
     : 'Are you sure you want to mark the selected user as spam?\n\nIf they request access to your events in the future, they will automatically be moved to the declined tab.';
   return (
-    <View>
-      <View style={styles.actionContentWrapper}>
-        <CustomText style={styles.title}>
-          {userDetails?.isSpam ? 'Unmark as Spam' : 'Mark as Spam'}
-        </CustomText>
-        <CustomText style={styles.markSpamMessage}>{message}</CustomText>
+    <BottomSheetView style={styles.actionContentWrapper}>
+      <CustomText style={styles.title}>
+        {userDetails?.isSpam ? 'Unmark as Spam' : 'Mark as Spam'}
+      </CustomText>
+      <CustomText style={styles.markSpamMessage}>{message}</CustomText>
 
-        <Button
-          title={userDetails?.isSpam ? 'Unmark as Spam' : 'Mark as Spam'}
-          colorTheme="dark"
-          style={[styles.actionCta, !userDetails?.isSpam && styles.markSpamCta]}
-          onPress={onPressCta}
-          loading={isLoading}
-        />
-      </View>
-    </View>
+      <Button
+        title={userDetails?.isSpam ? 'Unmark as Spam' : 'Mark as Spam'}
+        colorTheme="dark"
+        style={[styles.actionCta, !userDetails?.isSpam && styles.markSpamCta]}
+        onPress={onPressCta}
+        loading={isLoading}
+      />
+    </BottomSheetView>
   );
 };
 

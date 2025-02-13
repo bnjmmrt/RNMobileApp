@@ -10,8 +10,8 @@ import { RootState } from 'src/redux/slices';
 
 interface HeaderComponentProps {
     rightImageStyle?: StyleProp<ImageStyle>;
-    isDarkTheme: boolean;
-    hasGradient: boolean;
+    isDarkTheme?: boolean;
+    hasGradient?: boolean;
 }
 
 const HeaderComponent: React.FC<HeaderComponentProps> = ({ rightImageStyle, isDarkTheme, hasGradient = false }) => {

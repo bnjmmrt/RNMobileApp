@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { View, KeyboardAvoidingView, Platform } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { LABLE, BUTTON_LABLE } from '../../utils/constants';
 import VerifyOtpStyles from './VerifyOtpStyles';
 import BackButton from '../../component/BackButton/BackButton';
@@ -86,24 +85,6 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         }),
       );
     }
-
-    // console.log("Sayyed userRole:", userRole)
-
-    // if (userRole == 'non_member') {
-    //     console.log("Sayyed userRole:", "1")
-
-    //     if (data?.token?.length > 0) {
-
-    //         navigation.navigate('BottomTabBar');
-    //     } else {
-    //         data?.isInvited ? navigation.navigate('BottomTabBar') :
-    //             navigation.navigate('BeforeAppStaticScreen');
-    //     }
-    // } else {
-    //     console.log("Sayyed userRole:", "3")
-
-    //     navigation.navigate('BottomTabBar');
-    // }
   };
   useFocusEffect(
     useCallback(() => {

@@ -15,24 +15,19 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({ userId, searchText, tab }
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [events, setEvents] = useState<any[]>([]);
-  // const { data, isLoading } = useFetchEventsQuery({
-  //   userId,
-  //   guestEventStatus: 'INVITED',
-  //   searchText: searchText,
-  //   take: 10,
-  //   skip: (currentPage - 1) * 10,
-  // });
+  const { data, isLoading } = useFetchEventsQuery({
+    userId,
+    guestEventStatus: 'INVITED',
+    searchText: searchText,
+    take: 10,
+    skip: (currentPage - 1) * 10,
+  });
 
-  const { data, isLoading } = useFetchAllEventsQuery({ userId });
-
-
+  // const { data, isLoading } = useFetchAllEventsQuery({ userId });
 
   useEffect(() => {
     if (data) {
-      console.log("sayyed Invited events data", data);
       setEvents((prev) => (currentPage === 1 ? data.data : [...prev, ...data.data]));
-    } else {
-      console.log("sayyed Upcoming events data not found");
     }
   }, [data]);
 

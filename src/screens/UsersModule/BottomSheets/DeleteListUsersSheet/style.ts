@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {COLORS} from 'src/utils/constants';
-import {Wp} from 'src/utils/dimensions';
+import {verticalMarginScale, Wp} from 'src/utils/dimensions';
 import {fontFamily} from 'src/utils/functions';
 
 export const styles = StyleSheet.create({
@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
   actionCta: {
     borderRadius: 99,
     backgroundColor: COLORS.errorText,
+    marginBottom: verticalMarginScale(10),
   },
   title: {
     fontSize: 32,

@@ -1,18 +1,15 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {View, ScrollView, Text, Image, FlatList} from 'react-native';
-import {COLORS} from '../../utils/constants';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, ScrollView, Text, Image, FlatList } from 'react-native';
+import { COLORS } from '../../utils/constants';
 import HeaderComponent from '../../component/HeaderComponent';
-import EventItem from '../../screens/EventScreen/EventItem';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../redux/slices';
-import {StyleSheet} from 'react-native';
-import {Wp, Hp} from '../../utils/dimensions';
-import {fontFamily, retrieveData} from '../../utils/functions';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/slices';
+import { StyleSheet } from 'react-native';
+import { fontFamily, retrieveData } from '../../utils/functions';
 import FeedItem from './FeedItem';
 import dayjs from 'dayjs';
 import NoResults from './NoResults';
-import {apiGet} from '../../ApiManager/MainApi';
 import FeedSearchInput from './FeedSearchInput';
 import FeedAccessLocation from './FeedAccessLocation';
 import FeedFilter from './FeedFilter';
@@ -22,7 +19,21 @@ import IMAGES from '@images/index';
 import FeedSeries from './FeedSeries';
 import FeedSeriesDetail from './FeedSeriesDetail';
 import FeedFilterItem from './FeedFilterItem';
-import type {DateType} from 'react-native-ui-datepicker';
+import type { DateType } from 'react-native-ui-datepicker';
+import { Address } from '../../redux/slices/appFlowSlice';
+import FeaturedFeedItem from './FeaturedFeedItem';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+  horizontalScale,
+  verticalScale,
+  radiusScale,
+  fontScale,
+  Hp,
+  Wp,
+} from '../../utils/dimensions';
+import { debounce } from 'lodash';
+import { getUserEvents } from 'src/ApiManager/Endpoint';
 
 export interface EventItem {
   id: string;
@@ -35,17 +46,17 @@ export interface EventItem {
 }
 
 export interface SeriesItem {
-  title: string;
-  image: {uri: string};
+  name: string;
+  image: { uri: string };
   about: string;
   period: string;
   events: EventItem[];
 }
 
 export interface Filter {
-  location: string;
+  location: Address;
   categories: string[];
-  date: [DateType, DateType];
+  date: string[];
 }
 
 export interface Pagination {
@@ -55,9 +66,8 @@ export interface Pagination {
 
 const EventsFeed = () => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-
-  const [allFilterEvents, setAllFilterEvents] = useState<EventItem[]>([]);
-  const [filterEvents, setFilterEvents] = useState<EventItem[]>([]);
+  const [allEvents, setAllEvents] = useState<(EventItem & SeriesItem)[]>([]);
+  const [events, setEvents] = useState<(EventItem & SeriesItem)[]>([]);
   const [featuredEvents, setFeaturedEvents] = useState<EventItem[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [searchEnter, setSearchEnter] = useState<boolean>(true);
@@ -67,44 +77,58 @@ const EventsFeed = () => {
   const [filterVisible, setFilterVisible] = useState<boolean>(false);
   const [locationVisible, setLocationVisible] = useState<boolean>(false);
   const [detail, setDetail] = useState<EventItem | null>(null);
-  const [series, setSeries] = useState<SeriesItem[]>([]);
   const [seriesDetail, setSeriesDetail] = useState<SeriesItem | null>(null);
   const [responseSubmitted, setResponseSubmitted] = useState<boolean>(false);
-  const [pagination, setPagination] = useState<Pagination>({take: 5, skip: 0});
+  const [pagination, setPagination] = useState<Pagination>({ take: 7, skip: 0 });
+  const userId = useSelector((state: RootState) => state.auth.userId);
+
   const [filter, setFilter] = useState<Filter>({
-    location: '',
+    location: { address: '', placeId: '', latitude: '', longitude: '' },
     categories: [],
-    date: ['', ''],
+    date: [],
   });
 
   const isInvited = loginData?.isInvited || false;
 
-  const handleSearchChange = useCallback(
-    (text: string) => {
-      setSearchTerm(text);
-    },
-    [setSearchTerm],
+  const debouncedSearch = useCallback(
+    debounce((text: string) => setSearchTerm(text), 500),
+    [],
   );
+  const handleSearchChange = useCallback((text: string) => {
+    // setSearchTerm(text);
+    debouncedSearch(text);
+
+  }, []);
+
+  useEffect(() => {
+    setSearchEnter(searchTerm === '');
+
+    setEvents(
+      allEvents.filter(value =>
+        value.name.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
+    );
+  }, [searchTerm, allEvents])
 
   const handleSearch = useCallback(() => {
     setSearchEnter(searchTerm === '');
 
-    setFilterEvents(
-      allFilterEvents.filter(value =>
+    setEvents(
+      allEvents.filter(value =>
         value.title.toLowerCase().includes(searchTerm.toLowerCase()),
       ),
     );
-  }, [searchTerm, allFilterEvents]);
+  }, [searchTerm, allEvents]);
 
   const handleClear = useCallback(() => {
     setSearchEnter(true);
-    setFilterEvents(allFilterEvents);
-  }, [allFilterEvents]);
+    setEvents(allEvents);
+  }, [allEvents]);
 
   const handleFilter = useCallback(() => {
     if (allowAccess) setFilterVisible(true);
     else setAllowAccessModal(true);
-  }, [allowAccess]);
+  }, []);
 
   const handleNotify = useCallback(() => {
     setResponseSubmitted(true);
@@ -114,68 +138,42 @@ const EventsFeed = () => {
   }, []);
 
   const handleLoadMore = useCallback(() => {
-    setPagination(prev => ({...prev, take: prev.take + 6}));
-  }, []);
-
-  const fetchEvents = useCallback(async () => {
-    try {
-      const featuredRes: any = await apiGet('/events/feed/featured');
-      const res: any = await apiGet(
-        `/events/users/${loginData.userId}/events?take=${pagination.take}&skip=${
-          pagination.skip
-        }`,
-      );
-
-      const eventsRes = res.data.map((item: any) => ({
-        id: item.id,
-        title: item.name,
-        startDate: item.startDate,
-        endDate: item.endDate,
-        type: item.name,
-        location: item?.location?.location || '',
-        image: item.imageCover || item.imageFlyer,
-      }));
-
-      const featuredEventsRes = featuredRes.data[0].events.map((item: any) => ({
-        id: item.id,
-        title: item.name,
-        startDate: item.startDate,
-        endDate: item.endDate,
-        type: item.name,
-        location: item?.location?.location || '',
-        image: item.imageCover || item.imageFlyer,
-      }));
-
-      setFeaturedEvents(featuredEventsRes);
-      setFilterEvents(eventsRes);
-      setAllFilterEvents(eventsRes);
-
-      setSeries([
-        {
-          title: 'Lakers Season 2025',
-          image: IMAGES.eventCoverPlaceholders,
-          about:
-            'The highly anticipated Revolve Festival officially kicks off the 2023 Coachella festival season in spectacular style, drawing attention from music and fashion enthusiasts alike. This iconic event makes a show-stopping return to the desert, delivering its most extravagant and memorable celebration yet. With a lineup of star-studded performances, exclusive experiences, and cutting-edge fashion moments, Revolve Festival solidifies its place as a must-attend event, setting the tone for an unforgettable festival season.',
-          period: 'Jan 10 - May 20, 2025',
-          events: eventsRes,
-        },
-      ]);
-    } catch (error) {
-      console.error('Failed to fetch events:', error);
-    } finally {
-      setLoading(false);
+    if (pagination.skip < allEvents.length) {
+      setPagination(prev => ({ ...prev, skip: prev.skip + prev.take }));
     }
-  }, [pagination]);
+  }, [allEvents]);
 
   useEffect(() => {
+    console.log('~~pagination~~', pagination);
+    setEvents(prev => [
+      ...prev,
+      ...allEvents.slice(pagination.skip, pagination.skip + pagination.take),
+    ]);
+  }, [pagination.skip]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res: any = await getUserEvents(userId, filter)
+        const eventsRes = res.data
+        const featuredEventsRes = res.data.filter((item: any) => item.featuredEventSection)
+        setFeaturedEvents(featuredEventsRes);
+        setEvents([...eventsRes.slice(0, pagination.take)]);
+        setAllEvents(eventsRes);
+      } catch (error) {
+        console.error('Failed to fetch events:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchEvents();
-  }, [fetchEvents]);
+  }, [filter]);
 
   useEffect(() => {
     const formatAllowAccess = async () => {
       try {
         const allow = await retrieveData('allowAccess');
-        console.log('Allow Access:', allow);
         setAllowAccess(allow && allow === 'true' ? true : false);
       } catch (error) {
         console.error('Error retrieving data from AsyncStorage:', error);
@@ -185,8 +183,67 @@ const EventsFeed = () => {
     formatAllowAccess();
   }, []);
 
+  const renderFilters = () => {
+    const { categories, location, date } = filter;
+
+    // Ensure `hasFilters` includes date condition independently
+    const hasFilters =
+      categories.length > 0 ||
+      location.address ||
+      location.placeId ||
+      location.longitude ||
+      location.latitude ||
+      (date && date.length > 1); // Ensure `date` exists and has more than 1 value
+
+    if (!hasFilters) return null;
+
+    const clearLocation = () => {
+      setFilter(prev => ({
+        ...prev,
+        location: { address: '', placeId: '', longitude: '', latitude: '' },
+      }));
+    };
+
+    const clearDate = () => {
+      setFilter(prev => ({ ...prev, date: [] }));
+    };
+
+    const clearCategory = category => {
+      setFilter(prev => ({
+        ...prev,
+        categories: prev.categories.filter(cat => cat !== category),
+      }));
+    };
+
+    return (
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={[styles.filterScrollView]}
+      // contentContainerStyle={{ alignItems: 'center', paddingHorizontal: 8 }}
+      >
+        {/* Location Filter */}
+        {location.address && <FeedFilterItem content={location.address} handleClear={clearLocation} />}
+
+        {/* Date Filter - Ensure it's rendering when `date.length > 1` */}
+        {date && date.length > 1 &&
+          <FeedFilterItem
+            content={`${dayjs(date[0]).format('MMM DD, YYYY')} - ${dayjs(date[1]).format('MMM DD, YYYY')}`}
+            handleClear={clearDate}
+          />
+        }
+
+        {/* Categories Filter */}
+        {categories.map((category, index) => (
+          <FeedFilterItem key={index} content={category} handleClear={() => clearCategory(category)} />
+        ))}
+      </ScrollView>
+    );
+  };
+
+
   return (
-    <View style={[styles.container]}>
+    <View style={styles.container}>
       {isInvited ? (
         <BeforeAppStaticComponent isChatScreen={false} />
       ) : (
@@ -199,90 +256,51 @@ const EventsFeed = () => {
             handleFilter={handleFilter}
             filterLength={
               filter.categories.length +
-              (filter.location ? 1 : 0) +
+              (filter.location.address ? 1 : 0) +
               (filter.date[0] && filter.date[1] ? 1 : 0)
             }
           />
-          {(filter.categories.length > 0 ||
-            filter.location ||
-            (filter.date[0] && filter.date[1])) && (
-            <ScrollView horizontal style={styles.filterScrollView}>
-              <FeedFilterItem
-                content={filter.location}
-                handleClear={() => setFilter(prev => ({...prev, location: ''}))}
-              />
-              {filter.date[0] && filter.date[1] && (
-                <FeedFilterItem
-                  content={`${dayjs(filter.date[0]).format(
-                    'MMM DD, YYYY',
-                  )} - ${dayjs(filter.date[1]).format('MMM DD, YYYY')}`}
-                  handleClear={() =>
-                    setFilter(prev => ({...prev, date: ['', '']}))
-                  }
-                />
-              )}
-              {filter.categories.map((category, categoryIndex) => (
-                <FeedFilterItem
-                  content={category}
-                  handleClear={() =>
-                    setFilter(prev => ({
-                      ...prev,
-                      categories: prev.categories.filter(
-                        cat => cat !== category,
-                      ),
-                    }))
-                  }
-                  key={categoryIndex}
-                />
-              ))}
-            </ScrollView>
-          )}
-          <ScrollView>
-            {filterEvents.length === 0 ? (
+          <View>
+            {renderFilters()}
+
+            {events.length === 0 ? (
               <NoResults loading={loading} />
             ) : (
-              <>
-                {searchEnter && (
-                  <View style={styles.featuredContainer}>
-                    <Text style={styles.title}>Featured Events</Text>
-                    <ScrollView horizontal style={styles.scrollView}>
-                      {featuredEvents.map((event, index) => (
-                        <FeedItem
-                          key={index}
-                          item={event}
-                          setDetail={setDetail}
-                          isFeatured
-                        />
-                      ))}
-                    </ScrollView>
-                  </View>
-                )}
-
-                <View style={styles.eventContainer}>
-                  {searchEnter &&
-                    series.map((entry, entryIndex) => (
-                      <FeedSeries
-                        setSeries={setSeriesDetail}
-                        item={entry}
-                        key={entryIndex}
-                      />
-                    ))}
-                  <FlatList
-                    data={filterEvents}
-                    renderItem={({item}) => (
-                      <FeedItem setDetail={setDetail} item={item} />
-                    )}
-                    keyExtractor={item => item.id.toString()}
-                    onEndReached={handleLoadMore}
-                    onEndReachedThreshold={0.5}
-                  />
-                  {/* {filterEvents.map((value, index) => (
-                    <FeedItem setDetail={setDetail} item={value} key={index} />
-                  ))} */}
-                </View>
-              </>
+              <FlatList
+                data={events}
+                ListHeaderComponent={
+                  searchEnter && featuredEvents.length > 0 ? (
+                    <View style={styles.featuredContainer}>
+                      <Text style={styles.title}>Featured Events</Text>
+                      <ScrollView horizontal style={styles.scrollView} showsHorizontalScrollIndicator={false}>
+                        {featuredEvents.map((event) => (
+                          <FeaturedFeedItem
+                            key={event.id}
+                            item={event}
+                            setDetail={setDetail}
+                            isFeatured
+                          />
+                        ))}
+                      </ScrollView>
+                    </View>
+                  ) : null
+                }
+                renderItem={({ item }) => <FeedItem setDetail={setDetail} item={item} />}
+                // renderItem={({ item }) =>
+                //   item.events && searchEnter ? (
+                //     <FeedSeries setSeries={setSeriesDetail} item={item} />
+                //   ) : (
+                //     <FeedItem setDetail={setDetail} item={item} />
+                //   )
+                // }
+                numColumns={2}
+                keyExtractor={(_item, index) => index.toString()}
+                onEndReached={handleLoadMore}
+                onEndReachedThreshold={0.5}
+                style={styles.flatList}
+              />
             )}
-          </ScrollView>
+          </View>
         </View>
       )}
 
@@ -294,20 +312,17 @@ const EventsFeed = () => {
       )}
 
       <FeedSeriesDetail series={seriesDetail} setSeries={setSeriesDetail} />
-
       <FeedDetail
         detail={detail}
         setDetail={setDetail}
         handleNotify={handleNotify}
       />
-
       <FeedAccessLocation
         allowAccessModal={allowAccessModal}
         setAllowAccess={setAllowAccess}
         setAllowAccessModal={setAllowAccessModal}
         setFilterVisible={setFilterVisible}
       />
-
       <FeedFilter
         filter={filter}
         setFilter={setFilter}
@@ -315,12 +330,10 @@ const EventsFeed = () => {
         setFilterVisible={setFilterVisible}
         setLocationVisible={setLocationVisible}
       />
-
       {locationVisible && (
         <LocationPickerModal
-          setLocation={value =>
-            setFilter(prev => ({...prev, location: value.address}))
-          }
+          setLocation={value => setFilter(prev => ({ ...prev, location: value }))}
+          handleSubmit={setFilterVisible}
           setIsShown={setLocationVisible}
           submitVisible
         />
@@ -332,57 +345,58 @@ const EventsFeed = () => {
 const styles = StyleSheet.create({
   featuredContainer: {
     flexDirection: 'column',
-    padding: 10,
+    paddingHorizontal: horizontalMarginScale(10),
+    paddingVertical: verticalMarginScale(20),
     width: Wp(100),
     backgroundColor: COLORS.lighter_gray,
-    marginTop: 15,
+    // marginTop: verticalMarginScale(15),
   },
   title: {
-    fontSize: 32,
+    fontSize: fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
     color: COLORS.black,
     lineHeight: 40,
-    paddingLeft: 12,
+    paddingLeft: horizontalMarginScale(12),
   },
   filterScrollView: {
-    paddingVertical: 8,
-    marginHorizontal: 16,
-    height: 16,
+    marginHorizontal: horizontalMarginScale(16),
+    height: verticalScale(48),
+    flexGrow: 1,
+  },
+  flatList: {
+    paddingBottom: verticalMarginScale(900),
   },
   scrollView: {
-    height: Hp(41),
+    height: verticalScale(390),
   },
   container: {
     flex: 1,
-    alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: COLORS.white,
+    // paddingBottom: verticalMarginScale(80),
   },
   contentContainer: {
     flex: 1,
     flexDirection: 'column',
   },
   eventContainer: {
-    marginLeft: 10,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    marginLeft: horizontalMarginScale(10),
   },
   btnStyle: {
     width: Wp(85),
-    borderRadius: 100,
+    borderRadius: radiusScale(100),
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 10,
+    marginVertical: verticalMarginScale(10),
   },
   logoImgStyle: {
-    width: 100,
-    height: 50,
+    width: horizontalScale(100),
+    height: verticalScale(50),
     resizeMode: 'center',
   },
   textBelowStyle: {
     color: COLORS.light_gray,
-    fontSize: 12,
+    fontSize: fontScale(12),
     textAlign: 'center',
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginVertical: Hp(1),
@@ -391,21 +405,23 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 4,
     bottom: 56,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    backgroundColor: '#000000BF',
+    marginHorizontal: 'auto',
+    height: horizontalScale(32),
+    paddingHorizontal: horizontalMarginScale(6),
+    paddingVertical: verticalMarginScale(6),
+    borderRadius: radiusScale(6),
+    backgroundColor: COLORS.grayMiddle,
   },
   responseSubmittedText: {
-    color: 'white',
+    color: COLORS.white,
   },
   check1: {
-    width: 16,
-    height: 16,
+    width: horizontalScale(12),
+    height: verticalScale(12),
+    paddingVertical: verticalMarginScale(8),
+    paddingHorizontal: horizontalMarginScale(8),
   },
 });
 

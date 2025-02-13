@@ -58,7 +58,6 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
             }
             const response = await checkMemberLogin(requestParam).unwrap();
             if (response.status == 200) {
-                console.log("sayyed isExist:", response?.data?.isValid)
                 setMemberExist(response?.data?.isValid)
             }
             isResend && FlashMessageComponent.show('success', 'OTP resent successfully!');
@@ -81,7 +80,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
             setIsLoading(true)
             const response = await memberLogin(requestParam).unwrap();
             if (response.status == 200) {
-                const data ={
+                const data = {
                     ...response.data,
                     varifyStatus: route.params.isEmail ? 1 : 2
                 }

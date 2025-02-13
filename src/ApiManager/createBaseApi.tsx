@@ -54,8 +54,10 @@ export const createBaseApi = createApi({
     'Users',
     'UserDetail',
     'CustomLists',
+    'CustomListDetail',
     'EventDetails',
-    'Events'
+    'Events',
+    'HostEvents'
   ], // Accept tagTypes as a parameter
   endpoints: () => ({}),
   keepUnusedDataFor: 60, // Optional: Adjust cache duration

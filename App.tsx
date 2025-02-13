@@ -1,27 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useMemo, useState } from 'react';
-import { Provider, useSelector } from 'react-redux';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { StyleSheet, useColorScheme, LogBox } from 'react-native';
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
-import MainNavigation from './src/navigation';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import DarkTheme from './src/Theme/DarkTheme';
-// import DefaultTheme from './src/Theme/DefaultTheme';
-import { AppContext } from './src/context/AppContext';
-// import { NetInfoProvider, useAuth } from './src/context/NetInfoContext';
-import NoInternetScreen from './src/component/NoInternetScreen';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useNetInfo } from '@react-native-community/netinfo';
-import { store, persistor } from './src/redux/store';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { LogBox, StyleSheet } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Provider, useDispatch } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { SafeAreaViewWrapper } from 'src/component/Wrappers/SafeAreaViewWrapper';
-import { EndPoint } from 'src/ApiManager/config';
+import { EndPoint } from './src/ApiManager/config';
+import useApi from './src/axios/useApi';
+import EventsFeed from './src/component/EventsFeed/EventsFeed';
+import NoInternetScreen from './src/component/NoInternetScreen';
+import { SafeAreaViewWrapper } from './src/component/Wrappers/SafeAreaViewWrapper';
+import { setCreativeFocus } from './src/redux/slices/appGlobalDataSlice';
+import { setInterests } from './src/redux/slices/appGlobalDataSlice';
+import { persistor, store } from './src/redux/store';
+import MainNavigation from 'src/navigation';
 
-import useApi from 'src/axios/useApi';
-import { useDispatch } from 'react-redux';
-import { setCreativeFocus } from 'src/redux/slices/appGlobalDataSlice';
-import { setInterests } from 'src/redux/slices/appGlobalDataSlice';
 const AppContent: React.FC = () => {
   // const { isInternetConnected } = useAuth();
   const { isConnected } = useNetInfo();
@@ -65,11 +61,13 @@ const App: React.FC = () => {
         <SafeAreaViewWrapper>
           <GestureHandlerRootView style={{ flex: 1 }}>
             <NavigationContainer theme={MyTheme}>
-              {/* <AppContext.Provider value={appContext}> */}
-              {/* <SafeAreaProvider style={styles.container}> */}
-              <AppContent />
-              {/* </SafeAreaProvider> */}
-              {/* </AppContext.Provider> */}
+              <BottomSheetModalProvider>
+                {/* <AppContext.Provider value={appContext}> */}
+                {/* <SafeAreaProvider style={styles.container}> */}
+                <AppContent />
+                {/* </SafeAreaProvider> */}
+                {/* </AppContext.Provider> */}
+              </BottomSheetModalProvider>
             </NavigationContainer>
           </GestureHandlerRootView>
         </SafeAreaViewWrapper>

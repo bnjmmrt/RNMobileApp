@@ -1,4 +1,4 @@
-import React, {useState, forwardRef, useImperativeHandle} from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import {
   View,
   Text,
@@ -7,12 +7,12 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import {Image} from 'react-native-animatable';
+import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
-import {COLORS, PROFILE} from '../../utils/constants';
-import {fontFamily} from '../../utils/functions';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {ROUTES} from '../../navigation/Route';
+import { COLORS, PROFILE } from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { ROUTES } from '../../navigation/Route';
 import {
   fontScale,
   horizontalMarginScale,
@@ -20,8 +20,8 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import {useSelector} from 'react-redux';
-import {RootState} from 'src/redux/slices';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
 
 interface ListItemProps {
   item: {
@@ -33,7 +33,7 @@ interface ListItemProps {
   onPress: () => void;
 }
 
-const ProfileListItem: React.FC<ListItemProps> = ({item, onPress}) => {
+const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
   const navigation = useNavigation<NavigationProp>();
   const loginData = useSelector((state: RootState) => state.auth.loginData);
 
@@ -109,7 +109,7 @@ const ProfileListItem: React.FC<ListItemProps> = ({item, onPress}) => {
         break;
 
       case PROFILE.APPLY_FOR_MEMBERSHIP:
-        navigation.navigate('AppFlowStack');
+        navigation.navigate('BeforeAppStaticScreen', { isFromProfile: true });
         break;
       default:
         console.log('Unknown item clicked');
@@ -126,7 +126,7 @@ const ProfileListItem: React.FC<ListItemProps> = ({item, onPress}) => {
         <Text
           style={[
             styles.input,
-            {color: item.image ? COLORS.black : COLORS.errorText},
+            { color: item.image ? COLORS.black : COLORS.errorText },
           ]}>
           {item.title}
         </Text>

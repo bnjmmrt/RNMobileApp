@@ -1,14 +1,23 @@
-import React, {useCallback, useState} from 'react';
-import {View, Text, StyleSheet, Modal, ScrollView} from 'react-native';
-import {Image} from 'react-native-animatable';
-import {COLORS} from '../../utils/constants';
-import {fontFamily} from '../../utils/functions';
-import {Wp, Hp} from '../../utils/dimensions';
+import React, { useCallback, useState } from 'react';
+import { View, Text, StyleSheet, Modal, ScrollView, TouchableOpacity } from 'react-native';
+import { Image } from 'react-native-animatable';
+import { COLORS } from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
+import {
+  Wp,
+  Hp,
+  verticalMarginScale,
+  horizontalMarginScale,
+  radiusScale,
+  horizontalScale,
+  verticalScale,
+  fontScale,
+} from '../../utils/dimensions';
 import IMAGES from '../../assets/images';
-import type {EventItem, SeriesItem} from './EventsFeed';
-import CollapsibleView from '../CollapsibleView';
-import {format} from 'date-fns';
+import type { EventItem, SeriesItem } from './EventsFeed';
+import { format } from 'date-fns';
 import FeedDetail from './FeedDetail';
+import FastImage from '@d11/react-native-fast-image';
 
 interface FeedSeriesDetailProps {
   series: SeriesItem | null;
@@ -42,36 +51,42 @@ const FeedSeriesDetail: React.FC<FeedSeriesDetailProps> = ({
         <View style={styles.modalContent}>
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
             <View>
-              <Image
+              <FastImage
                 source={series.image || IMAGES.eventCoverPlaceholders1}
+                resizeMode={FastImage.resizeMode.cover}
+                defaultSource={IMAGES.eventCoverPlaceholders1}
                 style={styles.seriesImage}
               />
-              <View
+              <TouchableOpacity
                 style={styles.leftArrowBtn}
-                onTouchEnd={() => setSeries(null)}>
+                onPress={() => setSeries(null)}>
                 <Image source={IMAGES.leftArrow} alt="left arrow" />
-              </View>
+              </TouchableOpacity>
             </View>
             <View style={styles.contentContainer}>
               <Text numberOfLines={1} style={styles.title}>
                 {series.title}
               </Text>
               <View style={styles.revolveFollow}>
-                <Text style={styles.revolve}>REVOLVE</Text>
+                <View style={styles.revolve}>
+                  <Text style={styles.revolveText}>REVOLVE</Text>
+                </View>
                 <View style={styles.hostContainer}>
                   <Text style={styles.hostName}>Revolve</Text>
                   <Text style={styles.hostRole}>Host</Text>
                 </View>
-                <Text style={styles.followButton}>Follow</Text>
+                <View style={styles.followButton}>
+                  <Text style={styles.followButtonText}>Follow</Text>
+                </View>
               </View>
               <View style={styles.seriesBox}>
                 <Text style={styles.label}>About the Series</Text>
                 <Text style={styles.description} numberOfLines={readMore}>
                   {series.about}
                 </Text>
-                <View
+                <TouchableOpacity
                   style={styles.readMoreCard}
-                  onTouchEnd={() =>
+                  onPress={() =>
                     setReadMore(prev => (prev ? undefined : 5))
                   }>
                   <Text style={styles.readMore}>Read More</Text>
@@ -79,7 +94,7 @@ const FeedSeriesDetail: React.FC<FeedSeriesDetailProps> = ({
                     source={readMore ? IMAGES.downArrow : IMAGES.upArrow}
                     style={styles.arrow}
                   />
-                </View>
+                </TouchableOpacity>
               </View>
               {series.events.map((event, index) => (
                 <EventItem event={event} setDetail={setDetail} key={index} />
@@ -110,7 +125,7 @@ interface EventItemProps {
   setDetail: React.Dispatch<React.SetStateAction<EventItem | null>>;
 }
 
-const EventItem: React.FC<EventItemProps> = ({event, setDetail}) => {
+const EventItem: React.FC<EventItemProps> = ({ event, setDetail }) => {
   const formatEventDate = (dateString: string): string => {
     if (dateString === 'Invalid Date') return dateString;
     const [year, month, day] = [
@@ -122,20 +137,20 @@ const EventItem: React.FC<EventItemProps> = ({event, setDetail}) => {
   };
 
   return (
-    <View style={styles.eventContainer} onTouchEnd={() => setDetail(event)}>
-      <Image
-        source={
-          event.image ? {uri: event.image} : IMAGES.eventCoverPlaceholders1
-        }
-        style={styles.eventImage}
-        alt="event"
+    <TouchableOpacity style={styles.eventContainer} onPress={() => setDetail(event)}>
+      <FastImage
+        source={event.image ? { uri: event.image } : IMAGES.eventCoverPlaceholders1}
+        resizeMode={FastImage.resizeMode.cover}
+        defaultSource={IMAGES.eventCoverPlaceholders1}
+        style={styles.icon}
       />
       <View style={styles.eventBody}>
         <Text style={styles.title}>{event.title}</Text>
-        <Text>{formatEventDate(event.startDate)}</Text>
+        <Text style={styles.content}>{formatEventDate(event.startDate)}</Text>
+        <Text style={styles.content}>{event.location}</Text>
       </View>
       <Image source={IMAGES.arrowRight} alt="arrow-right" />
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -144,22 +159,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: COLORS.grayMiddle,
   },
   modalContent: {
-    width: '100%',
-    backgroundColor: 'white',
-    paddingVertical: 20,
-    height: '100%',
-    paddingHorizontal: 16,
+    width: Wp(100),
+    backgroundColor: COLORS.white,
+    paddingVertical: verticalMarginScale(32),
+    height: Hp(100),
+    paddingHorizontal: horizontalMarginScale(16),
   },
   scrollViewContent: {
-    paddingBottom: 20,
+    paddingVertical: verticalMarginScale(20),
   },
   seriesImage: {
     height: Hp(33),
     width: Wp(97),
-    borderRadius: 24,
+    borderRadius: radiusScale(24),
   },
   contentContainer: {
     flexDirection: 'column',
@@ -168,13 +183,14 @@ const styles = StyleSheet.create({
   revolveFollow: {
     display: 'flex',
     flexDirection: 'row',
-    borderColor: '#E1E1E1',
+    borderColor: COLORS.borderGray,
     borderWidth: 1,
-    padding: 8,
+    paddingVertical: verticalMarginScale(8),
+    paddingHorizontal: horizontalMarginScale(8),
     gap: 8,
-    borderRadius: 100,
-    width: '70%',
-    marginVertical: 16,
+    borderRadius: radiusScale(100),
+    width: Wp(70),
+    marginVertical: verticalMarginScale(16),
     alignItems: 'center',
   },
   revolve: {
@@ -183,38 +199,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 40,
     height: 40,
-    fontSize: 7,
-    paddingTop: 12,
-    borderRadius: 100,
-    backgroundColor: 'black',
-    color: 'white',
+    borderRadius: radiusScale(100),
+    backgroundColor: COLORS.black,
+  },
+  revolveText: {
+    color: COLORS.white,
     textAlign: 'center',
+    fontSize: fontScale(7),
   },
   readMoreCard: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderTopColor: '#E1E1E1',
+    paddingHorizontal: horizontalMarginScale(16),
+    paddingVertical: verticalMarginScale(8),
+    borderTopColor: COLORS.borderGray,
     borderTopWidth: 1,
   },
   hostContainer: {
     flex: 1,
   },
   hostName: {
-    color: 'black',
+    color: COLORS.black,
   },
   hostRole: {
-    color: 'gray',
+    color: COLORS.light_gray,
   },
   followButton: {
-    borderRadius: 100,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    marginLeft: 8,
-    backgroundColor: 'black',
-    color: 'white',
+    borderRadius: radiusScale(100),
+    paddingVertical: verticalMarginScale(8),
+    paddingHorizontal: horizontalMarginScale(16),
+    marginLeft: horizontalMarginScale(8),
+    backgroundColor: COLORS.black,
+  },
+  followButtonText: {
+    color: COLORS.white,
   },
   leftArrowBtn: {
     width: 48,
@@ -223,66 +242,78 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    backgroundColor: 'white',
-    borderRadius: 100,
+    backgroundColor: COLORS.white,
+    borderRadius: radiusScale(100),
   },
   seriesBox: {
     borderWidth: 1,
-    borderRadius: 16,
-    borderColor: '#E1E1E1',
+    borderRadius: radiusScale(16),
+    borderColor: COLORS.borderGray,
   },
   label: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingVertical: verticalScale(8),
+    paddingHorizontal: horizontalMarginScale(16),
     borderBottomWidth: 1,
-    borderBottomColor: '#E1E1E1',
+    borderBottomColor: COLORS.borderGray,
   },
   description: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingVertical: verticalMarginScale(8),
+    paddingHorizontal: horizontalMarginScale(16),
   },
   fullDescription: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: verticalScale(12),
+    paddingHorizontal: horizontalMarginScale(16),
     borderTopWidth: 1,
-    borderTopColor: '#E1E1E1',
+    borderTopColor: COLORS.borderGray,
   },
   title: {
-    fontSize: 18,
-    fontFamily: fontFamily.ABCDiatype_Medium,
+    fontSize: fontScale(20),
+    lineHeight: 24,
+    fontFamily: fontFamily.RomieTrial_Bold,
     color: COLORS.black,
-    marginTop: 16,
-    marginBottom: 4,
+    marginTop: verticalScale(16),
+    marginBottom: verticalScale(4),
+  },
+  content: {
+    fontSize: fontScale(12),
+    lineHeight: 14,
+    fontWeight: '500',
   },
   readMore: {
     textDecorationLine: 'underline',
   },
   arrow: {
-    height: 16,
-    width: 16,
-    marginLeft: 8,
+    height: verticalScale(16),
+    width: horizontalScale(16),
+    marginLeft: horizontalMarginScale(8),
   },
   eventContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 10,
-    padding: 8,
+    marginTop: verticalScale(10),
+    paddingVertical: verticalScale(12),
+    paddingHorizontal: horizontalMarginScale(12),
     borderWidth: 1,
-    borderColor: '#E1E1E1',
-    borderRadius: 12,
+    borderColor: COLORS.borderGray,
+    borderRadius: radiusScale(12),
   },
-  eventImage: {
-    height: Hp(25),
-    width: Wp(25),
-    borderRadius: 12,
+  icon: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: verticalScale(121),
+    width: horizontalScale(82),
+    borderRadius: radiusScale(12),
+    backgroundColor: COLORS.borderGray,
+    overflow: 'hidden',
   },
   eventBody: {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'flex-start',
     flex: 1,
-    marginLeft: 16,
+    marginLeft: horizontalMarginScale(16),
   },
   responseSubmitted: {
     display: 'flex',
@@ -292,17 +323,17 @@ const styles = StyleSheet.create({
     gap: 6,
     left: 144,
     bottom: 56,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: horizontalMarginScale(12),
+    paddingVertical: verticalScale(6),
     borderRadius: 6,
-    backgroundColor: '#000000BF',
+    backgroundColor: COLORS.grayMiddle,
   },
   responseSubmittedText: {
-    color: 'white',
+    color: COLORS.white,
   },
   check1: {
-    width: 16,
-    height: 16,
+    width: horizontalScale(16),
+    height: verticalScale(16),
   },
 });
 

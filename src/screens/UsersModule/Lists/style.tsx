@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {COLORS} from '../../../utils/constants';
+import {verticalMarginScale} from 'src/utils/dimensions';
 
 const createStyle = () => {
   return StyleSheet.create({
@@ -7,6 +8,7 @@ const createStyle = () => {
       marginHorizontal: 12,
       marginTop: 16,
       gap: 16,
+      flex: 1,
     },
     usersListRowContainer: {
       flexDirection: 'row',
@@ -39,6 +41,7 @@ const createStyle = () => {
       backgroundColor: COLORS.borderGray,
       width: '70%',
       alignSelf: 'center',
+      marginTop: verticalMarginScale(16),
     },
   });
 };

@@ -1,4 +1,6 @@
-import { objectToQueryString } from '../utils/functions';
+import dayjs from 'dayjs';
+import { objectToQueryString, objectToQueryStringFilter } from '../utils/functions';
+import { apiGet } from './MainApi';
 
 /**
  * Generates an endpoint URL with query parameters for fetching listing data.
@@ -26,8 +28,18 @@ export const getLocalAuthority = (params: Record<string, string | number | boole
   return `/program-management/api/geography/local-authority${queryString}`;
 };
 
-export const getSchoolList = (params: Record<string, string | number | boolean>): string => {
-  const queryString = objectToQueryString(params);
+export const getUserEvents = async (userId: string, filter: any) => {
+  const params = {
+    minStartDate: filter.date[0] ? dayjs(filter.date[0]).format('YYYY-MM-DD') : '',
+    maxEndDate: filter.date[1] ? dayjs(filter.date[1]).format('YYYY-MM-DD') : '',
+    longitude: filter.location.longitude,
+    latitude: filter.location.latitude,
+    eventTypeName: filter.categories, // Pass array directly
+  };
 
-  return `/program-management/api/geography/school${queryString}`;
+  const queryString = objectToQueryStringFilter(params);
+  const res: any = await apiGet(`/events/users/${userId}/events${queryString}`);
+
+  return res;
 };
+

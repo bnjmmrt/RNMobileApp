@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import type { GooglePlaceData, GooglePlaceDetail } from 'react-native-google-places-autocomplete';
 import { COLORS } from '../../utils/constants';
 import { Address } from '../../redux/slices/appFlowSlice';
 import { environment } from '../../../environments/environment';
@@ -25,12 +26,14 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({ setLocation, subm
 
       }}
       placeholder="Search Location"
-      onPress={(data: any, details = null) => {
+      onPress={(data: GooglePlaceData, detail: GooglePlaceDetail | null) => {
         // 'details' is provided when fetchDetails = true
         console.log("data.placeId", data, data.place_id);
         const address: Address = {
           address: data.description,
           placeId: data.place_id,
+          latitude: detail ? String(detail?.location?.latitude) : '',
+          longitude: detail ? String(detail?.location?.longitude) : '',
         };
         setLocation(address);
         submit();

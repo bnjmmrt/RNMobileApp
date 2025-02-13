@@ -37,7 +37,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
     (state: RootState) => state.appFlow.profilePic,
   );
   const styles = ProfilePhotoScreenStyles();
-  
+
   const [image, setImage] = useState<string>(profilePic);
   const [isToastShown, setIsToastShown] = useState(false);
   const [isUplaodProfile, setIsUploadProfile] = useState(false);
@@ -69,7 +69,11 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
         if (response.data) {
           // setIsToastShown(false);
           dispatch(
-            setProfilePic(environment.IMAGE_URL + response.data.fileKeyId),
+            setProfilePic(
+              environment.BASE_URL +
+                EndPoint.view_image +
+                response.data.fileKeyId,
+            ),
           );
         } else {
           //display error
@@ -118,7 +122,6 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      
       <Header headerTitle={LABLE.PROFILE_PHOTO} onPress={handleBackPress} />
 
       <View style={styles.contentContainer}>
@@ -126,23 +129,26 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
           title={LABLE.ADD_A_PHOTO}
           subTitle={LABLE.ADD_A_PHOTO_SUBTITLE}
         />
-        
+
         <View style={styles.profilePhotoContainer}>
-        <FullScreenLoader loading={loading} customStyle={styles.profilePhotoContainer}>
-          {image ? (
-            <Image
-              style={styles.profilePhotoContainer}
-              source={{uri: profilePic}}
-              resizeMode="cover"
-            />
-          ) : (
-            <View style={styles.profilePhotoContainer}>
-              <AvatarInitials
-                name={userDetails?.firstName + ' ' + userDetails?.lastName}
-                size={48}
+          <FullScreenLoader
+            loading={loading}
+            customStyle={styles.profilePhotoContainer}>
+            {image ? (
+              <Image
+                style={styles.profilePhotoContainer}
+                source={{uri: profilePic}}
+                resizeMode="cover"
               />
-            </View>
-          )}</FullScreenLoader>
+            ) : (
+              <View style={styles.profilePhotoContainer}>
+                <AvatarInitials
+                  name={userDetails?.firstName + ' ' + userDetails?.lastName}
+                  size={48}
+                />
+              </View>
+            )}
+          </FullScreenLoader>
 
           <TouchableOpacity style={styles.iconContainer} onPress={openPicker}>
             <Image
@@ -177,7 +183,6 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
         colorTheme="dark"
         onPress={onNextClick}
       />
-      
     </SafeAreaView>
   );
 };
