@@ -8,22 +8,25 @@ import { COLORS } from "../../utils/constants";
 import { fontFamily } from "../../utils/functions";
 import { useRequestMemberMutation } from "../../redux/actions/referralApiAction";
 import { fontScale, horizontalMarginScale, verticalMarginScale } from "src/utils/dimensions";
+import { useVouchRequestMutation } from "src/redux/actions/rspvApiAction";
 
 export const RenderMemberList = (data: any) => {
-    const { item } = data;
+    const { item, eventId } = data;
 
     const [isSent, setIsSent] = useState(false);
-    const [requestMember, { isLoading, isSuccess, isError }] = useRequestMemberMutation();
+    const [vouchRequest, { isLoading, isSuccess: VouchSuccess, isError: VouchError }] = useVouchRequestMutation();
+
+    const [requestMember, { isLoading: isRequestLoading, isSuccess, isError }] = useRequestMemberMutation();
     useEffect(() => {
-        if (isSuccess) {
+        if (isSuccess || VouchSuccess || VouchError) {
             setIsSent(true);
         }
-    }, [isSuccess]);
+    }, [isSuccess, VouchSuccess, VouchError]);
 
 
     const handleRequestSent = async () => {
         try {
-            const response = await requestMember({ userId: item.userId }).unwrap();
+            const response = eventId ? await vouchRequest({ eventId, userId: item.userId }).unwrap() : await requestMember({ userId: item.userId }).unwrap();
             console.log("API Response:", response);
         } catch (error) {
             console.error("API Error:", error);
@@ -34,9 +37,9 @@ export const RenderMemberList = (data: any) => {
     return (
         <View style={styles.listItem}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-                <AvatarInitials name={item.name} size={48} />
+                <AvatarInitials name={item?.firstName + ' ' + item?.lastName} size={48} />
                 <View>
-                    <Text style={styles.name}>{item.name}</Text>
+                    <Text style={styles.name}>{item?.firstName} {item?.lastName}</Text>
                     <Text style={styles.phone}>{item.phoneNumber}</Text>
                 </View>
             </View>
@@ -48,7 +51,7 @@ export const RenderMemberList = (data: any) => {
                 borderType={isSent ? "STRIPE" : "SOLID"}
                 leftIcon={isSent ? IMAGES.check : null}
                 onPress={handleRequestSent}
-                loading={isLoading}
+                loading={isLoading || isRequestLoading}
             />
         </View>
     );
