@@ -17,9 +17,9 @@ export const rspvApiAction = createBaseApi.injectEndpoints({
             }),
         }),
         deleteApplication: builder.mutation({
-            query: ({ eventId }) => ({
-                url: `v1/events/invitation/${eventId}/cancel`,
-                method: 'DELETE',
+            query: ({ eventId, id }) => ({
+                url: `v1/users/${id}/events/${eventId}/cancel`,
+                method: 'PUT',
             }),
         }),
         getApplication: builder.query({
@@ -40,6 +40,13 @@ export const rspvApiAction = createBaseApi.injectEndpoints({
                 method: 'GET',
             }),
         }),
+        vouchRequest: builder.mutation({
+            query: (requestParam) => ({
+                url: 'v1/platform/vouch-requests',
+                method: 'POST',
+                body: requestParam,
+            }),
+        }),
     }),
 });
 
@@ -50,4 +57,5 @@ export const {
     useGetApplicationQuery,
     useGetQuizQuestionQuery,
     useGetQuizQuestionAnswerQuery,
+    useVouchRequestMutation,
 } = rspvApiAction;

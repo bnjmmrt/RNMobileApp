@@ -10,54 +10,20 @@ import { COLORS } from 'src/utils/constants';
 import { fontFamily } from 'src/utils/functions';
 import useContacts from 'src/utils/hooks/useContactPermission';
 import useContactPermission from 'src/utils/hooks/useContactPermission';
+import { useFetchMembersQuery, useGetConfirmedMembersMutation } from 'src/redux/actions/referralApiAction';
+import { useRoute } from '@react-navigation/native';
 interface ContactItem {
     name: string;
     phone: string;
 }
 
-const membersData = [
-    {
-        age: 31,
-        categories: ["Food", "Music", "Technology"],
-        phoneNumber: "5556106679",
-        city: "Los Angeles",
-        email: "wwvvo@uoi.com",
-        followerCount: "72816",
-        gender: 1,
-        id: "ilxmjswjgt",
-        instagramUsername: "ylttxhrjrjfi",
-        isFavourite: false,
-        name: "John Wick",
-        profilePicture: "https://example.com/aorodlsmgw.jpg",
-        role: "Admin",
-        status: 0,
-        types: ["Influencer", "Blogger"],
-    },
-    {
-        age: 43,
-        categories: ["Technology"],
-        phoneNumber: "2836933363",
-        city: "Philadelphia",
-        email: "etobp@wzu.com",
-        followerCount: "96524",
-        gender: 1,
-        id: "hukknzeemj",
-        instagramUsername: "jfgphchevata",
-        isFavourite: false,
-        name: "Endeidx",
-        profilePicture: "https://example.com/kwgmpsvahl.jpg",
-        role: "Moderator",
-        status: 1,
-        types: ["Blogger", "Content Creator"],
-    },
-
-];
-
-const RequestVouch = ({ onClose }: { onClose: () => void }) => {
-    const { getContacts } = useContacts();
+const RequestVouch = ({ onClose, eventId }: { onClose: () => void, eventId: string }) => {
+    const { getContacts, getContactNumbersOnly } = useContacts();
     const [contacts, setContacts] = useState<ContactItem[]>([]);
     const [members, setMembers] = useState<ContactItem[]>([]);
-    // const { data: membersData, isMembersLoading, isError } = useFetchMembersQuery();
+
+    const [getConfirmedMembers] = useGetConfirmedMembersMutation();
+
     const [filteredContacts, setFilteredContacts] = useState<ContactItem[]>([]);
     const [filteredMembers, setFilteredMembers] = useState<ContactItem[]>([]);
     const [requestSent, setRequestSent] = useState<string[]>([]);
@@ -74,29 +40,26 @@ const RequestVouch = ({ onClose }: { onClose: () => void }) => {
 
     const fetchContacts = async () => {
         try {
-            const formattedContacts = await getContacts();
-            const memberPhoneNumbers = new Set(
-                membersData.map((member) =>
-                    member.phoneNumber.replace(/\s|-/g, "")
-                )
-            );
-            const membersResult: string[] = [];
-            formattedContacts.forEach((contact) => {
-                if (memberPhoneNumbers.has(contact.phoneNumber)) {
-                    const matchedMember = membersData.find(
-                        (member) => member.phoneNumber.replace(/\s|-/g, "") === contact.phoneNumber
-                    );
-                    if (matchedMember) {
-                        membersResult.push(matchedMember);
-                    }
-                }
-            });
-            setMembers(membersResult);
-            setFilteredMembers(membersResult);
+            const contacts = await getContactNumbersOnly();
+            const response = await getConfirmedMembers({ contacts });
+            if (response?.data?.data) {
+                setMembers(response?.data?.data);
+                setFilteredMembers(response?.data?.data);
+            }
+
         } catch (error) {
             console.error('Error fetching contacts:', error);
         }
     };
+
+    // const handleGetConfirmedMembers = async () => {
+    //     try {
+    //         const response = await getConfirmedMembers({ contacts: ['+915555555556', '+915555555557', '+915555555558'] });
+    //         console.log('Confirmed Members:', response);
+    //     } catch (error) {
+    //         console.error('Error fetching confirmed members:', error);
+    //     }
+    // };
 
     const handleSearch = (query: string) => {
         if (debounceTimeoutRef.current) {
@@ -138,7 +101,7 @@ const RequestVouch = ({ onClose }: { onClose: () => void }) => {
                 contentContainerStyle={{ gap: 4, }}
                 keyExtractor={(item, index) => '' + item.phoneNumber + index}
                 renderItem={({ item }) =>
-                    <RenderMemberList item={item} />
+                    <RenderMemberList item={item} eventId={eventId} />
                 }
             />
         </View>

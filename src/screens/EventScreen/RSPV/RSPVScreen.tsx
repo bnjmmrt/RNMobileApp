@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import BottomSheetComponent from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
@@ -32,6 +33,8 @@ import { verticalScale } from 'src/utils/dimensions';
 import { EventCard } from '../RSVP/RSVPInvitedUpcoming';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
+import useApi from 'src/axios/useApi';
+import { EndPoint } from 'src/ApiManager/config';
 
 type Guest = {
   id: number;
@@ -47,19 +50,14 @@ const RSPVScreen: React.FC = () => {
   const bottomSheetRef = useRef<any>(null);
   const { params } = useRoute();
   const inputRefs = useRef<{ [key: number]: any }>({});
-  const { goBack } = useNavigation();
+  const { goBack, navigate } = useNavigation();
   const userId = useSelector((state: RootState) => state.auth.userId);
+  const { apiRequest, loading } = useApi();
 
-  const { name, location, startDate, status, quizQuestions, limitOnePlus, id, currentGuestStatus } =
+
+  const { name, location, startDate, status, quizQuestions, limitOnePlus, id, currentGuestStatus, imageCover } =
     params?.event;
-  const { data, isLoading, isSuccess } = useGetQuizQuestionAnswerQuery(
-    {
-      userId,
-      eventId: id,
-    },
-    { refetchOnMountOrArgChange: true }
-  );
-  console.log(data?.data.questions)
+
 
   const [eventQuestions, setEventQuestions] = useState([]);
   const [selectedGuests, setSelectedGuests] = useState<any>(null);
@@ -75,23 +73,38 @@ const RSPVScreen: React.FC = () => {
 
 
   useEffect(() => {
-    if (isSuccess) {
-      if (currentGuestStatus === "APPLIED") {
-        setEventQuestions(data?.data?.questions)
-      }
-      else {
-        setEventQuestions(quizQuestions)
-      }
-    }
+    getQuestions();
+  }, [])
 
 
-  }, [isSuccess])
 
   useEffect(() => {
-    if (quizQuestions.length == 0 && limitOnePlus == 0) {
+    if (quizQuestions.length == 0 && limitOnePlus == 0 && currentGuestStatus !== "APPLIED") {
       onSumbitCall();
     }
   }, [])
+
+  const formattdQuestions = (quizQuestions) => {
+    return quizQuestions.map((item) => ({
+      order: item.order,
+      question: item.question,
+      questionId: item.id,
+      required: item.required,
+    }));
+  };
+  const getQuestions = async () => {
+    console.log("QUEX", quizQuestions)
+    if (currentGuestStatus === "APPLIED") {
+      const response: any = await apiRequest('get', `v1/users/${userId}/events/${id}/request`);
+      console.log("-->", response?.data?.questions)
+      setEventQuestions(response?.data?.questions)
+    }
+    else {
+      console.log(formattdQuestions(quizQuestions), "--->>")
+      setEventQuestions(formattdQuestions(quizQuestions));
+    }
+
+  };
 
   const onSumbitCall = async () => {
     try {
@@ -117,8 +130,8 @@ const RSPVScreen: React.FC = () => {
       const response = await submitApplication({
         eventId: id,
         answers: eventQuestions.map(q => ({
-          questionId: q.id,
-          answer: inputRefs.current[q.id]?.inputText || '',
+          questionId: q.questionId,
+          answer: inputRefs.current[q.questionId]?.inputText || '',
         })),
         guests: selectedGuests ? selectedGuests.id : 0,
       }).unwrap();
@@ -143,7 +156,7 @@ const RSPVScreen: React.FC = () => {
       }).unwrap();
 
       console.log('Application updated:', response);
-      goBack();
+
       setActiveTab('submit');
       bottomSheetRef.current?.open();
     } catch (error) {
@@ -153,9 +166,10 @@ const RSPVScreen: React.FC = () => {
 
   const handleCancelApplication = async () => {
     try {
-      const response = await deleteApplication({ eventId: id }).unwrap();
+      const response = await deleteApplication({ eventId: id, id: userId }).unwrap();
       console.log('Application canceled:', response);
       bottomSheetRef?.current?.close();
+      goBack();
     } catch (error) {
       console.error('Error canceling application:', error);
     }
@@ -221,6 +235,10 @@ const RSPVScreen: React.FC = () => {
         style={styles.btnStyle}
         title={'Discover More Events'}
         colorTheme="dark"
+        onPress={() => {
+          bottomSheetRef?.current?.close();
+          navigate('BottomTabBar')
+        }}
       />
     </View>
   );
@@ -232,7 +250,7 @@ const RSPVScreen: React.FC = () => {
       case 'guests':
         return renderNumberOfGuests(limitOnePlus);
       case 'vouch':
-        return <RequestVouch />;
+        return <RequestVouch eventId={id} />;
       case 'options':
         return renderOptions();
       case 'cancel':
@@ -249,7 +267,7 @@ const RSPVScreen: React.FC = () => {
       case 'guests':
         return '30%';
       case 'submit':
-        return '60%';
+        return '70%';
       case 'options':
         return '20%';
       case 'cancel':
@@ -305,9 +323,13 @@ const RSPVScreen: React.FC = () => {
       <TouchableOpacity
         onPress={handleCancelApplication}
         style={styles.redButton}>
-        <Text style={[styles.optionText, { color: COLORS.white }]}>
-          Cancel Application
-        </Text>
+        {isDeleting ?
+          <ActivityIndicator />
+          :
+          <Text style={[styles.optionText, { color: COLORS.white }]}>
+            Cancel Application
+          </Text>}
+
       </TouchableOpacity>
     </View>
   );
@@ -338,6 +360,7 @@ const RSPVScreen: React.FC = () => {
         title={'Leave'}
         colorTheme="dark"
         onPress={() => {
+          bottomSheetRef?.current?.close();
           goBack();
         }}
       />
@@ -353,9 +376,6 @@ const RSPVScreen: React.FC = () => {
       />
     </View>
   );
-  if (isLoading) {
-    return null
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -384,7 +404,7 @@ const RSPVScreen: React.FC = () => {
               </CustomText>
             </View>
           </View> */}
-          <EventCard name={name} location={location} />
+          <EventCard name={name} location={location?.location} imageCover={imageCover} />
           {currentGuestStatus != "NO_STATUS" && (
             <View style={styles.yellowBoxRightButton}>
               <View style={styles.waitingResponseContainer}>
@@ -432,6 +452,7 @@ const RSPVScreen: React.FC = () => {
 
         <BottomSheetComponent
           ref={bottomSheetRef}
+          onClose={() => { (activeView !== "cancel" && activeView !== "guests") && goBack() }}
           snapPoints={[getSnapPoints()]}>
           <View style={styles.bottomSheetContent}>
             {renderBottomSheetContent()}

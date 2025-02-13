@@ -31,6 +31,21 @@ const useContacts = () => {
             return [];
         }
     };
+    const getContactNumbersOnly = async (): Promise<string[]> => {
+        try {
+            const deviceContacts = await Contacts.getAll();
+            const contactNumbers = deviceContacts
+                .map((contact) => {
+                    const number = contact.phoneNumbers[0]?.number.replace(/\D/g, '');
+                    return number ? `+${number}` : '';
+                })
+                .filter((number) => number);
+            return contactNumbers;
+        } catch (error) {
+            console.error('Error fetching contact numbers:', error);
+            return [];
+        }
+    };
 
     const requestAndroidPermission = async (): Promise<void> => {
         try {
@@ -82,7 +97,7 @@ const useContacts = () => {
     };
 
 
-    return { permissionGranted, requestContactPermission, getContacts };
+    return { permissionGranted, requestContactPermission, getContacts, getContactNumbersOnly };
 };
 
 export default useContacts;

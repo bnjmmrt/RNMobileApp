@@ -19,6 +19,7 @@ import ListComponentBottomSheet from "src/component/BottomSheet/ListComponentBot
 import ConfirmationBottomSheet from "src/component/BottomSheet/ConfirmationBottomSheet"
 import RenderCancelPopup from "./RenderCancelPopup"
 import Title from 'src/component/Title/Title';
+import FastImage from "@d11/react-native-fast-image"
 
 const reasons = [
     { id: 1, name: 'Scheduling Conflict' },
@@ -35,14 +36,19 @@ type Guest = {
     name: string;
 };
 
-export const EventCard = ({ name }) => {
+export const EventCard = ({ name, location, imageCover }) => {
     return (
         <View style={styles.card}>
-            <Image source={IMAGES.frame} style={styles.image} />
+            <FastImage
+                source={{ uri: imageCover }}
+                resizeMode={FastImage.resizeMode.cover}
+                defaultSource={IMAGES.eventCoverPlaceholders1}
+                style={styles.image}
+            />
             <View style={styles.info}>
                 <CustomText style={styles.title}>{name}</CustomText>
                 <CustomText style={styles.details}>Fri, April 13, 9:00PM - 11:00PM EST</CustomText>
-                <CustomText style={styles.details}>Los Angeles, California</CustomText>
+                <CustomText style={styles.details}>{location}</CustomText>
             </View>
         </View>
     );
