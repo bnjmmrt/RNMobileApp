@@ -8,16 +8,36 @@ export const usersApiAction = createBaseApi.injectEndpoints({
         take,
         skip,
         searchValue = '',
+        queryString = '',
       }: {
         take: number;
         skip: number;
         searchValue?: string;
-      }) => ({
-        url: `${EndPoint.users_list}?take=${take}&skip=${skip}&searchValue=${searchValue}`,
-        method: 'GET',
-      }),
+        queryString?: string;
+      }) => {
+        let url = `${EndPoint.users_list}?take=${take}&skip=${skip}`;
+        if (searchValue) {
+          url = `${url}&searchValue=${searchValue}`;
+        }
+        if (queryString) {
+          url = `${url}&${queryString}`;
+        }
+        return {
+          url: url,
+          method: 'GET',
+        };
+      },
       providesTags: ['Users'], // Adjust the tag if needed for cache invalidation
     }),
+
+    fetchUserFilters: builder.query({
+      query: ({id}: {id: string}) => ({
+        url: `${EndPoint.host}/${id}/filters`,
+        method: 'GET',
+      }),
+      providesTags: ['Filters'], // Adjust the tag if needed for cache invalidation
+    }),
+
     fetchUserDetails: builder.query<UserDetailResponse, {user: string}>({
       query: ({user}) => ({
         url: `${EndPoint.user}${user}`,
@@ -37,7 +57,6 @@ export const usersApiAction = createBaseApi.injectEndpoints({
         method: 'POST',
         body: requestParam,
       }),
-      invalidatesTags: ['Users'],
     }),
     addUserNote: builder.mutation({
       query: (requestParam: {note: string; user: string}) => ({
@@ -105,6 +124,9 @@ export const {
   useReportUserMutation,
   useMarkUserFavMutation,
   useUnmarkUserFavMutation,
+
+  useFetchUserFiltersQuery,
+  useLazyFetchUserFiltersQuery,
 } = usersApiAction;
 
 export interface UserDetailResponse {

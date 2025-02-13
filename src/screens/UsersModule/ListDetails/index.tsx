@@ -154,7 +154,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({route}) => {
           ref={searchInputRef}
           onSearchTextChange={handleSearchTextChange}
           placeholder="Search..."
-          rightIcon={IMAGES.filter_lines}
+          // rightIcon={IMAGES.filter_lines}
           mainContainerStyle={{marginHorizontal: 0}}
         />
         {isLoading ? (

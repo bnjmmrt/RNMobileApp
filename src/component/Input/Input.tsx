@@ -12,6 +12,7 @@ import {
   Image,
   TouchableOpacity,
   ViewStyle,
+  KeyboardTypeOptions,
 } from 'react-native';
 import {COLORS} from '../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
@@ -40,6 +41,7 @@ interface InputProps {
   isRequired?: boolean;
   forBottomSheet?: boolean;
   inputFieldContainerStyle?: ViewStyle;
+  keyboardType?: KeyboardTypeOptions;
 }
 
 export type InputRefMethods = {
@@ -65,6 +67,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     isRequired = false,
     forBottomSheet = false,
     inputFieldContainerStyle,
+    keyboardType = 'default',
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -121,7 +124,11 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
         style={[
           styles.inputContainer,
           multiline ? styles.multilineInputContainer : null,
-          errorMessage  ? multiline ? [styles.errorInputWrapper,styles.multilineInputContainer]:styles.errorInputWrapper : null,
+          errorMessage
+            ? multiline
+              ? [styles.errorInputWrapper, styles.multilineInputContainer]
+              : styles.errorInputWrapper
+            : null,
           inputFieldContainerStyle,
         ]}>
         {leftImage && <Image source={leftImage} style={styles.leftImage} />}
@@ -139,6 +146,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
             }
           }}
           multiline={multiline}
+          keyboardType={keyboardType}
         />
         {rightImage && (
           <TouchableOpacity onPress={onPressImage}>
