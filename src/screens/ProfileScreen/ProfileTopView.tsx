@@ -35,7 +35,7 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick, profile
                         />
                     ) : (
                         <View style={styles.profilePhotoContainer}>
-                            <AvatarInitials name={'Bessie Cooper'} size={48} />
+                            <AvatarInitials name={name} size={48} />
                         </View>
                     )}
                 </FullScreenLoader>

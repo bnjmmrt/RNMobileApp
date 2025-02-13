@@ -144,12 +144,13 @@ const PhoneNumberInput = forwardRef<
             onPress={() => setCountryPickerVisible(true)}
             disabled={disabled}>
             <Text style={styles.flag}>{flag}</Text>
-            <Image source={IMAGES.upDownArrow} style={styles.arrowIcon} />
+            <Image source={IMAGES.upDownArrow} style={[styles.arrowIcon, disabled && {opacity: 0.5}]} />
             <Text style={styles.callingCode}>{callingCode}</Text>
           </TouchableOpacity>
 
           <InputComponent
-            style={styles.input}
+            // style={styles.input}
+            style={[styles.input, disabled && {color: COLORS.light_gray}]}
             placeholder="Enter phone number"
             keyboardType="phone-pad"
             returnKeyType="done"

@@ -79,7 +79,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
     if (configData.fromProfile) {
       getMyInterests();
     }else{
-      setInterest(selectedInterests)
+      setSelectedCategories(selectedInterests)
     }
   }, []);
 
@@ -118,6 +118,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
         setIsToastShown(false);
         const response: any = await updateMyInterests();
         if (response.status===200) {
+          navigation.navigate('ProfileScreen')
           // dispatch(setInterest(selectedCategories))
            FlashMessageComponent.show('success', 'Details updated successfully!');
         }
