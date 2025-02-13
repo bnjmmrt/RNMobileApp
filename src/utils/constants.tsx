@@ -543,3 +543,11 @@ export const eventData = {
   },
   "status": 200
 }
+
+
+export const genderList = [
+  {id: 0, gender: 'Male', value:'MALE'},
+  {id: 1, gender: 'Female', value:'FEMALE'},
+  {id: 2, gender: 'Non-binary', value:'NON_BINARY'},
+  {id: 3, gender: 'Prefer not to say', value:'NOT_APPLICABLE'},
+];

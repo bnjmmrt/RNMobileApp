@@ -106,7 +106,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
       'get',
       EndPoint.user + loginData?.id,
     );
-    // console.log('getMemberNonMemberProfile', response);
     if (response.status === 200) {
       dispatch(setProfileData(response?.data));
       setUser(response?.data);
@@ -217,7 +216,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   useEffect(() => {
     const listItems = hasFullAccess
       ? itemsExtras
-      : loginData?.roles[0].roleName === ROLE.HOST
+      : loginData?.roles[0]?.roleName === ROLE.HOST
       ? hostItems
       : items;
     setListItems(listItems);

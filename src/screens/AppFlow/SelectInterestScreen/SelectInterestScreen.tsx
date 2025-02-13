@@ -79,7 +79,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
     if (configData.fromProfile) {
       getMyInterests();
     }else{
-      setInterest(selectedInterests)
+      setSelectedCategories(selectedInterests)
     }
   }, []);
 

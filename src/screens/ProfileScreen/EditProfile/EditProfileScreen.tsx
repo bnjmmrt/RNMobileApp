@@ -7,6 +7,7 @@ import {
   ERROR_MESSAGE,
   COLORS,
   PROFILE,
+  genderList,
 } from '../../../utils/constants';
 import Button from '../../../component/Button';
 import Input from '../../../component/Input/Input';
@@ -35,12 +36,6 @@ import {extractCountryCode} from 'src/utils/functions';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
-const genderList = [
-  {id: 0, gender: 'Male'},
-  {id: 1, gender: 'Female'},
-  {id: 2, gender: 'Non-binary'},
-  {id: 3, gender: 'Prefer not to say'},
-];
 const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const {apiRequest, loading, error} = useApi();
   const dispatch = useDispatch();
@@ -48,7 +43,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const profileData = useSelector(
     (state: RootState) => state.appFlowApiData?.profileData,
   );
-
+ 
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
   const phoneNumberInputRef = useRef<any>(null);
@@ -56,21 +51,11 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const baseCityRef = useRef<any>(null);
   const birthDayRef = useRef<any>(null);
 
-  const getGenderId = (item: any) => {
-    switch (item) {
-      case 'MALE':
-        return 0;
-      case 'FEMALE':
-        return 1;
-      case 'NON-BINARY':
-        return 2;
-      default:
-        return 3;
-    }
+  const getGender = (gender: string) => {
+    return genderList.find(item=>item.value===gender)
   };
-  const [genderId, setGender] = useState(getGenderId(profileData?.gender));
 
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [gender, setGender] = useState<any>(getGender(profileData.gender));
   const [selectedDate, setSelectedDate] = useState<string>(
     profileData?.dateOfBirth,
   );
@@ -119,7 +104,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
         EndPoint.user_profile_picture + loginData?.id,
         {profilePicture: profileData?.imageUrl},
       );
-      console.log('fileUploadResponse,fileUploadResponse', fileUploadResponse);
+      
       if (fileUploadResponse.status === 200) {
         const requestObject: any = {
           address: {
@@ -133,12 +118,12 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
           birthDate: birthDayRef.current.selectedDate,
           email: profileData?.email,
           firstName: firstNameRef.current.inputText,
-          gender: genderId,
+          gender: gender?.value,
           lastName: lastNameRef.current.inputText,
           mobilePhone: profileData?.phoneNumber,
-          // creativeFocus: selectedCreativeFocus
-          //   ? selectedCreativeFocus.map((item: any) => item.id)
-          //   : profileData?.creativeFocus.map((item: any) => item.id),
+          creativeFocus: selectedCreativeFocus
+            ? selectedCreativeFocus.map((item: any) => item.id)
+            : profileData?.creativeFocus.map((item: any) => item.id),
         };
         console.log('requestObject', requestObject);
 
@@ -210,7 +195,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
               <Text style={[styles.label]}>{LABLE.GENDER}</Text>
               <GenderComponent
                 setGender={setGender}
-                selectedGender={genderId}
+                selectedGender={gender?.id}
                 list={genderList}
               />
 
