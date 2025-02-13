@@ -43,8 +43,9 @@ const authSlice = createSlice({
     setRole(state, action: PayloadAction<any>) {
       state.role = action.payload;
     },
-    resetLoginData() {
-      return initialState;
+    resetLoginData(state) {
+      // Reset state to initial values
+      Object.assign(state, initialState);
     },
   },
 });

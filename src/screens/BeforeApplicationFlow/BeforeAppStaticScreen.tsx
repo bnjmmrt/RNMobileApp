@@ -14,10 +14,6 @@ import {
   verticalMarginScale,
   Wp,
 } from '../../utils/dimensions';
-import useApi from 'src/axios/useApi';
-import { EndPoint } from 'src/ApiManager/config';
-import { setIsFirstTimeLoggedIn, setMemberProfileData } from 'src/redux/slices/appGlobalDataSlice';
-import { RootState } from 'src/redux/slices';
 
 interface BeforeAppStaticScreenProps extends NativeStackScreenProps<any, any> { }
 

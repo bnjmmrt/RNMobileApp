@@ -8,7 +8,7 @@ import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
 import {useDispatch, useSelector} from 'react-redux';
-import {setPageProgress} from '../../../redux/slices/appFlowSlice';
+import {resetAppFlowDetails, setPageProgress} from '../../../redux/slices/appFlowSlice';
 import Input from '../../../component/Input/Input';
 import IMAGES from '../../../assets/images';
 import {useMemberSignUp} from '../../../redux/hooks/useMemberSignUp';
@@ -84,6 +84,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         userId: response?.data?.id,
       };
       dispatch(setLoginData(data));
+      dispatch(resetAppFlowDetails());
       dispatch(setPageProgress(1));
       dispatch(setAuthToken(response.data.token));
       navigation.navigate('BottomTabBar');
