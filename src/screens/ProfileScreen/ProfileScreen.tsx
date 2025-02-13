@@ -285,7 +285,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       cropperCircleOverlay: true,
     }).then((image: ImageOrVideo) => {
       setImage(image.path);
-      editPhotoBottomSheetRef.current?.close();
+      // editPhotoBottomSheetRef.current?.close();
       savePhotoBottomSheetRef.current?.open();
     });
   };
