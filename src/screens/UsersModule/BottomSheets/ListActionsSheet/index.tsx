@@ -1,4 +1,10 @@
-import React, {forwardRef, useImperativeHandle, useRef, useState} from 'react';
+import React, {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import {Alert, View} from 'react-native';
 import BottomSheetComponent, {
   BottomSheetMethods,
@@ -48,6 +54,7 @@ const ListActionsSheet = forwardRef<
       selectedListName,
       onSuccess,
       listType,
+      from,
     },
     ref,
   ) => {
@@ -65,30 +72,36 @@ const ListActionsSheet = forwardRef<
         sheetRef.current?.showFlashMessage(type, message),
     }));
 
-    const snapPoints =
-      selectedAction === 'editListName'
-        ? [`${verticalScale(40)}%`]
-        : selectedAction === 'createList'
-        ? [`${verticalScale(40)}%`]
-        : selectedAction === 'duplicateList'
-        ? [`${verticalScale(50)}%`]
-        : selectedAction === 'deleteList'
-        ? [`${verticalScale(40)}%`]
-        : selectedAction === 'addUsers'
-        ? [`${verticalScale(70)}%`]
-        : [`${verticalScale(35)}%`];
+    const getDyanamicSnapPoints = useCallback(() => {
+      switch (selectedAction) {
+        case 'addUsers':
+          return [`${verticalScale(70)}%`];
+        case 'createList':
+          return [`${verticalScale(40)}%`];
+        case 'deleteList':
+          return [`${verticalScale(40)}%`];
+        case 'duplicateList':
+          return [`${verticalScale(50)}%`];
+        case 'editListName':
+          return [`${verticalScale(40)}%`];
+        case '':
+          if (listType === 'custom') {
+            return [`${verticalScale(35)}%`];
+          } else {
+            return [`${verticalScale(15)}%`];
+          }
+
+        default:
+          return [`${verticalScale(35)}%`];
+      }
+    }, [selectedAction, listType]);
 
     const closeSheet = () => {
       sheetRef?.current?.close();
     };
 
     const showError = (message: string) => {
-      sheetRef?.current?.showFlashMessage('error', message);
-    };
-
-    const showSuccess = (message: string) => {
-      closeSheet();
-      FlashMessageComponent.show('success', message);
+      FlashMessageComponent.show('error', message);
     };
 
     const onCreateListSuccess = (listId: string, listName: string) => {
@@ -119,17 +132,26 @@ const ListActionsSheet = forwardRef<
       closeSheet();
     };
 
+    const getDyanamicSizeConfig = useCallback(() => {
+      if (selectedAction === 'addUsers') {
+        return false;
+      } else {
+        return true;
+      }
+    }, [selectedAction, listType]);
+
     return (
       <BottomSheetComponent
         ref={sheetRef}
-        snapPoints={snapPoints} // Adjustable snap points
+        snapPoints={getDyanamicSnapPoints()} // Adjustable snap points
         onClose={() => {
           setSelectedAction('');
         }}
-        enableDynamicSizing={selectedAction === 'addUsers' ? false : true}>
+        enableDynamicSizing={getDyanamicSizeConfig() || true}
+        showBottomSafeAreaView={from === 'listDetail' ? true : false}>
         <BottomSheetView style={{flex: 1}}>
           {selectedAction === '' ? (
-            <BottomSheetView style={styles.actionButtonContainer}>
+            <BottomSheetView style={[styles.actionButtonContainer, {flex: 1}]}>
               {listType === 'custom' ? (
                 <Button
                   title="Add Users"
@@ -184,6 +206,7 @@ const ListActionsSheet = forwardRef<
               listId={selectedListData?.id || selectedListId || ''}
               listName={selectedListData?.name || selectedListName || ''}
               showError={showError}
+              listType={listType}
             />
           ) : null}
           {selectedAction === 'deleteList' ? (

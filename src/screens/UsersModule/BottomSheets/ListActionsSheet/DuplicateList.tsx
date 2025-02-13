@@ -8,17 +8,20 @@ import {styles} from './style';
 import {useDuplicateCustomListMutation} from 'src/redux/actions/listsApiAction';
 import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
 import {BottomSheetView} from '@gorhom/bottom-sheet';
+import {customListType} from 'src/navigation/AppStack';
 
 const DuplicateList = ({
   onSuccess,
   showError,
   listId,
   listName,
+  listType,
 }: {
   onSuccess: () => void;
   showError: (message: string) => void;
   listId: string;
   listName?: string;
+  listType: customListType;
 }) => {
   const listNameRef = useRef<InputRefMethods>(null);
 
@@ -39,7 +42,12 @@ const DuplicateList = ({
         const response = await duplicateCustomList({
           customName: customName,
           listId: listId,
-          listType: 'custom',
+          listType:
+            listType === 'favorite'
+              ? 'favorite'
+              : listType === 'follower'
+              ? 'followed'
+              : 'custom',
         }).unwrap();
         if (response.status === 200) {
           resetForm();

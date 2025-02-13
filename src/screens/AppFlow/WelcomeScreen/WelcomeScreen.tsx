@@ -6,16 +6,19 @@ import { COLORS, BUTTON_LABLE, LABLE } from '../../../utils/constants';
 import IMAGES from '../../../assets/images';
 import Button from '../../../component/Button';
 import { useSelector } from 'react-redux';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { apiPost, apiPut } from '../../../ApiManager/MainApi';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { RootState } from 'src/redux/slices';
+import { ROUTES } from 'src/navigation/Route';
 
-const WelcomePage: React.FC = () => {
+const WelcomeScreen: React.FC = () => {
   const [userName, setUserName] = useState<string>('');
   const navigation = useNavigation<any>();
   const styles = WelcomeScreenStyles();
-  const loginData = useSelector((state: any) => state.auth.loginData);
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  const root = useRoute();
 
   useFocusEffect(
     useCallback(() => {
@@ -28,31 +31,21 @@ const WelcomePage: React.FC = () => {
     console.log('openCommunityGuidelines');
   };
 
-  const onEnterClick = () => {
-    navigation.navigate('AppStack', { screen: 'BottomTabBar' });
+  const updateUserStatus = async () => {
+    try {
+
+      await apiPut(`/auth/user/${userId}/set-login-status`, {
+        id: userId,
+      });
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
   };
 
-  console.log(loginData);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res: any = await apiPost('/auth/get-user-with-roles-by-id', {
-          id: loginData.id,
-        });
-
-        setUserName(res.data.data.name);
-
-        await apiPut(`/auth/user/${loginData.id}/set-login-status`, {
-          id: loginData.id,
-        });
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    fetchUser();
-  }, [loginData.id]);
+  const onEnterClick = () => {
+    updateUserStatus()
+    navigation.navigate('AppStack', { screen: ROUTES.BottomTabBar });
+  };
 
   return (
     <View style={styles.container}>
@@ -68,7 +61,7 @@ const WelcomePage: React.FC = () => {
         <Text style={styles.title}>{LABLE.WELCOME}</Text>
         <View>
           <Text style={styles.subtitle}>
-            Hey {userName}, {LABLE.WELCOME_NOTE_LINE_1}
+            Hey {root?.params?.userName}, {LABLE.WELCOME_NOTE_LINE_1}
           </Text>
           <Text style={styles.subtitle}>
             {LABLE.WELCOME_NOTE_LINE_2}{' '}
@@ -94,4 +87,4 @@ const WelcomePage: React.FC = () => {
   );
 };
 
-export default WelcomePage;
+export default WelcomeScreen;
