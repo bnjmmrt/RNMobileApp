@@ -9,7 +9,6 @@ import {verticalScale} from 'src/utils/dimensions';
 import AllUsersFilters from './AllUsersFilters';
 import {FilterOptionTypes} from './FilterOptions';
 import {styles} from './style';
-import {Address} from 'src/redux/slices/appFlowSlice';
 
 export type SelectedSingleFilter = {
   type: FilterOptionTypes;
@@ -22,7 +21,7 @@ export type SelectedFilters = {
 const FiltersSheet = forwardRef<
   BottomSheetMethods,
   {
-    onApplyFilter: (query: string) => void;
+    onApplyFilter: (query: string, numberOfFiltersApplied: number) => void;
     onClearFilter: () => void;
     from: 'allUsersList';
     showBottomSafeAreaView: boolean;
@@ -38,6 +37,7 @@ const FiltersSheet = forwardRef<
   }));
 
   const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
+  const [disableApplyCta, setDisableApplyCta] = useState<boolean>(false);
 
   const onPressApplyFilter = async () => {
     const queryString = Object.entries(selectedFilters)
@@ -51,7 +51,11 @@ const FiltersSheet = forwardRef<
       .filter(Boolean)
       .join('&');
 
-    onApplyFilter(queryString);
+    const appliedFiltersCount = Object.values(selectedFilters).filter(
+      filter => Array.isArray(filter.value) && filter.value.length > 0,
+    ).length;
+
+    onApplyFilter(queryString, appliedFiltersCount);
     sheetRef?.current?.close();
   };
   const onPressClearFilter = async () => {
@@ -74,6 +78,7 @@ const FiltersSheet = forwardRef<
           <AllUsersFilters
             selectedFilters={selectedFilters}
             setSelectedFilters={setSelectedFilters}
+            setDisableApplyCta={setDisableApplyCta}
           />
         ) : null}
 
@@ -88,6 +93,7 @@ const FiltersSheet = forwardRef<
             colorTheme="dark"
             style={styles.applyCta}
             onPress={onPressApplyFilter}
+            disabled={disableApplyCta}
           />
         </BottomSheetView>
       </BottomSheetView>

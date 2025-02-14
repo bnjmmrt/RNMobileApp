@@ -1,12 +1,10 @@
 import {StyleSheet} from 'react-native';
 import {COLORS} from '../../../../utils/constants';
 import {
-  Wp,
   fontScale,
   horizontalMarginScale,
   radiusScale,
   verticalMarginScale,
-  verticalScale,
 } from '../../../../utils/dimensions';
 import {fontFamily} from '../../../../utils/functions';
 

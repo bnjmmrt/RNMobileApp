@@ -6,7 +6,6 @@ import {
   radiusScale,
   verticalMarginScale,
   verticalScale,
-  Wp,
 } from 'src/utils/dimensions';
 import {fontFamily} from 'src/utils/functions';
 
@@ -80,8 +79,6 @@ export const styles = StyleSheet.create({
   },
   applyCta: {
     flex: 1,
-    borderWidth: verticalScale(2),
-    borderColor: COLORS.black,
     paddingHorizontal: horizontalMarginScale(12),
   },
 });

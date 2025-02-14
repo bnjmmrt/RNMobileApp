@@ -1,14 +1,13 @@
+import {BottomSheetView} from '@gorhom/bottom-sheet';
 import React, {useEffect, useRef, useState} from 'react';
-import {View} from 'react-native';
 import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
 import Input, {InputRefMethods} from 'src/component/Input/Input';
-import {verticalMarginScale} from 'src/utils/dimensions';
-import {styles} from './style';
-import {useDuplicateCustomListMutation} from 'src/redux/actions/listsApiAction';
-import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
-import {BottomSheetView} from '@gorhom/bottom-sheet';
 import {customListType} from 'src/navigation/AppStack';
+import {useDuplicateCustomListMutation} from 'src/redux/actions/listsApiAction';
+import {verticalMarginScale} from 'src/utils/dimensions';
+import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
+import {styles} from './style';
 
 const DuplicateList = ({
   onSuccess,

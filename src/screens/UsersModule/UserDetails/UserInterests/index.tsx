@@ -1,12 +1,12 @@
 import React, {useCallback} from 'react';
 import {FlatList, View} from 'react-native';
+import {shallowEqual, useSelector} from 'react-redux';
 import {CustomText} from 'src/component/CustomText';
+import {UserDetailResponse} from 'src/redux/actions/usersApiAction';
+import {RootState} from 'src/redux/slices';
+import {horizontalMarginScale} from 'src/utils/dimensions';
 import UserDetailCard from '../UserDetailCard';
 import createStyle from './style';
-import {horizontalMarginScale} from 'src/utils/dimensions';
-import {shallowEqual, useSelector} from 'react-redux';
-import {RootState} from 'src/redux/slices';
-import {UserDetailResponse} from 'src/redux/actions/usersApiAction';
 
 const dummyListData = [
   {

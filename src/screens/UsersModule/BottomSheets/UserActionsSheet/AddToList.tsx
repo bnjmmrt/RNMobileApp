@@ -1,16 +1,16 @@
+import {BottomSheetFlatList, BottomSheetView} from '@gorhom/bottom-sheet';
 import React, {useCallback, useEffect, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {View} from 'react-native';
 import Button from 'src/component/Button';
-import {styles} from './style';
 import {
   useAddUsersToCustomListMutation,
   useFetchAllCustomListsQuery,
 } from 'src/redux/actions/listsApiAction';
-import {ListInterface, ListItemInterface} from '../../Lists';
 import {COLORS} from 'src/utils/constants';
 import {verticalMarginScale, verticalScale} from 'src/utils/dimensions';
-import {BottomSheetFlatList, BottomSheetView} from '@gorhom/bottom-sheet';
 import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
+import {ListInterface, ListItemInterface} from '../../Lists';
+import {styles} from './style';
 
 const AddToList = ({
   showError,

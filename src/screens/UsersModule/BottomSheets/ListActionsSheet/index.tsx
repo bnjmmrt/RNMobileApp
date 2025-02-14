@@ -1,3 +1,4 @@
+import {BottomSheetView} from '@gorhom/bottom-sheet';
 import React, {
   forwardRef,
   useCallback,
@@ -5,20 +6,18 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {Alert, View} from 'react-native';
 import BottomSheetComponent, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
+import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import {customListType} from 'src/navigation/AppStack';
 import {verticalScale} from 'src/utils/dimensions';
 import AddUsersInList from './AddUsersInList';
+import CreateEditList from './CreateEditList';
 import DeleteList from './DeleteList';
 import DuplicateList from './DuplicateList';
-import CreateEditList from './CreateEditList';
 import {styles} from './style';
-import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import {BottomSheetView} from '@gorhom/bottom-sheet';
-import {customListType} from 'src/navigation/AppStack';
 
 export type actionSheetFromType = 'customLists' | 'listDetail';
 export type listActionCurrentPageType =
@@ -40,6 +39,7 @@ interface ListActionsSheetPropsInterface {
   selectedListId?: string;
   selectedListName?: string;
   listType: customListType;
+  listUserCount?: number;
 }
 
 const ListActionsSheet = forwardRef<
@@ -55,6 +55,7 @@ const ListActionsSheet = forwardRef<
       onSuccess,
       listType,
       from,
+      listUserCount,
     },
     ref,
   ) => {
@@ -77,9 +78,9 @@ const ListActionsSheet = forwardRef<
         case 'addUsers':
           return [`${verticalScale(70)}%`];
         case 'createList':
-          return [`${verticalScale(40)}%`];
+          return [`${verticalScale(35)}%`];
         case 'deleteList':
-          return [`${verticalScale(40)}%`];
+          return [`${verticalScale(35)}%`];
         case 'duplicateList':
           return [`${verticalScale(50)}%`];
         case 'editListName':
@@ -147,7 +148,7 @@ const ListActionsSheet = forwardRef<
         onClose={() => {
           setSelectedAction('');
         }}
-        enableDynamicSizing={getDyanamicSizeConfig() || true}
+        enableDynamicSizing={getDyanamicSizeConfig()}
         showBottomSafeAreaView={from === 'listDetail' ? true : false}>
         <BottomSheetView style={{flex: 1}}>
           {selectedAction === '' ? (
@@ -176,6 +177,7 @@ const ListActionsSheet = forwardRef<
                   setSelectedAction('duplicateList');
                 }}
                 style={styles.actionButton}
+                disabled={listUserCount === 0}
               />
               {listType === 'custom' ? (
                 <Button

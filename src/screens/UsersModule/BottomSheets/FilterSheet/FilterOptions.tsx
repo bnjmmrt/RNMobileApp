@@ -8,8 +8,8 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import {styles} from './style';
 import {SelectedFilters} from '.';
+import {styles} from './style';
 
 export type FilterOptionTypes =
   | 'checkbox'
@@ -29,6 +29,7 @@ const FilterOptions = ({
   options,
   selectedFilters,
   onChangeOptionValue,
+  setDisableApplyCta,
 }: {
   id: string;
   optionType: FilterOptionTypes;
@@ -39,6 +40,7 @@ const FilterOptions = ({
     optionType: FilterOptionTypes,
     value: {id: string; name: string},
   ) => void;
+  setDisableApplyCta: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const minAgeInputRef = useRef<InputRefMethods>(null);
   const maxAgeInputRef = useRef<InputRefMethods>(null);
@@ -51,18 +53,24 @@ const FilterOptions = ({
       minAgeInputRef?.current?.setErrorMessage(
         'Minimum age must be 18 or older',
       );
+      setDisableApplyCta(true);
     } else {
       minAgeInputRef?.current?.setErrorMessage('');
+      setDisableApplyCta(false);
     }
 
-    if (maxAge && minAge && parseInt(maxAge) < parseInt(minAge)) {
-      maxAgeInputRef?.current?.setErrorMessage(
-        'Minimum age must be greater than or equal to "From" age',
-      );
-    } else {
-      maxAgeInputRef?.current?.setErrorMessage('');
+    if (maxAge) {
+      if (minAge && parseInt(maxAge) < parseInt(minAge)) {
+        maxAgeInputRef?.current?.setErrorMessage(
+          'Minimum age must be greater than or equal to "From" age',
+        );
+        setDisableApplyCta(true);
+      } else {
+        maxAgeInputRef?.current?.setErrorMessage('');
+        setDisableApplyCta(false);
+      }
     }
-  }, [minAge, maxAge]);
+  }, [minAge, maxAge, setDisableApplyCta]);
 
   return (
     <BottomSheetView>

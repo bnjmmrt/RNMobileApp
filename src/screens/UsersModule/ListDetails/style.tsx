@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
+import {radiusScale, verticalMarginScale} from 'src/utils/dimensions';
 import {COLORS} from '../../../utils/constants';
 import {fontFamily} from '../../../utils/functions';
-import {radiusScale, verticalMarginScale} from 'src/utils/dimensions';
 
 const createStyle = () => {
   return StyleSheet.create({

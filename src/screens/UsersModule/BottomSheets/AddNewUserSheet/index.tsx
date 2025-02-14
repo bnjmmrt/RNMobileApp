@@ -142,10 +142,8 @@ const AddNewUserSheet = forwardRef<BottomSheetMethods, {onSuccess: () => void}>(
       <BottomSheetComponent
         ref={sheetRef}
         snapPoints={[`${verticalScale(70)}%`]}
-        enableDynamicSizing
-        onClose={() => {
-          resetForm();
-        }}
+        enableDynamicSizing={true}
+        onClose={() => resetForm()}
         showBottomSafeAreaView={false}>
         <BottomSheetScrollView style={styles.container}>
           <CustomText style={styles.title}>{'Add New User'}</CustomText>
@@ -210,7 +208,7 @@ const AddNewUserSheet = forwardRef<BottomSheetMethods, {onSuccess: () => void}>(
           <Button
             title="Add User"
             colorTheme="dark"
-            style={[styles.cta, {marginBottom: verticalMarginScale(30)}]}
+            style={[styles.cta, {marginBottom: verticalMarginScale(40)}]}
             onPress={onPressAddUser}
             loading={isLoading}
           />
