@@ -11,6 +11,7 @@ import {RootState} from 'src/redux/slices';
 import {styles} from './style';
 import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
 import {BottomSheetView} from '@gorhom/bottom-sheet';
+import {verticalMarginScale} from 'src/utils/dimensions';
 
 const MarkAsSpam = ({
   showError,
@@ -71,7 +72,11 @@ const MarkAsSpam = ({
       <Button
         title={userDetails?.isSpam ? 'Unmark as Spam' : 'Mark as Spam'}
         colorTheme="dark"
-        style={[styles.actionCta, !userDetails?.isSpam && styles.markSpamCta]}
+        style={[
+          styles.actionCta,
+          !userDetails?.isSpam && styles.markSpamCta,
+          {marginBottom: verticalMarginScale(20)},
+        ]}
         onPress={onPressCta}
         loading={isLoading}
       />

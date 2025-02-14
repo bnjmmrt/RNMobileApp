@@ -29,6 +29,7 @@ interface FeedSearchInputProps {
 
 const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
   handleSearch,
+  handleChange,
   handleClear,
   handleFilter,
   filterLength,
@@ -38,6 +39,7 @@ const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
 
   const handleTextChange = (text: string) => {
     setSearchText(text);
+    handleChange(text)
   };
 
   const handleClearClick = () => {

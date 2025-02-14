@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingVertical: verticalMarginScale(10),
+    paddingVertical: verticalMarginScale(0),
     paddingHorizontal: horizontalMarginScale(20),
     height: '100%',
   },

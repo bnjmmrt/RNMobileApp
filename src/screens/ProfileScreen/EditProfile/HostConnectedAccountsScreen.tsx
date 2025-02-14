@@ -92,7 +92,7 @@ useEffect(()=>{
       requestObject,
     );
     if (response.status === 200) {
-      FlashMessageComponent.show('success', 'Profile updated successfully');
+      FlashMessageComponent.show('success', 'Connected Accounts updated successfully');
       //navigate if required
       dispatch(setProfileData(response?.data))
     }
@@ -117,7 +117,7 @@ useEffect(()=>{
             ref={instagramRef}
             label={PROFILE.INSTAGRAM}
             prefix="instagram.com/"
-            isIconShown={true}
+            isIconShown={false}
             defaultValue={hostProfileData?.socialMedia.instagram}
           />
           <SocialMediaInput

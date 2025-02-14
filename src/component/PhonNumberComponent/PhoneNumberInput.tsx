@@ -37,21 +37,30 @@ export type countryType = {
   name: TranslatedNames;
 };
 
-const PhoneNumberInput = forwardRef(
+export type PhoneNumberInputRefMethods = {
+  handleNextPress: () => void;
+  validatePhoneNumber: () => boolean;
+  setPhoneNumber: React.Dispatch<React.SetStateAction<string>>;
+  setCallingCode: React.Dispatch<React.SetStateAction<string>>;
+  setFlag: React.Dispatch<React.SetStateAction<string>>;
+  phoneNumber: string;
+  callingCode: string;
+  setDisabled: React.Dispatch<React.SetStateAction<boolean>>;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+};
+
+const PhoneNumberInput = forwardRef<
+  PhoneNumberInputRefMethods,
+  {
+    label?: string;
+    otherStyle?: ViewStyle;
+    onChangeText?: (text: string) => void;
+    onSelectCountry?: (selectedCountry: any) => void;
+    forBottomSheet?: boolean;
+  }
+>(
   (
-    {
-      label,
-      otherStyle,
-      onChangeText,
-      onSelectCountry,
-      forBottomSheet = false,
-    }: {
-      label?: string;
-      otherStyle?: ViewStyle;
-      onChangeText?: (text: string) => void;
-      onSelectCountry?: (selectedCountry: any) => void;
-      forBottomSheet?: boolean;
-    },
+    {label, otherStyle, onChangeText, onSelectCountry, forBottomSheet = false},
     ref,
   ) => {
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -93,6 +102,7 @@ const PhoneNumberInput = forwardRef(
       phoneNumber,
       callingCode,
       setDisabled,
+      setErrorMessage,
     }));
 
     const validatePhoneNumber = () => {
@@ -134,12 +144,13 @@ const PhoneNumberInput = forwardRef(
             onPress={() => setCountryPickerVisible(true)}
             disabled={disabled}>
             <Text style={styles.flag}>{flag}</Text>
-            <Image source={IMAGES.upDownArrow} style={styles.arrowIcon} />
+            <Image source={IMAGES.upDownArrow} style={[styles.arrowIcon, disabled && {opacity: 0.5}]} />
             <Text style={styles.callingCode}>{callingCode}</Text>
           </TouchableOpacity>
 
           <InputComponent
-            style={styles.input}
+            // style={styles.input}
+            style={[styles.input, disabled && {color: COLORS.light_gray}]}
             placeholder="Enter phone number"
             keyboardType="phone-pad"
             returnKeyType="done"

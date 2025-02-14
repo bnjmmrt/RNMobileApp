@@ -25,6 +25,8 @@ import {
   getFlashMessageBackgroundColor,
   MessageType,
 } from '../FlashMessageComponent/FlashMessageComponent';
+import {changeSafeAreaViewConfig} from 'src/utils/functions';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 
 interface BottomSheetComponentProps {
   children: React.ReactNode;
@@ -36,6 +38,7 @@ interface BottomSheetComponentProps {
   footer?: any;
   backgroundColor?: string;
   enableDynamicSizing?: boolean;
+  showBottomSafeAreaView?: boolean;
 }
 
 export type BottomSheetMethods = {
@@ -57,6 +60,7 @@ const BottomSheetComponent = forwardRef<
       footer,
       backgroundColor,
       enableDynamicSizing = false,
+      showBottomSafeAreaView = true,
     },
     ref,
   ) => {
@@ -121,6 +125,21 @@ const BottomSheetComponent = forwardRef<
       );
 
       return () => backHandler.remove();
+    }, [isSheetOpen]);
+
+    useEffect(() => {
+      if (isSheetOpen) {
+        changeSafeAreaViewConfig({
+          ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+          showBottomSafeAreaView: false,
+          topSafeAreaViewColor: '#00000078',
+        });
+      } else {
+        changeSafeAreaViewConfig({
+          ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+          showBottomSafeAreaView: showBottomSafeAreaView,
+        });
+      }
     }, [isSheetOpen]);
 
     return (

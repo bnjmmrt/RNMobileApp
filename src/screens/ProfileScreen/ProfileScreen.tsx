@@ -35,8 +35,12 @@ import {changeSafeAreaViewConfig} from 'src/utils/functions';
 import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 import {verticalScale} from 'src/utils/dimensions';
 import {resetAppFlowDetails} from 'src/redux/slices/appFlowSlice';
-import {setProfileData} from 'src/redux/slices/appGlobalDataSlice';
+import {
+  resetProfileData,
+  setProfileData,
+} from 'src/redux/slices/appGlobalDataSlice';
 import {setNotificationSettings} from 'src/redux/slices/appSettingsSlice';
+import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
@@ -59,8 +63,13 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const savePhotoBottomSheetRef = useRef<any>(null);
   const logoutBottomSheetRef = useRef<any>(null);
   const deleteAccountBottomSheetRef = useRef<any>(null);
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  const role = useSelector((state: RootState) => state.auth.role);
 
   const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const profileData = useSelector(
+    (state: RootState) => state.appFlowApiData?.profileData,
+  );
   // const memberProfileData = useSelector((state: RootState) => state.appFlowApiData.memberProfileData);
   const [isShown, setIsShown] = useState(false);
   const [user, setUser] = useState<any>();
@@ -79,7 +88,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const getUserSettings = async () => {
     const response: any = await apiRequest(
       'get',
-      EndPoint.user_settings + loginData?.id,
+      EndPoint.user_settings + userId,
     );
     // console.log("getUserSettingAndDetails", response)
     if (response.status === 200) {
@@ -92,29 +101,25 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const getHostProfile = async () => {
     const response: any = await apiRequest(
       'get',
-      `v1/auth/host/${loginData?.id}/profile`,
+      `v1/auth/host/${userId}/profile`,
     );
     // console.log('getHostDetails', response);
     if (response.status === 200) {
       dispatch(setProfileData(response.data));
-      setUser(response?.data);
+      // setUser(response?.data);
     }
   };
 
   const getMemberNonMemberProfile = async () => {
-    const response: any = await apiRequest(
-      'get',
-      EndPoint.user + loginData?.id,
-    );
-    // console.log('getMemberNonMemberProfile', response);
+    const response: any = await apiRequest('get', EndPoint.user + userId);
     if (response.status === 200) {
       dispatch(setProfileData(response?.data));
-      setUser(response?.data);
+      // setUser(response?.data);
     }
   };
 
   useEffect(() => {
-    switch (loginData?.roles[0].roleName) {
+    switch (role) {
       // case ROLE.MEMBER:
       //   break;
       case ROLE.HOST:
@@ -148,6 +153,19 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
 
   const contactSupportModal = () => {
     setIsShown(true);
+  };
+
+  const roleText = (role: string) => {
+    switch (role.toLowerCase()) {
+      case 'memeber':
+        return 'Member'
+      case 'non_member':
+        return 'Non-Member'
+      case 'host':
+        return 'Host'
+      default:
+        return 'Non-Member'
+    }
   };
 
   const items: ListItem[] = [
@@ -212,14 +230,23 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     {id: '7', title: PROFILE.DELETE_ACCOUNT, image: '', onPress: deleteAccount},
   ];
 
-  const hasFullAccess = loginData?.isSignUpCompleted || loginData?.roles[0].roleName===ROLE.MEMBER;
+  // const hasFullAccess = loginData?.isSignUpCompleted || loginData?.roles[0].roleName === ROLE.MEMBER;
 
   useEffect(() => {
-    const listItems = hasFullAccess
-      ? itemsExtras
-      : loginData?.roles[0].roleName === ROLE.HOST
-      ? hostItems
-      : items;
+    let listItems = itemsExtras;
+    if(loginData.isInvited && role.toLocaleLowerCase() === 'non_member') {
+      listItems = items;
+    } else if (role.toLocaleLowerCase() === 'host') {
+      listItems = hostItems
+    } else {
+      listItems = itemsExtras
+    }
+    // const listItems =
+    //   loginData?.roles[0].roleName === ROLE.MEMBER || loginData?.roles[0].roleName === ROLE.NON_MEMBER
+    //     ? itemsExtras
+    //     : loginData?.roles[0]?.roleName === ROLE.HOST
+    //     ? hostItems
+    //     : items;
     setListItems(listItems);
   }, [loginData]);
 
@@ -247,26 +274,36 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     });
   };
 
+  const updateProfilePhoto = async (url:string) => {
+    const fileUploadResponse: any = await apiRequest(
+      'put',
+      EndPoint.user_profile_picture + loginData?.id,
+      {profilePicture: url},
+    );
+
+    if (fileUploadResponse.status === 200) {
+      console.log("imageeeeeeeeeeeee",fileUploadResponse?.data?.profilePicture)
+      FlashMessageComponent.show('success', 'Photo updated successfully');
+      dispatch(
+        setProfileData({
+          ...profileData,
+          imageUrl: fileUploadResponse?.data?.profilePicture,
+        }),
+      );
+    }
+  };
   const savePhoto = async () => {
     if (image) {
       // setIsToastShown(false);
       savePhotoBottomSheetRef.current?.close();
       const response: any = await uploadFile();
-      if (response.data) {
+      console.log('savePhoto', response);
+      if (response.status === 200) {
         // setIsToastShown(false);
-        dispatch(
-          // setProfilePic(environment.IMAGE_URL + response.data.fileKeyId),
-          dispatch(
-            setProfileData({
-              ...user,
-              imageUrl:
-                environment.BASE_URL +
-                EndPoint.view_image +
-                response.data.fileKeyId,
-            }),
-          ),
-          // setProfilePic(EndPoint.create_user + response.data.fileKeyId),
-        );
+        const imageUrl =
+          environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
+         await updateProfilePhoto(imageUrl)
+       
       } else {
         //display error
       }
@@ -281,7 +318,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
       cropperCircleOverlay: true,
     }).then((image: ImageOrVideo) => {
       setImage(image.path);
-      editPhotoBottomSheetRef.current?.close();
+      // editPhotoBottomSheetRef.current?.close();
       savePhotoBottomSheetRef.current?.open();
     });
   };
@@ -291,6 +328,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
       index: 0,
       routes: [{name: 'AuthStack'}],
     });
+    dispatch(resetProfileData());
     dispatch(resetLoginData());
     dispatch(setAuthToken(null));
     dispatch(resetAppFlowDetails());
@@ -316,10 +354,15 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
           <ScrollView>
             <ProfileTopView
               editPhotoClick={editPhotoClick}
-              profilePic={user?.imageUrl}
-              name={ user?.firstName ? `${user?.firstName} ${user?.lastName}`:''}
+              profilePic={profileData?.imageUrl}
+              name={
+                profileData?.firstName
+                  ? `${profileData?.firstName} ${profileData?.lastName}`
+                  : ''
+              }
               loading={loading}
-              role={loginData?.roles[0].roleName}
+              // role={loginData?.roles[0].roleName}
+              role={roleText(role)}
             />
             {listItems.map(item => {
               return (

@@ -49,6 +49,7 @@ export const BUTTON_LABLE = {
   ADD: 'Add',
   DISCOVER_MORE_EVENTS: 'Discover More Events',
 };
+
 export const LABLE = {
   WELCOME: 'Welcome to Rumors!',
   RUMORAPP: 'RUMORAPP',
@@ -353,7 +354,7 @@ export const memberTabData: TabItem[] = [
 
 export const ROLE = {
   MEMBER: 'member',
-  NON_MEMBER: 'non-member',
+  NON_MEMBER: 'non_member',
   HOST: 'host',
 }
 export const hostTabData: TabItem[] = [
@@ -562,3 +563,11 @@ export const eventData = {
   },
   "status": 200
 }
+
+
+export const genderList = [
+  {id: 0, gender: 'Male', value:'MALE'},
+  {id: 1, gender: 'Female', value:'FEMALE'},
+  {id: 2, gender: 'Non-binary', value:'NON_BINARY'},
+  {id: 3, gender: 'Prefer not to say', value:'NOT_APPLICABLE'},
+];

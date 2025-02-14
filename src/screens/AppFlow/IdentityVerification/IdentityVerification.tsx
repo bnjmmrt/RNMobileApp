@@ -2,13 +2,16 @@ import React, {useCallback, useRef} from 'react';
 import {ScrollView, Text, View, Linking, Platform} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {LABLE, BUTTON_LABLE} from '../../../utils/constants';
+import {LABLE, BUTTON_LABLE, genderList} from '../../../utils/constants';
 import IdentityVerificationStyles from './IdentityVerificationStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
 import {useDispatch, useSelector} from 'react-redux';
-import {setPageProgress} from '../../../redux/slices/appFlowSlice';
+import {
+  resetAppFlowDetails,
+  setPageProgress,
+} from '../../../redux/slices/appFlowSlice';
 import Input from '../../../component/Input/Input';
 import IMAGES from '../../../assets/images';
 import {useMemberSignUp} from '../../../redux/hooks/useMemberSignUp';
@@ -20,10 +23,16 @@ import {
   changeSafeAreaViewConfig,
   convertDateFormat,
 } from '../../../utils/functions';
-import {setAuthToken, setLoginData} from '../../../redux/slices/authSlice';
+import {
+  setAuthToken,
+  setLoginData,
+  setRole,
+  setUserId,
+} from '../../../redux/slices/authSlice';
 import {FlashMessageComponent} from '../../../component/FlashMessageComponent/FlashMessageComponent';
 import {useFocusEffect} from '@react-navigation/native';
 import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import {setProfileData} from 'src/redux/slices/appGlobalDataSlice';
 
 interface IdentityVerificationProps extends NativeStackScreenProps<any, any> {}
 
@@ -74,7 +83,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       EndPoint.member_signUp,
       requestParams,
     );
-   
+
     if (response.status === 200) {
       const data = {
         ...loginData,
@@ -83,7 +92,28 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         isSignUpCompleted: true,
         userId: response?.data?.id,
       };
+
+      const userProfile = {
+        dateOfBirth: convertDateFormat(userDetails.birthday),
+        email: userDetails.email,
+        firstName: userDetails.firstName,
+        focuses: [],
+        gender: genderList.find(item => item.id === userDetails.gender)?.value,
+
+        id: response?.data?.id,
+        imageUrl: userDetails.profilePic,
+        interest: '',
+        lastName: userDetails.lastName,
+
+        phoneNumber: userDetails.phone ? userDetails.phone : loginData.phone,
+        role: response?.data?.roles[0]?.roleName,
+      };
+      dispatch(setProfileData(userProfile));
       dispatch(setLoginData(data));
+      dispatch(setUserId(data?.userId));
+      dispatch(setRole(data?.roles[0]?.roleName));
+      dispatch(setAuthToken(data?.token || ''));
+      dispatch(resetAppFlowDetails());
       dispatch(setPageProgress(1));
       dispatch(setAuthToken(response.data.token));
       navigation.navigate('BottomTabBar');
