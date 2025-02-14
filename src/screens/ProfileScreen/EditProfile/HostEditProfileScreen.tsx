@@ -96,12 +96,12 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
         requestObject,
       );
       if (response.status === 200) {
-        const response: any = await apiRequest(
+        const responseUser: any = await apiRequest(
           'get',
           `v1/auth/host/${userId}/profile`,
         );
-        if (response.status === 200) {
-          dispatch(setProfileData(response.data));
+        if (responseUser.status === 200) {
+          dispatch(setProfileData(responseUser.data));
         }
         FlashMessageComponent.show('success', "Profile updated successfully")
         handleBackPress()
