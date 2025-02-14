@@ -49,6 +49,12 @@ export const referralApiAction = createBaseApi.injectEndpoints({
         body: requestParam,
       }),
     }),
+    getReferralRequest: builder.query({
+      query: () => ({
+        url: 'v1/platform/referral-requests',
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -60,4 +66,5 @@ export const {
   useFollowHostMutation,
   useUnfollowHostMutation,
   useGetConfirmedMembersMutation,
+  useGetReferralRequestQuery
 } = referralApiAction;

@@ -13,7 +13,7 @@ import { useVouchRequestMutation } from "src/redux/actions/rspvApiAction";
 export const RenderMemberList = (data: any) => {
     const { item, eventId } = data;
 
-    const [isSent, setIsSent] = useState(false);
+    const [isSent, setIsSent] = useState(item?.isSent);
     const [vouchRequest, { isLoading, isSuccess: VouchSuccess, isError: VouchError }] = useVouchRequestMutation();
 
     const [requestMember, { isLoading: isRequestLoading, isSuccess, isError }] = useRequestMemberMutation();

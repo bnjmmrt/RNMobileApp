@@ -17,6 +17,7 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const userId = useSelector((state: RootState) => state.auth.userId);
 
+
   const [submitReferralCode, { isLoading }] = useSubmitReferralCodeMutation();
   const handleSubmit = async () => {
     const { inputText, validateInputs } = inputRef.current;
