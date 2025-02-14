@@ -94,7 +94,7 @@ useEffect(()=>{
     if (response.status === 200) {
       FlashMessageComponent.show('success', 'Connected Accounts updated successfully');
       //navigate if required
-      dispatch(setProfileData(response?.data))
+      dispatch(setProfileData({...hostProfileData,...response?.data}))
     }
   };
 

@@ -151,8 +151,8 @@ const ReferralScreen: React.FC = () => {
         onTabChange={handleTabChange}
         tabOneLabel="Referral Requests"
         tabTwoLabel="Vouch Requests"
-        countOne={4}
-        countTwo={2}
+        countOne={referrelRequests?.length ? referrelRequests?.length: undefined}
+        countTwo={vouchRequests?.length ? vouchRequests?.length :undefined}
         width={Wp(88)}
       />
       <View style={{paddingHorizontal: horizontalMarginScale(20), flex: 1}}>

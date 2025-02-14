@@ -29,15 +29,7 @@ const FollowingScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const {navigate, goBack} = useNavigation();
   const [pagination, setPagination] = useState({take: 12, skip: 0});
-  const [hostList, setHostList] = useState<any[]>([
-    {
-      id: 'cvsgs-sdggddvd',
-      firstName: 'This is a really long name for a Host',
-      companyName: 'Revolve',
-      companyLogo: 'https://i.imgur.com/Lrupihs.png',
-      isFollowing:false
-    },
-  ]);
+  const [hostList, setHostList] = useState<any[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const loginData = useSelector((state: RootState) => state.auth.loginData);

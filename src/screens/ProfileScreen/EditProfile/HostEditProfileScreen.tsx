@@ -73,7 +73,11 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
     }
   };
   useEffect(() => {
-    getHostDetails();
+      phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
+      emailInputRef?.current.setEmailAddress(profileData?.email);
+      phoneNumberInputRef?.current.setDisabled(true);
+      emailInputRef?.current.setDisabled(true);
+    // getHostDetails();
   }, []);
 
   const onConfirmClick = async () => {
@@ -110,7 +114,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
         requestObject,
       );
       if (response.status===200) {
-        // setProfileData(response.data)
+         setProfileData({...profileData,...response.data})
         FlashMessageComponent.show('success',"Profile updated successfully")
         handleBackPress()
       }

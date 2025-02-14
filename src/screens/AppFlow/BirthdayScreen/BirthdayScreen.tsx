@@ -27,7 +27,7 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
   const bottomSheetRef = useRef<any>(null);
   const styles = BirthdayScreenStyles();
   const birthday = useSelector((state: RootState) => state.appFlow.birthday);
-  const [selectedDate, setSelectedDate] = useState<string | undefined>('');
+  const [selectedDate, setSelectedDate] = useState<string | undefined>(birthday);
 
   // const [selectedDate, setSelectedDate] = useState<string>('11/12/1990'); // Initialize with birthday from Redux
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

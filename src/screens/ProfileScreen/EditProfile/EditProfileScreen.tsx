@@ -32,8 +32,8 @@ import CreativeFocusComponent from './CreativeFocusComponent';
 import GenderComponent from './GenderComponent';
 import Toast from 'src/component/Toast/Toast';
 import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import {convertDateFormat, extractCountryCode} from 'src/utils/functions';
-import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import {convertDateFormat, convertDateToFormatMMDDYYYY, extractCountryCode} from 'src/utils/functions';
+import {setProfileData} from 'src/redux/slices/appGlobalDataSlice';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -57,22 +57,23 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
     return genderList.find(item => item.value === gender);
   };
 
-  const [gender, setGender] = useState<any>(getGender(profileData.gender));
-  const [selectedDate, setSelectedDate] = useState<string>(
-    profileData?.dateOfBirth,
-  );
+  const [gender, setGender] = useState<any>(!loginData?.isInvited && getGender(profileData.gender));
+  const [selectedDate, setSelectedDate] = useState<any>(!loginData?.isInvited && convertDateToFormatMMDDYYYY(profileData?.dateOfBirth));
   const [isToastShown, setIsToastShown] = useState(false);
-  const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>();
+  const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>(!loginData?.isInvited &&  profileData?.focuses);
 
   useEffect(() => {
-    const phoneNumberDetails = extractCountryCode(profileData?.phoneNumber);
-
-    emailInputRef?.current.setDisabled(true);
-    emailInputRef?.current.setEmailAddress(profileData?.email);
-    phoneNumberInputRef?.current.setDisabled(true);
-    phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
-    phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
-    phoneNumberInputRef?.current.setCallingCode(null);
+    if (profileData?.email && profileData?.email !== '') {
+      emailInputRef?.current.setDisabled(true);
+      emailInputRef?.current.setEmailAddress(profileData?.email);
+    }
+    if (profileData?.phoneNumber && profileData?.phoneNumber !== '') {
+      const phoneNumberDetails = extractCountryCode(profileData?.phoneNumber);
+      phoneNumberInputRef?.current.setDisabled(true);
+      phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
+      phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
+      phoneNumberInputRef?.current.setCallingCode(null);
+    }
     // if (loginData?.isSignUpCompleted) {
     //   phoneNumberInputRef?.current.setDisabled(true);
     //   phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
@@ -125,7 +126,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
         gender: gender?.value,
         lastName: lastNameRef.current.inputText,
         // mobilePhone: profileData?.phoneNumber,
-        focusIds: selectedCreativeFocus
+        focusIds: selectedCreativeFocus.length
           ? selectedCreativeFocus.map((item: any) => item.id)
           : profileData?.creativeFocus.map((item: any) => item.id),
       };
@@ -136,14 +137,16 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
         EndPoint.user_profile + loginData?.id,
         requestObject,
       );
-      console.log('response,response',response);
       if (response.status === 200) {
-        const responseUser: any = await apiRequest('get', EndPoint.user + userId);
-            if (responseUser.status === 200) {
-              dispatch(setProfileData(response?.data));
-            }
+        const responseUser: any = await apiRequest(
+          'get',
+          EndPoint.user + userId,
+        );
+        if (responseUser.status === 200) {
+          dispatch(setProfileData({...profileData,...response?.data}));
+        }
         FlashMessageComponent.show('success', 'Profile Updated Successfully');
-        handleBackPress()
+        handleBackPress();
       }
     }
   };
@@ -151,8 +154,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
   const handleBackPress = () => {
     navigation.navigate('ProfileScreen');
   };
-
-  console.log('loginDDDDD', loginData)
 
   return (
     <View style={styles.container}>
@@ -176,13 +177,13 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
             errorMessage={ERROR_MESSAGE.LAST_NAME}
             defaultValue={profileData?.lastName}
           />
-          {profileData?.email && profileData?.email !== "" && (
+          {profileData?.email && profileData?.email !== '' && (
             <>
               <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
               <EmailInput ref={emailInputRef} />
             </>
           )}
-          {profileData?.phoneNumber && profileData?.phoneNumber !== "" && (
+          {profileData?.phoneNumber && profileData?.phoneNumber !== '' && (
             <>
               <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
               <PhoneNumberInput ref={phoneNumberInputRef} />

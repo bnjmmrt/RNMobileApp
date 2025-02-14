@@ -15,7 +15,7 @@ interface DatePickerComponentProps {
 const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) => {
   const dispatch = useDispatch();
   const bottomSheetRef = useRef<any>(null);
-  const [selectedDate, setSelectedDate] = useState<string>(formatDate(new Date(props.birthDate))); // Initialize with birthday from Redux
+  const [selectedDate, setSelectedDate] = useState<string>(props.birthDate); // Initialize with birthday from Redux
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const openDatePicker = () => {

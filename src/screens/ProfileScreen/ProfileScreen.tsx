@@ -157,7 +157,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
 
   const roleText = (role: string) => {
     switch (role.toLowerCase()) {
-      case 'memeber':
+      case 'member':
         return 'Member'
       case 'non_member':
         return 'Non-Member'
@@ -282,7 +282,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     );
 
     if (fileUploadResponse.status === 200) {
-      console.log("imageeeeeeeeeeeee",fileUploadResponse?.data?.profilePicture)
       FlashMessageComponent.show('success', 'Photo updated successfully');
       dispatch(
         setProfileData({
