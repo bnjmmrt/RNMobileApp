@@ -398,7 +398,14 @@ export const convertDateFormat = (dateString: string): string => {
   const [day, month, year] = dateString.split('/');
   return `${year}-${day}-${month}`;
 };
-
+export const convertDateToFormatMMDDYYYY = (dateString: string) => {
+  try {
+    const [year, month, day] = dateString && dateString.split('-');
+    return dateString && `${month}/${day}/${year}`;
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const formatDate = (date: Date) => {
   return date
     .toLocaleDateString('en-US', {

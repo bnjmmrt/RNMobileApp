@@ -45,7 +45,7 @@ const HostConnectedAccountsScreen: React.FC<
 > = ({navigation}) => {
   const {apiRequest, loading, error} = useApi();
   const dispatch = useDispatch();
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const userId = useSelector((state: RootState) => state.auth.userId);
   const hostProfileData = useSelector(
     (state: RootState) => state.appFlowApiData.profileData,
   );
@@ -57,11 +57,6 @@ const HostConnectedAccountsScreen: React.FC<
   const youtubeRef = useRef<any>(null);
 
   const [isToastShown, setIsToastShown] = useState(false);
-
-useEffect(()=>{
-  
-},[])
-
 
   const onConfirmClick = async () => {
     const requestObject: any = {
@@ -88,13 +83,14 @@ useEffect(()=>{
 
     const response: any = await apiRequest(
       'put',
-      `v1/auth/host/${loginData?.id}/profile`,
+      `v1/auth/host/${userId}/profile`,
       requestObject,
     );
     if (response.status === 200) {
       FlashMessageComponent.show('success', 'Connected Accounts updated successfully');
       //navigate if required
-      dispatch(setProfileData(response?.data))
+      dispatch(setProfileData({...hostProfileData,...response?.data}))
+      handleBackPress()
     }
   };
 

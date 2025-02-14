@@ -121,7 +121,7 @@ const AllUsersFilters = ({
 
   useEffect(() => {
     if (loginData && loginData.id) {
-      fetchFilters({id: loginData?.id});
+      fetchFilters({id: loginData?.userId});
     }
   }, [loginData]);
 

@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux';
 
 const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   const inputRef = useRef(null);
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
   const userId = useSelector((state: RootState) => state.auth.userId);
 
 
