@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     paddingVertical: verticalMarginScale(10),
-    paddingHorizontal: horizontalMarginScale(11),
-    width: Wp(48),
+    paddingHorizontal: horizontalMarginScale(10),
+    width: Wp(50),
   },
   imageContainer: {
     alignItems: 'center',

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
-import { fontFamily, formatEventDates } from '../../utils/functions';
+import { fontFamily } from '../../utils/functions';
 import { Wp, Hp, horizontalScale, verticalScale } from '../../utils/dimensions';
 import ButtonSmall from '../../component/ButtonSmall';
 import FastImage from '@d11/react-native-fast-image';

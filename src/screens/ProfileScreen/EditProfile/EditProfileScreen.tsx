@@ -22,7 +22,6 @@ import {
   horizontalMarginScale,
   radiusScale,
   verticalMarginScale,
-  Wp,
 } from '../../../utils/dimensions';
 import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
 import EmailInput from '../../../component/EmailComponent/EmailInput';
@@ -31,9 +30,9 @@ import BaseCityComponent from './BaseCityComponent';
 import CreativeFocusComponent from './CreativeFocusComponent';
 import GenderComponent from './GenderComponent';
 import Toast from 'src/component/Toast/Toast';
-import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import {convertDateFormat, convertDateToFormatMMDDYYYY, extractCountryCode} from 'src/utils/functions';
-import {setProfileData} from 'src/redux/slices/appGlobalDataSlice';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { extractCountryCode } from 'src/utils/functions';
+import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -58,9 +57,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
   };
 
   const [gender, setGender] = useState<any>(!loginData?.isInvited && getGender(profileData.gender));
-  const [selectedDate, setSelectedDate] = useState<any>(convertDateToFormatMMDDYYYY(profileData?.dateOfBirth));
   const [isToastShown, setIsToastShown] = useState(false);
-  const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>(!loginData?.isInvited &&  profileData?.focuses);
+  const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>(!loginData?.isInvited && profileData?.focuses);
 
   useEffect(() => {
     if (profileData?.email && profileData?.email !== '') {
@@ -121,7 +119,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
           placeId: baseCityRef.current.selectedCity.placeId,
           regionCode: '',
         },
-        birthDate: convertDateFormat(birthDayRef.current.selectedDate),
+        birthDate: birthDayRef.current.selectedDate,//convertDateFormat(birthDayRef.current.selectedDate),
         // email: profileData?.email,
         firstName: firstNameRef.current.inputText,
         gender: gender?.value,
@@ -153,8 +151,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
   };
 
   const handleBackPress = () => {
-    navigation.goBack();
+    navigation.goBack()
   };
+
 
   return (
     <View style={styles.container}>
@@ -223,7 +222,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
               />
 
               <Text style={[styles.label]}>{LABLE.BIRTHDAY}</Text>
-              <DatePickerComponent ref={birthDayRef} birthDate={convertDateToFormatMMDDYYYY(profileData?.dateOfBirth)} />
+              <DatePickerComponent ref={birthDayRef} birthDate={profileData.dateOfBirth} />
 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
               <BaseCityComponent ref={baseCityRef} />

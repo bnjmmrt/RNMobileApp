@@ -41,13 +41,10 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
         try {
           const response: any = await apiRequest('post', EndPoint.get_user_with_role_by_id, { id: userId });
           if (response.status === 200) {
-            if (role == response.data.roles[0].name) {
-
-            } else {
+            if (response.data.roles[0].roleName == ROLE.MEMBER || response.data.roles[0].name == ROLE.MEMBER) {
               navigate(ROUTES.WelcomeScreen, { userName: response?.data.name })
               dispatch(setRole(response?.data?.roles[0].name))
             }
-
           }
         } catch (error) {
           console.error("Error fetching user:", error);
