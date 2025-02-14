@@ -11,7 +11,6 @@ import {
 } from '../../utils/constants';
 import IMAGES from '../../assets/images/index';
 import ProfileScreenStyle from './ProfileScreenStyle';
-import { SafeAreaView } from 'react-native';
 import HeaderComponent from '../../component/HeaderComponent';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 import ProfileTopView from './ProfileTopView';
@@ -25,7 +24,6 @@ import EditPictureBottomSheet from '../../component/BottomSheet/EditPictureBotto
 import DeleteAccountBottomSheet from 'src/component/BottomSheet/DeleteAccountBottomSheet';
 import useApi from '../../axios/useApi';
 import { EndPoint } from '../../ApiManager/config';
-import { setProfilePic } from '../../redux/slices/appFlowSlice';
 import { environment } from '../../../environments/environment';
 import ContactSupporrtBottomSheet from 'src/component/BottomSheet/ContactSupporrtBottomSheet';
 import { setAuthToken } from 'src/redux/slices/authSlice';
@@ -35,13 +33,9 @@ import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { verticalScale } from 'src/utils/dimensions';
 import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
-import {
-  resetProfileData,
-  setProfileData,
-} from 'src/redux/slices/appGlobalDataSlice';
+import { resetProfileData, setProfileData } from 'src/redux/slices/appGlobalDataSlice';
 import { setNotificationSettings } from 'src/redux/slices/appSettingsSlice';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -55,7 +49,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
   const styles = ProfileScreenStyle();
-  const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [URL, setURL] = useState('');
   const [listItems, setListItems] = useState<ListItem[]>([]);
   const [image, setImage] = useState<string>('');
@@ -63,17 +56,13 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const savePhotoBottomSheetRef = useRef<any>(null);
   const logoutBottomSheetRef = useRef<any>(null);
   const deleteAccountBottomSheetRef = useRef<any>(null);
+  const bottomSheetRef = useRef(null);
+
   const userId = useSelector((state: RootState) => state.auth.userId);
   const role = useSelector((state: RootState) => state.auth.role);
-
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const profileData = useSelector(
-    (state: RootState) => state.appFlowApiData?.profileData,
-  );
-  // const memberProfileData = useSelector((state: RootState) => state.appFlowApiData.memberProfileData);
+  const profileData = useSelector((state: RootState) => state.appFlowApiData?.profileData);
   const [isShown, setIsShown] = useState(false);
-  const [user, setUser] = useState<any>();
-  const bottomSheetRef = useRef(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -90,7 +79,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       'get',
       EndPoint.user_settings + userId,
     );
-    // console.log("getUserSettingAndDetails", response)
     if (response.status === 200) {
       //dependiing on API response parse data and set
       // setUserDetails(response.data.userData);
@@ -136,12 +124,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     console.log('setUrl', url);
     setURL(url);
     URL.length && bottomSheetRef?.current?.open();
-  };
-
-  const onChangeBottomSheet = (index: number) => {
-    if (index === -1) {
-      setShowBottomSheet(false);
-    }
   };
 
   const [isInvited, setInvited] = useState<boolean>(
@@ -230,8 +212,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     { id: '7', title: PROFILE.DELETE_ACCOUNT, image: '', onPress: deleteAccount },
   ];
 
-  // const hasFullAccess = loginData?.isSignUpCompleted || loginData?.roles[0].roleName === ROLE.MEMBER;
-
   useEffect(() => {
     let listItems = itemsExtras;
     if (loginData.isInvited && role.toLocaleLowerCase() === 'non_member') {
@@ -278,7 +258,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     const fileUploadResponse: any = await apiRequest(
       'put',
       EndPoint.user_profile_picture + userId,
-      {profilePicture: url},
+      { profilePicture: url },
     );
 
     if (fileUploadResponse.status === 200) {

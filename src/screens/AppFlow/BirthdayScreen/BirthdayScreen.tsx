@@ -1,6 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/slices';
 import { setBirthday, setPageProgress } from '../../../redux/slices/appFlowSlice';
@@ -13,11 +12,11 @@ import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants'; `
 import DatepickerBottomSheet from '../../../component/BottomSheet/CustomDatepickerBottomSheet';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import BirthdayScreenStyles from './BirthdayScreenStyles';
-import { formatDate, validateAge } from 'src/utils/functions';
-interface BirthdayScreenProps extends NativeStackScreenProps<any, any> { }
+import { validateAge } from 'src/utils/functions';
 import { useFocusEffect } from '@react-navigation/native';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+
 interface BirthdayScreenProps extends NativeStackScreenProps<any, any> { }
 
 const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
@@ -27,11 +26,8 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
   const bottomSheetRef = useRef<any>(null);
   const styles = BirthdayScreenStyles();
   const birthday = useSelector((state: RootState) => state.appFlow.birthday);
-  const [selectedDate, setSelectedDate] = useState<string | undefined>(birthday);
-
-  // const [selectedDate, setSelectedDate] = useState<string>('11/12/1990'); // Initialize with birthday from Redux
+  const [selectedDate, setSelectedDate] = useState<string>(birthday || '');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [date, setDate] = useState<any>(new Date());
 
   const handleBackPress = () => {
     dispatch(setPageProgress(3));
@@ -44,8 +40,6 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
 
   const handleDateChange = (date: string) => {
     setErrorMessage(null); // Clear any error message
-    // const formattedDate = formatDate(date);
-    // console.log(formattedDate);
     setSelectedDate(date); // Update the selected date
   };
 
