@@ -38,6 +38,7 @@ const ReferralScreen: React.FC = () => {
   const [referrelRequests, setReferrelRequests] = useState<any[]>([]);
 
   const [vouchRequests, setVouchRequests] = useState<any[]>([]);
+  const [isShown, setIsShown] = useState<boolean>(false);
 
   const getReferredRequest = async () => {
     const response: any = await apiRequest('get', EndPoint.referral_requests);
@@ -94,6 +95,12 @@ const ReferralScreen: React.FC = () => {
     }
   };
 
+  const onInvite= async () => {
+    await requestContactPermission();
+    setIsShown(true)
+    inviteFriendSheetRef?.current.open();
+  }
+
   const renderContent = () => {
     const data = activeTab === 'referrals' ? referrelRequests : vouchRequests;
     const subtitle =
@@ -123,7 +130,7 @@ const ReferralScreen: React.FC = () => {
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <ReferralRequestItem
-              name={item.requesterName}
+              name={item?.requesterName}
               image={item?.requesterProfileImage}
               message={
                 activeTab === 'referrals'
@@ -134,7 +141,7 @@ const ReferralScreen: React.FC = () => {
               onDeclineApi={() => handleApproveDeclineClick(false, item?.id)}
             />
           )}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item?.id.toString()}
         />
       </>
     );
@@ -163,12 +170,9 @@ const ReferralScreen: React.FC = () => {
         style={styles.btnStyle}
         title={BUTTON_LABLE.INVITE_FRIENDS}
         colorTheme="dark"
-        onPress={async () => {
-          await requestContactPermission();
-          inviteFriendSheetRef?.current.open();
-        }}
+        onPress={onInvite}
       />
-      <InviteFriendsSheet ref={inviteFriendSheetRef} />
+      { isShown && <InviteFriendsSheet ref={inviteFriendSheetRef} />}
     </SafeAreaView>
   );
 };
