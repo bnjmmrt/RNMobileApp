@@ -95,6 +95,7 @@ useEffect(()=>{
       FlashMessageComponent.show('success', 'Connected Accounts updated successfully');
       //navigate if required
       dispatch(setProfileData({...hostProfileData,...response?.data}))
+      handleBackPress()
     }
   };
 
