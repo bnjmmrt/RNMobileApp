@@ -40,7 +40,7 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   return (
     <BottomSheetComponent
       ref={ref}
-      snapPoints={[`${verticalScale(40)}%`]}
+      snapPoints={[`${verticalScale(45)}%`]}
       onClose={() => console.log(ref)}
     // footer={}
     >

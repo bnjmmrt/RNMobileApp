@@ -33,44 +33,6 @@ interface ContactItem {
 
 const PAGE_SIZE = 30;
 
-const membersData = [
-  {
-    age: 31,
-    categories: ["Food", "Music", "Technology"],
-    phoneNumber: "5556106679",
-    city: "Los Angeles",
-    email: "wwvvo@uoi.com",
-    followerCount: "72816",
-    gender: 1,
-    id: "cc2a0ce2-a59b-4163-954d-93de10cc7966",
-    instagramUsername: "ylttxhrjrjfi",
-    isFavourite: false,
-    name: "John Wick",
-    profilePicture: "https://example.com/aorodlsmgw.jpg",
-    role: "Admin",
-    status: 0,
-    types: ["Influencer", "Blogger"],
-  },
-  {
-    age: 43,
-    categories: ["Technology"],
-    phoneNumber: "+17690348141",
-    city: "Philadelphia",
-    email: "etobp@wzu.com",
-    followerCount: "96524",
-    gender: 1,
-    id: "hukknzeemj",
-    instagramUsername: "jfgphchevata",
-    isFavourite: false,
-    name: "Endeidx",
-    profilePicture: "https://example.com/kwgmpsvahl.jpg",
-    role: "Moderator",
-    status: 1,
-    types: ["Blogger", "Content Creator"],
-  },
-  // Add more mocked data here
-];
-
 const InviteReferralBottomSheet = forwardRef((props, ref) => {
   const [contacts, setContacts] = useState<ContactItem[]>([]);
   const [members, setMembers] = useState<ContactItem[]>([]);
@@ -85,9 +47,10 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   const [selectedTab, setSelectedTab] = useState('01');
   const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const { getContacts, permissionGranted, getContactNumbersOnly } = useContacts();
+  const { getContacts, permissionGranted, getContactNumbersOnly, requestContactPermission } = useContacts();
 
   useEffect(() => {
+    requestContactPermission();
     fetchContacts()
   }, []);
 
@@ -267,14 +230,14 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
                 handleSearch(query);
               }}
             />
+            {permissionGranted && <View>
+              <Text style={styles.sectionTitle}>{LABLE.FRIENDS_WHO_ARE_MEMBERS}</Text>
+              <Text style={styles.sectionSubtitle}>{LABLE.REQUEST_A_REFERRAL}</Text>
+            </View>}
 
             <FlatList
               data={filteredMembers}
               scrollEnabled={false}
-              ListHeaderComponent={permissionGranted && <View>
-                <Text style={styles.sectionTitle}>{LABLE.FRIENDS_WHO_ARE_MEMBERS}</Text>
-                <Text style={styles.sectionSubtitle}>{LABLE.REQUEST_A_REFERRAL}</Text>
-              </View>}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={
                 permissionGranted ?
@@ -292,7 +255,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
                     />
                   </View>
               }
-              contentContainerStyle={{ gap: 4, marginTop: 12 }}
+              contentContainerStyle={{ gap: 4, marginTop: 0 }}
               keyExtractor={(item, index) => '' + item.phoneNumber + index}
               renderItem={({ item }) =>
                 <RenderMemberList item={item} />
@@ -309,14 +272,13 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
                 handleSearch(query);
               }}
             />
-
+            {permissionGranted && <View>
+              <Text style={styles.sectionTitle}>{LABLE.CONTACTS}</Text>
+              <Text style={styles.sectionSubtitle}>{LABLE.INVITE_FRIENDS_TO}</Text>
+            </View>}
             <FlatList
               data={filteredContacts}
               showsVerticalScrollIndicator={false}
-              ListHeaderComponent={permissionGranted && <View>
-                <Text style={styles.sectionTitle}>{LABLE.CONTACTS}</Text>
-                <Text style={styles.sectionSubtitle}>{LABLE.INVITE_FRIENDS_TO}</Text>
-              </View>}
               ListEmptyComponent={
                 <View style={{ height: Hp(50), justifyContent: 'center', alignItems: 'center' }}>
                   <EventEmptyRecord title='Access your contacts' subTitle='Easily sync your phone contacts to request referrals from members and invite friends to join you on Rumor' />
