@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React, { useEffect, useRef, useState } from 'react';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   LABLE,
   BUTTON_LABLE,
@@ -13,10 +13,10 @@ import Button from '../../../component/Button';
 import Input from '../../../component/Input/Input';
 import Header from '../../../component/Header/Header';
 // import {useGetPostsQuery} from '../../../redux/slices/apiSlice';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../redux/slices';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/slices';
 import useApi from '../../../axios/useApi';
-import {EndPoint} from '../../../ApiManager/config';
+import { EndPoint } from '../../../ApiManager/config';
 import {
   fontScale,
   horizontalMarginScale,
@@ -35,10 +35,10 @@ import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMe
 import {convertDateFormat, convertDateToFormatMMDDYYYY, extractCountryCode} from 'src/utils/functions';
 import {setProfileData} from 'src/redux/slices/appGlobalDataSlice';
 
-interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
+interface EditProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
-const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
-  const {apiRequest, loading, error} = useApi();
+const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => {
+  const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const profileData = useSelector(
@@ -109,6 +109,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
       lastNameRef.current.validateInputs() &&
       birthDayRef.current.validateBirthDate() &&
       baseCityRef.current.validateBaseCity() &&
+      selectedCreativeFocus && selectedCreativeFocus.length > 0 &&
       !isToastShown
     ) {
       const requestObject: any = {
@@ -244,14 +245,20 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
               />
             </View>
           )}
+
         </View>
         {isToastShown && (
-          <Toast
-            message={'Please select at least one'}
-            onClose={() => setIsToastShown(false)}
-          />
+          <View style={{ marginTop: 100 }}>
+
+            <Toast
+              message={'Please select at least one'}
+              onClose={() => setIsToastShown(false)}
+            />
+          </View>
         )}
       </ScrollView>
+
+
       <Button
         disabled={false}
         style={styles.btnStyle}
@@ -279,9 +286,9 @@ const styles = StyleSheet.create({
     // paddingVertical: verticalMarginScale(10),
     paddingHorizontal: horizontalMarginScale(20),
   },
-  scrollContainer: {paddingBottom: verticalMarginScale(200)},
+  scrollContainer: { paddingBottom: verticalMarginScale(40) },
   label: {
-    paddingVertical: horizontalMarginScale(2),
+    // paddingVertical: horizontalMarginScale(2),
     fontSize: fontScale(14),
     paddingTop: verticalMarginScale(20),
     color: COLORS.black,

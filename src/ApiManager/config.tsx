@@ -74,6 +74,8 @@ export const EndPoint = {
   profile_notification_settings: 'v1/auth/profile-notification-settings/',
   view_image: 'v1/files/view/',
 
+  hosts: 'v1/auth/hosts',
+  host: 'v1/auth/host',
   hosts_custom_lists: 'v1/auth/hosts/custom-lists',
   hosts_favorites_lists: 'v1/auth/hosts/favorites',
   hosts_followers_lists: 'v1/auth/hosts/followers',

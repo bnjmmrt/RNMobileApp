@@ -1,18 +1,24 @@
 import React from 'react';
-import { Image, StyleSheet, View } from 'react-native';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import type { GooglePlaceData, GooglePlaceDetail } from 'react-native-google-places-autocomplete';
-import { COLORS } from '../../utils/constants';
-import { Address } from '../../redux/slices/appFlowSlice';
-import { environment } from '../../../environments/environment';
+import {Image, StyleSheet, View} from 'react-native';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import type {
+  GooglePlaceData,
+  GooglePlaceDetail,
+} from 'react-native-google-places-autocomplete';
+import {COLORS} from '../../utils/constants';
+import {Address} from '../../redux/slices/appFlowSlice';
+import {environment} from '../../../environments/environment';
 import IMAGES from '../../assets/images';
-import { verticalMarginScale, verticalScale } from 'src/utils/dimensions';
+import {verticalMarginScale, verticalScale} from 'src/utils/dimensions';
 
 interface GooglePlacesInputProps {
   setLocation: (location: Address) => void;
   submit: () => void;
 }
-const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({ setLocation, submit }) => {
+const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
+  setLocation,
+  submit,
+}) => {
   return (
     <GooglePlacesAutocomplete
       styles={{
@@ -20,15 +26,14 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({ setLocation, subm
           borderRadius: 8,
           borderWidth: 2,
           borderColor: COLORS.borderGray,
-          height:60,
-          padding:verticalMarginScale(4)
+          height: 60,
+          padding: verticalMarginScale(4),
         },
-
       }}
       placeholder="Search Location"
       onPress={(data: GooglePlaceData, detail: GooglePlaceDetail | null) => {
         // 'details' is provided when fetchDetails = true
-        console.log("data.placeId", data, data.place_id);
+        console.log('data.placeId', data, data.place_id);
         const address: Address = {
           address: data.description,
           placeId: data.place_id,

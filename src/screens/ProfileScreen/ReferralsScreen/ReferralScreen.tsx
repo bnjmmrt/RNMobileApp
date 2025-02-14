@@ -1,10 +1,10 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {FlatList, SafeAreaView, StyleSheet, View} from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
 import TabBar from 'src/component/ActiveTabBar/TabBar';
 import Header from 'src/component/Header/Header';
-import {BUTTON_LABLE, COLORS, PROFILE} from 'src/utils/constants';
-import {Text} from 'react-native';
-import {fontFamily} from 'src/utils/functions';
+import { BUTTON_LABLE, COLORS, PROFILE } from 'src/utils/constants';
+import { Text } from 'react-native';
+import { fontFamily } from 'src/utils/functions';
 import ReferralRequestItem from './ReferralRequestItem';
 import Button from 'src/component/Button';
 import InviteFriendsSheet from './InviteFriendsSheet';
@@ -17,23 +17,23 @@ import {
   verticalMarginScale,
   Wp,
 } from 'src/utils/dimensions';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import useContacts from 'src/utils/hooks/useContactPermission';
 import useApi from 'src/axios/useApi';
-import {EndPoint} from 'src/ApiManager/config';
-import {useSelector} from 'react-redux';
-import {RootState} from 'src/redux/slices';
+import { EndPoint } from 'src/ApiManager/config';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 const ReferralScreen: React.FC = () => {
-  const {apiRequest, loading} = useApi();
+  const { apiRequest, loading } = useApi();
   const [activeTab, setActiveTab] = useState<'referrals' | 'vouches'>(
     'referrals',
   );
   const loginData = useSelector((state: RootState) => state.auth?.loginData);
   const inviteFriendSheetRef = useRef<any>(null);
-  const {goBack} = useNavigation();
-  const {requestContactPermission} = useContacts();
+  const { goBack } = useNavigation();
+  const { requestContactPermission } = useContacts();
 
   const [referrelRequests, setReferrelRequests] = useState<any[]>([]);
 
@@ -58,21 +58,21 @@ const ReferralScreen: React.FC = () => {
   const updateReferrel = async (id: string, status: boolean) => {
     const response: any = await apiRequest(
       'put',
-      EndPoint.referral_requests + '/' + id,{isApproved: status}
+      EndPoint.referral_requests + '/' + id, { isApproved: status }
     );
-    if(response?.status!==200){
-      FlashMessageComponent.show('error',"Something went wrong, please try later")
-     }
-   
+    if (response?.status !== 200) {
+      FlashMessageComponent.show('error', "Something went wrong, please try later")
+    }
+
   };
 
   const updateVouch = async (id: string, status: boolean) => {
     const response: any = await apiRequest(
       'put',
-      EndPoint.vouch_requests + '/' + id,{ isApproved: status},
+      EndPoint.vouch_requests + '/' + id, { isApproved: status },
     );
-    if(response?.status!==200){
-     FlashMessageComponent.show('error',"Something went wrong, please try later")
+    if (response?.status !== 200) {
+      FlashMessageComponent.show('error', "Something went wrong, please try later")
     }
   };
 
@@ -86,11 +86,11 @@ const ReferralScreen: React.FC = () => {
   };
 
   const handleApproveDeclineClick = async (flag: boolean, id: string) => {
-  
+
     if (activeTab === 'referrals') {
-     await updateReferrel(id, flag);
+      await updateReferrel(id, flag);
     } else {
-     await updateVouch(id, flag);
+      await updateVouch(id, flag);
     }
   };
 
@@ -121,7 +121,7 @@ const ReferralScreen: React.FC = () => {
           }
           contentContainerStyle={styles.contentContainerStyle}
           showsVerticalScrollIndicator={false}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <ReferralRequestItem
               name={item.requesterName}
               image={item?.requesterProfileImage}
@@ -155,7 +155,7 @@ const ReferralScreen: React.FC = () => {
         countTwo={vouchRequests?.length ? vouchRequests?.length :undefined}
         width={Wp(88)}
       />
-      <View style={{paddingHorizontal: horizontalMarginScale(20), flex: 1}}>
+      <View style={{ paddingHorizontal: horizontalMarginScale(20), flex: 1 }}>
         {renderContent()}
       </View>
       <Button

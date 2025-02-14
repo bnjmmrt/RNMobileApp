@@ -6,6 +6,8 @@ type PermissionStatus = boolean | null;
 type ContactItem = {
     name: string;
     phoneNumber: string;
+    firstName?: string;
+    lastName?: string;
 };
 
 const useContacts = () => {
@@ -18,12 +20,29 @@ const useContacts = () => {
                 .map((contact) => ({
                     name: `${contact.givenName} ${contact.familyName}`.trim(),
                     phoneNumber: contact.phoneNumbers[0]?.number.replace(/\D/g, '') || '',
+                    firstName: contact.givenName,
+                    lastName: contact.familyName
                 }))
                 .filter((contact) => contact.phoneNumber);
 
             return formattedContacts;
         } catch (error) {
             console.error('Error fetching contacts:', error);
+            return [];
+        }
+    };
+    const getContactNumbersOnly = async (): Promise<string[]> => {
+        try {
+            const deviceContacts = await Contacts.getAll();
+            const contactNumbers = deviceContacts
+                .map((contact) => {
+                    const number = contact.phoneNumbers[0]?.number.replace(/\D/g, '');
+                    return number ? `+${number}` : '';
+                })
+                .filter((number) => number);
+            return contactNumbers;
+        } catch (error) {
+            console.error('Error fetching contact numbers:', error);
             return [];
         }
     };
@@ -78,7 +97,7 @@ const useContacts = () => {
     };
 
 
-    return { permissionGranted, requestContactPermission, getContacts };
+    return { permissionGranted, requestContactPermission, getContacts, getContactNumbersOnly };
 };
 
 export default useContacts;

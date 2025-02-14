@@ -77,9 +77,9 @@ const UserActionsSheet = forwardRef<
 
     const snapPoints =
       selectedAction === 'report'
-        ? [`${verticalScale(60)}%`]
+        ? [`${verticalScale(50)}%`]
         : selectedAction === 'markSpam'
-        ? [`${verticalScale(40)}%`]
+        ? [`${verticalScale(30)}%`]
         : selectedAction === 'addToList'
         ? [`${verticalScale(60)}%`]
         : selectedAction === 'createList'
@@ -109,7 +109,7 @@ const UserActionsSheet = forwardRef<
     };
 
     const showError = (message: string) => {
-      sheetRef?.current?.showFlashMessage('error', message);
+      FlashMessageComponent.show('error', message);
     };
 
     const showSuccess = (message: string) => {
@@ -121,11 +121,14 @@ const UserActionsSheet = forwardRef<
       <BottomSheetComponent
         ref={sheetRef}
         snapPoints={snapPoints} // Adjustable snap points
-        enableDynamicSizing={selectedAction !== 'addToList' ? true : false}
+        enableDynamicSizing={selectedAction === 'addToList' ? false : true}
         onClose={() => {
           closeSheet();
           setSelectedAction('');
-        }}>
+        }}
+        showBottomSafeAreaView={
+          from === 'usersList' ? false : from === 'customLists' ? false : true
+        }>
         <BottomSheetView style={{flex: 1}}>
           {selectedAction === '' ? (
             <BottomSheetView style={styles.actionButtonContainer}>

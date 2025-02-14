@@ -1,120 +1,134 @@
 export const event_mock = {
     "data": {
         "admissionType": {
-            "description": "VIP and General Admission available",
+            "description": "this is first admission",
             "enabled": true,
-            "id": "adm_123",
-            "name": "VIP & General"
+            "id": "667a63f6-9254-4af0-b8d8-0901b35c17d9",
+            "name": "Admission01"
         },
         "ageLimit": {
-            "description": "Attendees must be 21+",
+            "description": "Adult age",
             "enabled": true,
-            "id": "age_456",
-            "maxAge": 60,
-            "minAge": 21,
-            "name": "21+ Age Restriction"
+            "id": "728746f8-9797-4ff9-b8d2-7ccadea4f516",
+            "maxAge": 50,
+            "minAge": 20,
+            "name": "Adult"
         },
-        "autoPublished": true,
-        "capacity": 500,
+        "autoPublished": false,
+        "capacity": 100,
         "collaborators": [
             {
-                "email": "john.doe@example.com",
-                "enabled": true,
-                "id": "col_789",
-                "name": "John Doe"
+                "addGuestsToDrafts": true,
+                "chatWithAllGuests": true,
+                "chatWithGuestsByCollaborator": true,
+                "checkInGuests": true,
+                "displayName": "string",
+                "displayNameListEvent": true,
+                "editEventDetailsSettings": true,
+                "email": "payal.ghusalikar+collaborator+1@techalchemy.com",
+                "generateEventReports": true,
+                "id": "53756718-0cbc-4c23-b935-7d6dcc5696fb",
+                "inviteGuestsToEvent": true,
+                "limitInvitations": true,
+                "manageDedicatedSignUpForm": true,
+                "manageInAppRsvpRequests": true,
+                "name": "NA NA",
+                "postAnnouncementsByCollaborator": true,
+                "postAnnouncementsToAllGuests": true,
+                "role": {
+                    "id": "9c75f161-47d6-4c07-a86f-39d67737b024",
+                    "name": "co_host"
+                },
+                "tickets": [
+                    {
+                        "id": "965f2337-4a45-4354-9070-5d0a87cde58d",
+                        "limitInvitationsNumber": -1,
+                        "name": "GENERAL"
+                    },
+                    {
+                        "id": "e8793b18-9375-4c09-aa32-1bd00dcce6c4",
+                        "limitInvitationsNumber": 100,
+                        "name": "VIP"
+                    }
+                ],
+                "viewFullGuestList": true
             }
         ],
-        "currentGuestStatus": 250,
-        "description": "An exclusive night of music, drinks, and networking.",
+        "currentGuestStatus": "CONFIRMED",
+        "description": "this is description",
         "enabled": true,
-        "endDate": "2025-06-15T23:59:00Z",
+        "endDate": "02/22/2025 20:45",
         "eventType": {
-            "description": "Music Concert",
+            "description": "Is a Film Festivals event type",
             "enabled": true,
-            "id": "evt_101",
-            "name": "Concert"
+            "id": "2202f705-e653-4702-b2e5-7009c073dc0c",
+            "name": "Film Festivals"
         },
-        "featuredEventSection": {
-            "id": "sec_001",
-            "index": 1,
-            "name": "Top Events"
-        },
-        "furtherInstructions": "Please bring a valid ID for entry.",
-        "guestId": "guest_999",
-        "guestsCount": 5,
-        "id": "event_555",
-        "imageCover": "https://example.com/images/event_cover.jpg",
-        "imageFlyer": "https://example.com/images/event_flyer.jpg",
-        "isPrivate": false,
-        "limitOnePlus": 2,
+        "furtherInstructions": "",
+        "guestsCount": 3,
+        "id": "2c372f47-2422-4df3-9a0b-773cd6d73412",
+        "imageCover": "string",
+        "imageFlyer": "string",
+        "isPrivate": true,
+        "limitOnePlus": 0,
         "location": {
-            "city": "Los Angeles",
-            "id": "loc_123",
-            "latitude": 34.0522,
-            "location": "Downtown LA Music Hall",
-            "longitude": -118.2437,
-            "placeId": "place_456",
-            "regionCode": "CA"
+            "city": "San Francisco",
+            "id": "421c428f-59af-4ebc-85ba-46f490b94a36",
+            "latitude": 37.7749,
+            "location": "123 Main St",
+            "longitude": -122.4194
         },
-        "name": "Summer Vibes Music Festival",
+        "name": "Event-01",
         "owner": {
-            "email": "event.organizer@example.com",
-            "firstName": "Alice",
-            "id": "owner_321",
-            "lastName": "Smith",
-            "profilePicture": "https://example.com/images/alice_profile.jpg"
+            "email": "payal.ghusalikar+host1@techalchemy.com",
+            "firstName": "payal-host1",
+            "id": "948902cc-c833-40da-b451-850f94b28a0f",
+            "lastName": "ghusalikar-host2"
         },
-        "publishDate": "2025-05-01T12:00:00Z",
-        "qrCodeUtilization": 1,
+        "publishDate": "02/18/2025 20:45",
+        "qrCodeUtilization": 0,
         "quizQuestions": [
             {
                 "enabled": true,
-                "id": "quiz_001",
+                "id": "2302dbaa-bde7-4296-9d21-7b7886057ef2",
                 "order": 1,
-                "question": "What is your favorite music genre?",
+                "question": "What is your name?",
                 "required": true
-            },
-            {
-                "enabled": true,
-                "id": "quiz_002",
-                "order": 2,
-                "question": "Who is your band?",
-                "required": false
             }
         ],
-        "rsvpDeadline": "2025-06-10T23:59:00Z",
+        "rsvpDeadline": "",
         "showLocation": true,
-        "startDate": "2025-06-15T18:00:00Z",
-        "status": 0,
+        "startDate": "02/20/2025 20:45",
+        "status": "PENDING_STATUS",
         "talents": [
             {
-                "contact": "dj.spark@example.com",
-                "description": "Renowned DJ with a decade of experience.",
+                "contact": "+912345678909",
+                "description": "THis is shreya's concert",
                 "enabled": true,
-                "id": "tal_007",
-                "imageKeyUrl": "https://example.com/images/dj_spark.jpg",
-                "name": "DJ Spark",
-                "socialNetwork": "@djspark"
+                "id": "6fdea200-d40e-411d-8da3-84e9660ed437",
+                "imageKeyUrl": "string",
+                "name": "Shreya Ghoshal",
+                "socialNetwork": "facebook.com"
             }
         ],
         "ticketTypes": [
             {
-                "capacity": 300,
-                "description": "General Admission",
+                "capacity": 0,
+                "description": "This is VIP Ticket",
                 "enabled": true,
-                "id": "ticket_001",
-                "name": "GA Ticket"
+                "id": "e8793b18-9375-4c09-aa32-1bd00dcce6c4",
+                "name": "VIP"
             },
             {
-                "capacity": 100,
-                "description": "VIP Admission with backstage access",
+                "capacity": 1000,
+                "description": "This is GENERAL Ticket",
                 "enabled": true,
-                "id": "ticket_002",
-                "name": "VIP Ticket"
+                "id": "965f2337-4a45-4354-9070-5d0a87cde58d",
+                "name": "GENERAL"
             }
         ],
-        "useQr": true,
-        "userId": "user_888"
+        "timeZone": "EST",
+        "useQr": true
     },
     "error": null,
     "status": 200

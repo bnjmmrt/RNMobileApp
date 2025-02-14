@@ -15,7 +15,7 @@ import Button from '../Button';
 import IMAGES from '../../assets/images';
 import TabBar from '../ActiveTabBar/TabBar';
 import { changeSafeAreaViewConfig, fontFamily } from '../../utils/functions';
-import { useFetchMembersQuery, useRequestMemberMutation } from '../../redux/actions/referralApiAction';
+import { useFetchMembersQuery, useGetConfirmedMembersMutation, useRequestMemberMutation } from '../../redux/actions/referralApiAction';
 import { RenderMemberList } from './RenderMemberList';
 import Header from '../Header/Header';
 import SearchInput from '../SearchInput';
@@ -41,7 +41,7 @@ const membersData = [
     email: "wwvvo@uoi.com",
     followerCount: "72816",
     gender: 1,
-    id: "ilxmjswjgt",
+    id: "cc2a0ce2-a59b-4163-954d-93de10cc7966",
     instagramUsername: "ylttxhrjrjfi",
     isFavourite: false,
     name: "John Wick",
@@ -73,7 +73,8 @@ const membersData = [
 const InviteReferralBottomSheet = forwardRef((props, ref) => {
   const [contacts, setContacts] = useState<ContactItem[]>([]);
   const [members, setMembers] = useState<ContactItem[]>([]);
-  // const { data: membersData, isMembersLoading, isError } = useFetchMembersQuery();
+  const [getConfirmedMembers, { data, error, isLoading }] = useGetConfirmedMembersMutation();
+
   const [filteredContacts, setFilteredContacts] = useState<ContactItem[]>([]);
   const [filteredMembers, setFilteredMembers] = useState<ContactItem[]>([]);
   const [requestSent, setRequestSent] = useState<string[]>([]);
@@ -96,6 +97,8 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   const fetchContacts = async () => {
     try {
       const formattedContacts = await getContacts();
+      const response = await getConfirmedMembers({}).unwrap().catch((err) => { console.log(err); });
+      console.log("Membetrs", response)
       const memberPhoneNumbers = new Set(
         membersData.map((member) =>
           member.phoneNumber.replace(/\s|-/g, "")

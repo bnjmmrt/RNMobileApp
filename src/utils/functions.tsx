@@ -467,11 +467,13 @@ const getCountryFlag = (countryCode: string) => {
     : '';
 };
 export interface ApiErrorInterface {
-  data: {error: {message: string; type: string} | string};
+  data: {error: {message: string; type: string} | string} | string;
 }
 export const getErrorMessage = (error: ApiErrorInterface) => {
   let message = 'Something went wrong!';
-  if (typeof error.data.error === 'object') {
+  if (typeof error.data === 'string') {
+    message = error.data;
+  } else if (typeof error.data.error === 'object') {
     if (error.data.error.message) {
       message = error.data.error.message;
     }

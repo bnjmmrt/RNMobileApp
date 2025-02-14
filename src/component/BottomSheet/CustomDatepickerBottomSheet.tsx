@@ -18,15 +18,16 @@ const CustomDatepickerBottomSheet = forwardRef((props: Props, ref) => {
 
   function parseDateString(dateString: string) {
     try {
-      if (dateString) {
+      if (dateString && dateString !== 'Invalid Date') {
         const [month, day, year] = dateString.split('/').map(Number);
         return new Date(year, month - 1, day); // Month is 0-based in JavaScript Date
       }
+
       const initialDate = new Date();
       initialDate.setFullYear(new Date().getFullYear() - 18);
       return initialDate
     } catch (error) {
-      console.log("errror", error)
+      console.log(" errror", error)
     }
   }
 

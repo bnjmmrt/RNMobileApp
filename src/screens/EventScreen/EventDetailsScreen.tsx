@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet, Text } from 'react-native';
 import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
 import { fontFamily } from 'src/utils/functions';
 import { fontScale, Hp, verticalScale, Wp } from 'src/utils/dimensions';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import BackButtonOverlay from 'src/component/BackButton/BackButtonOverlay';
 import EventStatus from 'src/component/Event/EventStatus';
 import EventHostItem from 'src/component/Event/EventHostItem';
@@ -37,12 +37,20 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
   const [isDeclinedByHost, setIsDeclinedByHost] = useState(false);
   const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
+
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
-  const { data, isLoading } = useFetchEventDetailsQuery({
-    eventId: route?.params?.id
-  });
+  const { data, isLoading, refetch } = useFetchEventDetailsQuery(
+    { eventId: route?.params?.id },
+    { refetchOnMountOrArgChange: true }
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
 
   useEffect(() => {
@@ -74,12 +82,13 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
     { id: "4", label: EVENT_STATUS.DECLINED_BY_YOU },
     { id: "5", label: EVENT_STATUS.GOING },
   ];
-  const [images, setImages] = useState(statusMap)
+  const [images, setImages] = useState(statusMap);
 
   // const styles = EventDetailsScreenStyle();
 
   const onNextClick = () => {
-    navigation.navigate('RSPVScreen', { event: event_mock.data })
+    data && data?.data && navigation.navigate('RSPVScreen', { event: data.data })
+    // navigation.navigate('RSPVInvitedUpcoming', { event: event_mock })
   }
 
   const onDiscoverMoreClick = () => {
@@ -105,7 +114,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
             />
           </View>
           <Text style={styles.titleStyle}>{route?.params?.name}</Text>
-          <EventStatus status={data?.data?.currentGuestStatus} isDeclinedByMe={isDeclinedByMe} />
+          <EventStatus status={guestStatus} isDeclinedByMe={isDeclinedByMe} />
           <FlatList
             data={collaborators}
             horizontal
@@ -119,6 +128,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
           />
           <EventVenue item={route?.params} />
           <EventOverview item={route?.params} />
+
           {talents.length > 0 && <EventTalent talents={talents} />}
 
         </View>
