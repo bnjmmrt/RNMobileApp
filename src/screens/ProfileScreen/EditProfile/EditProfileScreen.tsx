@@ -58,7 +58,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
   };
 
   const [gender, setGender] = useState<any>(!loginData?.isInvited && getGender(profileData.gender));
-  const [selectedDate, setSelectedDate] = useState<any>(!loginData?.isInvited && convertDateToFormatMMDDYYYY(profileData?.dateOfBirth));
+  const [selectedDate, setSelectedDate] = useState<any>(convertDateToFormatMMDDYYYY(profileData?.dateOfBirth));
   const [isToastShown, setIsToastShown] = useState(false);
   const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>(!loginData?.isInvited &&  profileData?.focuses);
 
@@ -223,7 +223,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
               />
 
               <Text style={[styles.label]}>{LABLE.BIRTHDAY}</Text>
-              <DatePickerComponent ref={birthDayRef} birthDate={selectedDate} />
+              <DatePickerComponent ref={birthDayRef} birthDate={profileData?.dateOfBirth} />
 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
               <BaseCityComponent ref={baseCityRef} />
