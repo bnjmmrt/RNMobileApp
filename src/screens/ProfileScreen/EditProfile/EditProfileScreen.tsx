@@ -135,7 +135,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
 
       const response: any = await apiRequest(
         'put',
-        EndPoint.user_profile + loginData?.userId,
+        EndPoint.user_profile + userId,
         requestObject,
       );
       if (response.status === 200) {
@@ -223,7 +223,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
               />
 
               <Text style={[styles.label]}>{LABLE.BIRTHDAY}</Text>
-              <DatePickerComponent ref={birthDayRef} birthDate={profileData?.dateOfBirth} />
+              <DatePickerComponent ref={birthDayRef} birthDate={convertDateToFormatMMDDYYYY(profileData?.dateOfBirth)} />
 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
               <BaseCityComponent ref={baseCityRef} />

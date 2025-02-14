@@ -59,7 +59,7 @@ const FollowingScreen: React.FC = () => {
   const followUnfollow = async (hostId: string) => {
     const response: any = await apiRequest(
       'post',
-      `v1/auth/host/${hostId}/follow`, { userId: loginData?.userId },
+      `v1/auth/host/${hostId}/follow`, { userId: userId },
     );
     return response?.status;
   };
