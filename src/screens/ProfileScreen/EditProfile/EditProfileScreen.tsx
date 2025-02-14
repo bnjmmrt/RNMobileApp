@@ -142,7 +142,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
           EndPoint.user + userId,
         );
         if (responseUser.status === 200) {
-          dispatch(setProfileData({ ...profileData, ...response?.data }));
+          dispatch(setProfileData(responseUser?.data));
         }
         FlashMessageComponent.show('success', 'Profile Updated Successfully');
         handleBackPress();
