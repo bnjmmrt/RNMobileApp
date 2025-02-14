@@ -14,7 +14,8 @@ import { useSelector } from 'react-redux';
 
 const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   const inputRef = useRef(null);
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const userId = useSelector((state: RootState) => state.auth.userId);
+
 
   const [submitReferralCode, { isLoading }] = useSubmitReferralCodeMutation();
   const handleSubmit = async () => {
@@ -24,7 +25,7 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
       try {
         const response = await submitReferralCode({
           referralCode: inputText,
-          userId: loginData?.userId,
+          userId: userId,
         }).unwrap();
         FlashMessageComponent.show('success', 'Code submitted successfully!');
         ref.current?.close();
