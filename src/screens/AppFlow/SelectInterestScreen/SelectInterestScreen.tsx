@@ -118,7 +118,8 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
         setIsToastShown(false);
         const response: any = await updateMyInterests();
         if (response.status===200) {
-          navigation.navigate('ProfileScreen')
+          // navigation.navigate('ProfileScreen')
+          navigation.goBack()
           // dispatch(setInterest(selectedCategories))
            FlashMessageComponent.show('success', 'Details updated successfully!');
         }

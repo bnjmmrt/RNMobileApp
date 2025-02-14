@@ -153,7 +153,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
   };
 
   const handleBackPress = () => {
-    navigation.navigate('ProfileScreen');
+    navigation.goBack();
   };
 
   return (
