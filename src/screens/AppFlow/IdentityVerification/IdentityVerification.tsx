@@ -16,7 +16,7 @@ import IMAGES from '../../../assets/images';
 import { useMemberSignUp } from '../../../redux/hooks/useMemberSignUp';
 import useApi from '../../../axios/useApi';
 import { EndPoint } from '../../../ApiManager/config';
-import { changeSafeAreaViewConfig } from '../../../utils/functions';
+import { changeSafeAreaViewConfig, convertDateFormat } from '../../../utils/functions';
 import {
   setAuthToken,
   setLoginData,
@@ -53,7 +53,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         address: userDetails.baseCity.address,
         placeId: userDetails.baseCity.placeId,
       },
-      dateOfBirth: userDetails.birthday,
+      dateOfBirth: convertDateFormat(userDetails.birthday),
       email: userDetails.email,
       firstName: userDetails.firstName,
       focusIds: userDetails.creativeFocus.map((item: any) => item.id),
