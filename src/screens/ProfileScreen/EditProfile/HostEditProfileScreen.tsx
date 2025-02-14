@@ -44,7 +44,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
 }) => {
   const {apiRequest, loading, error} = useApi();
   const dispatch = useDispatch();
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const userId = useSelector((state: RootState) => state.auth.userId);
   const profileData = useSelector(
       (state: RootState) => state.appFlowApiData?.profileData,
     );
@@ -58,7 +58,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
   const getHostDetails = async () => {
     const response: any = await apiRequest(
       'get',
-      `v1/auth/host/${loginData?.id}/profile`,
+      `v1/auth/host/${userId}/profile`,
     );
     console.log('getHostDetails', response);
     if (response.status === 200) {
@@ -110,7 +110,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
     console.log("requestobj",requestObject)
       const response: any = await apiRequest(
         'put',
-        `v1/auth/host/${loginData?.id}/profile`,
+        `v1/auth/host/${userId}/profile`,
         requestObject,
       );
       if (response.status===200) {

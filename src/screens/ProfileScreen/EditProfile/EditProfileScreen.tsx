@@ -135,7 +135,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
 
       const response: any = await apiRequest(
         'put',
-        EndPoint.user_profile + loginData?.id,
+        EndPoint.user_profile + loginData?.userId,
         requestObject,
       );
       if (response.status === 200) {

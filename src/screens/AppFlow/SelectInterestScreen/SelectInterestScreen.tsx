@@ -55,7 +55,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
   const getMyInterests = async() => {
     const response:any = await apiRequest(
       'get',
-      EndPoint.user_interests + loginData?.id,
+      EndPoint.user_interests + loginData?.userId,
     );
     if(response.status===200){
       //dependiing on API response parse data and set
@@ -69,7 +69,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
     };
     return apiRequest(
       'post',
-      EndPoint.user_interests + loginData?.id,
+      EndPoint.user_interests + loginData?.userId,
       requestObject,
     );
   };

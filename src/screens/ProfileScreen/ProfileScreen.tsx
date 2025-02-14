@@ -277,8 +277,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const updateProfilePhoto = async (url: string) => {
     const fileUploadResponse: any = await apiRequest(
       'put',
-      EndPoint.user_profile_picture + loginData?.id,
-      { profilePicture: url },
+      EndPoint.user_profile_picture + userId,
+      {profilePicture: url},
     );
 
     if (fileUploadResponse.status === 200) {

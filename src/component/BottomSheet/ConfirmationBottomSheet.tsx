@@ -1,10 +1,19 @@
-import React, { useRef, forwardRef } from 'react';
-import { View, StyleSheet, Text, Image, Platform, ViewStyle } from 'react-native';
+import React, {useRef, forwardRef} from 'react';
+import {View, StyleSheet, Text, Image, Platform, ViewStyle} from 'react-native';
 import BottomSheetComponent from './BottomSheet';
-import { COLORS, EVENT_STATUS } from '../../utils/constants';
+import {BUTTON_LABLE, COLORS, EVENT_STATUS} from '../../utils/constants';
 import Button from '../Button';
-import { fontFamily } from '../../utils/functions';
-import { fontScale, horizontalMarginScale, horizontalScale, Hp, radiusScale, verticalMarginScale, verticalScale, Wp } from '../../utils/dimensions';
+import {fontFamily} from '../../utils/functions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  horizontalScale,
+  Hp,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+} from '../../utils/dimensions';
 import IMAGES from '../../assets/images';
 
 interface ConfirmationBottomSheetProps {
@@ -14,16 +23,15 @@ interface ConfirmationBottomSheetProps {
   title: string;
   subTitle?: string;
   btnLabel: string;
-  status?: string
+  status?: string;
   btnStyle?: any;
   isSuccess?: boolean;
   back?: () => void;
 }
 const ConfirmationBottomSheet = forwardRef(
   (props: ConfirmationBottomSheetProps, ref) => {
-
     const close = () => {
-      props.back && props?.back()
+      props.back && props?.back();
       ref.current.close();
     };
     return (
@@ -36,21 +44,34 @@ const ConfirmationBottomSheet = forwardRef(
         }
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
-          {props.logo && (<View style={styles.logoContainer}>
-            <Image source={props.logo} style={styles.logo} />
-          </View>)}
-          {props.title && <Text style={styles.title}>{props.title}</Text>}
-          {props.isSuccess ? (
-            <View style={[styles.statusBanner, { backgroundColor: COLORS.bgGreen, borderColor: COLORS.borderGreen, width: Wp('35%') }]}>
-              <Image source={IMAGES.tickGoing} />
-              <Text style={styles.statusText}> {"You are going"}</Text>
+          {props.logo && (
+            <View style={styles.logoContainer}>
+              <Image source={props.logo} style={styles.logo} />
             </View>
-          ) :
+          )}
+          {props.title && <Text style={styles.title}>{props.title}</Text>}
+          {props.btnLabel == BUTTON_LABLE.CLOSE ? null : props.isSuccess ? (
+            <View
+              style={[
+                styles.statusBanner,
+                {
+                  backgroundColor: COLORS.bgGreen,
+                  borderColor: COLORS.borderGreen,
+                  width: Wp('35%'),
+                },
+              ]}>
+              <Image source={IMAGES.tickGoing} />
+              <Text style={styles.statusText}> {'You are going'}</Text>
+            </View>
+          ) : (
             <View style={styles.statusBanner}>
               <Image source={IMAGES.tickDeclined} />
-              <Text style={styles.statusText}> {EVENT_STATUS.DECLINED_BY_YOU}</Text>
+              <Text style={styles.statusText}>
+                {' '}
+                {EVENT_STATUS.DECLINED_BY_YOU}
+              </Text>
             </View>
-          }
+          )}
           {props.subTitle && (
             <Text style={[styles.subTitle]}>{props.subTitle}</Text>
           )}
@@ -111,7 +132,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.borderRed,
     width: '60%',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   statusText: {
     fontSize: fontScale(14),
@@ -119,7 +140,6 @@ const styles = StyleSheet.create({
     marginLeft: verticalScale(5),
     flex: 1,
   },
-
 });
 
 export default ConfirmationBottomSheet;
