@@ -4,7 +4,6 @@ import {
   horizontalMarginScale,
   horizontalScale,
   verticalMarginScale,
-  Wp,
 } from 'src/utils/dimensions';
 import {fontFamily} from 'src/utils/functions';
 

@@ -3,9 +3,14 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useRef, useState} from 'react';
 import {FlatList, View} from 'react-native';
 import {CustomText} from 'src/component/CustomText';
-import createStyle from './style';
-import {horizontalMarginScale, verticalMarginScale} from 'src/utils/dimensions';
+import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import SearchInput from 'src/component/SearchInput';
+import {
+  horizontalMarginScale,
+  Hp,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
+import createStyle from './style';
 
 const dummyListData = [
   {
@@ -76,9 +81,10 @@ const UserEvents: React.FC<UserEventsProps> = ({}) => {
       <SearchInput
         ref={searchInputRef}
         onSearchTextChange={handleSearchTextChange}
+        mainContainerStyle={{marginHorizontal: horizontalMarginScale(12)}}
       />
       <FlatList
-        data={dummyListData}
+        data={[]}
         renderItem={renderEventItem}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{gap: horizontalMarginScale(16)}}
@@ -89,6 +95,16 @@ const UserEvents: React.FC<UserEventsProps> = ({}) => {
         }}
         bounces={false}
         numColumns={2}
+        ListEmptyComponent={
+          <View
+            style={{
+              height: Hp(30),
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <EventEmptyRecord title="User has no events" isLoading={false} />
+          </View>
+        }
       />
     </View>
   );

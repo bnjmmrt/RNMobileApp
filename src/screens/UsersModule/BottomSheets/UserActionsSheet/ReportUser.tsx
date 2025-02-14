@@ -1,5 +1,6 @@
+import {BottomSheetScrollView, BottomSheetView} from '@gorhom/bottom-sheet';
 import React, {useRef} from 'react';
-import {Keyboard, View} from 'react-native';
+import {Keyboard} from 'react-native';
 import {shallowEqual, useSelector} from 'react-redux';
 import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
@@ -10,10 +11,9 @@ import {
   useReportUserMutation,
 } from 'src/redux/actions/usersApiAction';
 import {RootState} from 'src/redux/slices';
-import {verticalMarginScale, verticalScale} from 'src/utils/dimensions';
-import {styles} from './style';
-import {BottomSheetScrollView, BottomSheetView} from '@gorhom/bottom-sheet';
+import {verticalMarginScale} from 'src/utils/dimensions';
 import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
+import {styles} from './style';
 
 const ReportUser = ({
   onPressBack,

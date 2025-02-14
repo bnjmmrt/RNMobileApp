@@ -1,5 +1,5 @@
+import {BottomSheetView} from '@gorhom/bottom-sheet';
 import React from 'react';
-import {View} from 'react-native';
 import {shallowEqual, useSelector} from 'react-redux';
 import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
@@ -8,10 +8,9 @@ import {
   useUserSpamToggleMutation,
 } from 'src/redux/actions/usersApiAction';
 import {RootState} from 'src/redux/slices';
-import {styles} from './style';
-import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
-import {BottomSheetView} from '@gorhom/bottom-sheet';
 import {verticalMarginScale} from 'src/utils/dimensions';
+import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
+import {styles} from './style';
 
 const MarkAsSpam = ({
   showError,

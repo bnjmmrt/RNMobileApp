@@ -1,15 +1,14 @@
+import {BottomSheetView} from '@gorhom/bottom-sheet';
 import React, {forwardRef, useImperativeHandle, useRef} from 'react';
-import {View} from 'react-native';
 import BottomSheetComponent, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
-import {styles} from './style';
+import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import {useRemoveUsersFromCustomListMutation} from 'src/redux/actions/listsApiAction';
 import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
-import {BottomSheetView} from '@gorhom/bottom-sheet';
-import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import {styles} from './style';
 
 interface DeleteListUsersPropsInterface {
   listName: string;
