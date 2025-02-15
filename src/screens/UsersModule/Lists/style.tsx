@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
-import {COLORS} from '../../../utils/constants';
 import {verticalMarginScale} from 'src/utils/dimensions';
+import {COLORS} from '../../../utils/constants';
 
 const createStyle = () => {
   return StyleSheet.create({

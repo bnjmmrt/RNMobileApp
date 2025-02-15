@@ -33,6 +33,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const userId = useSelector((state: RootState) => state.auth.userId);
   const role = useSelector((state: RootState) => state.auth.role);
+  const isGuest = useSelector((state: RootState) => state.auth.isGuest);
 
   // const role =
   //   (loginData?.roles &&
@@ -41,7 +42,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   //   'non_member';
   const searchInputRef = useRef<any>(null);
   const [searchText, setSearchText] = useState('');
-  const showEvents = loginData?.isInvited || role === 'member' || role === 'host';
+  const showEvents = isGuest || role === 'member' || role === 'host';
   const tabs = role === 'host' ? hostTabData : memberTabData
 
   useFocusEffect(
@@ -94,7 +95,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
         ...styles.container,
         backgroundColor: showEvents ? COLORS.white : COLORS.black2,
       }}>
-      {true ? (
+      {showEvents ? (
         <View
           style={{
             backgroundColor: COLORS.white,

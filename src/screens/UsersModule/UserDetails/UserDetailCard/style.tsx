@@ -1,14 +1,12 @@
-import {Platform, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
+import {COLORS} from '../../../../utils/constants';
 import {
-  Wp,
-  Hp,
   fontScale,
   horizontalMarginScale,
   radiusScale,
-  verticalScale,
   verticalMarginScale,
+  verticalScale,
 } from '../../../../utils/dimensions';
-import {COLORS} from '../../../../utils/constants';
 import {fontFamily} from '../../../../utils/functions';
 
 const createStyle = () => {

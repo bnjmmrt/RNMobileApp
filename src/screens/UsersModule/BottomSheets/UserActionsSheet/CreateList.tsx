@@ -1,15 +1,15 @@
+import {BottomSheetView} from '@gorhom/bottom-sheet';
 import React, {useRef, useState} from 'react';
-import {Keyboard, View} from 'react-native';
+import {Keyboard} from 'react-native';
 import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
 import Header from 'src/component/Header/Header';
 import Input, {InputRefMethods} from 'src/component/Input/Input';
 import {useAddNewCustomListMutation} from 'src/redux/actions/listsApiAction';
 import {verticalMarginScale} from 'src/utils/dimensions';
+import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
 import {actionSheetFromType} from '.';
 import {styles} from './style';
-import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
-import {BottomSheetView} from '@gorhom/bottom-sheet';
 
 const CreateList = ({
   onPressBack,
@@ -33,7 +33,7 @@ const CreateList = ({
     {error: createNewListError, isLoading: createNewListLoading},
   ] = useAddNewCustomListMutation();
 
-  const onPressAddToList = async () => {
+  const onPressCreateList = async () => {
     Keyboard.dismiss();
     listNameRef?.current?.validateInputs();
     if (listNameRef?.current?.validateInputs()) {
@@ -57,14 +57,14 @@ const CreateList = ({
   };
 
   return (
-    <BottomSheetView>
+    <BottomSheetView style={{flex: 1}}>
       <Header
         headerTitle="List Name"
         showBackButton={from === 'customLists' ? false : true}
         showProgressBar={false}
-        onPress={onPressBack}
+        onPress={() => onPressBack()}
       />
-      <BottomSheetView style={styles.actionContentWrapper}>
+      <BottomSheetView style={[styles.actionContentWrapper, {flex: 1}]}>
         <CustomText style={styles.createListMessage}>
           {'Create a name for your list'}
         </CustomText>
@@ -83,7 +83,7 @@ const CreateList = ({
           title={from === 'customLists' ? 'Create a List' : 'Add to List'}
           colorTheme="dark"
           style={[styles.actionCta, {marginTop: verticalMarginScale(24)}]}
-          onPress={onPressAddToList}
+          onPress={onPressCreateList}
           loading={createNewListLoading}
         />
       </BottomSheetView>

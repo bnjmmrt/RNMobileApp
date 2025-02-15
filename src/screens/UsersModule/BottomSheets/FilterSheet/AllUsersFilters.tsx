@@ -1,13 +1,18 @@
-import {BottomSheetFlatList, BottomSheetScrollView} from '@gorhom/bottom-sheet';
+import {
+  BottomSheetFlatList,
+  BottomSheetScrollView,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet';
 import React, {useCallback, useEffect} from 'react';
 import {shallowEqual, useSelector} from 'react-redux';
 import GradientSeprator from 'src/component/GradientSeprator';
 import {useLazyFetchUserFiltersQuery} from 'src/redux/actions/usersApiAction';
 import {RootState} from 'src/redux/slices';
-import {horizontalMarginScale} from 'src/utils/dimensions';
+import {horizontalMarginScale, Hp} from 'src/utils/dimensions';
 import {SelectedFilters} from '.';
 import FilterAccordian from './FilterAccordian';
 import FilterOptions, {FilterOption, FilterOptionTypes} from './FilterOptions';
+import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 
 type FilterType = {
   id: string;
@@ -31,9 +36,11 @@ const allowedFilters = [
 const AllUsersFilters = ({
   selectedFilters,
   setSelectedFilters,
+  setDisableApplyCta,
 }: {
   selectedFilters: SelectedFilters;
   setSelectedFilters: React.Dispatch<React.SetStateAction<SelectedFilters>>;
+  setDisableApplyCta: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const loginData = useSelector(
     (state: RootState) => state.auth.loginData,
@@ -108,11 +115,12 @@ const AllUsersFilters = ({
             options={item.options}
             selectedFilters={selectedFilters}
             onChangeOptionValue={onChangeFilterOptionValue}
+            setDisableApplyCta={setDisableApplyCta}
           />
         </FilterAccordian>
       );
     },
-    [selectedFilters],
+    [selectedFilters, setDisableApplyCta],
   );
 
   const itemSeparatorComponent = useCallback(() => {
@@ -138,6 +146,16 @@ const AllUsersFilters = ({
         showsVerticalScrollIndicator={false}
         ItemSeparatorComponent={itemSeparatorComponent}
         contentContainerStyle={{marginHorizontal: horizontalMarginScale(12)}}
+        ListEmptyComponent={
+          <BottomSheetView
+            style={{
+              height: Hp(55),
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <EventEmptyRecord title="" subTitle="" isLoading={isLoading} />
+          </BottomSheetView>
+        }
       />
     </BottomSheetScrollView>
   );

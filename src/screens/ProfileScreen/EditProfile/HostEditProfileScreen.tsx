@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Platform,
   ScrollView,
@@ -7,8 +7,8 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   LABLE,
   BUTTON_LABLE,
@@ -20,10 +20,10 @@ import Button from '../../../component/Button';
 import Input from '../../../component/Input/Input';
 import Header from '../../../component/Header/Header';
 // import {useGetPostsQuery} from '../../../redux/slices/apiSlice';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../redux/slices';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/slices';
 import useApi from '../../../axios/useApi';
-import {EndPoint} from '../../../ApiManager/config';
+import { EndPoint } from '../../../ApiManager/config';
 import {
   fontScale,
   horizontalMarginScale,
@@ -37,17 +37,17 @@ import EmailInput from '../../../component/EmailComponent/EmailInput';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
 
-interface HostEditProfileScreenProps extends NativeStackScreenProps<any, any> {}
+interface HostEditProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
 const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
   navigation,
 }) => {
-  const {apiRequest, loading, error} = useApi();
+  const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const userId = useSelector((state: RootState) => state.auth.userId);
   const profileData = useSelector(
-      (state: RootState) => state.appFlowApiData?.profileData,
-    );
+    (state: RootState) => state.appFlowApiData?.profileData,
+  );
   // const [hostdetails, setHostDetails] = useState<any>();
   const companyNameRef = useRef<any>(null);
   const bioRef = useRef<any>(null);
@@ -55,29 +55,17 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
   const emailInputRef = useRef<any>(null);
   const websiteRef = useRef<any>(null);
 
-  const getHostDetails = async () => {
-    const response: any = await apiRequest(
-      'get',
-      `v1/auth/host/${loginData?.id}/profile`,
-    );
-    console.log('getHostDetails', response);
-    if (response.status === 200) {
-   
-      dispatch(setProfileData({...profileData,...response.data}));
-      // setHostDetails(response?.data);
 
-      phoneNumberInputRef?.current.setPhoneNumber(response?.data.phoneNumber);
-      emailInputRef?.current.setEmailAddress(response?.data.email);
-      phoneNumberInputRef?.current.setDisabled(true);
-      emailInputRef?.current.setDisabled(true);
-    }
-  };
   useEffect(() => {
-    getHostDetails();
+    phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
+    emailInputRef?.current.setEmailAddress(profileData?.email);
+    phoneNumberInputRef?.current.setDisabled(true);
+    emailInputRef?.current.setDisabled(true);
+    // getHostDetails();
   }, []);
 
   const onConfirmClick = async () => {
-  
+
     if (
       companyNameRef.current.validateInputs() &&
       websiteRef.current.validateInputs()
@@ -85,14 +73,12 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
       console.log("inside")
       const requestObject: any = {
         bio: bioRef?.current.inputText,
-        companyLogo: 'string',
         companyName: companyNameRef?.current.inputText,
         email: profileData?.email,
         eventsPerYear: 0,
         firstName: profileData?.firstName,
         lastName: profileData?.lastName,
         phoneNumber: profileData?.phoneNumber,
-        referredBy: 'string',
         socialMedia: {
           facebook: profileData?.socialMedia.facebook,
           instagram: profileData?.socialMedia.instagram,
@@ -103,15 +89,21 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
         },
         website: websiteRef?.current.inputText,
       };
-    console.log("requestobj",requestObject)
+      console.log("requestobj", requestObject)
       const response: any = await apiRequest(
         'put',
-        `v1/auth/host/${loginData?.id}/profile`,
+        `v1/auth/host/${userId}/profile`,
         requestObject,
       );
-      if (response.status===200) {
-        // setProfileData(response.data)
-        FlashMessageComponent.show('success',"Profile updated successfully")
+      if (response.status === 200) {
+        const responseUser: any = await apiRequest(
+          'get',
+          `v1/auth/host/${userId}/profile`,
+        );
+        if (responseUser.status === 200) {
+          dispatch(setProfileData(responseUser.data));
+        }
+        FlashMessageComponent.show('success', "Profile updated successfully")
         handleBackPress()
       }
     }
@@ -137,7 +129,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
             errorMessage={ERROR_MESSAGE.COMPANY_NAME_ERROR}
             defaultValue={profileData?.companyName}
           />
-           <Input
+          <Input
             ref={bioRef}
             label={LABLE.BIO}
             errorMessage={''}
@@ -187,7 +179,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: horizontalMarginScale(20),
   },
-  scrollContainer: {paddingBottom: verticalMarginScale(200)},
+  scrollContainer: { paddingBottom: verticalMarginScale(200) },
   label: {
     paddingVertical: horizontalMarginScale(2),
     fontSize: fontScale(14),

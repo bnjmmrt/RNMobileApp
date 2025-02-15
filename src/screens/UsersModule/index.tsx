@@ -53,8 +53,6 @@ const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
         addNewUserSheetRef?.current?.open();
       }
       if (currentTab.id === '2') {
-        console.log('llll');
-
         setSelectedActionSheetAction('createList');
         listActionSheetRef?.current?.open();
       }

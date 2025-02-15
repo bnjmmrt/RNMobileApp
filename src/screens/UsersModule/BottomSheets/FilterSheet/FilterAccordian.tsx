@@ -1,27 +1,10 @@
-import {BottomSheetScrollView, BottomSheetView} from '@gorhom/bottom-sheet';
+import {BottomSheetView} from '@gorhom/bottom-sheet';
 import IMAGES from '@images/index';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import React, {forwardRef, useImperativeHandle, useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {Image, TouchableOpacity, View} from 'react-native';
-import AvatarInitials from 'src/component/AvatarInitials';
-import BottomSheetComponent, {
-  BottomSheetMethods,
-} from 'src/component/BottomSheet/BottomSheet';
-import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
-import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import Input, {InputRefMethods} from 'src/component/Input/Input';
-import PhoneNumberInput, {
-  countryType,
-  PhoneNumberInputRefMethods,
-} from 'src/component/PhonNumberComponent/PhoneNumberInput';
-import {AppStackParamList} from 'src/navigation/AppStack';
-import {ROUTES} from 'src/navigation/Route';
-import {useAddNewUserMutation} from 'src/redux/actions/usersApiAction';
-import {verticalMarginScale, verticalScale} from 'src/utils/dimensions';
-import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
+import {verticalMarginScale} from 'src/utils/dimensions';
 import {styles} from './style';
-import GradientSeprator from 'src/component/GradientSeprator';
 
 const FilterAccordian = ({
   children,

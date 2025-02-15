@@ -5,6 +5,7 @@ interface AuthState {
   token: string;
   userId: string;
   role: string;
+  isGuest: boolean;
 }
 
 const initialState: AuthState = {
@@ -24,7 +25,8 @@ const initialState: AuthState = {
   },
   token: '',
   userId: '',
-  role: 'non_member'
+  role: 'non_member',
+  isGuest: false
 };
 
 const authSlice = createSlice({
@@ -43,6 +45,9 @@ const authSlice = createSlice({
     setRole(state, action: PayloadAction<any>) {
       state.role = action.payload;
     },
+    setIsGuest(state, action: PayloadAction<any>) {
+      state.isGuest = action.payload;
+    },
     resetLoginData(state) {
       // Reset state to initial values
       Object.assign(state, initialState);
@@ -50,6 +55,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setLoginData, setAuthToken, setUserId, setRole, resetLoginData } = authSlice.actions;
+export const { setLoginData, setAuthToken, setUserId, setRole, setIsGuest, resetLoginData } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {
   Image,
@@ -10,9 +10,9 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { fontFamily } from '../..//utils/functions';
+import {fontFamily} from '../..//utils/functions';
 import IMAGES from '../../assets/images';
-import { COLORS } from '../../utils/constants';
+import {COLORS} from '../../utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -36,7 +36,7 @@ const Header: React.FC<HeaderProps> = ({
   onPress,
   headerTitle,
   showProgressBar = true,
-  onPressRightIcon = () => { },
+  onPressRightIcon = () => {},
   rightIcon,
   showBackButton = true,
   rightIconWrapperStyle = {},
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   iconWrapper: {
     width: verticalScale(40),
     height: verticalScale(40),
-    borderRadius: radiusScale(20),
+    borderRadius: radiusScale(40),
     backgroundColor: COLORS.tabBorderColor,
     justifyContent: 'center',
     alignItems: 'center',

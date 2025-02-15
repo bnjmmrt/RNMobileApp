@@ -6,7 +6,7 @@ import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import Button from '../Button';
 import moment from 'moment';
 import WheelPicker from '../WheelPicker/WheelPicker';
-import { fontFamily } from 'src/utils/functions';
+import { fontFamily, parseAndFormatDate } from 'src/utils/functions';
 
 interface Props {
   setSelectedDate: (date: string) => void;
@@ -14,26 +14,8 @@ interface Props {
 }
 const CustomDatepickerBottomSheet = forwardRef((props: Props, ref) => {
 
-  // const today = new Date();
-
-  function parseDateString(dateString: string) {
-    try {
-      if (dateString && dateString !== 'Invalid Date') {
-        const [month, day, year] = dateString.split('/').map(Number);
-        return new Date(year, month - 1, day); // Month is 0-based in JavaScript Date
-      }
-
-      const initialDate = new Date();
-      initialDate.setFullYear(new Date().getFullYear() - 18);
-      return initialDate
-    } catch (error) {
-      console.log(" errror", error)
-    }
-  }
-
-  const initialDate = parseDateString(props.date);
-  console.log('Today:', initialDate)
-
+  const myDate = parseAndFormatDate(props.date);
+  const initialDate = new Date(myDate)
   const [selectedDay, setSelectedDay] = useState<string>(`${initialDate.getDate()}`);
   const [selectedMonth, setSelectedMonth] = useState<string>(
     new Intl.DateTimeFormat('en-US', { month: 'long' }).format(initialDate)
@@ -85,8 +67,7 @@ const CustomDatepickerBottomSheet = forwardRef((props: Props, ref) => {
     console.log('Select button value !!!!!', selectedDay, selectedMonth, selectedYear);
     const dateFormat = handleFormatDate(selectedDay, selectedMonth, selectedYear, months);
     setDateOfBirth(dateFormat);
-    console.log('Date of Birth:', dateOfBirth);
-    props.setSelectedDate(dateFormat)
+    props.setSelectedDate(dateFormat || '')
     ref.current?.close();
   };
 
@@ -98,7 +79,7 @@ const CustomDatepickerBottomSheet = forwardRef((props: Props, ref) => {
     }
     const monthNumber = (monthIndex + 1).toString().padStart(2, '0'); // Convert to two-digit month
     const dateString = `${selectedDay}/${monthNumber}/${selectedYear}`;
-    const formattedDate = moment(dateString, 'DD/MM/YYYY').format('MM/DD/YYYY');
+    const formattedDate = moment(dateString, 'DD/MM/YYYY').format('MM-DD-YYYY');
     console.log('Formatted Date:', formattedDate);
     return formattedDate;
   };

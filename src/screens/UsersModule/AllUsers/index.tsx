@@ -36,6 +36,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>('');
   const [filterQuery, setFilterQuery] = useState<string>('');
+  const [filterNumber, setFilterNumber] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
 
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
@@ -81,13 +82,19 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
     setSelectedUsers([]);
   };
 
-  const onApplyFilter = (queryString: string) => {
+  const onApplyFilter = (
+    queryString: string,
+    numberOfFiltersApplied: number,
+  ) => {
     setCurrentPage(1);
     setFilterQuery(queryString);
+    setFilterNumber(numberOfFiltersApplied);
   };
+
   const onClearFilter = () => {
     setCurrentPage(1);
     setFilterQuery('');
+    setFilterNumber(0);
   };
 
   const renderItem = useCallback(
@@ -126,37 +133,34 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   }, [data]);
 
   useEffect(() => {
-    if (error) {
+    if (isError) {
       setAllUsers({totalCount: 0, users: []});
     }
-  }, [error]);
+  }, [isError]);
 
   return (
     <View style={{marginTop: verticalMarginScale(8), flex: 1}}>
+      <SearchInput
+        ref={searchInputRef}
+        onSearchTextChange={handleSearchTextChange}
+        placeholder="Search..."
+        rightIcon={IMAGES.filter_lines}
+        onPressRightIcon={() => {
+          filtersSheetRef?.current?.open();
+        }}
+        rightIconText={String(filterNumber || '') || ''}
+        mainContainerStyle={{marginHorizontal: horizontalMarginScale(20)}}
+        defaultValue={searchText}
+      />
       <FlatList
         data={allUsers?.users || []}
         style={{
           marginHorizontal: horizontalMarginScale(20),
-          marginTop: verticalMarginScale(10),
+          marginTop: verticalMarginScale(16),
         }}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{gap: verticalMarginScale(16)}}
-        stickyHeaderIndices={[0]}
-        ListHeaderComponent={
-          <SearchInput
-            ref={searchInputRef}
-            onSearchTextChange={handleSearchTextChange}
-            placeholder="Search..."
-            rightIcon={IMAGES.filter_lines}
-            onPressRightIcon={() => {
-              filtersSheetRef?.current?.open();
-            }}
-            rightIconText=""
-            mainContainerStyle={{marginHorizontal: 0}}
-            defaultValue={searchText}
-          />
-        }
         ListFooterComponent={
           <View style={{marginBottom: verticalMarginScale(150)}} />
         }
