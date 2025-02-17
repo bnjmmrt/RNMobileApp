@@ -30,6 +30,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
           padding: verticalMarginScale(4),
         },
       }}
+      enablePoweredByContainer={false}
       placeholder="Search Location"
       onPress={(data: GooglePlaceData, detail: GooglePlaceDetail | null) => {
         // 'details' is provided when fetchDetails = true
