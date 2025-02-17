@@ -41,8 +41,8 @@ const useCalender = (eventDetails: Event) => {
     await checkPermission();
     if (!permissionGranted) {
       Alert.alert(
-        'Permission Required',
         '“Rumor” Would Like to Access Your Calendar',
+        'Save Rumor events to your Apple Calendar.',
       );
       return;
     }
