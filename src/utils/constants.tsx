@@ -242,7 +242,7 @@ export const PROFILE = {
   REVIEW_VOUCH_REQUESTS:
     'Approve or decline requests from members seeking your vouch to join an experience. Your decision is private.',
   COMPANY_NAME: 'Company Name',
-  APPLY_FOR_MEMBERSHIP: 'Apply for MemberShip',
+  APPLY_FOR_MEMBERSHIP: 'Apply for Membership',
 };
 
 export const ERROR_MESSAGE = {
