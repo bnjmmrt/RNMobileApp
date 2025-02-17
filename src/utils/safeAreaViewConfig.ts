@@ -1,11 +1,6 @@
-import { SafeAreaViewConfig } from 'src/redux/slices/safeAreaViewConfigSlice';
-import { COLORS } from './constants';
+import {COLORS} from './constants';
 
-interface SafeAreaViewConfigInterface {
-  [path: string]: SafeAreaViewConfig;
-}
-
-export const SAFEWAREAVIEW_CONFIG: SafeAreaViewConfigInterface = {
+export const SAFEWAREAVIEW_CONFIG = {
   DEFAULT_SCHEME: {
     showTopSafeAreaView: true,
     topSafeAreaViewColor: COLORS.white,
@@ -22,4 +17,12 @@ export const SAFEWAREAVIEW_CONFIG: SafeAreaViewConfigInterface = {
     statusBarStyle: 'default',
     translucent: false,
   },
-};
+  STATIC_GRADIENT_SCHEME: {
+    showTopSafeAreaView: true,
+    topSafeAreaViewColor: '#121f22',
+    showBottomSafeAreaView: true,
+    bottomSafeAreaViewColor: '#151012',
+    statusBarStyle: 'default',
+    translucent: false,
+  },
+} as const;

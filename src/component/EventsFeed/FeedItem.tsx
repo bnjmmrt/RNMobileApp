@@ -1,23 +1,19 @@
-import React from 'react';
-import IMAGES from '../../assets/images';
-import type { EventItem } from './EventsFeed';
 import FastImage from '@d11/react-native-fast-image';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { COLORS } from '../../utils/constants';
-import { fontFamily } from '../../utils/functions';
+import {useNavigation} from '@react-navigation/native';
+import React from 'react';
+import {Dimensions, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {ROUTES} from 'src/navigation/Route';
+import IMAGES from '../../assets/images';
+import {COLORS} from '../../utils/constants';
 import {
-  horizontalMarginScale,
-  verticalMarginScale,
-  radiusScale,
   fontScale,
-  horizontalScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
   verticalScale,
-  Hp,
-  Wp,
 } from '../../utils/dimensions';
-import { useNavigation } from '@react-navigation/native';
-import { ROUTES } from 'src/navigation/Route';
-
+import {CustomText} from '../CustomText';
+import type {EventItem} from './EventsFeed';
 
 interface FeedItemProps {
   item: EventItem;
@@ -25,70 +21,73 @@ interface FeedItemProps {
   setDetail: React.Dispatch<React.SetStateAction<EventItem | null>>;
 }
 
-const FeedItem: React.FC<FeedItemProps> = ({ item, isFeatured, setDetail }) => {
+const FeedItem: React.FC<FeedItemProps> = ({item, isFeatured, setDetail}) => {
   const navigation = useNavigation();
 
   const handlEventPress = () => {
     navigation.navigate(ROUTES.EventStack, {
       screen: ROUTES.EventDetailsScreen,
-      params: item
+      params: item,
     });
   };
+
   return (
-    <TouchableOpacity style={styles.container} onPress={() => handlEventPress()}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => handlEventPress()}>
       <View style={[styles.imageContainer]}>
         <FastImage
-          source={{ uri: item.imageCover || item.imageFlyer }}
+          source={{uri: item.imageCover || item.imageFlyer}}
           resizeMode={FastImage.resizeMode.cover}
           defaultSource={IMAGES.eventCoverPlaceholders1}
           style={styles.icon}
         />
       </View>
-      <View style={styles.contentContainer}>
-        <Text numberOfLines={1} style={styles.title}>
-          {item.name}
-        </Text>
-        <Text numberOfLines={1} style={styles.subtitle}>
-          {item.startDate}
-        </Text>
-      </View>
+      {item.name || item.startDate ? (
+        <View style={styles.contentContainer}>
+          {item.name ? (
+            <CustomText textProps={{numberOfLines: 1}} style={styles.title}>
+              {item.name}
+            </CustomText>
+          ) : null}
+          {item.startDate ? (
+            <CustomText textProps={{numberOfLines: 1}} style={styles.subtitle}>
+              {item.startDate}
+            </CustomText>
+          ) : null}
+        </View>
+      ) : null}
     </TouchableOpacity>
   );
 };
 
+let screenWidth: number = Dimensions.get('window').width;
+
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    paddingVertical: verticalMarginScale(10),
-    paddingHorizontal: horizontalMarginScale(10),
-    width: Wp(50),
+    width: (screenWidth - horizontalMarginScale(20) * 3) / 2,
   },
   imageContainer: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   contentContainer: {
-    flexDirection: 'column',
     flex: 1,
-    marginTop: verticalMarginScale(8),
-    paddingHorizontal: horizontalMarginScale(8),
+    marginTop: verticalMarginScale(12),
   },
   icon: {
-    borderRadius: 10,
-    height: horizontalScale(245),
-    width: verticalScale(166),
-    backgroundColor: COLORS.borderGray
+    borderRadius: radiusScale(8),
+    height: verticalScale(245),
+    width: '100%',
+    backgroundColor: COLORS.borderGray,
   },
   title: {
     fontSize: fontScale(16),
-    fontFamily: fontFamily.ABCDiatype_Medium,
-    color: COLORS.black,
   },
   subtitle: {
     color: COLORS.light_gray,
     fontSize: fontScale(12),
-    fontFamily: fontFamily.ABCDiatype_Regular,
-    marginTop: verticalMarginScale(1),
+    marginTop: verticalMarginScale(4),
   },
 });
 
