@@ -1,12 +1,12 @@
 import {Dimensions, StyleSheet} from 'react-native';
-import {COLORS} from '../../../../utils/constants';
-import {fontFamily} from '../../../../utils/functions';
 import {
   fontScale,
   horizontalMarginScale,
   radiusScale,
   verticalMarginScale,
 } from 'src/utils/dimensions';
+import {COLORS} from '../../../../utils/constants';
+import {fontFamily} from '../../../../utils/functions';
 
 let screenWidth: number = Dimensions.get('window').width;
 const cardWidth = (screenWidth - horizontalMarginScale(24 + 16)) / 2;

@@ -1,11 +1,10 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { StyleSheet } from 'react-native';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
 import IMAGES from '../../../assets/images';
-import { LABLE, ERROR_MESSAGE, COLORS } from '../../../utils/constants';
+import { LABLE, ERROR_MESSAGE } from '../../../utils/constants';
 import DatepickerBottomSheet from '../../../component/BottomSheet/CustomDatepickerBottomSheet';
-import { formatDate, validateAge } from '../../../utils/functions';
+import { validateAge } from '../../../utils/functions';
 import { horizontalMarginScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 
 interface DatePickerComponentProps {
@@ -13,7 +12,6 @@ interface DatePickerComponentProps {
 }
 
 const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) => {
-  const dispatch = useDispatch();
   const bottomSheetRef = useRef<any>(null);
   const [selectedDate, setSelectedDate] = useState<string>(props.birthDate); // Initialize with birthday from Redux
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

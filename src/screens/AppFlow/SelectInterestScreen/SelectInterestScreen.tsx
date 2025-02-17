@@ -46,7 +46,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
   const selectedInterests = useSelector(
     (state: RootState) => state.appFlow.interest,
   );
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const userId = useSelector((state: RootState) => state.auth.userId);
 
   const styles = SelectInterestScreenStyles();
   const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
@@ -55,7 +55,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
   const getMyInterests = async() => {
     const response:any = await apiRequest(
       'get',
-      EndPoint.user_interests + loginData?.id,
+      EndPoint.user_interests + userId,
     );
     if(response.status===200){
       //dependiing on API response parse data and set
@@ -69,7 +69,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
     };
     return apiRequest(
       'post',
-      EndPoint.user_interests + loginData?.id,
+      EndPoint.user_interests + userId,
       requestObject,
     );
   };
@@ -79,7 +79,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
     if (configData.fromProfile) {
       getMyInterests();
     }else{
-      setInterest(selectedInterests)
+      setSelectedCategories(selectedInterests)
     }
   }, []);
 
@@ -118,6 +118,8 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
         setIsToastShown(false);
         const response: any = await updateMyInterests();
         if (response.status===200) {
+          // navigation.navigate('ProfileScreen')
+          navigation.goBack()
           // dispatch(setInterest(selectedCategories))
            FlashMessageComponent.show('success', 'Details updated successfully!');
         }

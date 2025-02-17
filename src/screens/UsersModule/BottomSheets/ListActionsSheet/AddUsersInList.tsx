@@ -1,6 +1,7 @@
+import {BottomSheetFlatList, BottomSheetView} from '@gorhom/bottom-sheet';
 import IMAGES from '@images/index';
 import React, {useCallback, useEffect, useState} from 'react';
-import {FlatList, Image, TouchableOpacity, View} from 'react-native';
+import {Image, TouchableOpacity, View} from 'react-native';
 import AvatarInitials from 'src/component/AvatarInitials';
 import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
@@ -8,10 +9,9 @@ import SearchInput from 'src/component/SearchInput';
 import {useAddUsersToCustomListMutation} from 'src/redux/actions/listsApiAction';
 import {useFetchAllUsersQuery} from 'src/redux/actions/usersApiAction';
 import {horizontalMarginScale, verticalMarginScale} from 'src/utils/dimensions';
+import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
 import {UserItemInterface} from '../../UsersListItem';
 import {styles} from './style';
-import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
-import {BottomSheetFlatList, BottomSheetView} from '@gorhom/bottom-sheet';
 
 const AddUsersInList = ({
   onSuccess,
@@ -63,6 +63,7 @@ const AddUsersInList = ({
   };
 
   const handleSearchTextChange = (text: string) => {
+    setCurrentPage(1);
     setSearchText(text);
   };
 
@@ -150,7 +151,7 @@ const AddUsersInList = ({
         style={{
           marginBottom: verticalMarginScale(12),
           marginHorizontal: horizontalMarginScale(12),
-          flexGrow: 1,
+          flex: 1,
         }}
         ListHeaderComponent={
           <SearchInput
@@ -159,6 +160,8 @@ const AddUsersInList = ({
               marginBottom: verticalMarginScale(8),
               marginHorizontal: 0,
             }}
+            defaultValue={searchText}
+            onSearchTextChange={handleSearchTextChange}
           />
         }
         showsVerticalScrollIndicator={false}
@@ -172,9 +175,7 @@ const AddUsersInList = ({
         style={[
           styles.actionCta,
           {
-            marginBottom: verticalMarginScale(22),
-            // position: 'absolute',
-            // bottom: verticalMarginScale(22),
+            marginBottom: verticalMarginScale(20),
           },
         ]}
         onPress={onPressAddToList}

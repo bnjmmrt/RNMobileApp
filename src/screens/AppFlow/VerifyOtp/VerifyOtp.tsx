@@ -126,7 +126,6 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   //       : {phoneNumber: route.params.phone}),
   //     requestCode: code,
   //   };
-  //   console.log('sayyed params:', requestParam);
 
   //   try {
   //     setIsLoading(true);

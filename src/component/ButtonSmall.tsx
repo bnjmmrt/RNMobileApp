@@ -11,7 +11,7 @@ import {
   ImageStyle,
   ActivityIndicator,
 } from 'react-native';
-import {Hp, radiusScale, Wp} from '../utils/dimensions';
+import {horizontalScale, Hp, radiusScale, Wp} from '../utils/dimensions';
 import {fontFamily} from '../utils/functions';
 import {COLORS} from '../utils/constants';
 import {CustomText} from './CustomText';
@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     flexDirection: 'row',
+    minWidth: horizontalScale(70),
   },
   text: {
     fontFamily: fontFamily.ABCDiatype_Medium,

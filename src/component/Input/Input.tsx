@@ -12,18 +12,19 @@ import {
   Image,
   TouchableOpacity,
   ViewStyle,
+  KeyboardTypeOptions,
 } from 'react-native';
-import {COLORS} from '../../utils/constants';
-import {useNavigation} from '@react-navigation/native';
-import {CustomText} from '../CustomText';
+import { COLORS } from '../../utils/constants';
+import { useNavigation } from '@react-navigation/native';
+import { CustomText } from '../CustomText';
 import {
   fontScale,
   horizontalMarginScale,
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import {fontFamily} from 'src/utils/functions';
-import {BottomSheetTextInput} from '@gorhom/bottom-sheet';
+import { fontFamily } from 'src/utils/functions';
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
 interface InputProps {
   label?: string;
@@ -40,6 +41,7 @@ interface InputProps {
   isRequired?: boolean;
   forBottomSheet?: boolean;
   inputFieldContainerStyle?: ViewStyle;
+  keyboardType?: KeyboardTypeOptions;
 }
 
 export type InputRefMethods = {
@@ -65,6 +67,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     isRequired = false,
     forBottomSheet = false,
     inputFieldContainerStyle,
+    keyboardType = 'default',
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -77,6 +80,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     validateInputs,
     inputText,
     setErrorMessage,
+    setInputText
   }));
 
   // Validate inputs
@@ -96,7 +100,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     }
   };
   const requiredText = () =>
-    isRequired && <CustomText style={{color: COLORS.errorText}}> *</CustomText>;
+    isRequired && <CustomText style={{ color: COLORS.errorText }}> *</CustomText>;
 
   useEffect(() => {
     if (defaultValue != undefined && defaultValue != null) {
@@ -121,7 +125,11 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
         style={[
           styles.inputContainer,
           multiline ? styles.multilineInputContainer : null,
-          errorMessage  ? multiline ? [styles.errorInputWrapper,styles.multilineInputContainer]:styles.errorInputWrapper : null,
+          errorMessage
+            ? multiline
+              ? [styles.errorInputWrapper, styles.multilineInputContainer]
+              : styles.errorInputWrapper
+            : null,
           inputFieldContainerStyle,
         ]}>
         {leftImage && <Image source={leftImage} style={styles.leftImage} />}
@@ -139,6 +147,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
             }
           }}
           multiline={multiline}
+          keyboardType={keyboardType}
         />
         {rightImage && (
           <TouchableOpacity onPress={onPressImage}>
@@ -180,8 +189,10 @@ const styles = StyleSheet.create({
     height: verticalScale(160),
     paddingTop: verticalMarginScale(10),
   },
-  leftImage: {width: 16, height: 16},
-  rightImage: {width: 16, height: 16},
+  leftImage: { width: 16, height: 16 },
+  rightImage: {
+    width: 13, height: 13, resizeMode: 'contain'
+  },
   input: {
     flex: 1,
     fontSize: fontScale(14),

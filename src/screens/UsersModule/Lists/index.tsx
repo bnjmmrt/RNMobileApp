@@ -1,8 +1,10 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, RefreshControl, View} from 'react-native';
 import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
+import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import GradientSeprator from 'src/component/GradientSeprator';
 import {useFetchAllCustomListsQuery} from 'src/redux/actions/listsApiAction';
-import {verticalScale} from 'src/utils/dimensions';
+import {Hp, verticalScale} from 'src/utils/dimensions';
 import ListActionsSheet, {
   listActionCurrentPageType,
 } from '../BottomSheets/ListActionsSheet';
@@ -73,6 +75,11 @@ const Lists: React.FC<ListsProps> = ({}) => {
     }
   };
 
+  const onRefreshPage = () => {
+    setCurrentPage(1);
+    refetch();
+  };
+
   const onListActionSheetSuccess = () => {
     actionSheetRef?.current?.close();
     setCurrentPage(1);
@@ -98,7 +105,7 @@ const Lists: React.FC<ListsProps> = ({}) => {
               index === 0 ? 'follower' : index === 1 ? 'favorite' : 'custom'
             }
           />
-          {index === 1 ? <View style={styles.seprator} /> : null}
+          {index === 1 ? <GradientSeprator style={styles.seprator} /> : null}
         </>
       );
     },
@@ -119,6 +126,25 @@ const Lists: React.FC<ListsProps> = ({}) => {
         onEndReached={loadMore}
         onEndReachedThreshold={0.4}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          allCustomLists?.list?.length > 0 ? (
+            <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
+          ) : undefined
+        }
+        ListEmptyComponent={
+          <View
+            style={{
+              height: Hp(55),
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <EventEmptyRecord
+              title="No Lists"
+              subTitle=""
+              isLoading={isLoading}
+            />
+          </View>
+        }
       />
       <ListActionsSheet
         ref={actionSheetRef}
@@ -127,6 +153,7 @@ const Lists: React.FC<ListsProps> = ({}) => {
         setSelectedAction={setSelectedActionSheetAction}
         selectedListId={selectedList || ''}
         onSuccess={onListActionSheetSuccess}
+        listType="custom"
       />
     </View>
   );

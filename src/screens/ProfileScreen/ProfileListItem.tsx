@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
-import { COLORS, PROFILE } from '../../utils/constants';
+import { COLORS, PROFILE, ROLE } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { ROUTES } from '../../navigation/Route';
@@ -36,6 +36,8 @@ interface ListItemProps {
 const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
   const navigation = useNavigation<NavigationProp>();
   const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  const role = useSelector((state: RootState) => state.auth.role);
 
   const redirectToProfileStack = (screenName: string, params = {}) => {
     navigation.navigate('ProfileStack', {
@@ -49,7 +51,7 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
     switch (item.title) {
       case PROFILE.EDIT_PROFILE:
         screenName =
-          loginData?.roles[0].roleName === 'host'
+          role === ROLE.HOST
             ? ROUTES.HostEditProfileScreen
             : ROUTES.EditProfileScreen;
         console.log('Redirecting to Edit Profile...');

@@ -27,6 +27,10 @@ const appFlowApiDataSlice = createSlice({
     setProfileData(state, action: PayloadAction<any>) {
       state.profileData = action.payload;
     },
+    resetProfileData(state) {
+      // Reset profile data to initial values
+      state.profileData = {};
+    },
     resetAppGlobalData(state) {
       // Reset state to initial values
       Object.assign(state, initialState);
@@ -34,7 +38,12 @@ const appFlowApiDataSlice = createSlice({
   },
 });
 
-export const {setCreativeFocus, setInterests, resetAppGlobalData,setProfileData} =
-  appFlowApiDataSlice.actions;
+export const {
+  setCreativeFocus,
+  setInterests,
+  resetAppGlobalData,
+  setProfileData,
+  resetProfileData
+} = appFlowApiDataSlice.actions;
 
 export default appFlowApiDataSlice.reducer;

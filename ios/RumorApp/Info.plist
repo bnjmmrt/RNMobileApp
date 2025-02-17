@@ -35,12 +35,10 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Give Rumor app  access to your camera</string>
-  <key>NSLocationWhenInUseUsageDescription</key>
-  <string>This app needs access to your location for mapping services.</string>
-  <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-  <string>This app needs location access in the background.</string>
 	<key>NSContactsUsageDescription</key>
 	<string>This will be used to request referrals or invite friends from your contacts.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs location access in the background.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -72,19 +70,12 @@
 	<array>
 		<string>arm64</string>
 	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-    <string>UIInterfaceOrientationPortrait</string>
-    <string>UIInterfaceOrientationPortraitUpsideDown</string>
-    <string>UIInterfaceOrientationLandscapeLeft</string>
-    <string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

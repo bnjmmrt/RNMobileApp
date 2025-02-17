@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Image } from 'react-native-animatable';
+import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '../../assets/images';
 import { COLORS, } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
@@ -28,19 +28,19 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick, profile
             <View style={styles.profilePhotoContainer}>
                 <FullScreenLoader loading={loading} customStyle={styles.profilePhotoContainer}>
                     {profilePic ? (
-                        <Image
+                        <FastImage
                             style={styles.profilePhotoContainer}
                             source={{ uri: profilePic }}
                             resizeMode="cover"
                         />
                     ) : (
                         <View style={styles.profilePhotoContainer}>
-                            <AvatarInitials name={'Bessie Cooper'} size={48} />
+                            <AvatarInitials name={name} size={48} />
                         </View>
                     )}
                 </FullScreenLoader>
                 <TouchableOpacity style={styles.iconContainer} onPress={editPhotoClick}>
-                    <Image
+                    <FastImage
                         resizeMode="contain"
                         source={IMAGES.pencil}
                         style={styles.ic_pencil}

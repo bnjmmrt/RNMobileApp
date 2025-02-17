@@ -1,0 +1,39 @@
+import {BottomSheetView} from '@gorhom/bottom-sheet';
+import IMAGES from '@images/index';
+import React, {useState} from 'react';
+import {Image, TouchableOpacity, View} from 'react-native';
+import {CustomText} from 'src/component/CustomText';
+import {verticalMarginScale} from 'src/utils/dimensions';
+import {styles} from './style';
+
+const FilterAccordian = ({
+  children,
+  title,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  return (
+    <BottomSheetView
+      style={[
+        styles.accordianContainer,
+        isOpen && {paddingBottom: verticalMarginScale(16)},
+      ]}>
+      <TouchableOpacity
+        style={styles.accordianTitleContainer}
+        onPress={() => setIsOpen(!isOpen)}>
+        <CustomText style={styles.accordianTitle}>{title}</CustomText>
+        <View style={styles.accordianArrowContainer}>
+          <Image
+            source={IMAGES.arrowRight}
+            style={{transform: [{rotate: isOpen ? '270deg' : '90deg'}]}}
+          />
+        </View>
+      </TouchableOpacity>
+      {isOpen ? children : null}
+    </BottomSheetView>
+  );
+};
+
+export default FilterAccordian;

@@ -29,23 +29,15 @@ const FollowingScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const {navigate, goBack} = useNavigation();
   const [pagination, setPagination] = useState({take: 12, skip: 0});
-  const [hostList, setHostList] = useState<any[]>([
-    {
-      id: 'cvsgs-sdggddvd',
-      firstName: 'This is a really long name for a Host',
-      companyName: 'Revolve',
-      companyLogo: 'https://i.imgur.com/Lrupihs.png',
-      isFollowing:false
-    },
-  ]);
+  const [hostList, setHostList] = useState<any[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const userId = useSelector((state: RootState) => state.auth.userId);
 
   const getFollowings = async () => {
     const response: any = await apiRequest(
       'get',
-      `${EndPoint.hosts_followed}${loginData?.id}?take=${pagination.take}&skip=${pagination.skip}`,
+      `${EndPoint.hosts_followed}${userId}?take=${pagination.take}&skip=${pagination.skip}`,
     );
     if (response.status === 200) {
       const hostsData = response?.data.hosts;
@@ -67,7 +59,7 @@ const FollowingScreen: React.FC = () => {
   const followUnfollow = async (hostId: string) => {
     const response: any = await apiRequest(
       'post',
-      `v1/auth/host/${hostId}/follow`, { userId: loginData?.id },
+      `v1/auth/host/${hostId}/follow`, { userId: userId },
     );
     return response?.status;
   };

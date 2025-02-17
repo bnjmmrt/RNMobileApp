@@ -43,6 +43,10 @@ export const BUTTON_LABLE = {
   SHOW_RESULTS: 'Show Results',
   CLEAR_FILTERS: 'Clear Filters',
   FOLLOW: 'Follow',
+  YES: 'Yes',
+  NO: 'No',
+  ADD_GUEST_DETAILS: 'Add Guest Details',
+  ADD: 'Add',
   DISCOVER_MORE_EVENTS: 'Discover More Events',
   CLEAR:"Clear"
 };
@@ -170,6 +174,21 @@ export const LABLE = {
   DUMMY_TEXT:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent bland',
   PHONE_NUMBER: 'Phone Number',
+  RSVP_TEXT: `If you select ‘No’, you cannot change your response. If you later decide you’d like to attend, you’ll need to request another invite from the host.`,
+  WE_WERE_SORRY_CANT_MAKE_IT: "We’re sorry you         can’t make it.",
+  YOU_DECLINED_THIS_INVITATION: "You declined this invitation",
+  DISCOVER_MORE_EVENTS: "Discover More Events",
+  RSVP_QUESTION_DETAILS: "The host is offering you the option to bring up to [X] guests. How many guests would you like to bring?",
+  RSVP_SUBTITLE: "If you later decide you'd like to attend, you'll need to request another invite from the host.",
+  RSVP_INSTRUCTION: " Please add your additional guests’ details by [event date and time],or their passes will be canceled.",
+  ADD_FRIEND_AS_GUEST: 'Add friends as guests',
+  ADD_GUEST_SUBTITLE: 'Provide details to add your additional guest.',
+  ADD_GUEST_SYNC_TEXT: 'Easily sync your phone contacts to invite friends to join you at events.',
+  SYNC_CONTACT_SEETTINGS: 'Sync Contacts in Settings',
+  ADD_GUEST: 'Add Guest',
+  ADD_GUSET_SUBTITLE: 'Your changes will only be saved in Rumor and will not impact your device’s contact list.',
+  YOUR_RSPV_IS: 'Your RSVP is confirmed!',
+  YOU_CAN_RETURN_TO_THE: 'You can return to the event page anytime for more details or to access your event confirmation.',
   WEBSITE: 'Website',
   COMPANY_NAME: 'Company Name',
   BIO: 'Bio',
@@ -305,6 +324,7 @@ export const EVENT_STATUS = {
   DECLINED_BY_YOU: 'You declined this invitation',
   GOING: 'You are going',
 };
+
 
 export const memberTabData: TabItem[] = [
   {
@@ -544,3 +564,11 @@ export const eventData = {
   },
   "status": 200
 }
+
+
+export const genderList = [
+  {id: 0, gender: 'Male', value:'MALE'},
+  {id: 1, gender: 'Female', value:'FEMALE'},
+  {id: 2, gender: 'Non-binary', value:'NON_BINARY'},
+  {id: 3, gender: 'Prefer not to say', value:'NOT_APPLICABLE'},
+];

@@ -1,38 +1,26 @@
+import IMAGES from '@images/index';
 import React, {useCallback} from 'react';
 import {FlatList, View} from 'react-native';
+import {shallowEqual, useSelector} from 'react-redux';
+import ButtonSmall from 'src/component/ButtonSmall';
+import {CustomText} from 'src/component/CustomText';
+import {UserDetailResponse} from 'src/redux/actions/usersApiAction';
+import {RootState} from 'src/redux/slices';
 import {
   horizontalMarginScale,
   radiusScale,
   verticalMarginScale,
 } from 'src/utils/dimensions';
-import ListItem, {ListItemProps} from '../../ListItem';
+import ListItem from '../../ListItem';
 import UserDetailCard from '../UserDetailCard';
 import createStyle from './style';
-import {CustomText} from 'src/component/CustomText';
-import ButtonSmall from 'src/component/ButtonSmall';
-import IMAGES from '@images/index';
-import {shallowEqual, useSelector} from 'react-redux';
-import {RootState} from 'src/redux/slices';
-import {UserDetailResponse} from 'src/redux/actions/usersApiAction';
-import {UserItemInterface} from '../../UsersListItem';
-import {ListItemInterface} from '../../Lists';
-
-const dummyListData = [
-  {
-    name: 'List 1',
-    users: '1233432',
-  },
-  {
-    name: 'List 1',
-    users: '1233432',
-  },
-];
 
 interface UserListsProps {
   user: string;
+  onPressAddToList: () => void;
 }
 
-const UserLists: React.FC<UserListsProps> = ({user}) => {
+const UserLists: React.FC<UserListsProps> = ({user, onPressAddToList}) => {
   const styles = createStyle();
 
   const {userDetails} = useSelector((state: RootState) => {
@@ -62,6 +50,7 @@ const UserLists: React.FC<UserListsProps> = ({user}) => {
           id={item.id}
           userCount={item.totalCount}
           from="customListDetail"
+          listType="custom"
         />
       );
     },
@@ -88,7 +77,7 @@ const UserLists: React.FC<UserListsProps> = ({user}) => {
                 gap: horizontalMarginScale(6),
               }}
               title="Add to List"
-              onPress={() => {}}
+              onPress={() => onPressAddToList()}
               leftIcon={IMAGES.list}
               leftIconStyle={{tintColor: 'white'}}
             />

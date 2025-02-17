@@ -15,7 +15,7 @@ import Button from '../Button';
 import IMAGES from '../../assets/images';
 import TabBar from '../ActiveTabBar/TabBar';
 import { changeSafeAreaViewConfig, fontFamily } from '../../utils/functions';
-import { useFetchMembersQuery, useRequestMemberMutation } from '../../redux/actions/referralApiAction';
+import { useFetchMembersQuery, useGetConfirmedMembersMutation, useGetReferralRequestQuery, useRequestMemberMutation } from '../../redux/actions/referralApiAction';
 import { RenderMemberList } from './RenderMemberList';
 import Header from '../Header/Header';
 import SearchInput from '../SearchInput';
@@ -24,6 +24,7 @@ import EventEmptyRecord from '../EmptyRecord/EventEmptyRecord';
 import { useFocusEffect } from '@react-navigation/native';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import useContacts from 'src/utils/hooks/useContactPermission';
+import useApi from 'src/axios/useApi';
 
 interface ContactItem {
   name: string;
@@ -32,57 +33,24 @@ interface ContactItem {
 
 const PAGE_SIZE = 30;
 
-const membersData = [
-  {
-    age: 31,
-    categories: ["Food", "Music", "Technology"],
-    phoneNumber: "5556106679",
-    city: "Los Angeles",
-    email: "wwvvo@uoi.com",
-    followerCount: "72816",
-    gender: 1,
-    id: "ilxmjswjgt",
-    instagramUsername: "ylttxhrjrjfi",
-    isFavourite: false,
-    name: "John Wick",
-    profilePicture: "https://example.com/aorodlsmgw.jpg",
-    role: "Admin",
-    status: 0,
-    types: ["Influencer", "Blogger"],
-  },
-  {
-    age: 43,
-    categories: ["Technology"],
-    phoneNumber: "+17690348141",
-    city: "Philadelphia",
-    email: "etobp@wzu.com",
-    followerCount: "96524",
-    gender: 1,
-    id: "hukknzeemj",
-    instagramUsername: "jfgphchevata",
-    isFavourite: false,
-    name: "Endeidx",
-    profilePicture: "https://example.com/kwgmpsvahl.jpg",
-    role: "Moderator",
-    status: 1,
-    types: ["Blogger", "Content Creator"],
-  },
-  // Add more mocked data here
-];
-
 const InviteReferralBottomSheet = forwardRef((props, ref) => {
   const [contacts, setContacts] = useState<ContactItem[]>([]);
   const [members, setMembers] = useState<ContactItem[]>([]);
-  // const { data: membersData, isMembersLoading, isError } = useFetchMembersQuery();
+  const { apiRequest, loading: apiLoading, error: apiError } = useApi();
+
+  const [getConfirmedMembers, { data, error, isLoading }] = useGetConfirmedMembersMutation();
+
+
   const [filteredContacts, setFilteredContacts] = useState<ContactItem[]>([]);
   const [filteredMembers, setFilteredMembers] = useState<ContactItem[]>([]);
   const [requestSent, setRequestSent] = useState<string[]>([]);
   const [selectedTab, setSelectedTab] = useState('01');
   const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const { getContacts, permissionGranted } = useContacts();
+  const { getContacts, permissionGranted, getContactNumbersOnly, requestContactPermission } = useContacts();
 
   useEffect(() => {
+    requestContactPermission();
     fetchContacts()
   }, []);
 
@@ -95,34 +63,39 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
 
   const fetchContacts = async () => {
     try {
+      const refferalRequest = await apiRequest('get', 'v1/platform/list-referral-requests/');
       const formattedContacts = await getContacts();
-      const memberPhoneNumbers = new Set(
-        membersData.map((member) =>
-          member.phoneNumber.replace(/\s|-/g, "")
-        )
-      );
-      const membersResult: string[] = [];
-      const nonMembersResult: string[] = [];
-      formattedContacts.forEach((contact) => {
-        if (memberPhoneNumbers.has(contact.phoneNumber)) {
-          const matchedMember = membersData.find(
-            (member) => member.phoneNumber.replace(/\s|-/g, "") === contact.phoneNumber
-          );
-          if (matchedMember) {
-            membersResult.push(matchedMember);
-          }
-        } else {
-          nonMembersResult.push(contact);
-        }
-      });
-      setContacts(nonMembersResult);
-      setFilteredContacts(nonMembersResult.slice(0, PAGE_SIZE));
-      setMembers(membersResult);
-      setFilteredMembers(membersResult);
+      const contacts = await getContactNumbersOnly();
+      const response = await getConfirmedMembers({ contacts });
+
+      if (response?.data?.data) {
+        const referralUserIds = refferalRequest.data.map(request => request.userId);
+
+        const membersWithSentFlag = response.data.data.map(member => ({
+          ...member,
+          isSent: referralUserIds.includes(member.userId)
+        }));
+
+        setMembers(membersWithSentFlag);
+        setFilteredMembers(membersWithSentFlag);
+
+        const memberPhoneNumbers = membersWithSentFlag.map(member => member.phoneNumber);
+        const nonMembers = formattedContacts.filter(contact =>
+          !memberPhoneNumbers.includes(contact.phoneNumber)
+        );
+
+        setContacts(nonMembers);
+        setFilteredContacts(nonMembers.slice(0, PAGE_SIZE));
+      } else {
+        setContacts(formattedContacts);
+        setFilteredContacts(formattedContacts.slice(0, PAGE_SIZE));
+      }
+
     } catch (error) {
       console.error('Error fetching contacts:', error);
     }
   };
+
 
   const handleSearch = (query: string) => {
     if (debounceTimeoutRef.current) {
@@ -234,6 +207,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
     />
   );
 
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <Header headerTitle="Referrals & Invites" showProgressBar={false} />
@@ -256,20 +230,32 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
                 handleSearch(query);
               }}
             />
-            <View>
+            {permissionGranted && <View>
               <Text style={styles.sectionTitle}>{LABLE.FRIENDS_WHO_ARE_MEMBERS}</Text>
               <Text style={styles.sectionSubtitle}>{LABLE.REQUEST_A_REFERRAL}</Text>
-            </View>
+            </View>}
+
             <FlatList
               data={filteredMembers}
               scrollEnabled={false}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={
-                <View style={{ height: Hp(50), justifyContent: 'center', alignItems: 'center' }}>
-                  <EventEmptyRecord title='No Results' subTitle='No Contacts are members at this time' />
-                </View>
+                permissionGranted ?
+                  <View style={{ height: Hp(50), justifyContent: 'center', alignItems: 'center' }}>
+                    <EventEmptyRecord title='No Results' subTitle='No Contacts are members at this time' />
+                  </View> :
+                  <View style={{ height: Hp(50), justifyContent: 'center', alignItems: 'center' }}>
+                    <EventEmptyRecord title='Access your contacts' subTitle='Easily sync your phone contacts to request referrals from members and invite friends to join you on Rumor' />
+                    <ButtonSmall
+                      colorTheme="dark"
+                      leftIcon={IMAGES.settings}
+                      style={styles.settingsButton}
+                      title="Sync Contacts in Settings"
+                      onPress={() => Linking.openURL('app-settings:')}
+                    />
+                  </View>
               }
-              contentContainerStyle={{ gap: 4, marginTop: 12 }}
+              contentContainerStyle={{ gap: 4, marginTop: 0 }}
               keyExtractor={(item, index) => '' + item.phoneNumber + index}
               renderItem={({ item }) =>
                 <RenderMemberList item={item} />
@@ -286,29 +272,23 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
                 handleSearch(query);
               }}
             />
-            <View>
+            {permissionGranted && <View>
               <Text style={styles.sectionTitle}>{LABLE.CONTACTS}</Text>
               <Text style={styles.sectionSubtitle}>{LABLE.INVITE_FRIENDS_TO}</Text>
-            </View>
+            </View>}
             <FlatList
               data={filteredContacts}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={
-                <View style={{ height: Hp(40), justifyContent: 'center', alignItems: 'center' }}>
-                  <EventEmptyRecord title='No Results' subTitle='No Contacts are members at this time' />
-                  {!permissionGranted && (
-                    <>
-                      <Text style={styles.sectionSubtitle}>
-                        Allow permission to send invite to contacts
-                      </Text>
-                      <ButtonSmall
-                        colorTheme="dark"
-                        style={styles.settingsButton}
-                        title="Go to Settings"
-                        onPress={() => Linking.openURL('app-settings:')}
-                      />
-                    </>
-                  )}
+                <View style={{ height: Hp(50), justifyContent: 'center', alignItems: 'center' }}>
+                  <EventEmptyRecord title='Access your contacts' subTitle='Easily sync your phone contacts to request referrals from members and invite friends to join you on Rumor' />
+                  <ButtonSmall
+                    colorTheme="dark"
+                    leftIcon={IMAGES.settings}
+                    style={styles.settingsButton}
+                    title="Sync Contacts in Settings"
+                    onPress={() => Linking.openURL('app-settings:')}
+                  />
                 </View>
               }
               keyExtractor={(item, index) => '' + item.phoneNumber + index}

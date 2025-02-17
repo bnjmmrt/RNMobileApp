@@ -1,16 +1,16 @@
+import {BottomSheetFlatList, BottomSheetView} from '@gorhom/bottom-sheet';
 import React, {useCallback, useEffect, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {View} from 'react-native';
 import Button from 'src/component/Button';
-import {styles} from './style';
 import {
   useAddUsersToCustomListMutation,
   useFetchAllCustomListsQuery,
 } from 'src/redux/actions/listsApiAction';
-import {ListInterface, ListItemInterface} from '../../Lists';
 import {COLORS} from 'src/utils/constants';
 import {verticalMarginScale, verticalScale} from 'src/utils/dimensions';
-import {BottomSheetFlatList, BottomSheetView} from '@gorhom/bottom-sheet';
 import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
+import {ListInterface, ListItemInterface} from '../../Lists';
+import {styles} from './style';
 
 const AddToList = ({
   showError,
@@ -75,7 +75,7 @@ const AddToList = ({
   };
 
   const loadMore = () => {
-    if (allCustomLists.list?.length < data.data.list?.count) {
+    if (allCustomLists.list?.length < data?.data?.list?.count) {
       setCurrentPage(prev => prev + 1);
     }
   };
@@ -108,7 +108,7 @@ const AddToList = ({
   return (
     <BottomSheetView style={{flex: 1}}>
       <BottomSheetFlatList
-        data={allCustomLists.list || []}
+        data={allCustomLists?.list?.slice(2) || []}
         renderItem={renderListRow}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{gap: verticalScale(8)}}

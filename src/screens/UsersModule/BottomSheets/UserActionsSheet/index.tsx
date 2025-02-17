@@ -1,31 +1,27 @@
+import {BottomSheetView} from '@gorhom/bottom-sheet';
 import React, {
   forwardRef,
-  useEffect,
+  useCallback,
   useImperativeHandle,
   useRef,
-  useState,
 } from 'react';
-import {View} from 'react-native';
 import {shallowEqual, useSelector} from 'react-redux';
 import BottomSheetComponent, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
+import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import {
   useLazyFetchUserDetailsQuery,
   UserDetailResponse,
 } from 'src/redux/actions/usersApiAction';
 import {RootState} from 'src/redux/slices';
+import {verticalScale} from 'src/utils/dimensions';
 import AddToList from './AddToList';
 import CreateList from './CreateList';
 import MarkAsSpam from './MarkAsSpam';
 import ReportUser from './ReportUser';
 import {styles} from './style';
-import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import {verticalScale} from 'src/utils/dimensions';
-import {UserItemInterface} from '../../UsersListItem';
-import {BottomSheetView} from '@gorhom/bottom-sheet';
-import {useLazyFetchAllCustomListsQuery} from 'src/redux/actions/listsApiAction';
 
 export type actionSheetFromType = 'usersList' | 'customLists' | 'userDetail';
 export type UserActionCurrentPageType =
@@ -77,13 +73,13 @@ const UserActionsSheet = forwardRef<
 
     const snapPoints =
       selectedAction === 'report'
-        ? [`${verticalScale(60)}%`]
+        ? [`${verticalScale(50)}%`]
         : selectedAction === 'markSpam'
-        ? [`${verticalScale(40)}%`]
+        ? [`${verticalScale(30)}%`]
         : selectedAction === 'addToList'
         ? [`${verticalScale(60)}%`]
         : selectedAction === 'createList'
-        ? [`${verticalScale(45)}%`]
+        ? [`${verticalScale(38)}%`]
         : ['25%'];
 
     const onCreateListSuccess = () => {
@@ -109,7 +105,7 @@ const UserActionsSheet = forwardRef<
     };
 
     const showError = (message: string) => {
-      sheetRef?.current?.showFlashMessage('error', message);
+      FlashMessageComponent.show('error', message);
     };
 
     const showSuccess = (message: string) => {
@@ -117,15 +113,27 @@ const UserActionsSheet = forwardRef<
       FlashMessageComponent.show('success', message);
     };
 
+    const getDyanamicSizeConfig = useCallback(() => {
+      if (selectedAction === 'addToList') {
+        return false;
+      } else if (selectedAction === 'createList') {
+        return false;
+      } else {
+        return true;
+      }
+    }, [selectedAction, from]);
+
     return (
       <BottomSheetComponent
         ref={sheetRef}
         snapPoints={snapPoints} // Adjustable snap points
-        enableDynamicSizing={selectedAction !== 'addToList' ? true : false}
+        enableDynamicSizing={getDyanamicSizeConfig()}
         onClose={() => {
           closeSheet();
-          setSelectedAction('');
-        }}>
+        }}
+        showBottomSafeAreaView={
+          from === 'usersList' ? false : from === 'customLists' ? false : true
+        }>
         <BottomSheetView style={{flex: 1}}>
           {selectedAction === '' ? (
             <BottomSheetView style={styles.actionButtonContainer}>

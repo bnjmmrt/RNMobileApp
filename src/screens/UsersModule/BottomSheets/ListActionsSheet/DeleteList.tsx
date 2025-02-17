@@ -1,11 +1,11 @@
+import {BottomSheetView} from '@gorhom/bottom-sheet';
 import React from 'react';
-import {View} from 'react-native';
 import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
 import {useDeleteCustomListMutation} from 'src/redux/actions/listsApiAction';
-import {styles} from './style';
+import {verticalMarginScale} from 'src/utils/dimensions';
 import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
-import {BottomSheetView} from '@gorhom/bottom-sheet';
+import {styles} from './style';
 
 const DeleteList = ({
   onSuccess,
@@ -56,7 +56,11 @@ const DeleteList = ({
       <Button
         title="Delete List"
         colorTheme="dark"
-        style={[styles.actionCta, styles.deleteCta]}
+        style={[
+          styles.actionCta,
+          styles.deleteCta,
+          {marginBottom: verticalMarginScale(40)},
+        ]}
         onPress={onPressDeleteList}
         loading={deleteCustomListLoading}
       />

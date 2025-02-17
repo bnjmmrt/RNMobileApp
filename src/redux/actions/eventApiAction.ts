@@ -61,7 +61,8 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         url: `v1/events/event/${eventId}`,
         method: 'GET',
       }),
-      providesTags: ['EventDetails'], // Adjust the tag if needed for cache invalidation
+      providesTags: ['EventDetails'],
+      keepUnusedDataFor: 0// Adjust the tag if needed for cache invalidation
     }),
 
   }),

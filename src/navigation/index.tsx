@@ -76,9 +76,6 @@ const MainNavigation: React.FC = () => {
       ? loginData?.token?.length > 0 ? ROUTES.BottomTabBar : ROUTES.BeforeAppStaticScreen
       : ROUTES.BottomTabBar;
 
-  console.log("Sayyed index role:", role)
-  console.log("Sayyed index loginData:", loginData)
-
   return (
     <MainStack
       initialRouteName={initialRouteName}

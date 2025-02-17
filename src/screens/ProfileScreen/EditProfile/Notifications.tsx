@@ -42,7 +42,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = () => {
   const notificationsSettings = useSelector(
     (state: RootState) => state.appSettings.notificationsSettings,
   );
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const userId = useSelector((state: RootState) => state.auth.userId);
 
   const [isSMSNotificationEnabled, setSMSNotificationEnabled] = useState(
     notificationsSettings?.allowSMSNotifications,
@@ -84,10 +84,9 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = () => {
   };
 
   const updateSettings = async (requestData: any) => {
-    console.log('request dataaaaaaaaaaaaaa', requestData);
     const response: any = await apiRequest(
       'put',
-      EndPoint.profile_notification_settings + loginData?.id,
+      EndPoint.profile_notification_settings + userId,
       {...requestData,muteDuration:'24h'},
     );
 

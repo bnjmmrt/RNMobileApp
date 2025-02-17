@@ -2,21 +2,21 @@ import IMAGES from '@images/index';
 import React, {useEffect, useRef, useState} from 'react';
 import {shallowEqual, useSelector} from 'react-redux';
 import ButtonSmall from 'src/component/ButtonSmall';
+import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import Input from 'src/component/Input/Input';
+import {
+  useAddUserNoteMutation,
+  useLazyFetchUserDetailsQuery,
+  UserDetailResponse,
+} from 'src/redux/actions/usersApiAction';
 import {RootState} from 'src/redux/slices';
 import {
   horizontalMarginScale,
   radiusScale,
   verticalMarginScale,
 } from 'src/utils/dimensions';
-import UserDetailCard from '../UserDetailCard';
-import {
-  useAddUserNoteMutation,
-  useLazyFetchUserDetailsQuery,
-  UserDetailResponse,
-} from 'src/redux/actions/usersApiAction';
-import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
+import UserDetailCard from '../UserDetailCard';
 
 interface UserInformationProps {
   user: string;

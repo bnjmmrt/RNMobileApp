@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
+import {horizontalMarginScale} from 'src/utils/dimensions';
 import {COLORS} from '../../../utils/constants';
 import {fontFamily} from '../../../utils/functions';
-import {fontScale, horizontalMarginScale} from 'src/utils/dimensions';
 
 const UserListItemStyle = () => {
   return StyleSheet.create({

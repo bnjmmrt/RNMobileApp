@@ -20,4 +20,5 @@ export const ROUTES = {
   EventDetailsScreen: 'EventDetailsScreen',
   HostEditProfileScreen: 'HostEditProfileScreen',
   HostConnectedAccountsScreen: 'HostConnectedAccountsScreen',
+  WelcomeScreen: 'WelcomeScreen',
 } as const;

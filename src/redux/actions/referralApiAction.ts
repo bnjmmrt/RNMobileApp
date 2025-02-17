@@ -18,7 +18,7 @@ export const referralApiAction = createBaseApi.injectEndpoints({
     }),
     fetchMembers: builder.query({
       query: () => ({
-        url: 'v1/platform/members', 
+        url: 'v1/platform/members',
         method: 'GET',
       }),
     }),
@@ -42,6 +42,19 @@ export const referralApiAction = createBaseApi.injectEndpoints({
         body: { userId },
       }),
     }),
+    getConfirmedMembers: builder.mutation({
+      query: (requestParam) => ({
+        url: 'v1/auth/get-confirmed-members',
+        method: 'POST',
+        body: requestParam,
+      }),
+    }),
+    getReferralRequest: builder.query({
+      query: () => ({
+        url: 'v1/platform/referral-requests',
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -52,4 +65,6 @@ export const {
   useFetchHostListQuery,
   useFollowHostMutation,
   useUnfollowHostMutation,
+  useGetConfirmedMembersMutation,
+  useGetReferralRequestQuery
 } = referralApiAction;

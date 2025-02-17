@@ -1,22 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
-import {
-  Alert,
-  Image,
-  Platform,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Platform, StatusBar, Text } from 'react-native';
 import settings from '../ApiManager/config';
-import { parse, format } from 'date-fns';
-import {
-  configStatusBar,
-  SafeAreaViewConfig,
-} from 'src/redux/slices/safeAreaViewConfigSlice';
+import { configStatusBar, SafeAreaViewConfig, } from 'src/redux/slices/safeAreaViewConfigSlice';
 import store from 'src/redux/store';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import React from 'react';
 
 // ErrorText component with TypeScript props
 interface ErrorTextProps {
@@ -94,8 +83,8 @@ export function printLog(msg: string, value: any = ''): void {
 
 export const capitalizeFirstLetter = (text: string) => {
   if (typeof text !== 'string') {
-    console.warn("Input is not a string");
-    return "";
+    console.warn('Input is not a string');
+    return '';
   }
   return text.charAt(0).toUpperCase() + text.slice(1);
 };
@@ -114,13 +103,17 @@ export const objectToQueryString = (
   return str.length > 0 ? `?${str.join('&')}` : '';
 };
 
-export const objectToQueryStringFilter = (params: Record<string, string | number | boolean | string[]>): string => {
+export const objectToQueryStringFilter = (
+  params: Record<string, string | number | boolean | string[]>,
+): string => {
   const queryString = Object.entries(params)
-    .filter(([_, value]) => value !== undefined && value !== null && value !== '') // Filter out empty values
+    .filter(
+      ([_, value]) => value !== undefined && value !== null && value !== '',
+    ) // Filter out empty values
     .map(([key, value]) =>
       Array.isArray(value)
         ? `${key}=${value.join(',')}` // Handle array values
-        : `${key}=${encodeURIComponent(value)}`
+        : `${key}=${encodeURIComponent(value)}`,
     )
     .join('&');
 
@@ -298,60 +291,6 @@ export const handleFormatDate = (
   return formattedDate;
 };
 
-export const formatEventDates = (startDate: string, endDate: string) => {
-  return startDate + ' ' + endDate;
-  // // Helper function to parse the date
-  // function parseDate(dateString) {
-  //   const [datePart, timePart] = dateString.split(' ');
-  //   const [month, day, year] = datePart.split('/').map(Number);
-  //   const [hours, minutes] = timePart.split(':').map(Number);
-  //   return new Date(year, month - 1, day, hours, minutes);
-  // }
-
-  // // Parse input strings into Date objects
-  // const start = parseDate(startDate);
-  // const end = parseDate(endDate);
-
-  // // Format options
-  // const optionsDate = {weekday: 'short', month: 'short', day: 'numeric'};
-  // const optionsTime = {hour: 'numeric', minute: 'numeric', hour12: true};
-  // const optionsTimeZone = {timeZoneName: 'short'};
-
-  // // Format components
-  // const formattedStartDate = new Intl.DateTimeFormat(
-  //   'en-US',
-  //   optionsDate,
-  // ).format(start);
-  // const formattedStartTime = new Intl.DateTimeFormat(
-  //   'en-US',
-  //   optionsTime,
-  // ).format(start);
-  // const formattedEndDate = new Intl.DateTimeFormat('en-US', optionsDate).format(
-  //   end,
-  // );
-  // const formattedEndTime = new Intl.DateTimeFormat('en-US', optionsTime).format(
-  //   end,
-  // );
-  // const timeZone = new Intl.DateTimeFormat('en-US', optionsTimeZone)
-  //   .format(start)
-  //   .split(' ')[1];
-
-  // // Check if start and end are on the same day
-  // if (
-  //   start.getFullYear() === end.getFullYear() &&
-  //   start.getMonth() === end.getMonth() &&
-  //   start.getDate() === end.getDate()
-  // ) {
-  //   // Same day: Include time range only
-  //   return `${formattedStartDate}, ${formattedStartTime} – ${formattedEndTime} ${timeZone}`;
-  // } else {
-  //   // Different days: Include full date and time range
-  //   return `${formattedStartDate}, ${formattedStartTime} —\n${formattedEndDate}, ${formattedEndTime} ${timeZone}`;
-  // }
-};
-
-// export const  formatEventDates = (startDate: string, endDate: string) => {
-
 //   // Convert input strings into Date objects
 //   const start = new Date(startDate);
 //   const end = new Date(endDate);
@@ -391,10 +330,17 @@ export const isIos = (): boolean => platform === 'ios';
 export const isAndroid = (): boolean => platform === 'android';
 
 export const convertDateFormat = (dateString: string): string => {
-  const [day, month, year] = dateString.split('/');
+  const [month, day, year] = dateString.split('-');
   return `${year}-${month}-${day}`;
 };
-
+export const convertDateToFormatMMDDYYYY = (dateString: string) => {
+  try {
+    const [year, month, day] = dateString && dateString.split('-');
+    return dateString && `${month}-${day}-${year}`;
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const formatDate = (date: Date) => {
   return date
     .toLocaleDateString('en-US', {
@@ -405,8 +351,17 @@ export const formatDate = (date: Date) => {
     .replace(/\//g, '/');
 };
 
+export const parseAndFormatDate = (dateString: string) => {
+  const formats = ['MM-DD-YYYY', 'MM/DD/YYYY', 'DD-MM-YYYY', 'DD/MM/YYYY'];
+  const parsedDate = moment(dateString, formats, true);
 
+  if (parsedDate.isValid()) {
+    return parsedDate.format('YYYY-MM-DD');
+  }
 
+  // If invalid, return 18 years back from today
+  return moment().subtract(18, 'years').format('YYYY-MM-DD');
+};
 
 
 export const changeSafeAreaViewConfig = (config: SafeAreaViewConfig) => {
@@ -426,7 +381,7 @@ export const changeSafeAreaViewConfig = (config: SafeAreaViewConfig) => {
   StatusBar.setBarStyle(config.statusBarStyle, true);
 };
 export const validateAge = (selectedDate: string) => {
-  const [month, day, year] = selectedDate.split('/').map(Number);
+  const [month, day, year] = selectedDate.split('-').map(Number);
   const selectedDateObj = new Date(year, month - 1, day);
   const today = new Date();
   const eighteenYearsAgo = new Date();
@@ -440,7 +395,7 @@ export const extractCountryCode = (phoneNumber: string) => {
 
   if (!phone) return null;
 
-  const countryCode:any = phone.country; 
+  const countryCode: any = phone.country;
   const flag = getCountryFlag(countryCode);
 
   return {
@@ -460,11 +415,13 @@ const getCountryFlag = (countryCode: string) => {
     : '';
 };
 export interface ApiErrorInterface {
-  data: { error: { message: string; type: string } | string };
+  data: { error: { message: string; type: string } | string } | string;
 }
 export const getErrorMessage = (error: ApiErrorInterface) => {
   let message = 'Something went wrong!';
-  if (typeof error.data.error === 'object') {
+  if (typeof error.data === 'string') {
+    message = error.data;
+  } else if (typeof error.data.error === 'object') {
     if (error.data.error.message) {
       message = error.data.error.message;
     }

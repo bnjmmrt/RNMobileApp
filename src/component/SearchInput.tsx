@@ -99,7 +99,6 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         backgroundColor: COLORS.white,
-        marginHorizontal: 15
     },
     inputWrapper: {
         flexDirection: 'row',
