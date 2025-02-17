@@ -1,39 +1,42 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { View, ScrollView, Text, Image, FlatList } from 'react-native';
-import { COLORS } from '../../utils/constants';
-import HeaderComponent from '../../component/HeaderComponent';
-import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/slices';
-import { StyleSheet } from 'react-native';
-import { fontFamily, retrieveData } from '../../utils/functions';
-import FeedItem from './FeedItem';
-import dayjs from 'dayjs';
-import NoResults from './NoResults';
-import FeedSearchInput from './FeedSearchInput';
-import FeedAccessLocation from './FeedAccessLocation';
-import FeedFilter from './FeedFilter';
-import LocationPickerModal from '../BottomSheet/LocationPickerModal';
-import FeedDetail from './FeedDetail';
 import IMAGES from '@images/index';
-import FeedSeries from './FeedSeries';
-import FeedSeriesDetail from './FeedSeriesDetail';
-import FeedFilterItem from './FeedFilterItem';
-import type { DateType } from 'react-native-ui-datepicker';
-import { Address } from '../../redux/slices/appFlowSlice';
-import FeaturedFeedItem from './FeaturedFeedItem';
+import {debounce} from 'lodash';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
-  horizontalMarginScale,
-  verticalMarginScale,
-  horizontalScale,
-  verticalScale,
-  radiusScale,
+  FlatList,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import {useSelector} from 'react-redux';
+import {useFetchAllEventsQuery} from 'src/redux/actions/eventApiAction';
+import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
+import HeaderComponent from '../../component/HeaderComponent';
+import {RootState} from '../../redux/slices';
+import {Address} from '../../redux/slices/appFlowSlice';
+import {COLORS} from '../../utils/constants';
+import {
   fontScale,
-  Hp,
+  horizontalMarginScale,
+  horizontalScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
   Wp,
 } from '../../utils/dimensions';
-import { debounce } from 'lodash';
-import { getUserEvents } from 'src/ApiManager/Endpoint';
+import {changeSafeAreaViewConfig, fontFamily} from '../../utils/functions';
+import {BottomSheetMethods} from '../BottomSheet/BottomSheet';
+import FiltersSheet, {getFilterQuery, SelectedFilters} from '../FilterSheet';
+import {InputRefMethods} from '../Input/Input';
+import SearchInput from '../SearchInput';
+import FeaturedFeedItem from './FeaturedFeedItem';
+import FeedDetail from './FeedDetail';
+import FeedFilterItem from './FeedFilterItem';
+import FeedItem from './FeedItem';
+import FeedSeriesDetail from './FeedSeriesDetail';
+import {useFocusEffect} from '@react-navigation/native';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 
 export interface EventItem {
   id: string;
@@ -43,11 +46,14 @@ export interface EventItem {
   type: string;
   location: string;
   image: string;
+  name: string;
+  imageCover: string;
+  imageFlyer: string;
 }
 
 export interface SeriesItem {
   name: string;
-  image: { uri: string };
+  image: {uri: string};
   about: string;
   period: string;
   events: EventItem[];
@@ -65,69 +71,37 @@ export interface Pagination {
 }
 
 const EventsFeed = () => {
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const [allEvents, setAllEvents] = useState<(EventItem & SeriesItem)[]>([]);
-  const [events, setEvents] = useState<(EventItem & SeriesItem)[]>([]);
-  const [featuredEvents, setFeaturedEvents] = useState<EventItem[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [searchEnter, setSearchEnter] = useState<boolean>(true);
-  const [allowAccess, setAllowAccess] = useState<boolean>(false);
-  const [allowAccessModal, setAllowAccessModal] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [filterVisible, setFilterVisible] = useState<boolean>(false);
-  const [locationVisible, setLocationVisible] = useState<boolean>(false);
+  const filtersSheetRef = useRef<BottomSheetMethods>(null);
+  const searchInputRef = useRef<InputRefMethods>(null);
+
   const [detail, setDetail] = useState<EventItem | null>(null);
   const [seriesDetail, setSeriesDetail] = useState<SeriesItem | null>(null);
   const [responseSubmitted, setResponseSubmitted] = useState<boolean>(false);
-  const [pagination, setPagination] = useState<Pagination>({ take: 7, skip: 0 });
+
+  const [allEvents, setAllEvents] = useState<(EventItem & SeriesItem)[]>([]);
+  const [featuredEvents, setFeaturedEvents] = useState<EventItem[]>([]);
+  const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [filterQuery, setFilterQuery] = useState<string>('');
+  const [filterNumber, setFilterNumber] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
   const userId = useSelector((state: RootState) => state.auth.userId);
-
-  const [filter, setFilter] = useState<Filter>({
-    location: { address: '', placeId: '', latitude: '', longitude: '' },
-    categories: [],
-    date: [],
-  });
-
   const isInvited = loginData?.isInvited || false;
+
+  const {data, isLoading, error, isError, refetch} = useFetchAllEventsQuery({
+    searchText: searchTerm,
+    queryString: filterQuery,
+    userId: userId,
+  });
 
   const debouncedSearch = useCallback(
     debounce((text: string) => setSearchTerm(text), 500),
     [],
   );
   const handleSearchChange = useCallback((text: string) => {
-    // setSearchTerm(text);
     debouncedSearch(text);
-
-  }, []);
-
-  useEffect(() => {
-    setSearchEnter(searchTerm === '');
-
-    setEvents(
-      allEvents.filter(value =>
-        value.name.toLowerCase().includes(searchTerm.toLowerCase()),
-      ),
-    );
-  }, [searchTerm, allEvents])
-
-  const handleSearch = useCallback(() => {
-    setSearchEnter(searchTerm === '');
-
-    setEvents(
-      allEvents.filter(value =>
-        value.title.toLowerCase().includes(searchTerm.toLowerCase()),
-      ),
-    );
-  }, [searchTerm, allEvents]);
-
-  const handleClear = useCallback(() => {
-    setSearchEnter(true);
-    setEvents(allEvents);
-  }, [allEvents]);
-
-  const handleFilter = useCallback(() => {
-    if (allowAccess) setFilterVisible(true);
-    else setAllowAccessModal(true);
   }, []);
 
   const handleNotify = useCallback(() => {
@@ -138,171 +112,164 @@ const EventsFeed = () => {
   }, []);
 
   const handleLoadMore = useCallback(() => {
-    if (pagination.skip < allEvents.length) {
-      setPagination(prev => ({ ...prev, skip: prev.skip + prev.take }));
-    }
+    // if (pagination.skip < allEvents.length) {
+    //   setPagination(prev => ({...prev, skip: prev.skip + prev.take}));
+    // }
   }, [allEvents]);
 
-  useEffect(() => {
-    console.log('~~pagination~~', pagination);
-    setEvents(prev => [
-      ...prev,
-      ...allEvents.slice(pagination.skip, pagination.skip + pagination.take),
-    ]);
-  }, [pagination.skip]);
+  const onApplyFilter = (
+    queryString: string,
+    numberOfFiltersApplied: number,
+    selectedFilters?: SelectedFilters,
+  ) => {
+    setCurrentPage(1);
+    setFilterQuery(queryString);
+    setFilterNumber(numberOfFiltersApplied);
+
+    if (selectedFilters) {
+      console.log('selectedFilters', selectedFilters);
+      setSelectedFilters(selectedFilters);
+    }
+  };
+
+  const onClearFilter = () => {
+    setCurrentPage(1);
+    setFilterQuery('');
+    setFilterNumber(0);
+    setSelectedFilters({});
+  };
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const res: any = await getUserEvents(userId, filter)
-        const eventsRes = res.data
-        const featuredEventsRes = res.data.filter((item: any) => item.featuredEventSection)
-        setFeaturedEvents(featuredEventsRes);
-        setEvents([...eventsRes.slice(0, pagination.take)]);
-        setAllEvents(eventsRes);
-      } catch (error) {
-        console.error('Failed to fetch events:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (data) {
+      const eventsRes = data?.data;
+      const featuredEventsRes = data?.data.filter(
+        (item: any) => item.featuredEventSection,
+      );
+      setFeaturedEvents(featuredEventsRes);
+      setAllEvents(eventsRes);
+    }
+  }, [data]);
 
-    fetchEvents();
-  }, [filter]);
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+        showBottomSafeAreaView: false,
+      });
+    }, []),
+  );
 
-  useEffect(() => {
-    const formatAllowAccess = async () => {
-      try {
-        const allow = await retrieveData('allowAccess');
-        setAllowAccess(allow && allow === 'true' ? true : false);
-      } catch (error) {
-        console.error('Error retrieving data from AsyncStorage:', error);
-      }
-    };
-
-    formatAllowAccess();
-  }, []);
-
-  const renderFilters = () => {
-    const { categories, location, date } = filter;
-
-    // Ensure `hasFilters` includes date condition independently
-    const hasFilters =
-      categories.length > 0 ||
-      location.address ||
-      location.placeId ||
-      location.longitude ||
-      location.latitude ||
-      (date && date.length > 1); // Ensure `date` exists and has more than 1 value
-
-    if (!hasFilters) return null;
-
-    const clearLocation = () => {
-      setFilter(prev => ({
-        ...prev,
-        location: { address: '', placeId: '', longitude: '', latitude: '' },
-      }));
-    };
-
-    const clearDate = () => {
-      setFilter(prev => ({ ...prev, date: [] }));
-    };
-
-    const clearCategory = category => {
-      setFilter(prev => ({
-        ...prev,
-        categories: prev.categories.filter(cat => cat !== category),
-      }));
+  const renderFilters = useCallback(() => {
+    const onRemoveFilter = (filterKey: string, valueIndex: number) => {
+      let tempSelectedFilters = {...selectedFilters};
+      tempSelectedFilters = {
+        ...tempSelectedFilters,
+        [filterKey]: {
+          ...tempSelectedFilters[filterKey],
+          value: tempSelectedFilters[filterKey].value.filter(
+            (_: any, index: number) => index !== valueIndex,
+          ),
+        },
+      };
+      const {queryString, filtersCount} = getFilterQuery(tempSelectedFilters);
+      onApplyFilter(queryString, filtersCount, tempSelectedFilters);
     };
 
     return (
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={[styles.filterScrollView]}
-      // contentContainerStyle={{ alignItems: 'center', paddingHorizontal: 8 }}
-      >
-        {/* Location Filter */}
-        {location.address && <FeedFilterItem content={location.address} handleClear={clearLocation} />}
-
-        {/* Date Filter - Ensure it's rendering when `date.length > 1` */}
-        {date && date.length > 1 &&
-          <FeedFilterItem
-            content={`${dayjs(date[0]).format('MMM DD, YYYY')} - ${dayjs(date[1]).format('MMM DD, YYYY')}`}
-            handleClear={clearDate}
-          />
-        }
-
-        {/* Categories Filter */}
-        {categories.map((category, index) => (
-          <FeedFilterItem key={index} content={category} handleClear={() => clearCategory(category)} />
-        ))}
-      </ScrollView>
+      <View style={{alignSelf: 'flex-start', flexDirection: 'row'}}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={[styles.filterScrollView, {}]}
+          contentContainerStyle={{gap: horizontalMarginScale(4)}}>
+          {Object.entries(selectedFilters).map(([key, filter]) => {
+            return (
+              <>
+                {filter.value.map((item, index) => {
+                  return (
+                    <FeedFilterItem
+                      content={item.name}
+                      handleClear={() => onRemoveFilter(key, index)}
+                    />
+                  );
+                })}
+              </>
+            );
+          })}
+        </ScrollView>
+      </View>
     );
-  };
+  }, [selectedFilters]);
 
+  const renderFeaturedEvents = useCallback(
+    () =>
+      featuredEvents.length > 0 ? (
+        <View style={styles.featuredContainer}>
+          <Text style={styles.title}>Featured Events</Text>
+          <ScrollView
+            horizontal
+            style={styles.scrollView}
+            showsHorizontalScrollIndicator={false}>
+            {featuredEvents.map(event => (
+              <FeaturedFeedItem
+                key={event.id}
+                item={event}
+                setDetail={setDetail}
+                isFeatured
+              />
+            ))}
+          </ScrollView>
+        </View>
+      ) : null,
+    [featuredEvents.length],
+  );
+
+  const renderItem = useCallback(({item}: {item: any}) => {
+    return <FeedItem setDetail={setDetail} item={item} />;
+  }, []);
+
+  if (isInvited) {
+    return <BeforeAppStaticComponent isChatScreen={false} />;
+  }
 
   return (
     <View style={styles.container}>
-      {isInvited ? (
-        <BeforeAppStaticComponent isChatScreen={false} />
-      ) : (
-        <View>
-          <HeaderComponent isDarkTheme={false} />
-          <FeedSearchInput
-            handleChange={handleSearchChange}
-            handleSearch={handleSearch}
-            handleClear={handleClear}
-            handleFilter={handleFilter}
-            filterLength={
-              filter.categories.length +
-              (filter.location.address ? 1 : 0) +
-              (filter.date[0] && filter.date[1] ? 1 : 0)
-            }
-          />
-          <View>
-            {renderFilters()}
+      <HeaderComponent isDarkTheme={false} />
+      <SearchInput
+        ref={searchInputRef}
+        onSearchTextChange={handleSearchChange}
+        placeholder="Search for an event..."
+        rightIcon={IMAGES.filter_lines}
+        onPressRightIcon={() => {
+          filtersSheetRef?.current?.open();
+        }}
+        rightIconText={String(filterNumber || '') || ''}
+        mainContainerStyle={{
+          marginHorizontal: horizontalMarginScale(20),
+        }}
+        defaultValue={searchTerm}
+      />
+      {renderFilters()}
+      {renderFeaturedEvents()}
 
-            {events.length === 0 ? (
-              <NoResults loading={loading} />
-            ) : (
-              <FlatList
-                data={events}
-                ListHeaderComponent={
-                  searchEnter && featuredEvents.length > 0 ? (
-                    <View style={styles.featuredContainer}>
-                      <Text style={styles.title}>Featured Events</Text>
-                      <ScrollView horizontal style={styles.scrollView} showsHorizontalScrollIndicator={false}>
-                        {featuredEvents.map((event) => (
-                          <FeaturedFeedItem
-                            key={event.id}
-                            item={event}
-                            setDetail={setDetail}
-                            isFeatured
-                          />
-                        ))}
-                      </ScrollView>
-                    </View>
-                  ) : null
-                }
-                renderItem={({ item }) => <FeedItem setDetail={setDetail} item={item} />}
-                // renderItem={({ item }) =>
-                //   item.events && searchEnter ? (
-                //     <FeedSeries setSeries={setSeriesDetail} item={item} />
-                //   ) : (
-                //     <FeedItem setDetail={setDetail} item={item} />
-                //   )
-                // }
-                numColumns={2}
-                keyExtractor={(_item, index) => index.toString()}
-                onEndReached={handleLoadMore}
-                onEndReachedThreshold={0.5}
-                style={styles.flatList}
-              />
-            )}
-          </View>
-        </View>
-      )}
+      <FlatList
+        data={allEvents || []}
+        keyExtractor={(_item, index) => index.toString()}
+        renderItem={renderItem}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        numColumns={2}
+        style={{
+          marginHorizontal: horizontalMarginScale(20),
+          marginTop: verticalMarginScale(20),
+        }}
+        columnWrapperStyle={{gap: horizontalMarginScale(20)}}
+        contentContainerStyle={{gap: horizontalMarginScale(20)}}
+        showsVerticalScrollIndicator={false}
+        ListFooterComponent={
+          <View style={{marginBottom: verticalScale(100)}} />
+        }
+      />
 
       {responseSubmitted && (
         <View style={styles.responseSubmitted}>
@@ -317,27 +284,22 @@ const EventsFeed = () => {
         setDetail={setDetail}
         handleNotify={handleNotify}
       />
-      <FeedAccessLocation
+
+      {/* <FeedAccessLocation
         allowAccessModal={allowAccessModal}
         setAllowAccess={setAllowAccess}
         setAllowAccessModal={setAllowAccessModal}
         setFilterVisible={setFilterVisible}
+      /> */}
+
+      <FiltersSheet
+        ref={filtersSheetRef}
+        from="discoverEvents"
+        onApplyFilter={onApplyFilter}
+        onClearFilter={onClearFilter}
+        showBottomSafeAreaView={false}
+        selectedFiltersInParent={selectedFilters}
       />
-      <FeedFilter
-        filter={filter}
-        setFilter={setFilter}
-        filterVisible={filterVisible}
-        setFilterVisible={setFilterVisible}
-        setLocationVisible={setLocationVisible}
-      />
-      {locationVisible && (
-        <LocationPickerModal
-          setLocation={value => setFilter(prev => ({ ...prev, location: value }))}
-          handleSubmit={setFilterVisible}
-          setIsShown={setLocationVisible}
-          submitVisible
-        />
-      )}
     </View>
   );
 };
@@ -349,7 +311,7 @@ const styles = StyleSheet.create({
     paddingVertical: verticalMarginScale(20),
     width: Wp(100),
     backgroundColor: COLORS.lighter_gray,
-    // marginTop: verticalMarginScale(15),
+    marginTop: verticalMarginScale(20),
   },
   title: {
     fontSize: fontScale(32),
@@ -359,12 +321,8 @@ const styles = StyleSheet.create({
     paddingLeft: horizontalMarginScale(12),
   },
   filterScrollView: {
-    marginHorizontal: horizontalMarginScale(16),
-    height: verticalScale(48),
-    flexGrow: 1,
-  },
-  flatList: {
-    paddingBottom: verticalMarginScale(900),
+    marginHorizontal: horizontalMarginScale(20),
+    marginTop: verticalMarginScale(8),
   },
   scrollView: {
     height: verticalScale(390),
@@ -373,33 +331,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
     // paddingBottom: verticalMarginScale(80),
-  },
-  contentContainer: {
-    flex: 1,
-    flexDirection: 'column',
-  },
-  eventContainer: {
-    marginLeft: horizontalMarginScale(10),
-  },
-  btnStyle: {
-    width: Wp(85),
-    borderRadius: radiusScale(100),
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginVertical: verticalMarginScale(10),
-  },
-  logoImgStyle: {
-    width: horizontalScale(100),
-    height: verticalScale(50),
-    resizeMode: 'center',
-  },
-  textBelowStyle: {
-    color: COLORS.light_gray,
-    fontSize: fontScale(12),
-    textAlign: 'center',
-    fontFamily: fontFamily.ABCDiatype_Regular,
-    marginVertical: Hp(1),
   },
   responseSubmitted: {
     display: 'flex',

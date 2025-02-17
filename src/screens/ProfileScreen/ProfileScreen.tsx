@@ -173,17 +173,17 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   ];
 
   const itemsExtras: ListItem[] = [
-    {id: '11', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit},
-    {id: '12', title: PROFILE.FOLLOWING, image: IMAGES.following},
-    {id: '13', title: PROFILE.REFERRALS, image: IMAGES.thumbsUp},
-    {
-      id: '14',
-      title: PROFILE.CONNECTED_ACCOUNTS,
-      image: IMAGES.connectedAccount,
-    },
-    {id: '15', title: PROFILE.MY_INTERESTS, image: IMAGES.heart},
-    {id: '16', title: PROFILE.NOTIFICATION, image: IMAGES.notification},
-    {id: '17', title: PROFILE.FEEDBACK, image: IMAGES.feedback},
+    { id: '11', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit },
+    { id: '12', title: PROFILE.FOLLOWING, image: IMAGES.following },
+    { id: '13', title: PROFILE.REFERRALS, image: IMAGES.thumbsUp },
+    // {
+    //   id: '14',
+    //   title: PROFILE.CONNECTED_ACCOUNTS,
+    //   image: IMAGES.connectedAccount,
+    // },
+    { id: '15', title: PROFILE.MY_INTERESTS, image: IMAGES.heart },
+    { id: '16', title: PROFILE.NOTIFICATION, image: IMAGES.notification },
+    { id: '17', title: PROFILE.FEEDBACK, image: IMAGES.feedback },
     {
       id: '18',
       title: PROFILE.CONTACT_SUPPORT,
@@ -199,14 +199,14 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   ];
 
   const hostItems: ListItem[] = [
-    {id: '1', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit},
-    {
-      id: '2',
-      title: PROFILE.CONNECTED_ACCOUNTS,
-      image: IMAGES.connectedAccount,
-    },
-    {id: '3', title: PROFILE.NOTIFICATION, image: IMAGES.notification},
-    {id: '4', title: PROFILE.FEEDBACK, image: IMAGES.feedback},
+    { id: '1', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit },
+    // {
+    //   id: '2',
+    //   title: PROFILE.CONNECTED_ACCOUNTS,
+    //   image: IMAGES.connectedAccount,
+    // },
+    { id: '3', title: PROFILE.NOTIFICATION, image: IMAGES.notification },
+    { id: '4', title: PROFILE.FEEDBACK, image: IMAGES.feedback },
     {
       id: '5',
       title: PROFILE.CONTACT_SUPPORT,

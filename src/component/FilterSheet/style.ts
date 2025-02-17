@@ -3,6 +3,7 @@ import {COLORS} from 'src/utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
+  horizontalScale,
   radiusScale,
   verticalMarginScale,
   verticalScale,
@@ -80,5 +81,59 @@ export const styles = StyleSheet.create({
   applyCta: {
     flex: 1,
     paddingHorizontal: horizontalMarginScale(12),
+  },
+
+  //date range
+  inputValueWithLabel: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flex: 1,
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    height: verticalScale(60),
+    borderWidth: 1,
+    borderColor: COLORS.borderGray,
+    borderRadius: radiusScale(10),
+    backgroundColor: COLORS.white,
+    paddingLeft: horizontalMarginScale(12),
+    paddingRight: horizontalMarginScale(6),
+  },
+  datePicker: {
+    borderRadius: radiusScale(12),
+    borderColor: COLORS.borderGray,
+    borderWidth: 1,
+    marginTop: verticalMarginScale(6),
+    paddingHorizontal: horizontalMarginScale(12),
+  },
+  icon: {
+    width: verticalScale(16),
+    height: verticalScale(16),
+    marginRight: horizontalMarginScale(6),
+  },
+  input: {
+    flex: 1,
+    fontSize: fontScale(14),
+    color: COLORS.black,
+    fontFamily: fontFamily.ABCDiatype_Regular,
+  },
+  dayContainerStyle: {
+    width: 40,
+    height: 40,
+    marginHorizontal: 'auto',
+  },
+  alert: {
+    color: COLORS.red,
+  },
+  headerButtonStyle: {
+    backgroundColor: COLORS.tabBorderColor,
+    borderRadius: radiusScale(100),
+    height: verticalScale(24),
+    width: verticalScale(24),
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
