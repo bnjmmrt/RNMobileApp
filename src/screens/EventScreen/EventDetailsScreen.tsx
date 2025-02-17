@@ -21,6 +21,7 @@ import IMAGES from '@images/index';
 import EventTalent from 'src/component/Event/EventTalent';
 import { ROUTES } from 'src/navigation/Route';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import EventAnouncements from 'src/component/Event/EventAnnouncements';
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
@@ -107,7 +108,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
         <View style={{ ...styles.contentContainer }}>
           <View style={{}}>
             <FastImage
-              source={{ uri: route?.params?.imageCover }}
+              source={{ uri: route?.params?.imageCover || route?.params?.imageFlyer }}
               resizeMode={FastImage.resizeMode.cover}
               defaultSource={IMAGES.eventCoverPlaceholders1} // Placeholder
               style={styles.icon}
@@ -130,6 +131,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
           <EventOverview item={route?.params} />
 
           {talents.length > 0 && <EventTalent talents={talents} />}
+          {<EventAnouncements talents={talents} />}
+
 
         </View>
 

@@ -14,7 +14,6 @@ import { RootState } from 'src/redux/slices';
 import { ROUTES } from 'src/navigation/Route';
 
 const WelcomeScreen: React.FC = () => {
-  const [userName, setUserName] = useState<string>('');
   const navigation = useNavigation<any>();
   const styles = WelcomeScreenStyles();
   const userId = useSelector((state: RootState) => state.auth.userId);

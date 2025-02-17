@@ -1,4 +1,4 @@
-import {TabItem} from 'src/component/ActiveTabBar/DynamicTabBar';
+import { TabItem } from 'src/component/ActiveTabBar/DynamicTabBar';
 
 export const BUTTON_LABLE = {
   ENTER: 'Enter',
@@ -168,6 +168,8 @@ export const LABLE = {
     'Something went wrong, please try again',
   ABOUT_THE_EVENT: 'About the Event',
   FEATURE_TALENT: 'Featured Talent',
+  EVENT_ANNOUNCEMENTS: 'Event Announcements',
+  NO_EVENT_ANNOUNCEMENTS: 'No event announcements',
   READ_MORE: 'Read More',
   FEATURED_TALENT: 'Featured Talent',
   DUMMY_TEXT:
@@ -568,12 +570,56 @@ export const eventData = {
     useQr: false,
     userId: '5774aa32-abe5-45a8-a27f-e743ca61f291',
   },
-  status: 200,
-};
+  "status": 200
+}
+
+export const ANNOUNCCEMENTS_DATA = [
+  {
+    id: "1",
+    title: "The Event location has moved to the following address...",
+    description: 'The Event location has moved to the following address...',
+    date: "10/05/2025",
+    imageKeyUrl: 'https://picsum.photos/200/300',
+    media: [],
+  },
+  {
+    id: "1",
+    title: "The Event location has moved to the following address...",
+    description: LABLE.DUMMY_TEXT,
+    date: "10/05/2025",
+    media: [],
+  },
+  {
+    id: "1",
+    title: "The Event location has moved to the following address...",
+    description: LABLE.DUMMY_TEXT,
+    date: "10/05/2025",
+    media: [
+      { type: "image", uri: "https://picsum.photos/200/300" },
+      { type: "image", uri: "https://picsum.photos/200/300" },
+      { type: "pdf", name: "Guests File Rumor", size: "9.83 MB" },
+    ],
+  },
+  {
+    id: "1",
+    title: "The Event location has moved to the following address...",
+    description: LABLE.DUMMY_TEXT,
+    date: "10/05/2025",
+    media: [
+
+      { type: "image", uri: "https://picsum.photos/200/300" },
+      { type: "pdf", name: "Guests File Rumor", size: "9.83 MB" },
+      { type: "image", uri: "https://picsum.photos/200/300" },
+    ],
+  },
+  // Add more objects for additional list items
+];
+
+
 
 export const genderList = [
-  {id: 0, gender: 'Male', value: 'MALE'},
-  {id: 1, gender: 'Female', value: 'FEMALE'},
-  {id: 2, gender: 'Non-binary', value: 'NON_BINARY'},
-  {id: 3, gender: 'Prefer not to say', value: 'NOT_APPLICABLE'},
+  { id: 0, gender: 'Male', value: 'MALE' },
+  { id: 1, gender: 'Female', value: 'FEMALE' },
+  { id: 2, gender: 'Non-binary', value: 'NON_BINARY' },
+  { id: 3, gender: 'Prefer not to say', value: 'NOT_APPLICABLE' },
 ];
