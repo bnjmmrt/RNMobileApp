@@ -23,7 +23,7 @@ const FilterAccordian = ({
     <BottomSheetView
       style={[
         styles.accordianContainer,
-        isOpen && {paddingBottom: verticalMarginScale(16)},
+        isOpen ? {paddingBottom: verticalMarginScale(16)} : {paddingBottom: 0},
       ]}>
       <TouchableOpacity
         style={styles.accordianTitleContainer}

@@ -44,6 +44,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
           fontFamily: fontFamily.ABCDiatype_Regular,
         },
       }}
+      minLength={3}
       placeholder="Search Location"
       onPress={(data: GooglePlaceData, detail: GooglePlaceDetail | null) => {
         // 'details' is provided when fetchDetails = true

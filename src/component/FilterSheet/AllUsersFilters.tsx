@@ -54,8 +54,11 @@ const AllUsersFilters = ({
     useLazyFetchUserFiltersQuery();
 
   const filterData: FilterType[] =
-    data?.data?.filter((item: FilterType) =>
-      allowedFilters.includes(item.id),
+    data?.data?.filter(
+      (item: FilterType) =>
+        allowedFilters.includes(item.id) &&
+        (item.type !== 'checkbox' ||
+          (item.type === 'checkbox' && item.options.length > 0)),
     ) || [];
 
   const onChangeFilterOptionValue = (
