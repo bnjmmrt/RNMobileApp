@@ -1,4 +1,4 @@
-import React, {useRef, forwardRef, useState, useEffect} from 'react';
+import React, {useRef, forwardRef} from 'react';
 import {View, StyleSheet, Text, Image, Platform, Alert} from 'react-native';
 import BottomSheetComponent from './BottomSheet';
 import {BUTTON_LABLE, COLORS} from '../../utils/constants';

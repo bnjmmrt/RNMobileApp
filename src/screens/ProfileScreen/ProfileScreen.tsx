@@ -401,7 +401,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
 
             <TouchableOpacity
               onPress={() => handleLogoutPress()}
-              // onPress={() => addCalenderEvents()}
+             // onPress={() => addCalenderEvents()}
               style={{marginBottom: verticalScale(50)}}>
               <Text style={styles.textBelowStyle}>{PROFILE.LOGOUT}</Text>
             </TouchableOpacity>
@@ -448,7 +448,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
             ref={canelderEventsBottomSheetRef}
             eventDetails={{
               title: 'React Native Conference',
-              startdate: new Date().toISOString(),
+              startDate: new Date().toISOString(),
               endDate: new Date(
                 new Date().getTime() + 2 * 60 * 60 * 1000,
               ).toISOString(), // 2 hours event
