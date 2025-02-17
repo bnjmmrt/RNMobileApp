@@ -25,9 +25,15 @@ const AppContent: React.FC = () => {
   const dispatch = useDispatch();
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
-    dispatch(setCreativeFocus(focusResponse.data));
+    if (focusResponse.data) {
+      focusResponse.data.sort((a, b) => a.name.localeCompare(b.name))
+      dispatch(setCreativeFocus(focusResponse.data));
+    }
     const interestResponse: any = await apiRequest('get', EndPoint.interests);
-    dispatch(setInterests(interestResponse.data));
+    if (interestResponse.data) {
+      interestResponse.data.sort((a, b) => a.name.localeCompare(b.name))
+      dispatch(setInterests(interestResponse.data));
+    }
   };
 
   useEffect(() => {
