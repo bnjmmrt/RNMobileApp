@@ -9,11 +9,16 @@ import {styles} from './style';
 const FilterAccordian = ({
   children,
   title,
+  onOpen,
+  defaultOpen = false,
 }: {
   title: string;
   children: React.ReactNode;
+  onOpen?: () => void;
+  defaultOpen?: boolean;
 }) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(defaultOpen);
+
   return (
     <BottomSheetView
       style={[
@@ -22,7 +27,12 @@ const FilterAccordian = ({
       ]}>
       <TouchableOpacity
         style={styles.accordianTitleContainer}
-        onPress={() => setIsOpen(!isOpen)}>
+        onPress={() => {
+          setIsOpen(!isOpen);
+          if (!isOpen && onOpen) {
+            onOpen();
+          }
+        }}>
         <CustomText style={styles.accordianTitle}>{title}</CustomText>
         <View style={styles.accordianArrowContainer}>
           <Image

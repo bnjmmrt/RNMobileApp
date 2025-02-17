@@ -1,4 +1,5 @@
 import IMAGES from '@images/index';
+import {useFocusEffect} from '@react-navigation/native';
 import {debounce} from 'lodash';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
@@ -11,6 +12,7 @@ import {
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {useFetchAllEventsQuery} from 'src/redux/actions/eventApiAction';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 import HeaderComponent from '../../component/HeaderComponent';
 import {RootState} from '../../redux/slices';
@@ -35,20 +37,136 @@ import FeedDetail from './FeedDetail';
 import FeedFilterItem from './FeedFilterItem';
 import FeedItem from './FeedItem';
 import FeedSeriesDetail from './FeedSeriesDetail';
-import {useFocusEffect} from '@react-navigation/native';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 
 export interface EventItem {
-  id: string;
-  title: string;
-  startDate: string;
+  admissionType: {
+    description: string;
+    enabled: boolean;
+    id: string;
+    name: string;
+  };
+  ageLimit: {
+    description: string;
+    enabled: boolean;
+    id: string;
+    maxAge: number;
+    minAge: number;
+    name: string;
+  };
+  autoPublished: boolean;
+  capacity: number;
+  collaborators: [
+    {
+      addGuestsToDrafts: boolean;
+      chatWithAllGuests: boolean;
+      chatWithGuestsByCollaborator: boolean;
+      checkInGuests: boolean;
+      displayName: string;
+      displayNameListEvent: boolean;
+      editEventDetailsSettings: boolean;
+      email: string;
+      generateEventReports: boolean;
+      id: string;
+      inviteGuestsToEvent: boolean;
+      limitInvitations: boolean;
+      limitInvitationsNumber: number;
+      manageDedicatedSignUpForm: boolean;
+      manageInAppRsvpRequests: boolean;
+      name: string;
+      postAnnouncementsByCollaborator: boolean;
+      postAnnouncementsToAllGuests: boolean;
+      role: {
+        id: string;
+        name: string;
+      };
+      tickets: [
+        {
+          id: string;
+          limitInvitationsNumber: number;
+          name: string;
+        },
+      ];
+      viewFullGuestList: boolean;
+    },
+  ];
+  currentGuestStatus: number;
+  description: string;
+  enabled: boolean;
   endDate: string;
-  type: string;
-  location: string;
-  image: string;
-  name: string;
+  eventType: {
+    description: string;
+    enabled: boolean;
+    id: string;
+    name: string;
+  };
+  featuredEventSection: {
+    id: string;
+    index: number;
+    name: string;
+  };
+  furtherInstructions: string;
+  guestId: string;
+  guestsCount: number;
+  id: string;
   imageCover: string;
   imageFlyer: string;
+  isPrivate: boolean;
+  limitOnePlus: number;
+  location: {
+    city: string;
+    id: string;
+    latitude: number;
+    location: string;
+    longitude: number;
+    placeId: string;
+    regionCode: string;
+  };
+  name: string;
+  owner: {
+    email: string;
+    firstName: string;
+    id: string;
+    lastName: string;
+    profilePicture: string;
+  };
+  publishDate: string;
+  qrCodeUtilization: number;
+  quizQuestions: [
+    {
+      enabled: boolean;
+      id: string;
+      order: number;
+      question: string;
+      required: boolean;
+    },
+  ];
+  rsvpDeadline: string;
+  showLocation: boolean;
+  startDate: string;
+  status: number;
+  talents: [
+    {
+      contact: string;
+      description: string;
+      enabled: boolean;
+      id: string;
+      imageKeyUrl: string;
+      name: string;
+      socialNetwork: string;
+    },
+  ];
+  ticketTypes: [
+    {
+      capacity: number;
+      description: string;
+      enabled: boolean;
+      id: string;
+      name: string;
+    },
+  ];
+  timeZone: string;
+  useQr: boolean;
+  userId: string;
 }
 
 export interface SeriesItem {
@@ -211,12 +329,7 @@ const EventsFeed = () => {
             style={styles.scrollView}
             showsHorizontalScrollIndicator={false}>
             {featuredEvents.map(event => (
-              <FeaturedFeedItem
-                key={event.id}
-                item={event}
-                setDetail={setDetail}
-                isFeatured
-              />
+              <FeaturedFeedItem key={event.id} item={event} isFeatured />
             ))}
           </ScrollView>
         </View>
@@ -225,7 +338,7 @@ const EventsFeed = () => {
   );
 
   const renderItem = useCallback(({item}: {item: any}) => {
-    return <FeedItem setDetail={setDetail} item={item} />;
+    return <FeedItem item={item} />;
   }, []);
 
   if (isInvited) {
@@ -279,18 +392,12 @@ const EventsFeed = () => {
       )}
 
       <FeedSeriesDetail series={seriesDetail} setSeries={setSeriesDetail} />
+
       <FeedDetail
         detail={detail}
         setDetail={setDetail}
         handleNotify={handleNotify}
       />
-
-      {/* <FeedAccessLocation
-        allowAccessModal={allowAccessModal}
-        setAllowAccess={setAllowAccess}
-        setAllowAccessModal={setAllowAccessModal}
-        setFilterVisible={setFilterVisible}
-      /> */}
 
       <FiltersSheet
         ref={filtersSheetRef}

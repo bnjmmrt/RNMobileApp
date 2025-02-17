@@ -72,6 +72,18 @@ const SearchInput = forwardRef(
             value={searchText}
             onChangeText={handleTextChange}
           />
+          {searchText && (
+            <TouchableOpacity
+              onPress={() => handleTextChange('')}
+              style={{
+                height: '100%',
+                justifyContent: 'center',
+                paddingLeft: horizontalMarginScale(8),
+                paddingRight: horizontalMarginScale(4),
+              }}>
+              <Image source={IMAGES.clear} style={styles.clearIcon} />
+            </TouchableOpacity>
+          )}
           {rightIcon ? (
             <TouchableOpacity
               style={[
@@ -131,6 +143,10 @@ const styles = StyleSheet.create({
   },
   rightIconText: {
     color: COLORS.black,
+  },
+  clearIcon: {
+    width: 16,
+    height: 16,
   },
 });
 

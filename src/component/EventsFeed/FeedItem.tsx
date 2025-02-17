@@ -15,13 +15,14 @@ import {
 import {CustomText} from '../CustomText';
 import type {EventItem} from './EventsFeed';
 
+let screenWidth: number = Dimensions.get('window').width;
+
 interface FeedItemProps {
   item: EventItem;
-  isFeatured?: boolean;
-  setDetail: React.Dispatch<React.SetStateAction<EventItem | null>>;
+  from?: 'AllEvents' | 'UserDetail';
 }
 
-const FeedItem: React.FC<FeedItemProps> = ({item, isFeatured, setDetail}) => {
+const FeedItem: React.FC<FeedItemProps> = ({item, from = 'AllEvents'}) => {
   const navigation = useNavigation();
 
   const handlEventPress = () => {
@@ -31,9 +32,18 @@ const FeedItem: React.FC<FeedItemProps> = ({item, isFeatured, setDetail}) => {
     });
   };
 
+  const getCardWidth = () => {
+    switch (from) {
+      case 'AllEvents':
+        return (screenWidth - horizontalMarginScale(20) * 3) / 2;
+      case 'UserDetail':
+        return (screenWidth - horizontalMarginScale(40)) / 2;
+    }
+  };
+
   return (
     <TouchableOpacity
-      style={styles.container}
+      style={{width: getCardWidth()}}
       onPress={() => handlEventPress()}>
       <View style={[styles.imageContainer]}>
         <FastImage
@@ -61,12 +71,7 @@ const FeedItem: React.FC<FeedItemProps> = ({item, isFeatured, setDetail}) => {
   );
 };
 
-let screenWidth: number = Dimensions.get('window').width;
-
 const styles = StyleSheet.create({
-  container: {
-    width: (screenWidth - horizontalMarginScale(20) * 3) / 2,
-  },
   imageContainer: {
     alignItems: 'center',
     justifyContent: 'center',

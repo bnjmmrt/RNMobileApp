@@ -1,9 +1,10 @@
 import {
   BottomSheetFlatList,
+  BottomSheetFlatListMethods,
   BottomSheetScrollView,
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {shallowEqual, useSelector} from 'react-redux';
 import GradientSeprator from 'src/component/GradientSeprator';
 import {useLazyFetchUserFiltersQuery} from 'src/redux/actions/usersApiAction';
@@ -13,6 +14,7 @@ import {SelectedFilters} from '.';
 import FilterAccordian from './FilterAccordian';
 import FilterOptions, {FilterOption, FilterOptionTypes} from './FilterOptions';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import {InteractionManager} from 'react-native';
 
 type FilterType = {
   id: string;
@@ -42,6 +44,7 @@ const AllUsersFilters = ({
   setSelectedFilters: React.Dispatch<React.SetStateAction<SelectedFilters>>;
   setDisableApplyCta: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const filtersListRef = useRef<BottomSheetFlatListMethods>(null);
   const loginData = useSelector(
     (state: RootState) => state.auth.loginData,
     shallowEqual,
@@ -49,6 +52,11 @@ const AllUsersFilters = ({
 
   const [fetchFilters, {data, isLoading, error}] =
     useLazyFetchUserFiltersQuery();
+
+  const filterData: FilterType[] =
+    data?.data?.filter((item: FilterType) =>
+      allowedFilters.includes(item.id),
+    ) || [];
 
   const onChangeFilterOptionValue = (
     id: string,
@@ -105,10 +113,24 @@ const AllUsersFilters = ({
   };
 
   const renderItem = useCallback(
-    ({item}: {item: FilterType}) => {
+    ({item, index}: {item: FilterType; index: number}) => {
+      const scrollToOpenedAccordian = (index: number) => {
+        InteractionManager.runAfterInteractions(() => {
+          setTimeout(() => {
+            filtersListRef?.current?.scrollToIndex({
+              index: index,
+              animated: true,
+              viewPosition: 0,
+            });
+          }, 500);
+        });
+      };
       if (item.type === 'checkbox' && item.options.length === 0) return null;
       return (
-        <FilterAccordian title={item?.label}>
+        <FilterAccordian
+          title={item?.label}
+          onOpen={() => scrollToOpenedAccordian(index)}
+          defaultOpen={index === 0}>
           <FilterOptions
             id={item.id}
             optionType={item.type}
@@ -134,30 +156,26 @@ const AllUsersFilters = ({
   }, [loginData]);
 
   return (
-    <BottomSheetScrollView>
-      <BottomSheetFlatList
-        data={
-          data?.data?.filter((item: FilterOption) =>
-            allowedFilters.includes(item.id),
-          ) || []
-        }
-        renderItem={renderItem}
-        keyExtractor={(item, index) => `filters_header_${index.toString()}`}
-        showsVerticalScrollIndicator={false}
-        ItemSeparatorComponent={itemSeparatorComponent}
-        contentContainerStyle={{marginHorizontal: horizontalMarginScale(12)}}
-        ListEmptyComponent={
-          <BottomSheetView
-            style={{
-              height: Hp(55),
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <EventEmptyRecord title="" subTitle="" isLoading={isLoading} />
-          </BottomSheetView>
-        }
-      />
-    </BottomSheetScrollView>
+    <BottomSheetFlatList
+      ref={filtersListRef}
+      data={filterData}
+      renderItem={renderItem}
+      keyExtractor={(item, index) => `filters_header_${index.toString()}`}
+      showsVerticalScrollIndicator={false}
+      ItemSeparatorComponent={itemSeparatorComponent}
+      contentContainerStyle={{marginHorizontal: horizontalMarginScale(12)}}
+      style={{flex: 1}}
+      ListEmptyComponent={
+        <BottomSheetView
+          style={{
+            height: Hp(55),
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <EventEmptyRecord title="" subTitle="" isLoading={isLoading} />
+        </BottomSheetView>
+      }
+    />
   );
 };
 

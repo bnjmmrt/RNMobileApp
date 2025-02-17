@@ -99,7 +99,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route}) => {
           ) : null}
           {currentTab.id === '2' ? (
             <View>
-              <UserEvents />
+              <UserEvents user={user} />
             </View>
           ) : null}
         </ScrollView>
