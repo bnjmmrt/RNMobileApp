@@ -5,8 +5,8 @@ import RNCalendarEvents from 'react-native-calendar-events';
 type PermissionStatus = boolean | null;
 export interface Event {
   title: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   location: string;
   notes: string;
 }
