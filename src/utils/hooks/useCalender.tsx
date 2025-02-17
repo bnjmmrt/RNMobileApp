@@ -1,5 +1,5 @@
-import {useState, useEffect} from 'react';
-import {Alert} from 'react-native';
+import { useState } from 'react';
+import { Alert, Platform } from 'react-native';
 import RNCalendarEvents from 'react-native-calendar-events';
 
 type PermissionStatus = boolean | null;
@@ -12,60 +12,69 @@ export interface Event {
 }
 
 const useCalender = (eventDetails: Event) => {
-  const {title, startDate, endDate, location, notes} = eventDetails;
-  const [permissionGranted, setPermissionGranted] =
-    useState<PermissionStatus>(null);
+  const { title, startDate, endDate, location, notes } = eventDetails;
+  const [permissionGranted, setPermissionGranted] = useState<PermissionStatus>(null);
 
   const checkPermission = async () => {
-    const status = await RNCalendarEvents.checkPermissions();
-    if (status === 'authorized') {
-      setPermissionGranted(true);
-    } else {
-      requestPermission();
-    }
-  };
+    try {
+      let status = await RNCalendarEvents.checkPermissions();
 
-  const requestPermission = async () => {
-    const status = await RNCalendarEvents.requestPermissions();
-    if (status === 'authorized') {
-      setPermissionGranted(true);
-    } else {
-      Alert.alert(
-        'Permission Denied',
-        'Calendar access is required to add events.',
-      );
+      if ( status !== 'authorized') {
+        status = await RNCalendarEvents.requestPermissions();
+      }
+
+      if (status === 'authorized') {
+        setPermissionGranted(true);
+      } else {
+        setPermissionGranted(false);
+        Alert.alert('Permission Denied', 'Calendar access is required to add events.');
+      }
+    } catch (error) {
+      console.error('Error checking permissions:', error);
+      setPermissionGranted(false);
     }
   };
 
   const addEventToCalendar = async () => {
-    await checkPermission();
-    if (!permissionGranted) {
-      Alert.alert(
-        '“Rumor” Would Like to Access Your Calendar',
-        'Save Rumor events to your Apple Calendar.',
-      );
-      return;
+    const status = await RNCalendarEvents.checkPermissions();
+  
+    if (status !== 'authorized') {
+      const newStatus = await RNCalendarEvents.requestPermissions();
+      if (newStatus !== 'authorized') {
+        Alert.alert('Permission Denied', 'Calendar access is required to add events.');
+        return;
+      }
     }
-
+  
     try {
-      //  await RNCalendarEvents.findCalendars()
+      const calendars = await RNCalendarEvents.findCalendars();
+      const defaultCalendar = calendars.find(cal => cal.isPrimary) || calendars[0];
+  
+      if (!defaultCalendar) {
+        Alert.alert('Error', 'No calendar found on this device.');
+        return;
+      }
+  
       const eventId = await RNCalendarEvents.saveEvent(title, {
-        startDate: startDate,
-        endDate: endDate,
-        location: location,
-        notes: notes,
-        alarms: [{date: -15}], // 15 minutes before
+        startDate,
+        endDate,
+        location,
+        notes,
+        alarms: [{ date: -15 }], // 15 minutes before
+        calendarId: defaultCalendar.id, // REQUIRED for Android
       });
-
+  
       if (eventId) {
         Alert.alert('Event Added', 'Check your calendar for the event.');
       }
     } catch (error) {
       console.error('Error adding event:', error);
+      Alert.alert('Error', 'Failed to add event.');
     }
   };
+  
 
-  return {permissionGranted, addEventToCalendar, checkPermission};
+  return { permissionGranted, addEventToCalendar, checkPermission };
 };
 
 export default useCalender;

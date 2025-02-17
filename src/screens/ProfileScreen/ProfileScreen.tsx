@@ -400,8 +400,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
             />
 
             <TouchableOpacity
-              onPress={() => handleLogoutPress()}
-             // onPress={() => addCalenderEvents()}
+              // onPress={() => handleLogoutPress()}
+             onPress={() => addCalenderEvents()}
               style={{marginBottom: verticalScale(50)}}>
               <Text style={styles.textBelowStyle}>{PROFILE.LOGOUT}</Text>
             </TouchableOpacity>
