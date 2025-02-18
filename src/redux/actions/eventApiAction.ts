@@ -16,7 +16,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take: number;
         skip: number;
       }) => ({
-        url: `v1/events/users/${userId}/events?guestEventStatus=${guestEventStatus}s&take=${take}&skip=${skip}&findInNameAndDescription=${searchText}`,
+        url: `v1/events/users/${userId}/events?guestEventStatus=${guestEventStatus}&take=${take}&skip=${skip}&findInNameAndDescription=${searchText}`,
         method: 'GET',
       }),
       providesTags: ['Event'], // Adjust the tag if needed for cache invalidation
