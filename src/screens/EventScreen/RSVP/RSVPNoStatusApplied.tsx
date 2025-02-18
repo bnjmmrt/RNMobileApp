@@ -369,7 +369,7 @@ const RSVPNoStatusApplied: React.FC = () => {
                 headerTitle="RSPV"
                 showProgressBar={false}
                 onPress={() => {
-                    if (currentGuestStatus != "NO_STATUS") {
+                    if (currentGuestStatus === "APPLIED") {
                         setActiveTab('leave');
                         bottomSheetRef?.current?.open();
                     }
@@ -382,7 +382,7 @@ const RSVPNoStatusApplied: React.FC = () => {
             <ScrollView style={styles.scrollView}>
                 <View style={styles.contentContainer}>
                     <EventCard name={name} location={location?.location} imageCover={imageCover} dates={formatToDeviceTimeZone(startDate, endDate)} />
-                    {currentGuestStatus != "NO_STATUS" && (
+                    {currentGuestStatus === "APPLIED" && (
                         <View style={styles.yellowBoxRightButton}>
                             <View style={styles.waitingResponseContainer}>
                                 <Image source={IMAGES.loader} style={styles.loaderIcon} />
@@ -440,14 +440,14 @@ const RSVPNoStatusApplied: React.FC = () => {
                 disabled={false}
                 style={[styles.btnStyle, { marginBottom: verticalScale(20) }]}
                 title={
-                    currentGuestStatus != "NO_STATUS"
+                    currentGuestStatus == "APPLIED"
                         ? BUTTON_LABLE.UPDATE_APPLICATION
                         : BUTTON_LABLE.SUBMTI_APPLICATION
                 }
                 colorTheme="dark"
                 loading={isSubmitting || isUpdating}
                 onPress={
-                    currentGuestStatus == "NO_STATUS" ? handleSubmitApplication : handleUpdateApplication
+                    currentGuestStatus !== "APPLIED" ? handleSubmitApplication : handleUpdateApplication
                 }
             />
         </SafeAreaView>
