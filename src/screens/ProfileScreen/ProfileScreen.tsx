@@ -331,7 +331,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     dispatch(setAuthToken(null));
     dispatch(resetAppFlowDetails());
     logoutBottomSheetRef.current?.close();
-    navigation.dispatch(resetAction);
+    // navigation.dispatch(resetAction);
+    navigation.replace("AuthStack")
   };
 
   return (
