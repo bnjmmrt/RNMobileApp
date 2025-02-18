@@ -52,7 +52,7 @@
 // };
 
 // export default formatToDeviceTimeZone;
-const formatToDeviceTimeZone = (startDateString, endDateString) => {
+const formatToDeviceTimeZone = (startDateString, endDateString, isRequiredTimeZone = true) => {
     const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     const parseDate = (dateString) => {
@@ -94,7 +94,10 @@ const formatToDeviceTimeZone = (startDateString, endDateString) => {
 
     // Extract the time zone abbreviation
     const timeZoneName = formattedStartTime.split(" ").pop();
-    const formattedTimeRange = `${formattedStartTime.split(" ")[0]} - ${formattedEndTime.split(" ")[0]} ${timeZoneName}`;
+    let formattedTimeRange = `${formattedStartTime.split(" ")[0]} - ${formattedEndTime.split(" ")[0]} ${timeZoneName}`;
+    if (!isRequiredTimeZone) {
+        formattedTimeRange = `${formattedStartTime.split(" ")[0]} - ${formattedEndTime.split(" ")[0]}`;
+    }
 
     return [formattedDate, formattedTimeRange];
 };
