@@ -168,6 +168,8 @@ export const LABLE = {
     'Something went wrong, please try again',
   ABOUT_THE_EVENT: 'About the Event',
   FEATURE_TALENT: 'Featured Talent',
+  EVENT_ANNOUNCEMENTS: 'Event Announcements',
+  NO_EVENT_ANNOUNCEMENTS: 'No event announcements',
   READ_MORE: 'Read More',
   FEATURED_TALENT: 'Featured Talent',
   DUMMY_TEXT:
@@ -182,12 +184,15 @@ export const LABLE = {
   RSVP_INSTRUCTION: " Please add your additional guests’ details by [event date and time],or their passes will be canceled.",
   ADD_FRIEND_AS_GUEST: 'Add friends as guests',
   ADD_GUEST_SUBTITLE: 'Provide details to add your additional guest.',
-  ADD_GUEST_SYNC_TEXT: 'Easily sync your phone contacts to invite friends to join you at events.',
+  ADD_GUEST_SYNC_TEXT:
+    'Easily sync your phone contacts to invite friends to join you at events.',
   SYNC_CONTACT_SEETTINGS: 'Sync Contacts in Settings',
   ADD_GUEST: 'Add Guest',
-  ADD_GUSET_SUBTITLE: 'Your changes will only be saved in Rumor and will not impact your device’s contact list.',
+  ADD_GUSET_SUBTITLE:
+    'Your changes will only be saved in Rumor and will not impact your device’s contact list.',
   YOUR_RSPV_IS: 'Your RSVP is confirmed!',
-  YOU_CAN_RETURN_TO_THE: 'You can return to the event page anytime for more details or to access your event confirmation.',
+  YOU_CAN_RETURN_TO_THE:
+    'You can return to the event page anytime for more details or to access your event confirmation.',
   WEBSITE: 'Website',
   COMPANY_NAME: 'Company Name',
   BIO: 'Bio',
@@ -236,7 +241,7 @@ export const PROFILE = {
   REVIEW_VOUCH_REQUESTS:
     'Approve or decline requests from members seeking your vouch to join an experience. Your decision is private.',
   COMPANY_NAME: 'Company Name',
-  APPLY_FOR_MEMBERSHIP: 'Apply for MemberShip',
+  APPLY_FOR_MEMBERSHIP: 'Apply for Membership',
 };
 
 export const ERROR_MESSAGE = {
@@ -286,6 +291,7 @@ export const COLORS = {
   red: '#FF0000',
   yellow: '#FFFC00',
   yellowLight: '#FEF8E9',
+  yellowDark: '#D9A21F',
   grayMiddle: '#000000BF',
   blueLocation: '#007AFF',
   whiteFeedContainer: '#F1F1F1',
@@ -293,6 +299,7 @@ export const COLORS = {
   grayFeedLocation1: '#00000033',
   grayFeedLocation2: '#E0E0E0FA',
   grayFeedLocation3: '#54545657',
+  blueDark: '#0D729D',
 };
 
 export const feedList = [
@@ -323,7 +330,6 @@ export const EVENT_STATUS = {
   DECLINED_BY_YOU: 'You declined this invitation',
   GOING: 'You are going',
 };
-
 
 export const memberTabData: TabItem[] = [
   {
@@ -356,7 +362,7 @@ export const ROLE = {
   MEMBER: 'member',
   NON_MEMBER: 'non_member',
   HOST: 'host',
-}
+};
 export const hostTabData: TabItem[] = [
   {
     id: '1',
@@ -392,177 +398,220 @@ export const getStatusNumber = (status: string): number => {
 };
 
 export const eventData = {
-  "data": {
-    "admissionType": {
-      "description": "new admission",
-      "enabled": true,
-      "id": "a19a0a19-dfdd-49d4-8029-ac7ec582bedd",
-      "name": "birthday party"
+  data: {
+    admissionType: {
+      description: 'new admission',
+      enabled: true,
+      id: 'a19a0a19-dfdd-49d4-8029-ac7ec582bedd',
+      name: 'birthday party',
     },
-    "ageLimit": {
-      "description": "21 years old or more",
-      "enabled": true,
-      "id": "e8327ba6-817c-45bf-a309-66ef89f06a6f",
-      "maxAge": 120,
-      "minAge": 21,
-      "name": "21+"
+    ageLimit: {
+      description: '21 years old or more',
+      enabled: true,
+      id: 'e8327ba6-817c-45bf-a309-66ef89f06a6f',
+      maxAge: 120,
+      minAge: 21,
+      name: '21+',
     },
-    "autoPublished": false,
-    "capacity": 888,
-    "collaborators": [
+    autoPublished: false,
+    capacity: 888,
+    collaborators: [
       {
-        "addGuestsToDrafts": true,
-        "chatWithAllGuests": true,
-        "chatWithGuestsByCollaborator": true,
-        "checkInGuests": true,
-        "displayName": "",
-        "displayNameListEvent": true,
-        "editEventDetailsSettings": true,
-        "email": "payal.ghusalikar97@gmail.com",
-        "generateEventReports": true,
-        "id": "01478117-90de-42b7-b4b4-2cb7676ef0d7",
-        "inviteGuestsToEvent": true,
-        "limitInvitations": true,
-        "manageDedicatedSignUpForm": true,
-        "manageInAppRsvpRequests": true,
-        "name": "NA NA",
-        "postAnnouncementsByCollaborator": true,
-        "postAnnouncementsToAllGuests": true,
-        "role": {
-          "id": "43c05579-5113-483c-bcb6-e6d2d8e604c4",
-          "name": "co_host"
+        addGuestsToDrafts: true,
+        chatWithAllGuests: true,
+        chatWithGuestsByCollaborator: true,
+        checkInGuests: true,
+        displayName: '',
+        displayNameListEvent: true,
+        editEventDetailsSettings: true,
+        email: 'payal.ghusalikar97@gmail.com',
+        generateEventReports: true,
+        id: '01478117-90de-42b7-b4b4-2cb7676ef0d7',
+        inviteGuestsToEvent: true,
+        limitInvitations: true,
+        manageDedicatedSignUpForm: true,
+        manageInAppRsvpRequests: true,
+        name: 'NA NA',
+        postAnnouncementsByCollaborator: true,
+        postAnnouncementsToAllGuests: true,
+        role: {
+          id: '43c05579-5113-483c-bcb6-e6d2d8e604c4',
+          name: 'co_host',
         },
-        "tickets": [
+        tickets: [
           {
-            "id": "f03664af-51bb-4781-8c67-fc3ef6bfabfb",
-            "limitInvitationsNumber": 70,
-            "name": "VIPTicket"
-          }
+            id: 'f03664af-51bb-4781-8c67-fc3ef6bfabfb',
+            limitInvitationsNumber: 70,
+            name: 'VIPTicket',
+          },
         ],
-        "viewFullGuestList": true
+        viewFullGuestList: true,
       },
       {
-        "addGuestsToDrafts": true,
-        "chatWithAllGuests": true,
-        "chatWithGuestsByCollaborator": true,
-        "checkInGuests": true,
-        "displayName": "",
-        "displayNameListEvent": true,
-        "editEventDetailsSettings": true,
-        "email": "payal.ghusalikar+1@techalchemy.com",
-        "generateEventReports": true,
-        "id": "ae56f762-ced7-4e30-b190-1891353a1898",
-        "inviteGuestsToEvent": true,
-        "limitInvitations": true,
-        "manageDedicatedSignUpForm": true,
-        "manageInAppRsvpRequests": true,
-        "name": "NA NA",
-        "postAnnouncementsByCollaborator": true,
-        "postAnnouncementsToAllGuests": true,
-        "role": {
-          "id": "c1c72579-f2f9-4b4c-b5d7-6566b99d5f9d",
-          "name": "promoter"
+        addGuestsToDrafts: true,
+        chatWithAllGuests: true,
+        chatWithGuestsByCollaborator: true,
+        checkInGuests: true,
+        displayName: '',
+        displayNameListEvent: true,
+        editEventDetailsSettings: true,
+        email: 'payal.ghusalikar+1@techalchemy.com',
+        generateEventReports: true,
+        id: 'ae56f762-ced7-4e30-b190-1891353a1898',
+        inviteGuestsToEvent: true,
+        limitInvitations: true,
+        manageDedicatedSignUpForm: true,
+        manageInAppRsvpRequests: true,
+        name: 'NA NA',
+        postAnnouncementsByCollaborator: true,
+        postAnnouncementsToAllGuests: true,
+        role: {
+          id: 'c1c72579-f2f9-4b4c-b5d7-6566b99d5f9d',
+          name: 'promoter',
         },
-        "tickets": [
+        tickets: [
           {
-            "id": "f03664af-51bb-4781-8c67-fc3ef6bfabfb",
-            "limitInvitationsNumber": 50,
-            "name": "VIPTicket"
+            id: 'f03664af-51bb-4781-8c67-fc3ef6bfabfb',
+            limitInvitationsNumber: 50,
+            name: 'VIPTicket',
           },
           {
-            "id": "478820cb-59d6-49a8-a647-22b6f3082152",
-            "limitInvitationsNumber": -1,
-            "name": "GeneralTicket"
-          }
+            id: '478820cb-59d6-49a8-a647-22b6f3082152',
+            limitInvitationsNumber: -1,
+            name: 'GeneralTicket',
+          },
         ],
-        "viewFullGuestList": true
-      }
+        viewFullGuestList: true,
+      },
     ],
-    "currentGuestStatus": "INVITED",
-    "description": "Testing for get event by Id for a user",
-    "enabled": true,
-    "endDate": "2025-02-12 17:12:33+00",
-    "eventType": {
-      "description": "Is an Art Shows event type",
-      "enabled": true,
-      "id": "81c9c68f-fae1-4fc8-8b3a-36b068e412be",
-      "name": "Art Shows"
+    currentGuestStatus: 'INVITED',
+    description: 'Testing for get event by Id for a user',
+    enabled: true,
+    endDate: '2025-02-12 17:12:33+00',
+    eventType: {
+      description: 'Is an Art Shows event type',
+      enabled: true,
+      id: '81c9c68f-fae1-4fc8-8b3a-36b068e412be',
+      name: 'Art Shows',
     },
-    "featuredEventSection": {
-      "id": "9fcf2fd1-e752-4385-a960-3d61be784f7e",
-      "index": 0,
-      "name": "Feature Events"
+    featuredEventSection: {
+      id: '9fcf2fd1-e752-4385-a960-3d61be784f7e',
+      index: 0,
+      name: 'Feature Events',
     },
-    "furtherInstructions": "Please reach before time",
-    "guestId": "5b7078f9-3d07-4f9e-bc3d-836a098122c5",
-    "guestsCount": 0,
-    "id": "d1a1a562-38f7-4f7a-99bf-a63922a7d034",
-    "imageCover": "",
-    "imageFlyer": "kaustubh",
-    "invitationDeclinedBy": "ca9fe34d-2589-456b-89f7-0ded35c0c7ff",
-    "isPrivate": true,
-    "limitOnePlus": 3,
-    "location": {
-      "city": "San Francisco",
-      "id": "febf18b5-c9ef-48a0-900f-68c1fb73ad07",
-      "latitude": 37.7749,
-      "location": "123 Main St",
-      "longitude": -122.4194
+    furtherInstructions: 'Please reach before time',
+    guestId: '5b7078f9-3d07-4f9e-bc3d-836a098122c5',
+    guestsCount: 0,
+    id: 'd1a1a562-38f7-4f7a-99bf-a63922a7d034',
+    imageCover: '',
+    imageFlyer: 'kaustubh',
+    invitationDeclinedBy: 'ca9fe34d-2589-456b-89f7-0ded35c0c7ff',
+    isPrivate: true,
+    limitOnePlus: 3,
+    location: {
+      city: 'San Francisco',
+      id: 'febf18b5-c9ef-48a0-900f-68c1fb73ad07',
+      latitude: 37.7749,
+      location: '123 Main St',
+      longitude: -122.4194,
     },
-    "name": "Art and Artist",
-    "owner": {
-      "email": "kaustubh.tupe+4@techalchemy.com",
-      "firstName": "Kaustubh",
-      "id": "ca9fe34d-2589-456b-89f7-0ded35c0c7ff",
-      "lastName": "Tupe"
+    name: 'Art and Artist',
+    owner: {
+      email: 'kaustubh.tupe+4@techalchemy.com',
+      firstName: 'Kaustubh',
+      id: 'ca9fe34d-2589-456b-89f7-0ded35c0c7ff',
+      lastName: 'Tupe',
     },
-    "publishDate": "2025-02-09 17:12:33+00",
-    "qrCodeUtilization": 0,
-    "quizQuestions": [
+    publishDate: '2025-02-09 17:12:33+00',
+    qrCodeUtilization: 0,
+    quizQuestions: [
       {
-        "enabled": true,
-        "id": "5413643b-168b-4ebe-9208-c181acd76cfb",
-        "order": 1,
-        "question": "What is your name?",
-        "required": true
-      }
+        enabled: true,
+        id: '5413643b-168b-4ebe-9208-c181acd76cfb',
+        order: 1,
+        question: 'What is your name?',
+        required: true,
+      },
     ],
-    "rsvpDeadline": "",
-    "showLocation": true,
-    "startDate": "2025-02-11 17:12:33+00",
-    "talents": [
+    rsvpDeadline: '',
+    showLocation: true,
+    startDate: '2025-02-11 17:12:33+00',
+    talents: [
       {
-        "contact": "",
-        "description": "Melodious voice",
-        "enabled": true,
-        "id": "ebc87129-8567-4ee7-8361-a55969704591",
-        "imageKeyUrl": "some_image_string_signed_url_upload",
-        "name": "Shreya Ghoshal",
-        "socialNetwork": ""
-      }
+        contact: '',
+        description: 'Melodious voice',
+        enabled: true,
+        id: 'ebc87129-8567-4ee7-8361-a55969704591',
+        imageKeyUrl: 'some_image_string_signed_url_upload',
+        name: 'Shreya Ghoshal',
+        socialNetwork: '',
+      },
     ],
-    "ticketTypes": [
+    ticketTypes: [
       {
-        "capacity": 4,
-        "description": "checking",
-        "enabled": true,
-        "id": "f03664af-51bb-4781-8c67-fc3ef6bfabfb",
-        "name": "VIPTicket"
+        capacity: 4,
+        description: 'checking',
+        enabled: true,
+        id: 'f03664af-51bb-4781-8c67-fc3ef6bfabfb',
+        name: 'VIPTicket',
       },
       {
-        "capacity": 500,
-        "description": "fourth ticket description",
-        "enabled": true,
-        "id": "478820cb-59d6-49a8-a647-22b6f3082152",
-        "name": "GeneralTicket"
-      }
+        capacity: 500,
+        description: 'fourth ticket description',
+        enabled: true,
+        id: '478820cb-59d6-49a8-a647-22b6f3082152',
+        name: 'GeneralTicket',
+      },
     ],
-    "timeZone": "UTC",
-    "useQr": false,
-    "userId": "5774aa32-abe5-45a8-a27f-e743ca61f291"
+    timeZone: 'UTC',
+    useQr: false,
+    userId: '5774aa32-abe5-45a8-a27f-e743ca61f291',
   },
   "status": 200
 }
+
+export const ANNOUNCCEMENTS_DATA = [
+  {
+    id: "1",
+    title: "The Event location has moved to the following address...",
+    description: 'The Event location has moved to the following address...',
+    date: "10/05/2025",
+    imageKeyUrl: 'https://picsum.photos/200/300',
+    media: [],
+  },
+  {
+    id: "1",
+    title: "The Event location has moved to the following address...",
+    description: LABLE.DUMMY_TEXT,
+    date: "10/05/2025",
+    media: [],
+  },
+  {
+    id: "1",
+    title: "The Event location has moved to the following address...",
+    description: LABLE.DUMMY_TEXT,
+    date: "10/05/2025",
+    media: [
+      { type: "image", uri: "https://picsum.photos/200/300" },
+      { type: "image", uri: "https://picsum.photos/200/300" },
+      { type: "pdf", name: "Guests File Rumor", size: "9.83 MB" },
+    ],
+  },
+  {
+    id: "1",
+    title: "The Event location has moved to the following address...",
+    description: LABLE.DUMMY_TEXT,
+    date: "10/05/2025",
+    media: [
+
+      { type: "image", uri: "https://picsum.photos/200/300" },
+      { type: "pdf", name: "Guests File Rumor", size: "9.83 MB" },
+      { type: "image", uri: "https://picsum.photos/200/300" },
+    ],
+  },
+  // Add more objects for additional list items
+];
+
 
 
 export const genderList = [
@@ -571,3 +620,4 @@ export const genderList = [
   { id: 2, gender: 'Non-binary', value: 'NON_BINARY' },
   { id: 3, gender: 'Prefer not to say', value: 'NOT_APPLICABLE' },
 ];
+

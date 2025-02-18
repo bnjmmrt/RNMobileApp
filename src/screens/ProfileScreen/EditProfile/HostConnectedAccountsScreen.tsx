@@ -136,7 +136,7 @@ const HostConnectedAccountsScreen: React.FC<
             image={IMAGES.linkdn}
             ref={linkedinRef}
             label={PROFILE.LINKEDIN}
-            prefix="linkedin.com/.in/"
+            prefix="linkedin.com/in/"
             isIconShown={false}
             defaultValue={hostProfileData?.socialMedia.linkedin}
           />

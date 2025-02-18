@@ -1,13 +1,13 @@
-import IMAGES from '../../assets/images';
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import IMAGES from '../../assets/images';
+import {COLORS} from '../../utils/constants';
 import {
   horizontalMarginScale,
-  verticalMarginScale,
-  horizontalScale,
   radiusScale,
+  verticalMarginScale,
 } from '../../utils/dimensions';
-import { COLORS } from '../../utils/constants';
+import {CustomText} from '../CustomText';
 
 interface FeedFilterItemProps {
   content: string;
@@ -22,9 +22,14 @@ const FeedFilterItem: React.FC<FeedFilterItemProps> = ({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.content}>{content}</Text>
+      <CustomText style={styles.content}>{content}</CustomText>
       <TouchableOpacity onPress={handleClear} style={styles.closeContainer}>
-        <Image source={IMAGES.filterClose} alt="close" />
+        <Image
+          source={IMAGES.filterClose}
+          alt="close"
+          style={styles.icon}
+          resizeMode="contain"
+        />
       </TouchableOpacity>
     </View>
   );
@@ -32,28 +37,19 @@ const FeedFilterItem: React.FC<FeedFilterItemProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: horizontalMarginScale(10),
     borderRadius: radiusScale(100),
-    borderColor: COLORS.borderGray,
     borderWidth: 1,
-    paddingLeft: horizontalMarginScale(16),
-    paddingRight: horizontalMarginScale(8),
-    paddingVertical: verticalMarginScale(8),
-    backgroundColor: COLORS.whiteFeedContainer,
-    marginHorizontal: horizontalMarginScale(8),
-    height: horizontalScale(36),
+    borderColor: COLORS.borderGray,
+    backgroundColor: COLORS.lighter_gray,
+    paddingVertical: verticalMarginScale(12),
+    paddingHorizontal: horizontalMarginScale(16),
   },
-  content: {
-    color: COLORS.black,
-    lineHeight: 16,
-  },
-  closeContainer: {
-    paddingHorizontal: horizontalMarginScale(8),
-    paddingVertical: verticalMarginScale(8),
-  },
+  content: {},
+  closeContainer: {},
+  icon: {},
 });
 
 export default FeedFilterItem;
