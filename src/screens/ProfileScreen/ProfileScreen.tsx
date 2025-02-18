@@ -191,11 +191,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
   const hostItems: ListItem[] = [
     { id: '1', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit },
-    // {
-    //   id: '2',
-    //   title: PROFILE.CONNECTED_ACCOUNTS,
-    //   image: IMAGES.connectedAccount,
-    // },
+    {
+      id: '2',
+      title: PROFILE.CONNECTED_ACCOUNTS,
+      image: IMAGES.connectedAccount,
+    },
     { id: '3', title: PROFILE.NOTIFICATION, image: IMAGES.notification },
     { id: '4', title: PROFILE.FEEDBACK, image: IMAGES.feedback },
     {
