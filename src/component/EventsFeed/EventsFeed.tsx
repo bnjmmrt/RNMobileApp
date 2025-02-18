@@ -5,6 +5,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   FlatList,
   Image,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -22,6 +23,7 @@ import {
   fontScale,
   horizontalMarginScale,
   horizontalScale,
+  Hp,
   radiusScale,
   verticalMarginScale,
   verticalScale,
@@ -37,6 +39,7 @@ import FeedDetail from './FeedDetail';
 import FeedFilterItem from './FeedFilterItem';
 import FeedItem from './FeedItem';
 import FeedSeriesDetail from './FeedSeriesDetail';
+import EventEmptyRecord from '../EmptyRecord/EventEmptyRecord';
 
 export interface EventItem {
   admissionType: {
@@ -235,6 +238,11 @@ const EventsFeed = () => {
     // }
   }, [allEvents]);
 
+  const onRefreshPage = () => {
+    setCurrentPage(1);
+    refetch();
+  };
+
   const onApplyFilter = (
     queryString: string,
     numberOfFiltersApplied: number,
@@ -270,10 +278,17 @@ const EventsFeed = () => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-        showBottomSafeAreaView: false,
-      });
+      if (isInvited) {
+        changeSafeAreaViewConfig({
+          ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
+          showBottomSafeAreaView: false,
+        });
+      } else {
+        changeSafeAreaViewConfig({
+          ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+          showBottomSafeAreaView: false,
+        });
+      }
     }, []),
   );
 
@@ -381,6 +396,25 @@ const EventsFeed = () => {
         showsVerticalScrollIndicator={false}
         ListFooterComponent={
           <View style={{marginBottom: verticalScale(100)}} />
+        }
+        ListEmptyComponent={
+          <View
+            style={{
+              height: Hp(55),
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <EventEmptyRecord
+              title="No Events"
+              subTitle="There are no events available"
+              isLoading={isLoading}
+            />
+          </View>
+        }
+        refreshControl={
+          allEvents?.length > 0 ? (
+            <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
+          ) : undefined
         }
       />
 
