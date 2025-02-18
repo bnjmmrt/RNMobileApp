@@ -5,6 +5,7 @@ import {useDispatch} from 'react-redux';
 import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import FiltersSheet from 'src/component/FilterSheet';
 import {InputRefMethods} from 'src/component/Input/Input';
 import SearchInput from 'src/component/SearchInput';
 import {useFetchAllUsersQuery} from 'src/redux/actions/usersApiAction';
@@ -15,7 +16,6 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import FiltersSheet from '../BottomSheets/FilterSheet';
 import UserActionsSheet, {
   UserActionCurrentPageType,
 } from '../BottomSheets/UserActionsSheet';

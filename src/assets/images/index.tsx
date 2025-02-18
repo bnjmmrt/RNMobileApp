@@ -101,6 +101,7 @@ const IMAGES = {
   membership: require('./membership.png'),
   host_tiktok: require('./host_tiktok.png'),
   host_x: require('./host_x.png'),
+  paragraph_spacing: require('./paragraph-spacing.png'),
 };
 
 export default IMAGES;

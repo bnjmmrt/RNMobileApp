@@ -33,7 +33,7 @@ const ReferralScreen: React.FC = () => {
   const loginData = useSelector((state: RootState) => state.auth?.loginData);
   const inviteFriendSheetRef = useRef<any>(null);
   const { goBack } = useNavigation();
-  const { requestContactPermission } = useContacts();
+  const { requestContactPermission,permissionGranted } = useContacts();
 
   const [referrelRequests, setReferrelRequests] = useState<any[]>([]);
 
@@ -96,9 +96,12 @@ const ReferralScreen: React.FC = () => {
   };
 
   const onInvite= async () => {
-    await requestContactPermission();
+   await requestContactPermission();
+   if(permissionGranted){
     setIsShown(true)
     inviteFriendSheetRef?.current.open();
+   }
+    
   }
 
   const renderContent = () => {

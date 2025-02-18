@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
-import {SafeAreaView, StyleSheet, View} from 'react-native';
+import {SafeAreaView, View} from 'react-native';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/slices';
 
@@ -34,9 +34,3 @@ export const SafeAreaViewWrapper: React.FC<{children: React.ReactNode}> = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});

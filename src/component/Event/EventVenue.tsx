@@ -3,11 +3,12 @@ import { Text, StyleSheet, View, Image, TouchableOpacity, Platform, Linking } fr
 import { fontFamily } from '../../utils/functions';
 import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
 import IMAGES from '@images/index';
-import { Hp, Wp } from 'src/utils/dimensions';
+import { fontScale, Hp, verticalMarginScale, Wp } from 'src/utils/dimensions';
 import ButtonSmall from '../ButtonSmall';
 import MapView from 'react-native-maps';
 import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
 import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
+import GradientSeprator from '../GradientSeprator';
 
 interface EventVenueProps {
   item: {};
@@ -39,15 +40,17 @@ const EventVenue: React.FC<EventVenueProps> = ({ item }) => {
   return (
     <View style={[styles.container]}>
       <View style={{ flex: 1, padding: 5 }}>
-        <Text style={styles.title}>{dates[0]}</Text>
-        <Text style={styles.subtitle}>{dates[1]}</Text>
+        <View style={{ marginVertical: verticalMarginScale(10) }}>
+          <Text style={styles.title}>{dates[0]}</Text>
+          <Text style={styles.subtitle}>{dates[1]}</Text>
+        </View>
+        <GradientSeprator />
+        <View style={{ marginVertical: verticalMarginScale(10) }}>
+          <Text style={styles.title}>{"RSVP to See Location"}</Text>
+          <Text style={styles.subtitle}>{item?.location?.city}</Text>
+        </View>
 
-        <View style={{ height: 1, width: '80%', backgroundColor: COLORS.borderGray, marginVertical: 10, alignSelf: 'center' }}></View>
-
-        <Text style={styles.title}>{"RSVP to See Location"}</Text>
-        <Text style={styles.subtitle}>{item?.location?.city}</Text>
-
-        <View style={{ borderRadius: 10, overflow: 'hidden', height: 160, width: '100%', alignSelf: 'center', marginTop: 10, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ borderRadius: 10, overflow: 'hidden', height: 160, width: '100%', alignSelf: 'center', alignItems: 'center', justifyContent: 'center' }}>
           <MapView
             style={styles.map}
             initialRegion={{
@@ -62,7 +65,7 @@ const EventVenue: React.FC<EventVenueProps> = ({ item }) => {
             pitchEnabled={false}
           />
 
-          <TouchableOpacity
+          {item?.showLocation && <TouchableOpacity
             onPress={openMap}
             style={{
               width: 60,
@@ -84,7 +87,7 @@ const EventVenue: React.FC<EventVenueProps> = ({ item }) => {
               tintColor={COLORS.white}
               style={{ width: 20, height: 20 }}
             />
-          </TouchableOpacity>
+          </TouchableOpacity>}
         </View>
 
 
@@ -114,12 +117,12 @@ const styles = StyleSheet.create({
   },
   title: {
     color: COLORS.black2,
-    fontSize: 16,
+    fontSize: fontScale(16),
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
   subtitle: {
     color: COLORS.light_gray,
-    fontSize: 14,
+    fontSize: fontScale(14),
     paddingVertical: 5,
     fontFamily: fontFamily.ABCDiatype_Regular,
   },
