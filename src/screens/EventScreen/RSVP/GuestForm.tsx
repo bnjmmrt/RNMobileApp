@@ -10,12 +10,13 @@ import {
 import Button from '../../../component/Button';
 import Input from '../../../component/Input/Input';
 import PhoneNumberInput from 'src/component/PhonNumberComponent/PhoneNumberInput';
+import { fontScale, horizontalMarginScale } from 'src/utils/dimensions';
 
 interface GuestFormProps {
     hasPhone: boolean;
     data: {
-        first_name: string;
-        last_name: string;
+        firstName: string;
+        lastName: string;
         phoneNumber?: string;
         email?: string;
     };
@@ -45,18 +46,23 @@ const GuestForm: React.FC<GuestFormProps> = ({ hasPhone, data, onSubmit }) => {
             ? phoneNumberInputRef.current.validatePhoneNumber()
             : emailInputRef.current.validateInputs();
 
-        if (firstNameValid && lastNameValid && phoneOrEmailValid) {
+        const emailValid = !hasPhone && /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(emailInputRef.current.inputText);
+
+        if (firstNameValid && lastNameValid && phoneOrEmailValid && (hasPhone || emailValid)) {
             const filledValues = {
                 firstName: firstNameRef.current.inputText,
                 lastName: lastNameRef.current.inputText,
-                ...(hasPhone
-                    ? { phoneNumber: phoneNumberInputRef.current.phoneNumber }
-                    : { email: emailInputRef.current.inputText }),
-                id: Date.now(),
+                phoneNumber: hasPhone ? phoneNumberInputRef.current.phoneNumber : "",
+                email: hasPhone ? "" : emailInputRef?.current?.inputText
             };
             onSubmit(filledValues);
+        } else {
+            if (!emailValid) {
+                emailInputRef.current?.setErrorMessage('Please enter a valid email address.');
+            }
         }
     };
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -102,15 +108,14 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         flex: 1,
-        padding: 20,
+        paddingHorizontal: horizontalMarginScale(20)
     },
     btnStyle: {
         marginTop: 'auto',
         borderRadius: 100,
     },
     label: {
-        marginTop: 10,
-        fontSize: 14,
+        fontSize: fontScale(14),
         fontWeight: 'bold',
     },
 });

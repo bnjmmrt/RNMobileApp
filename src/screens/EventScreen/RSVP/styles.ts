@@ -48,11 +48,11 @@ export const styles = StyleSheet.create({
     },
     title: {
         fontSize: fontScale(24),
-        fontWeight: '700',
         fontFamily: fontFamily.RomieTrial_Bold,
+        marginBottom: verticalMarginScale(6)
     },
     details: {
-        fontSize: fontScale(14),
+        fontSize: fontScale(12),
         color: 'gray',
     },
     infoText: {

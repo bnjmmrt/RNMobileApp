@@ -47,6 +47,32 @@ export const rspvApiAction = createBaseApi.injectEndpoints({
                 body: requestParam,
             }),
         }),
+        declineApplication: builder.mutation({
+            query: ({ id, eventId, reason, guestId }) => ({
+                url: `v1/users/${id}/events/${eventId}/decline`,
+                method: 'PUT',
+                body: { reason, guestId },
+            }),
+        }),
+        acceptInvitation: builder.mutation({
+            query: ({ id, eventId }) => ({
+                url: `v1/users/${id}/events/${eventId}/accept`,
+                method: 'PUT',
+            }),
+        }),
+        inviteGuests: builder.mutation({
+            query: ({ userId, eventId, guests }) => ({
+                url: `v1/users/${userId}/events/${eventId}/invite-guests`,
+                method: 'POST',
+                body: { guests },
+            }),
+        }),
+        deleteConfirmedGuest: builder.mutation({
+            query: ({ userId, eventId, id }) => ({
+                url: `v1/users/${userId}/events/${eventId}/guest/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
@@ -58,4 +84,8 @@ export const {
     useGetQuizQuestionQuery,
     useGetQuizQuestionAnswerQuery,
     useVouchRequestMutation,
+    useDeclineApplicationMutation,
+    useInviteGuestsMutation,
+    useDeleteConfirmedGuestMutation,
+    useAcceptInvitationMutation
 } = rspvApiAction;

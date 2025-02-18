@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import EventScreen from 'src/screens/EventScreen/EventScreen';
 import EventDetailsScreen from 'src/screens/EventScreen/EventDetailsScreen';
-import RSPVScreen from 'src/screens/EventScreen/RSPV/RSPVScreen';
-import RSVPFormScreen from 'src/screens/EventScreen/RSVP/RSVPFormScreen';
 import AddGuestOptionScreen from 'src/screens/EventScreen/RSVP/AddGuestOptionScreen';
 import AddGuestScreen from 'src/screens/EventScreen/RSVP/AddGuestScreen';
 import RSVPInvitedUpcoming from 'src/screens/EventScreen/RSVP/RSVPInvitedUpcoming';
+import RSVPNoStatusApplied from 'src/screens/EventScreen/RSVP/RSVPNoStatusApplied';
 
 
 // Define the param list for the stack navigator
@@ -36,13 +35,8 @@ export const EventStack: React.FC = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="RSPVScreen"
-        component={RSPVScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="RSVPFormScreen"
-        component={RSVPFormScreen}
+        name="RSVPNoStatusApplied"
+        component={RSVPNoStatusApplied}
         options={{ headerShown: false }}
       />
       <Stack.Screen
