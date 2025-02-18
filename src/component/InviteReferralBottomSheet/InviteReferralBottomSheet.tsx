@@ -224,12 +224,12 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
 
         {selectedTab === '01' && (
           <View style={{ flex: 1, gap: 8, marginTop: verticalMarginScale(12) }}>
-            <SearchInput
+            {permissionGranted && <SearchInput
               placeholder={LABLE.SEARCH_FRIENDS}
               onSearchTextChange={(query) => {
                 handleSearch(query);
               }}
-            />
+            />}
             {permissionGranted && <View>
               <Text style={styles.sectionTitle}>{LABLE.FRIENDS_WHO_ARE_MEMBERS}</Text>
               <Text style={styles.sectionSubtitle}>{LABLE.REQUEST_A_REFERRAL}</Text>
@@ -244,7 +244,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
                   <View style={{ height: Hp(50), justifyContent: 'center', alignItems: 'center' }}>
                     <EventEmptyRecord title='No Results' subTitle='No Contacts are members at this time' />
                   </View> :
-                  <View style={{ height: Hp(50), justifyContent: 'center', alignItems: 'center' }}>
+                  <View style={{ height: Hp(65), justifyContent: 'center', alignItems: 'center' }}>
                     <EventEmptyRecord title='Access your contacts' subTitle='Easily sync your phone contacts to request referrals from members and invite friends to join you on Rumor' />
                     <ButtonSmall
                       colorTheme="dark"
@@ -266,12 +266,12 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
 
         {selectedTab === '02' && (
           <View style={{ flex: 1, gap: 8, marginTop: verticalMarginScale(12) }}>
-            <SearchInput
+            {permissionGranted && <SearchInput
               placeholder={LABLE.SEARCH_FRIENDS}
               onSearchTextChange={(query) => {
                 handleSearch(query);
               }}
-            />
+            />}
             {permissionGranted && <View>
               <Text style={styles.sectionTitle}>{LABLE.CONTACTS}</Text>
               <Text style={styles.sectionSubtitle}>{LABLE.INVITE_FRIENDS_TO}</Text>
@@ -280,7 +280,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
               data={filteredContacts}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={
-                <View style={{ height: Hp(50), justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ height: Hp(65), justifyContent: 'center', alignItems: 'center' }}>
                   <EventEmptyRecord title='Access your contacts' subTitle='Easily sync your phone contacts to request referrals from members and invite friends to join you on Rumor' />
                   <ButtonSmall
                     colorTheme="dark"
@@ -308,7 +308,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
         )}
 
 
-        {footerComponent()}
+        {permissionGranted && footerComponent()}
       </View>
 
 

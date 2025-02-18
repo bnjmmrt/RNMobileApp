@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     eventTitle: { fontSize: fontScale(24), color: COLORS.black, fontFamily: fontFamily.RomieTrial_Bold, marginBottom: verticalScale(6) },
     eventDetails: { fontSize: fontScale(12), color: COLORS.light_gray, fontFamily: fontFamily.ABCDiatype_Medium, marginTop: verticalScale(2) },
     descText: { fontSize: fontScale(14), color: COLORS.light_gray, fontFamily: fontFamily.ABCDiatype_Medium, marginTop: verticalScale(8) },
-    btnStyle: { borderRadius: radiusScale(100) },
+    btnStyle: { borderRadius: radiusScale(100), marginBottom: verticalMarginScale(6) },
     bottomSheetContent: { paddingHorizontal: horizontalScale(16) },
     successText: { fontSize: fontScale(32), color: COLORS.black, fontFamily: fontFamily.RomieTrial_Bold, textAlign: 'center' },
     waitingResponseContainer: {
@@ -110,7 +110,7 @@ export const styles = StyleSheet.create({
         color: COLORS.black,
     },
     cancelPopupContainer: { gap: verticalScale(8), marginTop: verticalScale(4) },
-    leaveContainer: { paddingHorizontal: horizontalScale(12), gap: verticalScale(8) },
+    leaveContainer: { paddingHorizontal: horizontalScale(12) },
     scrollView: { flex: 1 },
-    downArrowIcon: { width: 13, height: 13 },
+    downArrowIcon: { width: 12, height: 12 },
 });

@@ -30,11 +30,11 @@ import { useDispatch } from 'react-redux';
 interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> { }
 
 const AddGuestOptionScreen: React.FC<EmailPhoneScreenProps> = ({
-  navigation,
+
 }) => {
   const [currentTab, setCurrentTab] = useState('01');
   const dispatch = useDispatch();
-  const { navigate } = useNavigation();
+  const navigation = useNavigation();
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
   const [URL, setURL] = useState('');
@@ -89,7 +89,7 @@ const AddGuestOptionScreen: React.FC<EmailPhoneScreenProps> = ({
         />
         {currentTab == '01' ? <AddFromContacts /> : <GuestForm onSubmit={(e) => {
           dispatch(addGuest(e))
-          navigate('RSVPFormScreen')
+          navigation.pop(1);
         }} />}
         {/* <View style={styles.contactContainer}>
           <Image

@@ -2,8 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface Guest {
     id: number;
-    first_name: string;
-    last_name: string;
+    firtName: string;
+    lastName: string;
     email: string;
     phoneNumber: string;
 }
@@ -43,11 +43,22 @@ const rsvpSlice = createSlice({
                 console.log("Guest already exists.");
             }
         },
-        deleteGuest(state, action: PayloadAction<number>) {
-            state.guests = state.guests.filter(guest => guest.id !== action.payload);
+        deleteGuest(state, action: PayloadAction<{ phoneNumber?: string; email?: string }>) {
+            const { phoneNumber, email } = action.payload;
+            state.guests = state.guests.filter(guest => {
+                if (phoneNumber) {
+                    return guest.phoneNumber !== phoneNumber;
+                } else if (email) {
+                    return guest.email !== email;
+                }
+                return true;
+            });
         },
         setSelectedGuest(state, action: PayloadAction<Guest | null>) {
             state.selectedGuest = action.payload;
+        },
+        resetGuest(state) {
+            state.guests = [];
         },
         resetRSVP() {
             return initialState;
@@ -55,6 +66,6 @@ const rsvpSlice = createSlice({
     },
 });
 
-export const { setResponse, addGuest, deleteGuest, setSelectedGuest, resetRSVP } = rsvpSlice.actions;
+export const { setResponse, addGuest, deleteGuest, setSelectedGuest, resetRSVP, resetGuest } = rsvpSlice.actions;
 
 export default rsvpSlice.reducer;
