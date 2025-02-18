@@ -134,6 +134,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
             defaultValue={profileData?.companyName}
           />
           <Input
+            blurOnSubmit={true}
             ref={bioRef}
             label={LABLE.BIO}
             errorMessage={''}
