@@ -109,7 +109,10 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
               performCodeVerification={(code: string) =>
                 verifyOtp(code, redirectToHome)
               }
-              resendVerificationCode={() => sendOtp(true)}
+              resendVerificationCode={() => {
+                otpInputRef.current.clearOTP();
+                sendOtp(true)
+              }}
             />
             <View style={styles.spacer} />
             <Button

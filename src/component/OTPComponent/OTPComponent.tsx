@@ -1,4 +1,4 @@
-import React, {forwardRef, useImperativeHandle, useState} from 'react';
+import React, {forwardRef, useImperativeHandle, useState, useRef} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {OtpInput} from 'react-native-otp-entry';
 import {LABLE, BUTTON_LABLE, COLORS} from '../../utils/constants';
@@ -24,14 +24,20 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
   (props, ref) => {
     const [code, setCode] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string>('');
+    const otpInput = useRef(null);
 
     useImperativeHandle(ref, () => ({
       code,
       handleNextPress,
       validateCode,
       showInvalidCodeError,
+      clearOTP
     }));
 
+    const clearOTP = () => {
+      otpInput.current.clear(); // Clears the OTP input
+    };
+  
     const validateCode = (): boolean => {
       if (code.length < 4) {
         setErrorMessage(LABLE.EROOR_ENTER_CODE);
@@ -58,6 +64,7 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
     return (
       <View style={styles.container}>
         <OtpInput
+          ref={otpInput}
           numberOfDigits={4}
           focusColor="green"
           autoFocus={false}

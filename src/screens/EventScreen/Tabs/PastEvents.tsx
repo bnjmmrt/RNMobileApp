@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
-import { useFetchEventsQuery, useFetchHostEventsQuery } from '../../../redux/actions/eventApiAction';
+import React, {useEffect, useState} from 'react';
+import {View, FlatList, ActivityIndicator} from 'react-native';
+import {
+  useFetchEventsQuery,
+  useFetchHostEventsQuery,
+} from '../../../redux/actions/eventApiAction';
 import EventItem from '../EventItem';
 import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
-import { Hp } from '../../../utils/dimensions';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/redux/slices';
+import {Hp} from '../../../utils/dimensions';
+import {useSelector} from 'react-redux';
+import {RootState} from 'src/redux/slices';
+import {ROLE} from 'src/utils/constants';
 
 interface PastEventsProps {
   userId: string;
@@ -13,35 +17,33 @@ interface PastEventsProps {
   tab: any;
 }
 
-const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
+const PastEvents: React.FC<PastEventsProps> = ({userId, searchText, tab}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [events, setEvents] = useState<any[]>([]);
   const role = useSelector((state: RootState) => state.auth.role);
 
   const useFetchEvents =
-    role === 'host'
-      ? useFetchHostEventsQuery
-      : useFetchEventsQuery;
+    role === ROLE.HOST ? useFetchHostEventsQuery : useFetchEventsQuery;
 
   // Ensure argument structure remains consistent
   const queryArgs =
-    role === 'host'
+    role === ROLE.HOST
       ? ({
-        status: 'UPCOMING',
-        searchText,
-        take: 10,
-        skip: (currentPage - 1) * 10,
-      } as const) // Type assertion to prevent union mismatch
+          status: 'PAST_STATUS',
+          searchText,
+          take: 10,
+          skip: (currentPage - 1) * 10,
+        } as const) // Type assertion to prevent union mismatch
       : ({
-        userId,
-        guestEventStatus: 'UPCOMING',
-        searchText,
-        take: 10,
-        skip: (currentPage - 1) * 10,
-      } as const); // Type assertion
+          userId,
+          guestEventStatus: 'PAST',
+          searchText,
+          take: 10,
+          skip: (currentPage - 1) * 10,
+        } as const); // Type assertion
 
-  const { data, isLoading } = useFetchEvents(queryArgs);
+  const {data, isLoading} = useFetchEvents(queryArgs);
 
   // const { data, isLoading } = useFetchEventsQuery({
   //   userId,
@@ -53,33 +55,43 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
 
   useEffect(() => {
     if (data) {
-      setEvents((prev) => (currentPage === 1 ? data.data : [...prev, ...data.data]));
+      console.log('sayyed past events:', data);
+      if (role === ROLE.HOST) {
+        setEvents(prev =>
+          currentPage === 1
+            ? data.data.eventsResponse
+            : [...prev, ...data.data.eventsResponse],
+        );
+      } else {
+        setEvents(prev =>
+          currentPage === 1 ? data.data : [...prev, ...data.data],
+        );
+      }
     }
   }, [data]);
 
   useEffect(() => {
-    setRefreshing(isLoading)
-  }, [isLoading])
+    setRefreshing(isLoading);
+  }, [isLoading]);
 
   const handleRefresh = () => {
-    setCurrentPage(1)
+    setCurrentPage(1);
   };
-
 
   const loadMore = () => {
     if (data?.currentPage < data?.totalPages && !isLoading) {
-      setCurrentPage((prev) => prev + 1);
+      setCurrentPage(prev => prev + 1);
     }
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
+    <View style={{flex: 1, justifyContent: 'center', flexDirection: 'row'}}>
       {events.length > 0 ? (
         <FlatList
           data={events}
-          style={{ paddingBottom: 10, paddingHorizontal: 15 }}
+          style={{paddingBottom: 10, paddingHorizontal: 15}}
           keyExtractor={(item, index) => `${item.id}-${index}`}
-          renderItem={({ item }) => <EventItem item={item} />}
+          renderItem={({item}) => <EventItem item={item} />}
           refreshing={refreshing}
           onRefresh={handleRefresh}
           onEndReached={loadMore}
@@ -87,8 +99,17 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
           ListFooterComponent={isLoading && <ActivityIndicator />}
         />
       ) : (
-        <View style={{ height: Hp(55), alignItems: 'center', justifyContent: 'center' }}>
-          <EventEmptyRecord title={tab.title} subTitle={tab.subTitle} isLoading={isLoading} />
+        <View
+          style={{
+            height: Hp(55),
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <EventEmptyRecord
+            title={tab.title}
+            subTitle={tab.subTitle}
+            isLoading={isLoading}
+          />
         </View>
       )}
     </View>

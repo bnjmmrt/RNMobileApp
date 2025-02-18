@@ -1,11 +1,13 @@
 import {
   BottomSheetFlatList,
   BottomSheetFlatListMethods,
-  BottomSheetScrollView,
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import React, {useCallback, useEffect, useRef} from 'react';
+import {InteractionManager} from 'react-native';
+import {DateType} from 'react-native-ui-datepicker';
 import {shallowEqual, useSelector} from 'react-redux';
+import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import GradientSeprator from 'src/component/GradientSeprator';
 import {useLazyFetchUserFiltersQuery} from 'src/redux/actions/usersApiAction';
 import {RootState} from 'src/redux/slices';
@@ -13,8 +15,6 @@ import {horizontalMarginScale, Hp} from 'src/utils/dimensions';
 import {SelectedFilters} from '.';
 import FilterAccordian from './FilterAccordian';
 import FilterOptions, {FilterOption, FilterOptionTypes} from './FilterOptions';
-import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
-import {InteractionManager} from 'react-native';
 
 type FilterType = {
   id: string;
@@ -64,7 +64,7 @@ const AllUsersFilters = ({
   const onChangeFilterOptionValue = (
     id: string,
     optionType: FilterOptionTypes,
-    value: {id: string; name: string},
+    value: {id: string | DateType; name: string},
   ) => {
     let tempSelectedFilter = {...selectedFilters};
 

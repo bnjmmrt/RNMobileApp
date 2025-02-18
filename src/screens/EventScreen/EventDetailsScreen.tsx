@@ -27,63 +27,63 @@ interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: {
-    item: {}
+    item: {};
   };
 };
 
-
-
-const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) => {
+const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
+  navigation,
+}) => {
   const route = useRoute<RouteProp<RouteParams>>();
   const [isDeclinedByMe, setIsDeclinedByMe] = useState(false);
   const [isDeclinedByHost, setIsDeclinedByHost] = useState(false);
   const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
-  const [acceptInvite, { isLoading: acceptLoading, isError: acceptError, isSuccess: acceptSuccess }] = useAcceptInvitationMutation();
+  const [
+    acceptInvite,
+    { isLoading: acceptLoading, isError: acceptError, isSuccess: acceptSuccess },
+  ] = useAcceptInvitationMutation();
 
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
   const { data, isLoading, refetch, isSuccess } = useFetchEventDetailsQuery(
     { eventId: route?.params?.id },
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
   useFocusEffect(
     useCallback(() => {
       refetch();
-    }, [refetch])
+    }, [refetch]),
   );
-
 
   useEffect(() => {
     if (guestStatus === 'DECLINED') {
-      setIsDeclinedByMe(data?.data?.invitationDeclinedBy == userId)
-      setIsDeclinedByHost(data?.data?.invitationDeclinedBy !== userId)
+      setIsDeclinedByMe(data?.data?.invitationDeclinedBy == userId);
+      setIsDeclinedByHost(data?.data?.invitationDeclinedBy !== userId);
     }
-  }, [guestStatus])
-
+  }, [guestStatus]);
 
   useEffect(() => {
-    console.log("Event data:", data)
+    console.log('Event data:', data);
     if (data && data.data && data?.data?.collaborators) {
-      setCollaborators(data.data.collaborators)
+      setCollaborators(data.data.collaborators);
     }
 
     if (data && data.data && data?.data?.talents) {
-      setTalents(data.data.talents)
+      setTalents(data.data.talents);
     }
 
-    setGuestStatus(data?.data?.currentGuestStatus)
-
-  }, [data])
-  console.log("Event details", route.params.id);
+    setGuestStatus(data?.data?.currentGuestStatus);
+  }, [data]);
+  console.log('Event details', route.params.id);
   const statusMap = [
-    { id: "1", label: EVENT_STATUS.AWAITING },
-    { id: "2", label: EVENT_STATUS.INVITED },
-    { id: "3", label: EVENT_STATUS.DECLINED_BY_HOST },
-    { id: "4", label: EVENT_STATUS.DECLINED_BY_YOU },
-    { id: "5", label: EVENT_STATUS.GOING },
+    { id: '1', label: EVENT_STATUS.AWAITING },
+    { id: '2', label: EVENT_STATUS.INVITED },
+    { id: '3', label: EVENT_STATUS.DECLINED_BY_HOST },
+    { id: '4', label: EVENT_STATUS.DECLINED_BY_YOU },
+    { id: '5', label: EVENT_STATUS.GOING },
   ];
   const [images, setImages] = useState(statusMap);
 
@@ -91,30 +91,31 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
 
   const onNextClick = () => {
     if (guestStatus === 'INVITED' || guestStatus === 'CONFIRMED') {
-      navigation.navigate('RSVPInvitedUpcoming', { event: data.data })
-    }
-    else {
-      navigation.navigate('RSVPNoStatusApplied', { event: data.data })
+      navigation.navigate('RSVPInvitedUpcoming', { event: data.data });
+    } else {
+      navigation.navigate('RSVPNoStatusApplied', { event: data.data });
     }
   };
 
   const onDiscoverMoreClick = () => {
-    navigation.goBack()
+    navigation.goBack();
   };
 
   const onViewTicketClick = () => {
-    FlashMessageComponent.show('success', "in Progress...")
+    FlashMessageComponent.show('success', 'in Progress...');
   };
 
   const acceptInvitation = async () => {
     try {
       const accept_response = await acceptInvite({
         id: userId,
-        eventId: route.params.id
+        eventId: route.params.id,
       });
       const updatedData = await refetch();
       if (updatedData?.data) {
-        navigation.navigate('RSVPInvitedUpcoming', { event: updatedData?.data?.data });
+        navigation.navigate('RSVPInvitedUpcoming', {
+          event: updatedData?.data?.data,
+        });
       } else {
         console.warn('Failed to get updated event data');
       }
@@ -123,22 +124,22 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
     }
   };
 
-
   return (
     <View style={{ ...styles.container }}>
-
       <ScrollView>
         <View style={{ ...styles.contentContainer }}>
           <View style={{}}>
             <FastImage
-              source={{ uri: route?.params?.imageCover || route?.params?.imageFlyer }}
+              source={{
+                uri: route?.params?.imageCover || route?.params?.imageFlyer,
+              }}
               resizeMode={FastImage.resizeMode.cover}
               defaultSource={IMAGES.eventCoverPlaceholders1} // Placeholder
               style={styles.icon}
             />
           </View>
           <Text style={styles.titleStyle}>{route?.params?.name}</Text>
-          <EventStatus status={guestStatus} isDeclinedByMe={isDeclinedByMe} />
+          <EventStatus status={guestStatus} isDeclinedByMe={!isDeclinedByMe} />
           <FlatList
             data={collaborators}
             horizontal
@@ -146,72 +147,76 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
             // style={{ marginVertical: 20 }}
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item, index) => `${item.id}-${index}`}
-            renderItem={({ item }) => (
-              <EventHostItem item={item} />
-            )}
+            renderItem={({ item }) => <EventHostItem item={item} />}
           />
-          <EventVenue item={route?.params} />
-          <EventOverview item={route?.params} />
+          <EventVenue item={data?.data} />
+          <EventOverview item={data?.data} />
 
           {talents.length > 0 && <EventTalent talents={talents} />}
-          {<EventAnouncements talents={talents} />}
-
-
+          {/* {<EventAnouncements talents={talents} />} */}
         </View>
-
       </ScrollView>
 
-      {(!isDeclinedByHost && guestStatus !== "CONFIRMED") && <View style={{ margin: 20 }}>
-        <Button
-          disabled={false}
-          style={styles.btnStyle}
-          title={guestStatus == 'APPLIED' ? BUTTON_LABLE.UPDATE_APPLICATION : BUTTON_LABLE.RSVP}
-          colorTheme="dark"
-          onPress={onNextClick}
-        />
-      </View>
-      }
-      {(guestStatus == "DECLINED") && <View style={{ margin: 20 }}>
-        <Button
-          disabled={false}
-          style={styles.btnStyle}
-          loading={acceptLoading}
-          title={BUTTON_LABLE.RSVP}
-          colorTheme="dark"
-          onPress={() => {
-            acceptInvitation();
-          }}
-        />
-      </View>
-      }
+      {!isDeclinedByHost && guestStatus !== 'CONFIRMED' && (
+        <View style={{ margin: 20 }}>
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={
+              guestStatus == 'APPLIED'
+                ? BUTTON_LABLE.UPDATE_APPLICATION
+                : BUTTON_LABLE.RSVP
+            }
+            colorTheme="dark"
+            onPress={onNextClick}
+          />
+        </View>
+      )}
+      {guestStatus == 'DECLINED' && (
+        <View style={{ margin: 20 }}>
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            loading={acceptLoading}
+            title={BUTTON_LABLE.RSVP}
+            colorTheme="dark"
+            onPress={() => {
+              onNextClick();
+            }}
+          />
+        </View>
+      )}
 
-      {isDeclinedByHost && <View style={{ margin: 20 }}>
-        <Button
-          disabled={false}
-          style={styles.btnStyle}
-          title={BUTTON_LABLE.DISCOVER_MORE_EVENTS}
-          colorTheme="dark"
-          onPress={onDiscoverMoreClick}
-        />
-      </View>}
+      {isDeclinedByMe && (
+        <View style={{ margin: 20 }}>
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={BUTTON_LABLE.DISCOVER_MORE_EVENTS}
+            colorTheme="dark"
+            onPress={onDiscoverMoreClick}
+          />
+        </View>
+      )}
 
-
-      {(guestStatus == 'CONFIRMED') && <View style={{ margin: 20 }}>
-        <Button
-          disabled={false}
-          style={styles.btnStyle}
-          title={BUTTON_LABLE.VIEW_TICKET}
-          colorTheme="dark"
-          onPress={onViewTicketClick}
-        />
-        <Button
-          disabled={false}
-          style={styles.btnStyleLight}
-          title={BUTTON_LABLE.UPDATE_RSVP}
-          colorTheme="light"
-          onPress={onNextClick}
-        />
-      </View>}
+      {guestStatus == 'CONFIRMED' && (
+        <View style={{ margin: 20 }}>
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={BUTTON_LABLE.VIEW_TICKET}
+            colorTheme="dark"
+            onPress={onViewTicketClick}
+          />
+          <Button
+            disabled={false}
+            style={styles.btnStyleLight}
+            title={BUTTON_LABLE.UPDATE_RSVP}
+            colorTheme="light"
+            onPress={onNextClick}
+          />
+        </View>
+      )}
 
       <BackButtonOverlay onPress={() => navigation.goBack()} />
     </View>
@@ -269,7 +274,6 @@ const styles = StyleSheet.create({
     fontSize: fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
     paddingHorizontal: 10,
-
   },
   subtitle: {
     color: COLORS.black2,
