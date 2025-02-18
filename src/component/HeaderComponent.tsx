@@ -7,6 +7,9 @@ import AvatarInitials from './AvatarInitials';
 import { fontFamily } from 'src/utils/functions';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
+import FastImage from '@d11/react-native-fast-image';
+import { useNavigation } from '@react-navigation/native';
+import { ROUTES } from 'src/navigation/Route';
 
 interface HeaderComponentProps {
     rightImageStyle?: StyleProp<ImageStyle>;
@@ -19,8 +22,12 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({ rightImageStyle, isDa
     const tintColor = isDarkTheme ? COLORS.white : COLORS.black2;
     const backgroundColorNotification = isDarkTheme ? COLORS.dark_gray : COLORS.tabBorderColor;
     const role = useSelector((state: RootState) => state.auth.role);
-
-
+    const profileData = useSelector((state: RootState) => state.appFlowApiData?.profileData);
+    const profilePic = role.toLocaleLowerCase() === 'host' ? profileData?.companyLogo : profileData?.imageUrl
+    const name = profileData?.firstName
+        ? `${profileData?.firstName} ${profileData?.lastName}`
+        : ''
+    const navigation = useNavigation()
     return (
         <View style={[styles.container, { backgroundColor: hasGradient ? 'transparent' : backgroundColor }]}>
             <View style={styles.logoContainer}>
@@ -53,8 +60,22 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({ rightImageStyle, isDa
                         tintColor={tintColor}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.profileButton}>
-                    <AvatarInitials name={"Bessie Cooper"} size={48} />
+                <TouchableOpacity style={styles.profileButton} onPress={() => navigation.navigate(ROUTES.ProfileScreen)}>
+
+                    {profilePic ? (
+                        <FastImage
+                            style={[styles.profilePhotoContainer]}
+                            source={{ uri: profilePic }}
+                            resizeMode="cover"
+                        />
+                    ) : (
+                        <View style={styles.profilePhotoContainer}>
+                            <AvatarInitials name={name} size={48} />
+                        </View>
+                    )}
+
+
+                    {/* <AvatarInitials name={"Bessie Cooper"} size={48} /> */}
 
                     {/* <Image
                         style={[styles.imgStyle, rightImageStyle]}
@@ -100,6 +121,15 @@ const styles = StyleSheet.create({
         borderRadius: 24,
         marginHorizontal: 5,
         backgroundColor: COLORS.tabBorderColor,
+    },
+    profilePhotoContainer: {
+        height: 48,
+        width: 48,
+        borderRadius: 24,
+        backgroundColor: COLORS.tabBorderColor,
+        alignSelf: 'center',
+        justifyContent: "center",
+        alignItems: "center"
     },
     imgStyle: {
         resizeMode: 'contain',

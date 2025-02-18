@@ -75,7 +75,7 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
           />
         </View>
 
-        <WebViewBottomSheet url={LINKS.APPLY_FOR_HOST} ref={bottomSheetRef} />
+        <WebViewBottomSheet url={LINKS.APPLY_FOR_HOST} ref={bottomSheetRef} isFromLanding={true} />
       </View>
     </View>
   );

@@ -3,7 +3,7 @@ import { View, FlatList, ActivityIndicator } from 'react-native';
 import { useFetchEventsQuery, useFetchHostEventsQuery } from '../../../redux/actions/eventApiAction';
 import EventItem from '../EventItem';
 import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
-import { BUTTON_LABLE, COLORS } from '../../../utils/constants';
+import { BUTTON_LABLE, COLORS, ROLE } from '../../../utils/constants';
 import { Hp } from '../../../utils/dimensions';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
@@ -21,13 +21,13 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({ userId, searchText, tab
   const role = useSelector((state: RootState) => state.auth.role);
 
   const useFetchEvents =
-    role === 'host'
+    role === ROLE.HOST
       ? useFetchHostEventsQuery
       : useFetchEventsQuery;
 
   // Ensure argument structure remains consistent
   const queryArgs =
-    role === 'host'
+    role === ROLE.HOST
       ? ({
         status: 'UPCOMING',
         searchText,
@@ -46,7 +46,11 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({ userId, searchText, tab
 
   useEffect(() => {
     if (data) {
-      setEvents((prev) => (currentPage === 1 ? data.data : [...prev, ...data.data]));
+      if (role === ROLE.HOST) {
+        setEvents((prev) => (currentPage === 1 ? data.data.eventsResponse : [...prev, ...data.data.eventsResponse]));
+      } else {
+        setEvents((prev) => (currentPage === 1 ? data.data : [...prev, ...data.data]));
+      }
     }
   }, [data]);
 
@@ -67,7 +71,7 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({ userId, searchText, tab
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
-      {events.length > 0 ? (
+      {events?.length > 0 ? (
         <FlatList
           data={events}
           style={{ paddingBottom: 10, paddingHorizontal: 15 }}

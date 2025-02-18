@@ -16,10 +16,17 @@ import AllUsersFilters from './AllUsersFilters';
 import DiscoverEventsFilters from './DiscoverEventsFilters';
 import {FilterOptionTypes} from './FilterOptions';
 import {styles} from './style';
+import {DateType} from 'react-native-ui-datepicker';
 
 export type SelectedSingleFilter = {
   type: FilterOptionTypes;
-  value: {id: string; name: string}[];
+  value: {
+    id: string | DateType;
+    name: string;
+    date?: DateType;
+    lat?: string;
+    long?: string;
+  }[];
 };
 export type SelectedFilters = {
   [id: string]: SelectedSingleFilter;
@@ -52,7 +59,8 @@ export const getFilterQuery = (selectedFilters: SelectedFilters) => {
     .join('&');
 
   const filtersCount = Object.values(selectedFilters).filter(
-    filter => Array.isArray(filter.value) && filter.value.length > 0,
+    filter =>
+      Array.isArray(filter.value) && filter.value.some(item => item.name),
   ).length;
 
   return {queryString, filtersCount};

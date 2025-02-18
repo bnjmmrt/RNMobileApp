@@ -36,6 +36,7 @@ import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumber
 import EmailInput from '../../../component/EmailComponent/EmailInput';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import { extractCountryCode } from 'src/utils/functions';
 
 interface HostEditProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -57,10 +58,13 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
 
 
   useEffect(() => {
-    phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
-    emailInputRef?.current.setEmailAddress(profileData?.email);
-    phoneNumberInputRef?.current.setDisabled(true);
-    emailInputRef?.current.setDisabled(true);
+         const phoneNumberDetails = extractCountryCode(profileData?.phoneNumber);
+         phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
+         phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
+         phoneNumberInputRef?.current.setCallingCode(null);
+         phoneNumberInputRef?.current.setDisabled(true);
+         emailInputRef?.current.setEmailAddress(profileData?.email);
+         emailInputRef?.current.setDisabled(true);
     // getHostDetails();
   }, []);
 

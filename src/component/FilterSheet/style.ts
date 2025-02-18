@@ -84,23 +84,21 @@ export const styles = StyleSheet.create({
   },
 
   //date range
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: verticalMarginScale(20),
+    borderWidth: verticalScale(1),
+    borderColor: COLORS.borderGray,
+    borderRadius: radiusScale(8),
+    backgroundColor: COLORS.white,
+    paddingHorizontal: horizontalMarginScale(20),
+  },
   inputValueWithLabel: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     flex: 1,
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    height: verticalScale(60),
-    borderWidth: 1,
-    borderColor: COLORS.borderGray,
-    borderRadius: radiusScale(10),
-    backgroundColor: COLORS.white,
-    paddingLeft: horizontalMarginScale(12),
-    paddingRight: horizontalMarginScale(6),
   },
   datePicker: {
     borderRadius: radiusScale(12),
