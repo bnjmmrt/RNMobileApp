@@ -21,6 +21,7 @@ import IMAGES from '@images/index';
 import EventTalent from 'src/component/Event/EventTalent';
 import { ROUTES } from 'src/navigation/Route';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { useAcceptInvitationMutation } from 'src/redux/actions/rspvApiAction';
 import EventAnouncements from 'src/component/Event/EventAnnouncements';
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -38,11 +39,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
   const [isDeclinedByHost, setIsDeclinedByHost] = useState(false);
   const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
+  const [acceptInvite, { isLoading: acceptLoading, isError: acceptError, isSuccess: acceptSuccess }] = useAcceptInvitationMutation();
 
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
-  const { data, isLoading, refetch } = useFetchEventDetailsQuery(
+  const { data, isLoading, refetch, isSuccess } = useFetchEventDetailsQuery(
     { eventId: route?.params?.id },
     { refetchOnMountOrArgChange: true }
   );
@@ -88,17 +90,38 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
   // const styles = EventDetailsScreenStyle();
 
   const onNextClick = () => {
-    data && data?.data && navigation.navigate('RSPVScreen', { event: data.data })
-    // navigation.navigate('RSPVInvitedUpcoming', { event: event_mock })
-  }
+    if (guestStatus === 'INVITED' || guestStatus === 'CONFIRMED') {
+      navigation.navigate('RSVPInvitedUpcoming', { event: data.data })
+    }
+    else {
+      navigation.navigate('RSVPNoStatusApplied', { event: data.data })
+    }
+  };
 
   const onDiscoverMoreClick = () => {
     navigation.goBack()
-  }
+  };
 
   const onViewTicketClick = () => {
     FlashMessageComponent.show('success', "in Progress...")
-  }
+  };
+
+  const acceptInvitation = async () => {
+    try {
+      const accept_response = await acceptInvite({
+        id: userId,
+        eventId: route.params.id
+      });
+      const updatedData = await refetch();
+      if (updatedData?.data) {
+        navigation.navigate('RSVPInvitedUpcoming', { event: updatedData?.data?.data });
+      } else {
+        console.warn('Failed to get updated event data');
+      }
+    } catch (error) {
+      console.error('Error accepting invitation:', error);
+    }
+  };
 
 
   return (
@@ -138,13 +161,26 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
 
       </ScrollView>
 
-      {!isDeclinedByHost && <View style={{ margin: 20 }}>
+      {(!isDeclinedByHost && guestStatus !== "CONFIRMED") && <View style={{ margin: 20 }}>
         <Button
           disabled={false}
           style={styles.btnStyle}
           title={guestStatus == 'APPLIED' ? BUTTON_LABLE.UPDATE_APPLICATION : BUTTON_LABLE.RSVP}
           colorTheme="dark"
           onPress={onNextClick}
+        />
+      </View>
+      }
+      {(guestStatus == "DECLINED") && <View style={{ margin: 20 }}>
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          loading={acceptLoading}
+          title={BUTTON_LABLE.RSVP}
+          colorTheme="dark"
+          onPress={() => {
+            acceptInvitation();
+          }}
         />
       </View>
       }
@@ -160,7 +196,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
       </View>}
 
 
-      {guestStatus == 'CONFIRMED' && <View style={{ margin: 20 }}>
+      {(guestStatus == 'CONFIRMED') && <View style={{ margin: 20 }}>
         <Button
           disabled={false}
           style={styles.btnStyle}

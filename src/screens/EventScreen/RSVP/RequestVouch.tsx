@@ -12,6 +12,8 @@ import useContacts from 'src/utils/hooks/useContactPermission';
 import useContactPermission from 'src/utils/hooks/useContactPermission';
 import { useFetchMembersQuery, useGetConfirmedMembersMutation } from 'src/redux/actions/referralApiAction';
 import { useRoute } from '@react-navigation/native';
+import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import { Hp } from 'src/utils/dimensions';
 interface ContactItem {
     name: string;
     phone: string;
@@ -98,6 +100,9 @@ const RequestVouch = ({ onClose, eventId }: { onClose: () => void, eventId: stri
             <FlatList
                 data={filteredMembers}
                 scrollEnabled={false}
+                ListEmptyComponent={<View style={{ height: Hp(40), justifyContent: 'center', alignItems: 'center' }}>
+                    <EventEmptyRecord title='No Results' subTitle='No Contacts are members at this time' />
+                </View>}
                 contentContainerStyle={{ gap: 4, }}
                 keyExtractor={(item, index) => '' + item.phoneNumber + index}
                 renderItem={({ item }) =>
