@@ -1,29 +1,29 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {View, ScrollView, StyleSheet, Text} from 'react-native';
-import {BUTTON_LABLE, COLORS, EVENT_STATUS} from '../../utils/constants';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, ScrollView, StyleSheet, Text } from 'react-native';
+import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
-import {fontFamily} from 'src/utils/functions';
-import {fontScale, Hp, verticalScale, Wp} from 'src/utils/dimensions';
-import {RouteProp, useFocusEffect, useRoute} from '@react-navigation/native';
+import { fontFamily } from 'src/utils/functions';
+import { fontScale, Hp, verticalScale, Wp } from 'src/utils/dimensions';
+import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import BackButtonOverlay from 'src/component/BackButton/BackButtonOverlay';
 import EventStatus from 'src/component/Event/EventStatus';
 import EventHostItem from 'src/component/Event/EventHostItem';
-import {FlatList} from 'react-native-gesture-handler';
+import { FlatList } from 'react-native-gesture-handler';
 import EventVenue from 'src/component/Event/EventVenue';
 import EventOverview from 'src/component/Event/EventOverview';
 import Button from 'src/component/Button';
-import {event_mock} from './eventMock';
-import {useSelector} from 'react-redux';
-import {RootState} from 'src/redux/slices';
-import {useFetchEventDetailsQuery} from 'src/redux/actions/eventApiAction';
+import { event_mock } from './eventMock';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+import { useFetchEventDetailsQuery } from 'src/redux/actions/eventApiAction';
 import IMAGES from '@images/index';
 import EventTalent from 'src/component/Event/EventTalent';
-import {ROUTES} from 'src/navigation/Route';
-import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import {useAcceptInvitationMutation} from 'src/redux/actions/rspvApiAction';
+import { ROUTES } from 'src/navigation/Route';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { useAcceptInvitationMutation } from 'src/redux/actions/rspvApiAction';
 import EventAnouncements from 'src/component/Event/EventAnnouncements';
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: {
@@ -41,15 +41,15 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const userId = useSelector((state: RootState) => state.auth.userId);
   const [
     acceptInvite,
-    {isLoading: acceptLoading, isError: acceptError, isSuccess: acceptSuccess},
+    { isLoading: acceptLoading, isError: acceptError, isSuccess: acceptSuccess },
   ] = useAcceptInvitationMutation();
 
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
-  const {data, isLoading, refetch, isSuccess} = useFetchEventDetailsQuery(
-    {eventId: route?.params?.id},
-    {refetchOnMountOrArgChange: true},
+  const { data, isLoading, refetch, isSuccess } = useFetchEventDetailsQuery(
+    { eventId: route?.params?.id },
+    { refetchOnMountOrArgChange: true },
   );
 
   useFocusEffect(
@@ -79,11 +79,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   }, [data]);
   console.log('Event details', route.params.id);
   const statusMap = [
-    {id: '1', label: EVENT_STATUS.AWAITING},
-    {id: '2', label: EVENT_STATUS.INVITED},
-    {id: '3', label: EVENT_STATUS.DECLINED_BY_HOST},
-    {id: '4', label: EVENT_STATUS.DECLINED_BY_YOU},
-    {id: '5', label: EVENT_STATUS.GOING},
+    { id: '1', label: EVENT_STATUS.AWAITING },
+    { id: '2', label: EVENT_STATUS.INVITED },
+    { id: '3', label: EVENT_STATUS.DECLINED_BY_HOST },
+    { id: '4', label: EVENT_STATUS.DECLINED_BY_YOU },
+    { id: '5', label: EVENT_STATUS.GOING },
   ];
   const [images, setImages] = useState(statusMap);
 
@@ -91,9 +91,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
   const onNextClick = () => {
     if (guestStatus === 'INVITED' || guestStatus === 'CONFIRMED') {
-      navigation.navigate('RSVPInvitedUpcoming', {event: data.data});
+      navigation.navigate('RSVPInvitedUpcoming', { event: data.data });
     } else {
-      navigation.navigate('RSVPNoStatusApplied', {event: data.data});
+      navigation.navigate('RSVPNoStatusApplied', { event: data.data });
     }
   };
 
@@ -125,9 +125,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   return (
-    <View style={{...styles.container}}>
+    <View style={{ ...styles.container }}>
       <ScrollView>
-        <View style={{...styles.contentContainer}}>
+        <View style={{ ...styles.contentContainer }}>
           <View style={{}}>
             <FastImage
               source={{
@@ -139,7 +139,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             />
           </View>
           <Text style={styles.titleStyle}>{route?.params?.name}</Text>
-          <EventStatus status={guestStatus} isDeclinedByMe={isDeclinedByMe} />
+          <EventStatus status={guestStatus} isDeclinedByMe={!isDeclinedByMe} />
           <FlatList
             data={collaborators}
             horizontal
@@ -147,7 +147,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             // style={{ marginVertical: 20 }}
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item, index) => `${item.id}-${index}`}
-            renderItem={({item}) => <EventHostItem item={item} />}
+            renderItem={({ item }) => <EventHostItem item={item} />}
           />
           <EventVenue item={data?.data} />
           <EventOverview item={data?.data} />
@@ -158,7 +158,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       </ScrollView>
 
       {!isDeclinedByHost && guestStatus !== 'CONFIRMED' && (
-        <View style={{margin: 20}}>
+        <View style={{ margin: 20 }}>
           <Button
             disabled={false}
             style={styles.btnStyle}
@@ -173,7 +173,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         </View>
       )}
       {guestStatus == 'DECLINED' && (
-        <View style={{margin: 20}}>
+        <View style={{ margin: 20 }}>
           <Button
             disabled={false}
             style={styles.btnStyle}
@@ -181,14 +181,14 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             title={BUTTON_LABLE.RSVP}
             colorTheme="dark"
             onPress={() => {
-              acceptInvitation();
+              onNextClick();
             }}
           />
         </View>
       )}
 
-      {isDeclinedByHost && (
-        <View style={{margin: 20}}>
+      {isDeclinedByMe && (
+        <View style={{ margin: 20 }}>
           <Button
             disabled={false}
             style={styles.btnStyle}
@@ -200,7 +200,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       )}
 
       {guestStatus == 'CONFIRMED' && (
-        <View style={{margin: 20}}>
+        <View style={{ margin: 20 }}>
           <Button
             disabled={false}
             style={styles.btnStyle}
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     height: verticalScale(528),
     flex: 1,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 4},
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 20,
     elevation: 5,
