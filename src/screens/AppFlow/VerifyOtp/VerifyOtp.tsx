@@ -148,6 +148,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   // };
 
   const resendVerificationCode = async () => {
+    otpInputRef.current.clearOTP();
     sendOtp('resent');
   };
 
