@@ -116,7 +116,7 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
     return (
       <BottomSheetComponent
         ref={sheetRef}
-        snapPoints={[`${verticalScale(85)}%`]}
+        snapPoints={[`${verticalScale(88)}%`]}
         enableDynamicSizing={false}
         onClose={() => {}}
         showBottomSafeAreaView={showBottomSafeAreaView}>

@@ -44,20 +44,22 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
           fontFamily: fontFamily.ABCDiatype_Regular,
         },
       }}
+      minLength={3}
       enablePoweredByContainer={false}
       placeholder="Search Location"
       onPress={(data: GooglePlaceData, detail: GooglePlaceDetail | null) => {
         // 'details' is provided when fetchDetails = true
-        // console.log('data.placeId', detail);
+        console.log('data.placeId', detail);
         const address: Address = {
           address: data.description,
           placeId: data.place_id,
-          latitude: detail ? String(detail?.location?.latitude) : '',
-          longitude: detail ? String(detail?.location?.longitude) : '',
+          latitude: detail ? String(detail?.geometry?.location?.lat) : '',
+          longitude: detail ? String(detail?.geometry?.location?.lng) : '',
         };
         setLocation(address);
         submit();
       }}
+      fetchDetails={true}
       query={{
         key: environment.PLACES_API_KEY,
         language: 'en',
@@ -68,6 +70,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
         </View>
       )}
       enablePoweredByContainer={false}
+      disableScroll={false}
     />
   );
 };

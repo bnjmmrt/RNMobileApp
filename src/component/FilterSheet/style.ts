@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
   },
 
   //arrordian
-  accordianContainer: {},
+  accordianContainer: {flex: 1},
   accordianTitleContainer: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -1,5 +1,10 @@
-import {BottomSheetFlatList, BottomSheetScrollView} from '@gorhom/bottom-sheet';
-import React, {useCallback} from 'react';
+import {
+  BottomSheetFlatList,
+  BottomSheetFlatListMethods,
+  BottomSheetScrollView,
+} from '@gorhom/bottom-sheet';
+import React, {useCallback, useRef} from 'react';
+import {InteractionManager} from 'react-native';
 import GradientSeprator from 'src/component/GradientSeprator';
 import {feedList} from 'src/utils/constants';
 import {horizontalMarginScale} from 'src/utils/dimensions';
@@ -23,6 +28,8 @@ const DiscoverEventsFilters = ({
   setSelectedFilters: React.Dispatch<React.SetStateAction<SelectedFilters>>;
   setDisableApplyCta: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const filtersListRef = useRef<BottomSheetFlatListMethods>(null);
+
   const onChangeFilterOptionValue = (
     id: string,
     optionType: FilterOptionTypes,
@@ -97,13 +104,26 @@ const DiscoverEventsFilters = ({
     setSelectedFilters(tempSelectedFilter);
   };
 
-  console.log(JSON.stringify(selectedFilters));
-
   const renderItem = useCallback(
-    ({item}: {item: FilterType}) => {
+    ({item, index}: {item: FilterType; index: number}) => {
+      const scrollToOpenedAccordian = (index: number) => {
+        InteractionManager.runAfterInteractions(() => {
+          setTimeout(() => {
+            filtersListRef?.current?.scrollToIndex({
+              index: index,
+              animated: true,
+              viewPosition: 0,
+            });
+          }, 500);
+        });
+      };
+
       if (item.type === 'checkbox' && item.options.length === 0) return null;
       return (
-        <FilterAccordian title={item?.label}>
+        <FilterAccordian
+          title={item?.label}
+          onOpen={() => scrollToOpenedAccordian(index)}
+          defaultOpen={index === 0}>
           <FilterOptions
             id={item.id}
             optionType={item.type}

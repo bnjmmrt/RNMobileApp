@@ -3,6 +3,7 @@ import { Text, StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import { COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '@images/index';
+import { fontScale } from 'src/utils/dimensions';
 
 interface EventOverviewProps {
   item: {}; // Extend this type with actual item properties for better type safety.
@@ -59,13 +60,13 @@ const styles = StyleSheet.create({
   },
   title: {
     color: COLORS.black2,
-    fontSize: 16,
+    fontSize: fontScale(16),
     marginBottom: 10,
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
   subtitle: {
     color: COLORS.light_gray,
-    fontSize: 14,
+    fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginBottom: 10,
   },
