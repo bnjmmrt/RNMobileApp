@@ -6,12 +6,21 @@ import { ANNOUNCCEMENTS_DATA, COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '@images/index';
 import { fontFamily } from '../../utils/functions';
 import { fontScale, horizontalScale, verticalScale, verticalMarginScale, horizontalMarginScale } from 'src/utils/dimensions';
+import ImagePdfViewer from './ImagePdfViewer';
 
 const EventAnnouncements = ({ talents }) => {
+  const [viewerVisible, setViewerVisible] = useState(false);
+  const [media, setMedia] = useState([]);
 
-  const MediaItem = ({ item }) => (
+  const MediaItem = ({ item, media }) => (
     item.type === "image" ? (
-      <FastImage source={{ uri: item.uri }} style={styles.mediaImage} />
+      <TouchableOpacity onPress={() => {
+        setMedia(media)
+        setViewerVisible(true)
+      }}>
+        <FastImage source={{ uri: item.uri }} style={styles.mediaImage} />
+
+      </TouchableOpacity>
     ) : (
       <View style={styles.pdfContainer}>
         <Text style={styles.title} numberOfLines={2}>{item.name}</Text>
@@ -37,7 +46,7 @@ const EventAnnouncements = ({ talents }) => {
           <Text style={styles.subtitle}>{item.date}</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {item.media.slice(0, 3).map((mediaItem, index) => (
-              <MediaItem key={index} item={mediaItem} />
+              <MediaItem key={index} item={mediaItem} media={item.media} />
             ))}
           </ScrollView>
           {!expanded && shouldShowReadMore && (
@@ -47,6 +56,7 @@ const EventAnnouncements = ({ talents }) => {
             </TouchableOpacity>
           )}
         </View>
+
       </View>
     );
   };
@@ -63,6 +73,11 @@ const EventAnnouncements = ({ talents }) => {
           <Text style={styles.heading}>{LABLE.NO_EVENT_ANNOUNCEMENTS}</Text>
         }
       />
+      {viewerVisible && <ImagePdfViewer
+        visible={viewerVisible}
+        onClose={() => setViewerVisible(false)}
+        mediaItems={media}
+      />}
     </View>
   );
 };

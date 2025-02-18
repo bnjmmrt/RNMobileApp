@@ -154,7 +154,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
           <EventOverview item={route?.params} />
 
           {talents.length > 0 && <EventTalent talents={talents} />}
-          {<EventAnouncements talents={talents} />}
+          {/* {<EventAnouncements talents={talents} />} */}
 
 
         </View>

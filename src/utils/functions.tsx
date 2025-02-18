@@ -19,7 +19,7 @@ export const getApiBaseUrl = () => {
 export const LINKS = {
   TERMS_AND_CONDITION: 'https://therumor.com/terms-of-services',
   PRIVACY_POLICY: 'https://therumor.com/privacy-policy',
-  APPLY_FOR_HOST: 'https://therumor.com/auth/sign-up',
+  APPLY_FOR_HOST: 'https://stagehost.therumor.com/auth/sign-up',
 };
 
 export const fontFamily = {

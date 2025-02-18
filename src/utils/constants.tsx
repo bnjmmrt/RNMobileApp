@@ -6,6 +6,7 @@ export const BUTTON_LABLE = {
   RSVP: 'RSVP',
   APPLY_TO_BE_HOST: 'Apply to be a Host',
   GET_STARTED: 'Get Started',
+  SAVE_TO_FILE: 'Save to Files',
   RESEND: 'Resend',
   SUBMTI_APPLICATION: 'Submit Application',
   UPDATE_APPLICATION: 'Update Application',
@@ -594,7 +595,7 @@ export const ANNOUNCCEMENTS_DATA = [
     media: [
       { type: "image", uri: "https://picsum.photos/200/300" },
       { type: "image", uri: "https://picsum.photos/200/300" },
-      { type: "pdf", name: "Guests File Rumor", size: "9.83 MB" },
+      { type: "pdf", name: "Guests File Rumor", size: "9.83 MB", uri: "https://www.aeee.in/wp-content/uploads/2020/08/Sample-pdf.pdf" },
     ],
   },
   {
