@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, ScrollView, StyleSheet, Text } from 'react-native';
 import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -22,6 +22,7 @@ import EventTalent from 'src/component/Event/EventTalent';
 import { ROUTES } from 'src/navigation/Route';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import EventAnouncements from 'src/component/Event/EventAnnouncements';
+import QRCodeBottomsheet from 'src/component/BottomSheet/QRCodeBottomsheet';
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
@@ -41,6 +42,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
 
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
+  const qrCodeBottomSheetRef = useRef<any>(null);
 
   const { data, isLoading, refetch } = useFetchEventDetailsQuery(
     { eventId: route?.params?.id },
@@ -97,6 +99,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
   }
 
   const onViewTicketClick = () => {
+    qrCodeBottomSheetRef?.current.open()
     FlashMessageComponent.show('success', "in Progress...")
   }
 
@@ -158,7 +161,13 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
           onPress={onDiscoverMoreClick}
         />
       </View>}
-
+<QRCodeBottomsheet
+            ref={qrCodeBottomSheetRef}
+            title='Tao Desert Nights Desert Storm NYC House Party'
+            subTitle={'September 8th, 3:00PM EST'}
+            imageURL={IMAGES.qr}
+            name="ANURag harod"
+          />
 
       {guestStatus == 'CONFIRMED' && <View style={{ margin: 20 }}>
         <Button

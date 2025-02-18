@@ -102,6 +102,10 @@ const IMAGES = {
   host_tiktok: require('./host_tiktok.png'),
   host_x: require('./host_x.png'),
   paragraph_spacing: require('./paragraph-spacing.png'),
+  qr: require('./QR_Code.png'),
+  half_circle: require('./half_circle.png'),
+  info_filled: require('./info-filled.png'),
+  ticket: require('./ticket.png'),
 };
 
 export default IMAGES;

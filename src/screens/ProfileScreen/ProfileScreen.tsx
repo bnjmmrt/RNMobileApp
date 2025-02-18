@@ -40,6 +40,7 @@ import {
 import {setNotificationSettings} from 'src/redux/slices/appSettingsSlice';
 import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import CalenderEventsBottomSheet from 'src/component/BottomSheet/CalenderEventsBottomSheet';
+import QRCodeBottomsheet from 'src/component/BottomSheet/QRCodeBottomsheet';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
@@ -444,7 +445,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
             image={null}
           />
           {/* //replace with actual data */}
-          <CalenderEventsBottomSheet
+          {/* <CalenderEventsBottomSheet
             ref={canelderEventsBottomSheetRef}
             eventDetails={{
               title: 'React Native Conference',
@@ -455,8 +456,17 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
               location: 'San Francisco, CA',
               notes: 'A React Native meetup',
             }}
+          /> */}
+
+         <QRCodeBottomsheet
+            ref={canelderEventsBottomSheetRef}
+            title='Tao Desert Nights Desert Storm NYC House Party'
+            subTitle={'September 8th, 3:00PM EST'}
+            imageURL={IMAGES.qr}
+            name="ANURag harod"
           />
           <DeleteAccountBottomSheet
+          
             ref={deleteAccountBottomSheetRef}
             onPress={deleteAccount}
           />
