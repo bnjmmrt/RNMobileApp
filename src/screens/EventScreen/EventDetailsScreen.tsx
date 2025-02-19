@@ -23,7 +23,7 @@ import { ROUTES } from 'src/navigation/Route';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { useAcceptInvitationMutation } from 'src/redux/actions/rspvApiAction';
 import EventAnouncements from 'src/component/Event/EventAnnouncements';
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: {
@@ -41,7 +41,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const userId = useSelector((state: RootState) => state.auth.userId);
   const [
     acceptInvite,
-    { isLoading: acceptLoading, isError: acceptError, isSuccess: acceptSuccess },
+    {
+      isLoading: acceptLoading,
+      isError: acceptError,
+      isSuccess: acceptSuccess,
+    },
   ] = useAcceptInvitationMutation();
 
   const [collaborators, setCollaborators] = useState([]);
@@ -154,6 +158,18 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
           {talents.length > 0 && <EventTalent talents={talents} />}
           {/* {<EventAnouncements talents={talents} />} */}
+
+          <Button
+            disabled={false}
+            style={styles.btnStyleLight}
+            title="View Guest List"
+            colorTheme="light"
+            onPress={() =>
+              navigation.navigate('EventGuestList', {
+                guests: data?.data?.guests || [],
+              })
+            }
+          />
         </View>
       </ScrollView>
 

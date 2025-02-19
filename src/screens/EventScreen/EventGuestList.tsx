@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useState, useRef } from 'react';
 import {
   View,
@@ -6,6 +7,10 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  Animated,
+  LayoutAnimation,
+  Platform,
+  UIManager,
 } from 'react-native';
 import { COLORS } from '../../utils/constants';
 import { fontFamily } from 'src/utils/functions';
@@ -24,6 +29,12 @@ import {
 
 interface EventGuestListProps extends NativeStackScreenProps<any, any> {}
 
+if (Platform.OS === 'android') {
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+}
+
 const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
   //   const [searchText, setSearchText] = useState('');
   const [expandedGuests, setExpandedGuests] = useState<{
@@ -38,6 +49,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
   const guests = guestListMock;
 
   const toggleExpand = (guestId: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpandedGuests(prev => ({
       ...prev,
       [guestId]: !prev[guestId],
@@ -59,7 +71,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
   const renderInvitee = ({ item }: { item: GuestItem }) => (
     <View style={styles.inviteeItem}>
       <View style={styles.inviteeLeftContainer}>
-        <View style={styles.inviteeConnector} />
+        <Image source={IMAGES.nested_badge} style={[styles.nestedIcon]} />
         <View style={styles.leftContainer}>
           <FastImage
             source={{
@@ -68,57 +80,24 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
                 'https://ui-avatars.com/api/?name=' +
                   encodeURIComponent(item.name),
             }}
-            style={styles.avatar}
+            style={styles.inviteeAvatar}
           />
           <View style={styles.guestInfo}>
-            <Text style={styles.guestName}>{item.name}</Text>
-            <View
-              style={[
-                styles.statusContainer,
-                {
-                  backgroundColor:
-                    item.status === 'Confirmed'
-                      ? COLORS.successLight
-                      : item.status === 'Declined'
-                      ? COLORS.bgRed
-                      : item.status === 'Invited'
-                      ? COLORS.bgBlue
-                      : item.status === 'Drafts'
-                      ? COLORS.lighter_gray
-                      : item.status === 'Requested'
-                      ? COLORS.black
-                      : COLORS.bgBlue,
-                },
-              ]}>
-              <Text
-                style={[
-                  styles.guestStatus,
-                  {
-                    color:
-                      item.status === 'Confirmed'
-                        ? COLORS.success
-                        : item.status === 'Declined'
-                        ? COLORS.errorText
-                        : item.status === 'Invited'
-                        ? COLORS.blueDark
-                        : item.status === 'Drafts'
-                        ? COLORS.black2
-                        : item.status === 'Requested'
-                        ? COLORS.white
-                        : COLORS.blueDark,
-                  },
-                ]}>
-                {item.status}
-              </Text>
-            </View>
+            <Text style={[styles.guestName]}>{item.name}</Text>
           </View>
         </View>
       </View>
-      {item.isVip && (
-        <View style={styles.vipContainer}>
-          <Text style={styles.vipText}>VIP</Text>
-        </View>
+
+      {item.status === 'Confirmed' && (
+        <Image
+          source={IMAGES.confirmed_badge}
+          style={[styles.confirmedBadge]}
+        />
       )}
+
+      <View style={styles.vipContainer}>
+        <Text style={styles.vipText}>VIP</Text>
+      </View>
     </View>
   );
 
@@ -193,10 +172,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
           {item.status === 'Confirmed' && (
             <Image
               source={IMAGES.confirmed_badge}
-              style={[
-                styles.confirmedBadge,
-                expandedGuests[item.id] && styles.arrowIconRotated,
-              ]}
+              style={[styles.confirmedBadge]}
             />
           )}
           {item.isVip && (
@@ -219,11 +195,15 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
           )}
         </View>
       </TouchableOpacity>
-      {expandedGuests[item.id] && item.invitees && (
-        <View style={styles.inviteesContainer}>
-          {item.invitees.map(invitee => renderInvitee({ item: invitee }))}
-        </View>
-      )}
+      <Animated.View
+        style={[
+          styles.inviteesContainer,
+          expandedGuests[item.id]
+            ? { maxHeight: 1000 }
+            : { maxHeight: 0, overflow: 'hidden' },
+        ]}>
+        {item.invitees?.map(invitee => renderInvitee({ item: invitee }))}
+      </Animated.View>
     </View>
   );
 
@@ -334,31 +314,27 @@ const styles = StyleSheet.create({
   },
 
   listContainer: {
-    padding: 20,
+    paddingHorizontal: 12,
+    paddingBottom: 16,
   },
   guestItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 10,
-    marginBottom: 15,
+    marginTop: 16,
   },
   inviteeItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 10,
-    marginBottom: 10,
+    paddingLeft: 16,
+    paddingRight: 40,
+    paddingVertical: 8,
   },
   inviteeLeftContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  inviteeConnector: {
-    width: 20,
-    height: 2,
-    backgroundColor: COLORS.borderGray,
-    marginRight: 10,
+    flex: 1,
   },
   leftContainer: {
     flexDirection: 'row',
@@ -368,12 +344,19 @@ const styles = StyleSheet.create({
   rightContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+  },
+  arrowIconRotated: {
+    transform: [{ rotate: '180deg' }],
   },
   avatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
+  },
+  inviteeAvatar: {
+    width: 24,
+    height: 24,
+    borderRadius: 16,
   },
   guestInfo: {
     gap: 4,
@@ -386,6 +369,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(16),
     fontFamily: fontFamily.ABCDiatype_Regular,
     color: COLORS.black,
+    fontWeight: '500',
   },
   inviteCount: {
     fontSize: fontScale(16),
@@ -408,6 +392,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     backgroundColor: COLORS.bgBlue,
     borderRadius: 12,
+    maxWidth: 32,
   },
   vipText: {
     fontSize: fontScale(12),
@@ -418,6 +403,7 @@ const styles = StyleSheet.create({
   expandButton: {
     width: 32,
     height: 32,
+    marginLeft: 8,
     borderRadius: 16,
     backgroundColor: COLORS.lighter_gray,
     justifyContent: 'center',
@@ -429,12 +415,14 @@ const styles = StyleSheet.create({
   confirmedBadge: {
     width: 18,
     height: 18,
+    marginRight: 4,
   },
-  arrowIconRotated: {
-    transform: [{ rotate: '180deg' }],
+  nestedIcon: {
+    marginRight: 8,
   },
   inviteesContainer: {
-    marginTop: -5,
+    marginTop: 4,
+    overflow: 'hidden',
   },
   filterDropdown: {
     flexDirection: 'row',

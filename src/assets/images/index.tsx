@@ -105,6 +105,7 @@ const IMAGES = {
   host_x: require('./host_x.png'),
   paragraph_spacing: require('./paragraph-spacing.png'),
   confirmed_badge: require('./confirmed-badge.png'),
+  nested_badge: require('./nested.png'),
 };
 
 export default IMAGES;
