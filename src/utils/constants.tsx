@@ -49,6 +49,7 @@ export const BUTTON_LABLE = {
   ADD_GUEST_DETAILS: 'Add Guest Details',
   ADD: 'Add',
   DISCOVER_MORE_EVENTS: 'Discover More Events',
+  CHECK_IN:'Check In'
 };
 
 export const LABLE = {
@@ -199,6 +200,7 @@ export const LABLE = {
   BIO: 'Bio',
   COMPANY_DESCRIPTION: 'Description of Company',
   ENTER_FEEDBACK: 'Enter Feedback',
+  CHECK_IN:'Check-In'
 };
 
 export const PROFILE = {
@@ -301,6 +303,7 @@ export const COLORS = {
   grayFeedLocation2: '#E0E0E0FA',
   grayFeedLocation3: '#54545657',
   blueDark: '#0D729D',
+  yellowbackground:"#F1B422"
 };
 
 export const feedList = [
