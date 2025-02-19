@@ -6,12 +6,17 @@ import AddGuestOptionScreen from 'src/screens/EventScreen/RSVP/AddGuestOptionScr
 import AddGuestScreen from 'src/screens/EventScreen/RSVP/AddGuestScreen';
 import RSVPInvitedUpcoming from 'src/screens/EventScreen/RSVP/RSVPInvitedUpcoming';
 import RSVPNoStatusApplied from 'src/screens/EventScreen/RSVP/RSVPNoStatusApplied';
-
+import EventGuestList from 'src/screens/EventScreen/EventGuestList';
 
 // Define the param list for the stack navigator
 export type EventStackParamList = {
   EventScreen: undefined;
   EventDetailsScreen: undefined;
+  RSVPNoStatusApplied: { event: any };
+  RSVPInvitedUpcoming: { event: any };
+  AddGuestOptionScreen: undefined;
+  AddGuestScreen: undefined;
+  EventGuestList: { guests: Array<{ name: string; status: string }> };
 };
 
 const Stack = createStackNavigator<EventStackParamList>();
@@ -20,9 +25,8 @@ const Stack = createStackNavigator<EventStackParamList>();
 export const EventStack: React.FC = () => {
   return (
     <Stack.Navigator
-      initialRouteName={"EventScreen"}
+      initialRouteName={'EventScreen'}
       screenOptions={({ route, navigation }) => ({})}>
-
       <Stack.Screen
         name="EventScreen"
         component={EventScreen}
@@ -54,7 +58,11 @@ export const EventStack: React.FC = () => {
         component={AddGuestScreen}
         options={{ headerShown: false }}
       />
-
+      <Stack.Screen
+        name="EventGuestList"
+        component={EventGuestList}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

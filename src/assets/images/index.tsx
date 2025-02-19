@@ -15,6 +15,8 @@ const IMAGES = {
   clear: require('./clear.png'),
   check1: require('./check1.png'),
   filter: require('./filter.png'),
+  qr: require('./qr-code.png'),
+  sort: require('./sort.png'),
   iconRumor: require('./icon_rumor.png'),
   introVideo: require('./intro_video.mp4'),
   pencil: require('./pencil-01.png'),

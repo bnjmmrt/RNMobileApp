@@ -301,6 +301,8 @@ export const COLORS = {
   grayFeedLocation2: '#E0E0E0FA',
   grayFeedLocation3: '#54545657',
   blueDark: '#0D729D',
+  neutral_disabled: '#9C9C9C',
+  neutral_surface: '#D8D8D8',
 };
 
 export const feedList = [
