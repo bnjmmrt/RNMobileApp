@@ -53,7 +53,7 @@ const StatusLabel: React.FC<{
       case 'requested':
         return { bg: COLORS.black, text: COLORS.white };
       case 'all':
-        return { bg: COLORS.lighter_gray, text: COLORS.black2 };
+        return { bg: COLORS.lighter_gray, text: COLORS.neutral_disabled };
       default:
         return { bg: COLORS.bgBlue, text: COLORS.blueDark };
     }
@@ -372,16 +372,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   guestName: {
-    fontSize: fontScale(16),
-    fontFamily: fontFamily.ABCDiatype_Regular,
-    color: COLORS.black,
+    fontSize: fontScale(14),
+    lineHeight: fontScale(16),
     fontWeight: '500',
   },
   inviteCount: {
-    fontSize: fontScale(16),
-    fontFamily: fontFamily.ABCDiatype_Regular,
-    color: COLORS.black2,
+    fontSize: fontScale(14),
+    lineHeight: fontScale(16),
+    fontWeight: '700',
   },
+
   vipContainer: {
     paddingHorizontal: 6,
     paddingVertical: 2,

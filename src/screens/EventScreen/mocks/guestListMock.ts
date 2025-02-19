@@ -20,7 +20,7 @@ export interface GuestItem {
 export const guestListMock: GuestItem[] = [
   {
     id: '1',
-    name: 'Username',
+    name: 'Emma Thompson',
     avatar: 'https://i.pravatar.cc/150?img=1',
     status: 'Confirmed',
     isVip: true,
@@ -30,7 +30,7 @@ export const guestListMock: GuestItem[] = [
     invitees: [
       {
         id: '1-1',
-        name: 'Username',
+        name: 'James Wilson',
         avatar: 'https://i.pravatar.cc/150?img=11',
         status: 'Confirmed',
         isVip: true,
@@ -39,7 +39,7 @@ export const guestListMock: GuestItem[] = [
       },
       {
         id: '1-2',
-        name: 'Username',
+        name: 'Sophia Chen',
         avatar: 'https://i.pravatar.cc/150?img=12',
         status: 'Confirmed',
         isVip: true,
@@ -48,7 +48,7 @@ export const guestListMock: GuestItem[] = [
       },
       {
         id: '1-3',
-        name: 'Username',
+        name: 'Marcus Rodriguez',
         avatar: 'https://i.pravatar.cc/150?img=13',
         status: 'Confirmed',
         isVip: true,
@@ -59,7 +59,7 @@ export const guestListMock: GuestItem[] = [
   },
   {
     id: '2',
-    name: 'Username',
+    name: 'Oliver Parker',
     avatar: 'https://i.pravatar.cc/150?img=2',
     status: 'Requested',
     isVip: false,
@@ -69,7 +69,7 @@ export const guestListMock: GuestItem[] = [
   },
   {
     id: '3',
-    name: 'Username',
+    name: 'Isabella Martinez',
     avatar: 'https://i.pravatar.cc/150?img=3',
     status: 'Confirmed',
     isVip: true,
@@ -79,7 +79,7 @@ export const guestListMock: GuestItem[] = [
     invitees: [
       {
         id: '3-1',
-        name: 'Username',
+        name: 'Ethan Williams',
         avatar: 'https://i.pravatar.cc/150?img=31',
         status: 'Confirmed',
         isVip: true,
@@ -88,7 +88,7 @@ export const guestListMock: GuestItem[] = [
       },
       {
         id: '3-2',
-        name: 'Username',
+        name: 'Ava Johnson',
         avatar: 'https://i.pravatar.cc/150?img=32',
         status: 'Confirmed',
         isVip: true,
@@ -99,7 +99,7 @@ export const guestListMock: GuestItem[] = [
   },
   {
     id: '4',
-    name: 'Username',
+    name: 'Lucas Kim',
     avatar: 'https://i.pravatar.cc/150?img=4',
     status: 'Confirmed',
     isVip: true,
@@ -109,7 +109,7 @@ export const guestListMock: GuestItem[] = [
     invitees: [
       {
         id: '4-1',
-        name: 'Username',
+        name: 'Mia Patel',
         avatar: 'https://i.pravatar.cc/150?img=41',
         status: 'Confirmed',
         isVip: false,
@@ -120,7 +120,7 @@ export const guestListMock: GuestItem[] = [
   },
   {
     id: '5',
-    name: 'Username',
+    name: 'Sarah Anderson',
     avatar: 'https://i.pravatar.cc/150?img=5',
     status: 'Drafts',
     isVip: true,
@@ -129,7 +129,7 @@ export const guestListMock: GuestItem[] = [
   },
   {
     id: '6',
-    name: 'Username',
+    name: 'Daniel Lee',
     avatar: 'https://i.pravatar.cc/150?img=6',
     status: 'Drafts',
     isVip: true,
@@ -138,7 +138,7 @@ export const guestListMock: GuestItem[] = [
   },
   {
     id: '7',
-    name: 'Username',
+    name: 'Olivia Taylor',
     avatar: 'https://i.pravatar.cc/150?img=7',
     status: 'Declined',
     isVip: false,
@@ -147,7 +147,7 @@ export const guestListMock: GuestItem[] = [
   },
   {
     id: '8',
-    name: 'Username',
+    name: 'Noah Garcia',
     avatar: 'https://i.pravatar.cc/150?img=8',
     status: 'Declined',
     isVip: false,
@@ -156,7 +156,7 @@ export const guestListMock: GuestItem[] = [
   },
   {
     id: '9',
-    name: 'Username',
+    name: 'Charlotte Brown',
     avatar: 'https://i.pravatar.cc/150?img=9',
     status: 'Drafts',
     isVip: true,
@@ -165,7 +165,7 @@ export const guestListMock: GuestItem[] = [
   },
   {
     id: '10',
-    name: 'Username',
+    name: 'William Davis',
     avatar: 'https://i.pravatar.cc/150?img=10',
     status: 'Drafts',
     isVip: true,
@@ -174,7 +174,7 @@ export const guestListMock: GuestItem[] = [
   },
   {
     id: '11',
-    name: 'Username',
+    name: 'Sofia Nguyen',
     avatar: 'https://i.pravatar.cc/150?img=11',
     status: 'Invited',
     isVip: true,
@@ -183,7 +183,7 @@ export const guestListMock: GuestItem[] = [
   },
   {
     id: '12',
-    name: 'Username',
+    name: 'Alexander White',
     avatar: 'https://i.pravatar.cc/150?img=12',
     status: 'Drafts',
     isVip: true,
