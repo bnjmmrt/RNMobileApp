@@ -42,7 +42,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
         <View style={styles.pic_Container}>
           <AvatarInitials name={props.name} size={48} />
           <Text style={styles.name}>{props.name}</Text>
-          <Image source={IMAGES.info_filled} style={styles.icon} />
+          <Image source={IMAGES.info_filled}  />
         </View>
 
         <View style={styles.card}>
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(14),
     fontWeight: '500',
     color: COLORS.black,
-    paddingHorizontal: verticalMarginScale(10),
+    paddingHorizontal: verticalMarginScale(6),
   },
   card: {
     width: horizontalScale(270),
@@ -162,8 +162,8 @@ const styles = StyleSheet.create({
     marginRight: verticalMarginScale(10),
   },
   icon: {
-    width: horizontalScale(20),
-    height: verticalScale(20),
+    width: horizontalScale(16),
+    height: verticalScale(16),
   },
   infoText: {
     fontSize: fontScale(14),
