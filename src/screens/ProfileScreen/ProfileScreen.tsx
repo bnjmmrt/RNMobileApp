@@ -350,9 +350,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     navigation.replace("AuthStack")
   };
 
-  const addCalenderEvents = () => {
-    canelderEventsBottomSheetRef.current?.open();
-  };
+  
   return (
     <View
       style={[
@@ -403,7 +401,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
 
             <TouchableOpacity
               // onPress={() => handleLogoutPress()}
-             onPress={() => addCalenderEvents()}
+             onPress={() => handleLogoutPress()}
               style={{marginBottom: verticalScale(50)}}>
               <Text style={styles.textBelowStyle}>{PROFILE.LOGOUT}</Text>
             </TouchableOpacity>
@@ -445,27 +443,16 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
             snapPoints={[Platform.OS == 'android' ? '40%' : '30%']}
             image={null}
           />
-          {/* //replace with actual data */}
-          {/* <CalenderEventsBottomSheet
-            ref={canelderEventsBottomSheetRef}
-            eventDetails={{
-              title: 'React Native Conference',
-              startDate: new Date().toISOString(),
-              endDate: new Date(
-                new Date().getTime() + 2 * 60 * 60 * 1000,
-              ).toISOString(), // 2 hours event
-              location: 'San Francisco, CA',
-              notes: 'A React Native meetup',
-            }}
-          /> */}
 
-         <QRCodeBottomsheet
+          
+
+         {/* <QRCodeBottomsheet
             ref={canelderEventsBottomSheetRef}
             title='Tao Desert Nights Desert Storm NYC House Party'
             subTitle={'September 8th, 3:00PM EST'}
             imageURL={IMAGES.qr}
             name="ANURag harod"
-          />
+          /> */}
           <DeleteAccountBottomSheet
           
             ref={deleteAccountBottomSheetRef}

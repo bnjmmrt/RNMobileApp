@@ -24,6 +24,7 @@ import { FlashMessageComponent } from 'src/component/FlashMessageComponent/Flash
 import { useAcceptInvitationMutation } from 'src/redux/actions/rspvApiAction';
 import EventAnouncements from 'src/component/Event/EventAnnouncements';
 import QRCodeBottomsheet from 'src/component/BottomSheet/QRCodeBottomsheet';
+import CalenderEventsBottomSheet from 'src/component/BottomSheet/CalenderEventsBottomSheet';
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
@@ -45,7 +46,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
   const qrCodeBottomSheetRef = useRef<any>(null);
-
+  const calenderEventsBottomSheetRef = useRef<any>(null);
   const { data, isLoading, refetch, isSuccess } = useFetchEventDetailsQuery(
     { eventId: route?.params?.id },
     { refetchOnMountOrArgChange: true }
@@ -108,7 +109,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
     qrCodeBottomSheetRef?.current.open()
     FlashMessageComponent.show('success', "in Progress...")
   };
-
+  const addCalenderEvents = () => {
+    calenderEventsBottomSheetRef.current?.open();
+  };
+  
   const acceptInvitation = async () => {
     try {
       const accept_response = await acceptInvite({
@@ -197,6 +201,19 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
           onPress={onDiscoverMoreClick}
         />
       </View>}
+
+      <CalenderEventsBottomSheet
+            ref={calenderEventsBottomSheetRef}
+            eventDetails={{
+              title: 'React Native Conference',
+              startDate: new Date().toISOString(),
+              endDate: new Date(
+                new Date().getTime() + 2 * 60 * 60 * 1000,
+              ).toISOString(), // 2 hours event
+              location: 'San Francisco, CA',
+              notes: 'A React Native meetup',
+            }}
+          />
 <QRCodeBottomsheet
             ref={qrCodeBottomSheetRef}
             title='Tao Desert Nights Desert Storm NYC House Party'
@@ -205,7 +222,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({ navigation }) =
             name="ANURag harod"
           />
 
-      {(guestStatus == 'CONFIRMED') && <View style={{ margin: 20 }}>
+      {(guestStatus !== 'CONFIRMED') && <View style={{ margin: 20 }}>
         <Button
           disabled={false}
           style={styles.btnStyle}
