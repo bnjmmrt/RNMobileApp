@@ -96,7 +96,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
 
   const handleBackPress = () => {
     dispatch(setPageProgress(7));
-    navigation.navigate('SelectInterestScreen');
+    navigation.goBack();
   };
 
   const openPicker = () => {

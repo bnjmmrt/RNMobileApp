@@ -123,7 +123,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
 
   const handleBackPress = () => {
     dispatch(setPageProgress(8));
-    navigation.navigate('ProfilePhotoScreen');
+    navigation.goBack();
   };
 
   const goToInstagram = () => {

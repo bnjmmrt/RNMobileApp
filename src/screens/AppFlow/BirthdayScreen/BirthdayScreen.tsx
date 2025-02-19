@@ -31,7 +31,7 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
 
   const handleBackPress = () => {
     dispatch(setPageProgress(3));
-    navigation.navigate('GenderScreen');
+    navigation.goBack();
   };
 
   const openDatePicker = () => {
