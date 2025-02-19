@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -27,6 +27,7 @@ import {
   filterOptions,
 } from './Components/GuestListSheets';
 import ProgressBanner from 'src/component/ProgressBanner/ProgressBanner';
+import GuestEmptyRecord from 'src/component/EmptyRecord/GuestEmptyRecord';
 
 interface EventGuestListProps extends NativeStackScreenProps<any, any> {}
 
@@ -80,7 +81,7 @@ const StatusLabel: React.FC<{
 };
 
 const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
-  //   const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState('');
   const [expandedGuests, setExpandedGuests] = useState<{
     [key: string]: boolean;
   }>({});
@@ -92,11 +93,48 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
   // Use mock data for now
   const guests = guestListMock;
 
-  // Add calculation for confirmed guests
-  const confirmedGuests = guests.filter(
+  // Filter and sort guests
+  const filteredAndSortedGuests = useMemo(() => {
+    let result = [...guests];
+
+    // Apply search filter
+    if (searchText.trim()) {
+      result = result.filter(guest =>
+        guest.name.toLowerCase().includes(searchText.toLowerCase()),
+      );
+    }
+
+    // Apply status filter
+    if (selectedFilter !== 'all') {
+      result = result.filter(
+        guest => guest.status.toLowerCase() === selectedFilter,
+      );
+    }
+
+    // Apply sorting
+    result.sort((a, b) => {
+      switch (selectedSort) {
+        case 'name_asc':
+          return a.name.localeCompare(b.name);
+        case 'name_desc':
+          return b.name.localeCompare(a.name);
+        case 'party_size':
+          const aSize = a.invitees?.length || 0;
+          const bSize = b.invitees?.length || 0;
+          return bSize - aSize;
+        default:
+          return 0;
+      }
+    });
+
+    return result;
+  }, [guests, searchText, selectedFilter, selectedSort]);
+
+  // Add calculation for confirmed guests from filtered list
+  const confirmedGuests = filteredAndSortedGuests.filter(
     guest => guest.status === 'Confirmed',
   ).length;
-  const totalGuests = guests.length;
+  const totalGuests = filteredAndSortedGuests.length;
 
   const toggleExpand = (guestId: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -106,8 +144,8 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
     }));
   };
 
-  const handleSearchTextChange = () => {
-    // setSearchText(text);
+  const handleSearchTextChange = (text: string) => {
+    setSearchText(text);
   };
 
   const handleFilterSelect = (filter: string) => {
@@ -116,6 +154,11 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
 
   const handleSortSelect = (sort: string) => {
     setSelectedSort(sort);
+  };
+
+  const handleAddGuest = () => {
+    // Navigate to add guest screen or open add guest modal
+    navigation.navigate('AddGuestScreen');
   };
 
   const renderInvitee = ({ item }: { item: GuestItem }) => (
@@ -219,6 +262,26 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
     </View>
   );
 
+  const renderContent = () => {
+    if (filteredAndSortedGuests.length === 0) {
+      return (
+        <View style={{ flex: 1 }}>
+          <GuestEmptyRecord onAddGuest={handleAddGuest} />
+        </View>
+      );
+    }
+
+    return (
+      <FlatList
+        data={filteredAndSortedGuests}
+        renderItem={renderGuestItem}
+        keyExtractor={item => item.id}
+        contentContainerStyle={[styles.listContainer, { paddingBottom: 100 }]}
+        showsVerticalScrollIndicator={false}
+      />
+    );
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -251,7 +314,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
           </View>
           <TouchableOpacity
             style={styles.filterButton}
-            onPress={() => filtersSheetRef?.current?.open()}>
+            onPress={() => sortSheetRef?.current?.open()}>
             <Image source={IMAGES.sort} style={styles.filterIcon} />
           </TouchableOpacity>
         </TouchableOpacity>
@@ -268,19 +331,12 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
           />
         </View>
 
-        <FlatList
-          data={guests}
-          renderItem={renderGuestItem}
-          keyExtractor={item => item.id}
-          contentContainerStyle={[
-            styles.listContainer,
-            { paddingBottom: 100 }, // Add padding for the banner
-          ]}
-          showsVerticalScrollIndicator={false}
-        />
+        {renderContent()}
       </View>
 
-      <ProgressBanner confirmed={confirmedGuests} total={totalGuests} />
+      {confirmedGuests > 0 && (
+        <ProgressBanner confirmed={confirmedGuests} total={totalGuests} />
+      )}
 
       <GuestListFilterSheet
         ref={filtersSheetRef}
