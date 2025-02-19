@@ -4,7 +4,6 @@ import BottomSheet, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
 import { COLORS } from 'src/utils/constants';
-import { fontFamily } from 'src/utils/functions';
 import {
   fontScale,
   horizontalMarginScale,
@@ -44,7 +43,7 @@ export const GuestListFilterSheet = forwardRef<BottomSheetMethods, SheetProps>(
     return (
       <BottomSheet
         ref={ref}
-        snapPoints={['60%', '85%']}
+        snapPoints={['43%', '65%']}
         showBottomSafeAreaView={showBottomSafeAreaView}
         enableDynamicSizing={false}>
         <View style={styles.container}>
@@ -75,7 +74,7 @@ export const GuestListSortSheet = forwardRef<BottomSheetMethods, SheetProps>(
     return (
       <BottomSheet
         ref={ref}
-        snapPoints={['35%', '50%', '75%']}
+        snapPoints={['30%', '50%', '75%']}
         showBottomSafeAreaView={showBottomSafeAreaView}>
         <View style={styles.container}>
           {sortOptions.map(option => (
@@ -107,10 +106,14 @@ const styles = StyleSheet.create({
     paddingTop: verticalScale(8),
   },
   optionButton: {
-    paddingVertical: verticalScale(16),
+    // paddingVertical: verticalScale(16),
+    height: verticalScale(40),
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 100,
-    marginBottom: verticalScale(8),
-    borderColor: COLORS.neutral_surface,
+    marginBottom: verticalScale(4),
+    borderColor: COLORS.borderGray,
     borderWidth: 1,
   },
   selectedOption: {
@@ -118,8 +121,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   optionText: {
-    fontSize: fontScale(16),
-    fontFamily: fontFamily.ABCDiatype_Regular,
+    fontSize: fontScale(14),
+    fontWeight: '500',
+    lineHeight: fontScale(16),
+    // fontFamily: fontFamily.ABCDiatype_Regular,
     color: COLORS.black,
     textAlign: 'center',
   },
