@@ -42,6 +42,7 @@ interface InputProps {
   forBottomSheet?: boolean;
   inputFieldContainerStyle?: ViewStyle;
   keyboardType?: KeyboardTypeOptions;
+  blurOnSubmit?: any;
 }
 
 export type InputRefMethods = {
@@ -68,6 +69,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     forBottomSheet = false,
     inputFieldContainerStyle,
     keyboardType = 'default',
+    blurOnSubmit = true
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -135,6 +137,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
         {leftImage && <Image source={leftImage} style={styles.leftImage} />}
         <InputComponent
           {...props}
+          blurOnSubmit={blurOnSubmit}
           editable={editable}
           style={[styles.input, multiline ? styles.multilineInput : null]}
           value={inputText}

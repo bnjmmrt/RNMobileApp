@@ -101,6 +101,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
             backgroundColor: COLORS.white,
             flex: 1,
             gap: verticalMarginScale(15),
+            paddingBottom: 80
           }}>
           <HeaderComponent isDarkTheme={false} />
           <SearchInput

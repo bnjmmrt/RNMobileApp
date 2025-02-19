@@ -7,10 +7,11 @@ import {
   useFetchAllCustomListsQuery,
 } from 'src/redux/actions/listsApiAction';
 import {COLORS} from 'src/utils/constants';
-import {verticalMarginScale, verticalScale} from 'src/utils/dimensions';
+import {Hp, verticalMarginScale, verticalScale} from 'src/utils/dimensions';
 import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
 import {ListInterface, ListItemInterface} from '../../Lists';
 import {styles} from './style';
+import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 
 const AddToList = ({
   showError,
@@ -119,6 +120,20 @@ const AddToList = ({
           <View style={{marginBottom: verticalMarginScale(20)}} />
         }
         ListHeaderComponent={<></>}
+        ListEmptyComponent={
+          <View
+            style={{
+              height: Hp(40),
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <EventEmptyRecord
+              title="No Lists"
+              subTitle="There are no lists to show!"
+              isLoading={isLoading}
+            />
+          </View>
+        }
       />
       <BottomSheetView style={{marginBottom: verticalMarginScale(10)}}>
         <Button

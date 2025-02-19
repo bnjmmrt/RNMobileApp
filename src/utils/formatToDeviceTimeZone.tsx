@@ -52,54 +52,62 @@
 // };
 
 // export default formatToDeviceTimeZone;
-const formatToDeviceTimeZone = (startDateString, endDateString, isRequiredTimeZone = true) => {
-    const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+const formatToDeviceTimeZone = (
+  startDateString,
+  endDateString,
+  isRequiredTimeZone = true,
+) => {
+  const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    const parseDate = (dateString) => {
-        // Convert "YYYY-MM-DD HH:mm:ss+00" → "YYYY-MM-DDTHH:mm:ssZ" for correct parsing
-        if (!dateString.includes("T")) {
-            dateString = dateString.replace(" ", "T").replace("+00", "Z");
-        }
-        const date = new Date(dateString);
-        return isNaN(date.getTime()) ? null : date;
-    };
-
-    const startDate = parseDate(startDateString);
-    const endDate = parseDate(endDateString);
-
-    if (!startDate || !endDate) {
-        return ["Invalid date format", ""];
+  const parseDate = dateString => {
+    // Convert "YYYY-MM-DD HH:mm:ss+00" → "YYYY-MM-DDTHH:mm:ssZ" for correct parsing
+    if (!dateString?.includes('T')) {
+      dateString = dateString?.replace(' ', 'T').replace('+00', 'Z');
     }
+    const date = new Date(dateString);
+    return isNaN(date.getTime()) ? null : date;
+  };
 
-    const optionsDate = {
-        timeZone: deviceTimeZone,
-        weekday: "short",
-        month: "long",
-        day: "numeric",
-    };
+  const startDate = parseDate(startDateString);
+  const endDate = parseDate(endDateString);
 
-    const optionsTime = {
-        timeZone: deviceTimeZone,
-        hour: "numeric",
-        minute: "2-digit",
-        timeZoneName: "short",
-    };
+  if (!startDate || !endDate) {
+    return ['Invalid date format', ''];
+  }
 
-    const formatterDate = new Intl.DateTimeFormat("en-US", optionsDate);
-    const formatterTime = new Intl.DateTimeFormat("en-US", optionsTime);
+  const optionsDate = {
+    timeZone: deviceTimeZone,
+    weekday: 'short',
+    month: 'long',
+    day: 'numeric',
+  };
 
-    const formattedDate = formatterDate.format(startDate);
-    const formattedStartTime = formatterTime.format(startDate);
-    const formattedEndTime = formatterTime.format(endDate);
+  const optionsTime = {
+    timeZone: deviceTimeZone,
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  };
 
-    // Extract the time zone abbreviation
-    const timeZoneName = formattedStartTime.split(" ").pop();
-    let formattedTimeRange = `${formattedStartTime.split(" ")[0]} - ${formattedEndTime.split(" ")[0]} ${timeZoneName}`;
-    if (!isRequiredTimeZone) {
-        formattedTimeRange = `${formattedStartTime.split(" ")[0]} - ${formattedEndTime.split(" ")[0]}`;
-    }
+  const formatterDate = new Intl.DateTimeFormat('en-US', optionsDate);
+  const formatterTime = new Intl.DateTimeFormat('en-US', optionsTime);
 
-    return [formattedDate, formattedTimeRange];
+  const formattedDate = formatterDate.format(startDate);
+  const formattedStartTime = formatterTime.format(startDate);
+  const formattedEndTime = formatterTime.format(endDate);
+
+  // Extract the time zone abbreviation
+  const timeZoneName = formattedStartTime.split(' ').pop();
+  let formattedTimeRange = `${formattedStartTime.split(' ')[0]} - ${
+    formattedEndTime.split(' ')[0]
+  } ${timeZoneName}`;
+  if (!isRequiredTimeZone) {
+    formattedTimeRange = `${formattedStartTime.split(' ')[0]} - ${
+      formattedEndTime.split(' ')[0]
+    }`;
+  }
+
+  return [formattedDate, formattedTimeRange];
 };
 
 export default formatToDeviceTimeZone;

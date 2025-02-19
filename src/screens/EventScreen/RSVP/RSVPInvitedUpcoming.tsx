@@ -346,28 +346,31 @@ const RSVPInvitedUpcoming = () => {
     };
     const handleInviteGuests = async (value) => {
         try {
-            const response = await inviteGuests({
-                userId: userId,
-                eventId: id,
-                guests: rspv?.guests,
-            });
-            if (response) {
-                if (value === "add") {
-                    const accept_response = await acceptInvite({
-                        id: userId,
-                        eventId: id
-                    });
-                    console.log(accept_response)
-                    dispatch(resetGuest());
-                    setActiveTab('success');
-                    bottomSheetRef?.current?.open();
-                }
-                else {
-                    dispatch(resetGuest());
-                    getInvitees();
-                }
+            if (value == 'add') {
+                const accept_response = await acceptInvite({
+                    id: userId,
+                    eventId: id
+                });
+                const response = await inviteGuests({
+                    userId: userId,
+                    eventId: id,
+                    guests: rspv?.guests,
+                });
+                console.log(accept_response)
+                dispatch(resetGuest());
+                setActiveTab('success');
+                bottomSheetRef?.current?.open();
             }
-            console.log('Guests invited successfully:', response);
+            else {
+                const response = await inviteGuests({
+                    userId: userId,
+                    eventId: id,
+                    guests: rspv?.guests,
+                });
+                dispatch(resetGuest());
+                getInvitees();
+            }
+
         } catch (error) {
             console.error('Failed to invite guests:', error);
         }
