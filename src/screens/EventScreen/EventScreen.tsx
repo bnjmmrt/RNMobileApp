@@ -59,7 +59,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
     }, [loginData?.isInvited]),
   );
 
-  const [currentTab, setCurrentTab] = useState<TabItem>(tabs[1]);
+  const [currentTab, setCurrentTab] = useState<TabItem>(tabs[0]);
 
   const debouncedSearch = useCallback(
     debounce((text: string) => setSearchText(text), 500),
@@ -112,7 +112,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
           <DynamicTabBar
             onTabChange={handleTabChange}
             tabs={tabs}
-            activeTabIndex={showEvents ? 1 : 0}
+            activeTabIndex={isGuest ? 1 : 0}
           />
           <View style={styles.contentContainer}>{renderTabContent()}</View>
         </View>

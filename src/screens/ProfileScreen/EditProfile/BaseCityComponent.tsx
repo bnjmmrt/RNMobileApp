@@ -1,39 +1,40 @@
-import React, {forwardRef, useImperativeHandle, useState} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {
-  LABLE,
-  BUTTON_LABLE,
-  ERROR_MESSAGE,
-  COLORS,
-} from '../../../utils/constants';
-
+import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import { Address } from '../../../redux/slices/appFlowSlice';
+import { LABLE, ERROR_MESSAGE, COLORS } from '../../../utils/constants';
 import IMAGES from '../../../assets/images';
-
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../redux/slices';
-import {Address} from '../../../redux/slices/appFlowSlice';
 import LocationPickerModal from '../../../component/BottomSheet/LocationPickerModal';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
-import {fontScale, horizontalMarginScale, radiusScale, verticalScale, Wp} from '../../../utils/dimensions';
+import { fontScale, horizontalMarginScale, radiusScale, verticalScale, Wp } from '../../../utils/dimensions';
 
-interface BaseCityComponentProps {}
+interface BaseCityComponentProps {
+  location?: Address;
+}
 
-const BaseCityComponent =forwardRef((props, ref) => {
-  const dispatch = useDispatch();
-  const address = useSelector((state: RootState) => state.appFlowApiData.profileData?.address);
-  //need to get from store when response updated in api
-  const [selectedCity, setSelectedCity] = useState<Address>({"placeId": "ChIJkbeSa_BfYzARphNChaFPjNc",address:'India'});
+const BaseCityComponent = forwardRef(({ location }: BaseCityComponentProps, ref) => {
+  console.log("Sayyed my location:", location)
+  const defaultAddress: Address = {
+    placeId: 'ChIJkbeSa_BfYzARphNChaFPjNc',
+    address: 'India',
+  };
 
+  // Initialize state with location prop or default address
+  const [selectedCity, setSelectedCity] = useState<Address>(location || defaultAddress);
   const [isShown, setIsShown] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // Sync state when location prop changes
+  useEffect(() => {
+    if (location) {
+      setSelectedCity(location);
+    }
+  }, [location]);
 
   useImperativeHandle(ref, () => ({
     validateBaseCity,
-     selectedCity
-    }));
+    selectedCity,
+  }));
 
-  // Validate inputs
   const validateBaseCity = () => {
     if (!selectedCity?.address) {
       setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_YOUR_BASE_CITY);
@@ -43,32 +44,21 @@ const BaseCityComponent =forwardRef((props, ref) => {
     return true;
   };
 
-  const openLocationPicker = () => {
-    console.log('clicked');
-    setIsShown(!isShown);
-  };
+  const toggleLocationPicker = () => setIsShown((prev) => !prev);
 
   return (
     <>
-     
-        <TouchableOpacity onPress={openLocationPicker}>
-          <CustomSelectableText
-            placeholder={LABLE.SEARCH_FOR_A_LOCATION}
-            leftImage={IMAGES.search}
-            errorMessage={errorMessage}
-            defaultValue={selectedCity?.address}
-            onPress={openLocationPicker}
-            style={styles.container}
-          />
-        </TouchableOpacity>
+      <TouchableOpacity onPress={toggleLocationPicker} style={styles.container}>
+        <CustomSelectableText
+          placeholder={LABLE.SEARCH_FOR_A_LOCATION}
+          leftImage={IMAGES.search}
+          errorMessage={errorMessage}
+          defaultValue={selectedCity?.address}
+          onPress={toggleLocationPicker}
+        />
+      </TouchableOpacity>
 
-        {isShown && (
-          <LocationPickerModal
-            setLocation={setSelectedCity}
-            setIsShown={setIsShown}
-          />
-        )}
-    
+      {isShown && <LocationPickerModal setLocation={setSelectedCity} setIsShown={setIsShown} />}
     </>
   );
 });
@@ -76,16 +66,16 @@ const BaseCityComponent =forwardRef((props, ref) => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 0,
-    height:verticalScale(60),
+    height: verticalScale(60),
     backgroundColor: COLORS.white,
   },
   btnStyle: {
     width: Wp(85),
-    borderRadius:radiusScale(100),
+    borderRadius: radiusScale(100),
   },
   contentContainer: {
     flex: 1,
-    paddingVertical:horizontalMarginScale(10),
+    paddingVertical: horizontalMarginScale(10),
     paddingHorizontal: horizontalMarginScale(20),
   },
   spacer: {
@@ -95,15 +85,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 8,
-    height:verticalScale(50),
+    height: verticalScale(50),
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal:horizontalMarginScale(15),
+    paddingHorizontal: horizontalMarginScale(15),
   },
-  searchImage: {marginRight: horizontalMarginScale(6)},
+  searchImage: { marginRight: horizontalMarginScale(6) },
   input: {
     width: '90%',
-    fontSize:fontScale(16),
+    fontSize: fontScale(16),
     color: COLORS.white,
   },
 });

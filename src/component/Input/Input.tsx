@@ -69,7 +69,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     forBottomSheet = false,
     inputFieldContainerStyle,
     keyboardType = 'default',
-    blurOnSubmit = true
+    blurOnSubmit = true,
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -116,10 +116,10 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     <View style={[styles.container, otherStyle]}>
       {/* Dynamic Label */}
       {label && (
-        <Text style={styles.label}>
+        <CustomText style={styles.label} >
           {label}
           {requiredText()}
-        </Text>
+        </CustomText>
       )}
 
       {/* Input Field */}
@@ -176,8 +176,8 @@ const styles = StyleSheet.create({
     paddingBottom: horizontalMarginScale(2),
     color: COLORS.black,
     fontSize: fontScale(14),
-    fontWeight: '500',
     lineHeight: 16,
+    marginBottom: 2
   },
   inputContainer: {
     borderWidth: 1,

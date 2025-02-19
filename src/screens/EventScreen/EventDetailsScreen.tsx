@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet, Text } from 'react-native';
-import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
+import { BUTTON_LABLE, COLORS, EVENT_STATUS, ROLE } from '../../utils/constants';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
 import { fontFamily } from 'src/utils/functions';
@@ -23,6 +23,8 @@ import { ROUTES } from 'src/navigation/Route';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { useAcceptInvitationMutation } from 'src/redux/actions/rspvApiAction';
 import EventAnouncements from 'src/component/Event/EventAnnouncements';
+import EventRequests from 'src/component/Event/EventRequests';
+import CircleButtonOverlay from 'src/component/BackButton/CircleButtonOverlay';
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
@@ -39,11 +41,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [isDeclinedByHost, setIsDeclinedByHost] = useState(false);
   const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
-  const [
-    acceptInvite,
-    { isLoading: acceptLoading, isError: acceptError, isSuccess: acceptSuccess },
-  ] = useAcceptInvitationMutation();
-
+  const role = useSelector((state: RootState) => state.auth.role);
+  const [acceptInvite, { isLoading: acceptLoading }] = useAcceptInvitationMutation();
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
@@ -78,14 +77,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     setGuestStatus(data?.data?.currentGuestStatus);
   }, [data]);
   console.log('Event details', route.params.id);
-  const statusMap = [
-    { id: '1', label: EVENT_STATUS.AWAITING },
-    { id: '2', label: EVENT_STATUS.INVITED },
-    { id: '3', label: EVENT_STATUS.DECLINED_BY_HOST },
-    { id: '4', label: EVENT_STATUS.DECLINED_BY_YOU },
-    { id: '5', label: EVENT_STATUS.GOING },
-  ];
-  const [images, setImages] = useState(statusMap);
 
   // const styles = EventDetailsScreenStyle();
 
@@ -128,7 +119,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     <View style={{ ...styles.container }}>
       <ScrollView>
         <View style={{ ...styles.contentContainer }}>
-          <View style={{}}>
+          <View>
+
             <FastImage
               source={{
                 uri: route?.params?.imageCover || route?.params?.imageFlyer,
@@ -137,10 +129,14 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               defaultSource={IMAGES.eventCoverPlaceholders1} // Placeholder
               style={styles.icon}
             />
+
           </View>
+
           <Text style={styles.titleStyle}>{route?.params?.name}</Text>
+
           <EventStatus status={guestStatus} isDeclinedByMe={!isDeclinedByMe} />
-          <FlatList
+
+          {role !== ROLE.NON_MEMBER && <FlatList
             data={collaborators}
             horizontal
             pagingEnabled={false}
@@ -148,12 +144,18 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item, index) => `${item.id}-${index}`}
             renderItem={({ item }) => <EventHostItem item={item} />}
-          />
+          />}
+
+          {role == ROLE.HOST && <EventRequests eventId={data?.data?.id} />}
+
           <EventVenue item={data?.data} />
+
           <EventOverview item={data?.data} />
 
           {talents.length > 0 && <EventTalent talents={talents} />}
+
           {/* {<EventAnouncements talents={talents} />} */}
+
         </View>
       </ScrollView>
 
@@ -172,6 +174,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           />
         </View>
       )}
+
       {guestStatus == 'DECLINED' && (
         <View style={{ margin: 20 }}>
           <Button
@@ -218,7 +221,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         </View>
       )}
 
+
       <BackButtonOverlay onPress={() => navigation.goBack()} />
+      <BackButtonOverlay customStyle={{ right: 4 }} imageSource={IMAGES.edits} onPress={() => navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })} />
+      <BackButtonOverlay customStyle={{ right: 55 }} imageSource={IMAGES.share} onPress={() => navigation.goBack()} />
+
     </View>
   );
 };

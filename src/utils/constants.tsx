@@ -168,6 +168,7 @@ export const LABLE = {
   SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:
     'Something went wrong, please try again',
   ABOUT_THE_EVENT: 'About the Event',
+  GUEST_LIST: 'Guest List',
   FEATURE_TALENT: 'Featured Talent',
   EVENT_ANNOUNCEMENTS: 'Event Announcements',
   NO_EVENT_ANNOUNCEMENTS: 'No event announcements',
@@ -199,7 +200,25 @@ export const LABLE = {
   BIO: 'Bio',
   COMPANY_DESCRIPTION: 'Description of Company',
   ENTER_FEEDBACK: 'Enter Feedback',
+  INVITED: 'Invited',
+  REQUESTS: 'Requests',
+  CONFIRMED: 'Confirmed',
+  CHECKED_IN: 'Checked-In'
 };
+export const EVENT = {
+  EDIT_EVENT: 'Edit Event',
+  DETAILS: 'Details',
+  SETTINGS: 'Settings',
+  EVENT_NAME: 'Event Name',
+  START_DATE: 'Start Date',
+  END_DATE: 'End Date',
+  LOCATION: 'Location',
+  FURTHER_INSTRUCTION: 'Further Instructions',
+  EVENT_DESCRIPTION: 'Event Description',
+  HIDE_ADDRESS: 'Hide full address for confirmed guests',
+
+
+}
 
 export const PROFILE = {
   EDIT_PROFILE: 'Edit Profile',
@@ -379,6 +398,20 @@ export const hostTabData: TabItem[] = [
   },
 ];
 
+export const editEventsTab: TabItem[] = [
+  {
+    id: '1',
+    label: EVENT.DETAILS,
+    title: '',
+    subTitle: '.',
+  },
+  {
+    id: '2',
+    label: EVENT.SETTINGS,
+    title: '',
+    subTitle: '',
+  },
+];
 export const StatusEnum = {
   NO_STATUS: 0,
   DRAFT: 1,
