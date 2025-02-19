@@ -25,7 +25,7 @@ export const filterOptions: OptionType[] = [
   { id: 'all', label: 'All' },
   { id: 'confirmed', label: 'Confirmed' },
   { id: 'invited', label: 'Invited' },
-  { id: 'requests', label: 'Requests' },
+  { id: 'requests', label: 'Requested' },
   { id: 'drafts', label: 'Drafts' },
   { id: 'declined', label: 'Declined' },
 ];

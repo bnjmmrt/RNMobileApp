@@ -35,6 +35,49 @@ if (Platform.OS === 'android') {
   }
 }
 
+const StatusLabel: React.FC<{
+  status: string;
+  isFilter?: boolean;
+}> = ({ status, isFilter = false }) => {
+  const getStatusColor = (statusText: string) => {
+    const statusKey = statusText.toLowerCase();
+    switch (statusKey) {
+      case 'confirmed':
+        return { bg: COLORS.successLight, text: COLORS.success };
+      case 'declined':
+        return { bg: COLORS.bgRed, text: COLORS.errorText };
+      case 'invited':
+        return { bg: COLORS.bgBlue, text: COLORS.blueDark };
+      case 'drafts':
+        return { bg: COLORS.lighter_gray, text: COLORS.black2 };
+      case 'requested':
+        return { bg: COLORS.black, text: COLORS.white };
+      case 'all':
+        return { bg: COLORS.lighter_gray, text: COLORS.black2 };
+      default:
+        return { bg: COLORS.bgBlue, text: COLORS.blueDark };
+    }
+  };
+
+  const colors = getStatusColor(status);
+
+  return (
+    <View style={[styles.statusLabelContainer, { backgroundColor: colors.bg }]}>
+      <Text
+        style={[
+          styles.statusLabelText,
+          {
+            color: colors.text,
+            fontSize: isFilter ? fontScale(14) : fontScale(12),
+            lineHeight: isFilter ? fontScale(16) : fontScale(14),
+          },
+        ]}>
+        {status}
+      </Text>
+    </View>
+  );
+};
+
 const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
   //   const [searchText, setSearchText] = useState('');
   const [expandedGuests, setExpandedGuests] = useState<{
@@ -127,45 +170,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
               )}
             </View>
 
-            <View
-              style={[
-                styles.statusContainer,
-                {
-                  backgroundColor:
-                    item.status === 'Confirmed'
-                      ? COLORS.successLight
-                      : item.status === 'Declined'
-                      ? COLORS.bgRed
-                      : item.status === 'Invited'
-                      ? COLORS.bgBlue
-                      : item.status === 'Drafts'
-                      ? COLORS.lighter_gray
-                      : item.status === 'Requested'
-                      ? COLORS.black
-                      : COLORS.bgBlue,
-                },
-              ]}>
-              <Text
-                style={[
-                  styles.guestStatus,
-                  {
-                    color:
-                      item.status === 'Confirmed'
-                        ? COLORS.success
-                        : item.status === 'Declined'
-                        ? COLORS.errorText
-                        : item.status === 'Invited'
-                        ? COLORS.blueDark
-                        : item.status === 'Drafts'
-                        ? COLORS.black2
-                        : item.status === 'Requested'
-                        ? COLORS.white
-                        : COLORS.blueDark,
-                  },
-                ]}>
-                {item.status}
-              </Text>
-            </View>
+            <StatusLabel status={item.status} />
           </View>
         </View>
         <View style={styles.rightContainer}>
@@ -228,12 +233,13 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
           style={styles.filterDropdown}
           onPress={() => filtersSheetRef?.current?.open()}>
           <View style={styles.dropdownLeft}>
-            <View style={styles.dropdownTextContainer}>
-              <Text style={styles.dropdownText}>
-                {filterOptions.find(option => option.id === selectedFilter)
-                  ?.label || 'All'}
-              </Text>
-            </View>
+            <StatusLabel
+              status={
+                filterOptions.find(option => option.id === selectedFilter)
+                  ?.label || 'All'
+              }
+              isFilter={true}
+            />
             <Image source={IMAGES.downArrow} />
           </View>
           <TouchableOpacity
@@ -376,17 +382,6 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.ABCDiatype_Regular,
     color: COLORS.black2,
   },
-  statusContainer: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-  },
-  guestStatus: {
-    fontSize: fontScale(12),
-    lineHeight: fontScale(14),
-    fontWeight: '500',
-  },
   vipContainer: {
     paddingHorizontal: 6,
     paddingVertical: 2,
@@ -445,19 +440,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  dropdownTextContainer: {
-    borderRadius: 128,
-    backgroundColor: COLORS.lighter_gray,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  dropdownText: {
-    fontSize: fontScale(12),
-    lineHeight: fontScale(14),
-    fontWeight: 500,
-    fontFamily: fontFamily.ABCDiatype_Regular,
-    color: COLORS.neutral_disabled,
-  },
   filterButton: {
     width: 32,
     height: 32,
@@ -470,6 +452,16 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     tintColor: COLORS.black,
+  },
+  statusLabelContainer: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  statusLabelText: {
+    fontWeight: '500',
+    fontFamily: fontFamily.ABCDiatype_Regular,
   },
 });
 
