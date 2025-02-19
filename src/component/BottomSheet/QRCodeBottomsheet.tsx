@@ -1,5 +1,5 @@
 import React, {useRef, forwardRef} from 'react';
-import {View, StyleSheet, Text, Image, Platform, Alert} from 'react-native';
+import {View, StyleSheet, Text, Image, Platform, Alert, ScrollView} from 'react-native';
 import BottomSheetComponent from './BottomSheet';
 import {BUTTON_LABLE, COLORS} from '../../utils/constants';
 import Button from '../Button';
@@ -34,6 +34,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
       ref={ref}
       snapPoints={[props.isQRShown ? '93%' : '85%']}
       onClose={() => console.log(ref)}>
+        <ScrollView>
       <View style={styles.container}>
         <Text style={styles.title}>{props.title}</Text>
 
@@ -64,6 +65,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
         </View>
         <Text style={styles.infoText}>Show this QR code at event check-in</Text>
       </View>
+      </ScrollView>
     </BottomSheetComponent>
   );
 });
