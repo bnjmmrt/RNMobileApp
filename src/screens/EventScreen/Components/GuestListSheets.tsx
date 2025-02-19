@@ -88,7 +88,7 @@ export const GuestListSortSheet = forwardRef<BottomSheetMethods, SheetProps>(
                 onSelect(option.id);
                 bottomSheetRef?.current?.close();
               }}>
-              <Text style={styles.optionText}>{option.label}</Text>
+              <Text style={[styles.optionText]}>{option.label}</Text>
             </TouchableOpacity>
           ))}
           <View style={styles.bottomIndicator} />
@@ -106,7 +106,6 @@ const styles = StyleSheet.create({
     paddingTop: verticalScale(8),
   },
   optionButton: {
-    // paddingVertical: verticalScale(16),
     height: verticalScale(40),
     display: 'flex',
     alignItems: 'center',

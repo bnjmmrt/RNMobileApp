@@ -25,7 +25,7 @@ import {
 interface EventGuestListProps extends NativeStackScreenProps<any, any> {}
 
 const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
-//   const [searchText, setSearchText] = useState('');
+  //   const [searchText, setSearchText] = useState('');
   const [expandedGuests, setExpandedGuests] = useState<{
     [key: string]: boolean;
   }>({});
@@ -72,20 +72,45 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
           />
           <View style={styles.guestInfo}>
             <Text style={styles.guestName}>{item.name}</Text>
-            <Text
+            <View
               style={[
-                styles.guestStatus,
+                styles.statusContainer,
                 {
-                  color:
+                  backgroundColor:
                     item.status === 'Confirmed'
-                      ? COLORS.success
+                      ? COLORS.successLight
                       : item.status === 'Declined'
-                      ? COLORS.errorText
-                      : COLORS.black2,
+                      ? COLORS.bgRed
+                      : item.status === 'Invited'
+                      ? COLORS.bgBlue
+                      : item.status === 'Drafts'
+                      ? COLORS.lighter_gray
+                      : item.status === 'Requested'
+                      ? COLORS.black
+                      : COLORS.bgBlue,
                 },
               ]}>
-              {item.status}
-            </Text>
+              <Text
+                style={[
+                  styles.guestStatus,
+                  {
+                    color:
+                      item.status === 'Confirmed'
+                        ? COLORS.success
+                        : item.status === 'Declined'
+                        ? COLORS.errorText
+                        : item.status === 'Invited'
+                        ? COLORS.blueDark
+                        : item.status === 'Drafts'
+                        ? COLORS.black2
+                        : item.status === 'Requested'
+                        ? COLORS.white
+                        : COLORS.blueDark,
+                  },
+                ]}>
+                {item.status}
+              </Text>
+            </View>
           </View>
         </View>
       </View>
@@ -115,28 +140,65 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
           <View style={styles.guestInfo}>
             <View style={styles.nameContainer}>
               <Text style={styles.guestName}>{item.name}</Text>
-              {item.inviteCount ? (
+              {item.invitees && (
                 <Text
-                  style={styles.inviteCount}>{` +${item.inviteCount}`}</Text>
-              ) : null}
+                  style={
+                    styles.inviteCount
+                  }>{` +${item.invitees.length}`}</Text>
+              )}
             </View>
-            <Text
+
+            <View
               style={[
-                styles.guestStatus,
+                styles.statusContainer,
                 {
-                  color:
+                  backgroundColor:
                     item.status === 'Confirmed'
-                      ? COLORS.success
+                      ? COLORS.successLight
                       : item.status === 'Declined'
-                      ? COLORS.errorText
-                      : COLORS.black2,
+                      ? COLORS.bgRed
+                      : item.status === 'Invited'
+                      ? COLORS.bgBlue
+                      : item.status === 'Drafts'
+                      ? COLORS.lighter_gray
+                      : item.status === 'Requested'
+                      ? COLORS.black
+                      : COLORS.bgBlue,
                 },
               ]}>
-              {item.status}
-            </Text>
+              <Text
+                style={[
+                  styles.guestStatus,
+                  {
+                    color:
+                      item.status === 'Confirmed'
+                        ? COLORS.success
+                        : item.status === 'Declined'
+                        ? COLORS.errorText
+                        : item.status === 'Invited'
+                        ? COLORS.blueDark
+                        : item.status === 'Drafts'
+                        ? COLORS.black2
+                        : item.status === 'Requested'
+                        ? COLORS.white
+                        : COLORS.blueDark,
+                  },
+                ]}>
+                {item.status}
+              </Text>
+            </View>
           </View>
         </View>
         <View style={styles.rightContainer}>
+          {item.status === 'Confirmed' && (
+            <Image
+              source={IMAGES.confirmed_badge}
+              style={[
+                styles.confirmedBadge,
+                expandedGuests[item.id] && styles.arrowIconRotated,
+              ]}
+            />
+          )}
           {item.isVip && (
             <View style={styles.vipContainer}>
               <Text style={styles.vipText}>VIP</Text>
@@ -330,20 +392,28 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.ABCDiatype_Regular,
     color: COLORS.black2,
   },
+  statusContainer: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
   guestStatus: {
-    fontSize: fontScale(14),
-    fontFamily: fontFamily.ABCDiatype_Regular,
+    fontSize: fontScale(12),
+    lineHeight: fontScale(14),
+    fontWeight: '500',
   },
   vipContainer: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    backgroundColor: COLORS.success,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    backgroundColor: COLORS.bgBlue,
     borderRadius: 12,
   },
   vipText: {
     fontSize: fontScale(12),
-    fontFamily: fontFamily.ABCDiatype_Regular,
-    color: COLORS.white,
+    lineHeight: fontScale(14),
+    color: COLORS.blueDark,
+    fontWeight: '500',
   },
   expandButton: {
     width: 32,
@@ -354,9 +424,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   arrowIcon: {
-    width: 16,
-    height: 16,
     tintColor: COLORS.black,
+  },
+  confirmedBadge: {
+    width: 18,
+    height: 18,
   },
   arrowIconRotated: {
     transform: [{ rotate: '180deg' }],
