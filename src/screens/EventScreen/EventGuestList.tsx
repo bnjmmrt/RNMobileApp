@@ -26,6 +26,7 @@ import {
   GuestListSortSheet,
   filterOptions,
 } from './Components/GuestListSheets';
+import ProgressBanner from 'src/component/ProgressBanner/ProgressBanner';
 
 interface EventGuestListProps extends NativeStackScreenProps<any, any> {}
 
@@ -90,6 +91,12 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
 
   // Use mock data for now
   const guests = guestListMock;
+
+  // Add calculation for confirmed guests
+  const confirmedGuests = guests.filter(
+    guest => guest.status === 'Confirmed',
+  ).length;
+  const totalGuests = guests.length;
 
   const toggleExpand = (guestId: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -214,7 +221,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View>
+      <View style={styles.content}>
         <View style={styles.headerTop}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <View style={styles.iconButton}>
@@ -260,15 +267,20 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
             mainContainerStyle={{ marginHorizontal: horizontalMarginScale(20) }}
           />
         </View>
+
+        <FlatList
+          data={guests}
+          renderItem={renderGuestItem}
+          keyExtractor={item => item.id}
+          contentContainerStyle={[
+            styles.listContainer,
+            { paddingBottom: 100 }, // Add padding for the banner
+          ]}
+          showsVerticalScrollIndicator={false}
+        />
       </View>
 
-      <FlatList
-        data={guests}
-        renderItem={renderGuestItem}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}
-      />
+      <ProgressBanner confirmed={confirmedGuests} total={totalGuests} />
 
       <GuestListFilterSheet
         ref={filtersSheetRef}
@@ -462,6 +474,10 @@ const styles = StyleSheet.create({
   statusLabelText: {
     fontWeight: '500',
     fontFamily: fontFamily.ABCDiatype_Regular,
+  },
+  content: {
+    flex: 1,
+    position: 'relative',
   },
 });
 
