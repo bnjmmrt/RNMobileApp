@@ -22,6 +22,7 @@ interface QRCodeBottomsheetProps {
   subTitle: string;
   imageURL: string;
   name: string;
+  isQRShown:boolean
 }
 const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
   const cancelClick = () => {
@@ -31,7 +32,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
   return (
     <BottomSheetComponent
       ref={ref}
-      snapPoints={[props.imageURL ? '93%' : '85%']}
+      snapPoints={[props.isQRShown ? '93%' : '85%']}
       onClose={() => console.log(ref)}>
       <View style={styles.container}>
         <Text style={styles.title}>{props.title}</Text>
@@ -46,7 +47,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
         <View style={styles.card}>
           <View style={styles.qrContainer}>
             <View style={styles.ticket}>
-            {props.imageURL ?    <Image source={props.imageURL} style={styles.image} /> :   <Image source={IMAGES.ticket} style={styles.image} />}
+           <Image source={props.imageURL} style={styles.image} /> 
 
               <View style={{flexDirection: 'row'}}>
                 {Array.from({length: 6}).map((_, index) => (

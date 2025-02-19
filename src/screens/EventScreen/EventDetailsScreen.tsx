@@ -54,7 +54,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     {eventId: route?.params?.id},
     {refetchOnMountOrArgChange: true},
   );
-
+  const [isQRShown, setIsQRShown] = useState(true);
   useFocusEffect(
     useCallback(() => {
       refetch();
@@ -225,7 +225,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         ref={qrCodeBottomSheetRef}
         title="Tao Desert Nights Desert Storm NYC House Party"
         subTitle={'September 8th, 3:00PM EST'}
-        imageURL={IMAGES.qr}
+        imageURL={isQRShown? IMAGES.qr : IMAGES.ticket}
+        isQRShown={isQRShown}
         name="ANURag harod"
       />
 
