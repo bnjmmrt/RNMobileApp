@@ -106,6 +106,7 @@ const IMAGES = {
   half_circle: require('./half_circle.png'),
   info_filled: require('./info-filled.png'),
   ticket: require('./ticket.png'),
+  calendarCircle: require('./calendar-circle.png'),
 };
 
 export default IMAGES;
