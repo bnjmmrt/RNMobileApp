@@ -1,10 +1,10 @@
+import FastImage, {ImageStyle} from '@d11/react-native-fast-image';
+import IMAGES from '@images/index';
 import React from 'react';
-import {Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, ViewStyle} from 'react-native';
+import {radiusScale} from 'src/utils/dimensions';
 import {COLORS} from '../../../src/utils/constants';
 import {fontFamily} from '../../../src/utils/functions';
-import {radiusScale} from 'src/utils/dimensions';
-import FastImage from '@d11/react-native-fast-image';
-import IMAGES from '@images/index';
 
 type AvatarInitialsProps = {
   name?: string;
@@ -13,6 +13,7 @@ type AvatarInitialsProps = {
   textColor?: string;
   imgUrl?: string;
   onPress?: any;
+  containerStyle?: ViewStyle;
 };
 
 const AvatarInitials: React.FC<AvatarInitialsProps> = ({
@@ -22,6 +23,7 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
   textColor = COLORS.black,
   imgUrl,
   onPress,
+  containerStyle,
 }) => {
   const getInitials = (name: string): string => {
     if (!name) return '';
@@ -35,19 +37,29 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
     return initials;
   };
 
-  const initials = getInitials(name);
+  const initials = getInitials(name || '');
 
   return imgUrl ? (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[
+        styles.avatar,
+        {
+          width: radiusScale(size),
+          height: radiusScale(size),
+          borderRadius: radiusScale(size) / 2,
+        },
+        containerStyle,
+      ]}>
       <FastImage
         source={{uri: imgUrl}}
         defaultSource={IMAGES.rumorLogo}
         style={[
           styles.avatar,
           {
-            width: radiusScale(size),
-            height: radiusScale(size),
-            borderRadius: radiusScale(size) / 2,
+            width: '100%',
+            height: '100%',
+            borderRadius: radiusScale(size),
           },
         ]}
       />
@@ -63,6 +75,7 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
           borderRadius: radiusScale(size) / 2,
           backgroundColor,
         },
+        containerStyle,
       ]}>
       <Text
         style={[

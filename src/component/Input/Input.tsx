@@ -13,18 +13,20 @@ import {
   TouchableOpacity,
   ViewStyle,
   KeyboardTypeOptions,
+  ImageStyle,
+  TextInputProps,
 } from 'react-native';
-import { COLORS } from '../../utils/constants';
-import { useNavigation } from '@react-navigation/native';
-import { CustomText } from '../CustomText';
+import {COLORS} from '../../utils/constants';
+import {useNavigation} from '@react-navigation/native';
+import {CustomText} from '../CustomText';
 import {
   fontScale,
   horizontalMarginScale,
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import { fontFamily } from 'src/utils/functions';
-import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import {fontFamily} from 'src/utils/functions';
+import {BottomSheetTextInput} from '@gorhom/bottom-sheet';
 
 interface InputProps {
   label?: string;
@@ -43,6 +45,9 @@ interface InputProps {
   inputFieldContainerStyle?: ViewStyle;
   keyboardType?: KeyboardTypeOptions;
   blurOnSubmit?: any;
+  customRightImageStyle?: ImageStyle;
+  customLeftImageStyle?: ImageStyle;
+  extraInputProps?: TextInputProps;
 }
 
 export type InputRefMethods = {
@@ -69,7 +74,10 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     forBottomSheet = false,
     inputFieldContainerStyle,
     keyboardType = 'default',
-    blurOnSubmit = true
+    blurOnSubmit = true,
+    customLeftImageStyle,
+    customRightImageStyle,
+    extraInputProps,
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -82,7 +90,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     validateInputs,
     inputText,
     setErrorMessage,
-    setInputText
+    setInputText,
   }));
 
   // Validate inputs
@@ -102,7 +110,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     }
   };
   const requiredText = () =>
-    isRequired && <CustomText style={{ color: COLORS.errorText }}> *</CustomText>;
+    isRequired && <CustomText style={{color: COLORS.errorText}}> *</CustomText>;
 
   useEffect(() => {
     if (defaultValue != undefined && defaultValue != null) {
@@ -116,10 +124,10 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     <View style={[styles.container, otherStyle]}>
       {/* Dynamic Label */}
       {label && (
-        <Text style={styles.label}>
+        <CustomText style={styles.label}>
           {label}
           {requiredText()}
-        </Text>
+        </CustomText>
       )}
 
       {/* Input Field */}
@@ -134,7 +142,12 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
             : null,
           inputFieldContainerStyle,
         ]}>
-        {leftImage && <Image source={leftImage} style={styles.leftImage} />}
+        {leftImage && (
+          <Image
+            source={leftImage}
+            style={[styles.leftImage, customLeftImageStyle]}
+          />
+        )}
         <InputComponent
           {...props}
           blurOnSubmit={blurOnSubmit}
@@ -151,10 +164,14 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
           }}
           multiline={multiline}
           keyboardType={keyboardType}
+          {...extraInputProps}
         />
         {rightImage && (
           <TouchableOpacity onPress={onPressImage}>
-            <Image source={rightImage} style={styles.rightImage} />
+            <Image
+              source={rightImage}
+              style={[styles.rightImage, customRightImageStyle]}
+            />
           </TouchableOpacity>
         )}
       </View>
@@ -174,10 +191,6 @@ const styles = StyleSheet.create({
   },
   label: {
     paddingBottom: horizontalMarginScale(2),
-    color: COLORS.black,
-    fontSize: fontScale(14),
-    fontWeight: '500',
-    lineHeight: 16,
   },
   inputContainer: {
     borderWidth: 1,
@@ -192,9 +205,11 @@ const styles = StyleSheet.create({
     height: verticalScale(160),
     paddingTop: verticalMarginScale(10),
   },
-  leftImage: { width: 16, height: 16 },
+  leftImage: {width: 16, height: 16},
   rightImage: {
-    width: 13, height: 13, resizeMode: 'contain'
+    width: 13,
+    height: 13,
+    resizeMode: 'contain',
   },
   input: {
     flex: 1,

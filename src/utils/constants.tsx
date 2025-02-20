@@ -1,4 +1,4 @@
-import { TabItem } from 'src/component/ActiveTabBar/DynamicTabBar';
+import {TabItem} from 'src/component/ActiveTabBar/DynamicTabBar';
 
 export const BUTTON_LABLE = {
   ENTER: 'Enter',
@@ -49,6 +49,7 @@ export const BUTTON_LABLE = {
   ADD_GUEST_DETAILS: 'Add Guest Details',
   ADD: 'Add',
   DISCOVER_MORE_EVENTS: 'Discover More Events',
+  INVITE_GUESTS: 'Invite Guests',
 };
 
 export const LABLE = {
@@ -177,12 +178,15 @@ export const LABLE = {
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent bland',
   PHONE_NUMBER: 'Phone Number',
   RSVP_TEXT: `If you select ‘No’, you cannot change your response. If you later decide you’d like to attend, you’ll need to request another invite from the host.`,
-  WE_WERE_SORRY_CANT_MAKE_IT: "We’re sorry you can’t make it.",
-  YOU_DECLINED_THIS_INVITATION: "You declined this invitation",
-  DISCOVER_MORE_EVENTS: "Discover More Events",
-  RSVP_QUESTION_DETAILS: "The host is offering you the option to bring up to [X] guests. How many guests would you like to bring?",
-  RSVP_SUBTITLE: "If you later decide you'd like to attend, you'll need to request another invite from the host.",
-  RSVP_INSTRUCTION: " Please add your additional guests’ details by [event date and time],or their passes will be canceled.",
+  WE_WERE_SORRY_CANT_MAKE_IT: 'We’re sorry you can’t make it.',
+  YOU_DECLINED_THIS_INVITATION: 'You declined this invitation',
+  DISCOVER_MORE_EVENTS: 'Discover More Events',
+  RSVP_QUESTION_DETAILS:
+    'The host is offering you the option to bring up to [X] guests. How many guests would you like to bring?',
+  RSVP_SUBTITLE:
+    "If you later decide you'd like to attend, you'll need to request another invite from the host.",
+  RSVP_INSTRUCTION:
+    ' Please add your additional guests’ details by [event date and time],or their passes will be canceled.',
   ADD_FRIEND_AS_GUEST: 'Add friends as guests',
   ADD_GUEST_SUBTITLE: 'Provide details to add your additional guest.',
   ADD_GUEST_SYNC_TEXT:
@@ -568,57 +572,58 @@ export const eventData = {
     useQr: false,
     userId: '5774aa32-abe5-45a8-a27f-e743ca61f291',
   },
-  "status": 200
-}
+  status: 200,
+};
 
 export const ANNOUNCCEMENTS_DATA = [
   {
-    id: "1",
-    title: "The Event location has moved to the following address...",
+    id: '1',
+    title: 'The Event location has moved to the following address...',
     description: 'The Event location has moved to the following address...',
-    date: "10/05/2025",
+    date: '10/05/2025',
     imageKeyUrl: 'https://picsum.photos/200/300',
     media: [],
   },
   {
-    id: "1",
-    title: "The Event location has moved to the following address...",
+    id: '1',
+    title: 'The Event location has moved to the following address...',
     description: LABLE.DUMMY_TEXT,
-    date: "10/05/2025",
+    date: '10/05/2025',
     media: [],
   },
   {
-    id: "1",
-    title: "The Event location has moved to the following address...",
+    id: '1',
+    title: 'The Event location has moved to the following address...',
     description: LABLE.DUMMY_TEXT,
-    date: "10/05/2025",
+    date: '10/05/2025',
     media: [
-      { type: "image", uri: "https://picsum.photos/200/300" },
-      { type: "image", uri: "https://picsum.photos/200/300" },
-      { type: "pdf", name: "Guests File Rumor", size: "9.83 MB", uri: "https://www.aeee.in/wp-content/uploads/2020/08/Sample-pdf.pdf" },
+      {type: 'image', uri: 'https://picsum.photos/200/300'},
+      {type: 'image', uri: 'https://picsum.photos/200/300'},
+      {
+        type: 'pdf',
+        name: 'Guests File Rumor',
+        size: '9.83 MB',
+        uri: 'https://www.aeee.in/wp-content/uploads/2020/08/Sample-pdf.pdf',
+      },
     ],
   },
   {
-    id: "1",
-    title: "The Event location has moved to the following address...",
+    id: '1',
+    title: 'The Event location has moved to the following address...',
     description: LABLE.DUMMY_TEXT,
-    date: "10/05/2025",
+    date: '10/05/2025',
     media: [
-
-      { type: "image", uri: "https://picsum.photos/200/300" },
-      { type: "pdf", name: "Guests File Rumor", size: "9.83 MB" },
-      { type: "image", uri: "https://picsum.photos/200/300" },
+      {type: 'image', uri: 'https://picsum.photos/200/300'},
+      {type: 'pdf', name: 'Guests File Rumor', size: '9.83 MB'},
+      {type: 'image', uri: 'https://picsum.photos/200/300'},
     ],
   },
   // Add more objects for additional list items
 ];
 
-
-
 export const genderList = [
-  { id: 0, gender: 'Male', value: 'MALE' },
-  { id: 1, gender: 'Female', value: 'FEMALE' },
-  { id: 2, gender: 'Non-binary', value: 'NON_BINARY' },
-  { id: 3, gender: 'Prefer not to say', value: 'NOT_APPLICABLE' },
+  {id: 0, gender: 'Male', value: 'MALE'},
+  {id: 1, gender: 'Female', value: 'FEMALE'},
+  {id: 2, gender: 'Non-binary', value: 'NON_BINARY'},
+  {id: 3, gender: 'Prefer not to say', value: 'NOT_APPLICABLE'},
 ];
-
