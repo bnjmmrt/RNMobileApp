@@ -28,6 +28,8 @@ import {
 } from './Components/GuestListSheets';
 import ProgressBanner from 'src/component/ProgressBanner/ProgressBanner';
 import GuestEmptyRecord from 'src/component/EmptyRecord/GuestEmptyRecord';
+import StatusLabel from 'src/component/StatusLabel/StatusLabel';
+import { ROUTES } from 'src/navigation/Route'
 
 interface EventGuestListProps extends NativeStackScreenProps<any, any> {}
 
@@ -36,49 +38,6 @@ if (Platform.OS === 'android') {
     UIManager.setLayoutAnimationEnabledExperimental(true);
   }
 }
-
-const StatusLabel: React.FC<{
-  status: string;
-  isFilter?: boolean;
-}> = ({ status, isFilter = false }) => {
-  const getStatusColor = (statusText: string) => {
-    const statusKey = statusText.toLowerCase();
-    switch (statusKey) {
-      case 'confirmed':
-        return { bg: COLORS.successLight, text: COLORS.success };
-      case 'declined':
-        return { bg: COLORS.bgRed, text: COLORS.errorText };
-      case 'invited':
-        return { bg: COLORS.bgBlue, text: COLORS.blueDark };
-      case 'drafts':
-        return { bg: COLORS.lighter_gray, text: COLORS.black2 };
-      case 'requested':
-        return { bg: COLORS.black, text: COLORS.white };
-      case 'all':
-        return { bg: COLORS.lighter_gray, text: COLORS.neutral_disabled };
-      default:
-        return { bg: COLORS.bgBlue, text: COLORS.blueDark };
-    }
-  };
-
-  const colors = getStatusColor(status);
-
-  return (
-    <View style={[styles.statusLabelContainer, { backgroundColor: colors.bg }]}>
-      <Text
-        style={[
-          styles.statusLabelText,
-          {
-            color: colors.text,
-            fontSize: isFilter ? fontScale(14) : fontScale(12),
-            lineHeight: isFilter ? fontScale(16) : fontScale(14),
-          },
-        ]}>
-        {status}
-      </Text>
-    </View>
-  );
-};
 
 const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
   const [searchText, setSearchText] = useState('');
@@ -198,7 +157,14 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
     <View>
       <TouchableOpacity
         style={styles.guestItem}
-        onPress={() => item.invitees && toggleExpand(item.id)}>
+        onPress={() => {
+          navigation.navigate(ROUTES.EventStack, {
+            screen: ROUTES.GuestDetailScreen,
+            params: {
+              guest: item,
+            },
+          });
+        }}>
         <View style={styles.leftContainer}>
           <FastImage
             source={{
@@ -520,16 +486,6 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     tintColor: COLORS.black,
-  },
-  statusLabelContainer: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-  },
-  statusLabelText: {
-    fontWeight: '500',
-    fontFamily: fontFamily.ABCDiatype_Regular,
   },
   content: {
     flex: 1,

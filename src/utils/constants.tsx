@@ -50,7 +50,12 @@ export const BUTTON_LABLE = {
   ADD: 'Add',
   DISCOVER_MORE_EVENTS: 'Discover More Events',
   CHECK_IN: 'Check In',
-};
+  SAVE_DRAFT: 'Save Draft',
+  SEND_INVITE: 'Send Invite',
+  APPROVE_REQUEST: 'Approve Request',
+  UPDATE_INVITE: 'Update Invite',
+  MARK_AS_SPAM: 'Mark as Spam',
+} as const;
 
 export const LABLE = {
   WELCOME: 'Welcome to Rumors!',
@@ -68,28 +73,28 @@ export const LABLE = {
   EROOR_ENTER_CODE: 'Please enter a verification code',
   ENTER_YOUR_VERIFICATION_CODE: 'Enter your verification code',
   SEND_TO: 'Sent to ',
-  DONT_GET_CODE: 'Didn’t get a code?',
-  ENTER_YOUR_NAME: 'Let’s start with your name.',
+  DONT_GET_CODE: "Didn't get a code?",
+  ENTER_YOUR_NAME: "Let's start with your name.",
   FIRST_NAME: 'First Name',
   LAST_NAME: 'Last Name',
-  WHATS_YOUR_EMAIL_ADDRESS: 'What’s your email address?',
-  WHATS_YOUR_PHONE_NUMBER: 'What’s your phone number?',
+  WHATS_YOUR_EMAIL_ADDRESS: "What's your email address?",
+  WHATS_YOUR_PHONE_NUMBER: "What's your phone number?",
   WHATS_YOUR_PHONE_NUMBER_SUBTITLE:
-    'We’ll contact you for membership and event updates.',
+    "We'll contact you for membership and event updates.",
   WHATS_YOUR_EMAIL_SUBTITLE:
     "We'll contact you for membership and event updates.",
   EMAIL_ADDRESS: 'Email Address',
-  WHATS_YOUR_GENDER: 'What’s your gender?',
+  WHATS_YOUR_GENDER: "What's your gender?",
   SELECT_THE_OPTION_THAT_BEST_DESCRIBES_YOU:
     'Select the option that best describes you.',
-  WHEN_IS_YOUR_BIRTHDAY: 'When’s your birthday?',
+  WHEN_IS_YOUR_BIRTHDAY: "When's your birthday?",
   WE_WILL_USE_THIS_INFORMATION_TO_TAILOR_YOUR_EXPERIENCE:
-    'We’ll use this information to tailor your experience.',
+    "We'll use this information to tailor your experience.",
   WHERE_DO_YOU_CALL_HOME: 'Where do you call home?',
   WE_WILL_RECOMMEND_EVENTS_AND_EXPERIENCES_NEAR_YOU:
-    'We’ll recommend events and experiences near you.',
+    "We'll recommend events and experiences near you.",
   WHAT_IS_YOUR_CREATIVE_OR_PROFESSIONAL_FOCUS:
-    'What’s your creative or professional focus?',
+    "What's your creative or professional focus?",
   YOU_CAN_CHOOSE_UP_TO_3_CATEGORIES: 'You can choose up to 3 categories',
   SEARCH_FOR_A_LOCATION: 'Search for a Location…',
   DATE_PLACEHOLDER: 'MM/DD/YYYY',
@@ -109,11 +114,11 @@ export const LABLE = {
   SET_UP_YOUR_ACCOUNT: 'Set up your account',
   ACCOUNT_SETTINGS: 'Account Settings',
   IDENTITY_VERIFICATION: 'Identity Verification',
-  IDENTITY_VERIFICATION_TITLE: 'Last step, what’s your Instagram?',
+  IDENTITY_VERIFICATION_TITLE: "Last step, what's your Instagram?",
   IDENTITY_VERIFICATION_SUBTITLE: 'This helps us verify your online identity.',
   CHOOSE_YOUR_INTERESTS: 'Choose your interests',
   CHOOSE_YOUR_INTERESTS_SUBTITLE:
-    'Select topics of interests so we can curate experiences you’ll want to attend.',
+    "Select topics of interests so we can curate experiences you'll want to attend.",
   ADD_A_PHOTO: 'Add a photo',
   ADD_A_PHOTO_SUBTITLE: 'Upload a profile photo to complete your profile.',
   CHAT_WITH_HOST: 'Chat\nwith hosts.',
@@ -137,7 +142,7 @@ export const LABLE = {
   COMPLETE_VERIFICATION: 'Complete Verification',
   SEND_DIRECT_MSG_CODE: 'Send direct message with the code:',
   WE_WILL_REVIEW_APP:
-    'We’ll review your application after we receive your message.',
+    "We'll review your application after we receive your message.",
   EMAIL_THE_CODE: 'Email the code to:',
   DONT_USE_INSTAGRAM: "Don't use Instagram?",
   REFERRAL_CODE: 'Referral Code',
@@ -150,7 +155,7 @@ export const LABLE = {
     'Request a referral from a Rumor member to boost your application.',
   CONTACTS: 'Contacts',
   INVITE_FRIENDS_TO: 'Invite friends to fast track your membership approval.',
-  YOU_ARE_ON_WAITLIST: 'You’re on\nthe waitlist.',
+  YOU_ARE_ON_WAITLIST: "You're on the waitlist.",
   FULL_ACCESS_UNLOCK:
     'Full access will be unlocked once your application is approved.',
   FASTRACK_YOUR_APPLICATION: 'Want to fast-track your application?',
@@ -158,11 +163,11 @@ export const LABLE = {
   INVITE_YOUR_FRIEND: 'Invite your friends to join Rumor.',
   SELECT_YOUR_BIRTHDAY_BELOW: 'Select your birthday below',
   WELCOME_NOTE_LINE_1:
-    "Your application has been approved. You’re now part of a private network connecting you to experiences from the world's top event organizers.",
+    "Your application has been approved. You're now part of a private network connecting you to experiences from the world's top event organizers.",
   WELCOME_NOTE_LINE_2:
     'At Rumor, we value positivity, respect, and meaningful connections. Please take a moment to review our',
   WELCOME_NOTE_LINE_3:
-    'We’re excited to have you in our community and can’t wait for you to explore everything Rumor has to offer.',
+    "We're excited to have you in our community and can't wait for you to explore everything Rumor has to offer.",
   LOGOUT: 'Log Out',
   COMING_SOON: 'Coming Soon…',
   OTP_VERIFIED_SUCCESSFULLY: 'OTP verified successfully!',
@@ -177,24 +182,21 @@ export const LABLE = {
   DUMMY_TEXT:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent bland',
   PHONE_NUMBER: 'Phone Number',
-  RSVP_TEXT: `If you select ‘No’, you cannot change your response. If you later decide you’d like to attend, you’ll need to request another invite from the host.`,
-  WE_WERE_SORRY_CANT_MAKE_IT: 'We’re sorry you can’t make it.',
+  RSVP_TEXT: `If you select 'No', you cannot change your response. If you later decide you'd like to attend, you'll need to request another invite from the host.`,
+  WE_WERE_SORRY_CANT_MAKE_IT: `We're sorry you can't make it.`,
   YOU_DECLINED_THIS_INVITATION: 'You declined this invitation',
-  DISCOVER_MORE_EVENTS: 'Discover More Events',
   RSVP_QUESTION_DETAILS:
     'The host is offering you the option to bring up to [X] guests. How many guests would you like to bring?',
   RSVP_SUBTITLE:
     "If you later decide you'd like to attend, you'll need to request another invite from the host.",
-  RSVP_INSTRUCTION:
-    ' Please add your additional guests’ details by [event date and time],or their passes will be canceled.',
+  RSVP_INSTRUCTION: ` Please add your additional guests' details by [event date and time],or their passes will be canceled.`,
   ADD_FRIEND_AS_GUEST: 'Add friends as guests',
   ADD_GUEST_SUBTITLE: 'Provide details to add your additional guest.',
   ADD_GUEST_SYNC_TEXT:
     'Easily sync your phone contacts to invite friends to join you at events.',
   SYNC_CONTACT_SEETTINGS: 'Sync Contacts in Settings',
   ADD_GUEST: 'Add Guest',
-  ADD_GUSET_SUBTITLE:
-    'Your changes will only be saved in Rumor and will not impact your device’s contact list.',
+  ADD_GUSET_SUBTITLE: `Your changes will only be saved in Rumor and will not impact your device's contact list.`,
   YOUR_RSPV_IS: 'Your RSVP is confirmed!',
   YOU_CAN_RETURN_TO_THE:
     'You can return to the event page anytime for more details or to access your event confirmation.',
@@ -309,6 +311,7 @@ export const COLORS = {
   neutral_disabled: '#9C9C9C',
   neutral_surface: '#D8D8D8',
   yellowbackground: '#F1B422',
+  neutralBorder: '#E1E3E6',
 };
 
 export const feedList = [
@@ -357,7 +360,7 @@ export const memberTabData: TabItem[] = [
     id: '3',
     label: BUTTON_LABLE.APPLIED,
     title: 'No Events Here',
-    subTitle: 'You haven’t applied to any events yet.',
+    subTitle: "You haven't applied to any events yet.",
   },
   {
     id: '4',

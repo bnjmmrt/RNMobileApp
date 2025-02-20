@@ -13,6 +13,11 @@ export interface GuestItem {
   isVip: boolean;
   isYou: boolean;
   isHost: boolean;
+  isMember: boolean;
+  age: number;
+  location: string;
+  followers: number;
+  roles: string[];
   invitees?: GuestItem[];
   inviteCount?: number;
 }
@@ -26,6 +31,11 @@ export const guestListMock: GuestItem[] = [
     isVip: true,
     isYou: true,
     isHost: false,
+    isMember: true,
+    age: 21,
+    location: 'Los Angeles',
+    followers: 25700000,
+    roles: ['Actor', 'Content Creator', 'Model'],
     inviteCount: 5,
     invitees: [
       {
@@ -36,6 +46,11 @@ export const guestListMock: GuestItem[] = [
         isVip: true,
         isYou: false,
         isHost: false,
+        isMember: true,
+        age: 25,
+        location: 'New York',
+        followers: 1200000,
+        roles: ['Photographer'],
       },
       {
         id: '1-2',
@@ -45,6 +60,11 @@ export const guestListMock: GuestItem[] = [
         isVip: true,
         isYou: false,
         isHost: false,
+        isMember: true,
+        age: 23,
+        location: 'San Francisco',
+        followers: 890000,
+        roles: ['Designer'],
       },
       {
         id: '1-3',
@@ -54,6 +74,11 @@ export const guestListMock: GuestItem[] = [
         isVip: true,
         isYou: false,
         isHost: false,
+        isMember: true,
+        age: 28,
+        location: 'Miami',
+        followers: 1500000,
+        roles: ['DJ'],
       },
     ],
   },
@@ -65,6 +90,11 @@ export const guestListMock: GuestItem[] = [
     isVip: false,
     isYou: false,
     isHost: false,
+    isMember: true,
+    age: 24,
+    location: 'Chicago',
+    followers: 980000,
+    roles: ['Musician', 'Producer'],
     inviteCount: 5,
   },
   {
@@ -75,6 +105,11 @@ export const guestListMock: GuestItem[] = [
     isVip: true,
     isYou: false,
     isHost: false,
+    isMember: true,
+    age: 26,
+    location: 'Austin',
+    followers: 2100000,
+    roles: ['Artist', 'Designer'],
     inviteCount: 5,
     invitees: [
       {
@@ -85,6 +120,11 @@ export const guestListMock: GuestItem[] = [
         isVip: true,
         isYou: false,
         isHost: false,
+        isMember: true,
+        age: 27,
+        location: 'Seattle',
+        followers: 750000,
+        roles: ['Photographer'],
       },
       {
         id: '3-2',
@@ -94,6 +134,11 @@ export const guestListMock: GuestItem[] = [
         isVip: true,
         isYou: false,
         isHost: false,
+        isMember: true,
+        age: 22,
+        location: 'Portland',
+        followers: 890000,
+        roles: ['Model'],
       },
     ],
   },
@@ -105,6 +150,11 @@ export const guestListMock: GuestItem[] = [
     isVip: true,
     isYou: false,
     isHost: true,
+    isMember: true,
+    age: 29,
+    location: 'Los Angeles',
+    followers: 3200000,
+    roles: ['Director', 'Producer'],
     inviteCount: 5,
     invitees: [
       {
@@ -115,6 +165,11 @@ export const guestListMock: GuestItem[] = [
         isVip: false,
         isYou: false,
         isHost: false,
+        isMember: true,
+        age: 24,
+        location: 'San Diego',
+        followers: 670000,
+        roles: ['Artist'],
       },
     ],
   },
@@ -126,6 +181,11 @@ export const guestListMock: GuestItem[] = [
     isVip: true,
     isYou: false,
     isHost: false,
+    isMember: true,
+    age: 23,
+    location: 'Nashville',
+    followers: 1800000,
+    roles: ['Singer', 'Songwriter'],
   },
   {
     id: '6',
@@ -135,6 +195,11 @@ export const guestListMock: GuestItem[] = [
     isVip: true,
     isYou: false,
     isHost: false,
+    isMember: true,
+    age: 25,
+    location: 'Boston',
+    followers: 920000,
+    roles: ['Chef', 'Content Creator'],
   },
   {
     id: '7',
@@ -144,6 +209,11 @@ export const guestListMock: GuestItem[] = [
     isVip: false,
     isYou: false,
     isHost: false,
+    isMember: true,
+    age: 27,
+    location: 'Denver',
+    followers: 1100000,
+    roles: ['Athlete', 'Coach'],
   },
   {
     id: '8',
@@ -153,6 +223,11 @@ export const guestListMock: GuestItem[] = [
     isVip: false,
     isYou: false,
     isHost: false,
+    isMember: true,
+    age: 26,
+    location: 'Phoenix',
+    followers: 850000,
+    roles: ['Artist', 'Designer'],
   },
   {
     id: '9',
@@ -162,6 +237,11 @@ export const guestListMock: GuestItem[] = [
     isVip: true,
     isYou: false,
     isHost: false,
+    isMember: true,
+    age: 24,
+    location: 'Atlanta',
+    followers: 1600000,
+    roles: ['Fashion Designer'],
   },
   {
     id: '10',
@@ -171,6 +251,11 @@ export const guestListMock: GuestItem[] = [
     isVip: true,
     isYou: false,
     isHost: false,
+    isMember: true,
+    age: 28,
+    location: 'Houston',
+    followers: 2300000,
+    roles: ['Entrepreneur', 'Speaker'],
   },
   {
     id: '11',
@@ -180,6 +265,11 @@ export const guestListMock: GuestItem[] = [
     isVip: true,
     isYou: false,
     isHost: false,
+    isMember: true,
+    age: 22,
+    location: 'Las Vegas',
+    followers: 1900000,
+    roles: ['DJ', 'Producer'],
   },
   {
     id: '12',
@@ -189,5 +279,10 @@ export const guestListMock: GuestItem[] = [
     isVip: true,
     isYou: false,
     isHost: false,
+    isMember: true,
+    age: 25,
+    location: 'Miami',
+    followers: 2800000,
+    roles: ['Actor', 'Model'],
   },
 ];

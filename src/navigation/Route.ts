@@ -22,5 +22,6 @@ export const ROUTES = {
   HostEditProfileScreen: 'HostEditProfileScreen',
   HostConnectedAccountsScreen: 'HostConnectedAccountsScreen',
   WelcomeScreen: 'WelcomeScreen',
-  GuestCheckInScreen:'GuestCheckInScreen'
+  GuestCheckInScreen: 'GuestCheckInScreen',
+  GuestDetailScreen: 'GuestDetailScreen',
 } as const;

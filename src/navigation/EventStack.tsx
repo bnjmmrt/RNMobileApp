@@ -9,6 +9,8 @@ import RSVPNoStatusApplied from 'src/screens/EventScreen/RSVP/RSVPNoStatusApplie
 import EventGuestList from 'src/screens/EventScreen/EventGuestList';
 import GuestCheckInScreen from 'src/screens/EventScreen/Guest/GuestCheckInScreen';
 import QRCodeScanner from 'src/screens/EventScreen/Guest/QRScannar';
+import GuestDetailScreen from 'src/screens/EventScreen/Guest/GuestDetailScreen';
+import { ROUTES } from './Route';
 
 // Define the param list for the stack navigator
 export type EventStackParamList = {
@@ -21,6 +23,7 @@ export type EventStackParamList = {
   EventGuestList: { guests: Array<{ name: string; status: string }> };
   GuestCheckInScreen: undefined;
   QRCodeScanner: undefined;
+  GuestDetailScreen: { guest: any };
 };
 
 const Stack = createStackNavigator<EventStackParamList>();
@@ -63,7 +66,7 @@ export const EventStack: React.FC = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="EventGuestList"
+        name={ROUTES.EventGuestList}
         component={EventGuestList}
         options={{ headerShown: false }}
       />
@@ -75,6 +78,11 @@ export const EventStack: React.FC = () => {
       <Stack.Screen
         name="QRCodeScanner"
         component={QRCodeScanner}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={ROUTES.GuestDetailScreen}
+        component={GuestDetailScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
