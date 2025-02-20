@@ -2,7 +2,7 @@ import IMAGES from '@images/index';
 import React from 'react';
 import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import AvatarInitials from 'src/component/AvatarInitials';
-import {COLORS} from 'src/utils/constants';
+import {COLORS, LABLE} from 'src/utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -10,10 +10,16 @@ import {
   verticalMarginScale,
 } from 'src/utils/dimensions';
 
+interface Profile {
+  name:string;
+  role:string;
+  Details:{}
+}
 const ProfileCard = () => {
   return (
     <>
       <View style={styles.card}>
+        <Image style={styles.profileIcon}  source={IMAGES.profile}/>
         <View style={styles.profileContainer}>
           <AvatarInitials  name="Anurag Harod" size={80} />
           <View style={styles.memberBadge}>
@@ -38,15 +44,15 @@ const ProfileCard = () => {
 
         <View style={styles.detailsContainer}>
           <View style={styles.detailText}>
-            <Image source={IMAGES.check_verified} />
+            <Image source={IMAGES.age} />
             <Text> 21 Years Old</Text>
           </View>
           <View style={styles.detailText}>
-            <Image source={IMAGES.check_verified} />
+            <Image source={IMAGES.user} />
             <Text> 25.7M</Text>
           </View>
           <View style={styles.detailText}>
-            <Image source={IMAGES.check_verified} />
+            <Image source={IMAGES.location} />
             <Text> Los Angeles</Text>
           </View>
         </View>
@@ -55,12 +61,12 @@ const ProfileCard = () => {
       <View style={[styles.card, styles.grayCard]}>
         <View style={styles.buttonsContainer}>
           <TouchableOpacity style={styles.checkedInButton}>
-            <Image source={IMAGES.checkCircleFilled} />
-            <Text style={styles.checkedInText}> Checked-In</Text>
+            <Image source={IMAGES.checkedinCurved} />
+            <Text style={styles.checkedInText}>{LABLE.CHECKED_IN}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.profileButton}>
-            <Image source={IMAGES.arrowRight} />
-            <Text style={styles.profileText}>Profile</Text>
+            <Image source={IMAGES.arrow_up_right} />
+            <Text style={styles.profileText}>{LABLE.PROFILE}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -86,6 +92,7 @@ const styles = StyleSheet.create({
     // elevation: 5,
     marginVertical: 2,
   },
+  profileIcon:{position:'absolute',right:10,top:10},
   grayCard: {
     backgroundColor: COLORS.lighter_gray,
     borderWidth: 0,
@@ -171,6 +178,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontWeight: '500',
     fontSize: fontScale(14),
+    paddingLeft:verticalMarginScale(8)
   },
   profileButton: {
     flexDirection: 'row',
@@ -188,6 +196,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontWeight: '500',
     fontSize: fontScale(14),
+    paddingLeft:verticalMarginScale(8)
   },
 });
 

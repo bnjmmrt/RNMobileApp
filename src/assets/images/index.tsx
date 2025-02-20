@@ -104,6 +104,13 @@ const IMAGES = {
   paragraph_spacing: require('./paragraph-spacing.png'),
   arrowDownCircle: require('./arrow-down-circle.png'),
   arrowupCircle: require('./arrow-up-circle.png'),
+  profile: require('./profile.png'),
+  user: require('./user.png'),
+  age: require('./age.png'),
+  checkedinCurved: require('./checked-in-curved.png'),
+  checkinCurved: require('./check-in-curved.png'),
+  alertTriangle: require('./alert-triangle.png'),
+  arrowUpgray: require('./arrow-up-gray.png'),
 };
 
 export default IMAGES;

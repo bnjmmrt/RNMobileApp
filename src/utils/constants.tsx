@@ -200,7 +200,16 @@ export const LABLE = {
   BIO: 'Bio',
   COMPANY_DESCRIPTION: 'Description of Company',
   ENTER_FEEDBACK: 'Enter Feedback',
-  CHECK_IN:'Check-In'
+  CHECK_IN:'Check-In',
+  PROFILE: 'Profile',
+  CHECKED_IN:'Checked-In',
+  PENDING_DETAILS:'Pending Details',
+ GUEST_CHICKED_IN :'Guest Check-in',
+ STANDARD: 'Standard',
+ LEAD_GUEST:'Lead Guest',
+ GUEST_NOTE:'Guest Note',
+ PLUS_1S:'Pluse 1s'
+
 };
 
 export const PROFILE = {

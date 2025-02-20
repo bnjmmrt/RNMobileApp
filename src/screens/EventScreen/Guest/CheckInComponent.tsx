@@ -1,5 +1,5 @@
 import IMAGES from '@images/index';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {Image} from 'react-native-animatable';
 import AvatarInitials from 'src/component/AvatarInitials';
-import {COLORS} from 'src/utils/constants';
+import {COLORS, LABLE} from 'src/utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -19,68 +19,6 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-
-const renderItemComponent = (item: any) => {
-  return (
-    <View style={[styles.card, {padding: 0}]}>
-      <View style={[styles.guestCard, true && styles.bottomRadius]}>
-        <View style={styles.guestHeader}>
-          <AvatarInitials
-            name="Anu ha"
-            size={32}
-            backgroundColor={COLORS.white}
-          />
-          <Text style={styles.guestUsername}>{item.username}</Text>
-          {item.status == 'Checked-In' ? (
-            <View style={styles.checkInButton}>
-              <Image source={IMAGES.checkCircleFilled} />
-              <Text style={styles.checkInText}>Checked-In</Text>
-            </View>
-          ) : item.status == 'Check-In' ? (
-            <View
-              style={[
-                styles.checkInButton,
-                {
-                  backgroundColor: COLORS.white,
-                  borderWidth: 1,
-                  borderColor: COLORS.borderGray,
-                },
-              ]}>
-              <Image source={IMAGES.checkCircleFilled} />
-              <Text style={styles.checkInText}>Check-In</Text>
-            </View>
-          ) : (
-            <View style={styles.pendingDetailsButton}>
-              <Image source={IMAGES.checkCircleFilled} />
-              <Text style={styles.pendingDetailsText}>Pending Details</Text>
-            </View>
-          )}
-          {item.status !== 'Pending' && (<TouchableOpacity>
-            <Image source={IMAGES.arrowDownCircle} />
-          </TouchableOpacity>)}
-        </View>
-
-        {!true && (
-          <View style={{marginTop: verticalMarginScale(16)}}>
-            <Text style={styles.label}>Guest Note</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Add a private note. Not visible to the guest."
-              multiline
-            />
-          </View>
-        )}
-      </View>
-
-      {!true && (
-        <TouchableOpacity style={styles.profileButton}>
-          <Image source={IMAGES.arrowRight} />
-          <Text style={styles.profileText}> Profile</Text>
-        </TouchableOpacity>
-      )}
-    </View>
-  );
-};
 const guests = [
   {
     id: '1',
@@ -104,13 +42,86 @@ const guests = [
     status: 'Pending',
   },
 ];
+
+const expandIndex=[{id:0,isExpand:true},{id:1,isExpand:false},{id:2,isExpand:false}]
+const renderItemComponent = (item: any,index:number,expandList:any[],toggleExpand:any) => {
+
+  return (
+    <View style={[styles.card, {padding: 0}]}>
+      <View style={[styles.guestCard, true && styles.bottomRadius]}>
+        <View style={styles.guestHeader}>
+          <AvatarInitials
+            name="Anu ha"
+            size={32}
+            backgroundColor={COLORS.white}
+          />
+          <Text style={styles.guestUsername}>{item.username}</Text>
+          {item.status == 'Checked-In' ? (
+            <View style={styles.checkInButton}>
+              <Image source={IMAGES.checkedinCurved} />
+              <Text style={styles.checkInText}>{LABLE.CHECKED_IN}</Text>
+            </View>
+          ) : item.status == 'Check-In' ? (
+            <View
+              style={[
+                styles.checkInButton,
+                {
+                  backgroundColor: COLORS.white,
+                  borderWidth: 1,
+                  borderColor: COLORS.borderGray,
+                },
+              ]}>
+              <Image source={IMAGES.checkinCurved} />
+              <Text style={styles.checkInText}>{LABLE.CHECK_IN}</Text>
+            </View>
+          ) : (
+            <View style={styles.pendingDetailsButton}>
+              <Image source={IMAGES.alertTriangle} />
+              <Text style={styles.pendingDetailsText}>{LABLE.PENDING_DETAILS}</Text>
+            </View>
+          )}
+          {item.status !== 'Pending' && (<TouchableOpacity onPress={()=>toggleExpand(index)}>
+            <Image source={IMAGES.arrowDownCircle} />
+          </TouchableOpacity>)}
+        </View>
+
+        {expandList[index].isExpand && (
+          <View style={{marginTop: verticalMarginScale(16)}}>
+            <Text style={styles.label}>{LABLE.GUEST_NOTE}</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Add a private note. Not visible to the guest."
+              multiline
+            />
+          </View>
+        )}
+      </View>
+
+      {expandIndex[index].isExpand && (
+        <TouchableOpacity style={styles.profileButton}>
+          <Image source={IMAGES.arrowRight} />
+          <Text style={styles.profileText}> Profile</Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+};
+
 const CheckInComponent = () => {
+
+  const [expandlist,setExpandList]=useState<any[]>(expandIndex);
+  const toggleExpand = (index:number) => {
+    expandIndex[index].isExpand=! expandIndex[index].isExpand
+    setExpandList(expandIndex);
+    console.log("toggleExpand",index)
+  };
+  
   return (
     <View style={styles.card}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Guest Check-in</Text>
+        <Text style={styles.headerText}>{LABLE.GUEST_CHICKED_IN}</Text>
         <TouchableOpacity style={styles.iconButton}>
-          <Image source={IMAGES.upDownArrow} />
+          <Image source={IMAGES.arrowUpgray} />
         </TouchableOpacity>
       </View>
 
@@ -119,28 +130,28 @@ const CheckInComponent = () => {
           Ticket Type <Text style={styles.required}>*</Text>
         </Text>
         <View style={styles.dropdown}>
-          <Text style={styles.dropdownText}>Standard</Text>
+          <Text style={styles.dropdownText}>{LABLE.GUEST_CHICKED_IN}</Text>
           <Image source={IMAGES.downArrow} />
         </View>
       </View>
 
-      <Text style={styles.sectionTitle}>Lead Guest</Text>
+      <Text style={styles.sectionTitle}>{LABLE.LEAD_GUEST}</Text>
 
       <View style={styles.section}>
-        <Text style={styles.label}>Guest Note</Text>
+        <Text style={styles.label}>{LABLE.GUEST_NOTE}</Text>
         <TextInput
           style={styles.input}
           placeholder="Add a private note. Not visible to the guest."
           multiline
         />
       </View>
-      {/* <Text style={styles.sectionTitle}>Plus 1s</Text>
+      <Text style={styles.sectionTitle}>{LABLE.PLUS_1S}</Text>
       <FlatList
         data={guests}
         keyExtractor={item => item.id}
-        renderItem={({item}) => renderItemComponent(item)}
+        renderItem={({item,index}) => renderItemComponent(item,index,expandlist,toggleExpand)}
         //   contentContainerStyle={styles.container}
-      /> */}
+      />
     </View>
   );
 };
