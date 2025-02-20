@@ -53,21 +53,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     {eventId: route?.params?.id},
     {refetchOnMountOrArgChange: true},
   );
-  const [hasPermission, setHasPermission] = useState<boolean>(false);
-
-  useEffect(() => {
-    (async () => {
-      if (Platform.OS === 'android') {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.CAMERA
-        );
-        setHasPermission(granted === PermissionsAndroid.RESULTS.GRANTED);
-      } else {
-        const status = await Camera.requestCameraPermission();
-        setHasPermission(status === 'granted');
-      }
-    })();
-  }, []);
+ 
   useFocusEffect(
     useCallback(() => {
       refetch();
@@ -141,10 +127,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const onCheckInClick=async()=>{
-          // const status = await Camera.requestCameraPermission();
-          // console.log("status",status)
-          // setHasPermission(status === 'granted');
-     navigation.navigate("GuestCheckInScreen")
+      navigation.navigate("QRCodeScanner")
   }
 
   return (
@@ -181,7 +164,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
        
       </ScrollView>
    
-
+      
       {!isDeclinedByHost && guestStatus !== 'CONFIRMED' && (
         <View style={{margin: 20}}>
           <Button
@@ -251,7 +234,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       />
       <BackButtonOverlay onPress={() => navigation.goBack()} />
     </View>
-   
+    
   );
 };
 

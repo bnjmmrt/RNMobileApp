@@ -134,14 +134,13 @@ const CheckInComponent = () => {
           multiline
         />
       </View>
-      {/* Plus 1s Section */}
-      <Text style={styles.sectionTitle}>Plus 1s</Text>
+      {/* <Text style={styles.sectionTitle}>Plus 1s</Text>
       <FlatList
         data={guests}
         keyExtractor={item => item.id}
         renderItem={({item}) => renderItemComponent(item)}
         //   contentContainerStyle={styles.container}
-      />
+      /> */}
     </View>
   );
 };

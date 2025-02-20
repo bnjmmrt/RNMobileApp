@@ -7,13 +7,15 @@ import AddGuestScreen from 'src/screens/EventScreen/RSVP/AddGuestScreen';
 import RSVPInvitedUpcoming from 'src/screens/EventScreen/RSVP/RSVPInvitedUpcoming';
 import RSVPNoStatusApplied from 'src/screens/EventScreen/RSVP/RSVPNoStatusApplied';
 import GuestCheckInScreen from 'src/screens/EventScreen/Guest/GuestCheckInScreen';
+import QRCodeScanner from 'src/screens/EventScreen/Guest/QRScannar';
 
 
 // Define the param list for the stack navigator
 export type EventStackParamList = {
   EventScreen: undefined;
   EventDetailsScreen: undefined;
-  GuestCheckInScreen:undefined
+  GuestCheckInScreen:undefined;
+  QRCodeScanner:undefined
 };
 
 const Stack = createStackNavigator<EventStackParamList>();
@@ -59,6 +61,11 @@ export const EventStack: React.FC = () => {
  <Stack.Screen
         name="GuestCheckInScreen"
         component={GuestCheckInScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="QRCodeScanner"
+        component={QRCodeScanner}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
