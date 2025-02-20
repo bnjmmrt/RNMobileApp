@@ -9,19 +9,20 @@ import {
   radiusScale,
   verticalMarginScale,
 } from 'src/utils/dimensions';
+import {fontFamily} from 'src/utils/functions';
 
 interface Profile {
-  name:string;
-  role:string;
-  Details:{}
+  name: string;
+  role: string;
+  Details: {};
 }
 const ProfileCard = () => {
   return (
     <>
       <View style={styles.card}>
-        <Image style={styles.profileIcon}  source={IMAGES.profile}/>
+        <Image style={styles.profileIcon} source={IMAGES.profile} />
         <View style={styles.profileContainer}>
-          <AvatarInitials  name="Anurag Harod" size={80} />
+          <AvatarInitials name="Anurag Harod" size={80} />
           <View style={styles.memberBadge}>
             <Image source={IMAGES.check_verified} />
             <Text style={styles.memberText}>Member</Text>
@@ -43,17 +44,17 @@ const ProfileCard = () => {
         </View>
 
         <View style={styles.detailsContainer}>
-          <View style={styles.detailText}>
+          <View style={styles.detailTextContainer}>
             <Image source={IMAGES.age} />
-            <Text> 21 Years Old</Text>
+            <Text style={styles.tagText}> 21 Years Old</Text>
           </View>
-          <View style={styles.detailText}>
+          <View style={styles.detailTextContainer}>
             <Image source={IMAGES.user} />
-            <Text> 25.7M</Text>
+            <Text style={styles.tagText}> 25.7M</Text>
           </View>
-          <View style={styles.detailText}>
+          <View style={styles.detailTextContainer}>
             <Image source={IMAGES.location} />
-            <Text> Los Angeles</Text>
+            <Text style={styles.tagText}> Los Angeles</Text>
           </View>
         </View>
       </View>
@@ -90,15 +91,15 @@ const styles = StyleSheet.create({
     // shadowRadius: 10,
     // shadowOffset: {width: 0, height: 5},
     // elevation: 5,
-    marginVertical: 2,
+    marginVertical: verticalMarginScale(2),
   },
-  profileIcon:{position:'absolute',right:10,top:10},
+  profileIcon: {position: 'absolute', right: 10, top: 10},
   grayCard: {
     backgroundColor: COLORS.lighter_gray,
     borderWidth: 0,
     borderBottomLeftRadius: radiusScale(16),
     borderBottomRightRadius: radiusScale(16),
-    padding:verticalMarginScale(8)
+    padding: verticalMarginScale(8),
   },
   profileContainer: {
     position: 'relative',
@@ -130,10 +131,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginVertical: verticalMarginScale(12),
     lineHeight: 32,
+    fontFamily: fontFamily.RomieTrial_Bold,
   },
   tagsContainer: {
     flexDirection: 'row',
-    marginVertical: 8,
+    marginVertical: verticalMarginScale(8),
   },
   tag: {
     backgroundColor: COLORS.borderGray,
@@ -143,20 +145,21 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
   },
   tagText: {
-    fontSize: 12,
+    fontSize: fontScale(12),
     fontWeight: '500',
+    paddingHorizontal: verticalMarginScale(4),
   },
   detailsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '90%',
-    marginVertical: 10,
+    marginTop: verticalMarginScale(16),
   },
-  detailText: {
+  detailTextContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    fontSize: 14,
   },
+
   buttonsContainer: {
     flexDirection: 'row',
     width: '100%',
@@ -178,8 +181,9 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontWeight: '500',
     fontSize: fontScale(14),
-    paddingLeft:verticalMarginScale(8)
+    paddingLeft: verticalMarginScale(8),
   },
+
   profileButton: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -196,7 +200,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontWeight: '500',
     fontSize: fontScale(14),
-    paddingLeft:verticalMarginScale(8)
+    paddingLeft: verticalMarginScale(8),
   },
 });
 

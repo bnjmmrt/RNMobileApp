@@ -111,6 +111,8 @@ const IMAGES = {
   checkinCurved: require('./check-in-curved.png'),
   alertTriangle: require('./alert-triangle.png'),
   arrowUpgray: require('./arrow-up-gray.png'),
+  searchWhite: require('./search-white.png'),
+  profileWhite: require('./profile-white.png'),
 };
 
 export default IMAGES;
