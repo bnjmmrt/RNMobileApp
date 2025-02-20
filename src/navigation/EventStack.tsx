@@ -49,6 +49,17 @@ export const EventStack: React.FC = () => {
         component={EventDetailsScreen}
         options={{ headerShown: false }}
       />
+
+      <Stack.Screen
+        name={ROUTES.EventGuestList}
+        component={EventGuestList}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={ROUTES.GuestDetailScreen}
+        component={GuestDetailScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="RSVPNoStatusApplied"
         component={RSVPNoStatusApplied}

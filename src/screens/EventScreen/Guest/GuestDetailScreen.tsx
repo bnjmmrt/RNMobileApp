@@ -11,10 +11,10 @@ import { COLORS, BUTTON_LABLE } from 'src/utils/constants';
 import { fontFamily } from 'src/utils/functions';
 import { fontScale } from 'src/utils/dimensions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import FastImage from '@d11/react-native-fast-image';
 import IMAGES from 'src/assets/images';
 import Button from 'src/component/Button';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
+import ProfileCard from './ProfileCard';
 
 interface GuestDetailScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -24,6 +24,14 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 }) => {
   const guest = route.params?.guest;
   const status = guest?.status?.toLowerCase() || 'drafts';
+
+  const handleFavorite = () => {
+    // Handle favorite action
+  };
+
+  const handleProfile = () => {
+    // Handle profile action
+  };
 
   const renderFooterButtons = () => {
     switch (status) {
@@ -107,8 +115,6 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     }
   };
 
-  console.log('guest', guest);
-
   return (
     <View style={styles.container}>
       <View style={styles.headerTop}>
@@ -126,69 +132,33 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.guestCard}>
+        <View>
           <View style={styles.guestCardHeader}>
-            <View>
-              <StatusLabel status={guest?.status || 'Drafts'} />
-            </View>
-
-            <View style={styles.userCheckContainer}>
-              <Image source={IMAGES.user_check} style={styles.userCheckIcon} />
-            </View>
+            <StatusLabel status={guest?.status || 'Drafts'} />
           </View>
-
-          <View style={styles.guestCardContent}>
-            <View>
-              <FastImage
-                source={{
-                  uri:
-                    guest?.avatar ||
-                    'https://ui-avatars.com/api/?name=' +
-                      encodeURIComponent(guest?.name || ''),
-                }}
-                style={styles.guestAvatar}
-              />
-              <View style={styles.memberBadgeContainer}>
-                <Image
-                  source={IMAGES.check_verified}
-                  style={styles.memberBadgeIcon}
-                />
-                <Text style={styles.memberBadgeText}>Member</Text>
-              </View>
-            </View>
-            <Text style={styles.name}>{guest?.name}</Text>
-            <View style={styles.roleContainer}>
-              {guest?.roles?.map((role: string, index: number) => (
-                <View key={index} style={styles.role}>
-                  <Text style={styles.roleText}>{role}</Text>
-                </View>
-              ))}
-            </View>
-            <View style={styles.statsContainer}>
-              <View style={[styles.statItem, styles.leftStatItem]}>
-                <Image source={IMAGES.hourglass} style={styles.statIcon} />
-                <Text style={styles.statText}>{guest?.age} Years Old</Text>
-              </View>
-              <View style={[styles.statItem, styles.centerStatItem]}>
-                <Image source={IMAGES.user_check} style={styles.statIcon} />
-                <Text style={styles.statText}>
-                  {(guest?.followers / 1000000).toFixed(1)}M
-                </Text>
-              </View>
-              <View style={[styles.statItem, styles.rightStatItem]}>
-                <Image source={IMAGES.location} style={styles.statIcon} />
-                <Text style={styles.statText}>{guest?.location}</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View style={styles.actionButtons}>
-          <TouchableOpacity style={styles.actionButton}>
-            <Text style={styles.actionButtonText}>Favorite</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton}>
-            <Text style={styles.actionButtonText}>Profile</Text>
-          </TouchableOpacity>
+          <ProfileCard
+            guest={{
+              name: guest?.name || '',
+              avatar: guest?.avatar,
+              roles: guest?.roles || [],
+              age: guest?.age,
+              followers: guest?.followers,
+              location: guest?.location,
+              isMember: guest?.isMember,
+            }}
+            actionButtons={[
+              {
+                title: 'Favorite',
+                icon: IMAGES.star_inactive,
+                onPress: handleFavorite,
+              },
+              {
+                title: 'Profile',
+                icon: IMAGES.arrow_up_right,
+                onPress: handleProfile,
+              },
+            ]}
+          />
         </View>
 
         <View style={styles.inviteSection}>
@@ -279,157 +249,11 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
     paddingHorizontal: 16,
   },
-  guestCard: {
-    backgroundColor: COLORS.white,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    borderBottomLeftRadius: 8,
-    borderBottomRightRadius: 8,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: COLORS.neutralBorder,
-  },
   guestCardHeader: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    justifyContent: 'space-between',
     paddingLeft: 16,
-    paddingRight: 8,
     paddingTop: 8,
-  },
-  userCheckContainer: {
-    width: 48,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 100,
-    borderWidth: 1,
-    borderColor: COLORS.borderGray,
-  },
-  userCheckIcon: {
-    width: 16,
-    height: 16,
-  },
-  guestCardContent: {
-    alignItems: 'center',
-    padding: 16,
-  },
-  guestAvatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-  },
-  memberBadgeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.black,
-    paddingRight: 8,
-    paddingLeft: 6,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginTop: -18,
-  },
-  memberBadgeIcon: {
-    width: 12,
-    height: 12,
-    marginRight: 4,
-    tintColor: COLORS.surfaceSecondary,
-  },
-  memberBadgeText: {
-    color: COLORS.white,
-    fontSize: fontScale(12),
-    fontWeight: '500',
-  },
-  name: {
-    fontSize: fontScale(24),
-    // lineHeight: fontScale(32),
-    fontFamily: fontFamily.RomieTrial_Bold,
-    color: COLORS.black,
-    marginTop: 8,
-  },
-  roleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    marginTop: 16,
-    gap: 4,
-  },
-  role: {
-    fontSize: fontScale(12),
-    color: COLORS.black,
-    backgroundColor: COLORS.lighter_gray,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 128,
-  },
-  roleText: {
-    fontSize: fontScale(12),
-    color: COLORS.black,
-    fontWeight: '500',
-  },
-
-  statsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    marginTop: 16,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
-  statItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingVertical: 4,
-  },
-  centerStatItem: {
-    flex: 0,
-    minWidth: 100,
-    display: 'flex',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
-  leftStatItem: {
-    flex: 1,
-  },
-  rightStatItem: {
-    flex: 1,
-  },
-  statIcon: {
-    width: 16,
-    height: 16,
-    tintColor: COLORS.surfaceSecondary,
-  },
-  statText: {
-    fontSize: fontScale(12),
-    fontWeight: '500',
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 16,
-  },
-  actionButton: {
-    flex: 1,
-    height: 40,
-    backgroundColor: COLORS.white,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.borderGray,
-  },
-  actionButtonText: {
-    fontSize: fontScale(14),
-    color: COLORS.black,
-    fontWeight: '500',
+    marginBottom: -40,
+    zIndex: 1,
   },
   inviteSection: {
     paddingTop: 24,
