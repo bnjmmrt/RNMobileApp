@@ -30,7 +30,6 @@ const QRCodeScanner = () => {
   const [scanned, setScanned] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const requestPermission = async () => {
-    console.log('clicked');
     const status = await Camera.requestCameraPermission();
     setHasPermission(status === 'granted');
   };
@@ -44,7 +43,7 @@ const QRCodeScanner = () => {
       if (!scanned) {
         setScanned(true);
         Alert.alert('QR Code Scanned', codes[0].value, [
-          {text: 'OK', onPress: () => navigation.goBack()},
+          {text: 'OK', onPress: () => navigation.navigate('GuestCheckInScreen')},
         ]);
       }
     },

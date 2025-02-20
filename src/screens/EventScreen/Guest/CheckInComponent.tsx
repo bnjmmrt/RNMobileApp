@@ -1,5 +1,5 @@
 import IMAGES from '@images/index';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {Image} from 'react-native-animatable';
 import AvatarInitials from 'src/component/AvatarInitials';
-import {COLORS} from 'src/utils/constants';
+import {BUTTON_LABLE, COLORS, LABLE} from 'src/utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -19,68 +19,6 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-
-const renderItemComponent = (item: any) => {
-  return (
-    <View style={[styles.card, {padding: 0}]}>
-      <View style={[styles.guestCard, true && styles.bottomRadius]}>
-        <View style={styles.guestHeader}>
-          <AvatarInitials
-            name="Anu ha"
-            size={32}
-            backgroundColor={COLORS.white}
-          />
-          <Text style={styles.guestUsername}>{item.username}</Text>
-          {item.status == 'Checked-In' ? (
-            <View style={styles.checkInButton}>
-              <Image source={IMAGES.checkCircleFilled} />
-              <Text style={styles.checkInText}>Checked-In</Text>
-            </View>
-          ) : item.status == 'Check-In' ? (
-            <View
-              style={[
-                styles.checkInButton,
-                {
-                  backgroundColor: COLORS.white,
-                  borderWidth: 1,
-                  borderColor: COLORS.borderGray,
-                },
-              ]}>
-              <Image source={IMAGES.checkCircleFilled} />
-              <Text style={styles.checkInText}>Check-In</Text>
-            </View>
-          ) : (
-            <View style={styles.pendingDetailsButton}>
-              <Image source={IMAGES.checkCircleFilled} />
-              <Text style={styles.pendingDetailsText}>Pending Details</Text>
-            </View>
-          )}
-          {item.status !== 'Pending' && (<TouchableOpacity>
-            <Image source={IMAGES.arrowDownCircle} />
-          </TouchableOpacity>)}
-        </View>
-
-        {!true && (
-          <View style={{marginTop: verticalMarginScale(16)}}>
-            <Text style={styles.label}>Guest Note</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Add a private note. Not visible to the guest."
-              multiline
-            />
-          </View>
-        )}
-      </View>
-
-      {!true && (
-        <TouchableOpacity style={styles.profileButton}>
-          <Image source={IMAGES.arrowRight} />
-          <Text style={styles.profileText}> Profile</Text>
-        </TouchableOpacity>
-      )}
-    </View>
-  );
-};
 const guests = [
   {
     id: '1',
@@ -104,43 +42,116 @@ const guests = [
     status: 'Pending',
   },
 ];
+
+const expandIndex=[{id:0,isExpand:false},{id:1,isExpand:false},{id:2,isExpand:false}]
+const renderItemComponent = (item: any,index:number,expandList:any[],toggleExpand:any) => {
+
+  return (
+    <View style={[styles.card, {padding: 0}]}>
+      <View style={[styles.guestCard, true && styles.bottomRadius]}>
+        <View style={styles.guestHeader}>
+          <AvatarInitials
+            name="Anu ha"
+            size={32}
+            backgroundColor={COLORS.white}
+          />
+          <Text style={styles.guestUsername}>{item.username}</Text>
+          {item.status ==LABLE.CHECKED_IN ? (
+            <View style={styles.checkInButton}>
+              <Image source={IMAGES.checkedinCurved} />
+              <Text style={styles.checkInText}>{LABLE.CHECKED_IN}</Text>
+            </View>
+          ) : item.status == LABLE.CHECK_IN ? (
+            <View
+              style={[
+                styles.checkInButton,
+                {
+                  backgroundColor: COLORS.white,
+                  borderWidth: 1,
+                  borderColor: COLORS.borderGray,
+                },
+              ]}>
+              <Image source={IMAGES.checkinCurved} />
+              <Text style={styles.checkInText}>{LABLE.CHECK_IN}</Text>
+            </View>
+          ) : (
+            <View style={styles.pendingDetailsButton}>
+              <Image source={IMAGES.alertTriangle} />
+              <Text style={styles.pendingDetailsText}>{LABLE.PENDING_DETAILS}</Text>
+            </View>
+          )}
+          {item.status !== LABLE.PENDING && (<TouchableOpacity onPress={()=>toggleExpand(index)}>
+            <Image source={expandList[index].isExpand ? IMAGES.arrowupCircle :IMAGES.arrowDownCircle} />
+          </TouchableOpacity>)}
+        </View>
+
+        {expandList[index].isExpand && (
+          <View style={{marginTop: verticalMarginScale(16)}}>
+            <Text style={styles.label}>{LABLE.GUEST_NOTE}</Text>
+            <TextInput
+              style={styles.input}
+              placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
+              multiline
+            />
+          </View>
+        )}
+      </View>
+
+      {expandList[index].isExpand && (
+        <TouchableOpacity style={styles.profileButton}>
+          <Image source={IMAGES.arrow_up_right} />
+          <Text style={styles.profileText}>{BUTTON_LABLE.PROFILE}</Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+};
+
 const CheckInComponent = () => {
+
+  const [expandlist,setExpandList]=useState<any[]>(expandIndex);
+  const toggleExpand = (index:number) => {
+    // expandIndex[index].isExpand=! expandIndex[index].isExpand
+    setExpandList([...expandlist,expandlist[index].isExpand=! expandlist[index].isExpand]);
+    console.log("toggleExpand",expandlist)
+  };
+  
   return (
     <View style={styles.card}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Guest Check-in</Text>
+        <Text style={styles.headerText}>{LABLE.GUEST_CHICKED_IN}</Text>
         <TouchableOpacity style={styles.iconButton}>
-          <Image source={IMAGES.upDownArrow} />
+          <Image source={IMAGES.arrowUpgray} />
         </TouchableOpacity>
       </View>
 
       <View style={styles.section}>
         <Text style={styles.label}>
-          Ticket Type <Text style={styles.required}>*</Text>
+          {LABLE.TICKET_TYPE} <Text style={styles.required}>*</Text>
         </Text>
         <View style={styles.dropdown}>
-          <Text style={styles.dropdownText}>Standard</Text>
+          <Text style={styles.dropdownText}>{LABLE.STANDARD}</Text>
           <Image source={IMAGES.downArrow} />
         </View>
       </View>
 
-      <Text style={styles.sectionTitle}>Lead Guest</Text>
+      <Text style={styles.sectionTitle}>{LABLE.LEAD_GUEST}</Text>
 
       <View style={styles.section}>
-        <Text style={styles.label}>Guest Note</Text>
+        <Text style={styles.label}>{LABLE.GUEST_NOTE}</Text>
         <TextInput
           style={styles.input}
-          placeholder="Add a private note. Not visible to the guest."
+          placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
           multiline
         />
       </View>
-      {/* <Text style={styles.sectionTitle}>Plus 1s</Text>
+      <Text style={styles.sectionTitle}>{LABLE.PLUS_1S}</Text>
       <FlatList
         data={guests}
         keyExtractor={item => item.id}
-        renderItem={({item}) => renderItemComponent(item)}
+        renderItem={({item,index}) => renderItemComponent(item,index,expandlist,toggleExpand)}
         //   contentContainerStyle={styles.container}
-      /> */}
+      />
     </View>
   );
 };
@@ -158,26 +169,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    // padding: 15,
-    borderRadius: 10,
-    elevation: 2,
+    backgroundColor: COLORS.white,
+    paddingBottom: verticalMarginScale(8),
+    borderRadius: radiusScale(10),
+    borderBottomWidth:1,
+    borderBottomColor:'#E1E3E6'
   },
   headerText: {
     fontSize: radiusScale(18),
     fontWeight: '700',
   },
   iconButton: {
-    padding: 5,
+    padding: verticalMarginScale(5),
   },
   iconText: {
-    fontSize: 16,
+    fontSize: fontScale(16),
   },
   section: {
-    marginTop: 10,
+    marginTop: verticalMarginScale(10),
   },
   label: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     fontWeight: '500',
   },
   required: {
@@ -187,31 +199,32 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#EAEAEA',
+    backgroundColor: COLORS.bgGray,
     padding: verticalMarginScale(10),
     height: verticalScale(40),
-    borderRadius: 8,
-    marginTop: 5,
+    borderRadius: radiusScale(8),
+    marginTop: verticalMarginScale(5),
     borderWidth: 1,
-    borderColor: '#BFBFBF',
+    borderColor:COLORS.borderBlur,
+    
   },
   dropdownText: {
     color: COLORS.light_gray,
     fontSize: fontScale(14),
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 20,
+    fontSize: fontScale(16),
+    fontWeight: '700',
+    marginTop: verticalMarginScale(20),
   },
   input: {
-    backgroundColor: '#EAEAEA',
-    padding: 10,
+    backgroundColor: COLORS.bgGray,
+    padding: verticalMarginScale(10),
     borderWidth: 1,
-    borderColor: '#BFBFBF',
-    borderRadius: 8,
-    marginTop: 5,
-    minHeight: 60,
+    borderColor: COLORS.borderBlur,
+    borderRadius: radiusScale(8),
+    marginTop: verticalMarginScale(5),
+    minHeight: verticalScale(120),
     textAlignVertical: 'top',
   },
   guestCard: {
@@ -231,10 +244,10 @@ const styles = StyleSheet.create({
   },
   guestAvatar: {
     backgroundColor: '#ddd',
-    padding: 10,
-    borderRadius: 20,
+    padding: verticalMarginScale(10),
+    borderRadius: radiusScale(20),
     fontWeight: 'bold',
-    marginRight: 10,
+    marginRight: verticalMarginScale(10),
   },
   guestUsername: {
     flex: 1,
@@ -269,20 +282,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   profileText: {
-    color: '#333',
+    color:COLORS.black,
+    paddingLeft:verticalMarginScale(8)
   },
   guestCountContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 15,
+    padding:verticalMarginScale(15),
+    borderRadius: radiusScale(10),
+    marginTop: verticalMarginScale(15),
     elevation: 2,
   },
   guestCountText: {
-    fontSize: 16,
+    fontSize: fontScale(16),
     fontWeight: 'bold',
   },
   pendingDetailsButton: {
@@ -300,9 +314,9 @@ const styles = StyleSheet.create({
   },
   checkedInBanner: {
     backgroundColor: '#222',
-    padding: 15,
-    marginTop: 15,
-    borderRadius: 10,
+    padding: verticalMarginScale(15),
+    marginTop: verticalMarginScale(15),
+    borderRadius: radiusScale(10),
     alignItems: 'center',
   },
   checkedInText: {

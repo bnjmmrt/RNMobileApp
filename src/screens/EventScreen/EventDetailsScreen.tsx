@@ -138,7 +138,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const onCheckInClick = async () => {
-    navigation.navigate('QRCodeScanner');
+    navigation.navigate('GuestCheckInScreen');
   };
 
   return (

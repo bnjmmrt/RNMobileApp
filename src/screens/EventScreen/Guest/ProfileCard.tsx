@@ -2,20 +2,27 @@ import IMAGES from '@images/index';
 import React from 'react';
 import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import AvatarInitials from 'src/component/AvatarInitials';
-import {COLORS} from 'src/utils/constants';
+import {COLORS, LABLE} from 'src/utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
   radiusScale,
   verticalMarginScale,
 } from 'src/utils/dimensions';
+import {fontFamily} from 'src/utils/functions';
 
+interface Profile {
+  name: string;
+  role: string;
+  Details: {};
+}
 const ProfileCard = () => {
   return (
     <>
       <View style={styles.card}>
+        <Image style={styles.profileIcon} source={IMAGES.profile} />
         <View style={styles.profileContainer}>
-          <AvatarInitials  name="Anurag Harod" size={80} />
+          <AvatarInitials name="Anurag Harod" size={80} />
           <View style={styles.memberBadge}>
             <Image source={IMAGES.check_verified} />
             <Text style={styles.memberText}>Member</Text>
@@ -37,17 +44,17 @@ const ProfileCard = () => {
         </View>
 
         <View style={styles.detailsContainer}>
-          <View style={styles.detailText}>
-            <Image source={IMAGES.check_verified} />
-            <Text> 21 Years Old</Text>
+          <View style={styles.detailTextContainer}>
+            <Image source={IMAGES.age} />
+            <Text style={styles.tagText}> 21 Years Old</Text>
           </View>
-          <View style={styles.detailText}>
-            <Image source={IMAGES.check_verified} />
-            <Text> 25.7M</Text>
+          <View style={styles.detailTextContainer}>
+            <Image source={IMAGES.user} />
+            <Text style={styles.tagText}> 25.7M</Text>
           </View>
-          <View style={styles.detailText}>
-            <Image source={IMAGES.check_verified} />
-            <Text> Los Angeles</Text>
+          <View style={styles.detailTextContainer}>
+            <Image source={IMAGES.location} />
+            <Text style={styles.tagText}> Los Angeles</Text>
           </View>
         </View>
       </View>
@@ -55,12 +62,12 @@ const ProfileCard = () => {
       <View style={[styles.card, styles.grayCard]}>
         <View style={styles.buttonsContainer}>
           <TouchableOpacity style={styles.checkedInButton}>
-            <Image source={IMAGES.checkCircleFilled} />
-            <Text style={styles.checkedInText}> Checked-In</Text>
+            <Image source={IMAGES.checkedinCurved} />
+            <Text style={styles.checkedInText}>{LABLE.CHECKED_IN}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.profileButton}>
-            <Image source={IMAGES.arrowRight} />
-            <Text style={styles.profileText}>Profile</Text>
+            <Image source={IMAGES.arrow_up_right} />
+            <Text style={styles.profileText}>{LABLE.PROFILE}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -84,14 +91,15 @@ const styles = StyleSheet.create({
     // shadowRadius: 10,
     // shadowOffset: {width: 0, height: 5},
     // elevation: 5,
-    marginVertical: 2,
+    marginVertical: verticalMarginScale(2),
   },
+  profileIcon: {position: 'absolute', right: 10, top: 10},
   grayCard: {
     backgroundColor: COLORS.lighter_gray,
     borderWidth: 0,
     borderBottomLeftRadius: radiusScale(16),
     borderBottomRightRadius: radiusScale(16),
-    padding:verticalMarginScale(8)
+    padding: verticalMarginScale(8),
   },
   profileContainer: {
     position: 'relative',
@@ -123,10 +131,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginVertical: verticalMarginScale(12),
     lineHeight: 32,
+    fontFamily: fontFamily.RomieTrial_Bold,
   },
   tagsContainer: {
     flexDirection: 'row',
-    marginVertical: 8,
+    marginVertical: verticalMarginScale(8),
   },
   tag: {
     backgroundColor: COLORS.borderGray,
@@ -136,20 +145,21 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
   },
   tagText: {
-    fontSize: 12,
+    fontSize: fontScale(12),
     fontWeight: '500',
+    paddingHorizontal: verticalMarginScale(4),
   },
   detailsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '90%',
-    marginVertical: 10,
+    marginTop: verticalMarginScale(16),
   },
-  detailText: {
+  detailTextContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    fontSize: 14,
   },
+
   buttonsContainer: {
     flexDirection: 'row',
     width: '100%',
@@ -171,7 +181,9 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontWeight: '500',
     fontSize: fontScale(14),
+    paddingLeft: verticalMarginScale(8),
   },
+
   profileButton: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -188,6 +200,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontWeight: '500',
     fontSize: fontScale(14),
+    paddingLeft: verticalMarginScale(8),
   },
 });
 

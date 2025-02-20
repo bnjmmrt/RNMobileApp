@@ -55,6 +55,7 @@ export const BUTTON_LABLE = {
   APPROVE_REQUEST: 'Approve Request',
   UPDATE_INVITE: 'Update Invite',
   MARK_AS_SPAM: 'Mark as Spam',
+  PROFILE: 'Profile',
 } as const;
 
 export const LABLE = {
@@ -185,6 +186,7 @@ export const LABLE = {
   RSVP_TEXT: `If you select 'No', you cannot change your response. If you later decide you'd like to attend, you'll need to request another invite from the host.`,
   WE_WERE_SORRY_CANT_MAKE_IT: `We're sorry you can't make it.`,
   YOU_DECLINED_THIS_INVITATION: 'You declined this invitation',
+  DISCOVER_MORE_EVENTS: 'Discover More Events',
   RSVP_QUESTION_DETAILS:
     'The host is offering you the option to bring up to [X] guests. How many guests would you like to bring?',
   RSVP_SUBTITLE:
@@ -206,6 +208,21 @@ export const LABLE = {
   COMPANY_DESCRIPTION: 'Description of Company',
   ENTER_FEEDBACK: 'Enter Feedback',
   CHECK_IN: 'Check-In',
+  PROFILE: 'Profile',
+  CHECKED_IN: 'Checked-In',
+  PENDING_DETAILS: 'Pending Details',
+  GUEST_CHICKED_IN: 'Guest Check-in',
+  STANDARD: 'Standard',
+  LEAD_GUEST: 'Lead Guest',
+  GUEST_NOTE: 'Guest Note',
+  PLUS_1S: 'Pluse 1s',
+  PENDING: 'Pending',
+  PLACEHOLDER_PRIVATE_NOTE: 'Add a private note. Not visible to the guest.',
+  TICKET_TYPE: 'Ticket Type',
+  USER_NOT_FOUND: 'User not found',
+  SEARCH_USERS: 'Search Users',
+  MANAGE_GUESTS: 'Manage Guests',
+  USER_ALREADY_CHECKED_IN: 'User already checked-in',
 };
 
 export const PROFILE = {
@@ -263,6 +280,7 @@ export const ERROR_MESSAGE = {
   FEEDBACK_ERROR: 'Please enter your Feedback.',
   WEBSITE_ERROR: 'Please enter your URL.',
   COMPANY_NAME_ERROR: 'Company Name is required',
+  TCKET_ERROR_MESSAGE: 'Ticket is not associated with a guest for this event.',
 };
 
 export const COLORS = {
@@ -312,6 +330,8 @@ export const COLORS = {
   neutral_surface: '#D8D8D8',
   yellowbackground: '#F1B422',
   neutralBorder: '#E1E3E6',
+  borderBlur: '#BFBFBF',
+  bgGray: '#EAEAEA',
 };
 
 export const feedList = [
