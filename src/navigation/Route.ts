@@ -24,4 +24,6 @@ export const ROUTES = {
   WelcomeScreen: 'WelcomeScreen',
   GuestCheckInScreen: 'GuestCheckInScreen',
   GuestDetailScreen: 'GuestDetailScreen',
+  InviteGuestsScreen: 'InviteGuestsScreen',
+  ManageGuestsScreen: 'ManageGuestsScreen',
 } as const;

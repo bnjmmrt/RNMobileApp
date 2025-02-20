@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import EventScreen from 'src/screens/EventScreen/EventScreen';
+import React from 'react';
 import EventDetailsScreen from 'src/screens/EventScreen/EventDetailsScreen';
+import EventScreen from 'src/screens/EventScreen/EventScreen';
+import ManageGuests from 'src/screens/EventScreen/InviteGuestInEventFlow/ManageGuests';
 import AddGuestOptionScreen from 'src/screens/EventScreen/RSVP/AddGuestOptionScreen';
 import AddGuestScreen from 'src/screens/EventScreen/RSVP/AddGuestScreen';
 import RSVPInvitedUpcoming from 'src/screens/EventScreen/RSVP/RSVPInvitedUpcoming';
 import RSVPNoStatusApplied from 'src/screens/EventScreen/RSVP/RSVPNoStatusApplied';
+import InviteGuests from 'src/screens/EventScreen/InviteGuestInEventFlow/InviteGuests';
 import EventGuestList from 'src/screens/EventScreen/EventGuestList';
 import GuestCheckInScreen from 'src/screens/EventScreen/Guest/GuestCheckInScreen';
 import QRCodeScanner from 'src/screens/EventScreen/Guest/QRScannar';
@@ -24,6 +26,8 @@ export type EventStackParamList = {
   GuestCheckInScreen: undefined;
   QRCodeScanner: undefined;
   GuestDetailScreen: { guest: any };
+  [ROUTES.InviteGuestsScreen]: undefined;
+  [ROUTES.ManageGuestsScreen]: undefined;
 };
 
 const Stack = createStackNavigator<EventStackParamList>();
@@ -48,41 +52,18 @@ export const EventStack: React.FC = () => {
       <Stack.Screen
         name="RSVPNoStatusApplied"
         component={RSVPNoStatusApplied}
-        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="RSVPInvitedUpcoming"
         component={RSVPInvitedUpcoming}
-        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="AddGuestOptionScreen"
         component={AddGuestOptionScreen}
-        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="AddGuestScreen"
         component={AddGuestScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name={ROUTES.EventGuestList}
-        component={EventGuestList}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="GuestCheckInScreen"
-        component={GuestCheckInScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="QRCodeScanner"
-        component={QRCodeScanner}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name={ROUTES.GuestDetailScreen}
-        component={GuestDetailScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

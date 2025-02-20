@@ -117,6 +117,9 @@ const IMAGES = {
   arrowUpgray: require('./arrow-up-gray.png'),
   searchWhite: require('./search-white.png'),
   profileWhite: require('./profile-white.png'),
+  plus_black: require('./plusBlack.png'),
+  minus: require('./minus.png'),
+  corner_up_left: require('./corner-up-left.png'),
 };
 
 export default IMAGES;
