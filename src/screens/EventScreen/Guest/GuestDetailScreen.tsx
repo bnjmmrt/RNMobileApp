@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
   View,
@@ -68,13 +67,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         return (
           <>
             <Button
-              style={[
-                styles.sendButton,
-                {
-                  flex: 1,
-                  backgroundColor: COLORS.errorText,
-                },
-              ]}
+              style={[styles.sendButton, styles.spamButton]}
               title={BUTTON_LABLE.MARK_AS_SPAM}
               colorTheme="dark"
               onPress={() => {}}
@@ -133,54 +126,18 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View
-          style={{
-            backgroundColor: COLORS.white,
-            borderTopLeftRadius: 16,
-            borderTopRightRadius: 16,
-            borderBottomLeftRadius: 8,
-            borderBottomRightRadius: 8,
-            overflow: 'hidden',
-            borderWidth: 1,
-            borderColor: COLORS.neutralBorder,
-          }}>
-          <View
-            style={{
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              justifyContent: 'space-between',
-              paddingLeft: 16,
-              paddingRight: 8,
-              paddingTop: 8,
-            }}>
+        <View style={styles.guestCard}>
+          <View style={styles.guestCardHeader}>
             <View>
               <StatusLabel status={guest?.status || 'Drafts'} />
             </View>
 
-            <View
-              style={{
-                width: 48,
-                height: 40,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 100,
-                borderWidth: 1,
-                borderColor: COLORS.borderGray,
-              }}>
-              <Image
-                source={IMAGES.user_check}
-                style={{ width: 16, height: 16 }}
-              />
+            <View style={styles.userCheckContainer}>
+              <Image source={IMAGES.user_check} style={styles.userCheckIcon} />
             </View>
           </View>
 
-          <View style={{ alignItems: 'center', padding: 16 }}>
+          <View style={styles.guestCardContent}>
             <View>
               <FastImage
                 source={{
@@ -189,40 +146,14 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                     'https://ui-avatars.com/api/?name=' +
                       encodeURIComponent(guest?.name || ''),
                 }}
-                style={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: 40,
-                }}
+                style={styles.guestAvatar}
               />
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  backgroundColor: COLORS.black,
-                  paddingRight: 8,
-                  paddingLeft: 6,
-                  paddingVertical: 4,
-                  borderRadius: 12,
-                  marginTop: -18,
-                }}>
+              <View style={styles.memberBadgeContainer}>
                 <Image
                   source={IMAGES.check_verified}
-                  style={{
-                    width: 12,
-                    height: 12,
-                    marginRight: 4,
-                    tintColor: COLORS.surfaceSecondary,
-                  }}
+                  style={styles.memberBadgeIcon}
                 />
-                <Text
-                  style={{
-                    color: COLORS.white,
-                    fontSize: fontScale(12),
-                    fontWeight: '500',
-                  }}>
-                  Member
-                </Text>
+                <Text style={styles.memberBadgeText}>Member</Text>
               </View>
             </View>
             <Text style={styles.name}>{guest?.name}</Text>
@@ -234,7 +165,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               ))}
             </View>
             <View style={styles.statsContainer}>
-              <View style={styles.statItem}>
+              <View style={[styles.statItem, styles.leftStatItem]}>
                 <Image source={IMAGES.hourglass} style={styles.statIcon} />
                 <Text style={styles.statText}>{guest?.age} Years Old</Text>
               </View>
@@ -244,7 +175,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                   {(guest?.followers / 1000000).toFixed(1)}M
                 </Text>
               </View>
-              <View style={styles.statItem}>
+              <View style={[styles.statItem, styles.rightStatItem]}>
                 <Image source={IMAGES.location} style={styles.statIcon} />
                 <Text style={styles.statText}>{guest?.location}</Text>
               </View>
@@ -348,57 +279,71 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
     paddingHorizontal: 16,
   },
-  profileCard: {
+  guestCard: {
     backgroundColor: COLORS.white,
-    borderRadius: 16,
-    marginHorizontal: 20,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: COLORS.neutralBorder,
+  },
+  guestCardHeader: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    justifyContent: 'space-between',
+    paddingLeft: 16,
+    paddingRight: 8,
+    paddingTop: 8,
+  },
+  userCheckContainer: {
+    width: 48,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 100,
     borderWidth: 1,
     borderColor: COLORS.borderGray,
   },
-  statusBar: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.errorText,
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  statusIcon: {
+  userCheckIcon: {
     width: 16,
     height: 16,
-    tintColor: COLORS.white,
   },
-  profileSection: {
+  guestCardContent: {
     alignItems: 'center',
-    gap: 8,
     padding: 16,
-    paddingTop: 24,
   },
-  avatar: {
+  guestAvatar: {
     width: 80,
     height: 80,
     borderRadius: 40,
   },
-  memberBadge: {
+  memberBadgeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.black,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingRight: 8,
+    paddingLeft: 6,
+    paddingVertical: 4,
     borderRadius: 12,
-    marginTop: 4,
+    marginTop: -18,
   },
-  badgeIcon: {
+  memberBadgeIcon: {
     width: 12,
     height: 12,
     marginRight: 4,
-    tintColor: COLORS.white,
+    tintColor: COLORS.surfaceSecondary,
   },
-  badgeText: {
+  memberBadgeText: {
     color: COLORS.white,
-    fontSize: fontScale(10),
+    fontSize: fontScale(12),
     fontWeight: '500',
   },
   name: {
@@ -433,18 +378,29 @@ const styles = StyleSheet.create({
   statsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 4,
     width: '100%',
     marginTop: 16,
+    justifyContent: 'center',
     paddingHorizontal: 20,
   },
   statItem: {
     flexDirection: 'row',
-    display: 'flex',
     alignItems: 'center',
     gap: 4,
     paddingVertical: 4,
+  },
+  centerStatItem: {
+    flex: 0,
+    minWidth: 100,
+    display: 'flex',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  leftStatItem: {
+    flex: 1,
+  },
+  rightStatItem: {
+    flex: 1,
   },
   statIcon: {
     width: 16,
@@ -453,17 +409,7 @@ const styles = StyleSheet.create({
   },
   statText: {
     fontSize: fontScale(12),
-    // color: COLORS.black,
     fontWeight: '500',
-  },
-  centerStatItem: {
-    justifyContent: 'center',
-    display: 'flex',
-    alignItems: 'center',
-    minWidth: 100,
-    position: 'absolute',
-    right: 0,
-    left: 0,
   },
   actionButtons: {
     flexDirection: 'row',
@@ -645,6 +591,10 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     height: 50,
     backgroundColor: COLORS.black,
+  },
+  spamButton: {
+    flex: 1,
+    backgroundColor: COLORS.errorText,
   },
 });
 
