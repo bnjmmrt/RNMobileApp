@@ -1,5 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet, Text } from 'react-native';
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  Platform,
+  PermissionsAndroid,
+} from 'react-native';
 import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
@@ -23,6 +30,8 @@ import { ROUTES } from 'src/navigation/Route';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { useAcceptInvitationMutation } from 'src/redux/actions/rspvApiAction';
 import EventAnouncements from 'src/component/Event/EventAnnouncements';
+import { Camera } from 'react-native-vision-camera';
+import QRCodeScanner from 'src/component/QRScannar/QRScannar';
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
@@ -70,7 +79,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   }, [guestStatus]);
 
   useEffect(() => {
-    console.log('Event data:', data);
+    // console.log('Event data:', data);
     if (data && data.data && data?.data?.collaborators) {
       setCollaborators(data.data.collaborators);
     }
@@ -81,7 +90,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
     setGuestStatus(data?.data?.currentGuestStatus);
   }, [data]);
-  console.log('Event details', route.params.id);
+  // console.log('Event details', route.params.id);
   const statusMap = [
     { id: '1', label: EVENT_STATUS.AWAITING },
     { id: '2', label: EVENT_STATUS.INVITED },
@@ -126,6 +135,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     } catch (error) {
       console.error('Error accepting invitation:', error);
     }
+  };
+
+  const onCheckInClick = async () => {
+    navigation.navigate('QRCodeScanner');
   };
 
   return (
@@ -233,7 +246,13 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           />
         </View>
       )}
-
+      <Button
+        disabled={false}
+        style={styles.btnStyle}
+        title={BUTTON_LABLE.CHECK_IN}
+        colorTheme="dark"
+        onPress={onCheckInClick}
+      />
       <BackButtonOverlay onPress={() => navigation.goBack()} />
     </View>
   );

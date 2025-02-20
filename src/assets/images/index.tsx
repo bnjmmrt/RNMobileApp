@@ -106,6 +106,8 @@ const IMAGES = {
   paragraph_spacing: require('./paragraph-spacing.png'),
   confirmed_badge: require('./confirmed-badge.png'),
   nested_badge: require('./nested.png'),
+  arrowDownCircle: require('./arrow-down-circle.png'),
+  arrowupCircle: require('./arrow-up-circle.png'),
 };
 
 export default IMAGES;
