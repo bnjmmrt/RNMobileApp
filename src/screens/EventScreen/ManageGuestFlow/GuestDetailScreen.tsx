@@ -220,17 +220,12 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerTop}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.goBack()}>
           <View style={styles.iconButton}>
             <Image source={IMAGES.leftArrow} style={styles.icon} />
           </View>
         </TouchableOpacity>
         <Text style={styles.title}>Manage Invite</Text>
-        <TouchableOpacity>
-          <View style={styles.iconButton}>
-            <Image source={IMAGES.qr} style={styles.icon} />
-          </View>
-        </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -344,6 +339,7 @@ const styles = StyleSheet.create({
     paddingVertical: verticalMarginScale(16),
     alignItems: 'center',
     justifyContent: 'space-between',
+    position: 'relative',
   },
   iconButton: {
     width: verticalScale(40),
@@ -352,6 +348,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.neutral_surface,
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 1,
   },
   icon: {
     width: horizontalScale(16),
@@ -361,6 +358,9 @@ const styles = StyleSheet.create({
     fontSize: fontScale(24),
     fontFamily: fontFamily.RomieTrial_Bold,
     color: COLORS.black,
+    position: 'absolute',
+    left: 0,
+    right: 0,
     textAlign: 'center',
   },
   scrollContent: {
