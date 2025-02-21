@@ -1,5 +1,6 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useRef, useState } from 'react';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Image, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { CustomText } from '../../../component/CustomText';
 import Input, { InputRefMethods } from '../../../component/Input/Input';
 import Counter from '../../../component/Counter';
@@ -12,9 +13,10 @@ import {
   radiusScale,
   verticalMarginScale,
   verticalScale,
+  fontScale,
 } from 'src/utils/dimensions';
 import { COLORS } from 'src/utils/constants';
-import createStyles from '../../../component/InviteDetails/styles';
+import { fontFamily } from 'src/utils/functions';
 
 export interface TicketType {
   id: string;
@@ -54,7 +56,6 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   directlySendToConfirm,
   onDirectlySendToConfirmChange,
 }) => {
-  const styles = createStyles();
   const [isInviteDetailsOpen, setIsInviteDetailsOpen] = useState<boolean>(true);
 
   const ticketTypeRef = useRef<InputRefMethods>(null);
@@ -115,9 +116,10 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
             errorMessage=""
             rightImage={IMAGES.arrowRight}
             inputFieldContainerStyle={{
-              height: undefined,
-              paddingVertical: verticalMarginScale(12),
+              height: verticalScale(40),
+              // paddingVertical: verticalMarginScale(12),
               borderRadius: radiusScale(12),
+
             }}
             otherStyle={{ marginTop: 0, flex: 1 }}
             customRightImageStyle={{
@@ -228,7 +230,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
         ) : (
           <View>
             <CustomText style={styles.bypassLabel}>
-              {`Want users to bypass registration?`}
+              Want users to bypass registration?
             </CustomText>
             <TouchableOpacity
               style={styles.bypassTextContainer}
@@ -236,7 +238,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
                 onDirectlySendToConfirmChange(!directlySendToConfirm)
               }>
               <CustomText style={styles.bypassText}>
-                {`Add guests directly to the confirmed tab`}
+                Add guests directly to the confirmed tab
               </CustomText>
             </TouchableOpacity>
           </View>
@@ -252,5 +254,82 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    borderWidth: verticalScale(1),
+    borderColor: COLORS.borderGray,
+    borderRadius: radiusScale(16),
+    paddingHorizontal: horizontalMarginScale(16),
+    paddingVertical: verticalMarginScale(16),
+  },
+  title: {
+    fontSize: fontScale(18),
+    fontWeight: '700',
+    fontFamily: fontFamily.ABCDiatype_Bold,
+  },
+  inviteDetailHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: verticalScale(1),
+    borderBottomColor: COLORS.borderGray,
+    paddingBottom: verticalMarginScale(12),
+  },
+  accordianArrowContainer: {
+    height: verticalScale(24),
+    width: verticalScale(24),
+    borderRadius: radiusScale(32),
+    backgroundColor: COLORS.tabBorderColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  label: {
+    paddingBottom: horizontalMarginScale(2),
+  },
+  inviteMessageInputContainer: {
+    borderWidth: verticalScale(1),
+    borderColor: COLORS.borderGray,
+    borderRadius: radiusScale(16),
+  },
+  inviteMessagePrototype: {
+    marginHorizontal: horizontalMarginScale(16),
+    marginVertical: verticalMarginScale(16),
+  },
+  seperator: {
+    borderBottomWidth: verticalScale(1),
+    borderBottomColor: COLORS.tabBorderColor,
+  },
+  bypassLabel: {
+    fontSize: fontScale(14),
+  },
+  bypassTextContainer: {
+    marginTop: verticalMarginScale(6),
+    backgroundColor: COLORS.bgBlue,
+    alignSelf: 'flex-start',
+    paddingHorizontal: horizontalMarginScale(8),
+    paddingVertical: verticalMarginScale(4),
+    borderRadius: radiusScale(99),
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: horizontalMarginScale(8),
+  },
+  bypassText: {
+    fontSize: fontScale(11),
+    color: COLORS.blueDark,
+  },
+  bypassInfo: {
+    height: verticalScale(16),
+    width: verticalScale(16),
+    tintColor: COLORS.blueDark,
+  },
+  undoCta: {
+    backgroundColor: undefined,
+    width: undefined,
+    height: undefined,
+    paddingVertical: verticalMarginScale(6),
+    paddingHorizontal: horizontalMarginScale(12),
+  },
+});
 
 export default InviteDetails;

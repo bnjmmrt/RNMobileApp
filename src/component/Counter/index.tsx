@@ -1,7 +1,7 @@
 import IMAGES from '@images/index';
 import React from 'react';
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {COLORS} from '../../utils/constants';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { COLORS } from '../../utils/constants';
 import {
   horizontalMarginScale,
   horizontalScale,
@@ -9,7 +9,7 @@ import {
   verticalMarginScale,
   verticalScale,
 } from '../../utils/dimensions';
-import {CustomText} from '../CustomText';
+import { CustomText } from '../CustomText';
 
 interface CounterProps {
   onPressMinus: () => void;
@@ -24,7 +24,9 @@ const Counter: React.FC<CounterProps> = ({
 }) => {
   return (
     <View style={styles.counterContainer}>
-      <TouchableOpacity style={styles.leftCounterButton} onPress={onPressMinus}>
+      <TouchableOpacity
+        style={[styles.leftCounterButton, styles.counterButton]}
+        onPress={onPressMinus}>
         <View style={styles.counterButtonIconWrapper}>
           <Image source={IMAGES.minus} />
         </View>
@@ -32,7 +34,9 @@ const Counter: React.FC<CounterProps> = ({
       <View style={styles.counterTextContainer}>
         <CustomText style={styles.counterText}>{counterValue}</CustomText>
       </View>
-      <TouchableOpacity style={styles.rightCounterButton} onPress={onPressPlus}>
+      <TouchableOpacity
+        style={[styles.rightCounterButton, styles.counterButton]}
+        onPress={onPressPlus}>
         <View style={styles.counterButtonIconWrapper}>
           <Image source={IMAGES.plus_black} />
         </View>
@@ -55,28 +59,33 @@ const styles = StyleSheet.create({
     height: verticalScale(16),
     width: horizontalScale(16),
   },
+  counterButton: {
+    height: verticalScale(40),
+    width: verticalScale(40),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   leftCounterButton: {
     backgroundColor: COLORS.tabBorderColor,
     borderTopLeftRadius: radiusScale(12),
     borderBottomLeftRadius: radiusScale(12),
-    paddingHorizontal: horizontalMarginScale(12),
-    paddingVertical: verticalMarginScale(12),
     borderWidth: verticalScale(1),
     borderColor: COLORS.tabBorderColor,
   },
   counterTextContainer: {
     backgroundColor: COLORS.white,
-    paddingHorizontal: horizontalMarginScale(12),
-    paddingVertical: verticalMarginScale(12),
     borderWidth: verticalScale(1),
     borderColor: COLORS.tabBorderColor,
+
+    height: verticalScale(40),
+    width: verticalScale(40),
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   rightCounterButton: {
     backgroundColor: COLORS.tabBorderColor,
     borderTopRightRadius: radiusScale(12),
     borderBottomRightRadius: radiusScale(12),
-    paddingHorizontal: horizontalMarginScale(12),
-    paddingVertical: verticalMarginScale(12),
     borderWidth: verticalScale(1),
     borderColor: COLORS.tabBorderColor,
   },

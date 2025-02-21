@@ -10,7 +10,14 @@ import {
 } from 'react-native';
 import { COLORS, BUTTON_LABLE } from 'src/utils/constants';
 import { fontFamily } from 'src/utils/functions';
-import { fontScale, verticalMarginScale } from 'src/utils/dimensions';
+import {
+  fontScale,
+  radiusScale,
+  verticalMarginScale,
+  horizontalMarginScale,
+  verticalScale,
+  horizontalScale,
+} from 'src/utils/dimensions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import IMAGES from '@images/index';
 import Button from 'src/component/Button';
@@ -204,6 +211,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 
         <View style={styles.inviteSection}>
           <InviteDetails
+            isCollapsible
             selectedTicketType={selectedTicketType}
             onTicketTypePress={() => actionSheetRef?.current?.open()}
             additionalGuests={additionalGuests}
@@ -238,22 +246,22 @@ const styles = StyleSheet.create({
   },
   headerTop: {
     flexDirection: 'row',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: horizontalMarginScale(20),
+    paddingVertical: verticalMarginScale(16),
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   iconButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 22,
+    width: verticalScale(40),
+    height: verticalScale(40),
+    borderRadius: radiusScale(22),
     backgroundColor: COLORS.neutral_surface,
     justifyContent: 'center',
     alignItems: 'center',
   },
   icon: {
-    width: 16,
-    height: 16,
+    width: horizontalScale(16),
+    height: verticalScale(16),
   },
   title: {
     fontSize: fontScale(24),
@@ -263,55 +271,63 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: 16,
-    paddingBottom: 20, // Adjust padding for iOS
+    paddingHorizontal: horizontalMarginScale(16),
+    paddingBottom: verticalMarginScale(20),
   },
   guestCardHeader: {
-    paddingLeft: 16,
-    paddingTop: 8,
-    marginBottom: -40,
+    paddingLeft: horizontalMarginScale(16),
+    paddingTop: verticalMarginScale(8),
+    marginBottom: verticalMarginScale(-40),
     zIndex: 1,
   },
   inviteSection: {
-    paddingTop: verticalMarginScale(24),
+    paddingTop: verticalMarginScale(16),
   },
-
   footer: {
     flexDirection: 'row',
-    paddingHorizontal: 8,
-    paddingTop: 8,
+    paddingHorizontal: horizontalMarginScale(8),
+    paddingTop: verticalMarginScale(8),
     backgroundColor: COLORS.white,
-    gap: 4,
+    gap: horizontalMarginScale(4),
+    borderRadius: radiusScale(32),
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: verticalScale(-4),
+    },
+    shadowOpacity: 0.04,
+    shadowRadius: radiusScale(9),
+    elevation: 4,
+    position: 'relative',
+    zIndex: 1,
   },
   deleteButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: COLORS.bgRed,
+    width: verticalScale(48),
+    height: verticalScale(48),
+    borderRadius: radiusScale(25),
+    backgroundColor: COLORS.errorText,
     alignItems: 'center',
     justifyContent: 'center',
   },
   trashIcon: {
-    width: 20,
-    height: 20,
-    tintColor: COLORS.errorText,
+    width: horizontalScale(16),
+    height: verticalScale(16),
+    tintColor: COLORS.white,
   },
   footerButtons: {
     flex: 1,
     flexDirection: 'row',
-    gap: 4,
+    gap: horizontalMarginScale(4),
   },
   draftButton: {
     flex: 1,
-    borderRadius: 100,
-    height: 50,
-    borderWidth: 1,
+    borderRadius: radiusScale(100),
+    borderWidth: verticalScale(2),
     borderColor: COLORS.black,
   },
   sendButton: {
     flex: 1,
-    borderRadius: 100,
-    height: 50,
+    borderRadius: radiusScale(100),
     backgroundColor: COLORS.black,
   },
   spamButton: {

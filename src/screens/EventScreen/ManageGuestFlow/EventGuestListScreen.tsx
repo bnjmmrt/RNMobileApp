@@ -14,7 +14,14 @@ import {
 } from 'react-native';
 import { COLORS } from '../../../utils/constants';
 import { fontFamily } from 'src/utils/functions';
-import { fontScale, horizontalMarginScale } from 'src/utils/dimensions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  verticalMarginScale,
+  horizontalScale,
+  verticalScale,
+  radiusScale,
+} from 'src/utils/dimensions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
 import { guestListMock, GuestItem } from '../mocks/guestListMock';
@@ -330,22 +337,22 @@ const styles = StyleSheet.create({
 
   headerTop: {
     flexDirection: 'row',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: horizontalMarginScale(20),
+    paddingVertical: verticalMarginScale(16),
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   iconButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 22,
+    width: verticalScale(40),
+    height: verticalScale(40),
+    borderRadius: radiusScale(22),
     backgroundColor: COLORS.neutral_surface,
     justifyContent: 'center',
     alignItems: 'center',
   },
   icon: {
-    width: 16,
-    height: 16,
+    width: horizontalScale(16),
+    height: verticalScale(16),
   },
   title: {
     fontSize: fontScale(24),
@@ -355,22 +362,22 @@ const styles = StyleSheet.create({
   },
 
   listContainer: {
-    paddingHorizontal: 12,
-    paddingBottom: 16,
+    paddingHorizontal: horizontalMarginScale(12),
+    paddingBottom: verticalMarginScale(16),
   },
   guestItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 16,
+    marginTop: verticalMarginScale(16),
   },
   inviteeItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingLeft: 16,
-    paddingRight: 40,
-    paddingVertical: 8,
+    paddingLeft: horizontalMarginScale(16),
+    paddingRight: horizontalMarginScale(40),
+    paddingVertical: verticalMarginScale(8),
   },
   inviteeLeftContainer: {
     flexDirection: 'row',
@@ -380,7 +387,7 @@ const styles = StyleSheet.create({
   leftContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: horizontalMarginScale(10),
   },
   rightContainer: {
     flexDirection: 'row',
@@ -390,17 +397,17 @@ const styles = StyleSheet.create({
     transform: [{ rotate: '180deg' }],
   },
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: verticalScale(40),
+    height: verticalScale(40),
+    borderRadius: radiusScale(20),
   },
   inviteeAvatar: {
-    width: 24,
-    height: 24,
-    borderRadius: 16,
+    width: verticalScale(24),
+    height: verticalScale(24),
+    borderRadius: radiusScale(16),
   },
   guestInfo: {
-    gap: 4,
+    gap: verticalMarginScale(4),
   },
   nameContainer: {
     flexDirection: 'row',
@@ -418,11 +425,11 @@ const styles = StyleSheet.create({
   },
 
   vipContainer: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
+    paddingHorizontal: horizontalMarginScale(6),
+    paddingVertical: verticalMarginScale(2),
     backgroundColor: COLORS.bgBlue,
-    borderRadius: 12,
-    maxWidth: 32,
+    borderRadius: radiusScale(12),
+    maxWidth: horizontalScale(32),
   },
   vipText: {
     fontSize: fontScale(12),
@@ -431,10 +438,10 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   expandButton: {
-    width: 32,
-    height: 32,
-    marginLeft: 8,
-    borderRadius: 16,
+    width: verticalScale(32),
+    height: verticalScale(32),
+    marginLeft: horizontalMarginScale(8),
+    borderRadius: radiusScale(16),
     backgroundColor: COLORS.lighter_gray,
     justifyContent: 'center',
     alignItems: 'center',
@@ -443,29 +450,29 @@ const styles = StyleSheet.create({
     tintColor: COLORS.black,
   },
   confirmedBadge: {
-    width: 18,
-    height: 18,
-    marginRight: 4,
+    width: horizontalScale(18),
+    height: verticalScale(18),
+    marginRight: horizontalMarginScale(4),
   },
   nestedIcon: {
-    marginRight: 8,
+    marginRight: horizontalMarginScale(8),
   },
   inviteesContainer: {
-    marginTop: 4,
+    marginTop: verticalMarginScale(4),
     overflow: 'hidden',
   },
   filterDropdown: {
     flexDirection: 'row',
     alignItems: 'center',
-    columnGap: 10,
-    height: 48,
-    paddingHorizontal: 16,
+    columnGap: horizontalMarginScale(10),
+    height: verticalScale(48),
+    paddingHorizontal: horizontalMarginScale(16),
     justifyContent: 'space-between',
-    marginHorizontal: 20,
-    marginBottom: 12,
+    marginHorizontal: horizontalMarginScale(20),
+    marginBottom: verticalMarginScale(12),
     backgroundColor: COLORS.white,
-    borderRadius: 8,
-    borderWidth: 1,
+    borderRadius: radiusScale(8),
+    borderWidth: verticalScale(1),
     borderColor: COLORS.borderGray,
   },
   dropdownLeft: {
@@ -473,19 +480,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
-    gap: 8,
+    gap: horizontalMarginScale(8),
   },
   filterButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 20,
+    width: verticalScale(32),
+    height: verticalScale(32),
+    borderRadius: radiusScale(20),
     backgroundColor: COLORS.neutral_surface,
     justifyContent: 'center',
     alignItems: 'center',
   },
   filterIcon: {
-    width: 16,
-    height: 16,
+    width: horizontalScale(16),
+    height: verticalScale(16),
     tintColor: COLORS.black,
   },
   content: {
