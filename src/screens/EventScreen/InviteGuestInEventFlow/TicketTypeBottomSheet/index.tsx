@@ -1,18 +1,18 @@
-import {BottomSheetFlatList} from '@gorhom/bottom-sheet';
+import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import React, {
   forwardRef,
   useCallback,
   useImperativeHandle,
   useRef,
 } from 'react';
-import {View} from 'react-native';
+import { View } from 'react-native';
 import BottomSheetComponent, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
-import {COLORS} from 'src/utils/constants';
-import {verticalScale} from 'src/utils/dimensions';
-import {styles} from './style';
+import { COLORS } from 'src/utils/constants';
+import { verticalScale } from 'src/utils/dimensions';
+import { styles } from './style';
 
 export type TicketType = {
   capacity: number;
@@ -33,7 +33,7 @@ export interface TicketTypeBottomSheetInterface {
 const TicketTypeBottomSheet = forwardRef<
   BottomSheetMethods,
   TicketTypeBottomSheetInterface
->(({selectedTicketType, setSelectedTicketType, ticketTypes}, ref) => {
+>(({ selectedTicketType, setSelectedTicketType, ticketTypes }, ref) => {
   const sheetRef = useRef<BottomSheetMethods>(null);
 
   useImperativeHandle(ref, () => ({
@@ -48,14 +48,14 @@ const TicketTypeBottomSheet = forwardRef<
   };
 
   const renderListRow = useCallback(
-    ({item, index}: {item: TicketType; index: number}) => {
+    ({ item, index }: { item: TicketType; index: number }) => {
       const isSelected = item.id === selectedTicketType?.id;
       return (
         <Button
           title={item.name}
           style={[
             styles.actionButton,
-            isSelected && {borderColor: COLORS.black},
+            isSelected && { borderColor: COLORS.black },
           ]}
           onPress={() => {
             setSelectedTicketType(item);
@@ -70,16 +70,16 @@ const TicketTypeBottomSheet = forwardRef<
   return (
     <BottomSheetComponent
       ref={sheetRef}
-      snapPoints={[`${verticalScale(30)}%`]}
-      enableDynamicSizing={true}
+      snapPoints={[`${verticalScale(30)}%`, '40%']}
+      enableDynamicSizing
       onClose={closeSheet}
-      showBottomSafeAreaView={true}>
+      showBottomSafeAreaView={false}>
       <BottomSheetFlatList
         data={ticketTypes}
         renderItem={renderListRow}
         keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{gap: verticalScale(8)}}
-        ListFooterComponent={<View style={{height: verticalScale(30)}} />}
+        contentContainerStyle={{ gap: verticalScale(8) }}
+        ListFooterComponent={<View style={{ height: verticalScale(30) }} />}
         ListHeaderComponent={<></>}
       />
     </BottomSheetComponent>

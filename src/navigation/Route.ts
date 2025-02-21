@@ -18,9 +18,12 @@ export const ROUTES = {
   UserDetail: 'UserDetail',
   ListDetail: 'ListDetail',
   EventDetailsScreen: 'EventDetailsScreen',
+  EventGuestList: 'EventGuestList',
   HostEditProfileScreen: 'HostEditProfileScreen',
   HostConnectedAccountsScreen: 'HostConnectedAccountsScreen',
   WelcomeScreen: 'WelcomeScreen',
+  GuestCheckInScreen: 'GuestCheckInScreen',
+  GuestDetailScreen: 'GuestDetailScreen',
   InviteGuestsScreen: 'InviteGuestsScreen',
   ManageGuestsScreen: 'ManageGuestsScreen',
 } as const;
