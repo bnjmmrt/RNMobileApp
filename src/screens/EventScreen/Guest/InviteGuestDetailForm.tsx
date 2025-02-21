@@ -45,6 +45,7 @@ interface InviteDetailsProps {
   eventStartDate?: string;
   directlySendToConfirm: boolean;
   onDirectlySendToConfirmChange: (value: boolean) => void;
+  ticketTypeRef: React.RefObject<InputRefMethods>;
 }
 
 if (Platform.OS === 'android') {
@@ -68,8 +69,8 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   eventStartDate,
   directlySendToConfirm,
   onDirectlySendToConfirmChange,
+  ticketTypeRef,
 }) => {
-  const ticketTypeRef = useRef<InputRefMethods>(null);
   const inviteMessageRef = useRef<InputRefMethods>(null);
   const guestNoteRef = useRef<InputRefMethods>(null);
 

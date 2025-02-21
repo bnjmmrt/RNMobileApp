@@ -16,17 +16,17 @@ import {
   ImageStyle,
   TextInputProps,
 } from 'react-native';
-import {COLORS} from '../../utils/constants';
-import {useNavigation} from '@react-navigation/native';
-import {CustomText} from '../CustomText';
+import { COLORS } from '../../utils/constants';
+import { useNavigation } from '@react-navigation/native';
+import { CustomText } from '../CustomText';
 import {
   fontScale,
   horizontalMarginScale,
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import {fontFamily} from 'src/utils/functions';
-import {BottomSheetTextInput} from '@gorhom/bottom-sheet';
+import { fontFamily } from 'src/utils/functions';
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
 interface InputProps {
   label?: string;
@@ -110,7 +110,9 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     }
   };
   const requiredText = () =>
-    isRequired && <CustomText style={{color: COLORS.errorText}}> *</CustomText>;
+    isRequired && (
+      <CustomText style={{ color: COLORS.errorText }}> *</CustomText>
+    );
 
   useEffect(() => {
     if (defaultValue != undefined && defaultValue != null) {
@@ -178,7 +180,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
 
       {/* Dynamic Error Message */}
       {errorMessage ? (
-        <Text style={[styles.errorText]}>{errorMessage}</Text>
+        <CustomText style={[styles.errorText]}>{errorMessage}</CustomText>
       ) : null}
     </View>
   );
@@ -205,7 +207,7 @@ const styles = StyleSheet.create({
     height: verticalScale(160),
     paddingTop: verticalMarginScale(10),
   },
-  leftImage: {width: 16, height: 16},
+  leftImage: { width: 16, height: 16 },
   rightImage: {
     width: 13,
     height: 13,

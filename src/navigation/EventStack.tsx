@@ -13,6 +13,7 @@ import GuestCheckInScreen from 'src/screens/EventScreen/Guest/GuestCheckInScreen
 import QRCodeScanner from 'src/screens/EventScreen/Guest/QRScannar';
 import GuestDetailScreen from 'src/screens/EventScreen/ManageGuestFlow/GuestDetailScreen';
 import { ROUTES } from './Route';
+import InviteGuestsManually from 'src/screens/EventScreen/InviteGuestInEventFlow/InviteGuestsManually';
 
 // Define the param list for the stack navigator
 export type EventStackParamList = {
@@ -27,7 +28,11 @@ export type EventStackParamList = {
   QRCodeScanner: undefined;
   GuestDetailScreen: { guest: any };
   [ROUTES.InviteGuestsScreen]: undefined;
-  [ROUTES.ManageGuestsScreen]: undefined;
+  [ROUTES.ManageGuestsScreen]: {
+    isManual: boolean;
+    type: 'contact' | 'email' | 'existing';
+  };
+  [ROUTES.InviteGuestsManuallyScreen]: undefined;
 };
 
 const Stack = createStackNavigator<EventStackParamList>();
@@ -75,6 +80,21 @@ export const EventStack: React.FC = () => {
       <Stack.Screen
         name="AddGuestScreen"
         component={AddGuestScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={ROUTES.InviteGuestsScreen}
+        component={InviteGuests}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={ROUTES.InviteGuestsManuallyScreen}
+        component={InviteGuestsManually}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={ROUTES.ManageGuestsScreen}
+        component={ManageGuests}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

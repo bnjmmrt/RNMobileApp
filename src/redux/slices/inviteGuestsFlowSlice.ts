@@ -1,13 +1,16 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {UserItemInterface} from 'src/screens/UsersModule/UsersListItem';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { UserItemInterface } from 'src/screens/UsersModule/UsersListItem';
+import { ContactItem } from 'src/utils/hooks/useContactPermission';
 
 export interface UserDetailsState {
   selectedUsers: UserItemInterface[];
+  selectedManualUser: ContactItem | null;
   selectedEvent: EventDetailInterface | null;
 }
 
 const initialState: UserDetailsState = {
   selectedUsers: [],
+  selectedManualUser: null,
   selectedEvent: null,
 };
 
@@ -21,6 +24,9 @@ const inviteGuestsFlowSlice = createSlice({
     ) {
       state.selectedUsers = action.payload;
     },
+    setSelectedManualUser(state, action: PayloadAction<ContactItem>) {
+      state.selectedManualUser = action.payload;
+    },
     setSelectedEventForInvite(
       state,
       action: PayloadAction<EventDetailInterface>,
@@ -30,8 +36,11 @@ const inviteGuestsFlowSlice = createSlice({
   },
 });
 
-export const {setSelectedUsersToInvite, setSelectedEventForInvite} =
-  inviteGuestsFlowSlice.actions;
+export const {
+  setSelectedUsersToInvite,
+  setSelectedManualUser,
+  setSelectedEventForInvite,
+} = inviteGuestsFlowSlice.actions;
 
 export default inviteGuestsFlowSlice.reducer;
 

@@ -17,16 +17,16 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {BackHandler, Platform, StyleSheet, View} from 'react-native';
+import { BackHandler, Platform, StyleSheet, View } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
-import {COLORS} from '../../utils/constants';
-import {Wp} from '../../utils/dimensions';
+import { COLORS } from '../../utils/constants';
+import { Wp } from '../../utils/dimensions';
 import {
   getFlashMessageBackgroundColor,
   MessageType,
 } from '../FlashMessageComponent/FlashMessageComponent';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
 interface BottomSheetComponentProps {
   children: React.ReactNode;
@@ -66,7 +66,7 @@ const BottomSheetComponent = forwardRef<
   ) => {
     const flashMessageRef = useRef<FlashMessage | null>(null);
     const sheetRef = useRef<BottomSheetModal>(null);
-    const {dismissAll} = useBottomSheetModal();
+    const { dismissAll } = useBottomSheetModal();
 
     const [isSheetOpen, setIsSheetOpen] = useState(false);
 

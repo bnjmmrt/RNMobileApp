@@ -4,35 +4,37 @@ import {
   useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, RefreshControl, View} from 'react-native';
-import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { FlatList, RefreshControl, View } from 'react-native';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
-import {CustomText} from 'src/component/CustomText';
+import { CustomText } from 'src/component/CustomText';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import FiltersSheet from 'src/component/FilterSheet';
 import Header from 'src/component/Header/Header';
-import {InputRefMethods} from 'src/component/Input/Input';
+import { InputRefMethods } from 'src/component/Input/Input';
 import SearchInput from 'src/component/SearchInput';
-import {EventStackParamList} from 'src/navigation/EventStack';
-import {useFetchAllUsersQuery} from 'src/redux/actions/usersApiAction';
+import { EventStackParamList } from 'src/navigation/EventStack';
+import { ROUTES } from 'src/navigation/Route';
+import { useFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
+import { RootState } from 'src/redux/slices';
+import { setSelectedUsersToInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
 import UserListItem, {
   UserItemInterface,
 } from 'src/screens/UsersModule/UsersListItem';
-import {COLORS} from 'src/utils/constants';
+import { COLORS } from 'src/utils/constants';
 import {
   horizontalMarginScale,
   Hp,
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import createStyles from './styles';
-import {ROUTES} from 'src/navigation/Route';
-import {useDispatch} from 'react-redux';
-import {setSelectedUsersToInvite} from 'src/redux/slices/inviteGuestsFlowSlice';
+import useContacts from 'src/utils/hooks/useContactPermission';
 
 interface InviteGuestsProps
   extends NativeStackScreenProps<EventStackParamList, 'InviteGuestsScreen'> {}
@@ -41,6 +43,7 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
   const styles = createStyles();
   const navigation = useNavigation<NavigationProp<EventStackParamList>>();
   const dispatch = useDispatch();
+  const { requestContactPermission, permissionGranted } = useContacts();
 
   const searchInputRef = useRef<InputRefMethods>(null);
   const filtersSheetRef = useRef<BottomSheetMethods>(null);
@@ -48,14 +51,20 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
   const [allUsers, setAllUsers] = useState<{
     users: UserItemInterface[];
     totalCount: number;
-  }>({totalCount: 0, users: []});
-  const [selectedUsers, setSelectedUsers] = useState<UserItemInterface[]>([]);
+  }>({ totalCount: 0, users: [] });
   const [searchText, setSearchText] = useState<string>('');
   const [filterQuery, setFilterQuery] = useState<string>('');
   const [filterNumber, setFilterNumber] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const {data, isLoading, error, isError, refetch} = useFetchAllUsersQuery({
+  const { selectedUsers } = useSelector(
+    (state: RootState) => ({
+      selectedUsers: state.inviteGuestsFlow.selectedUsers,
+    }),
+    shallowEqual,
+  );
+
+  const { data, isLoading, error, isError, refetch } = useFetchAllUsersQuery({
     take: 10,
     skip: (currentPage - 1) * 10,
     searchValue: searchText,
@@ -79,10 +88,10 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
     );
     if (isSelected) {
       const newArray = selectedUsers.filter(u => u.id !== user.id);
-      setSelectedUsers(newArray);
+      dispatch(setSelectedUsersToInvite(newArray));
     } else {
       const newArray = [...selectedUsers, user];
-      setSelectedUsers(newArray);
+      dispatch(setSelectedUsersToInvite(newArray));
     }
   };
 
@@ -108,11 +117,21 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
 
   const onPressNext = () => {
     dispatch(setSelectedUsersToInvite(selectedUsers));
-    navigation.navigate(ROUTES.ManageGuestsScreen);
+    navigation.navigate(ROUTES.ManageGuestsScreen, {
+      isManual: false,
+      type: 'existing',
+    });
+  };
+
+  const onPressInviteManually = async () => {
+    await requestContactPermission();
+    if (permissionGranted) {
+      navigation.navigate(ROUTES.InviteGuestsManuallyScreen);
+    }
   };
 
   const renderItem = useCallback(
-    ({item}: {item: UserItemInterface}) => {
+    ({ item }: { item: UserItemInterface }) => {
       const isSelected = selectedUsers.some(user => user.id === item.id);
       return (
         <UserListItem
@@ -140,9 +159,13 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
 
   useEffect(() => {
     if (isError) {
-      setAllUsers({totalCount: 0, users: []});
+      setAllUsers({ totalCount: 0, users: [] });
     }
   }, [isError]);
+
+  useEffect(() => {
+    requestContactPermission();
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -157,7 +180,9 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
       <Header
         headerTitle="Invite Guests"
         showProgressBar={false}
-        rightIconWrapperStyle={{backgroundColor: COLORS.black}}
+        rightIconWrapperStyle={{ backgroundColor: COLORS.black }}
+        rightIcon={IMAGES.plus}
+        onPressRightIcon={onPressInviteManually}
       />
       <CustomText style={styles.messageText}>
         {
@@ -174,7 +199,7 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
           filtersSheetRef?.current?.open();
         }}
         rightIconText={String(filterNumber || '') || ''}
-        mainContainerStyle={{marginHorizontal: horizontalMarginScale(20)}}
+        mainContainerStyle={{ marginHorizontal: horizontalMarginScale(20) }}
         defaultValue={searchText}
       />
       <FlatList
@@ -185,9 +210,9 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
         }}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{gap: verticalMarginScale(16)}}
+        contentContainerStyle={{ gap: verticalMarginScale(16) }}
         ListFooterComponent={
-          <View style={{marginBottom: verticalMarginScale(150)}} />
+          <View style={{ marginBottom: verticalMarginScale(150) }} />
         }
         ListEmptyComponent={
           <View
@@ -219,7 +244,7 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
         }Next`}
         onPress={onPressNext}
         colorTheme="dark"
-        style={{position: 'absolute', bottom: verticalScale(8)}}
+        style={{ position: 'absolute', bottom: verticalScale(8) }}
         disabled={selectedUsers.length === 0}
       />
 

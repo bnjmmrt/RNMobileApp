@@ -1,5 +1,5 @@
-import {StyleSheet} from 'react-native';
-import {COLORS} from 'src/utils/constants';
+import { StyleSheet } from 'react-native';
+import { COLORS } from 'src/utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -8,7 +8,7 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import {fontFamily} from 'src/utils/functions';
+import { fontFamily } from 'src/utils/functions';
 
 const createStyles = () => {
   return StyleSheet.create({
@@ -72,35 +72,18 @@ const createStyles = () => {
       borderBottomColor: COLORS.tabBorderColor,
     },
 
-    bypassLabel: {
-      fontSize: fontScale(14),
-    },
-    bypassTextContainer: {
-      marginTop: verticalMarginScale(6),
+    bannerTextContainer: {
       backgroundColor: COLORS.bgBlue,
-      alignSelf: 'flex-start',
-      paddingHorizontal: horizontalMarginScale(8),
-      paddingVertical: verticalMarginScale(4),
-      borderRadius: radiusScale(99),
       flexDirection: 'row',
-      alignItems: 'center',
       gap: horizontalMarginScale(8),
+      paddingVertical: verticalMarginScale(8),
+      paddingHorizontal: horizontalMarginScale(8),
+      borderRadius: radiusScale(8),
     },
-    bypassText: {
-      fontSize: fontScale(11),
-      color: COLORS.blueDark,
-    },
-    bypassInfo: {
+    bannerInfo: {
       height: verticalScale(16),
       width: verticalScale(16),
       tintColor: COLORS.blueDark,
-    },
-    undoCta: {
-      backgroundColor: undefined,
-      width: undefined,
-      height: undefined,
-      paddingVertical: verticalMarginScale(6),
-      paddingHorizontal: horizontalMarginScale(12),
     },
 
     actionCtaContainer: {
@@ -117,6 +100,11 @@ const createStyles = () => {
     actionCta: {
       width: undefined,
       flex: 1,
+    },
+
+    inputStyle: {
+      height: null,
+      paddingVertical: verticalScale(12),
     },
   });
 };
