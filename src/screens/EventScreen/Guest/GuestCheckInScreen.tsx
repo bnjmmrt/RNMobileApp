@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: COLORS.borderGray,
     borderWidth: 1,
-    marginTop: verticalMarginScale(16),
+    marginTop: verticalMarginScale(14),
   },
   username: {
     fontSize: fontScale(14),
