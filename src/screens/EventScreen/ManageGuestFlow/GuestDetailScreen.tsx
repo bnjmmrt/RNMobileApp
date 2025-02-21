@@ -28,6 +28,7 @@ import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import TicketTypeBottomSheet, {
   TicketType,
 } from '../InviteGuestInEventFlow/TicketTypeBottomSheet';
+import DeclineBottomSheet from '../Guest/DeclineBottomSheet';
 
 interface GuestDetailScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -39,6 +40,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const status = guest?.status?.toLowerCase() || 'drafts';
 
   const actionSheetRef = useRef<BottomSheetMethods>(null);
+  const declineSheetRef = useRef<BottomSheetMethods>(null);
 
   const [selectedTicketType, setSelectedTicketType] =
     React.useState<TicketType>();
@@ -81,12 +83,58 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     // Handle profile action
   };
 
+  const getDeclineSheetProps = () => {
+    switch (status) {
+      case 'drafts':
+        return {
+          title: 'Remove Guest from Drafts',
+          description:
+            'Are you sure you want to remove \nselected guests from Drafts?',
+          buttonText: 'Remove from Drafts',
+        };
+      case 'requested':
+        return {
+          title: 'Delete Request',
+          description:
+            'Are you sure you want to decline \nselected guests request?',
+          buttonText: 'Decline Request',
+        };
+      case 'confirmed':
+        return {
+          title: 'Cancel Invite',
+          description:
+            'Are you sure you want to cancel selected guest invites? \nThey will be notified.',
+          buttonText: 'Cancel Invite',
+        };
+      case 'declined':
+        return {
+          title: 'Mark as Spam',
+          description:
+            'Are you sure you want to mark the selected user(s) as spam? \n If they request access to your events in the future, they will automatically be moved to the declined tab. You can manage spam settings at any time from the “Users” tab.',
+          buttonText: 'Mark as Spam',
+        };
+      default:
+        return {
+          title: 'Withdraw Invite',
+          description: 'Are you sure you want to withdraw selected invites?',
+          buttonText: 'Withdraw Invite',
+        };
+    }
+  };
+
+  const handleDelete = () => {
+    // Handle delete action here
+    console.log('Deleting guest:', guest);
+  };
+
   const renderFooterButtons = () => {
     switch (status) {
       case 'drafts':
         return (
           <>
-            <TouchableOpacity style={styles.deleteButton}>
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => declineSheetRef.current?.open()}>
               <Image source={IMAGES.trash} style={styles.trashIcon} />
             </TouchableOpacity>
             <View style={styles.footerButtons}>
@@ -108,7 +156,9 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       case 'requested':
         return (
           <>
-            <TouchableOpacity style={styles.deleteButton}>
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => declineSheetRef.current?.open()}>
               <Image source={IMAGES.trash} style={styles.trashIcon} />
             </TouchableOpacity>
             <Button
@@ -126,14 +176,16 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               style={[styles.sendButton, styles.spamButton]}
               title={BUTTON_LABLE.MARK_AS_SPAM}
               colorTheme="dark"
-              onPress={() => {}}
+              onPress={() => declineSheetRef.current?.open()}
             />
           </>
         );
       case 'confirmed':
         return (
           <>
-            <TouchableOpacity style={styles.deleteButton}>
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => declineSheetRef.current?.open()}>
               <Image source={IMAGES.trash} style={styles.trashIcon} />
             </TouchableOpacity>
             <Button
@@ -147,7 +199,9 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       case 'invited':
         return (
           <>
-            <TouchableOpacity style={styles.deleteButton}>
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => declineSheetRef.current?.open()}>
               <Image source={IMAGES.trash} style={styles.trashIcon} />
             </TouchableOpacity>
             <Button
@@ -234,6 +288,12 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         ticketTypes={mockTicketTypes}
         selectedTicketType={selectedTicketType}
         setSelectedTicketType={setSelectedTicketType}
+      />
+
+      <DeclineBottomSheet
+        ref={declineSheetRef}
+        {...getDeclineSheetProps()}
+        onConfirm={handleDelete}
       />
     </SafeAreaView>
   );
