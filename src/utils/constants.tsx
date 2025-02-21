@@ -51,6 +51,7 @@ export const BUTTON_LABLE = {
   DISCOVER_MORE_EVENTS: 'Discover More Events',
   CHECK_IN: 'Check In',
   PROFILE: 'Profile',
+  INVITE_GUESTS: 'Invite Guests',
 };
 
 export const LABLE = {
