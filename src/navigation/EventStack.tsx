@@ -7,8 +7,8 @@ import RSVPFormScreen from 'src/screens/EventScreen/RSVP/RSVPFormScreen';
 import AddGuestOptionScreen from 'src/screens/EventScreen/RSVP/AddGuestOptionScreen';
 import AddGuestScreen from 'src/screens/EventScreen/RSVP/AddGuestScreen';
 import RSVPInvitedUpcoming from 'src/screens/EventScreen/RSVP/RSVPInvitedUpcoming';
-
-
+import AddAnnouncementScreen from 'src/screens/EventScreen/Announcement/AddAnnouncement/AddAnnouncementScreen';
+import Announcement from 'src/screens/EventScreen/Announcement';
 // Define the param list for the stack navigator
 export type EventStackParamList = {
   EventScreen: undefined;
@@ -60,7 +60,16 @@ export const EventStack: React.FC = () => {
         component={AddGuestScreen}
         options={{ headerShown: false }}
       />
-
+      <Stack.Screen
+        name="AddAnnouncementScreen"
+        component={AddAnnouncementScreen}
+        options={{ headerShown: false }}
+      />
+       <Stack.Screen
+        name="Announcement"
+        component={Announcement}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

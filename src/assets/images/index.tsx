@@ -102,6 +102,7 @@ const IMAGES = {
   host_tiktok: require('./host_tiktok.png'),
   host_x: require('./host_x.png'),
   paragraph_spacing: require('./paragraph-spacing.png'),
+  upload:require('./upload.png'),
 };
 
 export default IMAGES;

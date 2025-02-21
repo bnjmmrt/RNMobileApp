@@ -19,9 +19,9 @@ import {
   verticalScale,
   Wp,
 } from '../utils/dimensions';
-import {fontFamily} from '../utils/functions';
-import {COLORS} from '../utils/constants';
-import {CustomText} from './CustomText';
+import { fontFamily } from '../utils/functions';
+import { COLORS } from '../utils/constants';
+import { CustomText } from './CustomText';
 
 interface ButtonProps {
   title: string;
@@ -55,13 +55,15 @@ const Button: React.FC<ButtonProps> = ({
   clearButtonStyle,
   buttonType = 'solid',
 }) => {
-  const colorbackground = colorTheme === 'dark' ? COLORS.black : COLORS.white;
+  const colorbackground = colorTheme === 'red' ? COLORS.errorText : colorTheme === 'dark' ? COLORS.black : COLORS.white;
   const textColor =
     buttonType === 'stripe'
       ? COLORS.black
-      : colorTheme === 'dark'
-      ? COLORS.white
-      : COLORS.black;
+      : colorTheme === 'red' ?
+        COLORS.white
+        : colorTheme === 'dark'
+          ? COLORS.white
+          : COLORS.black;
 
   return (
     <TouchableOpacity
@@ -72,8 +74,8 @@ const Button: React.FC<ButtonProps> = ({
           backgroundColor: disabled
             ? COLORS.disable
             : buttonType === 'stripe'
-            ? COLORS.white
-            : colorbackground,
+              ? COLORS.white
+              : colorbackground,
           borderWidth: buttonType === 'stripe' ? 2 : 0,
           borderColor: buttonType === 'stripe' ? COLORS.black : 'transparent',
         },
@@ -91,7 +93,7 @@ const Button: React.FC<ButtonProps> = ({
               style={[styles.image, leftImageStyle]}
             />
           )}
-          <Text style={[styles.text, {color: textColor}, textStyle]}>
+          <Text style={[styles.text, { color: textColor }, textStyle]}>
             {title}
           </Text>
           {rightImageSource && (
