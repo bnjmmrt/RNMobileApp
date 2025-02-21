@@ -20,6 +20,10 @@ export interface GuestItem {
   roles: string[];
   invitees?: GuestItem[];
   inviteCount?: number;
+  questionnaire?: {
+    question: string;
+    answer: string;
+  }[];
 }
 
 export const guestListMock: GuestItem[] = [
@@ -81,6 +85,29 @@ export const guestListMock: GuestItem[] = [
         roles: ['DJ'],
       },
     ],
+    questionnaire: [
+      {
+        question: 'Have you attended one of our events in the past?',
+        answer: "Yes! Last year's Super Bowl party in Arizona was incredible!",
+      },
+      {
+        question: 'Any guest references that are currently members?',
+        answer: 'Close friends - Olivia Culpo, Arielle Charnas',
+      },
+      {
+        question: 'What interests you most about this event?',
+        answer: 'The networking opportunities and creative collaborations',
+      },
+      {
+        question: 'Do you have any dietary restrictions or preferences?',
+        answer: 'Vegetarian, gluten-free preferred',
+      },
+      {
+        question:
+          'Would you be interested in contributing to the event (e.g., performing, speaking)?',
+        answer: 'Yes, I would love to do a short performance or DJ set',
+      },
+    ],
   },
   {
     id: '2',
@@ -96,6 +123,29 @@ export const guestListMock: GuestItem[] = [
     followers: 980000,
     roles: ['Musician', 'Producer'],
     inviteCount: 5,
+    questionnaire: [
+      {
+        question: 'Have you attended one of our events in the past?',
+        answer: "No, this would be my first time but I've heard great things!",
+      },
+      {
+        question: 'Any guest references that are currently members?',
+        answer: 'James Wilson and Sarah Chen from the music industry',
+      },
+      {
+        question: 'What interests you most about this event?',
+        answer: 'The opportunity to showcase my latest music productions',
+      },
+      {
+        question: 'Do you have any dietary restrictions or preferences?',
+        answer: 'No restrictions',
+      },
+      {
+        question:
+          'Would you be interested in contributing to the event (e.g., performing, speaking)?',
+        answer: 'Yes, would love to do a live music performance',
+      },
+    ],
   },
   {
     id: '3',

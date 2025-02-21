@@ -23,7 +23,8 @@ import IMAGES from '@images/index';
 import Button from 'src/component/Button';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
 import ProfileCard from '../Guest/ProfileCard';
-import InviteDetails from 'src/screens/EventScreen/Guest/InviteGuestDetailForm';
+import InviteDetails from '../Guest/InviteGuestDetailForm';
+import Questionnaire from '../Guest/Questionnaire';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import TicketTypeBottomSheet, {
   TicketType,
@@ -110,7 +111,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         return {
           title: 'Mark as Spam',
           description:
-            'Are you sure you want to mark the selected user(s) as spam? \n If they request access to your events in the future, they will automatically be moved to the declined tab. You can manage spam settings at any time from the “Users” tab.',
+            'Are you sure you want to mark the selected user(s) as spam? \n If they request access to your events in the future, they will automatically be moved to the declined tab. You can manage spam settings at any time from the "Users" tab.',
           buttonText: 'Mark as Spam',
         };
       default:
@@ -278,6 +279,41 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             directlySendToConfirm={directlySendToConfirm}
             onDirectlySendToConfirmChange={setDirectlySendToConfirm}
           />
+          <View style={{ marginTop: verticalMarginScale(16) }}>
+            <Questionnaire
+              isCollapsible
+              data={
+                guest?.questionnaire || [
+                  {
+                    question:
+                      'Have you attended one of our events in the past?',
+                    answer: "Yes! Last year's Super Bowl party in Arizona",
+                  },
+                  {
+                    question:
+                      'Any guest references that are currently members?',
+                    answer: 'Close friends - Olivia Culpo, Arielle Charnas',
+                  },
+                  {
+                    question: 'What interests you most about this event?',
+                    answer:
+                      'The networking opportunities and creative collaborations',
+                  },
+                  {
+                    question:
+                      'Do you have any dietary restrictions or preferences?',
+                    answer: 'No specific requirements',
+                  },
+                  {
+                    question:
+                      'Would you be interested in contributing to the event (e.g., performing, speaking)?',
+                    answer:
+                      'Yes, would love to share my experience in the industry',
+                  },
+                ]
+              }
+            />
+          </View>
         </View>
       </ScrollView>
 
