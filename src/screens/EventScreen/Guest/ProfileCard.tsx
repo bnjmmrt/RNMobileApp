@@ -13,6 +13,7 @@ import {
 import { fontFamily } from 'src/utils/functions';
 import IMAGES from 'src/assets/images';
 import AvatarInitials from 'src/component/AvatarInitials';
+import StatusLabel from 'src/component/StatusLabel/StatusLabel';
 
 interface ActionButton {
   title: string;
@@ -29,6 +30,7 @@ interface ProfileCardProps {
     followers?: number;
     location?: string;
     isMember?: boolean;
+    status?: string;
   };
   actionButtons: ActionButton[];
 }
@@ -79,6 +81,14 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ guest, actionButtons }) => {
   return (
     <>
       <View style={styles.guestCard}>
+        <View style={styles.guestCardHeader}>
+          <View>
+            <StatusLabel status={guest?.status || 'Drafts'} />
+          </View>
+          <View style={styles.followIndicator}>
+            <Image source={IMAGES.user_check} style={styles.followIcon} />
+          </View>
+        </View>
         <View style={styles.guestCardContent}>
           <View style={styles.profileImageContainer}>
             <ProfileImage
@@ -136,6 +146,33 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ guest, actionButtons }) => {
 };
 
 const styles = StyleSheet.create({
+  guestCardHeader: {
+    paddingLeft: horizontalMarginScale(16),
+    paddingRight: horizontalMarginScale(8),
+    paddingTop: verticalMarginScale(8),
+    // marginBottom: verticalMarginScale(-40),
+    zIndex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    justifyContent: 'space-between',
+  },
+  followIndicator: {
+    width: verticalScale(48),
+    height: verticalScale(40),
+    borderRadius: radiusScale(22),
+    justifyContent: 'center',
+    borderWidth: verticalScale(1),
+    borderColor: COLORS.borderGray,
+    alignItems: 'center',
+  },
+  followIcon: {
+    width: horizontalScale(16),
+    height: verticalScale(16),
+  },
   guestCard: {
     backgroundColor: COLORS.white,
     borderTopLeftRadius: radiusScale(16),

@@ -21,7 +21,6 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import IMAGES from '@images/index';
 import Button from 'src/component/Button';
-import StatusLabel from 'src/component/StatusLabel/StatusLabel';
 import ProfileCard from '../Guest/ProfileCard';
 import InviteDetails from '../Guest/InviteGuestDetailForm';
 import Questionnaire from '../Guest/Questionnaire';
@@ -236,9 +235,6 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View>
-          <View style={styles.guestCardHeader}>
-            <StatusLabel status={guest?.status || 'Drafts'} />
-          </View>
           <ProfileCard
             guest={{
               name: guest?.name || '',
@@ -248,6 +244,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               followers: guest?.followers,
               location: guest?.location,
               isMember: guest?.isMember,
+              status: guest?.status,
             }}
             actionButtons={[
               {
@@ -340,6 +337,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
   },
+
   headerTop: {
     flexDirection: 'row',
     paddingHorizontal: horizontalMarginScale(20),
@@ -369,12 +367,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: horizontalMarginScale(16),
     paddingBottom: verticalMarginScale(20),
-  },
-  guestCardHeader: {
-    paddingLeft: horizontalMarginScale(16),
-    paddingTop: verticalMarginScale(8),
-    marginBottom: verticalMarginScale(-40),
-    zIndex: 1,
   },
   inviteSection: {
     paddingTop: verticalMarginScale(16),
