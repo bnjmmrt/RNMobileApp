@@ -60,6 +60,12 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
   // Use mock data for now
   const guests = guestListMock;
 
+  // Calculate total confirmed guests from entire list
+  const totalConfirmedGuests = guests.filter(
+    guest => guest.status === 'Confirmed',
+  ).length;
+  const totalGuestCount = guests.length;
+
   // Filter and sort guests
   const filteredAndSortedGuests = useMemo(() => {
     let result = [...guests];
@@ -101,7 +107,6 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
   const confirmedGuests = filteredAndSortedGuests.filter(
     guest => guest.status === 'Confirmed',
   ).length;
-  const totalGuests = filteredAndSortedGuests.length;
 
   const toggleExpand = (guestId: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -308,8 +313,11 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
         {renderContent()}
       </View>
 
-      {confirmedGuests > 0 && selectedFilter === 'Confirmed' && (
-        <ProgressBanner confirmed={confirmedGuests} total={totalGuests} />
+      {confirmedGuests > 0 && selectedFilter === 'confirmed' && (
+        <ProgressBanner
+          confirmed={totalConfirmedGuests}
+          total={totalGuestCount}
+        />
       )}
 
       <GuestListFilterSheet
