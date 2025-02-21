@@ -73,7 +73,7 @@ const TicketTypeBottomSheet = forwardRef<
       snapPoints={[`${verticalScale(30)}%`, '40%']}
       enableDynamicSizing
       onClose={closeSheet}
-      showBottomSafeAreaView={false}>
+      showBottomSafeAreaView={true}>
       <BottomSheetFlatList
         data={ticketTypes}
         renderItem={renderListRow}
