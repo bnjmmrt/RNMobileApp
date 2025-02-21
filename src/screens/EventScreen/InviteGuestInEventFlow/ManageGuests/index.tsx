@@ -13,7 +13,7 @@ import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import { CustomText } from 'src/component/CustomText';
 import Header from 'src/component/Header/Header';
-import InviteDetails from 'src/component/InviteDetails';
+import InviteDetails from 'src/screens/EventScreen/Guest/InviteGuestDetailForm';
 import { EventStackParamList } from 'src/navigation/EventStack';
 import { RootState } from 'src/redux/slices';
 import { COLORS } from 'src/utils/constants';

@@ -12,12 +12,12 @@ import {
   Platform,
   UIManager,
 } from 'react-native';
-import { COLORS } from '../../utils/constants';
+import { COLORS } from '../../../utils/constants';
 import { fontFamily } from 'src/utils/functions';
 import { fontScale, horizontalMarginScale } from 'src/utils/dimensions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
-import { guestListMock, GuestItem } from './mocks/guestListMock';
+import { guestListMock, GuestItem } from '../mocks/guestListMock';
 import IMAGES from 'src/assets/images';
 import SearchInput from 'src/component/SearchInput';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
@@ -25,7 +25,7 @@ import {
   GuestListFilterSheet,
   GuestListSortSheet,
   filterOptions,
-} from './Guest/GuestListSheets';
+} from '../Guest/GuestListSheets';
 import ProgressBanner from 'src/component/ProgressBanner/ProgressBanner';
 import GuestEmptyRecord from 'src/component/EmptyRecord/GuestEmptyRecord';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';

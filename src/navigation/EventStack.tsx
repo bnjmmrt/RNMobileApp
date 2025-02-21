@@ -8,10 +8,10 @@ import AddGuestScreen from 'src/screens/EventScreen/RSVP/AddGuestScreen';
 import RSVPInvitedUpcoming from 'src/screens/EventScreen/RSVP/RSVPInvitedUpcoming';
 import RSVPNoStatusApplied from 'src/screens/EventScreen/RSVP/RSVPNoStatusApplied';
 import InviteGuests from 'src/screens/EventScreen/InviteGuestInEventFlow/InviteGuests';
-import EventGuestList from 'src/screens/EventScreen/EventGuestList';
+import EventGuestList from 'src/screens/EventScreen/ManageGuestFlow/EventGuestListScreen';
 import GuestCheckInScreen from 'src/screens/EventScreen/Guest/GuestCheckInScreen';
 import QRCodeScanner from 'src/screens/EventScreen/Guest/QRScannar';
-import GuestDetailScreen from 'src/screens/EventScreen/Guest/GuestDetailScreen';
+import GuestDetailScreen from 'src/screens/EventScreen/ManageGuestFlow/GuestDetailScreen';
 import { ROUTES } from './Route';
 
 // Define the param list for the stack navigator

@@ -15,12 +15,12 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import IMAGES from '@images/index';
 import Button from 'src/component/Button';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
-import ProfileCard from './ProfileCard';
-import InviteDetails from 'src/component/InviteDetails';
+import ProfileCard from '../Guest/ProfileCard';
+import InviteDetails from 'src/screens/EventScreen/Guest/InviteGuestDetailForm';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import TicketTypeBottomSheet, {
   TicketType,
-} from '../../EventScreen/InviteGuestInEventFlow/TicketTypeBottomSheet';
+} from '../InviteGuestInEventFlow/TicketTypeBottomSheet';
 
 interface GuestDetailScreenProps extends NativeStackScreenProps<any, any> {}
 

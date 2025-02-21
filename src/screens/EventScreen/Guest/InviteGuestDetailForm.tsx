@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
-import { CustomText } from '../CustomText';
-import Input, { InputRefMethods } from '../Input/Input';
-import Counter from '../Counter';
-import Button from '../Button';
+import { CustomText } from '../../../component/CustomText';
+import Input, { InputRefMethods } from '../../../component/Input/Input';
+import Counter from '../../../component/Counter';
+import Button from '../../../component/Button';
 import IMAGES from '@images/index';
 import moment from 'moment';
 import {
@@ -14,7 +14,7 @@ import {
   verticalScale,
 } from 'src/utils/dimensions';
 import { COLORS } from 'src/utils/constants';
-import createStyles from './styles';
+import createStyles from '../../../component/InviteDetails/styles';
 
 export interface TicketType {
   id: string;
