@@ -25,7 +25,7 @@ import {
   GuestListFilterSheet,
   GuestListSortSheet,
   filterOptions,
-} from './Components/GuestListSheets';
+} from './Guest/GuestListSheets';
 import ProgressBanner from 'src/component/ProgressBanner/ProgressBanner';
 import GuestEmptyRecord from 'src/component/EmptyRecord/GuestEmptyRecord';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
