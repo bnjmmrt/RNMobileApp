@@ -29,7 +29,8 @@ import {
 import ProgressBanner from 'src/component/ProgressBanner/ProgressBanner';
 import GuestEmptyRecord from 'src/component/EmptyRecord/GuestEmptyRecord';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
-import { ROUTES } from 'src/navigation/Route'
+import { ROUTES } from 'src/navigation/Route';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface EventGuestListProps extends NativeStackScreenProps<any, any> {}
 
@@ -242,14 +243,14 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
         data={filteredAndSortedGuests}
         renderItem={renderGuestItem}
         keyExtractor={item => item.id}
-        contentContainerStyle={[styles.listContainer, { paddingBottom: 100 }]}
+        contentContainerStyle={[styles.listContainer, { paddingBottom: 60 }]}
         showsVerticalScrollIndicator={false}
       />
     );
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <View style={styles.headerTop}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -300,7 +301,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
         {renderContent()}
       </View>
 
-      {confirmedGuests > 0 && (
+      {confirmedGuests > 0 && selectedFilter === 'Confirmed' && (
         <ProgressBanner confirmed={confirmedGuests} total={totalGuests} />
       )}
 
@@ -317,7 +318,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
         selectedValue={selectedSort}
         showBottomSafeAreaView={false}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

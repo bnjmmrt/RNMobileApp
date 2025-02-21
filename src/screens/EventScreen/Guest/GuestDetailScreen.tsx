@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   View,
   Text,
@@ -6,15 +6,21 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
 import { COLORS, BUTTON_LABLE } from 'src/utils/constants';
 import { fontFamily } from 'src/utils/functions';
-import { fontScale } from 'src/utils/dimensions';
+import { fontScale, verticalMarginScale } from 'src/utils/dimensions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import IMAGES from 'src/assets/images';
+import IMAGES from '@images/index';
 import Button from 'src/component/Button';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
 import ProfileCard from './ProfileCard';
+import InviteDetails from 'src/component/InviteDetails';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
+import TicketTypeBottomSheet, {
+  TicketType,
+} from '../../EventScreen/InviteGuestInEventFlow/TicketTypeBottomSheet';
 
 interface GuestDetailScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -24,6 +30,41 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 }) => {
   const guest = route.params?.guest;
   const status = guest?.status?.toLowerCase() || 'drafts';
+
+  const actionSheetRef = useRef<BottomSheetMethods>(null);
+
+  const [selectedTicketType, setSelectedTicketType] =
+    React.useState<TicketType>();
+  const [additionalGuests, setAdditionalGuests] = React.useState(0);
+  const [inviteMessage, setInviteMessage] = React.useState('');
+  const [guestNote, setGuestNote] = React.useState('');
+  const [directlySendToConfirm, setDirectlySendToConfirm] =
+    React.useState(false);
+
+  // Mock ticket types data
+  const mockTicketTypes: TicketType[] = [
+    {
+      id: '1',
+      name: 'Standard',
+      capacity: 100,
+      description: 'Standard ticket type',
+      enabled: true,
+    },
+    {
+      id: '2',
+      name: 'VIP',
+      capacity: 50,
+      description: 'VIP ticket type with premium benefits',
+      enabled: true,
+    },
+    {
+      id: '3',
+      name: 'Premium',
+      capacity: 25,
+      description: 'Premium ticket type with exclusive access',
+      enabled: true,
+    },
+  ];
 
   const handleFavorite = () => {
     // Handle favorite action
@@ -116,7 +157,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.headerTop}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <View style={styles.iconButton}>
@@ -162,56 +203,31 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         </View>
 
         <View style={styles.inviteSection}>
-          <Text style={styles.sectionTitle}>Invite Details</Text>
-          <View style={styles.inviteDetail}>
-            <Text style={styles.detailLabel}>Ticket Type</Text>
-            <TouchableOpacity style={styles.ticketSelector}>
-              <Text style={styles.ticketText}>Standard</Text>
-              <Image source={IMAGES.downArrow} style={styles.arrowIcon} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.inviteDetail}>
-            <Text style={styles.detailLabel}>Additional Guest</Text>
-            <View style={styles.counterContainer}>
-              <TouchableOpacity style={styles.counterButton}>
-                <Text style={styles.counterButtonText}>-</Text>
-              </TouchableOpacity>
-              <Text style={styles.counterText}>0</Text>
-              <TouchableOpacity style={styles.counterButton}>
-                <Text style={styles.counterButtonText}>+</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.messageContainer}>
-            <Text style={styles.messageLabel}>Invite Message</Text>
-            <Text style={styles.messageText}>
-              Hi, you're invited to [Event Name] on [MON DD, YYYY at T:TT PM].
-            </Text>
-            <Text style={styles.messagePlaceholder}>
-              Add your optional message...
-            </Text>
-          </View>
-          <View style={styles.noteContainer}>
-            <Text style={styles.noteLabel}>Guest Note</Text>
-            <Text style={styles.notePlaceholder}>
-              Add a private note. Not visible to the guest.
-            </Text>
-          </View>
-          <View style={styles.bypassContainer}>
-            <Text style={styles.bypassTitle}>
-              Want users to bypass registration?
-            </Text>
-            <TouchableOpacity style={styles.bypassButton}>
-              <Text style={styles.bypassButtonText}>
-                Add guests directly to the confirmed tab
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <InviteDetails
+            selectedTicketType={selectedTicketType}
+            onTicketTypePress={() => actionSheetRef?.current?.open()}
+            additionalGuests={additionalGuests}
+            onAdditionalGuestsChange={setAdditionalGuests}
+            maxAdditionalGuests={5}
+            inviteMessage={inviteMessage}
+            onInviteMessageChange={setInviteMessage}
+            guestNote={guestNote}
+            onGuestNoteChange={setGuestNote}
+            directlySendToConfirm={directlySendToConfirm}
+            onDirectlySendToConfirmChange={setDirectlySendToConfirm}
+          />
         </View>
       </ScrollView>
 
       <View style={styles.footer}>{renderFooterButtons()}</View>
-    </View>
+
+      <TicketTypeBottomSheet
+        ref={actionSheetRef}
+        ticketTypes={mockTicketTypes}
+        selectedTicketType={selectedTicketType}
+        setSelectedTicketType={setSelectedTicketType}
+      />
+    </SafeAreaView>
   );
 };
 
@@ -246,8 +262,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   scrollContent: {
-    paddingBottom: 100,
+    flexGrow: 1,
     paddingHorizontal: 16,
+    paddingBottom: 20, // Adjust padding for iOS
   },
   guestCardHeader: {
     paddingLeft: 16,
@@ -256,134 +273,15 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   inviteSection: {
-    paddingTop: 24,
-    gap: 24,
+    paddingTop: verticalMarginScale(24),
   },
-  sectionTitle: {
-    fontSize: fontScale(18),
-    fontFamily: fontFamily.RomieTrial_Bold,
-    color: COLORS.black,
-  },
-  inviteDetail: {
-    gap: 8,
-  },
-  detailLabel: {
-    fontSize: fontScale(14),
-    color: COLORS.black,
-    fontWeight: '500',
-  },
-  ticketSelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: COLORS.borderGray,
-    borderRadius: 8,
-  },
-  ticketText: {
-    fontSize: fontScale(14),
-    color: COLORS.black,
-  },
-  arrowIcon: {
-    width: 16,
-    height: 16,
-  },
-  counterContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
-  },
-  counterButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: COLORS.lighter_gray,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  counterButtonText: {
-    fontSize: fontScale(20),
-    color: COLORS.black,
-  },
-  counterText: {
-    fontSize: fontScale(16),
-    color: COLORS.black,
-  },
-  messageContainer: {
-    gap: 8,
-  },
-  messageLabel: {
-    fontSize: fontScale(14),
-    color: COLORS.black,
-    fontWeight: '500',
-  },
-  messageText: {
-    fontSize: fontScale(14),
-    color: COLORS.black,
-    backgroundColor: COLORS.lighter_gray,
-    padding: 16,
-    borderRadius: 8,
-  },
-  messagePlaceholder: {
-    fontSize: fontScale(14),
-    color: COLORS.light_gray,
-    backgroundColor: COLORS.white,
-    padding: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.borderGray,
-  },
-  noteContainer: {
-    gap: 8,
-  },
-  noteLabel: {
-    fontSize: fontScale(14),
-    color: COLORS.black,
-    fontWeight: '500',
-  },
-  notePlaceholder: {
-    fontSize: fontScale(14),
-    color: COLORS.light_gray,
-    backgroundColor: COLORS.white,
-    padding: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.borderGray,
-  },
-  bypassContainer: {
-    gap: 8,
-    marginBottom: 24,
-  },
-  bypassTitle: {
-    fontSize: fontScale(14),
-    color: COLORS.black,
-    fontWeight: '500',
-  },
-  bypassButton: {
-    padding: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.borderGray,
-  },
-  bypassButtonText: {
-    fontSize: fontScale(14),
-    color: COLORS.blueDark,
-    textDecorationLine: 'underline',
-  },
+
   footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     flexDirection: 'row',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: 8,
+    paddingTop: 8,
     backgroundColor: COLORS.white,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.borderGray,
-    gap: 12,
+    gap: 4,
   },
   deleteButton: {
     width: 50,
@@ -401,7 +299,7 @@ const styles = StyleSheet.create({
   footerButtons: {
     flex: 1,
     flexDirection: 'row',
-    gap: 12,
+    gap: 4,
   },
   draftButton: {
     flex: 1,
