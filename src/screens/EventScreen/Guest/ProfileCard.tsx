@@ -10,7 +10,7 @@ import {
   verticalScale,
   horizontalScale,
 } from 'src/utils/dimensions';
-import { fontFamily } from 'src/utils/functions';
+import { fontFamily, formatRole } from 'src/utils/functions';
 import IMAGES from 'src/assets/images';
 import AvatarInitials from 'src/component/AvatarInitials';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
@@ -20,17 +20,23 @@ interface ActionButton {
   icon: any;
   onPress: () => void;
 }
+interface Role {
+  roleId: string,
+  roleName: string,
+  status: string,
+}
 
 interface ProfileCardProps {
   guest: {
     name: string;
     avatar?: string;
-    roles?: string[];
-    age?: number;
-    followers?: number;
+    roles?: Role[];
+    age: number;
+    followers?: string;
     location?: string;
     isMember?: boolean;
     status?: string;
+    interests?:string[]
   };
   actionButtons: ActionButton[];
 }
@@ -44,6 +50,7 @@ const ProfileImage = ({
   avatar?: string;
   isMember?: boolean;
 }) => {
+
   if (isMember) {
     return (
       <FastImage
@@ -64,10 +71,10 @@ const ProfileImage = ({
   );
 };
 
-const MemberBadge = () => (
+const MemberBadge = ({role}) => (
   <View style={styles.memberBadge}>
     <Image source={IMAGES.check_verified} style={styles.memberBadgeIcon} />
-    <Text style={styles.memberBadgeText}>Member</Text>
+    <Text style={styles.memberBadgeText}>{formatRole(role)}</Text>
   </View>
 );
 
@@ -77,7 +84,8 @@ const NonMemberBadge = () => (
   </View>
 );
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ guest, actionButtons }) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ guest, actionButtons=[] }) => {
+ console.log("ismember",guest.interests)
   return (
     <>
       <View style={styles.guestCard}>
@@ -96,16 +104,16 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ guest, actionButtons }) => {
               avatar={guest.avatar}
               isMember={guest.isMember}
             />
-            {guest.isMember ? <MemberBadge /> : <NonMemberBadge />}
+            {guest.isMember ? <MemberBadge role={guest?.roles[0].roleName} /> : <NonMemberBadge />}
           </View>
           <Text style={styles.name}>{guest?.name}</Text>
 
           {guest.isMember && (
             <>
               <View style={styles.roleContainer}>
-                {guest?.roles?.map((role: string, index: number) => (
+                {guest?.interests?.map((interest: string, index: number) => (
                   <View key={index} style={styles.role}>
-                    <Text style={styles.roleText}>{role}</Text>
+                    <Text style={styles.roleText}>{interest}</Text>
                   </View>
                 ))}
               </View>
@@ -118,7 +126,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ guest, actionButtons }) => {
                 <View style={[styles.statItem, styles.centerStatItem]}>
                   <Image source={IMAGES.user_check} style={styles.statIcon} />
                   <Text style={styles.statText}>
-                    {((guest?.followers || 0) / 1000000).toFixed(1)}M
+                    {guest?.followers}
                   </Text>
                 </View>
                 <View style={[styles.statItem, styles.rightStatItem]}>
@@ -131,6 +139,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ guest, actionButtons }) => {
         </View>
       </View>
       <View style={styles.actionButtons}>
+        
         {actionButtons.map((button, index) => (
           <TouchableOpacity
             key={index}
@@ -266,7 +275,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     marginTop: verticalMarginScale(16),
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     paddingHorizontal: horizontalMarginScale(20),
   },
   statItem: {

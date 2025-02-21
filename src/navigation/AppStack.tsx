@@ -10,6 +10,8 @@ import { ProfileStack } from './ProfileStack';
 import { EventStack } from './EventStack';
 import InviteReferralBottomSheet from 'src/component/InviteReferralBottomSheet/InviteReferralBottomSheet';
 import WelcomeScreen from 'src/screens/AppFlow/WelcomeScreen/WelcomeScreen';
+import EventDetailsScreen from 'src/screens/EventScreen/EventDetailsScreen';
+import GuestCheckInScreen from 'src/screens/EventScreen/Guest/GuestCheckInScreen';
 
 export type customListType = 'follower' | 'favorite' | 'custom';
 export type AppStackParamList = {
@@ -58,6 +60,16 @@ export const AppStack: React.FC<AppStackProps> = ({
       <Stack.Screen name={ROUTES.EventStack} component={EventStack} />
       <Stack.Screen name={ROUTES.UserDetail} component={UserDetails} />
       <Stack.Screen name={ROUTES.ListDetail} component={ListDetails} />
+      <Stack.Screen
+        name="EventDetailsScreen"
+        component={EventDetailsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="GuestCheckInScreen"
+        component={GuestCheckInScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

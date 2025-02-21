@@ -138,7 +138,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const onCheckInClick = async () => {
-    navigation.navigate('GuestCheckInScreen');
+    navigation.navigate(ROUTES.GuestCheckInScreen);
   };
 
   const onPressInviteGuests = () => {

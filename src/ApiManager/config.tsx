@@ -83,8 +83,9 @@ export const EndPoint = {
   host_custom_lists: 'v1/auth/host/custom-lists',
   hosts_followed:'v1/auth/hosts-followed/',
   referral_requests:'v1/platform/referral-requests',
-  vouch_requests:'v1/platform/vouch-requests'
-
+  vouch_requests:'v1/platform/vouch-requests',
+  validate_qr:'v1/events/guest/ticket/validate',
+  event_guest_details:'v1/events/guest-details/{id}'
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

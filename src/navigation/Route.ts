@@ -26,4 +26,5 @@ export const ROUTES = {
   GuestDetailScreen: 'GuestDetailScreen',
   InviteGuestsScreen: 'InviteGuestsScreen',
   ManageGuestsScreen: 'ManageGuestsScreen',
+  QRCodeScanner:'QRCodeScanner'
 } as const;
