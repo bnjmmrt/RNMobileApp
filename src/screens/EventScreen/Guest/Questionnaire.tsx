@@ -20,7 +20,14 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({
   const renderQuestionAnswer = (question: string, answer: string) => {
     return (
       <View style={styles.questionContainer}>
-        <CustomText style={styles.question}>{question}</CustomText>
+        <CustomText
+          style={styles.question}
+          textProps={{
+            numberOfLines: 1,
+            ellipsizeMode: 'tail',
+          }}>
+          {question}
+        </CustomText>
         <CustomText style={styles.answer}>{answer || 'N/A'}</CustomText>
       </View>
     );
@@ -51,6 +58,7 @@ const styles = StyleSheet.create({
     lineHeight: fontScale(24),
     fontWeight: '500',
     color: COLORS.black,
+    flexShrink: 1,
   },
   answer: {
     fontSize: fontScale(14),
