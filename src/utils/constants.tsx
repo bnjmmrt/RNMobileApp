@@ -57,6 +57,9 @@ export const BUTTON_LABLE = {
   MARK_AS_SPAM: 'Mark as Spam',
   PROFILE: 'Profile',
   INVITE_GUESTS: 'Invite Guests',
+  INVITE_FROM_CONTACTS: 'Invite from Contacts',
+  INVITE_MANUALLY: 'Invite Manually',
+  CLEAR: "Clear"
 } as const;
 
 export const LABLE = {
