@@ -12,13 +12,14 @@ import GradientSeprator from '../GradientSeprator';
 
 interface EventVenueProps {
   item: {};
+  handleCalendarPress:()=>void
 }
 
 const handlEventPress = () => {
   // navigation.navigate('EventDetailsScreen', {item});
 };
 
-const EventVenue: React.FC<EventVenueProps> = ({ item }) => {
+const EventVenue: React.FC<EventVenueProps> = ({ item,handleCalendarPress }) => {
   const dates = formatToDeviceTimeZone(item?.startDate, item?.endDate);
 
 
@@ -40,9 +41,14 @@ const EventVenue: React.FC<EventVenueProps> = ({ item }) => {
   return (
     <View style={[styles.container]}>
       <View style={{ flex: 1, padding: 5 }}>
-        <View style={{ marginVertical: verticalMarginScale(10) }}>
-          <Text style={styles.title}>{dates[0]}</Text>
-          <Text style={styles.subtitle}>{dates[1]}</Text>
+        <View style={{ marginVertical: verticalMarginScale(10),flexDirection:'row',justifyContent:'space-between' }}>
+         <View>
+         <Text style={styles.title}>{dates[0]}</Text>
+         <Text style={styles.subtitle}>{dates[1]}</Text>
+         </View>
+         <TouchableOpacity onPress={handleCalendarPress}>
+         <Image source={IMAGES.calendarCircle}  />
+         </TouchableOpacity>
         </View>
         <GradientSeprator />
         <View style={{ marginVertical: verticalMarginScale(10) }}>

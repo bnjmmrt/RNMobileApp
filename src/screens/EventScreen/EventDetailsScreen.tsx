@@ -1,21 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-  View,
-  ScrollView,
-  StyleSheet,
-  Text,
-} from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { View, ScrollView, StyleSheet, Text } from 'react-native';
 import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
 import { fontFamily } from 'src/utils/functions';
+import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import {
   fontScale,
   verticalMarginScale,
   verticalScale,
   Wp,
+  Hp
 } from 'src/utils/dimensions';
-import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import BackButtonOverlay from 'src/component/BackButton/BackButtonOverlay';
 import EventStatus from 'src/component/Event/EventStatus';
 import EventHostItem from 'src/component/Event/EventHostItem';
@@ -23,6 +19,10 @@ import { FlatList } from 'react-native-gesture-handler';
 import EventVenue from 'src/component/Event/EventVenue';
 import EventOverview from 'src/component/Event/EventOverview';
 import Button from 'src/component/Button';
+import { event_mock } from './eventMock';
+import EventAnouncements from 'src/component/Event/EventAnnouncements';
+import QRCodeBottomsheet from 'src/component/BottomSheet/QRCodeBottomsheet';
+import CalenderEventsBottomSheet from 'src/component/BottomSheet/CalenderEventsBottomSheet';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import { useFetchEventDetailsQuery } from 'src/redux/actions/eventApiAction';
@@ -33,7 +33,7 @@ import { FlashMessageComponent } from 'src/component/FlashMessageComponent/Flash
 import { useAcceptInvitationMutation } from 'src/redux/actions/rspvApiAction';
 import { setSelectedEventForInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: any;
@@ -59,12 +59,13 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
-
+  const qrCodeBottomSheetRef = useRef<any>(null);
+  const calenderEventsBottomSheetRef = useRef<any>(null);
   const { data, isLoading, refetch, isSuccess } = useFetchEventDetailsQuery(
     { eventId: route?.params?.id },
     { refetchOnMountOrArgChange: true },
   );
-
+  const [isQRShown, setIsQRShown] = useState(true);
   useFocusEffect(
     useCallback(() => {
       refetch();
@@ -115,7 +116,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const onViewTicketClick = () => {
-    FlashMessageComponent.show('success', 'in Progress...');
+    qrCodeBottomSheetRef?.current.open();
+    // FlashMessageComponent.show('success', "in Progress...")
+  };
+  const addCalenderEvents = () => {
+    calenderEventsBottomSheetRef.current?.open();
   };
 
   const acceptInvitation = async () => {
@@ -171,7 +176,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             keyExtractor={(item, index) => `${item.id}-${index}`}
             renderItem={({ item }) => <EventHostItem item={item} />}
           />
-          <EventVenue item={data?.data} />
+          <EventVenue
+            item={data?.data}
+            handleCalendarPress={addCalenderEvents}
+          />
           <EventOverview item={data?.data} />
 
           {talents.length > 0 && <EventTalent talents={talents} />}
@@ -232,6 +240,27 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           />
         </View>
       )}
+
+      <CalenderEventsBottomSheet
+        ref={calenderEventsBottomSheetRef}
+        eventDetails={{
+          title: 'React Native Conference',
+          startDate: new Date().toISOString(),
+          endDate: new Date(
+            new Date().getTime() + 2 * 60 * 60 * 1000,
+          ).toISOString(), // 2 hours event
+          location: 'San Francisco, CA',
+          notes: 'A React Native meetup',
+        }}
+      />
+      <QRCodeBottomsheet
+        ref={qrCodeBottomSheetRef}
+        title="Tao Desert Nights Desert Storm NYC House Party"
+        subTitle={'September 8th, 3:00PM EST'}
+        imageURL={isQRShown ? IMAGES.qr : IMAGES.ticket}
+        isQRShown={isQRShown}
+        name="ANURag harod"
+      />
 
       {guestStatus == 'CONFIRMED' && (
         <View style={{ margin: 20 }}>
