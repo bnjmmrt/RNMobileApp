@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Text,
 } from 'react-native';
-import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
+import { BUTTON_LABLE, COLORS, EVENT_STATUS, ROLE } from '../../utils/constants';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
 import { fontFamily } from 'src/utils/functions';
@@ -48,6 +48,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [isDeclinedByHost, setIsDeclinedByHost] = useState(false);
   const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
   const [
     acceptInvite,
     {
@@ -251,13 +252,13 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           />
         </View>
       )}
-      <Button
+      {loginData?.roles[0]?.roleName===ROLE.HOST && (<Button
         disabled={false}
         style={styles.btnStyle}
         title={BUTTON_LABLE.CHECK_IN}
         colorTheme="dark"
         onPress={onCheckInClick}
-      />
+      />)}
 
       <Button
         disabled={false}

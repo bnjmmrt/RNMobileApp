@@ -82,7 +82,7 @@ export const EventStack: React.FC = () => {
         component={AddGuestScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="AddGuestScreen" component={AddGuestScreen} />
+      {/* <Stack.Screen name="AddGuestScreen" component={AddGuestScreen} /> */}
       
       {/* Invite Guest Screens */}
       <Stack.Screen name={ROUTES.InviteGuestsScreen} component={InviteGuests} />
