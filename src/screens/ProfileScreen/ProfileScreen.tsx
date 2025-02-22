@@ -1,7 +1,7 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, TouchableOpacity, ScrollView, Platform} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { View, TouchableOpacity, ScrollView, Platform } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import {
   BUTTON_LABLE,
   COLORS,
@@ -17,33 +17,27 @@ import ProfileTopView from './ProfileTopView';
 import ProfileListItem from './ProfileListItem';
 import TermsAndPolicy from '../../component/TermsAndPlolicy/TermsAndPolicy';
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
-import {Text} from 'react-native-animatable';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../redux/slices';
+import { Text } from 'react-native-animatable';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../redux/slices';
 import EditPictureBottomSheet from '../../component/BottomSheet/EditPictureBottomSheet';
 import DeleteAccountBottomSheet from 'src/component/BottomSheet/DeleteAccountBottomSheet';
 import useApi from '../../axios/useApi';
-import {EndPoint} from '../../ApiManager/config';
-import {environment} from '../../../environments/environment';
+import { EndPoint } from '../../ApiManager/config';
+import { environment } from '../../../environments/environment';
 import ContactSupporrtBottomSheet from 'src/component/BottomSheet/ContactSupporrtBottomSheet';
-import {setAuthToken} from 'src/redux/slices/authSlice';
-import {CommonActions, useFocusEffect} from '@react-navigation/native';
-import {resetLoginData} from 'src/redux/slices/authSlice';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
-import {verticalScale} from 'src/utils/dimensions';
-import {resetAppFlowDetails} from 'src/redux/slices/appFlowSlice';
-import {
-  resetProfileData,
-  setProfileData,
-} from 'src/redux/slices/appGlobalDataSlice';
-import {setNotificationSettings} from 'src/redux/slices/appSettingsSlice';
-import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import CalenderEventsBottomSheet from 'src/component/BottomSheet/CalenderEventsBottomSheet';
-import QRCodeBottomsheet from 'src/component/BottomSheet/QRCodeBottomsheet';
-
+import { setAuthToken } from 'src/redux/slices/authSlice';
+import { CommonActions, useFocusEffect } from '@react-navigation/native';
+import { resetLoginData } from 'src/redux/slices/authSlice';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { verticalScale } from 'src/utils/dimensions';
+import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
+import { resetProfileData, setProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import { setNotificationSettings } from 'src/redux/slices/appSettingsSlice';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 // Define the type for navigation props
-interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
+interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
 interface ListItem {
   id: string;
@@ -51,8 +45,8 @@ interface ListItem {
   image: string;
   onPress?: any;
 }
-const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
-  const {apiRequest, loading, error} = useApi();
+const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
+  const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
   const styles = ProfileScreenStyle();
   const [URL, setURL] = useState('');
@@ -62,16 +56,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const savePhotoBottomSheetRef = useRef<any>(null);
   const logoutBottomSheetRef = useRef<any>(null);
   const deleteAccountBottomSheetRef = useRef<any>(null);
-  const canelderEventsBottomSheetRef = useRef<any>(null);
-
   const bottomSheetRef = useRef(null);
 
   const userId = useSelector((state: RootState) => state.auth.userId);
   const role = useSelector((state: RootState) => state.auth.role);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const profileData = useSelector(
-    (state: RootState) => state.appFlowApiData?.profileData,
-  );
+  const profileData = useSelector((state: RootState) => state.appFlowApiData?.profileData);
   const [isShown, setIsShown] = useState(false);
 
   useFocusEffect(
@@ -150,27 +140,27 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const roleText = (role: string) => {
     switch (role.toLowerCase()) {
       case 'member':
-        return 'Member';
+        return 'Member'
       case 'non_member':
-        return 'Non-Member';
+        return 'Non-Member'
       case 'host':
-        return 'Host';
+        return 'Host'
       default:
-        return 'Non-Member';
+        return 'Non-Member'
     }
   };
 
   const items: ListItem[] = [
-    {id: '1', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit},
-    {id: '2', title: PROFILE.NOTIFICATION, image: IMAGES.notification},
-    {id: '3', title: PROFILE.FEEDBACK, image: IMAGES.feedback},
+    { id: '1', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit },
+    { id: '2', title: PROFILE.NOTIFICATION, image: IMAGES.notification },
+    { id: '3', title: PROFILE.FEEDBACK, image: IMAGES.feedback },
     {
       id: '4',
       title: PROFILE.CONTACT_SUPPORT,
       image: IMAGES.contact,
       onPress: contactSupportModal,
     },
-    {id: '5', title: PROFILE.DELETE_ACCOUNT, image: '', onPress: deleteAccount},
+    { id: '5', title: PROFILE.DELETE_ACCOUNT, image: '', onPress: deleteAccount },
   ];
 
   const itemsExtras: ListItem[] = [
@@ -219,7 +209,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
       title: PROFILE.APPLY_FOR_MEMBERSHIP,
       image: IMAGES.membership,
     },
-    {id: '7', title: PROFILE.DELETE_ACCOUNT, image: '', onPress: deleteAccount},
+    { id: '7', title: PROFILE.DELETE_ACCOUNT, image: '', onPress: deleteAccount },
   ];
 
   useEffect(() => {
@@ -227,9 +217,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     if (loginData.isInvited && role.toLocaleLowerCase() === 'non_member') {
       listItems = items;
     } else if (role.toLocaleLowerCase() === 'host') {
-      listItems = hostItems;
+      listItems = hostItems
     } else {
-      listItems = itemsExtras;
+      listItems = itemsExtras
     }
     // const listItems =
     //   loginData?.roles[0].roleName === ROLE.MEMBER || loginData?.roles[0].roleName === ROLE.NON_MEMBER
@@ -268,7 +258,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     const fileUploadResponse: any = await apiRequest(
       'put',
       EndPoint.user_profile_picture + userId,
-      {profilePicture: url},
+      { profilePicture: url },
     );
 
     if (fileUploadResponse.status === 200) {
@@ -289,16 +279,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     const response: any = await apiRequest(
       'put',
       `v1/auth/host/${userId}/profile`,
-      requestObject,
+      requestObject
     );
     if (response.status === 200) {
-      dispatch(
-        setProfileData({
-          ...profileData,
-          companyLogo: response?.data?.companyLogo,
-        }),
-      );
-      FlashMessageComponent.show('success', 'Photo updated successfully');
+      dispatch(setProfileData({ ...profileData, companyLogo: response?.data?.companyLogo }))
+      FlashMessageComponent.show('success', "Photo updated successfully")
     }
   };
 
@@ -313,9 +298,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         const imageUrl =
           environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
         if (role.toLocaleLowerCase() === 'host') {
-          await updateHostProfilePhoto(imageUrl);
+          await updateHostProfilePhoto(imageUrl)
         } else {
-          await updateProfilePhoto(imageUrl);
+          await updateProfilePhoto(imageUrl)
         }
       } else {
         //display error
@@ -339,7 +324,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const logOut = () => {
     const resetAction = CommonActions.reset({
       index: 0,
-      routes: [{name: 'AuthStack'}],
+      routes: [{ name: 'AuthStack' }],
     });
     dispatch(resetProfileData());
     dispatch(resetLoginData());
@@ -350,12 +335,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     navigation.replace("AuthStack")
   };
 
-  
   return (
     <View
       style={[
         styles.container,
-        {backgroundColor: !isInvited ? COLORS.black2 : COLORS.white},
+        { backgroundColor: !isInvited ? COLORS.black2 : COLORS.white },
       ]}>
       {isInvited ? (
         <BeforeAppStaticComponent
@@ -363,17 +347,13 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
           subTitle={LABLE.MANAGE_YOUR_EVENTS}
         />
       ) : (
-        <View style={{backgroundColor: COLORS.white}}>
+        <View style={{ backgroundColor: COLORS.white }}>
           <HeaderComponent isDarkTheme={false} />
 
           <ScrollView>
             <ProfileTopView
               editPhotoClick={editPhotoClick}
-              profilePic={
-                role.toLocaleLowerCase() === 'host'
-                  ? profileData?.companyLogo
-                  : profileData?.imageUrl
-              }
+              profilePic={role.toLocaleLowerCase() === 'host' ? profileData?.companyLogo : profileData?.imageUrl}
               name={
                 profileData?.firstName
                   ? `${profileData?.firstName} ${profileData?.lastName}`
@@ -400,9 +380,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
             />
 
             <TouchableOpacity
-              // onPress={() => handleLogoutPress()}
-             onPress={() => handleLogoutPress()}
-              style={{marginBottom: verticalScale(50)}}>
+              onPress={() => handleLogoutPress()}
+              style={{ marginBottom: verticalScale(50) }}>
               <Text style={styles.textBelowStyle}>{PROFILE.LOGOUT}</Text>
             </TouchableOpacity>
           </ScrollView>
@@ -443,18 +422,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
             snapPoints={[Platform.OS == 'android' ? '40%' : '30%']}
             image={null}
           />
-
-          
-
-         {/* <QRCodeBottomsheet
-            ref={canelderEventsBottomSheetRef}
-            title='Tao Desert Nights Desert Storm NYC House Party'
-            subTitle={'September 8th, 3:00PM EST'}
-            imageURL={IMAGES.qr}
-            name="ANURag harod"
-          /> */}
           <DeleteAccountBottomSheet
-          
             ref={deleteAccountBottomSheetRef}
             onPress={deleteAccount}
           />
