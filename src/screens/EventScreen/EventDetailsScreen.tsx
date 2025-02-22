@@ -4,8 +4,14 @@ import {BUTTON_LABLE, COLORS, EVENT_STATUS} from '../../utils/constants';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
 import {fontFamily} from 'src/utils/functions';
-import {fontScale, Hp, verticalScale, Wp} from 'src/utils/dimensions';
 import {RouteProp, useFocusEffect, useRoute} from '@react-navigation/native';
+import {
+  fontScale,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+  Hp
+} from 'src/utils/dimensions';
 import BackButtonOverlay from 'src/component/BackButton/BackButtonOverlay';
 import EventStatus from 'src/component/Event/EventStatus';
 import EventHostItem from 'src/component/Event/EventHostItem';
@@ -14,28 +20,29 @@ import EventVenue from 'src/component/Event/EventVenue';
 import EventOverview from 'src/component/Event/EventOverview';
 import Button from 'src/component/Button';
 import {event_mock} from './eventMock';
-import {useSelector} from 'react-redux';
-import {RootState} from 'src/redux/slices';
-import {useFetchEventDetailsQuery} from 'src/redux/actions/eventApiAction';
-import IMAGES from '@images/index';
-import EventTalent from 'src/component/Event/EventTalent';
-import {ROUTES} from 'src/navigation/Route';
-import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import {useAcceptInvitationMutation} from 'src/redux/actions/rspvApiAction';
 import EventAnouncements from 'src/component/Event/EventAnnouncements';
 import QRCodeBottomsheet from 'src/component/BottomSheet/QRCodeBottomsheet';
 import CalenderEventsBottomSheet from 'src/component/BottomSheet/CalenderEventsBottomSheet';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+import { useFetchEventDetailsQuery } from 'src/redux/actions/eventApiAction';
+import IMAGES from '@images/index';
+import EventTalent from 'src/component/Event/EventTalent';
+import { ROUTES } from 'src/navigation/Route';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { useAcceptInvitationMutation } from 'src/redux/actions/rspvApiAction';
+import { setSelectedEventForInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
+
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
-  params: {
-    item: {};
-  };
+  params: any;
 };
 
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   navigation,
 }) => {
+  const dispatch = useDispatch();
   const route = useRoute<RouteProp<RouteParams>>();
   const [isDeclinedByMe, setIsDeclinedByMe] = useState(false);
   const [isDeclinedByHost, setIsDeclinedByHost] = useState(false);
@@ -43,7 +50,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const userId = useSelector((state: RootState) => state.auth.userId);
   const [
     acceptInvite,
-    {isLoading: acceptLoading, isError: acceptError, isSuccess: acceptSuccess},
+    {
+      isLoading: acceptLoading,
+      isError: acceptError,
+      isSuccess: acceptSuccess,
+    },
   ] = useAcceptInvitationMutation();
 
   const [collaborators, setCollaborators] = useState([]);
@@ -69,7 +80,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   }, [guestStatus]);
 
   useEffect(() => {
-    console.log('Event data:', data);
+    // console.log('Event data:', data);
     if (data && data.data && data?.data?.collaborators) {
       setCollaborators(data.data.collaborators);
     }
@@ -80,7 +91,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
     setGuestStatus(data?.data?.currentGuestStatus);
   }, [data]);
-  console.log('Event details', route.params.id);
+  // console.log('Event details', route.params.id);
   const statusMap = [
     {id: '1', label: EVENT_STATUS.AWAITING},
     {id: '2', label: EVENT_STATUS.INVITED},
@@ -131,6 +142,15 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     }
   };
 
+  const onCheckInClick = async () => {
+    navigation.navigate('GuestCheckInScreen');
+  };
+
+  const onPressInviteGuests = () => {
+    dispatch(setSelectedEventForInvite(data.data));
+    navigation.navigate(ROUTES.InviteGuestsScreen);
+  };
+
   return (
     <View style={{...styles.container}}>
       <ScrollView>
@@ -164,6 +184,18 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
           {talents.length > 0 && <EventTalent talents={talents} />}
           {/* {<EventAnouncements talents={talents} />} */}
+
+          <Button
+            disabled={false}
+            style={styles.btnStyleLight}
+            title="View Guest List"
+            colorTheme="light"
+            onPress={() =>
+              navigation.navigate('EventGuestList', {
+                guests: data?.data?.guests || [],
+              })
+            }
+          />
         </View>
       </ScrollView>
 
@@ -249,6 +281,22 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         </View>
       )}
 
+      <Button
+        disabled={false}
+        style={styles.btnStyle}
+        title={BUTTON_LABLE.CHECK_IN}
+        colorTheme="dark"
+        onPress={onCheckInClick}
+      />
+
+      <Button
+        disabled={false}
+        style={styles.btnStyleLight}
+        title={BUTTON_LABLE.INVITE_GUESTS}
+        colorTheme="light"
+        onPress={onPressInviteGuests}
+      />
+
       <BackButtonOverlay onPress={() => navigation.goBack()} />
     </View>
   );
@@ -265,9 +313,10 @@ const styles = StyleSheet.create({
   btnStyleLight: {
     borderRadius: 100,
     marginVertical: 10,
-    borderWidth: 1,
+    borderWidth: verticalScale(2),
     borderColor: COLORS.black,
-    height: 50,
+    height: undefined,
+    paddingVertical: verticalMarginScale(16),
   },
   container: {
     flexDirection: 'column',
