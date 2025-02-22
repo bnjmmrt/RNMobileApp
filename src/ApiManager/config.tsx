@@ -87,6 +87,7 @@ export const EndPoint = {
   validate_qr:'v1/events/guest/ticket/validate',
   event_guest_details:'v1/events/guest-details/',
   events: 'v1/events',
+  generate_ticket:'v1/events/guest/ticket/'
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

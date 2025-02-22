@@ -1,5 +1,5 @@
 import IMAGES from '@images/index';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -94,7 +94,7 @@ const renderItemComponent = (
             </View>
           )}
           {!item?.isPending && (
-            <TouchableOpacity onPress={() => toggleExpand(index)}>
+            <TouchableOpacity onPress={() => toggleExpand(item)}>
               <Image
                 source={
                   item?.isExpand ? IMAGES.arrowupCircle : IMAGES.arrowDownCircle
@@ -133,32 +133,50 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   privateGuestNote,
   maxAdditionalGuests,
 }) => {
+  const [expandlist, setExpandList] = useState<
+    {
+      id: number;
+      isExpand: boolean;
+      isPending: boolean;
+      additionalGuest: any;
+    }[]
+  >([]);
+
   const pendingGuestCount = maxAdditionalGuests - additionalGuests.length;
   const guestString = pendingGuestCount > 1 ? ' Guests' : ' Guest';
 
-  let expandIndex = additionalGuests.map((guest, index) => ({
-    id: index,
-    isExpand: false,
-    isPending: false,
-    additionalGuest: guest,
-  }));
-
-  if (expandIndex.length < maxAdditionalGuests) {
-    expandIndex.push({
-      id: expandIndex.length,
+  useEffect(() => {
+    let expandIndex = additionalGuests.map((guest, index) => ({
+      id: index,
       isExpand: false,
-      isPending: true,
-      additionalGuest: { firstName: pendingGuestCount + guestString },
-    });
-  }
-  const [expandlist, setExpandList] = useState<any[]>(expandIndex);
+      isPending: false,
+      additionalGuest: guest,
+    }));
 
-  const toggleExpand = (index: number) => {
-    setExpandList([
-      ...expandlist,
-      (expandlist[index].isExpand = !expandlist[index].isExpand),
-    ]);
-    console.log('toggleExpand', expandlist);
+    if (expandIndex.length < maxAdditionalGuests) {
+      expandIndex.push({
+        id: expandIndex.length,
+        isExpand: false,
+        isPending: true,
+        additionalGuest: { firstName: pendingGuestCount + guestString },
+      });
+    }
+    setExpandList(expandIndex);
+  }, [additionalGuests]);
+
+  const toggleExpand = (guest: any) => {
+    console.log('expandlist', guest?.isExpand);
+    console.log(
+      'expandlist???',
+      expandlist.map(item =>
+        item.id === guest?.id ? { ...item, isExpand: !item.isExpand } : item,
+      ),
+    );
+    setExpandList(
+      expandlist.map(item =>
+        item.id === guest?.id ? { ...item, isExpand: !item.isExpand } : item,
+      ),
+    );
   };
 
   return (
@@ -193,14 +211,15 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
         />
       </View>
       <Text style={styles.sectionTitle}>{LABLE.PLUS_1S}</Text>
-      <FlatList
-        data={expandIndex}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item, index }) =>
-          renderItemComponent(item, index, expandlist, toggleExpand)
-        }
-        //   contentContainerStyle={styles.container}
-      />
+     <FlatList
+          data={expandlist || []}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item, index }) =>
+            renderItemComponent(item, index, expandlist, toggleExpand)
+          }
+          //   contentContainerStyle={styles.container}
+        />
+    
     </View>
   );
 };

@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, ScrollView, StyleSheet, Text } from 'react-native';
-import { BUTTON_LABLE, COLORS, EVENT_STATUS, ROLE } from '../../utils/constants';
+import {
+  BUTTON_LABLE,
+  COLORS,
+  EVENT_STATUS,
+  ROLE,
+} from '../../utils/constants';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
 import { fontFamily } from 'src/utils/functions';
@@ -10,7 +15,7 @@ import {
   verticalMarginScale,
   verticalScale,
   Wp,
-  Hp
+  Hp,
 } from 'src/utils/dimensions';
 import BackButtonOverlay from 'src/component/BackButton/BackButtonOverlay';
 import EventStatus from 'src/component/Event/EventStatus';
@@ -32,8 +37,11 @@ import { ROUTES } from 'src/navigation/Route';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { useAcceptInvitationMutation } from 'src/redux/actions/rspvApiAction';
 import { setSelectedEventForInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
+import { EndPoint } from 'src/ApiManager/config';
+import useApi from 'src/axios/useApi';
+import moment from 'moment';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: any;
@@ -42,6 +50,7 @@ type RouteParams = {
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   navigation,
 }) => {
+  const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
   const route = useRoute<RouteProp<RouteParams>>();
   const [isDeclinedByMe, setIsDeclinedByMe] = useState(false);
@@ -67,6 +76,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     { refetchOnMountOrArgChange: true },
   );
   const [isQRShown, setIsQRShown] = useState(true);
+  // const [qrURL, setQrURL] = useState('');
+  const [eventDetails, setEventDetails] = useState<any>({});
+  const [calendarDetails, setCalendarDetails] = useState<any>({});
   useFocusEffect(
     useCallback(() => {
       refetch();
@@ -80,12 +92,35 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     }
   }, [guestStatus]);
 
+
+  const parseDate = (dateStr:any) => {
+    const [datePart, timePart] = dateStr.split(" ");
+    return new Date(`${datePart}T${timePart}Z`).toISOString();
+  };
   useEffect(() => {
     // console.log('Event data:', data);
+    if(data?.data){
+      setEventDetails({
+        title: data.data.name,
+        subTitle: data.data.startDate,
+        name: data.data.owner.firstName + ' ' + data.data.owner.lastName,
+      });
+   
+
+const startDate = moment.utc(data.data.startDate).toISOString();
+const endDate = moment.utc(data.data.endDate).toISOString();
+      setCalendarDetails({
+        title: data.data.name,
+        startDate: startDate,
+        endDate: endDate, 
+        location: data.data?.location.city,
+        notes: data.data.description,
+      });
+    }
     if (data && data.data && data?.data?.collaborators) {
       setCollaborators(data.data.collaborators);
+     
     }
-
     if (data && data.data && data?.data?.talents) {
       setTalents(data.data.talents);
     }
@@ -116,10 +151,20 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     navigation.goBack();
   };
 
+  const generateTicket = async () => {
+    const response: any = await apiRequest(
+      'get',
+      EndPoint.generate_ticket + data?.data?.guestId,
+    );
+    if (response.status === 200) {
+      setEventDetails({...eventDetails,qrUrl:response.data.b64QRCode});
+      qrCodeBottomSheetRef?.current.open();
+    }
+  };
+
   const onViewTicketClick = () => {
     //API call
-    qrCodeBottomSheetRef?.current.open();
-    // FlashMessageComponent.show('success', "in Progress...")
+    generateTicket();
   };
   const addCalenderEvents = () => {
     calenderEventsBottomSheetRef.current?.open();
@@ -145,7 +190,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const onCheckInClick = async () => {
-     navigation.navigate(ROUTES.QRCodeScanner);
+    navigation.navigate(ROUTES.QRCodeScanner);
   };
 
   const onPressInviteGuests = () => {
@@ -245,23 +290,15 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
       <CalenderEventsBottomSheet
         ref={calenderEventsBottomSheetRef}
-        eventDetails={{
-          title: 'React Native Conference',
-          startDate: new Date().toISOString(),
-          endDate: new Date(
-            new Date().getTime() + 2 * 60 * 60 * 1000,
-          ).toISOString(), // 2 hours event
-          location: 'San Francisco, CA',
-          notes: 'A React Native meetup',
-        }}
+        eventDetails={calendarDetails}
       />
       <QRCodeBottomsheet
         ref={qrCodeBottomSheetRef}
-        title="Tao Desert Nights Desert Storm NYC House Party"
-        subTitle={'September 8th, 3:00PM EST'}
-        imageURL={isQRShown ? IMAGES.qr : IMAGES.ticket}
+        title={eventDetails?.title}
+        subTitle={eventDetails?.subTitle}
+        imageURL={eventDetails?.qrUrl ? eventDetails?.qrUrl : IMAGES.ticket}
         isQRShown={isQRShown}
-        name="ANURag harod"
+        name={eventDetails?.name}
       />
 
       {guestStatus == 'CONFIRMED' && (
@@ -272,6 +309,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             title={BUTTON_LABLE.VIEW_TICKET}
             colorTheme="dark"
             onPress={onViewTicketClick}
+            loading={loading}
           />
           <Button
             disabled={false}
@@ -282,13 +320,15 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           />
         </View>
       )}
-      {loginData?.roles[0]?.roleName===ROLE.HOST && (<Button
-        disabled={false}
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.CHECK_IN}
-        colorTheme="dark"
-        onPress={onCheckInClick}
-      />)}
+      {loginData?.roles[0]?.roleName === ROLE.HOST && (
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.CHECK_IN}
+          colorTheme="dark"
+          onPress={onCheckInClick}
+        />
+      )}
 
       <Button
         disabled={false}

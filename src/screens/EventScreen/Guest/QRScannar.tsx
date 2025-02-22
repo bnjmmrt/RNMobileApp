@@ -27,6 +27,8 @@ import useApi from 'src/axios/useApi';
 import { EndPoint } from 'src/ApiManager/config';
 import { ROUTES } from 'src/navigation/Route';
 import { Image } from 'react-native-animatable';
+import FullScreenLoader from 'src/component/FullScreenLoader';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 const { width } = Dimensions.get('window');
 const SCANNER_SIZE = width * 0.6;
@@ -58,6 +60,8 @@ const QRCodeScanner = () => {
         navigation.navigate(ROUTES.GuestCheckInScreen, {
           guestId: response.data.guestId,
         });
+      }else {
+        FlashMessageComponent.show("error","some error")
       }
     }
   };
@@ -98,7 +102,15 @@ const QRCodeScanner = () => {
   }
 
   if (!device) return <Text>Loading Camera...</Text>;
-  if (loading) return <Text>validating QR code</Text>;
+  if (loading)
+    return (
+      <FullScreenLoader loading={loading}>
+        <View
+          style={styles.validationText}>
+          <Text>Validating QR code</Text>
+        </View>
+      </FullScreenLoader>
+    );
 
   return (
     <View style={styles.container}>
@@ -209,4 +221,5 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderTopWidth: 0,
   },
+  validationText:{ flex: 1, justifyContent: 'center', alignItems: 'center' }
 });

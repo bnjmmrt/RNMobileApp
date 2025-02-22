@@ -228,6 +228,14 @@ export const LABLE = {
   SEARCH_USERS: 'Search Users',
   MANAGE_GUESTS: 'Manage Guests',
   USER_ALREADY_CHECKED_IN: 'User already checked-in',
+  SHOW_QR_CHECKIN_MESSAGE:'Show this QR code at event check-in',
+  NEVER_MISS_MOMENT:'Never miss a moment.\nSync this event to your calendar.',
+  ADD_TO_CALENDAR:'Add To Calendar',
+  ADD_TO_APPLE_CALENDAR:'Add to Apple Calendar',
+  ADD_TO_GOOGLE_CALENDAR:'Add to Google Calendar',
+  NO_CALENDAR_FOUND:'No calendar found on this device.',
+  ACCESS_CALENDAR:'Calendar access is required to add events.',
+  PERMISSION_DENIED:'Permission Denied'
 };
 
 export const PROFILE = {

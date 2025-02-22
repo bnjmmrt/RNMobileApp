@@ -88,7 +88,7 @@ export const EventStack: React.FC = () => {
         options={{ headerShown: false }}
       />
 
-      <Stack.Screen name="QRCodeScanner" component={QRCodeScanner} />
+      <Stack.Screen name="QRCodeScanner" component={QRCodeScanner}  options={{ headerShown: false }}/>
       <Stack.Screen
         name={ROUTES.InviteGuestsScreen}
         component={InviteGuests}
