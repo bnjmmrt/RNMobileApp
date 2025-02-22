@@ -120,6 +120,9 @@ const IMAGES = {
   plus_black: require('./plusBlack.png'),
   minus: require('./minus.png'),
   corner_up_left: require('./corner-up-left.png'),
+  close_gray: require('./close-gray.png'),
+  menu_gray: require('./menu-gray.png'),
+  user_gray: require('./user-gray.png'),
 };
 
 export default IMAGES;

@@ -9,9 +9,9 @@ import {
   ScrollView,
   FlatList,
 } from 'react-native';
-import {Image} from 'react-native-animatable';
+import { Image } from 'react-native-animatable';
 import AvatarInitials from 'src/component/AvatarInitials';
-import {BUTTON_LABLE, COLORS, LABLE} from 'src/utils/constants';
+import { BUTTON_LABLE, COLORS, LABLE } from 'src/utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -19,49 +19,60 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-const guests = [
-  {
-    id: '1',
-    name: 'Anu Ha',
-    username: 'Username',
-    checkedIn: true,
-    status: 'Checked-In',
-  },
-  {
-    id: '2',
-    name: 'John Doe',
-    username: 'JohnD',
-    checkedIn: false,
-    status: 'Check-In',
-  },
-  {
-    id: '3',
-    name: 'Jane Smith',
-    username: 'JaneS',
-    checkedIn: false,
-    status: 'Pending',
-  },
-];
 
-const expandIndex=[{id:0,isExpand:false},{id:1,isExpand:false},{id:2,isExpand:false}]
-const renderItemComponent = (item: any,index:number,expandList:any[],toggleExpand:any) => {
-
+interface AdditionalGuest {
+  addedBy: string;
+  category: any[];
+  checkIn: boolean;
+  firstName: string;
+  gender: string;
+  guestId: string;
+  id: string;
+  interest: string[];
+  invitationSource: string;
+  lastName: string;
+  privateGuestNote: string;
+}
+interface CheckInComponentProps {
+  additionalGuests: AdditionalGuest[];
+  ticketType: string;
+  privateGuestNote: string;
+  maxAdditionalGuests: number;
+}
+const renderItemComponent = (
+  item: any,
+  index: number,
+  expandList: any[],
+  toggleExpand: any,
+) => {
+  const getAvatar = (item: any): any => {
+    return (
+      item?.additionalGuest?.firstName + ' ' + item?.additionalGuest?.lastName
+    );
+  };
+  console.log('getAvatar', getAvatar(item));
   return (
-    <View style={[styles.card, {padding: 0}]}>
+    <View style={[styles.card, { padding: 0 }]}>
       <View style={[styles.guestCard, true && styles.bottomRadius]}>
         <View style={styles.guestHeader}>
-          <AvatarInitials
-            name="Anu ha"
-            size={32}
-            backgroundColor={COLORS.white}
-          />
-          <Text style={styles.guestUsername}>{item.username}</Text>
-          {item.status ==LABLE.CHECKED_IN ? (
+          {item?.isPending ? (
+            <Image source={IMAGES.user_gray} />
+          ) : (
+            <AvatarInitials
+              name={!item?.isPending ? getAvatar(item) : null}
+              size={32}
+              backgroundColor={COLORS.white}
+            />
+          )}
+          <Text style={styles.guestUsername}>
+            {item?.additionalGuest?.firstName}
+          </Text>
+          {!item?.isPending && item?.additionalGuest?.checkIn ? (
             <View style={styles.checkInButton}>
               <Image source={IMAGES.checkedinCurved} />
               <Text style={styles.checkInText}>{LABLE.CHECKED_IN}</Text>
             </View>
-          ) : item.status == LABLE.CHECK_IN ? (
+          ) : !item?.isPending && !item?.additionalGuest?.checkIn ? (
             <View
               style={[
                 styles.checkInButton,
@@ -77,27 +88,36 @@ const renderItemComponent = (item: any,index:number,expandList:any[],toggleExpan
           ) : (
             <View style={styles.pendingDetailsButton}>
               <Image source={IMAGES.alertTriangle} />
-              <Text style={styles.pendingDetailsText}>{LABLE.PENDING_DETAILS}</Text>
+              <Text style={styles.pendingDetailsText}>
+                {LABLE.PENDING_DETAILS}
+              </Text>
             </View>
           )}
-          {item.status !== LABLE.PENDING && (<TouchableOpacity onPress={()=>toggleExpand(index)}>
-            <Image source={expandList[index].isExpand ? IMAGES.arrowupCircle :IMAGES.arrowDownCircle} />
-          </TouchableOpacity>)}
+          {!item?.isPending && (
+            <TouchableOpacity onPress={() => toggleExpand(index)}>
+              <Image
+                source={
+                  item?.isExpand ? IMAGES.arrowupCircle : IMAGES.arrowDownCircle
+                }
+              />
+            </TouchableOpacity>
+          )}
         </View>
 
-        {expandList[index].isExpand && (
-          <View style={{marginTop: verticalMarginScale(16)}}>
+        {expandList[index]?.isExpand && (
+          <View style={{ marginTop: verticalMarginScale(16) }}>
             <Text style={styles.label}>{LABLE.GUEST_NOTE}</Text>
             <TextInput
               style={styles.input}
               placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
+              defaultValue={item?.additionalGuest.privateGuestNote}
               multiline
             />
           </View>
         )}
       </View>
 
-      {expandList[index].isExpand && (
+      {expandList[index]?.isExpand && (
         <TouchableOpacity style={styles.profileButton}>
           <Image source={IMAGES.arrow_up_right} />
           <Text style={styles.profileText}>{BUTTON_LABLE.PROFILE}</Text>
@@ -107,15 +127,40 @@ const renderItemComponent = (item: any,index:number,expandList:any[],toggleExpan
   );
 };
 
-const CheckInComponent = () => {
+const CheckInComponent: React.FC<CheckInComponentProps> = ({
+  additionalGuests = [],
+  ticketType,
+  privateGuestNote,
+  maxAdditionalGuests,
+}) => {
+  const pendingGuestCount = maxAdditionalGuests - additionalGuests.length;
+  const guestString = pendingGuestCount > 1 ? ' Guests' : ' Guest';
 
-  const [expandlist,setExpandList]=useState<any[]>(expandIndex);
-  const toggleExpand = (index:number) => {
-    // expandIndex[index].isExpand=! expandIndex[index].isExpand
-    setExpandList([...expandlist,expandlist[index].isExpand=! expandlist[index].isExpand]);
-    console.log("toggleExpand",expandlist)
+  let expandIndex = additionalGuests.map((guest, index) => ({
+    id: index,
+    isExpand: false,
+    isPending: false,
+    additionalGuest: guest,
+  }));
+
+  if (expandIndex.length < maxAdditionalGuests) {
+    expandIndex.push({
+      id: expandIndex.length,
+      isExpand: false,
+      isPending: true,
+      additionalGuest: { firstName: pendingGuestCount + guestString },
+    });
+  }
+  const [expandlist, setExpandList] = useState<any[]>(expandIndex);
+
+  const toggleExpand = (index: number) => {
+    setExpandList([
+      ...expandlist,
+      (expandlist[index].isExpand = !expandlist[index].isExpand),
+    ]);
+    console.log('toggleExpand', expandlist);
   };
-  
+
   return (
     <View style={styles.card}>
       <View style={styles.header}>
@@ -130,7 +175,7 @@ const CheckInComponent = () => {
           {LABLE.TICKET_TYPE} <Text style={styles.required}>*</Text>
         </Text>
         <View style={styles.dropdown}>
-          <Text style={styles.dropdownText}>{LABLE.STANDARD}</Text>
+          <Text style={styles.dropdownText}>{ticketType}</Text>
           <Image source={IMAGES.downArrow} />
         </View>
       </View>
@@ -142,14 +187,18 @@ const CheckInComponent = () => {
         <TextInput
           style={styles.input}
           placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
+          defaultValue={privateGuestNote}
           multiline
+          editable={false}
         />
       </View>
       <Text style={styles.sectionTitle}>{LABLE.PLUS_1S}</Text>
       <FlatList
-        data={guests}
-        keyExtractor={item => item.id}
-        renderItem={({item,index}) => renderItemComponent(item,index,expandlist,toggleExpand)}
+        data={expandIndex}
+        keyExtractor={item => item.id.toString()}
+        renderItem={({ item, index }) =>
+          renderItemComponent(item, index, expandlist, toggleExpand)
+        }
         //   contentContainerStyle={styles.container}
       />
     </View>
@@ -172,8 +221,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     paddingBottom: verticalMarginScale(8),
     borderRadius: radiusScale(10),
-    borderBottomWidth:1,
-    borderBottomColor:'#E1E3E6'
+    borderBottomWidth: 1,
+    borderBottomColor: '#E1E3E6',
   },
   headerText: {
     fontSize: radiusScale(18),
@@ -205,8 +254,7 @@ const styles = StyleSheet.create({
     borderRadius: radiusScale(8),
     marginTop: verticalMarginScale(5),
     borderWidth: 1,
-    borderColor:COLORS.borderBlur,
-    
+    borderColor: COLORS.borderBlur,
   },
   dropdownText: {
     color: COLORS.light_gray,
@@ -267,7 +315,7 @@ const styles = StyleSheet.create({
   },
   checkInText: {
     color: '#555',
-    paddingLeft:verticalMarginScale(8)
+    paddingLeft: verticalMarginScale(8),
   },
   profileButton: {
     flexDirection: 'row',
@@ -282,15 +330,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   profileText: {
-    color:COLORS.black,
-    paddingLeft:verticalMarginScale(8)
+    color: COLORS.black,
+    paddingLeft: verticalMarginScale(8),
   },
   guestCountContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
-    padding:verticalMarginScale(15),
+    padding: verticalMarginScale(15),
     borderRadius: radiusScale(10),
     marginTop: verticalMarginScale(15),
     elevation: 2,

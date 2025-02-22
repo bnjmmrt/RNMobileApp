@@ -138,7 +138,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const onCheckInClick = async () => {
-    navigation.navigate(ROUTES.GuestCheckInScreen);
+     navigation.navigate(ROUTES.QRCodeScanner);
   };
 
   const onPressInviteGuests = () => {

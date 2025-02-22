@@ -83,10 +83,15 @@ export const EventStack: React.FC = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="AddGuestScreen" component={AddGuestScreen} />
-
+      
       {/* Invite Guest Screens */}
       <Stack.Screen name={ROUTES.InviteGuestsScreen} component={InviteGuests} />
       <Stack.Screen name={ROUTES.ManageGuestsScreen} component={ManageGuests} />
+      <Stack.Screen
+        name="QRCodeScanner"
+        component={QRCodeScanner}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

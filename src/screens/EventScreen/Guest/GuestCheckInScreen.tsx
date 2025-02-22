@@ -40,69 +40,11 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
   route,
 }) => {
   const { apiRequest, loading, error } = useApi();
-  const [eventDetails, setEventDetails] = useState({
-    guestDetail: {
-      guestId: '24c29087-c1d3-4796-ac69-c237a3e352e5',
-      inviteMessage: 'Aayie appka intejar hai',
-      maxAdditionalGuests: 3,
-      privateGuestNote: 'welcome-home',
-      ticketType: 'VIP02',
-      userId: '3c9e75e1-e7b3-4066-ba2b-7a5298f84c3a',
-    },
-    guestProfile: {
-      addedBy: 'Rajni',
-      addedByPicture:
-        'https://stat5.bollywoodhungama.in/wp-content/uploads/2016/03/Rajinikanth2-1.jpg',
-      additionalGuests: [
-        {
-          addedBy: '3c9e75e1-e7b3-4066-ba2b-7a5298f84c3a',
-          category: [],
-          checkIn: false,
-          firstName: 'Danielle',
-          gender: 'MALE',
-          guestId: '3cea157e-4296-437a-ac62-b924b50597f2',
-          id: 'f4322732-727f-40f4-abba-d28e87350d32',
-          interest: [],
-          invitationSource: 'INVITED_BY_HOST',
-          lastName: 'Holland',
-          privateGuestNote: 'tu bhi aaja',
-        },
-      ],
-      age: 23 ,
-      categories: [],
-      checkIn: true,
-      declinedBy: '',
-      declinedByPicture: '',
-      email: 'crussell@baker-byrd.com',
-      favorite: true,
-      followsYou: '24.5M',
-      guestId: '24c29087-c1d3-4796-ac69-c237a3e352e5',
-      id: '24c29087-c1d3-4796-ac69-c237a3e352e5',
-      interest: ['Actor', 'Content Creator', 'Model'],
-      invitationSource: -1,
-      name: 'Stephen Zimmerman',
-      phoneNumber: '845.375.8937',
-      profilePicture: '',
-      location: 'Pune,India',
-      roles: [
-        {
-          roleId: '0ee616f4-287c-439a-8264-6af0529277b3',
-          roleName: 'non_member',
-          status: 'NEW_APPLICANT',
-        },
-      ],
-      status: 'INVITED',
-      userId: '3c9e75e1-e7b3-4066-ba2b-7a5298f84c3a',
-    },
-    quizDataList: {
-      questions: [],
-    },
-    vouches: [],
-  });
+  const [eventDetails, setEventDetails] = useState<any>({});
   const getEventGuestDetails = async () => {
     const response: any = await apiRequest(
       'get',
-      EndPoint.event_guest_details + route?.params.guestId,
+      EndPoint.event_guest_details + route?.params?.guestId,
     );
     if (response.status === 200) {
       setEventDetails(response.data);
@@ -131,26 +73,55 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
         <ScrollView style={styles.container}>
           <ProfileCard
             guest={{
-              name: eventDetails.guestProfile.name,
-              avatar: eventDetails.guestProfile.profilePicture,
-              roles: eventDetails.guestProfile.roles,
-              age: eventDetails.guestProfile.age,
-              followers: eventDetails.guestProfile.followsYou,
-              location: eventDetails.guestProfile.location,
-              status: eventDetails.guestProfile.status,
-              interests:eventDetails.guestProfile.interest,
-              isMember:eventDetails.guestProfile.roles[0].roleName==='non_member' ? true:false
+              name: eventDetails?.guestProfile?.name,
+              avatar: eventDetails?.guestProfile?.profilePicture,
+              roles: eventDetails?.guestProfile?.roles,
+              age: eventDetails?.guestProfile?.age,
+              followers: eventDetails?.guestProfile?.followsYou,
+              location: eventDetails?.guestProfile?.location,
+              status: eventDetails?.guestProfile?.status,
+              interests: eventDetails?.guestProfile?.interest,
+              isMember:
+                eventDetails?.guestProfile?.roles[0].roleName === 'non_member'
+                  ? false
+                  : true,
             }}
-            actionButtons={[]}
+            actionButtons={[
+              {
+                title: eventDetails?.guestProfile?.checkIn
+                  ? LABLE.CHECKED_IN
+                  : LABLE.CHECK_IN,
+                icon: IMAGES.checkedinCurved,
+                onPress: () => {},
+                otherStyle: styles.checkInButton,
+              },
+              {
+                title: LABLE.PROFILE,
+                icon: IMAGES.arrow_up_right,
+                onPress: () => {},
+                otherStyle: styles.profileButton,
+              },
+            ]}
           />
           <View style={styles.card}>
-            <AvatarInitials size={32} name="Anurag Harod" />
+            <AvatarInitials
+              size={32}
+              name={eventDetails?.guestProfile?.addedBy}
+              imgUrl={eventDetails?.guestProfile?.addedByPicture}
+            />
             <View style={{ paddingLeft: verticalMarginScale(8) }}>
               <Text style={styles.blurText}>Guest of</Text>
-              <Text style={styles.username}>Aurang</Text>
+              <Text style={styles.username}>
+                {eventDetails?.guestProfile?.addedBy}
+              </Text>
             </View>
           </View>
-          <CheckInComponent />
+          <CheckInComponent
+            ticketType={eventDetails?.guestDetail?.ticketType}
+            privateGuestNote={eventDetails?.guestDetail?.privateGuestNote}
+            additionalGuests={eventDetails?.guestProfile?.additionalGuests}
+            maxAdditionalGuests={eventDetails?.guestDetail?.maxAdditionalGuests}
+          />
         </ScrollView>
       ) : (
         <EmptyRecordComponent
@@ -194,5 +165,16 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   blurText: { color: COLORS.light_gray, fontSize: fontScale(11) },
+  checkInButton: {
+    flex: 0,
+    backgroundColor: COLORS.bgGreen,
+    borderWidth: 1,
+    borderColor: COLORS.borderGreen,
+    width: '70%',
+  },
+  profileButton: {
+    flex: 0,
+    width: '30%',
+  },
 });
 export default GuestCheckInScreen;

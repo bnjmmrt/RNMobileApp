@@ -39,7 +39,7 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
 
   const onAccessContactClick = async () => {
     await requestContactPermission();
-    navigate(ROUTES.EventDetailsScreen);
+    navigate('InviteReferralScreen');
   };
 
   useFocusEffect(

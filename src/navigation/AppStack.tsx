@@ -11,7 +11,6 @@ import { EventStack } from './EventStack';
 import InviteReferralBottomSheet from 'src/component/InviteReferralBottomSheet/InviteReferralBottomSheet';
 import WelcomeScreen from 'src/screens/AppFlow/WelcomeScreen/WelcomeScreen';
 import EventDetailsScreen from 'src/screens/EventScreen/EventDetailsScreen';
-import GuestCheckInScreen from 'src/screens/EventScreen/Guest/GuestCheckInScreen';
 
 export type customListType = 'follower' | 'favorite' | 'custom';
 export type AppStackParamList = {
@@ -63,11 +62,6 @@ export const AppStack: React.FC<AppStackProps> = ({
       <Stack.Screen
         name="EventDetailsScreen"
         component={EventDetailsScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="GuestCheckInScreen"
-        component={GuestCheckInScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

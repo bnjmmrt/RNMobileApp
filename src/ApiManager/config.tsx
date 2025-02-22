@@ -85,7 +85,7 @@ export const EndPoint = {
   referral_requests:'v1/platform/referral-requests',
   vouch_requests:'v1/platform/vouch-requests',
   validate_qr:'v1/events/guest/ticket/validate',
-  event_guest_details:'v1/events/guest-details/{id}'
+  event_guest_details:'v1/events/guest-details/'
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

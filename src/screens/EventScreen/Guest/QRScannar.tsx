@@ -5,10 +5,7 @@ import {
   Text,
   StyleSheet,
   Dimensions,
-  Alert,
   TouchableOpacity,
-  Platform,
-  PermissionsAndroid,
 } from 'react-native';
 import {
   Camera,
@@ -18,18 +15,21 @@ import {
 import { COLORS } from 'src/utils/constants';
 import {
   fontScale,
+  horizontalMarginScale,
+  horizontalScale,
   radiusScale,
   verticalMarginScale,
+  verticalScale,
 } from 'src/utils/dimensions';
 import IMAGES from '@images/index';
 import Button from 'src/component/Button';
 import useApi from 'src/axios/useApi';
 import { EndPoint } from 'src/ApiManager/config';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { ROUTES } from 'src/navigation/Route';
+import { Image } from 'react-native-animatable';
 
 const { width } = Dimensions.get('window');
-const SQUARE_SIZE = width * 0.8;
+const SCANNER_SIZE = width * 0.6;
 
 const QRCodeScanner = () => {
   const navigation = useNavigation();
@@ -54,8 +54,10 @@ const QRCodeScanner = () => {
       requestObject,
     );
     if (response.status === 200) {
-      if(response.data.eventQr){
-        navigation.navigate(ROUTES.GuestCheckInScreen,{guestId:response.data.guestId});
+      if (response.data.eventQr) {
+        navigation.navigate(ROUTES.GuestCheckInScreen, {
+          guestId: response.data.guestId,
+        });
       }
     }
   };
@@ -65,8 +67,7 @@ const QRCodeScanner = () => {
     onCodeScanned: codes => {
       if (!scanned) {
         setScanned(true);
-        if(codes[0].value)
-         validateQR(codes[0].value)
+        if (codes[0].value) validateQR(codes[0].value);
 
         // Alert.alert('QR Code Scanned', codes[0].value, [
         //   {
@@ -77,6 +78,10 @@ const QRCodeScanner = () => {
       }
     },
   });
+
+  const onClose = () => navigation.goBack();
+
+  const onMenuClick = () => {};
   if (!hasPermission) {
     return (
       <View style={styles.btnContainer}>
@@ -104,10 +109,20 @@ const QRCodeScanner = () => {
         isActive={!scanned}
         codeScanner={codeScanner}
       />
+
       <View style={styles.overlayContainer}>
-        <View style={styles.overlay} />
-        <View style={[styles.scannerBox]} />
-        <View style={styles.overlay} />
+        <View style={styles.scannerBox}>
+          <View style={[styles.corner, styles.topLeft]} />
+          <View style={[styles.corner, styles.topRight]} />
+          <View style={[styles.corner, styles.bottomLeft]} />
+          <View style={[styles.corner, styles.bottomRight]} />
+        </View>
+        <TouchableOpacity style={styles.closeIcon} onPress={onClose}>
+          <Image source={IMAGES.close_gray} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuIcon} onPress={onMenuClick}>
+          <Image source={IMAGES.menu_gray} />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -120,7 +135,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'black',
+    backgroundColor: COLORS.transperantBackground,
   },
   btnContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   btn: { width: '60%', marginVertical: verticalMarginScale(20) },
@@ -129,27 +144,69 @@ const styles = StyleSheet.create({
     height: '100%',
     position: 'absolute',
   },
+  closeIcon: {
+    position: 'absolute',
+    top: '5%',
+    left: '5%',
+  },
+  menuIcon: {
+    position: 'absolute',
+    bottom: '5%',
+    left: '5%',
+  },
+  closeText: {
+    color: COLORS.white,
+    fontSize: fontScale(18),
+  },
   overlayContainer: {
     position: 'absolute',
     width: '100%',
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: COLORS.black,
-    width: '100%',
+    backgroundColor: COLORS.transperantBackground,
   },
   scannerBox: {
-    width: SQUARE_SIZE,
-    height: SQUARE_SIZE,
-    borderWidth: 5,
-    borderColor: COLORS.white,
+    width: SCANNER_SIZE,
+    height: SCANNER_SIZE,
+    position: 'absolute',
     borderRadius: radiusScale(25),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  closeText: {
-    color: COLORS.white,
-    fontSize: fontScale(18),
+  corner: {
+    position: 'absolute',
+    width: horizontalScale(65),
+    height: verticalScale(65),
+    borderColor: COLORS.white,
+    borderWidth: 3.5,
+  },
+  topLeft: {
+    top: 0,
+    left: 0,
+    borderTopLeftRadius: radiusScale(25),
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+  },
+  topRight: {
+    top: 0,
+    right: 0,
+    borderTopRightRadius: radiusScale(25),
+    borderLeftWidth: 0,
+    borderBottomWidth: 0,
+  },
+  bottomLeft: {
+    bottom: 0,
+    left: 0,
+    borderBottomLeftRadius: radiusScale(25),
+    borderRightWidth: 0,
+    borderTopWidth: 0,
+  },
+  bottomRight: {
+    bottom: 0,
+    right: 0,
+    borderBottomRightRadius: radiusScale(25),
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
   },
 });

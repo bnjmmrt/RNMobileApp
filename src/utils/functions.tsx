@@ -432,7 +432,7 @@ export const getErrorMessage = (error: ApiErrorInterface) => {
 };
 
 
-export const formatRole = (role: string) => {
+export const getRoleRole = (role: string) => {
   switch (role.toLowerCase()) {
     case 'member':
       return 'Member'
