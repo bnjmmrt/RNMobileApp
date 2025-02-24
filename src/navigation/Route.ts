@@ -18,6 +18,17 @@ export const ROUTES = {
   UserDetail: 'UserDetail',
   ListDetail: 'ListDetail',
   EventDetailsScreen: 'EventDetailsScreen',
+  EventGuestList: 'EventGuestList',
   HostEditProfileScreen: 'HostEditProfileScreen',
   HostConnectedAccountsScreen: 'HostConnectedAccountsScreen',
+  WelcomeScreen: 'WelcomeScreen',
+  EditEventScreen: 'EditEventScreen',
+  EditEventDetails: 'EditEventDetails',
+  EditEventSettings: 'EditEventSettings',
+  GuestCheckInScreen: 'GuestCheckInScreen',
+  GuestDetailScreen: 'GuestDetailScreen',
+  InviteGuestsScreen: 'InviteGuestsScreen',
+  InviteGuestsManuallyScreen: 'InviteGuestsManuallyScreen',
+  ManageGuestsScreen: 'ManageGuestsScreen',
+  QRCodeScanner:'QRCodeScanner'
 } as const;

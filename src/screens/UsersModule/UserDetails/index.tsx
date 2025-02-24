@@ -1,7 +1,7 @@
 import IMAGES from '@images/index';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useRef, useState} from 'react';
-import {ActivityIndicator, SafeAreaView, ScrollView, View} from 'react-native';
+import {ActivityIndicator, ScrollView, View} from 'react-native';
 import DynamicTabBar, {TabItem} from 'src/component/ActiveTabBar/DynamicTabBar';
 import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
 import Header from 'src/component/Header/Header';
@@ -19,7 +19,6 @@ import UserInterests from './UserInterests';
 import UserLists from './UserLists';
 import UserOverview from './UserOverview';
 import UserProfile from './UserProfile';
-import FullScreenLoader from 'src/component/FullScreenLoader';
 
 interface UserDetailsProps
   extends NativeStackScreenProps<AppStackParamList, 'UserDetail'> {}
@@ -88,13 +87,19 @@ const UserDetails: React.FC<UserDetailsProps> = ({route}) => {
               }}>
               <UserOverview user={user} />
               <UserInterests user={user} />
-              <UserLists user={user} />
+              <UserLists
+                user={user}
+                onPressAddToList={() => {
+                  setSelectedActionSheetAction('addToList');
+                  actionSheetRef?.current?.open();
+                }}
+              />
               <UserInformation user={user} />
             </View>
           ) : null}
           {currentTab.id === '2' ? (
             <View>
-              <UserEvents />
+              <UserEvents user={user} />
             </View>
           ) : null}
         </ScrollView>

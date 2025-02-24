@@ -6,6 +6,7 @@ export const BUTTON_LABLE = {
   RSVP: 'RSVP',
   APPLY_TO_BE_HOST: 'Apply to be a Host',
   GET_STARTED: 'Get Started',
+  SAVE_TO_FILE: 'Save to Files',
   RESEND: 'Resend',
   SUBMTI_APPLICATION: 'Submit Application',
   UPDATE_APPLICATION: 'Update Application',
@@ -43,8 +44,24 @@ export const BUTTON_LABLE = {
   SHOW_RESULTS: 'Show Results',
   CLEAR_FILTERS: 'Clear Filters',
   FOLLOW: 'Follow',
+  YES: 'Yes',
+  NO: 'No',
+  ADD_GUEST_DETAILS: 'Add Guest Details',
+  ADD: 'Add',
   DISCOVER_MORE_EVENTS: 'Discover More Events',
-};
+  CHECK_IN: 'Check In',
+  SAVE_DRAFT: 'Save Draft',
+  SEND_INVITE: 'Send Invite',
+  APPROVE_REQUEST: 'Approve Request',
+  UPDATE_INVITE: 'Update Invite',
+  MARK_AS_SPAM: 'Mark as Spam',
+  PROFILE: 'Profile',
+  INVITE_GUESTS: 'Invite Guests',
+  INVITE_FROM_CONTACTS: 'Invite from Contacts',
+  INVITE_MANUALLY: 'Invite Manually',
+  CLEAR: "Clear"
+} as const;
+
 export const LABLE = {
   WELCOME: 'Welcome to Rumors!',
   RUMORAPP: 'RUMORAPP',
@@ -61,28 +78,28 @@ export const LABLE = {
   EROOR_ENTER_CODE: 'Please enter a verification code',
   ENTER_YOUR_VERIFICATION_CODE: 'Enter your verification code',
   SEND_TO: 'Sent to ',
-  DONT_GET_CODE: 'Didn’t get a code?',
-  ENTER_YOUR_NAME: 'Let’s start with your name.',
+  DONT_GET_CODE: "Didn't get a code?",
+  ENTER_YOUR_NAME: "Let's start with your name.",
   FIRST_NAME: 'First Name',
   LAST_NAME: 'Last Name',
-  WHATS_YOUR_EMAIL_ADDRESS: 'What’s your email address?',
-  WHATS_YOUR_PHONE_NUMBER: 'What’s your phone number?',
+  WHATS_YOUR_EMAIL_ADDRESS: "What's your email address?",
+  WHATS_YOUR_PHONE_NUMBER: "What's your phone number?",
   WHATS_YOUR_PHONE_NUMBER_SUBTITLE:
-    'We’ll contact you for membership and event updates.',
+    "We'll contact you for membership and event updates.",
   WHATS_YOUR_EMAIL_SUBTITLE:
     "We'll contact you for membership and event updates.",
   EMAIL_ADDRESS: 'Email Address',
-  WHATS_YOUR_GENDER: 'What’s your gender?',
+  WHATS_YOUR_GENDER: "What's your gender?",
   SELECT_THE_OPTION_THAT_BEST_DESCRIBES_YOU:
     'Select the option that best describes you.',
-  WHEN_IS_YOUR_BIRTHDAY: 'When’s your birthday?',
+  WHEN_IS_YOUR_BIRTHDAY: "When's your birthday?",
   WE_WILL_USE_THIS_INFORMATION_TO_TAILOR_YOUR_EXPERIENCE:
-    'We’ll use this information to tailor your experience.',
+    "We'll use this information to tailor your experience.",
   WHERE_DO_YOU_CALL_HOME: 'Where do you call home?',
   WE_WILL_RECOMMEND_EVENTS_AND_EXPERIENCES_NEAR_YOU:
-    'We’ll recommend events and experiences near you.',
+    "We'll recommend events and experiences near you.",
   WHAT_IS_YOUR_CREATIVE_OR_PROFESSIONAL_FOCUS:
-    'What’s your creative or professional focus?',
+    "What's your creative or professional focus?",
   YOU_CAN_CHOOSE_UP_TO_3_CATEGORIES: 'You can choose up to 3 categories',
   SEARCH_FOR_A_LOCATION: 'Search for a Location…',
   DATE_PLACEHOLDER: 'MM/DD/YYYY',
@@ -102,11 +119,11 @@ export const LABLE = {
   SET_UP_YOUR_ACCOUNT: 'Set up your account',
   ACCOUNT_SETTINGS: 'Account Settings',
   IDENTITY_VERIFICATION: 'Identity Verification',
-  IDENTITY_VERIFICATION_TITLE: 'Last step, what’s your Instagram?',
+  IDENTITY_VERIFICATION_TITLE: "Last step, what's your Instagram?",
   IDENTITY_VERIFICATION_SUBTITLE: 'This helps us verify your online identity.',
   CHOOSE_YOUR_INTERESTS: 'Choose your interests',
   CHOOSE_YOUR_INTERESTS_SUBTITLE:
-    'Select topics of interests so we can curate experiences you’ll want to attend.',
+    "Select topics of interests so we can curate experiences you'll want to attend.",
   ADD_A_PHOTO: 'Add a photo',
   ADD_A_PHOTO_SUBTITLE: 'Upload a profile photo to complete your profile.',
   CHAT_WITH_HOST: 'Chat\nwith hosts.',
@@ -130,7 +147,7 @@ export const LABLE = {
   COMPLETE_VERIFICATION: 'Complete Verification',
   SEND_DIRECT_MSG_CODE: 'Send direct message with the code:',
   WE_WILL_REVIEW_APP:
-    'We’ll review your application after we receive your message.',
+    "We'll review your application after we receive your message.",
   EMAIL_THE_CODE: 'Email the code to:',
   DONT_USE_INSTAGRAM: "Don't use Instagram?",
   REFERRAL_CODE: 'Referral Code',
@@ -143,7 +160,7 @@ export const LABLE = {
     'Request a referral from a Rumor member to boost your application.',
   CONTACTS: 'Contacts',
   INVITE_FRIENDS_TO: 'Invite friends to fast track your membership approval.',
-  YOU_ARE_ON_WAITLIST: 'You’re on\nthe waitlist.',
+  YOU_ARE_ON_WAITLIST: "You're on the waitlist.",
   FULL_ACCESS_UNLOCK:
     'Full access will be unlocked once your application is approved.',
   FASTRACK_YOUR_APPLICATION: 'Want to fast-track your application?',
@@ -151,29 +168,94 @@ export const LABLE = {
   INVITE_YOUR_FRIEND: 'Invite your friends to join Rumor.',
   SELECT_YOUR_BIRTHDAY_BELOW: 'Select your birthday below',
   WELCOME_NOTE_LINE_1:
-    "Your application has been approved. You’re now part of a private network connecting you to experiences from the world's top event organizers.",
+    "Your application has been approved. You're now part of a private network connecting you to experiences from the world's top event organizers.",
   WELCOME_NOTE_LINE_2:
     'At Rumor, we value positivity, respect, and meaningful connections. Please take a moment to review our',
   WELCOME_NOTE_LINE_3:
-    'We’re excited to have you in our community and can’t wait for you to explore everything Rumor has to offer.',
+    "We're excited to have you in our community and can't wait for you to explore everything Rumor has to offer.",
   LOGOUT: 'Log Out',
   COMING_SOON: 'Coming Soon…',
   OTP_VERIFIED_SUCCESSFULLY: 'OTP verified successfully!',
   SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:
     'Something went wrong, please try again',
   ABOUT_THE_EVENT: 'About the Event',
+  GUEST_LIST: 'Guest List',
   FEATURE_TALENT: 'Featured Talent',
+  EVENT_ANNOUNCEMENTS: 'Event Announcements',
+  NO_EVENT_ANNOUNCEMENTS: 'No event announcements',
   READ_MORE: 'Read More',
   FEATURED_TALENT: 'Featured Talent',
   DUMMY_TEXT:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent bland',
   PHONE_NUMBER: 'Phone Number',
+  RSVP_TEXT: `If you select ‘No’, you cannot change your response. If you later decide you’d like to attend, you’ll need to request another invite from the host.`,
+  WE_WERE_SORRY_CANT_MAKE_IT: 'We’re sorry you can’t make it.',
+  YOU_DECLINED_THIS_INVITATION: 'You declined this invitation',
+  DISCOVER_MORE_EVENTS: 'Discover More Events',
+  RSVP_QUESTION_DETAILS:
+    'The host is offering you the option to bring up to [X] guests. How many guests would you like to bring?',
+  RSVP_SUBTITLE:
+    "If you later decide you'd like to attend, you'll need to request another invite from the host.",
+  RSVP_INSTRUCTION:
+    ' Please add your additional guests’ details by [event date and time],or their passes will be canceled.',
+  ADD_FRIEND_AS_GUEST: 'Add friends as guests',
+  ADD_GUEST_SUBTITLE: 'Provide details to add your additional guest.',
+  ADD_GUEST_SYNC_TEXT:
+    'Easily sync your phone contacts to invite friends to join you at events.',
+  SYNC_CONTACT_SEETTINGS: 'Sync Contacts in Settings',
+  ADD_GUEST: 'Add Guest',
+  ADD_GUSET_SUBTITLE: `Your changes will only be saved in Rumor and will not impact your device's contact list.`,
+  YOUR_RSPV_IS: 'Your RSVP is confirmed!',
+  YOU_CAN_RETURN_TO_THE:
+    'You can return to the event page anytime for more details or to access your event confirmation.',
   WEBSITE: 'Website',
   COMPANY_NAME: 'Company Name',
   BIO: 'Bio',
   COMPANY_DESCRIPTION: 'Description of Company',
   ENTER_FEEDBACK: 'Enter Feedback',
+  INVITED: 'Invited',
+  REQUESTS: 'Requests',
+  CONFIRMED: 'Confirmed',
+  CHECKED_IN: 'Checked-In',
+  CHECK_IN: 'Check-In',
+  PROFILE: 'Profile',
+  PENDING_DETAILS: 'Pending Details',
+  GUEST_CHICKED_IN: 'Guest Check-in',
+  STANDARD: 'Standard',
+  LEAD_GUEST: 'Lead Guest',
+  GUEST_NOTE: 'Guest Note',
+  PLUS_1S: 'Pluse 1s',
+  PENDING: 'Pending',
+  PLACEHOLDER_PRIVATE_NOTE: 'Add a private note. Not visible to the guest.',
+  TICKET_TYPE: 'Ticket Type',
+  USER_NOT_FOUND: 'User not found',
+  SEARCH_USERS: 'Search Users',
+  MANAGE_GUESTS: 'Manage Guests',
+  USER_ALREADY_CHECKED_IN: 'User already checked-in',
+  SHOW_QR_CHECKIN_MESSAGE:'Show this QR code at event check-in',
+  NEVER_MISS_MOMENT:'Never miss a moment.\nSync this event to your calendar.',
+  ADD_TO_CALENDAR:'Add To Calendar',
+  ADD_TO_APPLE_CALENDAR:'Add to Apple Calendar',
+  ADD_TO_GOOGLE_CALENDAR:'Add to Google Calendar',
+  NO_CALENDAR_FOUND:'No calendar found on this device.',
+  ACCESS_CALENDAR:'Calendar access is required to add events.',
+  PERMISSION_DENIED:'Permission Denied'
 };
+export const EVENT = {
+  EDIT_EVENT: 'Edit Event',
+  DETAILS: 'Details',
+  SETTINGS: 'Settings',
+  EVENT_NAME: 'Event Name',
+  START_DATE: 'Start Date',
+  END_DATE: 'End Date',
+  LOCATION: 'Location',
+  FURTHER_INSTRUCTION: 'Further Instructions',
+  EVENT_DESCRIPTION: 'Event Description',
+  HIDE_ADDRESS: 'Hide full address for confirmed guests',
+  FEATURE_TALENT: 'Featured Talent',
+
+
+}
 
 export const PROFILE = {
   EDIT_PROFILE: 'Edit Profile',
@@ -216,7 +298,7 @@ export const PROFILE = {
   REVIEW_VOUCH_REQUESTS:
     'Approve or decline requests from members seeking your vouch to join an experience. Your decision is private.',
   COMPANY_NAME: 'Company Name',
-  APPLY_FOR_MEMBERSHIP: 'Apply for MemberShip',
+  APPLY_FOR_MEMBERSHIP: 'Apply for Membership',
 };
 
 export const ERROR_MESSAGE = {
@@ -230,6 +312,7 @@ export const ERROR_MESSAGE = {
   FEEDBACK_ERROR: 'Please enter your Feedback.',
   WEBSITE_ERROR: 'Please enter your URL.',
   COMPANY_NAME_ERROR: 'Company Name is required',
+  TCKET_ERROR_MESSAGE: 'Ticket is not associated with a guest for this event.',
 };
 
 export const COLORS = {
@@ -266,6 +349,7 @@ export const COLORS = {
   red: '#FF0000',
   yellow: '#FFFC00',
   yellowLight: '#FEF8E9',
+  yellowDark: '#D9A21F',
   grayMiddle: '#000000BF',
   blueLocation: '#007AFF',
   whiteFeedContainer: '#F1F1F1',
@@ -273,7 +357,19 @@ export const COLORS = {
   grayFeedLocation1: '#00000033',
   grayFeedLocation2: '#E0E0E0FA',
   grayFeedLocation3: '#54545657',
+  blueDark: '#0D729D',
+  LIGHT: 'LIGHT',
+  DARK: 'DARK',
+
+  neutral_disabled: '#9C9C9C',
+  neutral_surface: '#D8D8D8',
+  yellowbackground: '#F1B422',
+  neutralBorder: '#E1E3E6',
+  borderBlur: '#BFBFBF',
+  bgGray: '#EAEAEA',
 };
+
+
 
 export const feedList = [
   'After Parties',
@@ -321,7 +417,7 @@ export const memberTabData: TabItem[] = [
     id: '3',
     label: BUTTON_LABLE.APPLIED,
     title: 'No Events Here',
-    subTitle: 'You haven’t applied to any events yet.',
+    subTitle: "You haven't applied to any events yet.",
   },
   {
     id: '4',
@@ -333,9 +429,9 @@ export const memberTabData: TabItem[] = [
 
 export const ROLE = {
   MEMBER: 'member',
-  NON_MEMBER: 'non-member',
+  NON_MEMBER: 'non_member',
   HOST: 'host',
-}
+};
 export const hostTabData: TabItem[] = [
   {
     id: '1',
@@ -351,6 +447,20 @@ export const hostTabData: TabItem[] = [
   },
 ];
 
+export const editEventsTab: TabItem[] = [
+  {
+    id: '1',
+    label: EVENT.DETAILS,
+    title: '',
+    subTitle: '.',
+  },
+  {
+    id: '2',
+    label: EVENT.SETTINGS,
+    title: '',
+    subTitle: '',
+  },
+];
 export const StatusEnum = {
   NO_STATUS: 0,
   DRAFT: 1,
@@ -371,174 +481,227 @@ export const getStatusNumber = (status: string): number => {
 };
 
 export const eventData = {
-  "data": {
-    "admissionType": {
-      "description": "new admission",
-      "enabled": true,
-      "id": "a19a0a19-dfdd-49d4-8029-ac7ec582bedd",
-      "name": "birthday party"
+  data: {
+    admissionType: {
+      description: 'new admission',
+      enabled: true,
+      id: 'a19a0a19-dfdd-49d4-8029-ac7ec582bedd',
+      name: 'birthday party',
     },
-    "ageLimit": {
-      "description": "21 years old or more",
-      "enabled": true,
-      "id": "e8327ba6-817c-45bf-a309-66ef89f06a6f",
-      "maxAge": 120,
-      "minAge": 21,
-      "name": "21+"
+    ageLimit: {
+      description: '21 years old or more',
+      enabled: true,
+      id: 'e8327ba6-817c-45bf-a309-66ef89f06a6f',
+      maxAge: 120,
+      minAge: 21,
+      name: '21+',
     },
-    "autoPublished": false,
-    "capacity": 888,
-    "collaborators": [
+    autoPublished: false,
+    capacity: 888,
+    collaborators: [
       {
-        "addGuestsToDrafts": true,
-        "chatWithAllGuests": true,
-        "chatWithGuestsByCollaborator": true,
-        "checkInGuests": true,
-        "displayName": "",
-        "displayNameListEvent": true,
-        "editEventDetailsSettings": true,
-        "email": "payal.ghusalikar97@gmail.com",
-        "generateEventReports": true,
-        "id": "01478117-90de-42b7-b4b4-2cb7676ef0d7",
-        "inviteGuestsToEvent": true,
-        "limitInvitations": true,
-        "manageDedicatedSignUpForm": true,
-        "manageInAppRsvpRequests": true,
-        "name": "NA NA",
-        "postAnnouncementsByCollaborator": true,
-        "postAnnouncementsToAllGuests": true,
-        "role": {
-          "id": "43c05579-5113-483c-bcb6-e6d2d8e604c4",
-          "name": "co_host"
+        addGuestsToDrafts: true,
+        chatWithAllGuests: true,
+        chatWithGuestsByCollaborator: true,
+        checkInGuests: true,
+        displayName: '',
+        displayNameListEvent: true,
+        editEventDetailsSettings: true,
+        email: 'payal.ghusalikar97@gmail.com',
+        generateEventReports: true,
+        id: '01478117-90de-42b7-b4b4-2cb7676ef0d7',
+        inviteGuestsToEvent: true,
+        limitInvitations: true,
+        manageDedicatedSignUpForm: true,
+        manageInAppRsvpRequests: true,
+        name: 'NA NA',
+        postAnnouncementsByCollaborator: true,
+        postAnnouncementsToAllGuests: true,
+        role: {
+          id: '43c05579-5113-483c-bcb6-e6d2d8e604c4',
+          name: 'co_host',
         },
-        "tickets": [
+        tickets: [
           {
-            "id": "f03664af-51bb-4781-8c67-fc3ef6bfabfb",
-            "limitInvitationsNumber": 70,
-            "name": "VIPTicket"
-          }
+            id: 'f03664af-51bb-4781-8c67-fc3ef6bfabfb',
+            limitInvitationsNumber: 70,
+            name: 'VIPTicket',
+          },
         ],
-        "viewFullGuestList": true
+        viewFullGuestList: true,
       },
       {
-        "addGuestsToDrafts": true,
-        "chatWithAllGuests": true,
-        "chatWithGuestsByCollaborator": true,
-        "checkInGuests": true,
-        "displayName": "",
-        "displayNameListEvent": true,
-        "editEventDetailsSettings": true,
-        "email": "payal.ghusalikar+1@techalchemy.com",
-        "generateEventReports": true,
-        "id": "ae56f762-ced7-4e30-b190-1891353a1898",
-        "inviteGuestsToEvent": true,
-        "limitInvitations": true,
-        "manageDedicatedSignUpForm": true,
-        "manageInAppRsvpRequests": true,
-        "name": "NA NA",
-        "postAnnouncementsByCollaborator": true,
-        "postAnnouncementsToAllGuests": true,
-        "role": {
-          "id": "c1c72579-f2f9-4b4c-b5d7-6566b99d5f9d",
-          "name": "promoter"
+        addGuestsToDrafts: true,
+        chatWithAllGuests: true,
+        chatWithGuestsByCollaborator: true,
+        checkInGuests: true,
+        displayName: '',
+        displayNameListEvent: true,
+        editEventDetailsSettings: true,
+        email: 'payal.ghusalikar+1@techalchemy.com',
+        generateEventReports: true,
+        id: 'ae56f762-ced7-4e30-b190-1891353a1898',
+        inviteGuestsToEvent: true,
+        limitInvitations: true,
+        manageDedicatedSignUpForm: true,
+        manageInAppRsvpRequests: true,
+        name: 'NA NA',
+        postAnnouncementsByCollaborator: true,
+        postAnnouncementsToAllGuests: true,
+        role: {
+          id: 'c1c72579-f2f9-4b4c-b5d7-6566b99d5f9d',
+          name: 'promoter',
         },
-        "tickets": [
+        tickets: [
           {
-            "id": "f03664af-51bb-4781-8c67-fc3ef6bfabfb",
-            "limitInvitationsNumber": 50,
-            "name": "VIPTicket"
+            id: 'f03664af-51bb-4781-8c67-fc3ef6bfabfb',
+            limitInvitationsNumber: 50,
+            name: 'VIPTicket',
           },
           {
-            "id": "478820cb-59d6-49a8-a647-22b6f3082152",
-            "limitInvitationsNumber": -1,
-            "name": "GeneralTicket"
-          }
+            id: '478820cb-59d6-49a8-a647-22b6f3082152',
+            limitInvitationsNumber: -1,
+            name: 'GeneralTicket',
+          },
         ],
-        "viewFullGuestList": true
-      }
+        viewFullGuestList: true,
+      },
     ],
-    "currentGuestStatus": "INVITED",
-    "description": "Testing for get event by Id for a user",
-    "enabled": true,
-    "endDate": "2025-02-12 17:12:33+00",
-    "eventType": {
-      "description": "Is an Art Shows event type",
-      "enabled": true,
-      "id": "81c9c68f-fae1-4fc8-8b3a-36b068e412be",
-      "name": "Art Shows"
+    currentGuestStatus: 'INVITED',
+    description: 'Testing for get event by Id for a user',
+    enabled: true,
+    endDate: '2025-02-12 17:12:33+00',
+    eventType: {
+      description: 'Is an Art Shows event type',
+      enabled: true,
+      id: '81c9c68f-fae1-4fc8-8b3a-36b068e412be',
+      name: 'Art Shows',
     },
-    "featuredEventSection": {
-      "id": "9fcf2fd1-e752-4385-a960-3d61be784f7e",
-      "index": 0,
-      "name": "Feature Events"
+    featuredEventSection: {
+      id: '9fcf2fd1-e752-4385-a960-3d61be784f7e',
+      index: 0,
+      name: 'Feature Events',
     },
-    "furtherInstructions": "Please reach before time",
-    "guestId": "5b7078f9-3d07-4f9e-bc3d-836a098122c5",
-    "guestsCount": 0,
-    "id": "d1a1a562-38f7-4f7a-99bf-a63922a7d034",
-    "imageCover": "",
-    "imageFlyer": "kaustubh",
-    "invitationDeclinedBy": "ca9fe34d-2589-456b-89f7-0ded35c0c7ff",
-    "isPrivate": true,
-    "limitOnePlus": 3,
-    "location": {
-      "city": "San Francisco",
-      "id": "febf18b5-c9ef-48a0-900f-68c1fb73ad07",
-      "latitude": 37.7749,
-      "location": "123 Main St",
-      "longitude": -122.4194
+    furtherInstructions: 'Please reach before time',
+    guestId: '5b7078f9-3d07-4f9e-bc3d-836a098122c5',
+    guestsCount: 0,
+    id: 'd1a1a562-38f7-4f7a-99bf-a63922a7d034',
+    imageCover: '',
+    imageFlyer: 'kaustubh',
+    invitationDeclinedBy: 'ca9fe34d-2589-456b-89f7-0ded35c0c7ff',
+    isPrivate: true,
+    limitOnePlus: 3,
+    location: {
+      city: 'San Francisco',
+      id: 'febf18b5-c9ef-48a0-900f-68c1fb73ad07',
+      latitude: 37.7749,
+      location: '123 Main St',
+      longitude: -122.4194,
     },
-    "name": "Art and Artist",
-    "owner": {
-      "email": "kaustubh.tupe+4@techalchemy.com",
-      "firstName": "Kaustubh",
-      "id": "ca9fe34d-2589-456b-89f7-0ded35c0c7ff",
-      "lastName": "Tupe"
+    name: 'Art and Artist',
+    owner: {
+      email: 'kaustubh.tupe+4@techalchemy.com',
+      firstName: 'Kaustubh',
+      id: 'ca9fe34d-2589-456b-89f7-0ded35c0c7ff',
+      lastName: 'Tupe',
     },
-    "publishDate": "2025-02-09 17:12:33+00",
-    "qrCodeUtilization": 0,
-    "quizQuestions": [
+    publishDate: '2025-02-09 17:12:33+00',
+    qrCodeUtilization: 0,
+    quizQuestions: [
       {
-        "enabled": true,
-        "id": "5413643b-168b-4ebe-9208-c181acd76cfb",
-        "order": 1,
-        "question": "What is your name?",
-        "required": true
-      }
+        enabled: true,
+        id: '5413643b-168b-4ebe-9208-c181acd76cfb',
+        order: 1,
+        question: 'What is your name?',
+        required: true,
+      },
     ],
-    "rsvpDeadline": "",
-    "showLocation": true,
-    "startDate": "2025-02-11 17:12:33+00",
-    "talents": [
+    rsvpDeadline: '',
+    showLocation: true,
+    startDate: '2025-02-11 17:12:33+00',
+    talents: [
       {
-        "contact": "",
-        "description": "Melodious voice",
-        "enabled": true,
-        "id": "ebc87129-8567-4ee7-8361-a55969704591",
-        "imageKeyUrl": "some_image_string_signed_url_upload",
-        "name": "Shreya Ghoshal",
-        "socialNetwork": ""
-      }
+        contact: '',
+        description: 'Melodious voice',
+        enabled: true,
+        id: 'ebc87129-8567-4ee7-8361-a55969704591',
+        imageKeyUrl: 'some_image_string_signed_url_upload',
+        name: 'Shreya Ghoshal',
+        socialNetwork: '',
+      },
     ],
-    "ticketTypes": [
+    ticketTypes: [
       {
-        "capacity": 4,
-        "description": "checking",
-        "enabled": true,
-        "id": "f03664af-51bb-4781-8c67-fc3ef6bfabfb",
-        "name": "VIPTicket"
+        capacity: 4,
+        description: 'checking',
+        enabled: true,
+        id: 'f03664af-51bb-4781-8c67-fc3ef6bfabfb',
+        name: 'VIPTicket',
       },
       {
-        "capacity": 500,
-        "description": "fourth ticket description",
-        "enabled": true,
-        "id": "478820cb-59d6-49a8-a647-22b6f3082152",
-        "name": "GeneralTicket"
-      }
+        capacity: 500,
+        description: 'fourth ticket description',
+        enabled: true,
+        id: '478820cb-59d6-49a8-a647-22b6f3082152',
+        name: 'GeneralTicket',
+      },
     ],
-    "timeZone": "UTC",
-    "useQr": false,
-    "userId": "5774aa32-abe5-45a8-a27f-e743ca61f291"
+    timeZone: 'UTC',
+    useQr: false,
+    userId: '5774aa32-abe5-45a8-a27f-e743ca61f291',
   },
-  "status": 200
-}
+  status: 200,
+};
+
+export const ANNOUNCCEMENTS_DATA = [
+  {
+    id: '1',
+    title: 'The Event location has moved to the following address...',
+    description: 'The Event location has moved to the following address...',
+    date: '10/05/2025',
+    imageKeyUrl: 'https://picsum.photos/200/300',
+    media: [],
+  },
+  {
+    id: '1',
+    title: 'The Event location has moved to the following address...',
+    description: LABLE.DUMMY_TEXT,
+    date: '10/05/2025',
+    media: [],
+  },
+  {
+    id: '1',
+    title: 'The Event location has moved to the following address...',
+    description: LABLE.DUMMY_TEXT,
+    date: '10/05/2025',
+    media: [
+      { type: 'image', uri: 'https://picsum.photos/200/300' },
+      { type: 'image', uri: 'https://picsum.photos/200/300' },
+      {
+        type: 'pdf',
+        name: 'Guests File Rumor',
+        size: '9.83 MB',
+        uri: 'https://www.aeee.in/wp-content/uploads/2020/08/Sample-pdf.pdf',
+      },
+    ],
+  },
+  {
+    id: '1',
+    title: 'The Event location has moved to the following address...',
+    description: LABLE.DUMMY_TEXT,
+    date: '10/05/2025',
+    media: [
+      { type: 'image', uri: 'https://picsum.photos/200/300' },
+      { type: 'pdf', name: 'Guests File Rumor', size: '9.83 MB' },
+      { type: 'image', uri: 'https://picsum.photos/200/300' },
+    ],
+  },
+  // Add more objects for additional list items
+];
+
+export const genderList = [
+  { id: 0, gender: 'Male', value: 'MALE' },
+  { id: 1, gender: 'Female', value: 'FEMALE' },
+  { id: 2, gender: 'Non-binary', value: 'NON_BINARY' },
+  { id: 3, gender: 'Prefer not to say', value: 'NOT_APPLICABLE' },
+];

@@ -12,7 +12,6 @@
 		0A291A8969DF4B7694B0241C /* ABCDiatype-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8BC50AD5F9C4455B8314CEDE /* ABCDiatype-Regular.ttf */; };
 		0C28B76CEC624D23B2A8FE91 /* ABCDiatype-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 48342414648D45939C7833EB /* ABCDiatype-Medium.ttf */; };
 		0C57B9D3D7744E37B1C462D7 /* ABCDiatype-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F0DA1002D45F49149BA805FC /* ABCDiatype-Light.ttf */; };
-		0C80B921A6F3F58F76C31292 /* libPods-RumorApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-RumorApp.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -31,6 +30,7 @@
 		99086003C7B14AA0804168BC /* RomieTrial-Regular-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = C7388A0F4CCA49FC94EF7685 /* RomieTrial-Regular-Italic.otf */; };
 		BAE530E2907F4B3B8E3D1811 /* RomieTrial-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 186FD540EB524E67B7BD07BD /* RomieTrial-Heavy.otf */; };
 		C969512D9B1B48C698243ABD /* RomieTrial-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF49A30032ED4A579F18027C /* RomieTrial-Medium.otf */; };
+		CF1C7BDA7DC215968F7D3082 /* libPods-RumorApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-RumorApp.a */; };
 		F524A88F3F47466AA95F245A /* RomieTrial-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1D10291175C146BEB79D3415 /* RomieTrial-Bold.otf */; };
 		FDBF2577B57D42299DDB4CF0 /* ABCDiatype-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2225DA7E12CA44CB9987A28A /* ABCDiatype-ThinItalic.ttf */; };
 /* End PBXBuildFile section */
@@ -99,7 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C80B921A6F3F58F76C31292 /* libPods-RumorApp.a in Frameworks */,
+				CF1C7BDA7DC215968F7D3082 /* libPods-RumorApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -555,7 +555,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = CXG9GJ5APL;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = RumorApp/Info.plist;
@@ -597,7 +597,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = CXG9GJ5APL;
 				INFOPLIST_FILE = RumorApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Rumor;

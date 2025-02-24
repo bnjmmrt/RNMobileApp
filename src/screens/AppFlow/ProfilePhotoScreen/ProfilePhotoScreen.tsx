@@ -1,15 +1,15 @@
-import React, {useCallback, useRef, useState} from 'react';
-import {Image, Platform, Text, TouchableOpacity, View} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker';
-import {LABLE, BUTTON_LABLE} from '../../../utils/constants';
+import React, { useCallback, useRef, useState } from 'react';
+import { Image, Platform, Text, TouchableOpacity, View } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
+import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
 import ProfilePhotoScreenStyles from './ProfilePhotoScreenStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../redux/slices';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/slices';
 import {
   setPageProgress,
   setProfilePic,
@@ -17,21 +17,21 @@ import {
 import IMAGES from '../../../assets/images';
 import Toast from '../../../component/Toast/Toast';
 import useApi from '../../../axios/useApi';
-import {EndPoint} from '../../../ApiManager/config';
+import { EndPoint } from '../../../ApiManager/config';
 import AvatarInitials from '../../../component/AvatarInitials';
-import {environment} from '../../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 import EditPictureBottomSheet from '../../../component/BottomSheet/EditPictureBottomSheet';
 import FullScreenLoader from 'src/component/FullScreenLoader';
-import {useFocusEffect} from '@react-navigation/native';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { useFocusEffect } from '@react-navigation/native';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> {}
+interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> { }
 
 const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   navigation,
 }) => {
-  const {apiRequest, loading, error} = useApi();
+  const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
   const profilePic = useSelector(
     (state: RootState) => state.appFlow.profilePic,
@@ -71,8 +71,8 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
           dispatch(
             setProfilePic(
               environment.BASE_URL +
-                EndPoint.view_image +
-                response.data.fileKeyId,
+              EndPoint.view_image +
+              response.data.fileKeyId,
             ),
           );
         } else {
@@ -96,7 +96,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
 
   const handleBackPress = () => {
     dispatch(setPageProgress(7));
-    navigation.navigate('SelectInterestScreen');
+    navigation.goBack();
   };
 
   const openPicker = () => {
@@ -137,7 +137,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
             {image ? (
               <Image
                 style={styles.profilePhotoContainer}
-                source={{uri: profilePic}}
+                source={{ uri: profilePic }}
                 resizeMode="cover"
               />
             ) : (
@@ -162,7 +162,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
             onPress={savePhoto}
             submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
             cancelButtonText={BUTTON_LABLE.CANCEL}
-            snapPoints={[Platform.OS == 'android' ? '50%' : '45%']}
+            snapPoints={[Platform.OS == 'android' ? '50%' : '50%']}
             image={image}
           />
         </View>
@@ -181,6 +181,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
         style={styles.btnStyle}
         title={BUTTON_LABLE.NEXT}
         colorTheme="dark"
+        loading={loading}
         onPress={onNextClick}
       />
     </SafeAreaView>

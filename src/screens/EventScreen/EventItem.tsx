@@ -1,13 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
-import { fontFamily, formatEventDates } from '../../utils/functions';
+import { fontFamily } from '../../utils/functions';
 import { Wp, Hp, horizontalScale, verticalScale } from '../../utils/dimensions';
 import ButtonSmall from '../../component/ButtonSmall';
 import FastImage from '@d11/react-native-fast-image';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from 'src/navigation/Route';
 import IMAGES from '@images/index';
+import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
 
 interface EventItemProps {
   item: {};
@@ -18,6 +19,7 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
   const navigation = useNavigation();
   // Handle the "Next" button press
 
+  const dates = formatToDeviceTimeZone(item?.startDate, item?.endDate, false);
 
   const handlEventPress = () => {
     navigation.navigate(ROUTES.EventStack, {
@@ -26,11 +28,12 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
     });
   };
 
+  console.log("Sayyed event item :", item)
   return (
     <View style={styles.container}>
       <View style={[styles.imageContainer]}>
         <FastImage
-          source={{ uri: item?.imageCover }}
+          source={{ uri: item?.imageCover || item?.imageFlyer }}
           resizeMode={FastImage.resizeMode.cover}
           defaultSource={IMAGES.eventCoverPlaceholders1} // Your local placeholder image
           style={styles.icon}
@@ -39,10 +42,10 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
       <View style={styles.contentContainer}>
         <Text style={styles.titleStyle}>{item?.name}</Text>
         <Text style={styles.subtitle} numberOfLines={2}>
-          {item?.startDate}
+          {`${dates[0]}, ${dates[1]}`}
         </Text>
         <Text style={styles.subtitle} numberOfLines={2}>
-          {item?.location?.location}
+          {item?.location?.city}
         </Text>
         <View style={{ alignItems: 'flex-start', flexDirection: 'row' }}>
           <ButtonSmall

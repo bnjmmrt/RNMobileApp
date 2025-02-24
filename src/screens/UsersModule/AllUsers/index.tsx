@@ -1,48 +1,52 @@
 import IMAGES from '@images/index';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { FlatList, RefreshControl, View } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {FlatList, RefreshControl, View} from 'react-native';
+import {useDispatch} from 'react-redux';
+import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
-import { InputRefMethods } from 'src/component/Input/Input';
+import FiltersSheet from 'src/component/FilterSheet';
+import {InputRefMethods} from 'src/component/Input/Input';
 import SearchInput from 'src/component/SearchInput';
-import { useFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
-import { changeBottomTabsVisibility } from 'src/redux/slices/bottomTabsConfigSlice';
+import {useFetchAllUsersQuery} from 'src/redux/actions/usersApiAction';
+import {changeBottomTabsVisibility} from 'src/redux/slices/bottomTabsConfigSlice';
 import {
   horizontalMarginScale,
   Hp,
   verticalMarginScale,
+  verticalScale,
 } from 'src/utils/dimensions';
-import { changeSafeAreaViewConfig } from 'src/utils/functions';
-import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import UserActionsSheet, {
   UserActionCurrentPageType,
 } from '../BottomSheets/UserActionsSheet';
-import UserListItem, { UserItemInterface } from '../UsersListItem';
+import UserListItem, {UserItemInterface} from '../UsersListItem';
 
-interface AllUserProps { }
+interface AllUserProps {}
 
-const AllUsers: React.FC<AllUserProps> = ({ }) => {
+const AllUsers: React.FC<AllUserProps> = ({}) => {
   const dispatch = useDispatch();
   const searchInputRef = useRef<InputRefMethods>(null);
   const actionSheetRef = useRef<BottomSheetMethods>(null);
+  const filtersSheetRef = useRef<BottomSheetMethods>(null);
 
   const [allUsers, setAllUsers] = useState<{
     users: UserItemInterface[];
     totalCount: number;
-  }>({ totalCount: 0, users: [] });
+  }>({totalCount: 0, users: []});
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>('');
+  const [filterQuery, setFilterQuery] = useState<string>('');
+  const [filterNumber, setFilterNumber] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
 
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
     useState<UserActionCurrentPageType>('');
 
-  const { data, isLoading, refetch } = useFetchAllUsersQuery({
+  const {data, isLoading, error, isError, refetch} = useFetchAllUsersQuery({
     take: 10,
     skip: (currentPage - 1) * 10,
     searchValue: searchText,
+    queryString: filterQuery,
   });
 
   const onRefreshPage = () => {
@@ -78,8 +82,23 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
     setSelectedUsers([]);
   };
 
+  const onApplyFilter = (
+    queryString: string,
+    numberOfFiltersApplied: number,
+  ) => {
+    setCurrentPage(1);
+    setFilterQuery(queryString);
+    setFilterNumber(numberOfFiltersApplied);
+  };
+
+  const onClearFilter = () => {
+    setCurrentPage(1);
+    setFilterQuery('');
+    setFilterNumber(0);
+  };
+
   const renderItem = useCallback(
-    ({ item }: { item: UserItemInterface }) => {
+    ({item}: {item: UserItemInterface}) => {
       const isSelected = selectedUsers.some(user => user === item.id);
       return (
         <UserListItem
@@ -94,29 +113,14 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
 
   useEffect(() => {
     if (selectedUsers.length > 0) {
-      dispatch(changeBottomTabsVisibility({ showBottomTabs: false }));
-      changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-        showBottomSafeAreaView: true,
-      });
+      dispatch(changeBottomTabsVisibility({showBottomTabs: false}));
     } else {
-      dispatch(changeBottomTabsVisibility({ showBottomTabs: true }));
-      changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-        showBottomSafeAreaView: false,
-      });
+      dispatch(changeBottomTabsVisibility({showBottomTabs: true}));
     }
-    return () => {
-      dispatch(changeBottomTabsVisibility({ showBottomTabs: true }));
-      changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-        showBottomSafeAreaView: false,
-      });
-    };
   }, [selectedUsers]);
 
   useEffect(() => {
-    if (data) {
+    if (data && data.data) {
       if (currentPage === 1) {
         setAllUsers(data.data);
       } else {
@@ -128,44 +132,37 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (isError) {
+      setAllUsers({totalCount: 0, users: []});
+    }
+  }, [isError]);
+
   return (
-    <View
-      style={{
-        marginTop: verticalMarginScale(8),
-      }}>
+    <View style={{marginTop: verticalMarginScale(8), flex: 1}}>
       <SearchInput
         ref={searchInputRef}
         onSearchTextChange={handleSearchTextChange}
         placeholder="Search..."
         rightIcon={IMAGES.filter_lines}
-        onPressRightIcon={() => { }}
-        rightIconText=""
-        mainContainerStyle={{ marginHorizontal: 15 }}
+        onPressRightIcon={() => {
+          filtersSheetRef?.current?.open();
+        }}
+        rightIconText={String(filterNumber || '') || ''}
+        mainContainerStyle={{marginHorizontal: horizontalMarginScale(20)}}
+        defaultValue={searchText}
       />
-
       <FlatList
         data={allUsers?.users || []}
         style={{
           marginHorizontal: horizontalMarginScale(20),
-          marginTop: verticalMarginScale(10),
+          marginTop: verticalMarginScale(16),
         }}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{ gap: verticalMarginScale(16) }}
-        // ListHeaderComponent={
-        //   <SearchInput
-        //     ref={searchInputRef}
-        //     onSearchTextChange={handleSearchTextChange}
-        //     placeholder="Search..."
-        //     rightIcon={IMAGES.filter_lines}
-        //     onPressRightIcon={() => {}}
-        //     rightIconText=""
-        //     mainContainerStyle={{marginHorizontal: 0}}
-        //     defaultValue={searchText}
-        //   />
-        // }
+        contentContainerStyle={{gap: verticalMarginScale(16)}}
         ListFooterComponent={
-          <View style={{ marginBottom: verticalMarginScale(150) }} />
+          <View style={{marginBottom: verticalMarginScale(150)}} />
         }
         ListEmptyComponent={
           <View
@@ -185,7 +182,9 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
         onEndReachedThreshold={0.4}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
+          allUsers?.users?.length > 0 ? (
+            <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
+          ) : undefined
         }
       />
       {selectedUsers.length > 0 ? (
@@ -196,7 +195,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
             actionSheetRef?.current?.open();
           }}
           colorTheme="dark"
-          style={{ position: 'absolute', bottom: 0 }}
+          style={{position: 'absolute', bottom: verticalScale(30)}}
         />
       ) : null}
       <UserActionsSheet
@@ -206,6 +205,13 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
         onSuccess={onAddUserToListSuccess}
         selectedAction={selectedActionSheetAction}
         setSelectedAction={setSelectedActionSheetAction}
+      />
+      <FiltersSheet
+        ref={filtersSheetRef}
+        from="allUsersList"
+        onApplyFilter={onApplyFilter}
+        onClearFilter={onClearFilter}
+        showBottomSafeAreaView={false}
       />
     </View>
   );

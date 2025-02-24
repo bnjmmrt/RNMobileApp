@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AppStack } from './AppStack';
 import { AuthStack } from './AuthStack';
-import WelcomeScreen from '../screens/AppFlow/WelcomeScreen/WelcomeScreen'
+import WelcomeScreen from '../screens/AppFlow/WelcomeScreen/WelcomeScreen';
 
 export type MainStackParamList = {
   WelcomeScreen: undefined;

@@ -1,11 +1,12 @@
 import React from 'react';
-import { Text, StyleSheet, View, FlatList } from 'react-native';
+import { Text, StyleSheet, View, FlatList, Pressable, Alert } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import { COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '@images/index';
 import FastImage from '@d11/react-native-fast-image';
 import AvatarInitials from '../AvatarInitials';
-import { fontScale } from 'src/utils/dimensions';
+import { fontScale, verticalMarginScale } from 'src/utils/dimensions';
+import GradientSeprator from '../GradientSeprator';
 
 interface Talent {
   id: string;
@@ -18,6 +19,11 @@ interface EventTalentProps {
 }
 
 const EventTalent: React.FC<EventTalentProps> = ({ talents }) => {
+
+  const itemSeparatorComponent = () => {
+    return <GradientSeprator />;
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{LABLE.FEATURE_TALENT}</Text>
@@ -26,13 +32,15 @@ const EventTalent: React.FC<EventTalentProps> = ({ talents }) => {
       <FlatList
         data={talents}
         keyExtractor={(item) => item.id}
+        horizontal={false}
         contentContainerStyle={styles.itemContainer}
+        ItemSeparatorComponent={itemSeparatorComponent}
         renderItem={({ item }) => (
-          <View style={styles.talentItem}>
+          <Pressable style={styles.talentItem} onPress={() => Alert.alert("Inprogress")}>
             {item.imageKeyUrl && item.imageKeyUrl.includes("http") ? (
               <FastImage
                 source={{ uri: item.imageKeyUrl }}
-                resizeMode={FastImage.resizeMode.contain}
+                resizeMode={FastImage.resizeMode.cover}
                 defaultSource={IMAGES.rumorLogo}
                 style={styles.icon}
               />
@@ -40,7 +48,7 @@ const EventTalent: React.FC<EventTalentProps> = ({ talents }) => {
               <AvatarInitials name={item.name} size={48} />
             )}
             <Text style={styles.name}>{item.name}</Text>
-          </View>
+          </Pressable>
         )}
       />
     </View>
@@ -74,13 +82,12 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   itemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: verticalMarginScale(10),
   },
   talentItem: {
     alignItems: 'center',
     marginRight: 15,
+    marginBottom: 15,
     flexDirection: 'row'
   },
   name: {

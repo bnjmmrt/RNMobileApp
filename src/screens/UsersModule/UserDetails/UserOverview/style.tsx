@@ -6,7 +6,6 @@ import {
   radiusScale,
   verticalMarginScale,
   verticalScale,
-  Wp,
 } from '../../../../utils/dimensions';
 import {fontFamily} from '../../../../utils/functions';
 

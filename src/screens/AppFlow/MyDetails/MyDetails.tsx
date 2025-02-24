@@ -58,11 +58,12 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   };
 
   const handleBackPress = () => {
-    if (loginData?.isInvited || loginData.token.length > 0) {
-      navigation.navigate('BottomTabBar');
-    } else {
-      navigation.navigate('BeforeAppStaticScreen');
-    }
+    navigation.goBack();
+    // if (loginData?.isInvited || loginData.token.length > 0) {
+    //   navigation.navigate('BottomTabBar');
+    // } else {
+    //   navigation.navigate('BeforeAppStaticScreen');
+    // }
   };
 
   useFocusEffect(

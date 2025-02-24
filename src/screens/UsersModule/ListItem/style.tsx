@@ -1,6 +1,4 @@
 import {StyleSheet} from 'react-native';
-import {COLORS} from '../../../utils/constants';
-import {fontFamily} from '../../../utils/functions';
 import {
   fontScale,
   horizontalMarginScale,
@@ -8,6 +6,7 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
+import {COLORS} from '../../../utils/constants';
 
 const createStyle = () => {
   return StyleSheet.create({

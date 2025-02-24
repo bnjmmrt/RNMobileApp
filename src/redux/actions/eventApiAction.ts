@@ -16,7 +16,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take: number;
         skip: number;
       }) => ({
-        url: `v1/events/users/${userId}/events?guestEventStatus=${guestEventStatus}s&take=${take}&skip=${skip}&findInNameAndDescription=${searchText}`,
+        url: `v1/events/users/${userId}/events?guestEventStatus=${guestEventStatus}&take=${take}&skip=${skip}&findInNameAndDescription=${searchText}`,
         method: 'GET',
       }),
       providesTags: ['Event'], // Adjust the tag if needed for cache invalidation
@@ -42,29 +42,87 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     fetchAllEvents: builder.query({
       query: ({
+        statusName,
         userId,
+        queryString,
+        searchText,
+        skip,
+        take,
       }: {
+        statusName: string,
         userId: string;
-      }) => ({
-        url: `v1/events/users/${userId}/events`,
-        method: 'GET',
-      }),
+        queryString?: string;
+        searchText?: string;
+        take?: number;
+        skip?: number;
+      }) => {
+        let url = `v1/events/users/${userId}/events`;
+        if (take) {
+          url = `${url}?take=${take}&skip=${skip}`;
+        }
+        if (searchText) {
+          url = `${url}&findInNameAndDescription=${searchText}`;
+        }
+        if (statusName) {
+          url = `${url}&status=${statusName}`;
+        }
+        if (queryString) {
+          url = `${url}&${queryString}`;
+        }
+        return {
+          url: url,
+          method: 'GET',
+        };
+      },
       providesTags: ['Events'], // Adjust the tag if needed for cache invalidation
     }),
 
     fetchEventDetails: builder.query({
-      query: ({
-        eventId,
-      }: {
-        eventId: string;
-      }) => ({
+      query: ({ eventId, userId }: { eventId: string, userId: string }) => ({
+        url: `v1/events/users/${userId}/events/${eventId}`,
+        method: 'GET',
+      }),
+      providesTags: ['EventDetails'],
+      keepUnusedDataFor: 0, // Adjust the tag if needed for cache invalidation
+    }),
+
+    fetchHostEventDetails: builder.query({
+      query: ({ eventId }: { eventId: string }) => ({
         url: `v1/events/event/${eventId}`,
         method: 'GET',
       }),
-      providesTags: ['EventDetails'], // Adjust the tag if needed for cache invalidation
+      providesTags: ['EventDetails'],
+      keepUnusedDataFor: 0, // Adjust the tag if needed for cache invalidation
     }),
 
+
+    fetchGuestStatusCount: builder.query({
+      query: ({ eventId }: { eventId: string }) => ({
+        url: `v1/events/${eventId}/guest-status-counts`,
+        method: 'GET',
+      }),
+      providesTags: ['GuestStatusCount'],
+      keepUnusedDataFor: 0, // Adjust the tag if needed for cache invalidation
+    }),
+
+
+    fetchDashboardUpcomingEvents: builder.query({
+      query: () => ({
+        url: `v1/events/dashboard/upcoming-events`,
+        method: 'GET',
+      }),
+      providesTags: ['DashboardUpcomingEvents'],
+      keepUnusedDataFor: 0, // Adjust the tag if needed for cache invalidation
+    }),
   }),
 });
 
-export const { useFetchEventsQuery, useFetchEventDetailsQuery, useFetchAllEventsQuery, useFetchHostEventsQuery } = eventApiAction;
+export const {
+  useFetchEventsQuery,
+  useFetchEventDetailsQuery,
+  useFetchAllEventsQuery,
+  useFetchHostEventsQuery,
+  useFetchGuestStatusCountQuery,
+  useFetchDashboardUpcomingEventsQuery,
+  useFetchHostEventDetailsQuery
+} = eventApiAction;

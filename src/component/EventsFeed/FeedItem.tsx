@@ -1,94 +1,98 @@
-import React from 'react';
-import IMAGES from '../../assets/images';
-import type { EventItem } from './EventsFeed';
 import FastImage from '@d11/react-native-fast-image';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { COLORS } from '../../utils/constants';
-import { fontFamily } from '../../utils/functions';
+import {useNavigation} from '@react-navigation/native';
+import React from 'react';
+import {Dimensions, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {ROUTES} from 'src/navigation/Route';
+import IMAGES from '../../assets/images';
+import {COLORS} from '../../utils/constants';
 import {
-  horizontalMarginScale,
-  verticalMarginScale,
-  radiusScale,
   fontScale,
-  horizontalScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
   verticalScale,
-  Hp,
-  Wp,
 } from '../../utils/dimensions';
-import { useNavigation } from '@react-navigation/native';
-import { ROUTES } from 'src/navigation/Route';
+import {CustomText} from '../CustomText';
+import type {EventItem} from './EventsFeed';
 
+let screenWidth: number = Dimensions.get('window').width;
 
 interface FeedItemProps {
   item: EventItem;
-  isFeatured?: boolean;
-  setDetail: React.Dispatch<React.SetStateAction<EventItem | null>>;
+  from?: 'AllEvents' | 'UserDetail';
 }
 
-const FeedItem: React.FC<FeedItemProps> = ({ item, isFeatured, setDetail }) => {
+const FeedItem: React.FC<FeedItemProps> = ({item, from = 'AllEvents'}) => {
   const navigation = useNavigation();
 
   const handlEventPress = () => {
     navigation.navigate(ROUTES.EventStack, {
       screen: ROUTES.EventDetailsScreen,
-      params: item
+      params: item,
     });
   };
+
+  const getCardWidth = () => {
+    switch (from) {
+      case 'AllEvents':
+        return (screenWidth - horizontalMarginScale(20) * 3) / 2;
+      case 'UserDetail':
+        return (screenWidth - horizontalMarginScale(40)) / 2;
+    }
+  };
+
   return (
-    <TouchableOpacity style={styles.container} onPress={() => handlEventPress()}>
+    <TouchableOpacity
+      style={{width: getCardWidth()}}
+      onPress={() => handlEventPress()}>
       <View style={[styles.imageContainer]}>
         <FastImage
-          source={{ uri: item.imageCover || item.imageFlyer }}
+          source={{uri: item.imageCover || item.imageFlyer}}
           resizeMode={FastImage.resizeMode.cover}
           defaultSource={IMAGES.eventCoverPlaceholders1}
           style={styles.icon}
         />
       </View>
-      <View style={styles.contentContainer}>
-        <Text numberOfLines={1} style={styles.title}>
-          {item.name}
-        </Text>
-        <Text numberOfLines={1} style={styles.subtitle}>
-          {item.startDate}
-        </Text>
-      </View>
+      {item.name || item.startDate ? (
+        <View style={styles.contentContainer}>
+          {item.name ? (
+            <CustomText textProps={{numberOfLines: 1}} style={styles.title}>
+              {item.name}
+            </CustomText>
+          ) : null}
+          {item.startDate ? (
+            <CustomText textProps={{numberOfLines: 1}} style={styles.subtitle}>
+              {item.startDate}
+            </CustomText>
+          ) : null}
+        </View>
+      ) : null}
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'column',
-    paddingVertical: verticalMarginScale(10),
-    paddingHorizontal: horizontalMarginScale(11),
-    width: Wp(48),
-  },
   imageContainer: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   contentContainer: {
-    flexDirection: 'column',
     flex: 1,
-    marginTop: verticalMarginScale(8),
-    paddingHorizontal: horizontalMarginScale(8),
+    marginTop: verticalMarginScale(12),
   },
   icon: {
-    borderRadius: 10,
-    height: horizontalScale(245),
-    width: verticalScale(166),
-    backgroundColor: COLORS.borderGray
+    borderRadius: radiusScale(8),
+    height: verticalScale(245),
+    width: '100%',
+    backgroundColor: COLORS.borderGray,
   },
   title: {
     fontSize: fontScale(16),
-    fontFamily: fontFamily.ABCDiatype_Medium,
-    color: COLORS.black,
   },
   subtitle: {
     color: COLORS.light_gray,
     fontSize: fontScale(12),
-    fontFamily: fontFamily.ABCDiatype_Regular,
-    marginTop: verticalMarginScale(1),
+    marginTop: verticalMarginScale(4),
   },
 });
 

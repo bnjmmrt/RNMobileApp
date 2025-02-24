@@ -57,9 +57,12 @@ export const createBaseApi = createApi({
     'CustomListDetail',
     'EventDetails',
     'Events',
-    'HostEvents'
+    'HostEvents',
+    'Filters',
+    'GuestStatusCount',
+    'DashboardUpcomingEvents'
   ], // Accept tagTypes as a parameter
   endpoints: () => ({}),
-  keepUnusedDataFor: 60, // Optional: Adjust cache duration
+  keepUnusedDataFor: 0, // Optional: Adjust cache duration
   refetchOnFocus: true, // Optional: Refetch data when the app is focused
 });

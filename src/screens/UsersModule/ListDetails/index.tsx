@@ -4,30 +4,30 @@ import {
   useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ActivityIndicator, FlatList, View} from 'react-native';
+import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
+import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import Header from 'src/component/Header/Header';
 import SearchInput from 'src/component/SearchInput';
+import {AppStackParamList} from 'src/navigation/AppStack';
+import {useFetchCustomListUsersQuery} from 'src/redux/actions/listsApiAction';
+import {COLORS} from 'src/utils/constants';
 import {
   horizontalMarginScale,
   Hp,
   verticalMarginScale,
 } from 'src/utils/dimensions';
+import {changeSafeAreaViewConfig} from 'src/utils/functions';
+import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
 import DeleteListUsersSheet from '../BottomSheets/DeleteListUsersSheet';
 import ListActionsSheet, {
   listActionCurrentPageType,
 } from '../BottomSheets/ListActionsSheet';
 import UserListItem, {UserItemInterface} from '../UsersListItem';
 import createStyle from './style';
-import {AppStackParamList} from 'src/navigation/AppStack';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useFetchCustomListUsersQuery} from 'src/redux/actions/listsApiAction';
-import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
-import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
-import {COLORS} from 'src/utils/constants';
 
 interface ListDetailsProps
   extends NativeStackScreenProps<AppStackParamList, 'ListDetail'> {}
@@ -154,7 +154,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({route}) => {
           ref={searchInputRef}
           onSearchTextChange={handleSearchTextChange}
           placeholder="Search..."
-          rightIcon={IMAGES.filter_lines}
+          // rightIcon={IMAGES.filter_lines}
           mainContainerStyle={{marginHorizontal: 0}}
         />
         {isLoading ? (
@@ -224,6 +224,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({route}) => {
         selectedListName={allUsers.name || ''}
         onSuccess={onListActionSheetSuccess}
         listType={route.params.listType}
+        listUserCount={allUsers.users.length}
       />
     </View>
   );

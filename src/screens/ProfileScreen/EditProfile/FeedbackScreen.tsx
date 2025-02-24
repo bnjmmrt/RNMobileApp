@@ -52,7 +52,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   const [isToastShown, setIsToastShown] = useState(false);
 
   const [selectedData, getSelectedData] = useState<Tag[]>();
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const userId = useSelector((state: RootState) => state.auth.userId);
   const feedbackRef = useRef<any>(null);
 
   const handleBackPress = () => {
@@ -68,7 +68,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
       const requestData = {
         description: feedbackRef?.current.inputText,
         tag: selectedData[0].value,
-        userId: loginData?.id,
+        userId: userId,
       };
       console.log('requestObject', requestData);
       const response: any = await apiRequest(
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingVertical: verticalMarginScale(10),
+    paddingVertical: verticalMarginScale(0),
     paddingHorizontal: horizontalMarginScale(20),
     height: '100%',
   },

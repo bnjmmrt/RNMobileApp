@@ -3,10 +3,10 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {Image, TouchableOpacity, View, ViewStyle} from 'react-native';
 import {CustomText} from 'src/component/CustomText';
-import {ROUTES} from 'src/navigation/Route';
-import createStyle from './style';
-import {horizontalMarginScale} from 'src/utils/dimensions';
 import {AppStackParamList, customListType} from 'src/navigation/AppStack';
+import {ROUTES} from 'src/navigation/Route';
+import {horizontalMarginScale} from 'src/utils/dimensions';
+import createStyle from './style';
 
 export interface ListItemProps {
   id: string;

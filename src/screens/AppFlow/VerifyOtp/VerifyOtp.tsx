@@ -48,7 +48,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   //  const { verifyOtp,isLoading } = useVerifyOtp(isMemberExist, route.params.email, route.params.phone, route.params.isEmail);
 
   const sendToId = useSelector((state: RootState) =>
-    isEmailVerified ? state.appFlow.phone : state.appFlow.email,
+    route?.params?.isEmail ? state.appFlow.email : state.appFlow.phone,
   );
   const [_isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -126,7 +126,6 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   //       : {phoneNumber: route.params.phone}),
   //     requestCode: code,
   //   };
-  //   console.log('sayyed params:', requestParam);
 
   //   try {
   //     setIsLoading(true);
@@ -149,6 +148,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   // };
 
   const resendVerificationCode = async () => {
+    otpInputRef.current.clearOTP();
     sendOtp('resent');
   };
 
@@ -161,7 +161,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Header
-        headerTitle={isEmailVerified ? LABLE.VERIFY_PHONE : LABLE.VERIFY_EMAIL}
+        headerTitle={route?.params.isEmail ? LABLE.VERIFY_EMAIL : LABLE.VERIFY_PHONE}
         onPress={handleBackPress}
         showProgressBar={false}
       />

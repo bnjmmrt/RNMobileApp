@@ -1,5 +1,5 @@
+import {BottomSheetView} from '@gorhom/bottom-sheet';
 import React from 'react';
-import {View} from 'react-native';
 import {shallowEqual, useSelector} from 'react-redux';
 import Button from 'src/component/Button';
 import {CustomText} from 'src/component/CustomText';
@@ -8,9 +8,9 @@ import {
   useUserSpamToggleMutation,
 } from 'src/redux/actions/usersApiAction';
 import {RootState} from 'src/redux/slices';
-import {styles} from './style';
+import {verticalMarginScale} from 'src/utils/dimensions';
 import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
-import {BottomSheetView} from '@gorhom/bottom-sheet';
+import {styles} from './style';
 
 const MarkAsSpam = ({
   showError,
@@ -71,7 +71,11 @@ const MarkAsSpam = ({
       <Button
         title={userDetails?.isSpam ? 'Unmark as Spam' : 'Mark as Spam'}
         colorTheme="dark"
-        style={[styles.actionCta, !userDetails?.isSpam && styles.markSpamCta]}
+        style={[
+          styles.actionCta,
+          !userDetails?.isSpam && styles.markSpamCta,
+          {marginBottom: verticalMarginScale(20)},
+        ]}
         onPress={onPressCta}
         loading={isLoading}
       />

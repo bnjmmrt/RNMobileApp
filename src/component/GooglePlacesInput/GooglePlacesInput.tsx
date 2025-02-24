@@ -1,43 +1,65 @@
 import React from 'react';
-import { Image, StyleSheet, View } from 'react-native';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import type { GooglePlaceData, GooglePlaceDetail } from 'react-native-google-places-autocomplete';
-import { COLORS } from '../../utils/constants';
-import { Address } from '../../redux/slices/appFlowSlice';
-import { environment } from '../../../environments/environment';
+import {Image, StyleSheet, View} from 'react-native';
+import type {
+  GooglePlaceData,
+  GooglePlaceDetail,
+} from 'react-native-google-places-autocomplete';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+} from 'src/utils/dimensions';
+import {fontFamily} from 'src/utils/functions';
+import {environment} from '../../../environments/environment';
 import IMAGES from '../../assets/images';
-import { verticalMarginScale, verticalScale } from 'src/utils/dimensions';
+import {Address} from '../../redux/slices/appFlowSlice';
+import {COLORS} from '../../utils/constants';
 
 interface GooglePlacesInputProps {
   setLocation: (location: Address) => void;
   submit: () => void;
 }
-const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({ setLocation, submit }) => {
+const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
+  setLocation,
+  submit,
+}) => {
   return (
     <GooglePlacesAutocomplete
       styles={{
         textInputContainer: {
-          borderRadius: 8,
+          borderRadius: radiusScale(8),
           borderWidth: 2,
           borderColor: COLORS.borderGray,
-          height:60,
-          padding:verticalMarginScale(4)
+          paddingVertical: verticalMarginScale(18),
+          paddingHorizontal: horizontalMarginScale(18),
         },
-
+        textInput: {
+          height: '100%',
+          marginTop: 0,
+          marginBottom: 0,
+          fontSize: fontScale(14),
+          fontFamily: fontFamily.ABCDiatype_Regular,
+        },
       }}
+      minLength={3}
+      enablePoweredByContainer={false}
       placeholder="Search Location"
       onPress={(data: GooglePlaceData, detail: GooglePlaceDetail | null) => {
         // 'details' is provided when fetchDetails = true
-        console.log("data.placeId", data, data.place_id);
+        console.log('data.placeId', detail);
         const address: Address = {
           address: data.description,
           placeId: data.place_id,
-          latitude: detail ? String(detail?.location?.latitude) : '',
-          longitude: detail ? String(detail?.location?.longitude) : '',
+          latitude: detail ? String(detail?.geometry?.location?.lat) : '',
+          longitude: detail ? String(detail?.geometry?.location?.lng) : '',
         };
         setLocation(address);
         submit();
       }}
+      fetchDetails={true}
       query={{
         key: environment.PLACES_API_KEY,
         language: 'en',
@@ -47,6 +69,8 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({ setLocation, subm
           <Image source={IMAGES.location} style={styles.leftImage} />
         </View>
       )}
+      enablePoweredByContainer={false}
+      disableScroll={false}
     />
   );
 };
@@ -56,12 +80,12 @@ const styles = StyleSheet.create({
   iconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 10,
-    marginBottom: 3,
+    // marginLeft: 10,
+    // marginBottom: 3,
   },
   leftImage: {
-    width: 20,
-    height: 20,
+    width: verticalScale(16),
+    height: verticalScale(16),
     resizeMode: 'contain',
   },
 });
