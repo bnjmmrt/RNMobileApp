@@ -102,6 +102,9 @@ export const styles = StyleSheet.create({
         right: 0,
         alignItems: 'center',
     },
+    toastNoGuest: {
+        marginTop: verticalMarginScale(20), padding: 12, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: COLORS.bgRed, borderRadius: 12
+    },
     customSelectText: {
         marginTop: verticalMarginScale(4),
         marginBottom: verticalMarginScale(8),
