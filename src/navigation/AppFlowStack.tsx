@@ -33,25 +33,25 @@ export type AppFlowStackParamList = {
 const Stack = createStackNavigator<AppFlowStackParamList>();
 
 export const AppFlowStack: React.FC = () => {
-  const pageProgress = useSelector((state: RootState) => state.appFlow.pageProgress);
+  // const pageProgress = useSelector((state: RootState) => state.appFlow.pageProgress);
 
-  const getInitialPage=()=>{
-     switch(pageProgress){
-      case 1: return "MyDetailsScreen";
-      case 2 : return "EnterEmailPhone";
-      case 3 : return "GenderScreen";
-      case 4 : return "BirthdayScreen";
-      case 5 : return "BaseCityScreen";
-      case 6 : return "CreativeFocusScreen";
-      case 7 : return "SelectInterestScreen";
-      case 8 : return "ProfilePhotoScreen";
-      case 9 : return "IdentityVerification";
-      default : return "MyDetailsScreen"
-     }
-  }
+  // const getInitialPage=()=>{
+  //    switch(pageProgress){
+  //     case 1: return "MyDetailsScreen";
+  //     case 2 : return "EnterEmailPhone";
+  //     case 3 : return "GenderScreen";
+  //     case 4 : return "BirthdayScreen";
+  //     case 5 : return "BaseCityScreen";
+  //     case 6 : return "CreativeFocusScreen";
+  //     case 7 : return "SelectInterestScreen";
+  //     case 8 : return "ProfilePhotoScreen";
+  //     case 9 : return "IdentityVerification";
+  //     default : return "MyDetailsScreen"
+  //    }
+  // }
   return (
     <Stack.Navigator
-      initialRouteName={getInitialPage()}
+      initialRouteName={'MyDetailsScreen'}
       screenOptions={({ route, navigation }) => ({})}>
       <Stack.Screen
         name="MyDetailsScreen"

@@ -60,7 +60,7 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({navigation}) => {
 
   const handleBackPress = () => {
     dispatch(setPageProgress(1));
-    navigation.navigate('MyDetailsScreen');
+    navigation.goBack();
   };
 
   useFocusEffect(

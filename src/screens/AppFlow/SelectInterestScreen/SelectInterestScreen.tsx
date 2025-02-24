@@ -129,12 +129,13 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
   };
 
   const handleBackPress = () => {
-    if (!configData.fromProfile) {
-      dispatch(setPageProgress(6));
-      navigation.navigate('CreativeFocusScreen');
-    } else {
-      navigation.goBack();
-    }
+    navigation.goBack();
+    // if (!configData.fromProfile) {
+    //   dispatch(setPageProgress(6));
+    //   navigation.navigate('CreativeFocusScreen');
+    // } else {
+    //   navigation.goBack();
+    // }
   };
 
   useFocusEffect(
