@@ -37,11 +37,11 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
       onClose={() => console.log(ref)}>
         <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.title}>{props.title}</Text>
+        <Text numberOfLines={2} style={styles.title}>{props.title}</Text>
 
         <Text style={[styles.subTitle]}>{props.subTitle}</Text>
         <View style={styles.pic_Container}>
-          <AvatarInitials name={props.name} size={48} />
+          <AvatarInitials name={props.name} size={32} />
           <Text style={styles.name}>{props.name}</Text>
           <Image source={IMAGES.info_filled}  />
         </View>
@@ -91,8 +91,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subTitle: {
-    color: COLORS.light_gray,
-    fontSize: fontScale(14),
+    color: COLORS.black,
+    fontSize: fontScale(18),
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginTop: verticalMarginScale(2),
     marginBottom: verticalMarginScale(12),

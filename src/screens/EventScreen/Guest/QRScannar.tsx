@@ -104,11 +104,8 @@ const QRCodeScanner = () => {
   if (!device) return <Text>Loading Camera...</Text>;
   if (loading)
     return (
-      <FullScreenLoader loading={loading}>
-        <View
-          style={styles.validationText}>
-          <Text>Validating QR code</Text>
-        </View>
+      <FullScreenLoader loading={loading} customStyle={{ backgroundColor: COLORS.transperantBackground,}}>
+        {null}
       </FullScreenLoader>
     );
 
