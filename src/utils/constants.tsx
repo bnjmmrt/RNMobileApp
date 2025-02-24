@@ -179,6 +179,7 @@ export const LABLE = {
   SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:
     'Something went wrong, please try again',
   ABOUT_THE_EVENT: 'About the Event',
+  GUEST_LIST: 'Guest List',
   FEATURE_TALENT: 'Featured Talent',
   EVENT_ANNOUNCEMENTS: 'Event Announcements',
   NO_EVENT_ANNOUNCEMENTS: 'No event announcements',
@@ -212,9 +213,12 @@ export const LABLE = {
   BIO: 'Bio',
   COMPANY_DESCRIPTION: 'Description of Company',
   ENTER_FEEDBACK: 'Enter Feedback',
+  INVITED: 'Invited',
+  REQUESTS: 'Requests',
+  CONFIRMED: 'Confirmed',
+  CHECKED_IN: 'Checked-In',
   CHECK_IN: 'Check-In',
   PROFILE: 'Profile',
-  CHECKED_IN: 'Checked-In',
   PENDING_DETAILS: 'Pending Details',
   GUEST_CHICKED_IN: 'Guest Check-in',
   STANDARD: 'Standard',
@@ -237,6 +241,21 @@ export const LABLE = {
   ACCESS_CALENDAR:'Calendar access is required to add events.',
   PERMISSION_DENIED:'Permission Denied'
 };
+export const EVENT = {
+  EDIT_EVENT: 'Edit Event',
+  DETAILS: 'Details',
+  SETTINGS: 'Settings',
+  EVENT_NAME: 'Event Name',
+  START_DATE: 'Start Date',
+  END_DATE: 'End Date',
+  LOCATION: 'Location',
+  FURTHER_INSTRUCTION: 'Further Instructions',
+  EVENT_DESCRIPTION: 'Event Description',
+  HIDE_ADDRESS: 'Hide full address for confirmed guests',
+  FEATURE_TALENT: 'Featured Talent',
+
+
+}
 
 export const PROFILE = {
   EDIT_PROFILE: 'Edit Profile',
@@ -339,6 +358,9 @@ export const COLORS = {
   grayFeedLocation2: '#E0E0E0FA',
   grayFeedLocation3: '#54545657',
   blueDark: '#0D729D',
+  LIGHT: 'LIGHT',
+  DARK: 'DARK',
+
   neutral_disabled: '#9C9C9C',
   neutral_surface: '#D8D8D8',
   yellowbackground: '#F1B422',
@@ -346,6 +368,8 @@ export const COLORS = {
   borderBlur: '#BFBFBF',
   bgGray: '#EAEAEA',
 };
+
+
 
 export const feedList = [
   'After Parties',
@@ -423,6 +447,20 @@ export const hostTabData: TabItem[] = [
   },
 ];
 
+export const editEventsTab: TabItem[] = [
+  {
+    id: '1',
+    label: EVENT.DETAILS,
+    title: '',
+    subTitle: '.',
+  },
+  {
+    id: '2',
+    label: EVENT.SETTINGS,
+    title: '',
+    subTitle: '',
+  },
+];
 export const StatusEnum = {
   NO_STATUS: 0,
   DRAFT: 1,

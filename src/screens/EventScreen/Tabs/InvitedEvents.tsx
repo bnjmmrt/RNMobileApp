@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, FlatList, ActivityIndicator } from 'react-native';
-import { useFetchAllEventsQuery, useFetchEventsQuery } from '../../../redux/actions/eventApiAction';
+import { useFetchEventsQuery } from '../../../redux/actions/eventApiAction';
 import EventItem from '../EventItem';
 import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
 import { Hp } from '../../../utils/dimensions';

@@ -1,41 +1,41 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import SelectInterestScreenStyles from './SelectInterestScreenStyles';
 import Button from '../../../component/Button';
-import {LABLE, BUTTON_LABLE} from '../../../utils/constants';
+import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../redux/slices';
-import {setInterest, setPageProgress} from '../../../redux/slices/appFlowSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/slices';
+import { setInterest, setPageProgress } from '../../../redux/slices/appFlowSlice';
 import Toast from '../../../component/Toast/Toast';
 import useApi from 'src/axios/useApi';
-import {EndPoint} from 'src/ApiManager/config';
+import { EndPoint } from 'src/ApiManager/config';
 import FullScreenLoader from 'src/component/FullScreenLoader';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import {useFocusEffect} from '@react-navigation/native';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { useFocusEffect } from '@react-navigation/native';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-interface SelectInterestScreenProps extends NativeStackScreenProps<any, any> {}
+interface SelectInterestScreenProps extends NativeStackScreenProps<any, any> { }
 
 const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
   navigation,
   route,
 }) => {
   const dispatch = useDispatch();
-  const {apiRequest, loading, error} = useApi();
+  const { apiRequest, loading, error } = useApi();
   const [configData, setConfigData] = useState(
     route.params
       ? route.params
       : {
-          headerTitle: null,
-          btnTitle: null,
-          subTitle: null,
-          fromProfile: false,
-        },
+        headerTitle: null,
+        btnTitle: null,
+        subTitle: null,
+        fromProfile: false,
+      },
   );
 
   //give all interests
@@ -52,12 +52,12 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
   const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
 
   const [isToastShown, setIsToastShown] = useState(false);
-  const getMyInterests = async() => {
-    const response:any = await apiRequest(
+  const getMyInterests = async () => {
+    const response: any = await apiRequest(
       'get',
       EndPoint.user_interests + userId,
     );
-    if(response.status===200){
+    if (response.status === 200) {
       //dependiing on API response parse data and set
       setSelectedCategories(response.data)
     }
@@ -78,7 +78,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
     //execute when naviagte from edit profile
     if (configData.fromProfile) {
       getMyInterests();
-    }else{
+    } else {
       setSelectedCategories(selectedInterests)
     }
   }, []);
@@ -112,16 +112,16 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
       }
     } else {
       //execute when navigate from edit profile
-      if (selectedCategories.length===0) {
+      if (selectedCategories.length === 0) {
         setIsToastShown(true);
       } else {
         setIsToastShown(false);
         const response: any = await updateMyInterests();
-        if (response.status===200) {
+        if (response.status === 200) {
           // navigation.navigate('ProfileScreen')
           navigation.goBack()
           // dispatch(setInterest(selectedCategories))
-           FlashMessageComponent.show('success', 'Details updated successfully!');
+          FlashMessageComponent.show('success', 'Details updated successfully!');
         }
       }
       //handle edit profile flow
@@ -129,12 +129,13 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
   };
 
   const handleBackPress = () => {
-    if (!configData.fromProfile) {
-      dispatch(setPageProgress(6));
-      navigation.navigate('CreativeFocusScreen');
-    } else {
-      navigation.goBack();
-    }
+    navigation.goBack();
+    // if (!configData.fromProfile) {
+    //   dispatch(setPageProgress(6));
+    //   navigation.navigate('CreativeFocusScreen');
+    // } else {
+    //   navigation.goBack();
+    // }
   };
 
   useFocusEffect(
@@ -145,67 +146,67 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <FullScreenLoader loading={loading}>
-        <Header
-          headerTitle={
-            configData.headerTitle ? configData.headerTitle : LABLE.INTERESTS
+      {/* <FullScreenLoader loading={loading}> */}
+      <Header
+        headerTitle={
+          configData.headerTitle ? configData.headerTitle : LABLE.INTERESTS
+        }
+        onPress={handleBackPress}
+        showProgressBar={!configData.fromProfile}
+      />
+
+      <View style={styles.contentContainer}>
+        <Title
+          title={!configData.fromProfile ? LABLE.CHOOSE_YOUR_INTERESTS : ''}
+          subTitle={
+            configData.subTitle
+              ? configData.subTitle
+              : LABLE.CHOOSE_YOUR_INTERESTS_SUBTITLE
           }
-          onPress={handleBackPress}
-          showProgressBar={!configData.fromProfile}
+          align='center'
         />
 
-        <View style={styles.contentContainer}>
-          <Title
-            title={!configData.fromProfile ? LABLE.CHOOSE_YOUR_INTERESTS : ''}
-            subTitle={
-              configData.subTitle
-                ? configData.subTitle
-                : LABLE.CHOOSE_YOUR_INTERESTS_SUBTITLE
-            }
-            align='center'
-          />
-
-          <View style={styles.categoryContainer}>
-            {interest?.map(item => (
-              <TouchableOpacity
-                key={item.id}
+        <View style={styles.categoryContainer}>
+          {interest?.map(item => (
+            <TouchableOpacity
+              key={item.id}
+              style={[
+                styles.categoryButton,
+                selectedCategories.some(
+                  selected => selected.id === item.id,
+                ) && styles.selectedCategoryButton,
+              ]}
+              onPress={() => handleCategorySelect(item)}>
+              <Text
                 style={[
-                  styles.categoryButton,
+                  styles.categoryText,
                   selectedCategories.some(
                     selected => selected.id === item.id,
-                  ) && styles.selectedCategoryButton,
-                ]}
-                onPress={() => handleCategorySelect(item)}>
-                <Text
-                  style={[
-                    styles.categoryText,
-                    selectedCategories.some(
-                      selected => selected.id === item.id,
-                    ) && styles.selectedCategoryText,
-                  ]}>
-                  {item.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          {isToastShown && (
-            <Toast
-              message={'Please select at least one'}
-              onClose={() => setIsToastShown(false)}
-            />
-          )}
+                  ) && styles.selectedCategoryText,
+                ]}>
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
-         <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={
-              configData.btnTitle ? configData.btnTitle : BUTTON_LABLE.NEXT
-            }
-            colorTheme="dark"
-            onPress={onNextClick}
-            loading={loading}
+        {isToastShown && (
+          <Toast
+            message={'Please select at least one'}
+            onClose={() => setIsToastShown(false)}
           />
-      </FullScreenLoader>
+        )}
+      </View>
+      <Button
+        disabled={false}
+        style={styles.btnStyle}
+        title={
+          configData.btnTitle ? configData.btnTitle : BUTTON_LABLE.NEXT
+        }
+        colorTheme="dark"
+        onPress={onNextClick}
+        loading={loading}
+      />
+      {/* </FullScreenLoader> */}
     </SafeAreaView>
   );
 };
