@@ -40,11 +40,11 @@ interface EventVenueProps {
 
 }
 
+
 const EventVenue: React.FC<EventVenueProps> = ({ item, handleCalendarPress }) => {
+  const dates = formatToDeviceTimeZone(item?.startDate, item?.endDate);
   const role = useSelector((state: RootState) => state.auth.role);
   // const dates = useMemo(() => formatToDeviceTimeZone(item?.startDate, item?.endDate));
-
-  const dates = formatToDeviceTimeZone(item?.startDate, item?.endDate);
 
   const isShowLocation = role === ROLE.HOST || item?.currentGuestStatus === 'confirmed';
   const locationText = isShowLocation ? item?.location?.location : 'RSVP to See Location';
@@ -64,16 +64,16 @@ const EventVenue: React.FC<EventVenueProps> = ({ item, handleCalendarPress }) =>
             <Image source={IMAGES.calendarCircle} />
           </TouchableOpacity>
         </View>
-
+        <GradientSeprator />
+        <View style={{ marginVertical: verticalMarginScale(10) }}>
+          <Text style={styles.title}>{"RSVP to See Location"}</Text>
+          <Text style={styles.subtitle}>{item?.location?.city}</Text>
+        </View>
         {!isShowLocation && <TouchableOpacity onPress={addEventToCalender}>
           <Image source={IMAGES.calender_event} />
         </TouchableOpacity>}
-
       </View>
-
-
       <GradientSeprator />
-
       <View style={styles.locationContainer}>
         <Text style={styles.title}>{locationText}</Text>
         <Text style={styles.subtitle}>{item?.location?.city}</Text>
