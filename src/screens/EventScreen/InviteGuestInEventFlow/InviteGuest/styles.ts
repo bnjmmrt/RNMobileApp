@@ -106,6 +106,25 @@ const createStyles = () => {
       height: null,
       paddingVertical: verticalScale(12),
     },
+
+    userPreviewContainer: {
+      borderColor: COLORS.borderGray,
+      borderWidth: 1,
+      borderRadius: radiusScale(16),
+      backgroundColor: COLORS.lighter_gray,
+      padding: horizontalMarginScale(12),
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: horizontalMarginScale(9),
+    },
+    userName: {
+      color: COLORS.black,
+    },
+    alreadyPresent: {
+      fontSize: fontScale(12),
+      color: COLORS.light_gray,
+      marginTop: verticalMarginScale(4),
+    },
   });
 };
 

@@ -132,14 +132,16 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
           style={{
             backgroundColor: COLORS.white,
             flex: 1,
-            gap: verticalMarginScale(15),
             paddingBottom: 80,
           }}>
           <HeaderComponent isDarkTheme={false} />
           <SearchInput
             ref={searchInputRef}
             onSearchTextChange={handleSearchTextChange}
-            mainContainerStyle={{ marginHorizontal: horizontalMarginScale(20) }}
+            mainContainerStyle={{
+              marginHorizontal: horizontalMarginScale(20),
+              marginBottom: verticalMarginScale(8),
+            }}
           />
           <DynamicTabBar
             onTabChange={handleTabChange}

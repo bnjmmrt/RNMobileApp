@@ -1,11 +1,11 @@
 import IMAGES from '@images/index';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {Image, TouchableOpacity, View} from 'react-native';
+import { Image, TouchableOpacity, View } from 'react-native';
 import AvatarInitials from 'src/component/AvatarInitials';
-import {CustomText} from 'src/component/CustomText';
-import {AppStackParamList} from 'src/navigation/AppStack';
-import {ROUTES} from 'src/navigation/Route';
+import { CustomText } from 'src/component/CustomText';
+import { AppStackParamList } from 'src/navigation/AppStack';
+import { ROUTES } from 'src/navigation/Route';
 import UserListItemStyle from './style';
 
 export interface UserItemInterface {
@@ -39,7 +39,7 @@ const UserListItem: React.FC<UserListItemProps> = ({
   const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
   const onPressUser = () => {
-    navigation.navigate(ROUTES.UserDetail, {user: item.id});
+    navigation.navigate(ROUTES.UserDetail, { user: item.id });
   };
 
   return (
@@ -49,7 +49,6 @@ const UserListItem: React.FC<UserListItemProps> = ({
           name={item.name}
           imgUrl={item.profilePicture}
           size={40}
-          textColor="white"
         />
         <CustomText style={styles.username}>{item.name}</CustomText>
       </View>

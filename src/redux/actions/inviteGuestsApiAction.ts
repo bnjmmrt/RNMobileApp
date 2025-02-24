@@ -48,8 +48,26 @@ export const inviteGuestsApiAction = createBaseApi.injectEndpoints({
         body: payload,
       }),
     }),
+    getUserWithRolesByEmail: builder.mutation({
+      query: (requestParam: { email: string }) => ({
+        url: EndPoint.get_user_with_role_by_email,
+        method: 'POST',
+        body: requestParam,
+      }),
+    }),
+    getUserWithRolesById: builder.mutation({
+      query: (requestParam: { id: string }) => ({
+        url: EndPoint.get_user_with_role_by_id,
+        method: 'POST',
+        body: requestParam,
+      }),
+    }),
   }),
 });
 
-export const { useInviteGuestsMutation, useInviteNewGuestsMutation } =
-  inviteGuestsApiAction;
+export const {
+  useInviteGuestsMutation,
+  useInviteNewGuestsMutation,
+  useGetUserWithRolesByEmailMutation,
+  useGetUserWithRolesByIdMutation,
+} = inviteGuestsApiAction;
