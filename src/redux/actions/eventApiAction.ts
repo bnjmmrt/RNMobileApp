@@ -56,7 +56,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take?: number;
         skip?: number;
       }) => {
-        let url = `v1/events/users/${userId}/events?`;
+        let url = `v1/events/users/${userId}/events`;
         if (take) {
           url = `${url}?take=${take}&skip=${skip}`;
         }
@@ -78,6 +78,15 @@ export const eventApiAction = createBaseApi.injectEndpoints({
     }),
 
     fetchEventDetails: builder.query({
+      query: ({ eventId, userId }: { eventId: string, userId: string }) => ({
+        url: `v1/events/users/${userId}/events/${eventId}`,
+        method: 'GET',
+      }),
+      providesTags: ['EventDetails'],
+      keepUnusedDataFor: 0, // Adjust the tag if needed for cache invalidation
+    }),
+
+    fetchHostEventDetails: builder.query({
       query: ({ eventId }: { eventId: string }) => ({
         url: `v1/events/event/${eventId}`,
         method: 'GET',
@@ -85,6 +94,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       providesTags: ['EventDetails'],
       keepUnusedDataFor: 0, // Adjust the tag if needed for cache invalidation
     }),
+
 
     fetchGuestStatusCount: builder.query({
       query: ({ eventId }: { eventId: string }) => ({
@@ -113,5 +123,6 @@ export const {
   useFetchAllEventsQuery,
   useFetchHostEventsQuery,
   useFetchGuestStatusCountQuery,
-  useFetchDashboardUpcomingEventsQuery
+  useFetchDashboardUpcomingEventsQuery,
+  useFetchHostEventDetailsQuery
 } = eventApiAction;

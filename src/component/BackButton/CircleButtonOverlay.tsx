@@ -4,12 +4,12 @@ import { Wp, Hp } from '../../utils/dimensions';
 import IMAGES from '../../assets/images';
 import { COLORS } from '../../utils/constants';
 
-const CircleButtonOverlay = ({ onPress, customStyle, imageSource }: { onPress: () => void, customStyle?: ViewStyle, imageSource?: any }) => {
+const CircleButtonOverlay = ({ onPress, customStyle, imageSource, size = 40, theme = COLORS.DARK }: { onPress: () => void, customStyle?: ViewStyle, imageSource?: any, size?: number, theme?: string }) => {
   const containerStyle = [styles.container, customStyle];
   return (
     <TouchableOpacity style={containerStyle} onPress={onPress}>
-      <View style={styles.iconWrapper}>
-        <Image source={imageSource || IMAGES.edit} />
+      <View style={[styles.iconWrapper, { width: size, height: size, backgroundColor: theme == COLORS.LIGHT ? COLORS.tabBorderColor : COLORS.black }]}>
+        <Image source={imageSource || IMAGES.edit} tintColor={theme == COLORS.LIGHT ? COLORS.black : COLORS.white} resizeMode='center' />
       </View>
     </TouchableOpacity>
   );

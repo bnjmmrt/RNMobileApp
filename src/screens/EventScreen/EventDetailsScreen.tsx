@@ -16,7 +16,7 @@ import Button from 'src/component/Button';
 import { event_mock } from './eventMock';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
-import { useFetchEventDetailsQuery } from 'src/redux/actions/eventApiAction';
+import { useFetchEventDetailsQuery, useFetchHostEventDetailsQuery } from 'src/redux/actions/eventApiAction';
 import IMAGES from '@images/index';
 import EventTalent from 'src/component/Event/EventTalent';
 import { ROUTES } from 'src/navigation/Route';
@@ -46,10 +46,27 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
-  const { data, isLoading, refetch, isSuccess } = useFetchEventDetailsQuery(
-    { eventId: route?.params?.id },
-    { refetchOnMountOrArgChange: true },
-  );
+
+
+  const useFetchEventDetails =
+    role === ROLE.HOST ? useFetchHostEventDetailsQuery : useFetchEventDetailsQuery;
+  // Ensure argument structure remains consistent
+  const queryArgs =
+    role === ROLE.HOST
+      ? ({ eventId: route?.params?.id } as const) // Type assertion to prevent union mismatch
+      : ({
+        userId,
+        eventId: route?.params?.id,
+      } as const); // Type assertion
+
+
+  const { data, isLoading, refetch, isSuccess } = useFetchEventDetails(queryArgs, { refetchOnMountOrArgChange: true });
+
+
+  // const { data, isLoading, refetch, isSuccess } = useFetchEventDetailsQuery(
+  //   { eventId: route?.params?.id, userId: userId },
+  //   { refetchOnMountOrArgChange: true },
+  // );
 
   useFocusEffect(
     useCallback(() => {

@@ -15,7 +15,7 @@ import EditEventDetails from './EditEventDetails';
 import EditEventSettings from './EditEventSettings';
 import { useRoute } from '@react-navigation/native';
 import Input from 'src/component/Input/Input';
-import { horizontalMarginScale } from 'src/utils/dimensions';
+import { horizontalMarginScale, verticalMarginScale } from 'src/utils/dimensions';
 
 interface EditEventScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
 
   contentContainer: {
     flex: 1,
+    marginTop: verticalMarginScale(20),
     paddingHorizontal: horizontalMarginScale(20),
   },
 

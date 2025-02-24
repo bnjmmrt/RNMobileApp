@@ -181,6 +181,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
         style={styles.btnStyle}
         title={BUTTON_LABLE.NEXT}
         colorTheme="dark"
+        loading={loading}
         onPress={onNextClick}
       />
     </SafeAreaView>

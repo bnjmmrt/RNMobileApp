@@ -216,6 +216,7 @@ export const EVENT = {
   FURTHER_INSTRUCTION: 'Further Instructions',
   EVENT_DESCRIPTION: 'Event Description',
   HIDE_ADDRESS: 'Hide full address for confirmed guests',
+  FEATURE_TALENT: 'Featured Talent',
 
 
 }
@@ -320,7 +321,12 @@ export const COLORS = {
   grayFeedLocation2: '#E0E0E0FA',
   grayFeedLocation3: '#54545657',
   blueDark: '#0D729D',
+  LIGHT: 'LIGHT',
+  DARK: 'DARK',
+
 };
+
+
 
 export const feedList = [
   'After Parties',

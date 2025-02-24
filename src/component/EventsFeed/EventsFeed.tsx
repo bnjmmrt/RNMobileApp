@@ -212,7 +212,7 @@ const EventsFeed = () => {
   const isInvited = loginData?.isInvited || false;
 
   const { data, isLoading, error, isError, refetch } = useFetchAllEventsQuery({
-    statusName: 'UPCOMING_STATUS,APPROVED_STATUS',
+    statusName: 'UPCOMING_STATUS',
     searchText: searchTerm,
     queryString: filterQuery,
     userId: userId,

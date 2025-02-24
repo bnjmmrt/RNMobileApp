@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, ActivityIndicator } from 'react-native';
 import {
-  useFetchDashboardUpcomingEventsQuery,
   useFetchEventsQuery,
   useFetchHostEventsQuery,
 } from '../../../redux/actions/eventApiAction';
@@ -29,8 +28,8 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
   const role = useSelector((state: RootState) => state.auth.role);
 
   const useFetchEvents =
-    // role === ROLE.HOST ? useFetchHostEventsQuery : useFetchEventsQuery;
-    role === ROLE.HOST ? useFetchDashboardUpcomingEventsQuery : useFetchEventsQuery;
+    role === ROLE.HOST ? useFetchHostEventsQuery : useFetchEventsQuery;
+  // role === ROLE.HOST ? useFetchDashboardUpcomingEventsQuery : useFetchEventsQuery;
 
   // Ensure argument structure remains consistent
   const queryArgs =
@@ -42,12 +41,13 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
         skip: (currentPage - 1) * 10,
       } as const) // Type assertion to prevent union mismatch
       : ({
-        // userId,
-        // guestEventStatus: 'UPCOMING',
-        // searchText,
-        // take: 10,
-        // skip: (currentPage - 1) * 10,
+        userId,
+        guestEventStatus: 'UPCOMING',
+        searchText,
+        take: 10,
+        skip: (currentPage - 1) * 10,
       } as const); // Type assertion
+
 
   const { data, isLoading } = useFetchEvents(queryArgs);
 

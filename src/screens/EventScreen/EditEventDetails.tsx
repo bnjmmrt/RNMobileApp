@@ -20,6 +20,11 @@ import { CustomText } from 'src/component/CustomText';
 import MapView from 'react-native-maps';
 import { Address } from 'src/redux/slices/appFlowSlice';
 import MapComponent from 'src/component/MapComponent';
+import EventTalent from 'src/component/Event/EventTalent';
+import HostEventTalent from 'src/component/Event/HostEventTalent';
+import EditPictureBottomSheet from 'src/component/BottomSheet/EditPictureBottomSheet';
+import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
+import { environment } from 'environments/environment';
 
 
 interface Location {
@@ -42,6 +47,7 @@ interface EventItem {
   showLocation?: boolean;
   name: string;
   furtherInstructions: string;
+  talents: []
 }
 
 interface EditEventDetailsProps {
@@ -73,8 +79,18 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
   const baseCityRef = useRef<any>(null);
   const startDateRef = useRef<any>(null);
   const endDateRef = useRef<any>(null);
+  const editPhotoBottomSheetRef = useRef<any>(null);
 
 
+  const [eventName, setEventName] = useState(item?.name || '');
+  const [startDate, setStartDate] = useState(item.startDate);
+  const [endDate, setEndDate] = useState(item.endDate);
+  const [furtherInstructions, setFurtherInstructions] = useState(item?.furtherInstructions || '');
+  const [eventDescription, setEventDescription] = useState(item?.description || '');
+  const [featureTalent, setFeatureTalent] = useState(item?.talents || []);
+  const [image, setImage] = useState<string>(item?.imageCover || item?.imageFlyer || '');
+
+  console.log("Sayyed item:", item)
   const onConfirmClick = async () => {
     if (
       eventNameRef.current.validateInputs() &&
@@ -93,7 +109,6 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
         },
         firstName: eventNameRef.current.inputText,
         lastName: eventDescriptionRef.current.inputText,
-
       };
       console.log('requestObject', requestObject);
 
@@ -120,6 +135,61 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
     //navigation.goBack()
   };
 
+
+  const uploadFile = async () => {
+    const mimeType = `images/${image.split('.').pop()}`;
+    const fileName = image.split('/').pop();
+
+    const formData = new FormData();
+    formData.append('file', {
+      uri: image,
+      type: mimeType,
+      name: fileName,
+    });
+
+    return await apiRequest('post', EndPoint.file_upload, formData, null, {
+      'Content-Type': 'multipart/form-data',
+    });
+  };
+
+  useEffect(() => {
+    image && savePhoto()
+  }, [image])
+
+  const savePhoto = async () => {
+    if (image) {
+      // setIsToastShown(false);
+      const response: any = await uploadFile();
+      console.log('savePhoto', response);
+      if (response.status === 200) {
+        // setIsToastShown(false);
+        // const imageUrl =environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
+        // if (role.toLocaleLowerCase() === 'host') {
+        //   await updateHostProfilePhoto(imageUrl)
+        // } else {
+        //   await updateProfilePhoto(imageUrl)
+        // }
+      } else {
+        //display error
+      }
+    }
+  };
+
+  const openCamera = async () => {
+    editPhotoBottomSheetRef.current?.close();
+
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+      cropperCircleOverlay: false,
+    }).then((image: ImageOrVideo) => {
+      setImage(image.path);
+      // savePhotoBottomSheetRef.current?.open();
+    });
+  };
+
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -128,14 +198,14 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
           <View>
             <FastImage
               source={{
-                uri: item?.imageCover || item?.imageFlyer,
+                uri: image,
               }}
               resizeMode={FastImage.resizeMode.cover}
               defaultSource={IMAGES.eventCoverPlaceholders1} // Placeholder
               style={styles.coverImageStyle}
             />
 
-            <CircleButtonOverlay onPress={() => { }} />
+            <CircleButtonOverlay onPress={() => { editPhotoBottomSheetRef.current?.open() }} />
 
           </View>
 
@@ -186,6 +256,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
           <View style={styles.mapContainer}>
             <MapComponent item={item} />
           </View>
+
           <Input
             ref={eventDescriptionRef}
             label={EVENT.EVENT_DESCRIPTION}
@@ -193,10 +264,25 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
             defaultValue={item?.description}
             multiline={true}
           />
+
+          <HostEventTalent talents={item?.talents} />
+
+
+
         </View>
+
+
 
       </ScrollView>
 
+      <EditPictureBottomSheet
+        ref={editPhotoBottomSheetRef}
+        onPress={openCamera}
+        submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
+        cancelButtonText={BUTTON_LABLE.CANCEL}
+        snapPoints={[Platform.OS == 'android' ? '20%' : '20%']}
+        image={null}
+      />
 
       <Button
         disabled={false}
@@ -223,7 +309,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
   coverImageStyle: {
-    margin: verticalMarginScale(20),
+    marginBottom: verticalMarginScale(20),
     backgroundColor: COLORS.borderGray,
     borderRadius: 20,
     height: verticalScale(348),
