@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.ABCDiatype_Regular,
   },
   rightIconWrapper: {
-    backgroundColor: COLORS.tabBorderColor,
+    backgroundColor: COLORS.neutral_surface,
     padding: verticalMarginScale(8),
     borderRadius: radiusScale(99),
     flexDirection: 'row',

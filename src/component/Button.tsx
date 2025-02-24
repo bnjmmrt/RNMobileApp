@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
   TouchableOpacity,
@@ -8,20 +9,12 @@ import {
   TextStyle,
   ImageSourcePropType,
   Image,
-  Platform,
   ImageStyle,
   ActivityIndicator,
 } from 'react-native';
-import {
-  Hp,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-  Wp,
-} from '../utils/dimensions';
-import {fontFamily} from '../utils/functions';
-import {COLORS} from '../utils/constants';
-import {CustomText} from './CustomText';
+import { fontScale, Hp, radiusScale, verticalScale, Wp } from '../utils/dimensions';
+import { fontFamily } from '../utils/functions';
+import { COLORS } from '../utils/constants';
 
 interface ButtonProps {
   title: string;
@@ -91,7 +84,7 @@ const Button: React.FC<ButtonProps> = ({
               style={[styles.image, leftImageStyle]}
             />
           )}
-          <Text style={[styles.text, {color: textColor}, textStyle]}>
+          <Text style={[styles.text, { color: textColor }, textStyle]}>
             {title}
           </Text>
           {rightImageSource && (
@@ -108,7 +101,7 @@ const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    height: verticalScale(50),
+    height: verticalScale(48),
     borderRadius: radiusScale(99),
     alignItems: 'center',
     justifyContent: 'center',
@@ -119,6 +112,7 @@ const styles = StyleSheet.create({
   text: {
     marginHorizontal: 10,
     fontFamily: fontFamily.ABCDiatype_Medium,
+    fontSize: fontScale(14),
   },
   image: {
     width: Hp(3),

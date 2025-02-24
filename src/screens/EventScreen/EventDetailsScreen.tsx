@@ -1,11 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, ScrollView, StyleSheet, Text } from 'react-native';
 import { BUTTON_LABLE, COLORS, EVENT_STATUS, ROLE } from '../../utils/constants';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
 import { fontFamily } from 'src/utils/functions';
-import { fontScale, Hp, verticalScale, Wp } from 'src/utils/dimensions';
 import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
+import {
+  fontScale,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+  Hp
+} from 'src/utils/dimensions';
 import BackButtonOverlay from 'src/component/BackButton/BackButtonOverlay';
 import EventStatus from 'src/component/Event/EventStatus';
 import EventHostItem from 'src/component/Event/EventHostItem';
@@ -13,8 +19,10 @@ import { FlatList } from 'react-native-gesture-handler';
 import EventVenue from 'src/component/Event/EventVenue';
 import EventOverview from 'src/component/Event/EventOverview';
 import Button from 'src/component/Button';
-import { event_mock } from './eventMock';
-import { useSelector } from 'react-redux';
+import EventAnouncements from 'src/component/Event/EventAnnouncements';
+import QRCodeBottomsheet from 'src/component/BottomSheet/QRCodeBottomsheet';
+import CalenderEventsBottomSheet from 'src/component/BottomSheet/CalenderEventsBottomSheet';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import { useFetchEventDetailsQuery, useFetchHostEventDetailsQuery } from 'src/redux/actions/eventApiAction';
 import IMAGES from '@images/index';
@@ -22,20 +30,20 @@ import EventTalent from 'src/component/Event/EventTalent';
 import { ROUTES } from 'src/navigation/Route';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { useAcceptInvitationMutation } from 'src/redux/actions/rspvApiAction';
-import EventAnouncements from 'src/component/Event/EventAnnouncements';
 import EventRequests from 'src/component/Event/EventRequests';
 import CircleButtonOverlay from 'src/component/BackButton/CircleButtonOverlay';
+import { setSelectedEventForInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
+
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
-  params: {
-    item: {};
-  };
+  params: any;
 };
 
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   navigation,
 }) => {
+  const dispatch = useDispatch();
   const route = useRoute<RouteProp<RouteParams>>();
   const [isDeclinedByMe, setIsDeclinedByMe] = useState(false);
   const [isDeclinedByHost, setIsDeclinedByHost] = useState(false);
@@ -48,8 +56,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
 
 
-  const useFetchEventDetails =
-    role === ROLE.HOST ? useFetchHostEventDetailsQuery : useFetchEventDetailsQuery;
+  const useFetchEventDetails = role === ROLE.HOST ? useFetchHostEventDetailsQuery : useFetchEventDetailsQuery;
   // Ensure argument structure remains consistent
   const queryArgs =
     role === ROLE.HOST
@@ -68,6 +75,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   //   { refetchOnMountOrArgChange: true },
   // );
 
+
+  const qrCodeBottomSheetRef = useRef<any>(null);
+  const calenderEventsBottomSheetRef = useRef<any>(null);
+
+  const [isQRShown, setIsQRShown] = useState(true);
   useFocusEffect(
     useCallback(() => {
       refetch();
@@ -82,7 +94,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   }, [guestStatus]);
 
   useEffect(() => {
-    console.log('Event data:', data);
+    // console.log('Event data:', data);
     if (data && data.data && data?.data?.collaborators) {
       setCollaborators(data.data.collaborators);
     }
@@ -93,7 +105,15 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
     setGuestStatus(data?.data?.currentGuestStatus);
   }, [data]);
-  console.log('Event details', route.params.id);
+  // console.log('Event details', route.params.id);
+  const statusMap = [
+    { id: '1', label: EVENT_STATUS.AWAITING },
+    { id: '2', label: EVENT_STATUS.INVITED },
+    { id: '3', label: EVENT_STATUS.DECLINED_BY_HOST },
+    { id: '4', label: EVENT_STATUS.DECLINED_BY_YOU },
+    { id: '5', label: EVENT_STATUS.GOING },
+  ];
+  const [images, setImages] = useState(statusMap);
 
   // const styles = EventDetailsScreenStyle();
 
@@ -110,7 +130,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const onViewTicketClick = () => {
-    FlashMessageComponent.show('success', 'in Progress...');
+    qrCodeBottomSheetRef?.current.open();
+    // FlashMessageComponent.show('success', "in Progress...")
+  };
+  const addCalenderEvents = () => {
+    calenderEventsBottomSheetRef.current?.open();
   };
 
   const acceptInvitation = async () => {
@@ -130,6 +154,15 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     } catch (error) {
       console.error('Error accepting invitation:', error);
     }
+  };
+
+  const onCheckInClick = async () => {
+    navigation.navigate('GuestCheckInScreen');
+  };
+
+  const onPressInviteGuests = () => {
+    dispatch(setSelectedEventForInvite(data.data));
+    navigation.navigate(ROUTES.InviteGuestsScreen);
   };
 
   return (
@@ -165,7 +198,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
           {role == ROLE.HOST && <EventRequests eventId={data?.data?.id} />}
 
-          <EventVenue item={data?.data} />
+          <EventVenue item={data?.data} handleCalendarPress={addCalenderEvents} />
+
 
           <EventOverview item={data?.data} />
 
@@ -173,6 +207,17 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
           {/* {<EventAnouncements talents={talents} />} */}
 
+          <Button
+            disabled={false}
+            style={styles.btnStyleLight}
+            title="View Guest List"
+            colorTheme="light"
+            onPress={() =>
+              navigation.navigate('EventGuestList', {
+                guests: data?.data?.guests || [],
+              })
+            }
+          />
         </View>
       </ScrollView>
 
@@ -219,6 +264,27 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         </View>
       )}
 
+      <CalenderEventsBottomSheet
+        ref={calenderEventsBottomSheetRef}
+        eventDetails={{
+          title: 'React Native Conference',
+          startDate: new Date().toISOString(),
+          endDate: new Date(
+            new Date().getTime() + 2 * 60 * 60 * 1000,
+          ).toISOString(), // 2 hours event
+          location: 'San Francisco, CA',
+          notes: 'A React Native meetup',
+        }}
+      />
+      <QRCodeBottomsheet
+        ref={qrCodeBottomSheetRef}
+        title="Tao Desert Nights Desert Storm NYC House Party"
+        subTitle={'September 8th, 3:00PM EST'}
+        imageURL={isQRShown ? IMAGES.qr : IMAGES.ticket}
+        isQRShown={isQRShown}
+        name="ANURag harod"
+      />
+
       {guestStatus == 'CONFIRMED' && (
         <View style={{ margin: 20 }}>
           <Button
@@ -238,6 +304,21 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         </View>
       )}
 
+      <Button
+        disabled={false}
+        style={styles.btnStyle}
+        title={BUTTON_LABLE.CHECK_IN}
+        colorTheme="dark"
+        onPress={onCheckInClick}
+      />
+
+      <Button
+        disabled={false}
+        style={styles.btnStyleLight}
+        title={BUTTON_LABLE.INVITE_GUESTS}
+        colorTheme="light"
+        onPress={onPressInviteGuests}
+      />
 
       <BackButtonOverlay onPress={() => navigation.goBack()} />
       <BackButtonOverlay customStyle={{ right: 4 }} imageSource={IMAGES.edits} onPress={() => navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })} />
@@ -258,9 +339,10 @@ const styles = StyleSheet.create({
   btnStyleLight: {
     borderRadius: 100,
     marginVertical: 10,
-    borderWidth: 1,
+    borderWidth: verticalScale(2),
     borderColor: COLORS.black,
-    height: 50,
+    height: undefined,
+    paddingVertical: verticalMarginScale(16),
   },
   container: {
     flexDirection: 'column',

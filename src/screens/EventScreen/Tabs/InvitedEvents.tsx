@@ -27,7 +27,7 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({ userId, searchText, tab }
 
   useEffect(() => {
     if (data) {
-      setEvents((prev) => (currentPage === 1 ? data.data : [...prev, ...data.data]));
+      setEvents((prev) => (currentPage === 1 ? data.data.data : [...prev, ...data.data.data]));
     }
   }, [data]);
 

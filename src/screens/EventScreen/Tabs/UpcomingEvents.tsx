@@ -62,7 +62,7 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
         );
       } else {
         setEvents(prev =>
-          currentPage === 1 ? data.data : [...prev, ...data.data],
+          currentPage === 1 ? data.data.data : [...prev, ...data.data.data],
         );
       }
     }

@@ -26,7 +26,6 @@ interface Location {
   latitude?: number;
   longitude?: number;
 }
-
 interface EventItem {
   startDate?: string;
   endDate?: string;
@@ -37,11 +36,15 @@ interface EventItem {
 
 interface EventVenueProps {
   item: EventItem;
+  handleCalendarPress: () => void
+
 }
 
-const EventVenue: React.FC<EventVenueProps> = ({ item }) => {
+const EventVenue: React.FC<EventVenueProps> = ({ item, handleCalendarPress }) => {
   const role = useSelector((state: RootState) => state.auth.role);
-  const dates = useMemo(() => formatToDeviceTimeZone(item?.startDate, item?.endDate), [item?.startDate, item?.endDate]);
+  // const dates = useMemo(() => formatToDeviceTimeZone(item?.startDate, item?.endDate));
+
+  const dates = formatToDeviceTimeZone(item?.startDate, item?.endDate);
 
   const isShowLocation = role === ROLE.HOST || item?.currentGuestStatus === 'confirmed';
   const locationText = isShowLocation ? item?.location?.location : 'RSVP to See Location';
@@ -50,12 +53,16 @@ const EventVenue: React.FC<EventVenueProps> = ({ item }) => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.contentContainer}>
-
-        <View style={styles.dateContainer}>
-          <Text style={styles.title}>{dates[0]}</Text>
-          <Text style={styles.subtitle}>{dates[1]}</Text>
+    <View style={[styles.container]}>
+      <View style={{ flex: 1, padding: 5 }}>
+        <View style={{ marginVertical: verticalMarginScale(10), flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View>
+            <Text style={styles.title}>{dates[0]}</Text>
+            <Text style={styles.subtitle}>{dates[1]}</Text>
+          </View>
+          <TouchableOpacity onPress={handleCalendarPress}>
+            <Image source={IMAGES.calendarCircle} />
+          </TouchableOpacity>
         </View>
 
         {!isShowLocation && <TouchableOpacity onPress={addEventToCalender}>

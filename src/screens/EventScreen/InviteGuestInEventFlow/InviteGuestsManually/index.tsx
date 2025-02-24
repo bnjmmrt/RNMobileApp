@@ -1,0 +1,254 @@
+import IMAGES from '@images/index';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { FlatList, RefreshControl, View } from 'react-native';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
+import Button from 'src/component/Button';
+import { CustomText } from 'src/component/CustomText';
+import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import FiltersSheet from 'src/component/FilterSheet';
+import Header from 'src/component/Header/Header';
+import { InputRefMethods } from 'src/component/Input/Input';
+import SearchInput from 'src/component/SearchInput';
+import { EventStackParamList } from 'src/navigation/EventStack';
+import { ROUTES } from 'src/navigation/Route';
+import { useFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
+import { RootState } from 'src/redux/slices';
+import { setSelectedUsersToInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
+import UserListItem, {
+  UserItemInterface,
+} from 'src/screens/UsersModule/UsersListItem';
+import { BUTTON_LABLE, COLORS } from 'src/utils/constants';
+import {
+  horizontalMarginScale,
+  Hp,
+  verticalMarginScale,
+  verticalScale,
+} from 'src/utils/dimensions';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import createStyles from './styles';
+import DynamicTabBar, {
+  TabItem,
+} from 'src/component/ActiveTabBar/DynamicTabBar';
+import InviteFromContacts from './InviteFromContacts';
+
+const tabsData: TabItem[] = [
+  {
+    id: '1',
+    label: BUTTON_LABLE.INVITE_FROM_CONTACTS,
+    title: 'No Events Here',
+    subTitle: 'No upcoming events.',
+  },
+  {
+    id: '2',
+    label: BUTTON_LABLE.INVITE_MANUALLY,
+    title: 'No Events Here',
+    subTitle: 'No invitations yet.',
+  },
+];
+
+interface InviteGuestsManuallyProps
+  extends NativeStackScreenProps<
+    EventStackParamList,
+    'InviteGuestsManuallyScreen'
+  > {}
+
+const InviteGuestsManually: React.FC<InviteGuestsManuallyProps> = ({}) => {
+  const styles = createStyles();
+  const navigation = useNavigation<NavigationProp<EventStackParamList>>();
+  const dispatch = useDispatch();
+
+  const searchInputRef = useRef<InputRefMethods>(null);
+  const filtersSheetRef = useRef<BottomSheetMethods>(null);
+
+  const [allUsers, setAllUsers] = useState<{
+    users: UserItemInterface[];
+    totalCount: number;
+  }>({ totalCount: 0, users: [] });
+  const [searchText, setSearchText] = useState<string>('');
+  const [filterQuery, setFilterQuery] = useState<string>('');
+  const [filterNumber, setFilterNumber] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [currentTab, setCurrentTab] = useState<TabItem | null>(tabsData[0]);
+
+  const handleTabChange = (tab: TabItem) => {
+    setCurrentTab(tab);
+  };
+
+  const { selectedUsers } = useSelector(
+    (state: RootState) => ({
+      selectedUsers: state.inviteGuestsFlow.selectedUsers,
+    }),
+    shallowEqual,
+  );
+
+  const { data, isLoading, error, isError, refetch } = useFetchAllUsersQuery({
+    take: 10,
+    skip: (currentPage - 1) * 10,
+    searchValue: searchText,
+    queryString: filterQuery,
+  });
+
+  const onRefreshPage = () => {
+    setCurrentPage(1);
+    refetch();
+  };
+
+  const loadMore = () => {
+    if (allUsers?.users?.length < data?.data?.totalCount && !isLoading) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
+  const onSelectUser = (user: UserItemInterface) => {
+    const isSelected = selectedUsers.some(
+      selectedUser => selectedUser.id === user.id,
+    );
+    if (isSelected) {
+      const newArray = selectedUsers.filter(u => u.id !== user.id);
+      dispatch(setSelectedUsersToInvite(newArray));
+    } else {
+      const newArray = [...selectedUsers, user];
+      dispatch(setSelectedUsersToInvite(newArray));
+    }
+  };
+
+  const handleSearchTextChange = (text: string) => {
+    setCurrentPage(1);
+    setSearchText(text);
+  };
+
+  const onApplyFilter = (
+    queryString: string,
+    numberOfFiltersApplied: number,
+  ) => {
+    setCurrentPage(1);
+    setFilterQuery(queryString);
+    setFilterNumber(numberOfFiltersApplied);
+  };
+
+  const onClearFilter = () => {
+    setCurrentPage(1);
+    setFilterQuery('');
+    setFilterNumber(0);
+  };
+
+  const onPressNext = () => {
+    dispatch(setSelectedUsersToInvite(selectedUsers));
+    navigation.navigate(ROUTES.ManageGuestsScreen);
+  };
+
+  const renderItem = useCallback(
+    ({ item }: { item: UserItemInterface }) => {
+      const isSelected = selectedUsers.some(user => user.id === item.id);
+      return (
+        <UserListItem
+          item={item}
+          onSelectUser={onSelectUser}
+          isSelected={isSelected}
+        />
+      );
+    },
+    [selectedUsers],
+  );
+
+  useEffect(() => {
+    if (data && data.data) {
+      if (currentPage === 1) {
+        setAllUsers(data.data);
+      } else {
+        setAllUsers(prev => ({
+          totalCount: data.data.totalCount,
+          users: [...prev.users, ...data.data.users],
+        }));
+      }
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (isError) {
+      setAllUsers({ totalCount: 0, users: [] });
+    }
+  }, [isError]);
+
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+      });
+    }, []),
+  );
+
+  return (
+    <View style={styles.container}>
+      <Header
+        headerTitle="Invite Guests"
+        showProgressBar={false}
+        rightIconWrapperStyle={{ backgroundColor: COLORS.black }}
+      />
+
+      <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
+
+      {currentTab?.id === '1' ? <InviteFromContacts /> : null}
+      {/* {currentTab?.id === '2' ? <Lists /> : null} */}
+
+      {/* <SearchInput
+        ref={searchInputRef}
+        onSearchTextChange={handleSearchTextChange}
+        placeholder="Search..."
+        rightIcon={IMAGES.filter_lines}
+        onPressRightIcon={() => {
+          filtersSheetRef?.current?.open();
+        }}
+        rightIconText={String(filterNumber || '') || ''}
+        mainContainerStyle={{ marginHorizontal: horizontalMarginScale(20) }}
+        defaultValue={searchText}
+      />
+      <FlatList
+        data={allUsers?.users || []}
+        style={{
+          marginHorizontal: horizontalMarginScale(20),
+          marginTop: verticalMarginScale(16),
+        }}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={{ gap: verticalMarginScale(16) }}
+        ListFooterComponent={
+          <View style={{ marginBottom: verticalMarginScale(150) }} />
+        }
+        ListEmptyComponent={
+          <View
+            style={{
+              height: Hp(55),
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <EventEmptyRecord
+              title="User not found"
+              subTitle="This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest"
+              isLoading={isLoading}
+            />
+          </View>
+        }
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.4}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          allUsers?.users?.length > 0 ? (
+            <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
+          ) : undefined
+        }
+      /> */}
+    </View>
+  );
+};
+
+export default InviteGuestsManually;
