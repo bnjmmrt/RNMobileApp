@@ -1,7 +1,7 @@
 import React, {useRef, forwardRef} from 'react';
 import {View, StyleSheet, Text, Image, Platform, Alert, ScrollView} from 'react-native';
 import BottomSheetComponent from './BottomSheet';
-import {BUTTON_LABLE, COLORS} from '../../utils/constants';
+import {BUTTON_LABLE, COLORS, LABLE} from '../../utils/constants';
 import Button from '../Button';
 import {fontFamily} from '../../utils/functions';
 import {
@@ -25,6 +25,7 @@ interface QRCodeBottomsheetProps {
   isQRShown:boolean
 }
 const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
+
   const cancelClick = () => {
     ref.current?.close();
   };
@@ -46,9 +47,8 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
         </View>
 
         <View style={styles.card}>
-          <View style={styles.qrContainer}>
             <View style={styles.ticket}>
-           <Image source={props.imageURL} style={styles.image} /> 
+            <Image source={{ uri: props.imageURL} } style={{ width: 270, height: 270 }} resizeMode="contain" />
 
               <View style={{flexDirection: 'row'}}>
                 {Array.from({length: 6}).map((_, index) => (
@@ -60,10 +60,9 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                 <Image source={IMAGES.info_filled} style={styles.icon} />
               </View>
             </View>
-          </View>
           <Image source={IMAGES.half_circle} style={styles.cardBottom} />
         </View>
-        <Text style={styles.infoText}>Show this QR code at event check-in</Text>
+        <Text style={styles.infoText}>{LABLE.SHOW_QR_CHECKIN_MESSAGE}</Text>
       </View>
       </ScrollView>
     </BottomSheetComponent>
@@ -131,10 +130,8 @@ const styles = StyleSheet.create({
     top: Platform.OS === 'android' ? 10 : -7,
     resizeMode:  Platform.OS === 'ios' ? 'contain':'cover',
   },
-  qrContainer: {},
   ticket: {
-  
-    padding:verticalMarginScale(20),
+    paddingTop:verticalMarginScale(6),
     backgroundColor: COLORS.white,
     width: horizontalScale(270),
     justifyContent: 'center',
@@ -148,7 +145,7 @@ const styles = StyleSheet.create({
     height: verticalScale(4),
     backgroundColor: COLORS.borderGray,
     borderRadius:radiusScale(50),
-    marginHorizontal: Platform.OS === 'android' ? 4.5 : 3.2,
+    marginHorizontal: Platform.OS === 'android' ? 3.5 : 3.2,
     marginVertical:verticalMarginScale(20),
   },
   vipContainer: {

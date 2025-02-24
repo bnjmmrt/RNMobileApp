@@ -81,11 +81,13 @@ export const EndPoint = {
   hosts_followers_lists: 'v1/auth/hosts/followers',
   custom_lists_duplicate: 'v1/auth/hosts/custom-lists/duplicate',
   host_custom_lists: 'v1/auth/host/custom-lists',
-  hosts_followed: 'v1/auth/hosts-followed/',
-  referral_requests: 'v1/platform/referral-requests',
-  vouch_requests: 'v1/platform/vouch-requests',
-
+  hosts_followed:'v1/auth/hosts-followed/',
+  referral_requests:'v1/platform/referral-requests',
+  vouch_requests:'v1/platform/vouch-requests',
+  validate_qr:'v1/events/guest/ticket/validate',
+  event_guest_details:'v1/events/guest-details/',
   events: 'v1/events',
+  generate_ticket:'v1/events/guest/ticket/'
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Alert, Platform } from 'react-native';
 import RNCalendarEvents from 'react-native-calendar-events';
+import { LABLE } from '../constants';
 
 type PermissionStatus = boolean | null;
 export interface Event {
@@ -27,7 +28,7 @@ const useCalender = (eventDetails: Event) => {
         setPermissionGranted(true);
       } else {
         setPermissionGranted(false);
-        Alert.alert('Permission Denied', 'Calendar access is required to add events.');
+        Alert.alert(LABLE.PERMISSION_DENIED, LABLE.ACCESS_CALENDAR);
       }
     } catch (error) {
       console.error('Error checking permissions:', error);
@@ -37,11 +38,11 @@ const useCalender = (eventDetails: Event) => {
 
   const addEventToCalendar = async () => {
     const status = await RNCalendarEvents.checkPermissions();
-  
+ 
     if (status !== 'authorized') {
       const newStatus = await RNCalendarEvents.requestPermissions();
       if (newStatus !== 'authorized') {
-        Alert.alert('Permission Denied', 'Calendar access is required to add events.');
+        Alert.alert(LABLE.PERMISSION_DENIED, LABLE.ACCESS_CALENDAR);
         return;
       }
     }
@@ -49,12 +50,12 @@ const useCalender = (eventDetails: Event) => {
     try {
       const calendars = await RNCalendarEvents.findCalendars();
       const defaultCalendar = calendars.find(cal => cal.isPrimary) || calendars[0];
-  
+    
       if (!defaultCalendar) {
-        Alert.alert('Error', 'No calendar found on this device.');
+        Alert.alert('Error', LABLE.NO_CALENDAR_FOUND);
         return;
       }
-  
+    
       const eventId = await RNCalendarEvents.saveEvent(title, {
         startDate,
         endDate,
@@ -63,7 +64,7 @@ const useCalender = (eventDetails: Event) => {
         alarms: [{ date: -15 }], // 15 minutes before
         calendarId: defaultCalendar.id, // REQUIRED for Android
       });
-  
+    
       if (eventId) {
         Alert.alert('Event Added', 'Check your calendar for the event.');
       }

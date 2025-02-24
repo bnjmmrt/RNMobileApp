@@ -1,7 +1,7 @@
 import React, {useRef, forwardRef} from 'react';
 import {View, StyleSheet, Text, Image, Platform, Alert} from 'react-native';
 import BottomSheetComponent from './BottomSheet';
-import {BUTTON_LABLE, COLORS} from '../../utils/constants';
+import {BUTTON_LABLE, COLORS, LABLE} from '../../utils/constants';
 import Button from '../Button';
 import {fontFamily} from '../../utils/functions';
 ;
@@ -34,11 +34,10 @@ const CalenderEventsBottomSheet = forwardRef(
         snapPoints={[Platform.OS == 'android' ? '35%' : '35%']}
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
-          <Text style={styles.title}>{'Add To Caleneder'}</Text>
+          <Text style={styles.title}>{LABLE.ADD_TO_CALENDAR}</Text>
 
           <Text style={[styles.subTitle]}>
-            {' '}
-            {'Never miss a moment.\nSync this event to your calendar.'}
+            {LABLE.NEVER_MISS_MOMENT}
           </Text>
 
           <Button
@@ -46,8 +45,8 @@ const CalenderEventsBottomSheet = forwardRef(
             style={styles.btnStyle}
             title={
               Platform.OS === 'ios'
-                ? 'Add to Apple Calendar'
-                : 'Add to Google Calendar'
+                ? LABLE.ADD_TO_APPLE_CALENDAR
+                : LABLE.ADD_TO_GOOGLE_CALENDAR
             }
             colorTheme="dark"
             onPress={addEventToCalendar}

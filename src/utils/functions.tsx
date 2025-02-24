@@ -430,3 +430,17 @@ export const getErrorMessage = (error: ApiErrorInterface) => {
   }
   return message;
 };
+
+
+export const getRoleRole = (role: string) => {
+  switch (role.toLowerCase()) {
+    case 'member':
+      return 'Member'
+    case 'non_member':
+      return 'Non-Member'
+    case 'host':
+      return 'Host'
+    default:
+      return 'Non-Member'
+  }
+};

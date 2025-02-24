@@ -68,20 +68,32 @@ export const EventStack: React.FC = () => {
       <Stack.Screen
         name="RSVPNoStatusApplied"
         component={RSVPNoStatusApplied}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="RSVPInvitedUpcoming"
         component={RSVPInvitedUpcoming}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="AddGuestOptionScreen"
         component={AddGuestOptionScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="GuestCheckInScreen"
+        component={GuestCheckInScreen}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="AddGuestScreen"
         component={AddGuestScreen}
         options={{ headerShown: false }}
       />
+
+      <Stack.Screen name="QRCodeScanner"
+      component={QRCodeScanner} 
+      options={{ headerShown: false }}/>
       <Stack.Screen
         name={ROUTES.InviteGuestsScreen}
         component={InviteGuests}
