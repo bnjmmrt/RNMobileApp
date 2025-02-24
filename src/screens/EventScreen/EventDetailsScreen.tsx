@@ -41,6 +41,7 @@ import { setSelectedEventForInvite } from 'src/redux/slices/inviteGuestsFlowSlic
 import { EndPoint } from 'src/ApiManager/config';
 import useApi from 'src/axios/useApi';
 import moment from 'moment';
+import { setEventId } from 'src/redux/slices/eventSlice';
 
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -171,8 +172,13 @@ const endDate = moment.utc(data.data.endDate).toISOString();
       EndPoint.generate_ticket + data?.data?.guestId,
     );
     if (response.status === 200) {
+      if(response.data.eventQr)
+     {
       setEventDetails({...eventDetails,qrUrl:response.data.b64QRCode});
       qrCodeBottomSheetRef?.current.open();
+     }else{
+      FlashMessageComponent.show('error',"QR not genetaed")
+     }
     }
   };
 
@@ -204,6 +210,7 @@ const endDate = moment.utc(data.data.endDate).toISOString();
   };
 
   const onCheckInClick = async () => {
+    dispatch(setEventId(route?.params?.id))
     navigation.navigate(ROUTES.QRCodeScanner);
   };
 
@@ -319,7 +326,7 @@ const endDate = moment.utc(data.data.endDate).toISOString();
         ref={qrCodeBottomSheetRef}
         title={eventDetails?.title}
         subTitle={eventDetails?.subTitle}
-        imageURL={eventDetails?.qrUrl ? eventDetails?.qrUrl : IMAGES.ticket}
+        imageURL={eventDetails?.qrUrl}
         isQRShown={isQRShown}
         name={eventDetails?.name}
       />

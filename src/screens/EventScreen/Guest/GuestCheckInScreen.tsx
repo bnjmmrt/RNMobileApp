@@ -32,6 +32,9 @@ import {
 import AvatarInitials from 'src/component/AvatarInitials';
 import useApi from 'src/axios/useApi';
 import { EndPoint } from 'src/ApiManager/config';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+import { ROUTES } from 'src/navigation/Route';
 
 interface GuestCheckInScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -41,6 +44,7 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
 }) => {
   const { apiRequest, loading, error } = useApi();
   const [eventDetails, setEventDetails] = useState<any>({});
+  const eventId = useSelector((state: RootState) => state.event.id);
   const getEventGuestDetails = async () => {
     const response: any = await apiRequest(
       'get',
@@ -57,9 +61,10 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
   useFocusEffect(
     useCallback(() => {
       changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
-    }, []));
+    }, []),
+  );
   const handleBackPress = () => {
-    navigation.goBack();
+    navigation.navigate(ROUTES.EventDetailsScreen, { eventId: eventId });
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -69,59 +74,59 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
         showProgressBar={false}
       />
       {/* {true ? ( */}
-        <ScrollView style={styles.container}>
-          <ProfileCard
-            guest={{
-              name: eventDetails?.guestProfile?.name,
-              avatar: eventDetails?.guestProfile?.profilePicture,
-              roles: eventDetails?.guestProfile?.roles,
-              age: eventDetails?.guestProfile?.age,
-              followers: eventDetails?.guestProfile?.followsYou,
-              location: eventDetails?.guestProfile?.location,
-              status: eventDetails?.guestProfile?.status,
-              interests: eventDetails?.guestProfile?.interest,
-              // isMember:
-              //   eventDetails?.guestProfile?.roles[0].roleName === 'non_member'
-              //     ? false
-              //     : true,
-            }}
-            actionButtons={[
-              {
-                title: eventDetails?.guestProfile?.checkIn
-                  ? LABLE.CHECKED_IN
-                  : LABLE.CHECK_IN,
-                icon: IMAGES.checkedinCurved,
-                onPress: () => {},
-                otherStyle: styles.checkInButton,
-              },
-              {
-                title: LABLE.PROFILE,
-                icon: IMAGES.arrow_up_right,
-                onPress: () => {},
-                otherStyle: styles.profileButton,
-              },
-            ]}
+      <ScrollView style={styles.container}>
+        <ProfileCard
+          guest={{
+            name: eventDetails?.guestProfile?.name,
+            avatar: eventDetails?.guestProfile?.profilePicture,
+            roles: eventDetails?.guestProfile?.roles,
+            age: eventDetails?.guestProfile?.age,
+            followers: eventDetails?.guestProfile?.followsYou,
+            location: eventDetails?.guestProfile?.location,
+            status: eventDetails?.guestProfile?.status,
+            interests: eventDetails?.guestProfile?.interest,
+            // isMember:
+            //   eventDetails?.guestProfile?.roles[0].roleName === 'non_member'
+            //     ? false
+            //     : true,
+          }}
+          actionButtons={[
+            {
+              title: eventDetails?.guestProfile?.checkIn
+                ? LABLE.CHECKED_IN
+                : LABLE.CHECK_IN,
+              icon: IMAGES.checkedinCurved,
+              onPress: () => {},
+              otherStyle: styles.checkInButton,
+            },
+            {
+              title: LABLE.PROFILE,
+              icon: IMAGES.arrow_up_right,
+              onPress: () => {},
+              otherStyle: styles.profileButton,
+            },
+          ]}
+        />
+        <View style={styles.card}>
+          <AvatarInitials
+            size={32}
+            name={eventDetails?.guestProfile?.addedBy}
+            imgUrl={eventDetails?.guestProfile?.addedByPicture}
           />
-          <View style={styles.card}>
-            <AvatarInitials
-              size={32}
-              name={eventDetails?.guestProfile?.addedBy}
-              imgUrl={eventDetails?.guestProfile?.addedByPicture}
-            />
-            <View style={{ paddingLeft: verticalMarginScale(8) }}>
-              <Text style={styles.blurText}>Guest of</Text>
-              <Text style={styles.username}>
-                {eventDetails?.guestProfile?.addedBy}
-              </Text>
-            </View>
+          <View style={{ paddingLeft: verticalMarginScale(8) }}>
+            <Text style={styles.blurText}>Guest of</Text>
+            <Text style={styles.username}>
+              {eventDetails?.guestProfile?.addedBy}
+            </Text>
           </View>
-          <CheckInComponent
-            ticketType={eventDetails?.guestDetail?.ticketType}
-            privateGuestNote={eventDetails?.guestDetail?.privateGuestNote}
-            additionalGuests={eventDetails?.guestProfile?.additionalGuests}
-            maxAdditionalGuests={eventDetails?.guestDetail?.maxAdditionalGuests}
-          />
-        </ScrollView>
+        </View>
+        <CheckInComponent
+          ticketType={eventDetails?.guestDetail?.ticketType}
+          privateGuestNote={eventDetails?.guestDetail?.privateGuestNote}
+          additionalGuests={eventDetails?.guestProfile?.additionalGuests}
+          maxAdditionalGuests={eventDetails?.guestDetail?.maxAdditionalGuests}
+        />
+      </ScrollView>
       {/* ) : (
         <EmptyRecordComponent
           title={LABLE.USER_NOT_FOUND}
