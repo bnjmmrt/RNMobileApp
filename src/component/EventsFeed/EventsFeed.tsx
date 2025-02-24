@@ -1,7 +1,7 @@
 import IMAGES from '@images/index';
-import {useFocusEffect} from '@react-navigation/native';
-import {debounce} from 'lodash';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { debounce } from 'lodash';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -11,14 +11,14 @@ import {
   Text,
   View,
 } from 'react-native';
-import {useSelector} from 'react-redux';
-import {useFetchAllEventsQuery} from 'src/redux/actions/eventApiAction';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { useSelector } from 'react-redux';
+import { useFetchAllEventsQuery } from 'src/redux/actions/eventApiAction';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 import HeaderComponent from '../../component/HeaderComponent';
-import {RootState} from '../../redux/slices';
-import {Address} from '../../redux/slices/appFlowSlice';
-import {COLORS} from '../../utils/constants';
+import { RootState } from '../../redux/slices';
+import { Address } from '../../redux/slices/appFlowSlice';
+import { COLORS } from '../../utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -29,10 +29,10 @@ import {
   verticalScale,
   Wp,
 } from '../../utils/dimensions';
-import {changeSafeAreaViewConfig, fontFamily} from '../../utils/functions';
-import {BottomSheetMethods} from '../BottomSheet/BottomSheet';
-import FiltersSheet, {getFilterQuery, SelectedFilters} from '../FilterSheet';
-import {InputRefMethods} from '../Input/Input';
+import { changeSafeAreaViewConfig, fontFamily } from '../../utils/functions';
+import { BottomSheetMethods } from '../BottomSheet/BottomSheet';
+import FiltersSheet, { getFilterQuery, SelectedFilters } from '../FilterSheet';
+import { InputRefMethods } from '../Input/Input';
 import SearchInput from '../SearchInput';
 import FeaturedFeedItem from './FeaturedFeedItem';
 import FeedDetail from './FeedDetail';
@@ -174,7 +174,7 @@ export interface EventItem {
 
 export interface SeriesItem {
   name: string;
-  image: {uri: string};
+  image: { uri: string };
   about: string;
   period: string;
   events: EventItem[];
@@ -211,10 +211,13 @@ const EventsFeed = () => {
   const userId = useSelector((state: RootState) => state.auth.userId);
   const isInvited = loginData?.isInvited || false;
 
-  const {data, isLoading, error, isError, refetch} = useFetchAllEventsQuery({
+  const { data, isLoading, error, isError, refetch } = useFetchAllEventsQuery({
+    statusName: 'UPCOMING_STATUS',
     searchText: searchTerm,
     queryString: filterQuery,
     userId: userId,
+    take: 6,
+    skip: (currentPage - 1) * 6,
   });
 
   const debouncedSearch = useCallback(
@@ -225,6 +228,7 @@ const EventsFeed = () => {
     debouncedSearch(text);
   }, []);
 
+
   const handleNotify = useCallback(() => {
     setResponseSubmitted(true);
     setTimeout(() => {
@@ -232,10 +236,15 @@ const EventsFeed = () => {
     }, 3000);
   }, []);
 
+  useEffect(() => {
+    console.log("Sayyed currentPage:", currentPage)
+  }, [currentPage])
+
   const handleLoadMore = useCallback(() => {
-    // if (pagination.skip < allEvents.length) {
-    //   setPagination(prev => ({...prev, skip: prev.skip + prev.take}));
-    // }
+    const totalPages = data?.totalPages || 10
+    if (data?.currentPage < totalPages && !isLoading) {
+      setCurrentPage((prev) => prev + 1);
+    }
   }, [allEvents]);
 
   const onRefreshPage = () => {
@@ -266,9 +275,9 @@ const EventsFeed = () => {
   };
 
   useEffect(() => {
-    if (data) {
-      const eventsRes = data?.data;
-      const featuredEventsRes = data?.data.filter(
+    if (data?.data?.data) {
+      const eventsRes = data?.data?.data;
+      const featuredEventsRes = data?.data?.data?.filter(
         (item: any) => item.featuredEventSection,
       );
       setFeaturedEvents(featuredEventsRes);
@@ -294,7 +303,7 @@ const EventsFeed = () => {
 
   const renderFilters = useCallback(() => {
     const onRemoveFilter = (filterKey: string, valueIndex: number) => {
-      let tempSelectedFilters = {...selectedFilters};
+      let tempSelectedFilters = { ...selectedFilters };
       tempSelectedFilters = {
         ...tempSelectedFilters,
         [filterKey]: {
@@ -304,17 +313,17 @@ const EventsFeed = () => {
           ),
         },
       };
-      const {queryString, filtersCount} = getFilterQuery(tempSelectedFilters);
+      const { queryString, filtersCount } = getFilterQuery(tempSelectedFilters);
       onApplyFilter(queryString, filtersCount, tempSelectedFilters);
     };
 
     return (
-      <View style={{alignSelf: 'flex-start', flexDirection: 'row'}}>
+      <View style={{ alignSelf: 'flex-start', flexDirection: 'row' }}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           style={[styles.filterScrollView, {}]}
-          contentContainerStyle={{gap: horizontalMarginScale(4)}}>
+          contentContainerStyle={{ gap: horizontalMarginScale(4) }}>
           {Object.entries(selectedFilters).map(([key, filter]) => {
             return (
               <>
@@ -352,7 +361,7 @@ const EventsFeed = () => {
     [featuredEvents.length],
   );
 
-  const renderItem = useCallback(({item}: {item: any}) => {
+  const renderItem = useCallback(({ item }: { item: any }) => {
     return <FeedItem item={item} />;
   }, []);
 
@@ -391,11 +400,11 @@ const EventsFeed = () => {
           marginHorizontal: horizontalMarginScale(20),
           marginTop: verticalMarginScale(20),
         }}
-        columnWrapperStyle={{gap: horizontalMarginScale(20)}}
-        contentContainerStyle={{gap: horizontalMarginScale(20)}}
+        columnWrapperStyle={{ gap: horizontalMarginScale(20) }}
+        contentContainerStyle={{ gap: horizontalMarginScale(20) }}
         showsVerticalScrollIndicator={false}
         ListFooterComponent={
-          <View style={{marginBottom: verticalScale(100)}} />
+          <View style={{ marginBottom: verticalScale(100) }} />
         }
         ListEmptyComponent={
           <View

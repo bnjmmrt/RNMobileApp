@@ -22,9 +22,11 @@ export const ROUTES = {
   HostEditProfileScreen: 'HostEditProfileScreen',
   HostConnectedAccountsScreen: 'HostConnectedAccountsScreen',
   WelcomeScreen: 'WelcomeScreen',
+  EditEventScreen: 'EditEventScreen',
+  EditEventDetails: 'EditEventDetails',
+  EditEventSettings: 'EditEventSettings',
   GuestCheckInScreen: 'GuestCheckInScreen',
   GuestDetailScreen: 'GuestDetailScreen',
-
   InviteGuestsScreen: 'InviteGuestsScreen',
   InviteGuestsManuallyScreen: 'InviteGuestsManuallyScreen',
   ManageGuestsScreen: 'ManageGuestsScreen',

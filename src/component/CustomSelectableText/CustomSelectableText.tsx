@@ -72,7 +72,7 @@ const CustomSelectableText: React.FC<CustomSelectableTextProps> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    marginTop: verticalMarginScale(24),
+    // marginTop: verticalMarginScale(24),
   },
   label: {
     paddingVertical: verticalMarginScale(2),
