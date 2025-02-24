@@ -3,18 +3,21 @@ import {
   BottomSheetFlatListMethods,
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
-import React, {useCallback, useEffect, useRef} from 'react';
-import {InteractionManager} from 'react-native';
-import {DateType} from 'react-native-ui-datepicker';
-import {shallowEqual, useSelector} from 'react-redux';
+import React, { useCallback, useEffect, useRef } from 'react';
+import { InteractionManager } from 'react-native';
+import { DateType } from 'react-native-ui-datepicker';
+import { shallowEqual, useSelector } from 'react-redux';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import GradientSeprator from 'src/component/GradientSeprator';
-import {useLazyFetchUserFiltersQuery} from 'src/redux/actions/usersApiAction';
-import {RootState} from 'src/redux/slices';
-import {horizontalMarginScale, Hp} from 'src/utils/dimensions';
-import {SelectedFilters} from '.';
+import { useLazyFetchUserFiltersQuery } from 'src/redux/actions/usersApiAction';
+import { RootState } from 'src/redux/slices';
+import { horizontalMarginScale, Hp } from 'src/utils/dimensions';
+import { SelectedFilters } from '.';
 import FilterAccordian from './FilterAccordian';
-import FilterOptions, {FilterOption, FilterOptionTypes} from './FilterOptions';
+import FilterOptions, {
+  FilterOption,
+  FilterOptionTypes,
+} from './FilterOptions';
 
 type FilterType = {
   id: string;
@@ -50,7 +53,7 @@ const AllUsersFilters = ({
     shallowEqual,
   );
 
-  const [fetchFilters, {data, isLoading, error}] =
+  const [fetchFilters, { data, isLoading, error }] =
     useLazyFetchUserFiltersQuery();
 
   const filterData: FilterType[] =
@@ -64,9 +67,9 @@ const AllUsersFilters = ({
   const onChangeFilterOptionValue = (
     id: string,
     optionType: FilterOptionTypes,
-    value: {id: string | DateType; name: string},
+    value: { id: string | DateType; name: string },
   ) => {
-    let tempSelectedFilter = {...selectedFilters};
+    let tempSelectedFilter = { ...selectedFilters };
 
     if (optionType === 'checkbox') {
       if (tempSelectedFilter[id]) {
@@ -116,7 +119,7 @@ const AllUsersFilters = ({
   };
 
   const renderItem = useCallback(
-    ({item, index}: {item: FilterType; index: number}) => {
+    ({ item, index }: { item: FilterType; index: number }) => {
       const scrollToOpenedAccordian = (index: number) => {
         InteractionManager.runAfterInteractions(() => {
           setTimeout(() => {
@@ -154,7 +157,7 @@ const AllUsersFilters = ({
 
   useEffect(() => {
     if (loginData && loginData.id) {
-      fetchFilters({id: loginData?.id});
+      fetchFilters({ id: loginData?.id });
     }
   }, [loginData]);
 
@@ -166,8 +169,8 @@ const AllUsersFilters = ({
       keyExtractor={(item, index) => `filters_header_${index.toString()}`}
       showsVerticalScrollIndicator={false}
       ItemSeparatorComponent={itemSeparatorComponent}
-      contentContainerStyle={{marginHorizontal: horizontalMarginScale(12)}}
-      style={{flex: 1}}
+      contentContainerStyle={{ marginHorizontal: horizontalMarginScale(12) }}
+      style={{ flex: 1 }}
       ListEmptyComponent={
         <BottomSheetView
           style={{

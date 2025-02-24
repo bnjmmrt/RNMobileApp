@@ -29,7 +29,10 @@ import QRCodeBottomsheet from 'src/component/BottomSheet/QRCodeBottomsheet';
 import CalenderEventsBottomSheet from 'src/component/BottomSheet/CalenderEventsBottomSheet';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
-import { useFetchEventDetailsQuery, useFetchHostEventDetailsQuery } from 'src/redux/actions/eventApiAction';
+import {
+  useFetchEventDetailsQuery,
+  useFetchHostEventDetailsQuery,
+} from 'src/redux/actions/eventApiAction';
 import IMAGES from '@images/index';
 import EventTalent from 'src/component/Event/EventTalent';
 import { ROUTES } from 'src/navigation/Route';
@@ -60,31 +63,33 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const userId = useSelector((state: RootState) => state.auth.userId);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const role = useSelector((state: RootState) => state.auth.role);
-  const [acceptInvite, { isLoading: acceptLoading }] = useAcceptInvitationMutation();
+  const [acceptInvite, { isLoading: acceptLoading }] =
+    useAcceptInvitationMutation();
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
-
-
-  const useFetchEventDetails = role === ROLE.HOST ? useFetchHostEventDetailsQuery : useFetchEventDetailsQuery;
+  const useFetchEventDetails =
+    role === ROLE.HOST
+      ? useFetchHostEventDetailsQuery
+      : useFetchEventDetailsQuery;
   // Ensure argument structure remains consistent
   const queryArgs =
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const) // Type assertion to prevent union mismatch
       : ({
-        userId,
-        eventId: route?.params?.id,
-      } as const); // Type assertion
+          userId,
+          eventId: route?.params?.id,
+        } as const); // Type assertion
 
-
-  const { data, isLoading, refetch, isSuccess } = useFetchEventDetails(queryArgs, { refetchOnMountOrArgChange: true });
-
+  const { data, isLoading, refetch, isSuccess } = useFetchEventDetails(
+    queryArgs,
+    { refetchOnMountOrArgChange: true },
+  );
 
   // const { data, isLoading, refetch, isSuccess } = useFetchEventDetailsQuery(
   //   { eventId: route?.params?.id, userId: userId },
   //   { refetchOnMountOrArgChange: true },
   // );
-
 
   const qrCodeBottomSheetRef = useRef<any>(null);
   const calenderEventsBottomSheetRef = useRef<any>(null);
@@ -106,34 +111,31 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     }
   }, [guestStatus]);
 
-
-  const parseDate = (dateStr:any) => {
-    const [datePart, timePart] = dateStr.split(" ");
+  const parseDate = (dateStr: any) => {
+    const [datePart, timePart] = dateStr.split(' ');
     return new Date(`${datePart}T${timePart}Z`).toISOString();
   };
   useEffect(() => {
     // console.log('Event data:', data);
-    if(data?.data){
+    if (data?.data) {
       setEventDetails({
         title: data.data.name,
         subTitle: data.data.startDate,
         name: data.data.owner.firstName + ' ' + data.data.owner.lastName,
       });
-   
 
-const startDate = moment.utc(data.data.startDate).toISOString();
-const endDate = moment.utc(data.data.endDate).toISOString();
+      const startDate = moment.utc(data.data.startDate).toISOString();
+      const endDate = moment.utc(data.data.endDate).toISOString();
       setCalendarDetails({
         title: data.data.name,
         startDate: startDate,
-        endDate: endDate, 
+        endDate: endDate,
         location: data.data?.location.city,
         notes: data.data.description,
       });
     }
     if (data && data.data && data?.data?.collaborators) {
       setCollaborators(data.data.collaborators);
-     
     }
     if (data && data.data && data?.data?.talents) {
       setTalents(data.data.talents);
@@ -171,7 +173,7 @@ const endDate = moment.utc(data.data.endDate).toISOString();
       EndPoint.generate_ticket + data?.data?.guestId,
     );
     if (response.status === 200) {
-      setEventDetails({...eventDetails,qrUrl:response.data.b64QRCode});
+      setEventDetails({ ...eventDetails, qrUrl: response.data.b64QRCode });
       qrCodeBottomSheetRef?.current.open();
     }
   };
@@ -209,7 +211,7 @@ const endDate = moment.utc(data.data.endDate).toISOString();
 
   const onPressInviteGuests = () => {
     dispatch(setSelectedEventForInvite(data.data));
-    navigation.navigate(ROUTES.InviteGuestsScreen);
+    navigation.navigate(ROUTES.SelectGuestsToInviteScreen);
   };
 
   return (
@@ -217,7 +219,6 @@ const endDate = moment.utc(data.data.endDate).toISOString();
       <ScrollView>
         <View style={{ ...styles.contentContainer }}>
           <View>
-
             <FastImage
               source={{
                 uri: route?.params?.imageCover || route?.params?.imageFlyer,
@@ -226,27 +227,30 @@ const endDate = moment.utc(data.data.endDate).toISOString();
               defaultSource={IMAGES.eventCoverPlaceholders1} // Placeholder
               style={styles.icon}
             />
-
           </View>
 
           <Text style={styles.titleStyle}>{route?.params?.name}</Text>
 
           <EventStatus status={guestStatus} isDeclinedByMe={!isDeclinedByMe} />
 
-          {role !== ROLE.NON_MEMBER && <FlatList
-            data={collaborators}
-            horizontal
-            pagingEnabled={false}
-            // style={{ marginVertical: 20 }}
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item, index) => `${item.id}-${index}`}
-            renderItem={({ item }) => <EventHostItem item={item} />}
-          />}
+          {role !== ROLE.NON_MEMBER && (
+            <FlatList
+              data={collaborators}
+              horizontal
+              pagingEnabled={false}
+              // style={{ marginVertical: 20 }}
+              showsHorizontalScrollIndicator={false}
+              keyExtractor={(item, index) => `${item.id}-${index}`}
+              renderItem={({ item }) => <EventHostItem item={item} />}
+            />
+          )}
 
           {role == ROLE.HOST && <EventRequests eventId={data?.data?.id} />}
 
-          <EventVenue item={data?.data} handleCalendarPress={addCalenderEvents} />
-
+          <EventVenue
+            item={data?.data}
+            handleCalendarPress={addCalenderEvents}
+          />
 
           <EventOverview item={data?.data} />
 
@@ -362,9 +366,18 @@ const endDate = moment.utc(data.data.endDate).toISOString();
       />
 
       <BackButtonOverlay onPress={() => navigation.goBack()} />
-      <BackButtonOverlay customStyle={{ right: 4 }} imageSource={IMAGES.edits} onPress={() => navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })} />
-      <BackButtonOverlay customStyle={{ right: 55 }} imageSource={IMAGES.share} onPress={() => navigation.goBack()} />
-
+      <BackButtonOverlay
+        customStyle={{ right: 4 }}
+        imageSource={IMAGES.edits}
+        onPress={() =>
+          navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })
+        }
+      />
+      <BackButtonOverlay
+        customStyle={{ right: 55 }}
+        imageSource={IMAGES.share}
+        onPress={() => navigation.goBack()}
+      />
     </View>
   );
 };

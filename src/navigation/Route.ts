@@ -27,8 +27,10 @@ export const ROUTES = {
   EditEventSettings: 'EditEventSettings',
   GuestCheckInScreen: 'GuestCheckInScreen',
   GuestDetailScreen: 'GuestDetailScreen',
-  InviteGuestsScreen: 'InviteGuestsScreen',
-  InviteGuestsManuallyScreen: 'InviteGuestsManuallyScreen',
   ManageGuestsScreen: 'ManageGuestsScreen',
-  QRCodeScanner:'QRCodeScanner'
+  QRCodeScanner: 'QRCodeScanner',
+  SelectGuestsToInviteScreen: 'SelectGuestsToInviteScreen',
+  InviteGuestScreen: 'InviteGuestScreen',
+  InviteGuestsManuallyScreen: 'InviteGuestsManuallyScreen',
+  SelectedGuestsToInviteScreen: 'SelectedGuestsToInviteScreen',
 } as const;

@@ -80,7 +80,7 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
           colorTheme={'dark'}
           onPress={() => {
             dispatch(setSelectedManualUser(item));
-            navigation.navigate(ROUTES.ManageGuestsScreen, {
+            navigation.navigate(ROUTES.InviteGuestScreen, {
               isManual: true,
               type: 'contact',
             });
