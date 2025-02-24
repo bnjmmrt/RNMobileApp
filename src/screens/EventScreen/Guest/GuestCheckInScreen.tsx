@@ -57,8 +57,7 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
   useFocusEffect(
     useCallback(() => {
       changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
-    }, []),
-  );
+    }, []));
   const handleBackPress = () => {
     navigation.goBack();
   };
@@ -69,7 +68,7 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
         onPress={handleBackPress}
         showProgressBar={false}
       />
-      {true ? (
+      {/* {true ? ( */}
         <ScrollView style={styles.container}>
           <ProfileCard
             guest={{
@@ -81,10 +80,10 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
               location: eventDetails?.guestProfile?.location,
               status: eventDetails?.guestProfile?.status,
               interests: eventDetails?.guestProfile?.interest,
-              isMember:
-                eventDetails?.guestProfile?.roles[0].roleName === 'non_member'
-                  ? false
-                  : true,
+              // isMember:
+              //   eventDetails?.guestProfile?.roles[0].roleName === 'non_member'
+              //     ? false
+              //     : true,
             }}
             actionButtons={[
               {
@@ -123,7 +122,7 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
             maxAdditionalGuests={eventDetails?.guestDetail?.maxAdditionalGuests}
           />
         </ScrollView>
-      ) : (
+      {/* ) : (
         <EmptyRecordComponent
           title={LABLE.USER_NOT_FOUND}
           subTitle={ERROR_MESSAGE.TCKET_ERROR_MESSAGE}
@@ -138,7 +137,7 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
         //   btnIcon={IMAGES.profileWhite}
         //   btnLabel={LABLE.MANAGE_GUESTS}
         // />
-      )}
+      )} */}
     </SafeAreaView>
   );
 };

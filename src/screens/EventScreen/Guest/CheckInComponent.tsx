@@ -162,7 +162,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
       });
     }
     setExpandList(expandIndex);
-  }, [additionalGuests]);
+  }, [ticketType]);
 
   const toggleExpand = (guest: any) => {
     console.log('expandlist', guest?.isExpand);
@@ -213,7 +213,8 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
       <Text style={styles.sectionTitle}>{LABLE.PLUS_1S}</Text>
      <FlatList
           data={expandlist || []}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item?.id?.toString()}
+          nestedScrollEnabled
           renderItem={({ item, index }) =>
             renderItemComponent(item, index, expandlist, toggleExpand)
           }
