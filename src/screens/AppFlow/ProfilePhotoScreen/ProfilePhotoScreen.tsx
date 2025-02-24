@@ -96,7 +96,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
 
   const handleBackPress = () => {
     dispatch(setPageProgress(7));
-    navigation.navigate('SelectInterestScreen');
+    navigation.goBack();
   };
 
   const openPicker = () => {
@@ -181,6 +181,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
         style={styles.btnStyle}
         title={BUTTON_LABLE.NEXT}
         colorTheme="dark"
+        loading={loading}
         onPress={onNextClick}
       />
     </SafeAreaView>

@@ -126,7 +126,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     <View style={[styles.container, otherStyle]}>
       {/* Dynamic Label */}
       {label && (
-        <CustomText style={styles.label}>
+        <CustomText style={styles.label} >
           {label}
           {requiredText()}
         </CustomText>
@@ -193,6 +193,10 @@ const styles = StyleSheet.create({
   },
   label: {
     paddingBottom: horizontalMarginScale(2),
+    color: COLORS.black,
+    fontSize: fontScale(14),
+    lineHeight: 16,
+    marginBottom: 2
   },
   inputContainer: {
     borderWidth: 1,

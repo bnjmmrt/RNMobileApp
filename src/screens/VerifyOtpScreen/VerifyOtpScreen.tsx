@@ -95,36 +95,37 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}>
-      <FullScreenLoader loading={isLoading}>
-        <View style={styles.container}>
-          <BackButton onPress={handleBackPress} />
-          <View style={styles.contentContainer}>
-            <TitleSubtitle
-              title={LABLE.ENTER_YOUR_VERIFICATION_CODE}
-              subTitle={`${LABLE.SEND_TO}${route.params.isEmail ? route.params.email : route.params.phone
-                }`}
-            />
-            <OTPComponent
-              ref={otpInputRef}
-              performCodeVerification={(code: string) =>
-                verifyOtp(code, redirectToHome)
-              }
-              resendVerificationCode={() => {
-                otpInputRef.current.clearOTP();
-                sendOtp(true)
-              }}
-            />
-            <View style={styles.spacer} />
-            <Button
-              disabled={false}
-              style={styles.btnStyle}
-              title={BUTTON_LABLE.GET_STARTED}
-              colorTheme="dark"
-              onPress={onNextClick}
-            />
-          </View>
+      {/* <FullScreenLoader loading={isLoading}> */}
+      <View style={styles.container}>
+        <BackButton onPress={handleBackPress} />
+        <View style={styles.contentContainer}>
+          <TitleSubtitle
+            title={LABLE.ENTER_YOUR_VERIFICATION_CODE}
+            subTitle={`${LABLE.SEND_TO}${route.params.isEmail ? route.params.email : route.params.phone
+              }`}
+          />
+          <OTPComponent
+            ref={otpInputRef}
+            performCodeVerification={(code: string) =>
+              verifyOtp(code, redirectToHome)
+            }
+            resendVerificationCode={() => {
+              otpInputRef.current.clearOTP();
+              sendOtp(true)
+            }}
+          />
+          <View style={styles.spacer} />
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={BUTTON_LABLE.GET_STARTED}
+            colorTheme="dark"
+            onPress={onNextClick}
+            loading={isLoading}
+          />
         </View>
-      </FullScreenLoader>
+      </View>
+      {/* </FullScreenLoader> */}
     </KeyboardAvoidingView>
   );
 };

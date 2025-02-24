@@ -24,18 +24,19 @@ import { FlatList } from 'react-native-gesture-handler';
 import EventVenue from 'src/component/Event/EventVenue';
 import EventOverview from 'src/component/Event/EventOverview';
 import Button from 'src/component/Button';
-// import { event_mock } from './eventMock';
 import EventAnouncements from 'src/component/Event/EventAnnouncements';
 import QRCodeBottomsheet from 'src/component/BottomSheet/QRCodeBottomsheet';
 import CalenderEventsBottomSheet from 'src/component/BottomSheet/CalenderEventsBottomSheet';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
-import { useFetchEventDetailsQuery } from 'src/redux/actions/eventApiAction';
+import { useFetchEventDetailsQuery, useFetchHostEventDetailsQuery } from 'src/redux/actions/eventApiAction';
 import IMAGES from '@images/index';
 import EventTalent from 'src/component/Event/EventTalent';
 import { ROUTES } from 'src/navigation/Route';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { useAcceptInvitationMutation } from 'src/redux/actions/rspvApiAction';
+import EventRequests from 'src/component/Event/EventRequests';
+import CircleButtonOverlay from 'src/component/BackButton/CircleButtonOverlay';
 import { setSelectedEventForInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
 import { EndPoint } from 'src/ApiManager/config';
 import useApi from 'src/axios/useApi';
@@ -58,23 +59,36 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const [
-    acceptInvite,
-    {
-      isLoading: acceptLoading,
-      isError: acceptError,
-      isSuccess: acceptSuccess,
-    },
-  ] = useAcceptInvitationMutation();
-
+  const role = useSelector((state: RootState) => state.auth.role);
+  const [acceptInvite, { isLoading: acceptLoading }] = useAcceptInvitationMutation();
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
+
+
+
+  const useFetchEventDetails = role === ROLE.HOST ? useFetchHostEventDetailsQuery : useFetchEventDetailsQuery;
+  // Ensure argument structure remains consistent
+  const queryArgs =
+    role === ROLE.HOST
+      ? ({ eventId: route?.params?.id } as const) // Type assertion to prevent union mismatch
+      : ({
+        userId,
+        eventId: route?.params?.id,
+      } as const); // Type assertion
+
+
+  const { data, isLoading, refetch, isSuccess } = useFetchEventDetails(queryArgs, { refetchOnMountOrArgChange: true });
+
+
+  // const { data, isLoading, refetch, isSuccess } = useFetchEventDetailsQuery(
+  //   { eventId: route?.params?.id, userId: userId },
+  //   { refetchOnMountOrArgChange: true },
+  // );
+
+
   const qrCodeBottomSheetRef = useRef<any>(null);
   const calenderEventsBottomSheetRef = useRef<any>(null);
-  const { data, isLoading, refetch, isSuccess } = useFetchEventDetailsQuery(
-    { eventId: route?.params?.id },
-    { refetchOnMountOrArgChange: true },
-  );
+
   const [isQRShown, setIsQRShown] = useState(true);
   // const [qrURL, setQrURL] = useState('');
   const [eventDetails, setEventDetails] = useState<any>({});
@@ -202,7 +216,8 @@ const endDate = moment.utc(data.data.endDate).toISOString();
     <View style={{ ...styles.container }}>
       <ScrollView>
         <View style={{ ...styles.contentContainer }}>
-          <View style={{}}>
+          <View>
+
             <FastImage
               source={{
                 uri: route?.params?.imageCover || route?.params?.imageFlyer,
@@ -211,10 +226,14 @@ const endDate = moment.utc(data.data.endDate).toISOString();
               defaultSource={IMAGES.eventCoverPlaceholders1} // Placeholder
               style={styles.icon}
             />
+
           </View>
+
           <Text style={styles.titleStyle}>{route?.params?.name}</Text>
+
           <EventStatus status={guestStatus} isDeclinedByMe={!isDeclinedByMe} />
-          <FlatList
+
+          {role !== ROLE.NON_MEMBER && <FlatList
             data={collaborators}
             horizontal
             pagingEnabled={false}
@@ -222,14 +241,17 @@ const endDate = moment.utc(data.data.endDate).toISOString();
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item, index) => `${item.id}-${index}`}
             renderItem={({ item }) => <EventHostItem item={item} />}
-          />
-          <EventVenue
-            item={data?.data}
-            handleCalendarPress={addCalenderEvents}
-          />
+          />}
+
+          {role == ROLE.HOST && <EventRequests eventId={data?.data?.id} />}
+
+          <EventVenue item={data?.data} handleCalendarPress={addCalenderEvents} />
+
+
           <EventOverview item={data?.data} />
 
           {talents.length > 0 && <EventTalent talents={talents} />}
+
           {/* {<EventAnouncements talents={talents} />} */}
 
           <Button
@@ -261,6 +283,7 @@ const endDate = moment.utc(data.data.endDate).toISOString();
           />
         </View>
       )}
+
       {guestStatus == 'DECLINED' && (
         <View style={{ margin: 20 }}>
           <Button
@@ -339,6 +362,9 @@ const endDate = moment.utc(data.data.endDate).toISOString();
       />
 
       <BackButtonOverlay onPress={() => navigation.goBack()} />
+      <BackButtonOverlay customStyle={{ right: 4 }} imageSource={IMAGES.edits} onPress={() => navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })} />
+      <BackButtonOverlay customStyle={{ right: 55 }} imageSource={IMAGES.share} onPress={() => navigation.goBack()} />
+
     </View>
   );
 };

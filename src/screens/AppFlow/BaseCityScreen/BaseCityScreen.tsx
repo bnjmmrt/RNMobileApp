@@ -51,7 +51,7 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({navigation}) => {
 
   const handleBackPress = () => {
     dispatch(setPageProgress(4));
-    navigation.navigate('BirthdayScreen');
+    navigation.goBack();
   };
 
   const openLocationPicker = () => {
