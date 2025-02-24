@@ -41,11 +41,9 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
     ref.current?.close();
   };
 
-  const [tooltipVisible,setToolTipVisible]=useState(false)
-
   const showTooltip=()=>{
     console.log("showTooltipshowTooltipshowTooltip")
-    setToolTipVisible(true)
+   
   }
   return (
     <BottomSheetComponent
@@ -91,7 +89,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
               </View>
              
               <View style={styles.vipContainer}>
-              {!tooltipVisible && <CustomTooltip position={Placement.TOP} setToolTipVisible={setToolTipVisible} content="Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas."></CustomTooltip>}
+              {/* { <CustomTooltip position={Placement.TOP} setToolTipVisible={setToolTipVisible} content="Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas."></CustomTooltip>} */}
                 <Text style={styles.vipText}>VIP</Text>
                 <TouchableOpacity onPress={showTooltip}>
                    <Image source={IMAGES.info_filled} style={styles.icon} />
