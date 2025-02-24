@@ -81,8 +81,10 @@ const PhoneNumberInput = forwardRef<
     const [disabled, setDisabled] = useState(false);
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const [selectedCountry, setSelectedCountry] = useState('');
 
     const handleCountrySelect = (selectedCountry: any) => {
+      console.log(selectedCountry)
       dispatch(setCountryCallingCode(selectedCountry.callingCode));
       dispatch(setCountryCodeFlag(selectedCountry.flag));
       setFlag(selectedCountry.flag);
@@ -92,6 +94,7 @@ const PhoneNumberInput = forwardRef<
       setFlag(selectedCountry.flag);
       setCode(selectedCountry.code);
       setCallingCode(selectedCountry.dial_code);
+      setSelectedCountry(selectedCountry)
       setCountryPickerVisible(false);
       if (onSelectCountry) {
         onSelectCountry(selectedCountry);
@@ -163,8 +166,8 @@ const PhoneNumberInput = forwardRef<
 
           <InputComponent
             // style={styles.input}
-            style={[styles.input, disabled && { color: COLORS.light_gray }]}
-            placeholder="Enter phone number"
+            style={[styles.input, disabled && {color: COLORS.light_gray}]}
+            // placeholder="Enter phone number"
             keyboardType="phone-pad"
             returnKeyType="done"
             value={phoneNumber}
@@ -190,6 +193,7 @@ const PhoneNumberInput = forwardRef<
           pickerButtonOnPress={handleCountrySelect}
           closeCountryModal={closeCountryModal}
           show={isCountryPickerVisible}
+          selectedCountry={selectedCountry}
           lang="en"
         />
       </View>

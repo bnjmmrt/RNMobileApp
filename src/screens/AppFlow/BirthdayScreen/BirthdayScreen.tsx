@@ -26,7 +26,7 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
   const bottomSheetRef = useRef<any>(null);
   const styles = BirthdayScreenStyles();
   const birthday = useSelector((state: RootState) => state.appFlow.birthday);
-  const [selectedDate, setSelectedDate] = useState<string>(birthday || '');
+  const [selectedDate, setSelectedDate] = useState<string>(birthday || LABLE.DATE_PLACEHOLDER);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleBackPress = () => {

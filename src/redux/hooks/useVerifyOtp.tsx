@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useMemberLoginMutation } from '../../redux/actions/loginApiAction';
 import { FlashMessageComponent } from '../../component/FlashMessageComponent/FlashMessageComponent';
+import { LABLE } from 'src/utils/constants';
 
 export const useVerifyOtp = (isMemberExist: boolean, isGuest: boolean, email?: string, phone?: string, isEmail?: boolean) => {
     const [isLoading, setIsLoading] = useState(false);
     const [memberLogin] = useMemberLoginMutation();
-
+    const [error,setError] = useState('')
     const verifyOtp = async (code: string, onSuccess: (data: any) => void) => {
         try {
             setIsLoading(true);
@@ -17,6 +18,7 @@ export const useVerifyOtp = (isMemberExist: boolean, isGuest: boolean, email?: s
                 onSuccess(data);
             }
         } catch (error) {
+            setError(LABLE.INVALID_OTP)
             FlashMessageComponent.show('error', 'Something went wrong, please try again!');
             console.error('Error verifying OTP:', error);
         } finally {
@@ -24,5 +26,5 @@ export const useVerifyOtp = (isMemberExist: boolean, isGuest: boolean, email?: s
         }
     };
 
-    return { verifyOtp, isLoading };
+    return { verifyOtp, isLoading ,error};
 };

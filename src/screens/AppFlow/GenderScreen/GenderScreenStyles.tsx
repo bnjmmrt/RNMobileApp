@@ -27,14 +27,17 @@ const GenderScreenStyles = () => {
     genderButton: {
       paddingVertical: Hp(1.5),
       paddingHorizontal: Wp(5),
-      borderRadius: radiusScale(20),
+      borderRadius: radiusScale(30),
       backgroundColor: COLORS.lighter_gray,
-      marginVertical: Hp(1),
+      borderColor:COLORS.borderGray,
+      borderWidth:1.5,
+      marginVertical: Hp(0.5),
       marginHorizontal: Wp(1),
       alignItems: 'center',
     },
     selectedGenderButton: {
       backgroundColor: COLORS.black,
+      borderColor:COLORS.black,
     },
     genderText: {
       fontSize: fontScale(16),

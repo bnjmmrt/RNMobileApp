@@ -219,6 +219,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
+    left:10,
     fontSize: fontScale(14),
     color: COLORS.black,
     fontWeight: '500',
