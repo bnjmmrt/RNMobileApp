@@ -15,7 +15,7 @@ export const usersApiAction = createBaseApi.injectEndpoints({
         searchValue?: string;
         queryString?: string;
       }) => {
-        let url = `${EndPoint.users_list}?take=${take}&skip=${skip}`;
+        let url = `${EndPoint.users_list}?take=${take}&skip=${skip}&sortBy=name`;
         if (searchValue) {
           url = `${url}&searchValue=${searchValue}`;
         }
