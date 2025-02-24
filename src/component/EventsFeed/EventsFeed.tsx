@@ -268,7 +268,7 @@ const EventsFeed = () => {
   useEffect(() => {
     if (data) {
       const eventsRes = data?.data;
-      const featuredEventsRes = data?.data.filter(
+      const featuredEventsRes = data?.data?.data.filter(
         (item: any) => item.featuredEventSection,
       );
       setFeaturedEvents(featuredEventsRes);
