@@ -49,7 +49,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
       placeholder="Search Location"
       onPress={(data: GooglePlaceData, detail: GooglePlaceDetail | null) => {
         // 'details' is provided when fetchDetails = true
-        console.log('data.placeId', detail);
+        // console.log('data.placeId', detail);
         const address: Address = {
           address: data.description,
           placeId: data.place_id,
@@ -63,13 +63,13 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
       query={{
         key: environment.PLACES_API_KEY,
         language: 'en',
+        types: '(regions)',
       }}
       renderLeftButton={() => (
         <View style={styles.iconContainer}>
           <Image source={IMAGES.location} style={styles.leftImage} />
         </View>
       )}
-      enablePoweredByContainer={false}
       disableScroll={false}
     />
   );
