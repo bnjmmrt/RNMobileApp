@@ -1,4 +1,4 @@
-import {BottomSheetView} from '@gorhom/bottom-sheet';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, {
   forwardRef,
   useCallback,
@@ -10,14 +10,14 @@ import BottomSheetComponent, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
-import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import {customListType} from 'src/navigation/AppStack';
-import {verticalScale} from 'src/utils/dimensions';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { customListType } from 'src/navigation/AppStack';
+import { verticalScale } from 'src/utils/dimensions';
 import AddUsersInList from './AddUsersInList';
 import CreateEditList from './CreateEditList';
 import DeleteList from './DeleteList';
 import DuplicateList from './DuplicateList';
-import {styles} from './style';
+import { styles } from './style';
 
 export type actionSheetFromType = 'customLists' | 'listDetail';
 export type listActionCurrentPageType =
@@ -106,7 +106,7 @@ const ListActionsSheet = forwardRef<
     };
 
     const onCreateListSuccess = (listId: string, listName: string) => {
-      setSelectedListData({id: listId, name: listName});
+      setSelectedListData({ id: listId, name: listName });
       setSelectedAction('addUsers');
     };
 
@@ -148,11 +148,11 @@ const ListActionsSheet = forwardRef<
         onClose={() => {
           setSelectedAction('');
         }}
-        enableDynamicSizing={getDyanamicSizeConfig()}
-        showBottomSafeAreaView={from === 'listDetail' ? true : false}>
-        <BottomSheetView style={{flex: 1}}>
+        enableDynamicSizing={getDyanamicSizeConfig()}>
+        <BottomSheetView style={{ flex: 1 }}>
           {selectedAction === '' ? (
-            <BottomSheetView style={[styles.actionButtonContainer, {flex: 1}]}>
+            <BottomSheetView
+              style={[styles.actionButtonContainer, { flex: 1 }]}>
               {listType === 'custom' ? (
                 <Button
                   title="Add Users"
@@ -223,6 +223,7 @@ const ListActionsSheet = forwardRef<
           ) : null}
           {selectedAction === 'addUsers' ? (
             <AddUsersInList
+              closeSheet={closeSheet}
               onSuccess={onAddUserToListSuccess}
               listId={selectedListData?.id || selectedListId || ''}
               listName={selectedListData?.name || selectedListName || ''}

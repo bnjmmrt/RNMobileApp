@@ -133,6 +133,7 @@ const IMAGES = {
   ticketBg: require('./ticketBg.png'),
   ticketBgSm: require('./ticketBgSm.png'),
   arrowDowngray: require('./arrow-down-gray.png'),
+  refresh: require('./refresh.png'),
 };
 
 export default IMAGES;

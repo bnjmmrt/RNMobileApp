@@ -97,7 +97,7 @@ const RequestVouch = ({ onClose, eventId, vouchData }: { onClose: () => void, ev
     return (
         <View style={{ gap: 12 }}>
             <Title title={"Select a Member to Vouch for You"} align="center" />
-            <SearchInput placeholder='Search friends..' onSearchTextChange={handleSearch} />
+            <SearchInput placeholder='Search friends' onSearchTextChange={handleSearch} />
             <View style={{ gap: 6 }}>
                 <Text style={styles.title}>{"Friends who are members"}</Text>
                 <Text style={styles.description}>{"Request a vouch from a Rumor member to boost your event application."}</Text>

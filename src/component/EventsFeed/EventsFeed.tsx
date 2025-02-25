@@ -243,13 +243,13 @@ const EventsFeed = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Sayyed currentPage:", currentPage)
-  }, [currentPage])
+    console.log('Sayyed currentPage:', currentPage);
+  }, [currentPage]);
 
   const handleLoadMore = useCallback(() => {
-    const totalPages = data?.totalPages || 10
+    const totalPages = data?.totalPages || 10;
     if (data?.currentPage < totalPages && !isLoading) {
-      setCurrentPage((prev) => prev + 1);
+      setCurrentPage(prev => prev + 1);
     }
   }, [allEvents]);
 
@@ -453,7 +453,6 @@ const EventsFeed = () => {
         from="discoverEvents"
         onApplyFilter={onApplyFilter}
         onClearFilter={onClearFilter}
-        showBottomSafeAreaView={false}
         selectedFiltersInParent={selectedFilters}
       />
     </View>

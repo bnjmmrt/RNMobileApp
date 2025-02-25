@@ -49,7 +49,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         skip,
         take,
       }: {
-        statusName: string,
+        statusName?: string;
         userId: string;
         queryString?: string;
         searchText?: string;
@@ -78,7 +78,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
     }),
 
     fetchEventDetails: builder.query({
-      query: ({ eventId, userId }: { eventId: string, userId: string }) => ({
+      query: ({ eventId, userId }: { eventId: string; userId: string }) => ({
         url: `v1/events/users/${userId}/events/${eventId}`,
         method: 'GET',
       }),
@@ -103,7 +103,6 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       providesTags: ['EventDetails'],
       keepUnusedDataFor: 0, // Adjust the tag if needed for cache invalidation
     }),
-
 
     fetchGuestStatusCount: builder.query({
       query: ({ eventId }: { eventId: string }) => ({

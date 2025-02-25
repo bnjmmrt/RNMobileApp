@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontSize: fontScale(14),
     lineHeight: 16,
-    marginBottom: 2
+    marginBottom: 2,
   },
   inputContainer: {
     borderWidth: 1,
@@ -221,6 +221,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
+    left: 10,
     fontSize: fontScale(14),
     color: COLORS.black,
     fontWeight: '500',

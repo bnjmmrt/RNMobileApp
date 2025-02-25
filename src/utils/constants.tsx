@@ -154,7 +154,7 @@ export const LABLE = {
   IF_YOU_HAVE_ANY_REFERRAL_CODE: 'If you have a referral code, enter it below.',
   ENTER_CODE: 'Enter Code',
   SELECT_A_REFERRAL: 'Select a Referral',
-  SEARCH_FRIENDS: 'Search friends..',
+  SEARCH_FRIENDS: 'Search friends',
   FRIENDS_WHO_ARE_MEMBERS: 'Friends who are members',
   REQUEST_A_REFERRAL:
     'Request a referral from a Rumor member to boost your application.',
@@ -178,6 +178,7 @@ export const LABLE = {
   OTP_VERIFIED_SUCCESSFULLY: 'OTP verified successfully!',
   SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:
     'Something went wrong, please try again',
+    INVALID_OTP:"The code you entered cannot be verified. Please try again.",
   ABOUT_THE_EVENT: 'About the Event',
   GUEST_LIST: 'Guest List',
   FEATURE_TALENT: 'Featured Talent',
@@ -368,6 +369,7 @@ export const COLORS = {
   neutralBorder: '#E1E3E6',
   borderBlur: '#BFBFBF',
   bgGray: '#EAEAEA',
+  webBlack:'#181818'
 };
 
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
@@ -20,6 +20,7 @@ import useApi from '../../../axios/useApi';
 import { EndPoint } from '../../../ApiManager/config';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { verticalMarginScale } from 'src/utils/dimensions';
 
 interface VerifyOtpScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -40,9 +41,26 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const otpInputRef = useRef<{
     handleNextPress: () => void;
     showInvalidCodeError: (message: string) => void;
+    code: string;
   }>(null);
   const { apiRequest, loading, error } = useApi();
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
 
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardVisible(true);
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardVisible(false);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+      setErrorMsg('')
+    };
+  }, []);
   const route = useRoute<RouteProp<RouteParams>>();
   // const { sendOtp, isMemberExist } = useSendOtp(route.params.email, route.params.phone);
   //  const { verifyOtp,isLoading } = useVerifyOtp(isMemberExist, route.params.email, route.params.phone, route.params.isEmail);
@@ -51,7 +69,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     route?.params?.isEmail ? state.appFlow.email : state.appFlow.phone,
   );
   const [_isLoading, setIsLoading] = useState<boolean>(false);
-
+  const [errorMsg, setErrorMsg] = useState('')
   const sendOtp = async (message: string) => {
     let params;
     let endPoint;
@@ -81,7 +99,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     sendOtp('sent');
   }, [route.params]);
 
-  const verifyCode = async (code) => {
+  const verifyCode = async () => {
     let params;
     let endPoint;
     if (route.params.isEmail) {
@@ -103,12 +121,9 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
       // FlashMessageComponent.show('success', LABLE.OTP_VERIFIED_SUCCESSFULLY);
       dispatch(setPageProgress(3));
       dispatch(setIsEmailPhoneBothVerified(true));
-      navigation.navigate('GenderScreen');
+      navigation.replace('GenderScreen');
     } else {
-      FlashMessageComponent.show(
-        'error',
-        LABLE.SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN,
-      );
+      otpInputRef.current?.showInvalidCodeError(LABLE.ERROR_VERIFY_CODE)
     }
   };
 
@@ -159,7 +174,8 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   );
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}>
       <Header
         headerTitle={route?.params.isEmail ? LABLE.VERIFY_EMAIL : LABLE.VERIFY_PHONE}
         onPress={handleBackPress}
@@ -175,18 +191,21 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
           ref={otpInputRef}
           performCodeVerification={verifyCode}
           resendVerificationCode={resendVerificationCode}
+          error={errorMsg}
         />
         <View style={styles.spacer} />
       </View>
 
       <Button
         disabled={false}
-        style={styles.btnStyle}
+        style={[styles.btnStyle, {
+          marginBottom: keyboardVisible ? verticalMarginScale(60) : 0,
+        }]}
         title={BUTTON_LABLE.NEXT}
         colorTheme="dark"
         onPress={onNextClick}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

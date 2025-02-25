@@ -1,13 +1,13 @@
 import IMAGES from '@images/index';
 import React from 'react';
-import {Image, TouchableOpacity, View} from 'react-native';
-import {CustomText} from 'src/component/CustomText';
-import {COLORS} from 'src/utils/constants';
-import {Filter} from '../../BottomSheets/EventFilterSheet';
+import { Image, TouchableOpacity, View } from 'react-native';
+import { CustomText } from 'src/component/CustomText';
+import { COLORS } from 'src/utils/constants';
+import { Filter } from '../../BottomSheets/EventFilterSheet';
 import createStyle from './style';
 
 interface FilterBarProps {
-  selectedFilter: Filter;
+  selectedFilter: Filter | null;
   onPressFilter: () => void;
 }
 
@@ -18,15 +18,19 @@ const FilterBar: React.FC<FilterBarProps> = ({
   const styles = createStyle();
 
   const getChipColor = () => {
-    switch (selectedFilter.value) {
-      case 'UPCOMING':
-        return {bg: COLORS.bgGreen, text: COLORS.success};
-      case 'PAST':
-        return {bg: COLORS.yellowLight, text: COLORS.yellowDark};
-      case 'INVITED':
-        return {bg: COLORS.bgBlue, text: COLORS.blueDark};
-      case 'APPLIED':
-        return {bg: COLORS.black, text: COLORS.white};
+    if (selectedFilter) {
+      switch (selectedFilter.value) {
+        case 'UPCOMING':
+          return { bg: COLORS.bgGreen, text: COLORS.success };
+        case 'PAST':
+          return { bg: COLORS.yellowLight, text: COLORS.yellowDark };
+        case 'INVITED':
+          return { bg: COLORS.bgBlue, text: COLORS.blueDark };
+        case 'APPLIED':
+          return { bg: COLORS.black, text: COLORS.white };
+        case '':
+          return { bg: COLORS.black, text: COLORS.white };
+      }
     }
   };
 
@@ -35,14 +39,15 @@ const FilterBar: React.FC<FilterBarProps> = ({
       <View
         style={[
           styles.filterBarSelectedSatusChip,
-          {backgroundColor: getChipColor()?.bg},
+          { backgroundColor: getChipColor()?.bg },
         ]}>
         <CustomText
           style={[
             styles.filterBarSelectedSatusChipText,
-            {color: getChipColor()?.text},
+            { color: getChipColor()?.text },
+            !selectedFilter && { color: COLORS.dark_gray },
           ]}>
-          {selectedFilter.label}
+          {selectedFilter?.label || 'Filter by status'}
         </CustomText>
       </View>
 
