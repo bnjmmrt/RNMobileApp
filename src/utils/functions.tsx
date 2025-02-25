@@ -330,7 +330,7 @@ export const isIos = (): boolean => platform === 'ios';
 export const isAndroid = (): boolean => platform === 'android';
 
 export const convertDateFormat = (dateString: string): string => {
-  console.log("dateString",dateString)
+  console.log("dateString", dateString)
   const [month, day, year] = dateString.split('/');
   return `${year}-${month}-${day}`;
 };
@@ -363,7 +363,16 @@ export const parseAndFormatDate = (dateString: string) => {
   // If invalid, return 18 years back from today
   return moment().subtract(18, 'years').format('YYYY-MM-DD');
 };
-
+export const numberSpacing = (number: any, callingCode: any) => {
+  const cleanedText = number.replace(/\D/g, '');
+  const fullNumber = `${callingCode}${cleanedText}`;
+  let parsedNumber = parsePhoneNumberFromString(fullNumber);
+  if (parsedNumber && parsedNumber.isValid()) {
+    return parsedNumber.formatInternational().replace(`${callingCode} `, ''); // Remove country code from input
+  } else {
+    return cleanedText; // Keep raw input if invalid
+  }
+};
 
 export const changeSafeAreaViewConfig = (config: SafeAreaViewConfig) => {
   store.store.dispatch(configStatusBar(config));

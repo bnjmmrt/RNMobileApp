@@ -1,10 +1,10 @@
-import FastImage, {ImageStyle} from '@d11/react-native-fast-image';
+import FastImage, { ImageStyle } from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, ViewStyle} from 'react-native';
-import {radiusScale} from 'src/utils/dimensions';
-import {COLORS} from '../../../src/utils/constants';
-import {fontFamily} from '../../../src/utils/functions';
+import { StyleSheet, Text, TouchableOpacity, ViewStyle } from 'react-native';
+import { radiusScale } from 'src/utils/dimensions';
+import { COLORS } from '../../../src/utils/constants';
+import { fontFamily } from '../../../src/utils/functions';
 
 type AvatarInitialsProps = {
   name?: string;
@@ -14,6 +14,7 @@ type AvatarInitialsProps = {
   imgUrl?: string;
   onPress?: any;
   containerStyle?: ViewStyle;
+  listing?: boolean
 };
 
 const AvatarInitials: React.FC<AvatarInitialsProps> = ({
@@ -24,6 +25,7 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
   imgUrl,
   onPress,
   containerStyle,
+  listing
 }) => {
   const getInitials = (name: string): string => {
     if (!name) return '';
@@ -52,7 +54,7 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
         containerStyle,
       ]}>
       <FastImage
-        source={{uri: imgUrl}}
+        source={{ uri: imgUrl }}
         defaultSource={IMAGES.rumorLogo}
         style={[
           styles.avatar,
@@ -80,7 +82,7 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
       <Text
         style={[
           styles.text,
-          {color: textColor, fontSize: radiusScale(size) / 1.5},
+          { color: textColor, fontSize: listing ? radiusScale(size) / 2.5 : radiusScale(size) / 1.5 },
         ]}>
         {initials}
       </Text>

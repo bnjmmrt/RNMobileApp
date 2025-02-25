@@ -1,6 +1,8 @@
 import { TabItem } from 'src/component/ActiveTabBar/DynamicTabBar';
 
 export const BUTTON_LABLE = {
+  MAIL_SUBJECT:"Rumor Application Verification",
+  MAIL_BODY:"Hi Rumor Team, I'd like to verify my identity for my Rumor application.My verification code is: RUMORAPP",
   ENTER: 'Enter',
   NEXT: 'Next',
   RSVP: 'RSVP',
