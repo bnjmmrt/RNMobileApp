@@ -113,8 +113,6 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       providesTags: ['GuestStatusCount'],
       keepUnusedDataFor: 0, // Adjust the tag if needed for cache invalidation
     }),
-
-
     fetchDashboardUpcomingEvents: builder.query({
       query: () => ({
         url: `v1/events/dashboard/upcoming-events`,
@@ -134,5 +132,7 @@ export const {
   useFetchGuestStatusCountQuery,
   useFetchDashboardUpcomingEventsQuery,
   useFetchHostEventDetailsQuery,
-  useFetchPublicEventDetailsQuery
+  useFetchPublicEventDetailsQuery,
+  useLazyFetchEventDetailsQuery,
+  useLazyFetchPublicEventDetailsQuery
 } = eventApiAction;

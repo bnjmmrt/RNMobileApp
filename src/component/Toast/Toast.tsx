@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Text, StyleSheet, TouchableOpacity, Animated, Image} from 'react-native';
+import React, { useState } from 'react';
+import { Text, StyleSheet, TouchableOpacity, Animated, Image } from 'react-native';
 import { COLORS } from '../../utils/constants';
 import IMAGES from '../../assets/images';
 import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale } from 'src/utils/dimensions';
@@ -8,7 +8,7 @@ interface ToastProps {
   message: String;
   onClose: () => void;
 }
-const Toast: React.FC<ToastProps> = ({message, onClose}) => {
+const Toast: React.FC<ToastProps> = ({ message, onClose }) => {
   const [fadeAnim] = useState(new Animated.Value(0)); // For fade-in/out animation
 
   React.useEffect(() => {
@@ -20,13 +20,13 @@ const Toast: React.FC<ToastProps> = ({message, onClose}) => {
   }, []);
 
   return (
-    <Animated.View style={[styles.toast, {opacity: fadeAnim}]}>
-      
+    <Animated.View style={[styles.toast, { opacity: fadeAnim }]}>
+
       <TouchableOpacity onPress={onClose}>
         <Image source={IMAGES.close} style={styles.closeButton} />
       </TouchableOpacity>
       <Text style={styles.message}>{message}</Text>
-     
+
     </Animated.View>
   );
 };
@@ -39,25 +39,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: COLORS.bgBackArrow,
-    
+
   },
- 
+
   buttonText: {
     color: '#fff',
     fontSize: fontScale(16),
   },
   toast: {
     position: 'absolute',
-    bottom:verticalMarginScale(20),
-    left:horizontalMarginScale(20),
+    bottom: verticalMarginScale(20),
+    left: horizontalMarginScale(20),
     right: horizontalMarginScale(20),
-    backgroundColor:COLORS.bgRed,
-    borderRadius:radiusScale(5),
-    padding:verticalMarginScale(10),
+    backgroundColor: COLORS.bgRed,
+    borderRadius: radiusScale(5),
+    padding: verticalMarginScale(10),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    
+
     // shadowColor: '#000',
     // shadowOpacity: 0.2,
     // shadowRadius: 5,
@@ -65,9 +65,9 @@ const styles = StyleSheet.create({
     // elevation: 5,
   },
   message: {
-    fontSize: fontScale(16),
+    fontSize: fontScale(14),
     flex: 1,
-    color:COLORS.black
+    color: COLORS.black
   },
   closeButton: {
     fontSize: fontScale(20),

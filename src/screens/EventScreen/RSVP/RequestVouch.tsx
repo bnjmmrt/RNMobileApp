@@ -19,7 +19,7 @@ interface ContactItem {
     phone: string;
 }
 
-const RequestVouch = ({ onClose, eventId }: { onClose: () => void, eventId: string }) => {
+const RequestVouch = ({ onClose, eventId, vouchData }: { onClose: () => void, eventId: string, vouchData: any }) => {
     const { getContacts, getContactNumbersOnly } = useContacts();
     const [contacts, setContacts] = useState<ContactItem[]>([]);
     const [members, setMembers] = useState<ContactItem[]>([]);
@@ -44,9 +44,14 @@ const RequestVouch = ({ onClose, eventId }: { onClose: () => void, eventId: stri
         try {
             const contacts = await getContactNumbersOnly();
             const response = await getConfirmedMembers({ contacts });
+            const vouchUserId = vouchData && vouchData.map(request => request.idUserVouch);
             if (response?.data?.data) {
-                setMembers(response?.data?.data);
-                setFilteredMembers(response?.data?.data);
+                const membersWithSentFlag = response.data.data.map(member => ({
+                    ...member,
+                    isSent: vouchUserId.includes(member.userId)
+                }));
+                setMembers(membersWithSentFlag);
+                setFilteredMembers(membersWithSentFlag);
             }
 
         } catch (error) {

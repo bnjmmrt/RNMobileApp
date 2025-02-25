@@ -4,7 +4,7 @@ import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming, runOnJS } from 'react-native-reanimated';
 import AvatarInitials from 'src/component/AvatarInitials';
 import { COLORS } from 'src/utils/constants';
-import { horizontalScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
+import { fontScale, horizontalScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import IMAGES from '@images/index';
 import { Image } from 'react-native';
 import { fontFamily } from 'src/utils/functions';
@@ -141,8 +141,8 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     name: {
-        fontSize: 16,
-        color: '#000',
+        fontSize: fontScale(14),
+        color: COLORS.black,
     },
     iconBox: { width: 40, height: 32, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.lighter_gray, borderRadius: 100 },
     swapList: { flexDirection: 'row', alignItems: 'center', gap: 12, justifyContent: 'space-between', flex: 1 },

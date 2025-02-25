@@ -46,6 +46,8 @@ import {
   useFetchEventDetailsQuery,
   useFetchHostEventDetailsQuery,
   useFetchPublicEventDetailsQuery,
+  useLazyFetchEventDetailsQuery,
+  useLazyFetchPublicEventDetailsQuery,
 } from 'src/redux/actions/eventApiAction';
 import IMAGES from '@images/index';
 import EventTalent from 'src/component/Event/EventTalent';
@@ -64,6 +66,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -74,6 +77,8 @@ type RouteParams = {
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   navigation,
 }) => {
+
+
   const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
   const route = useRoute<RouteProp<RouteParams>>();
@@ -82,6 +87,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const [isCurrentUserIsGuest, setIsCurrentGuestStatus] = useState(route?.params?.isCurrentUserIsGuest);
+  const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
+
+  console.log(route?.params)
+
   const role = useSelector((state: RootState) => state.auth.role);
   // const insets = useSafeAreaInsets();
 
@@ -105,11 +115,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
-  const useFetchEventDetails =
-    role === ROLE.HOST
-      ? useFetchHostEventDetailsQuery
-      : route?.params?.isCurrentUserIsGuest ? useFetchPublicEventDetailsQuery : useFetchEventDetailsQuery;
-  // Ensure argument structure remains consistent
+
+  useEffect(() => {
+    dispatch(setRsvpStatus(isCurrentUserIsGuest ? 'TRUE' : "NO_STATUS"));
+  }, [isCurrentUserIsGuest]);
   const queryArgs =
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const) // Type assertion to prevent union mismatch
@@ -118,9 +127,26 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         eventId: route?.params?.id,
       } as const); // Type assertion
 
-  const { data, refetch } = useFetchEventDetails(queryArgs as any, {
-    refetchOnMountOrArgChange: true,
-  });
+  const useFetchEventDetailsHook =
+    role === ROLE.HOST
+      ? useFetchHostEventDetailsQuery
+      : rspvStatus === "NO_STATUS"
+        ? useFetchPublicEventDetailsQuery
+        : useFetchEventDetailsQuery;
+
+  const { data, isLoading, refetch } = useFetchEventDetailsHook(queryArgs);
+
+  useEffect(() => {
+    refetch();
+  }, [rspvStatus, refetch]);
+
+
+
+  // Ensure argument structure remains consistent
+
+
+
+
 
   // const { data, isLoading, refetch, isSuccess } = useFetchEventDetailsQuery(
   //   { eventId: route?.params?.id, userId: userId },
@@ -135,11 +161,15 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [eventDetails, setEventDetails] = useState<any>({});
   const [calendarDetails, setCalendarDetails] = useState<any>({});
   const [useQr, setUseQr] = useState<boolean>(false);
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [refetch]),
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     if(rspvStatus=="APPLIED") setIsCurrentGuestStatus(true);
+  //     setTimeout(() => {
+  //       refetch();
+  //     }, 1000);
+  //   }, [rspvStatus]),
+  // );
+
 
   useEffect(() => {
     if (guestStatus === 'DECLINED') {
@@ -211,25 +241,24 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       EndPoint.generate_ticket + data?.data?.guestId,
     );
     if (response.status === 200) {
-      if(response.data.eventQr)
-     {
-      setEventDetails({ ...eventDetails, qrUrl: response.data.b64QRCode });
-      qrCodeBottomSheetRef?.current.open();
-     }else{
-      FlashMessageComponent.show('error',"QR not genetaed")
-     }
+      if (response.data.eventQr) {
+        setEventDetails({ ...eventDetails, qrUrl: response.data.b64QRCode });
+        qrCodeBottomSheetRef?.current.open();
+      } else {
+        FlashMessageComponent.show('error', "QR not genetaed")
+      }
     }
   };
 
   const onViewTicketClick = () => {
     //API call
-    if(useQr){
+    if (useQr) {
       generateTicket();
-    }else{
+    } else {
       setIsQRShown(false)
       qrCodeBottomSheetRef?.current.open();
     }
-   
+
   };
   const addCalenderEvents = () => {
     calenderEventsBottomSheetRef.current?.open();
@@ -255,12 +284,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const onCheckInClick = async () => {
-   if(useQr){
-    dispatch(setEventId(route?.params?.id))
-    navigation.navigate(ROUTES.QRCodeScanner);
-   }else{
-     navigateToViewList()
-   }
+    if (useQr) {
+      dispatch(setEventId(route?.params?.id))
+      navigation.navigate(ROUTES.QRCodeScanner);
+    } else {
+      navigateToViewList()
+    }
   };
 
   const onPressInviteGuests = () => {
@@ -268,12 +297,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     navigation.navigate(ROUTES.SelectGuestsToInviteScreen);
   };
 
-  const navigateToViewList=() =>{
+  const navigateToViewList = () => {
     navigation.navigate('EventGuestList', {
       guests: data?.data?.guests || [],
     })
   }
-   
+
   const imageWrapperStyle = StyleSheet.create({
     wrapper: {
       height: verticalScale(528),
@@ -328,7 +357,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
             <EventStatus
               status={guestStatus}
-              isDeclinedByMe={!isDeclinedByMe}
+              isDeclinedByMe={isDeclinedByMe}
             />
 
             {role !== ROLE.NON_MEMBER && (
@@ -400,33 +429,18 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           </View>
         )}
 
-        {guestStatus == 'DECLINED' && (
-          <View>
-            <Button
-              disabled={false}
-              style={styles.btnStyle}
-              loading={acceptLoading}
-              title={BUTTON_LABLE.RSVP}
-              colorTheme="dark"
-              onPress={() => {
-                onNextClick();
-              }}
-            />
-          </View>
-        )}
-
-      <CalenderEventsBottomSheet
-        ref={calenderEventsBottomSheetRef}
-        eventDetails={calendarDetails}
-      />
-      <QRCodeBottomsheet
-        ref={qrCodeBottomSheetRef}
-        title={eventDetails?.title}
-        subTitle={eventDetails?.subTitle}
-        imageURL={eventDetails?.qrUrl}
-        isQRShown={isQRShown}
-        name={eventDetails?.name}
-      />
+        <CalenderEventsBottomSheet
+          ref={calenderEventsBottomSheetRef}
+          eventDetails={calendarDetails}
+        />
+        <QRCodeBottomsheet
+          ref={qrCodeBottomSheetRef}
+          title={eventDetails?.title}
+          subTitle={eventDetails?.subTitle}
+          imageURL={eventDetails?.qrUrl}
+          isQRShown={isQRShown}
+          name={eventDetails?.name}
+        />
 
         <CalenderEventsBottomSheet
           ref={calenderEventsBottomSheetRef}

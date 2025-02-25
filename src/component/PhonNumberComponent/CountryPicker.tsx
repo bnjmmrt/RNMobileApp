@@ -348,7 +348,7 @@ export const CountryPicker = ({
                 ]}
                 value={searchValue}
                 onChangeText={setSearchValue}
-                placeholder={inputPlaceholder || 'Search loacation'}
+                placeholder={inputPlaceholder || 'Search location'}
                 placeholderTextColor={inputPlaceholderTextColor || '#A2A1A1'}
                 testID="countryCodesPickerSearchInput"
                 {...rest}

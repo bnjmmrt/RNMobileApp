@@ -210,6 +210,8 @@ const EventsFeed = () => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const userId = useSelector((state: RootState) => state.auth.userId);
   const isInvited = loginData?.isInvited || false;
+  const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
+
 
   const { data, isLoading, error, isError, refetch } = useFetchAllEventsQuery({
     statusName: 'UPCOMING_STATUS',
@@ -227,6 +229,10 @@ const EventsFeed = () => {
   const handleSearchChange = useCallback((text: string) => {
     debouncedSearch(text);
   }, []);
+
+  useEffect(() => {
+    refetch();
+  }, [rspvStatus, refetch]);
 
 
   const handleNotify = useCallback(() => {
