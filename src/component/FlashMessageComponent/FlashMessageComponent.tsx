@@ -5,6 +5,14 @@ import IMAGES from '@images/index';
 import { StyleSheet, View, Text, Image } from 'react-native';
 import { COLORS } from 'src/utils/constants';
 import { fontFamily } from 'src/utils/functions';
+import {
+  fontScale,
+  horizontalScale,
+  verticalScale,
+  horizontalMarginScale,
+  verticalMarginScale,
+  radiusScale,
+} from 'src/utils/dimensions';
 
 export type MessageType = 'success' | 'error' | 'info' | 'warning';
 
@@ -56,15 +64,18 @@ export const FlashMessageComponent = {
       backgroundColor: 'transparent',
       color: '#fff',
       duration: 3000,
+      style: {
+        marginVertical: 0,
+        paddingVertical: 0,
+      },
       position: position,
-      statusBarHeight: 0,
       renderCustomContent: () => (
         <View
           style={[
             styles.container,
             position === 'top'
               ? { marginTop: 20, marginBottom: 0 }
-              : { marginBottom: 20, marginTop: 0 },
+              : { marginBottom: 0, marginTop: 0 },
           ]}>
           <View style={styles.toastContainer}>
             <Image source={getIconForType(type)} style={styles.icon} />
@@ -81,28 +92,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    paddingHorizontal: 16,
+    paddingHorizontal: horizontalMarginScale(16),
   },
   toastContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 8,
-    borderRadius: 6,
+    paddingVertical: verticalMarginScale(8),
+    paddingHorizontal: horizontalMarginScale(8),
+    borderRadius: radiusScale(6),
     backgroundColor: 'rgba(0, 0, 0, 0.75)',
-    minWidth: 150,
+    minWidth: horizontalScale(150),
     maxWidth: '90%',
   },
   icon: {
-    width: 16,
-    height: 16,
+    width: horizontalScale(16),
+    height: verticalScale(16),
     tintColor: COLORS.white,
-    marginRight: 4,
+    marginRight: horizontalMarginScale(4),
   },
   message: {
     color: COLORS.white,
     fontFamily: fontFamily.ABCDiatype_Medium,
-    fontSize: 14,
+    fontSize: fontScale(14),
   },
 });
