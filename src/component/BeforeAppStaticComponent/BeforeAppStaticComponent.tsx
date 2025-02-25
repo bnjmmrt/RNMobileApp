@@ -9,6 +9,10 @@ import { ScrollView } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import { useNavigation } from '@react-navigation/native';
 import { CustomText } from '../CustomText';
+import SliderImg1 from '../../assets/svgs/images/SliderImg1.svg'
+import SliderImg2 from '../../assets/svgs/images/SliderImg2.svg'
+import SliderImg3 from '../../assets/svgs/images/SliderImg3.svg'
+import SliderImg4 from '../../assets/svgs/images/SliderImg4.svg'
 
 interface BeforeAppStaticComponentProps {
   isChatScreen: boolean;
@@ -22,25 +26,26 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
   const listData = [
     {
       id: 0,
-      uri: IMAGES.frame1,
+      uri: <SliderImg1 height={320} width={320}/>,
       title: LABLE.ACCESS_THE_MOST_VALUABLE_CALENDAR,
       subTitle: LABLE.DISCOVER_EXPERIENCES_IN_ART,
     },
     {
       id: 1,
-      uri: IMAGES.frame2,
+      // uri: IMAGES.frame2,
+      uri: <SliderImg2 height={320} width={320}/>,
       title: LABLE.UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS,
       subTitle: LABLE.CONNECT_WITH_WORLD,
     },
     {
       id: 2,
-      uri: IMAGES.frame3,
+      uri: <SliderImg3 height={320} width={320}/>,
       title: LABLE.CHAT_WITH_HOST,
       subTitle: LABLE.CONNECT_DIRECTLY_WITH_PEOPLE,
     },
     {
       id: 3,
-      uri: IMAGES.frame4,
+      uri: <SliderImg4 height={320} width={320}/>,
       title: LABLE.STREAMLINE_YOUR_LIFESTYLE,
       subTitle: LABLE.MANAGE_YOUR_EVENTS,
     },
@@ -88,8 +93,9 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
 
 
         {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} onScroll={handleImageClick}> */}
-        <Pressable onPress={handleImageClick}>
-          <Image source={current.uri} style={styles.image} />
+        <Pressable style={{alignItems: 'center'}} onPress={handleImageClick}>
+          {/* <Image source={current.uri} style={styles.image} /> */}
+          {current.uri}
         </Pressable>
         {/* </ScrollView> */}
 
