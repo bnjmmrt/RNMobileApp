@@ -1,17 +1,17 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, View} from 'react-native';
-import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { FlatList, View } from 'react-native';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
-import {EventItem} from 'src/component/EventsFeed/EventsFeed';
+import { EventItem } from 'src/component/EventsFeed/EventsFeed';
 import FeedItem from 'src/component/EventsFeed/FeedItem';
-import {useFetchAllEventsQuery} from 'src/redux/actions/eventApiAction';
+import { useFetchAllEventsQuery } from 'src/redux/actions/eventApiAction';
 import {
   horizontalMarginScale,
   Hp,
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import EventFilterSheet, {Filter} from '../../BottomSheets/EventFilterSheet';
+import EventFilterSheet, { Filter } from '../../BottomSheets/EventFilterSheet';
 import FilterBar from './FilterBar';
 
 interface UserEventsProps {
@@ -19,21 +19,26 @@ interface UserEventsProps {
 }
 
 const filterData: Filter[] = [
-  {label: 'Upcoming', value: 'UPCOMING'},
-  {label: 'Invited', value: 'INVITED'},
-  {label: 'Applied', value: 'APPLIED'},
-  {label: 'Past', value: 'PAST'},
+  { label: 'All', value: '' },
+  { label: 'Upcoming', value: 'UPCOMING' },
+  { label: 'Invited', value: 'INVITED' },
+  { label: 'Applied', value: 'APPLIED' },
+  { label: 'Past', value: 'PAST' },
 ];
 
-const UserEvents: React.FC<UserEventsProps> = ({user}) => {
+const UserEvents: React.FC<UserEventsProps> = ({ user }) => {
   const actionSheetRef = useRef<BottomSheetMethods>(null);
 
   const [allEvents, setAllEvents] = useState<EventItem[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState<Filter>(filterData[0]);
 
-  const {data, isLoading, error, isError, refetch} = useFetchAllEventsQuery({
-    queryString: `&guestEventStatus=${selectedFilter.value}`,
+  const { data, isLoading, error, isError, refetch } = useFetchAllEventsQuery({
+    queryString: `${
+      selectedFilter.value! == ''
+        ? `&guestEventStatus=${selectedFilter.value}`
+        : ''
+    }`,
     userId: user,
   });
 
@@ -55,12 +60,12 @@ const UserEvents: React.FC<UserEventsProps> = ({user}) => {
     }
   }, [data]);
 
-  const renderItem = useCallback(({item}: {item: EventItem}) => {
+  const renderItem = useCallback(({ item }: { item: EventItem }) => {
     return <FeedItem item={item} from="UserDetail" />;
   }, []);
 
   return (
-    <View style={{marginTop: verticalMarginScale(6)}}>
+    <View style={{ marginTop: verticalMarginScale(6) }}>
       <FilterBar
         selectedFilter={selectedFilter}
         onPressFilter={() => actionSheetRef?.current?.open()}
@@ -77,10 +82,12 @@ const UserEvents: React.FC<UserEventsProps> = ({user}) => {
           marginHorizontal: horizontalMarginScale(12),
           marginTop: verticalMarginScale(20),
         }}
-        columnWrapperStyle={{gap: horizontalMarginScale(16)}}
-        contentContainerStyle={{gap: horizontalMarginScale(16)}}
+        columnWrapperStyle={{ gap: horizontalMarginScale(16) }}
+        contentContainerStyle={{ gap: horizontalMarginScale(16) }}
         showsVerticalScrollIndicator={false}
-        ListFooterComponent={<View style={{marginBottom: verticalScale(50)}} />}
+        ListFooterComponent={
+          <View style={{ marginBottom: verticalScale(50) }} />
+        }
         ListEmptyComponent={
           <View
             style={{
