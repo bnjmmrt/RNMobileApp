@@ -10,14 +10,16 @@ import {
 import IMAGES from '../../assets/images';
 import {COLORS} from '../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
+import BtnBack from '../../assets/svgs/icons/BtnBack.svg'
 
 const BackButton = ({onPress}: {onPress: () => void}) => {
   const {goBack} = useNavigation();
   return (
     <TouchableOpacity style={styles.container} onPress={goBack}>
-      <View style={styles.iconWrapper}>
+      <BtnBack height={40} width={40} />
+      {/* <View style={styles.iconWrapper}>
         <Image source={IMAGES.leftArrow} />
-      </View>
+      </View> */}
     </TouchableOpacity>
   );
 };
