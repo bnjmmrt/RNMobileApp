@@ -1,7 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useRef, useState } from 'react';
-import { View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
 import AfterAppStaticComponent from 'src/component/BeforeAppStaticComponent/AfterAppStaticComponent';
@@ -27,7 +27,7 @@ import {
   verticalMarginScale,
 } from 'src/utils/dimensions';
 
-interface EventScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventScreenProps extends NativeStackScreenProps<any, any> {}
 
 interface TabItem {
   id: string;
@@ -57,13 +57,15 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
     useCallback(() => {
       showEvents
         ? changeSafeAreaViewConfig({
-          ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-          showBottomSafeAreaView: false,
-        })
+            ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+            showBottomSafeAreaView: false,
+            showTopSafeAreaView: false,
+          })
         : changeSafeAreaViewConfig({
-          ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
-          showBottomSafeAreaView: false,
-        });
+            ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
+            showBottomSafeAreaView: false,
+            showTopSafeAreaView: false,
+          });
     }, [loginData?.isInvited]),
   );
 
@@ -127,6 +129,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
         ...styles.container,
         backgroundColor: showEvents ? COLORS.white : COLORS.black2,
       }}>
+      <SafeAreaView />
       {showEvents ? (
         <View
           style={{
