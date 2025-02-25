@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image, Text, Pressable } from 'react-native';
+import { View, StyleSheet, Image, Text, Pressable, FlatList } from 'react-native';
 import { fontScale, Hp, verticalMarginScale, Wp } from '../../utils/dimensions';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '../../assets/images/index';
@@ -63,6 +63,14 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
     navigation.navigate('AppFlowStack');
   };
 
+  // const renderImageItem = ({item}:{item:any}) => {
+  //   return (
+  //     <Pressable onPress={handleImageClick}>
+  //       <Image source={item.uri} style={styles.image} />
+  //     </Pressable>
+  //   )
+  // }
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.contentContainer}>
@@ -70,9 +78,22 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           <Image source={IMAGES.rumorLogo} style={styles.logoImgStyle} />
         </View>
 
+        {/* <FlatList
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          data={listData}
+          renderItem={renderImageItem}
+          onScroll={handleImageClick}
+        /> */}
+
+
+        {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} onScroll={handleImageClick}> */}
         <Pressable onPress={handleImageClick}>
           <Image source={current.uri} style={styles.image} />
         </Pressable>
+        {/* </ScrollView> */}
+
+
 
         {!isChatScreen ? (
           <View style={styles.dotContainer}>
@@ -151,7 +172,7 @@ const styles = StyleSheet.create({
     marginBottom: verticalMarginScale(40),
   },
   logoImgStyle: {
-    resizeMode: 'center',
+    resizeMode: 'contain',
   },
   textBelowStyle: {
     color: COLORS.light_gray,
