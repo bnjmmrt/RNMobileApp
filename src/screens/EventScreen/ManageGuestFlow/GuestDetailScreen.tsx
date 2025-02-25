@@ -29,17 +29,21 @@ import TicketTypeBottomSheet, {
   TicketType,
 } from '../InviteGuestInEventFlow/TicketTypeBottomSheet';
 import DeclineBottomSheet from '../Guest/DeclineBottomSheet';
+import { EventGuest } from '../types';
 
-interface GuestDetailScreenProps extends NativeStackScreenProps<any, any> {}
+interface GuestDetailScreenProps extends NativeStackScreenProps<any, any> {
+  guest?: EventGuest;
+}
 
 const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   navigation,
   route,
 }) => {
-  const guest = route.params?.guest;
-  const status = guest?.status?.toLowerCase() || 'drafts';
+  const guest = route.params?.guest as EventGuest;
+  const status = guest?.status?.toLowerCase() || 'draft';
 
   const actionSheetRef = useRef<BottomSheetMethods>(null);
+  const ticketTypeRef = useRef<any>(null);
   const declineSheetRef = useRef<BottomSheetMethods>(null);
 
   const [selectedTicketType, setSelectedTicketType] =
@@ -49,6 +53,14 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const [guestNote, setGuestNote] = React.useState('');
   const [directlySendToConfirm, setDirectlySendToConfirm] =
     React.useState(false);
+
+  // Set initial additional guests count after component mounts
+  React.useEffect(() => {
+    const guestCount = guest?.additionalGuests?.length;
+    if (typeof guestCount === 'number') {
+      setAdditionalGuests(guestCount);
+    }
+  }, [guest?.additionalGuests]);
 
   // Mock ticket types data
   const mockTicketTypes: TicketType[] = [
@@ -85,14 +97,14 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 
   const getDeclineSheetProps = () => {
     switch (status) {
-      case 'drafts':
+      case 'draft':
         return {
           title: 'Remove Guest from Drafts',
           description:
             'Are you sure you want to remove \nselected guests from Drafts?',
           buttonText: 'Remove from Drafts',
         };
-      case 'requested':
+      case 'applied':
         return {
           title: 'Delete Request',
           description:
@@ -129,7 +141,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 
   const renderFooterButtons = () => {
     switch (status) {
-      case 'drafts':
+      case 'draft':
         return (
           <>
             <TouchableOpacity
@@ -153,7 +165,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             </View>
           </>
         );
-      case 'requested':
+      case 'applied':
         return (
           <>
             <TouchableOpacity
@@ -181,21 +193,6 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
           </>
         );
       case 'confirmed':
-        return (
-          <>
-            <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => declineSheetRef.current?.open()}>
-              <Image source={IMAGES.trash} style={styles.trashIcon} />
-            </TouchableOpacity>
-            <Button
-              style={[styles.sendButton]}
-              title={BUTTON_LABLE.UPDATE_INVITE}
-              colorTheme="dark"
-              onPress={() => {}}
-            />
-          </>
-        );
       case 'invited':
         return (
           <>
@@ -220,7 +217,9 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerTop}>
-        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => navigation.goBack()}>
           <View style={styles.iconButton}>
             <Image source={IMAGES.leftArrow} style={styles.icon} />
           </View>
@@ -231,16 +230,8 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View>
           <ProfileCard
-            guest={{
-              name: guest?.name || '',
-              avatar: guest?.avatar,
-              roles: guest?.roles || [],
-              age: guest?.age,
-              followers: guest?.followers,
-              location: guest?.location,
-              isMember: guest?.isMember,
-              status: guest?.status,
-            }}
+            guest={guest}
+            showGuestStatus={true}
             actionButtons={[
               {
                 title: 'Favorite',
@@ -259,11 +250,12 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         <View style={styles.inviteSection}>
           <InviteDetails
             isCollapsible
+            ticketTypeRef={ticketTypeRef}
             selectedTicketType={selectedTicketType}
             onTicketTypePress={() => actionSheetRef?.current?.open()}
             additionalGuests={additionalGuests}
             onAdditionalGuestsChange={setAdditionalGuests}
-            maxAdditionalGuests={5}
+            maxAdditionalGuests={guest?.maxAdditionalGuests || 5}
             inviteMessage={inviteMessage}
             onInviteMessageChange={setInviteMessage}
             guestNote={guestNote}
@@ -272,39 +264,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             onDirectlySendToConfirmChange={setDirectlySendToConfirm}
           />
           <View style={{ marginTop: verticalMarginScale(16) }}>
-            <Questionnaire
-              isCollapsible
-              data={
-                guest?.questionnaire || [
-                  {
-                    question:
-                      'Have you attended one of our events in the past?',
-                    answer: "Yes! Last year's Super Bowl party in Arizona",
-                  },
-                  {
-                    question:
-                      'Any guest references that are currently members?',
-                    answer: 'Close friends - Olivia Culpo, Arielle Charnas',
-                  },
-                  {
-                    question: 'What interests you most about this event?',
-                    answer:
-                      'The networking opportunities and creative collaborations',
-                  },
-                  {
-                    question:
-                      'Do you have any dietary restrictions or preferences?',
-                    answer: 'No specific requirements',
-                  },
-                  {
-                    question:
-                      'Would you be interested in contributing to the event (e.g., performing, speaking)?',
-                    answer:
-                      'Yes, would love to share my experience in the industry',
-                  },
-                ]
-              }
-            />
+            <Questionnaire isCollapsible data={guest?.questions || []} />
           </View>
         </View>
       </ScrollView>

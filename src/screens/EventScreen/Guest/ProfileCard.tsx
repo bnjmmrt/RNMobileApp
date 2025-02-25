@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import FastImage from '@d11/react-native-fast-image';
 import { COLORS } from 'src/utils/constants';
 import {
   fontScale,
@@ -10,10 +9,11 @@ import {
   verticalScale,
   horizontalScale,
 } from 'src/utils/dimensions';
-import { fontFamily, getRoleRole } from 'src/utils/functions';
+import { fontFamily } from 'src/utils/functions';
 import IMAGES from 'src/assets/images';
 import AvatarInitials from 'src/component/AvatarInitials';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
+import { EventGuest } from '../types';
 
 interface ActionButton {
   title: string;
@@ -21,63 +21,31 @@ interface ActionButton {
   onPress: () => void;
   otherStyle?: any;
 }
-interface Role {
-  roleId: string;
-  roleName: string;
-  status: string;
-}
 
 interface ProfileCardProps {
-  guest: {
-    name: string;
-    avatar?: string;
-    roles?: Role[];
-    age: number;
-    followers?: string;
-    location?: string;
-    isMember?: boolean;
-    isFollowing?: boolean;
-    status?: string;
-    interests?: string[];
-  };
+  guest: EventGuest;
   actionButtons: ActionButton[];
   showGuestStatus: boolean;
 }
 
 const ProfileImage = ({
   name,
-  avatar,
-  isMember,
+  profilePicture,
 }: {
   name: string;
-  avatar?: string;
-  isMember?: boolean;
+  profilePicture?: string;
 }) => {
-  //  if (isMember) {
-  //   return (
-  //     <FastImage
-  //       source={{
-  //         uri:
-  //           avatar ||
-  //           'https://ui-avatars.com/api/?name=' +
-  //             encodeURIComponent(name || ''),
-  //       }}
-  //       style={styles.guestAvatar}
-  //     />
-  //   );
-  // }
-
   return (
     <View style={styles.guestAvatar}>
-      <AvatarInitials name={name} size={80} imgUrl={avatar} />
+      <AvatarInitials name={name} size={80} imgUrl={profilePicture} />
     </View>
   );
 };
 
-const MemberBadge = ({ role }: { role: string }) => (
+const MemberBadge = () => (
   <View style={styles.memberBadge}>
     <Image source={IMAGES.check_verified} style={styles.memberBadgeIcon} />
-    <Text style={styles.memberBadgeText}>{getRoleRole(role)}</Text>
+    <Text style={styles.memberBadgeText}>Member</Text>
   </View>
 );
 
@@ -92,63 +60,58 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   actionButtons = [],
   showGuestStatus = true,
 }) => {
-  console.log('ismember', guest.interests);
+  const isMember = guest.age && guest.profilePicture;
+
   return (
     <>
       <View style={styles.guestCard}>
         <View style={styles.guestCardHeader}>
           <View>
             {showGuestStatus ? (
-              <StatusLabel status={guest?.status || 'Drafts'} />
+              <StatusLabel status={guest.status || 'DRAFT'} />
             ) : null}
           </View>
-          {guest.isFollowing ? (
-            <View style={styles.followIndicator}>
-              <Image source={IMAGES.user_check} style={styles.followIcon} />
-            </View>
-          ) : null}
         </View>
         <View style={styles.guestCardContent}>
           <View style={styles.profileImageContainer}>
             <ProfileImage
               name={guest.name}
-              avatar={guest.avatar}
-              isMember={guest.isMember}
+              profilePicture={guest.profilePicture}
             />
-            {guest.isMember && guest?.roles ? (
-              <MemberBadge role={guest?.roles[0].roleName} />
-            ) : (
-              <NonMemberBadge />
-            )}
+            {isMember ? <MemberBadge /> : <NonMemberBadge />}
           </View>
-          <Text style={styles.name}>{guest?.name}</Text>
+          <Text style={styles.name}>{guest.name}</Text>
 
-          {/* {guest.isMember && ( */}
-          <>
-            <View style={styles.roleContainer}>
-              {guest?.interests?.map((interest: string, index: number) => (
-                <View key={index} style={styles.role}>
-                  <Text style={styles.roleText}>{interest}</Text>
+          {isMember && (
+            <>
+              <View style={styles.roleContainer}>
+                {guest.category?.map((category: string, index: number) => (
+                  <View key={index} style={styles.role}>
+                    <Text style={styles.roleText}>{category}</Text>
+                  </View>
+                ))}
+              </View>
+
+              <View style={styles.statsContainer}>
+                <View style={[styles.statItem, styles.leftStatItem]}>
+                  <Image source={IMAGES.hourglass} style={styles.statIcon} />
+                  <Text style={styles.statText}>
+                    {guest.age || 'N/A'} Years Old
+                  </Text>
                 </View>
-              ))}
-            </View>
-
-            <View style={styles.statsContainer}>
-              <View style={[styles.statItem, styles.leftStatItem]}>
-                <Image source={IMAGES.hourglass} style={styles.statIcon} />
-                <Text style={styles.statText}>{guest?.age} Years Old</Text>
+                <View style={[styles.statItem, styles.centerStatItem]}>
+                  <Image source={IMAGES.user_check} style={styles.statIcon} />
+                  <Text style={styles.statText}>
+                    {guest.numFollowers || '0'}
+                  </Text>
+                </View>
+                <View style={[styles.statItem, styles.rightStatItem]}>
+                  <Image source={IMAGES.location} style={styles.statIcon} />
+                  <Text style={styles.statText}>{guest.baseCity || 'N/A'}</Text>
+                </View>
               </View>
-              <View style={[styles.statItem, styles.centerStatItem]}>
-                <Image source={IMAGES.user_check} style={styles.statIcon} />
-                <Text style={styles.statText}>{guest?.followers}</Text>
-              </View>
-              <View style={[styles.statItem, styles.rightStatItem]}>
-                <Image source={IMAGES.location} style={styles.statIcon} />
-                <Text style={styles.statText}>{guest?.location}</Text>
-              </View>
-            </View>
-          </>
-          {/* )} */}
+            </>
+          )}
         </View>
       </View>
       <View style={styles.actionButtons}>

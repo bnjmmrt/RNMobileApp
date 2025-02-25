@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
   },
   statusLabelText: {
     fontWeight: '500',
+    textTransform: 'capitalize',
     fontFamily: fontFamily.ABCDiatype_Regular,
   },
 });

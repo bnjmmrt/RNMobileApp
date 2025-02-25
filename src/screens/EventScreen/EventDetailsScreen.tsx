@@ -258,6 +258,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     },
   });
 
+  console.log('guest list', data?.data?.guests, 'geuest list');
+
   return (
     <>
       {/* <SafeAreaView style={{ backgroundColor: COLORS.white }} /> */}
@@ -339,6 +341,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               onPress={() =>
                 navigation.navigate('EventGuestList', {
                   guests: data?.data?.guests || [],
+                  eventId: data?.data?.id,
                 })
               }
             />
