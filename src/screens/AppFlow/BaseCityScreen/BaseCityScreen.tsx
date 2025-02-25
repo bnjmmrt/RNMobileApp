@@ -67,7 +67,6 @@ console.log(selectedCity)
 
   const handleBackPress = () => {
     dispatch(setPageProgress(4));
-    // dispatch(setBaseCity({}))
     navigation.goBack();
   };
 

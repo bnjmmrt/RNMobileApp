@@ -48,11 +48,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
       googlePlacesRef?.current &&
         googlePlacesRef?.current?.setAddressText(defaultValue);
     }
-
-    if(googlePlacesRef?.current?.isFocused()){
-      // setError(null)
-    }
-  }, [googlePlacesRef?.current]);
+  }, []);
   return (
     <>
       <GooglePlacesAutocomplete
@@ -67,16 +63,11 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
             paddingHorizontal: horizontalMarginScale(18),
           },
           textInput: {
-            // height: '100%',
-            // marginTop: 0,
             bottom: verticalMarginScale(13),
             fontSize: fontScale(14),
             fontFamily: fontFamily.ABCDiatype_Regular,
           },
-          listView:{
-            // height:200,
-            backgroundColor:"red"
-          }
+          container:{flex:0}
         }}
         minLength={3}
         enablePoweredByContainer={false}
@@ -130,7 +121,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(12),
     color: COLORS.errorText,
     marginTop: verticalMarginScale(5),
-    bottom: Platform.OS === 'android' ? '67%' : '64%',
+    // bottom: Platform.OS === 'android' ? '67%' : '64%',
   },
 });
 export default GooglePlacesInput;
