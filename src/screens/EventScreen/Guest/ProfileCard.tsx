@@ -36,10 +36,12 @@ interface ProfileCardProps {
     followers?: string;
     location?: string;
     isMember?: boolean;
+    isFollowing?: boolean;
     status?: string;
     interests?: string[];
   };
   actionButtons: ActionButton[];
+  showGuestStatus: boolean;
 }
 
 const ProfileImage = ({
@@ -72,7 +74,7 @@ const ProfileImage = ({
   );
 };
 
-const MemberBadge = ({ role }) => (
+const MemberBadge = ({ role }: { role: string }) => (
   <View style={styles.memberBadge}>
     <Image source={IMAGES.check_verified} style={styles.memberBadgeIcon} />
     <Text style={styles.memberBadgeText}>{getRoleRole(role)}</Text>
@@ -88,6 +90,7 @@ const NonMemberBadge = () => (
 const ProfileCard: React.FC<ProfileCardProps> = ({
   guest,
   actionButtons = [],
+  showGuestStatus = true,
 }) => {
   console.log('ismember', guest.interests);
   return (
@@ -95,11 +98,15 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       <View style={styles.guestCard}>
         <View style={styles.guestCardHeader}>
           <View>
-            <StatusLabel status={guest?.status || 'Drafts'} />
+            {showGuestStatus ? (
+              <StatusLabel status={guest?.status || 'Drafts'} />
+            ) : null}
           </View>
-          <View style={styles.followIndicator}>
-            <Image source={IMAGES.user_check} style={styles.followIcon} />
-          </View>
+          {guest.isFollowing ? (
+            <View style={styles.followIndicator}>
+              <Image source={IMAGES.user_check} style={styles.followIcon} />
+            </View>
+          ) : null}
         </View>
         <View style={styles.guestCardContent}>
           <View style={styles.profileImageContainer}>

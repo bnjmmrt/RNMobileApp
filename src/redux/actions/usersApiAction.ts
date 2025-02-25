@@ -1,5 +1,5 @@
-import {EndPoint} from 'src/ApiManager/config';
-import {createBaseApi} from '../../ApiManager/createBaseApi';
+import { EndPoint } from 'src/ApiManager/config';
+import { createBaseApi } from '../../ApiManager/createBaseApi';
 
 export const usersApiAction = createBaseApi.injectEndpoints({
   endpoints: builder => ({
@@ -15,7 +15,7 @@ export const usersApiAction = createBaseApi.injectEndpoints({
         searchValue?: string;
         queryString?: string;
       }) => {
-        let url = `${EndPoint.users_list}?take=${take}&skip=${skip}`;
+        let url = `${EndPoint.users_list}?take=${take}&skip=${skip}&sortBy=name`;
         if (searchValue) {
           url = `${url}&searchValue=${searchValue}`;
         }
@@ -31,15 +31,15 @@ export const usersApiAction = createBaseApi.injectEndpoints({
     }),
 
     fetchUserFilters: builder.query({
-      query: ({id}: {id: string}) => ({
+      query: ({ id }: { id: string }) => ({
         url: `${EndPoint.host}/${id}/filters`,
         method: 'GET',
       }),
       providesTags: ['Filters'], // Adjust the tag if needed for cache invalidation
     }),
 
-    fetchUserDetails: builder.query<UserDetailResponse, {user: string}>({
-      query: ({user}) => ({
+    fetchUserDetails: builder.query<UserDetailResponse, { user: string }>({
+      query: ({ user }) => ({
         url: `${EndPoint.user}${user}`,
         method: 'GET',
       }),
@@ -59,7 +59,7 @@ export const usersApiAction = createBaseApi.injectEndpoints({
       }),
     }),
     addUserNote: builder.mutation({
-      query: (requestParam: {note: string; user: string}) => ({
+      query: (requestParam: { note: string; user: string }) => ({
         url: `${EndPoint.user}${requestParam.user}/note`,
         method: 'POST',
         body: {
@@ -69,7 +69,7 @@ export const usersApiAction = createBaseApi.injectEndpoints({
       invalidatesTags: ['UserDetail'],
     }),
     userSpamToggle: builder.mutation({
-      query: (requestParam: {isSpam: boolean; user: string}) => ({
+      query: (requestParam: { isSpam: boolean; user: string }) => ({
         url: `${EndPoint.user}${requestParam.user}/spam`,
         method: 'POST',
         body: {
@@ -79,17 +79,24 @@ export const usersApiAction = createBaseApi.injectEndpoints({
       invalidatesTags: ['UserDetail'],
     }),
     reportUser: builder.mutation({
-      query: (requestParam: {reportMessage: string; user: string}) => ({
+      query: (requestParam: {
+        reportMessage: string;
+        user: string;
+        reportedByRoleId: string;
+        reportedToroleId: string;
+      }) => ({
         url: `${EndPoint.user}${requestParam.user}/report`,
         method: 'POST',
         body: {
           reportMessage: requestParam.reportMessage,
+          reportedByRoleId: requestParam.reportedByRoleId,
+          reportedToroleId: requestParam.reportedToroleId,
         },
       }),
       invalidatesTags: ['UserDetail'],
     }),
     markUserFav: builder.mutation({
-      query: (requestParam: {targetUserId: string; user: string}) => ({
+      query: (requestParam: { targetUserId: string; user: string }) => ({
         url: `${EndPoint.user}${requestParam.user}/favorite`,
         method: 'POST',
         body: {
@@ -99,7 +106,7 @@ export const usersApiAction = createBaseApi.injectEndpoints({
       invalidatesTags: ['UserDetail'],
     }),
     unmarkUserFav: builder.mutation({
-      query: (requestParam: {targetUserId: string; user: string}) => ({
+      query: (requestParam: { targetUserId: string; user: string }) => ({
         url: `${EndPoint.user}${requestParam.user}/favorite`,
         method: 'DELETE',
         body: {
@@ -154,6 +161,7 @@ export interface UserDetailResponse {
     referredBy: any[]; // Define specific type if available
     requestedEvents: any[]; // Define specific type if available
     role: string;
+    roleId: string;
     socialStats: {
       facebookFollowersCount?: number | undefined;
       instagramFollowersCount?: number | undefined;

@@ -10,7 +10,7 @@ interface UseApiReturn<T> {
     url: string,
     data?: Record<string, unknown> | FormData | null,
     params?: Record<string, unknown> | null,
-    headers?: Record<string, string> // Optional headers parameter
+    headers?: Record<string, string>, // Optional headers parameter
   ) => Promise<T>;
   loading: boolean;
   error: AxiosError | null;
@@ -26,7 +26,7 @@ const useApi = <T>(): UseApiReturn<T> => {
       url: string,
       data: Record<string, unknown> | FormData | null = null,
       params: Record<string, unknown> | null = null,
-      headers: Record<string, string> = {}
+      headers: Record<string, string> = {},
     ): Promise<T> => {
       setLoading(true);
       setError(null);
@@ -34,7 +34,7 @@ const useApi = <T>(): UseApiReturn<T> => {
       try {
         const config: AxiosRequestConfig = {
           params,
-          headers
+          headers,
         };
 
         const response = await axiosController[method](url, data, config);
@@ -46,7 +46,7 @@ const useApi = <T>(): UseApiReturn<T> => {
         setLoading(false);
       }
     },
-    []
+    [],
   );
 
   return { apiRequest, loading, error };
