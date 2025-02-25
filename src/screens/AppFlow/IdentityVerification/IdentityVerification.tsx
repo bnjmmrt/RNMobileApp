@@ -49,7 +49,6 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   )}&body=${encodeURIComponent(body)}`;
 
   const onNextClick = async () => {
-    navigation.navigate('BottomTabBar');
 
     const requestParams: any = {
       address: {
@@ -72,13 +71,12 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       socialUrl: '',
       profilePicture: userDetails.profilePic,
     };
-    console.log('requestParams', requestParams);
     const response: any = await apiRequest(
       'post',
       EndPoint.member_signUp,
       requestParams,
     );
-
+ console.log("response",response)
     if (response.status === 200) {
       const data = {
         ...loginData,

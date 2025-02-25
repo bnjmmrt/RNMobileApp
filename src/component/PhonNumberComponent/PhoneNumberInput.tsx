@@ -1,6 +1,6 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
-import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js';
+import parsePhoneNumberFromString, { CountryCode, isValidPhoneNumber, AsYouType, formatNumber, parseNumber, formatIncompletePhoneNumber, getExampleNumber } from 'libphonenumber-js';
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import {
   StyleSheet,
@@ -82,8 +82,9 @@ const PhoneNumberInput = forwardRef<
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const [selectedCountry, setSelectedCountry] = useState('');
-
+    const [maxLength,setMaxLength] = useState(12)
     const handleCountrySelect = (selectedCountry: any) => {
+      setPhoneNumber('')
       console.log(selectedCountry)
       dispatch(setCountryCallingCode(selectedCountry.callingCode));
       dispatch(setCountryCodeFlag(selectedCountry.flag));
@@ -95,6 +96,7 @@ const PhoneNumberInput = forwardRef<
       setCode(selectedCountry.code);
       setCallingCode(selectedCountry.dial_code);
       setSelectedCountry(selectedCountry)
+      setMaxLength(getMaxPhoneNumberLength(selectedCountry.dial_code))
       setCountryPickerVisible(false);
       if (onSelectCountry) {
         onSelectCountry(selectedCountry);
@@ -138,6 +140,38 @@ const PhoneNumberInput = forwardRef<
       }
     };
 
+    const getMaxPhoneNumberLength = (countryCode:any) => {
+      try {
+        const exampleNumber = getExampleNumber(countryCode);
+        return exampleNumber ? exampleNumber.nationalNumber.length : 10; // Default to 10 if no example found
+      } catch (error) {
+        return 10; // Fallback max length
+      }
+    };
+    const handleChange = (text:any) => {
+      // Remove non-numeric characters except "+"
+      const cleanedText = text.replace(/\D/g, ''); 
+    
+      // Ensure that text is not empty
+      if (!cleanedText) {
+        setPhoneNumber('');
+        return;
+      }
+    
+      // Combine with country code
+      const fullNumber = `${callingCode}${cleanedText}`;
+      console.log('Full Number:', fullNumber);
+
+      // Parse the number
+      let parsedNumber = parsePhoneNumberFromString(fullNumber);
+    console.log(parsedNumber)
+      if (parsedNumber && parsedNumber.isValid()) {
+        setPhoneNumber(parsedNumber.formatInternational().replace(`${callingCode} `, '')); // Remove country code from input
+      } else {
+        setPhoneNumber(cleanedText); // Keep raw input if invalid
+      }
+    };
+
     const InputComponent = forBottomSheet ? BottomSheetTextInput : TextInput;
 
     return (
@@ -166,14 +200,15 @@ const PhoneNumberInput = forwardRef<
 
           <InputComponent
             // style={styles.input}
-            style={[styles.input, disabled && {color: COLORS.light_gray}]}
+            style={[styles.input, disabled && { color: COLORS.light_gray }]}
             // placeholder="Enter phone number"
             keyboardType="phone-pad"
             returnKeyType="done"
             value={phoneNumber}
-            maxLength={12}
+            maxLength={maxLength}
+            // onChangeText={handleChange}
             onChangeText={(text: string) => {
-              setPhoneNumber(text);
+              handleChange(text)
               setErrorMessage('');
               if (onChangeText) {
                 onChangeText(text);

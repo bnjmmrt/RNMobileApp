@@ -50,10 +50,10 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
         setErrorMessage(LABLE.EROOR_ENTER_CODE);
         return false;
       }
-      if (props.error != '') {
-        setErrorMessage(LABLE.INVALID_OTP);
-        return false;
-      }
+      // if (props.error != '') {
+      //   setErrorMessage(LABLE.INVALID_OTP);
+      //   return false;
+      // }
       setErrorMessage('');
       return true;
     };

@@ -18,7 +18,7 @@ export const useVerifyOtp = (isMemberExist: boolean, isGuest: boolean, email?: s
                 onSuccess(data);
             }
         } catch (error) {
-            setError(LABLE.INVALID_OTP)
+            // setError(LABLE.INVALID_OTP)
             FlashMessageComponent.show('error', 'Something went wrong, please try again!');
             console.error('Error verifying OTP:', error);
         } finally {
