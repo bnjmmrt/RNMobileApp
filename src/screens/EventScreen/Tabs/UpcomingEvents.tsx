@@ -35,19 +35,18 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
   const queryArgs =
     role === ROLE.HOST
       ? ({
-        status: 'UPCOMING_STATUS',
-        searchText,
-        take: 10,
-        skip: (currentPage - 1) * 10,
-      } as const) // Type assertion to prevent union mismatch
+          status: 'UPCOMING_STATUS',
+          searchText,
+          take: 10,
+          skip: (currentPage - 1) * 10,
+        } as const) // Type assertion to prevent union mismatch
       : ({
-        userId,
-        guestEventStatus: 'UPCOMING',
-        searchText,
-        take: 10,
-        skip: (currentPage - 1) * 10,
-      } as const); // Type assertion
-
+          userId,
+          guestEventStatus: 'UPCOMING',
+          searchText,
+          take: 10,
+          skip: (currentPage - 1) * 10,
+        } as const); // Type assertion
 
   const { data, isLoading } = useFetchEvents(queryArgs);
 
@@ -56,8 +55,8 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
       if (role === ROLE.HOST) {
         setEvents(prev =>
           currentPage === 1
-            // ? data.data.eventsResponse
-            ? data.data
+            ? // ? data.data.eventsResponse
+              data.data.eventsResponse
             : [...prev, ...data.data.eventsResponse],
         );
       } else {
@@ -66,7 +65,8 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
         );
       }
     }
-  }, [data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.data?.eventsResponse]);
 
   useEffect(() => {
     setRefreshing(isLoading);
@@ -94,7 +94,7 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
           onRefresh={handleRefresh}
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={isLoading && <ActivityIndicator />}
+          ListFooterComponent={isLoading ? <ActivityIndicator /> : null}
         />
       ) : (
         <View

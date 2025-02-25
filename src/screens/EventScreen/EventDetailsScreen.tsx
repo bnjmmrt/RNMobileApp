@@ -1,5 +1,18 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, ScrollView, StyleSheet, Text } from 'react-native';
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useLayoutEffect,
+} from 'react';
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  SafeAreaView,
+  Platform,
+} from 'react-native';
 import {
   BUTTON_LABLE,
   COLORS,
@@ -29,7 +42,10 @@ import QRCodeBottomsheet from 'src/component/BottomSheet/QRCodeBottomsheet';
 import CalenderEventsBottomSheet from 'src/component/BottomSheet/CalenderEventsBottomSheet';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
-import { useFetchEventDetailsQuery, useFetchHostEventDetailsQuery } from 'src/redux/actions/eventApiAction';
+import {
+  useFetchEventDetailsQuery,
+  useFetchHostEventDetailsQuery,
+} from 'src/redux/actions/eventApiAction';
 import IMAGES from '@images/index';
 import EventTalent from 'src/component/Event/EventTalent';
 import { ROUTES } from 'src/navigation/Route';
@@ -42,6 +58,11 @@ import { EndPoint } from 'src/ApiManager/config';
 import useApi from 'src/axios/useApi';
 import moment from 'moment';
 import { setEventId } from 'src/redux/slices/eventSlice';
+import { BlurView } from '@react-native-community/blur';
+import LinearGradient from 'react-native-linear-gradient';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -61,31 +82,50 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const userId = useSelector((state: RootState) => state.auth.userId);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const role = useSelector((state: RootState) => state.auth.role);
-  const [acceptInvite, { isLoading: acceptLoading }] = useAcceptInvitationMutation();
+  // const insets = useSafeAreaInsets();
+
+  const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 44 : 24;
+
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+        showTopSafeAreaView: false,
+      });
+
+      return () => {
+        // Reset to default when screen is unfocused
+        changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      };
+    }, []),
+  );
+
+  const [acceptInvite, { isLoading: acceptLoading }] =
+    useAcceptInvitationMutation();
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
-
-
-  const useFetchEventDetails = role === ROLE.HOST ? useFetchHostEventDetailsQuery : useFetchEventDetailsQuery;
+  const useFetchEventDetails =
+    role === ROLE.HOST
+      ? useFetchHostEventDetailsQuery
+      : useFetchEventDetailsQuery;
   // Ensure argument structure remains consistent
   const queryArgs =
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const) // Type assertion to prevent union mismatch
       : ({
-        userId,
-        eventId: route?.params?.id,
-      } as const); // Type assertion
+          userId,
+          eventId: route?.params?.id,
+        } as const); // Type assertion
 
-
-  const { data, isLoading, refetch, isSuccess } = useFetchEventDetails(queryArgs, { refetchOnMountOrArgChange: true });
-
+  const { data, refetch } = useFetchEventDetails(queryArgs as any, {
+    refetchOnMountOrArgChange: true,
+  });
 
   // const { data, isLoading, refetch, isSuccess } = useFetchEventDetailsQuery(
   //   { eventId: route?.params?.id, userId: userId },
   //   { refetchOnMountOrArgChange: true },
   // );
-
 
   const qrCodeBottomSheetRef = useRef<any>(null);
   const calenderEventsBottomSheetRef = useRef<any>(null);
@@ -107,34 +147,31 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     }
   }, [guestStatus]);
 
-
-  const parseDate = (dateStr:any) => {
-    const [datePart, timePart] = dateStr.split(" ");
+  const parseDate = (dateStr: any) => {
+    const [datePart, timePart] = dateStr.split(' ');
     return new Date(`${datePart}T${timePart}Z`).toISOString();
   };
   useEffect(() => {
     // console.log('Event data:', data);
-    if(data?.data){
+    if (data?.data) {
       setEventDetails({
         title: data.data.name,
         subTitle: data.data.startDate,
         name: data.data.owner.firstName + ' ' + data.data.owner.lastName,
       });
-   
 
-const startDate = moment.utc(data.data.startDate).toISOString();
-const endDate = moment.utc(data.data.endDate).toISOString();
+      const startDate = moment.utc(data.data.startDate).toISOString();
+      const endDate = moment.utc(data.data.endDate).toISOString();
       setCalendarDetails({
         title: data.data.name,
         startDate: startDate,
-        endDate: endDate, 
+        endDate: endDate,
         location: data.data?.location.city,
         notes: data.data.description,
       });
     }
     if (data && data.data && data?.data?.collaborators) {
       setCollaborators(data.data.collaborators);
-     
     }
     if (data && data.data && data?.data?.talents) {
       setTalents(data.data.talents);
@@ -174,7 +211,7 @@ const endDate = moment.utc(data.data.endDate).toISOString();
     if (response.status === 200) {
       if(response.data.eventQr)
      {
-      setEventDetails({...eventDetails,qrUrl:response.data.b64QRCode});
+      setEventDetails({ ...eventDetails, qrUrl: response.data.b64QRCode });
       qrCodeBottomSheetRef?.current.open();
      }else{
       FlashMessageComponent.show('error',"QR not genetaed")
@@ -194,7 +231,7 @@ const endDate = moment.utc(data.data.endDate).toISOString();
     try {
       const accept_response = await acceptInvite({
         id: userId,
-        eventId: route.params.id,
+        eventId: route?.params?.id,
       });
       const updatedData = await refetch();
       if (updatedData?.data) {
@@ -216,107 +253,153 @@ const endDate = moment.utc(data.data.endDate).toISOString();
 
   const onPressInviteGuests = () => {
     dispatch(setSelectedEventForInvite(data.data));
-    navigation.navigate(ROUTES.InviteGuestsScreen);
+    navigation.navigate(ROUTES.SelectGuestsToInviteScreen);
   };
 
-  return (
-    <View style={{ ...styles.container }}>
-      <ScrollView>
-        <View style={{ ...styles.contentContainer }}>
-          <View>
+  const imageWrapperStyle = StyleSheet.create({
+    wrapper: {
+      height: verticalScale(528),
+      borderRadius: 20,
+      overflow: 'hidden' as const,
+      marginTop: verticalScale(20) + STATUS_BAR_HEIGHT,
+    },
+  });
 
+  return (
+    <>
+      {/* <SafeAreaView style={{ backgroundColor: COLORS.white }} /> */}
+      <View style={styles.container}>
+        <ScrollView>
+          <View style={styles.blurredBackgroundContainer}>
             <FastImage
               source={{
                 uri: route?.params?.imageCover || route?.params?.imageFlyer,
               }}
               resizeMode={FastImage.resizeMode.cover}
-              defaultSource={IMAGES.eventCoverPlaceholders1} // Placeholder
-              style={styles.icon}
+              defaultSource={IMAGES.eventCoverPlaceholders1}
+              style={styles.blurredBackground}
             />
-
+            <BlurView
+              style={StyleSheet.absoluteFill}
+              blurType="light"
+              blurAmount={128}
+              reducedTransparencyFallbackColor="white"
+            />
+            <LinearGradient
+              style={StyleSheet.absoluteFill}
+              colors={['rgba(255, 255, 255, 0)', '#FFFFFF']}
+              locations={[0, 0.9]}
+            />
           </View>
 
-          <Text style={styles.titleStyle}>{route?.params?.name}</Text>
+          {/* <SafeAreaView /> */}
 
-          <EventStatus status={guestStatus} isDeclinedByMe={!isDeclinedByMe} />
+          <View style={styles.contentContainer}>
+            <View style={imageWrapperStyle.wrapper}>
+              <FastImage
+                source={{
+                  uri: route?.params?.imageCover || route?.params?.imageFlyer,
+                }}
+                resizeMode={FastImage.resizeMode.cover}
+                defaultSource={IMAGES.eventCoverPlaceholders1}
+                style={styles.mainImage}
+              />
+            </View>
 
-          {role !== ROLE.NON_MEMBER && <FlatList
-            data={collaborators}
-            horizontal
-            pagingEnabled={false}
-            // style={{ marginVertical: 20 }}
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item, index) => `${item.id}-${index}`}
-            renderItem={({ item }) => <EventHostItem item={item} />}
-          />}
+            <Text style={styles.titleStyle}>{route?.params?.name}</Text>
 
-          {role == ROLE.HOST && <EventRequests eventId={data?.data?.id} />}
+            <EventStatus
+              status={guestStatus}
+              isDeclinedByMe={!isDeclinedByMe}
+            />
 
-          <EventVenue item={data?.data} handleCalendarPress={addCalenderEvents} />
+            {role !== ROLE.NON_MEMBER && (
+              <FlatList
+                data={collaborators}
+                horizontal
+                pagingEnabled={false}
+                // style={{ marginVertical: 20 }}
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item: any, index) => `${item.id}-${index}`}
+                renderItem={({ item }) => <EventHostItem item={item} />}
+              />
+            )}
 
+            {role == ROLE.HOST && <EventRequests eventId={data?.data?.id} />}
 
-          <EventOverview item={data?.data} />
+            <EventVenue
+              item={data?.data}
+              handleCalendarPress={addCalenderEvents}
+            />
 
-          {talents.length > 0 && <EventTalent talents={talents} />}
+            <EventOverview item={data?.data} />
 
-          {/* {<EventAnouncements talents={talents} />} */}
+            {talents.length > 0 && <EventTalent talents={talents} />}
+
+            {/* {<EventAnouncements talents={talents} />} */}
+
+            <Button
+              disabled={false}
+              style={styles.btnStyleLight}
+              title="View Guest List"
+              colorTheme="light"
+              onPress={() =>
+                navigation.navigate('EventGuestList', {
+                  guests: data?.data?.guests || [],
+                })
+              }
+            />
+          </View>
 
           <Button
             disabled={false}
             style={styles.btnStyleLight}
-            title="View Guest List"
+            title={BUTTON_LABLE.INVITE_GUESTS}
             colorTheme="light"
-            onPress={() =>
-              navigation.navigate('EventGuestList', {
-                guests: data?.data?.guests || [],
-              })
-            }
+            onPress={onPressInviteGuests}
           />
-        </View>
-      </ScrollView>
 
-      {!isDeclinedByHost && guestStatus !== 'CONFIRMED' && (
-        <View style={{ margin: 20 }}>
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={
-              guestStatus == 'APPLIED'
-                ? BUTTON_LABLE.UPDATE_APPLICATION
-                : BUTTON_LABLE.RSVP
-            }
-            colorTheme="dark"
-            onPress={onNextClick}
-          />
-        </View>
-      )}
+          {loginData?.roles[0]?.roleName === ROLE.HOST && (
+            <Button
+              disabled={false}
+              style={styles.btnStyle}
+              title={BUTTON_LABLE.CHECK_IN}
+              colorTheme="dark"
+              onPress={onCheckInClick}
+            />
+          )}
+        </ScrollView>
 
-      {guestStatus == 'DECLINED' && (
-        <View style={{ margin: 20 }}>
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            loading={acceptLoading}
-            title={BUTTON_LABLE.RSVP}
-            colorTheme="dark"
-            onPress={() => {
-              onNextClick();
-            }}
-          />
-        </View>
-      )}
+        {!isDeclinedByHost && guestStatus !== 'CONFIRMED' && (
+          <View>
+            <Button
+              disabled={false}
+              style={styles.btnStyle}
+              title={
+                guestStatus == 'APPLIED'
+                  ? BUTTON_LABLE.UPDATE_APPLICATION
+                  : BUTTON_LABLE.RSVP
+              }
+              colorTheme="dark"
+              onPress={onNextClick}
+            />
+          </View>
+        )}
 
-      {isDeclinedByMe && (
-        <View style={{ margin: 20 }}>
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={BUTTON_LABLE.DISCOVER_MORE_EVENTS}
-            colorTheme="dark"
-            onPress={onDiscoverMoreClick}
-          />
-        </View>
-      )}
+        {guestStatus == 'DECLINED' && (
+          <View>
+            <Button
+              disabled={false}
+              style={styles.btnStyle}
+              loading={acceptLoading}
+              title={BUTTON_LABLE.RSVP}
+              colorTheme="dark"
+              onPress={() => {
+                onNextClick();
+              }}
+            />
+          </View>
+        )}
 
       <CalenderEventsBottomSheet
         ref={calenderEventsBottomSheetRef}
@@ -331,48 +414,57 @@ const endDate = moment.utc(data.data.endDate).toISOString();
         name={eventDetails?.name}
       />
 
-      {guestStatus == 'CONFIRMED' && (
-        <View style={{ margin: 20 }}>
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={BUTTON_LABLE.VIEW_TICKET}
-            colorTheme="dark"
-            onPress={onViewTicketClick}
-            loading={loading}
-          />
-          <Button
-            disabled={false}
-            style={styles.btnStyleLight}
-            title={BUTTON_LABLE.UPDATE_RSVP}
-            colorTheme="light"
-            onPress={onNextClick}
-          />
-        </View>
-      )}
-      {loginData?.roles[0]?.roleName === ROLE.HOST && (
-        <Button
-          disabled={false}
-          style={styles.btnStyle}
-          title={BUTTON_LABLE.CHECK_IN}
-          colorTheme="dark"
-          onPress={onCheckInClick}
+        <CalenderEventsBottomSheet
+          ref={calenderEventsBottomSheetRef}
+          eventDetails={calendarDetails}
         />
-      )}
+        <QRCodeBottomsheet
+          ref={qrCodeBottomSheetRef}
+          title={eventDetails?.title}
+          subTitle={eventDetails?.subTitle}
+          imageURL={eventDetails?.qrUrl ? eventDetails?.qrUrl : IMAGES.ticket}
+          isQRShown={isQRShown}
+          name={eventDetails?.name}
+        />
 
-      <Button
-        disabled={false}
-        style={styles.btnStyleLight}
-        title={BUTTON_LABLE.INVITE_GUESTS}
-        colorTheme="light"
-        onPress={onPressInviteGuests}
-      />
+        {guestStatus == 'CONFIRMED' && (
+          <View style={{ margin: 20 }}>
+            <Button
+              disabled={false}
+              style={styles.btnStyle}
+              title={BUTTON_LABLE.VIEW_TICKET}
+              colorTheme="dark"
+              onPress={onViewTicketClick}
+              loading={loading}
+            />
+            <Button
+              disabled={false}
+              style={styles.btnStyleLight}
+              title={BUTTON_LABLE.UPDATE_RSVP}
+              colorTheme="light"
+              onPress={onNextClick}
+            />
+          </View>
+        )}
 
-      <BackButtonOverlay onPress={() => navigation.goBack()} />
-      <BackButtonOverlay customStyle={{ right: 4 }} imageSource={IMAGES.edits} onPress={() => navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })} />
-      <BackButtonOverlay customStyle={{ right: 55 }} imageSource={IMAGES.share} onPress={() => navigation.goBack()} />
-
-    </View>
+        <BackButtonOverlay
+          customStyle={{ top: 16 + STATUS_BAR_HEIGHT }}
+          onPress={() => navigation.goBack()}
+        />
+        <BackButtonOverlay
+          customStyle={{ right: 4, top: 16 + STATUS_BAR_HEIGHT }}
+          imageSource={IMAGES.edits}
+          onPress={() =>
+            navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })
+          }
+        />
+        <BackButtonOverlay
+          customStyle={{ right: 55, top: 16 + STATUS_BAR_HEIGHT }}
+          imageSource={IMAGES.share}
+          onPress={() => navigation.goBack()}
+        />
+      </View>
+    </>
   );
 };
 
@@ -395,11 +487,18 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     flex: 1,
-    backgroundColor: COLORS.white,
+
+    backgroundColor: 'transparent',
   },
-  imageContainer: {
-    alignItems: 'center',
-    // height: 100,
+  imageWrapper: {
+    height: verticalScale(528),
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  mainImage: {
+    height: '100%',
+    width: '100%',
+    borderRadius: 20,
   },
   contentContainer: {
     flexDirection: 'column',
@@ -407,22 +506,10 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     gap: verticalScale(20),
     flex: 1,
-    backgroundColor: COLORS.white,
   },
   errorInputWrapper: {
     borderColor: COLORS.borderRed,
     backgroundColor: COLORS.bgRed,
-  },
-  icon: {
-    backgroundColor: COLORS.borderGray,
-    borderRadius: 20,
-    height: verticalScale(528),
-    flex: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 5,
   },
   titleStyle: {
     fontSize: fontScale(32),
@@ -441,5 +528,24 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 5,
     color: COLORS.errorText,
+  },
+  blurredBackgroundContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: verticalScale(700),
+    zIndex: -1,
+    overflow: 'hidden',
+  },
+  blurredBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: verticalScale(300),
+    objectFit: 'contain',
+    transform: [{ scale: 1.5 }],
   },
 });

@@ -5,14 +5,17 @@ import {
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Image, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import AvatarInitials from 'src/component/AvatarInitials';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
-import { CustomText } from 'src/component/CustomText';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import Header from 'src/component/Header/Header';
+import { InputRefMethods } from 'src/component/Input/Input';
+import {
+  countryType,
+  PhoneNumberInputRefMethods,
+} from 'src/component/PhonNumberComponent/PhoneNumberInput';
 import { EventStackParamList } from 'src/navigation/EventStack';
 import {
   useInviteGuestsMutation,
@@ -24,9 +27,7 @@ import InviteDetails from 'src/screens/EventScreen/Guest/InviteGuestDetailForm';
 import { COLORS } from 'src/utils/constants';
 import {
   horizontalMarginScale,
-  radiusScale,
   verticalMarginScale,
-  verticalScale,
 } from 'src/utils/dimensions';
 import {
   ApiErrorInterface,
@@ -35,21 +36,24 @@ import {
 } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import TicketTypeBottomSheet, { TicketType } from '../TicketTypeBottomSheet';
+import ExistingUserView from './ExistingUserView';
+import NewUserView from './NewUserView';
 import createStyles from './styles';
-import Input, { InputRefMethods } from 'src/component/Input/Input';
-import IMAGES from '@images/index';
-import PhoneNumberInput, {
-  countryType,
-  PhoneNumberInputRefMethods,
-} from 'src/component/PhonNumberComponent/PhoneNumberInput';
 
-interface ManageGuestsProps
-  extends NativeStackScreenProps<EventStackParamList, 'ManageGuestsScreen'> {}
+export interface existingUserType {
+  email: string;
+  id: string;
+  name: string;
+  profilePicture: string;
+}
+interface InviteGuestProps
+  extends NativeStackScreenProps<EventStackParamList, 'InviteGuestScreen'> {}
 
-const ManageGuests: React.FC<ManageGuestsProps> = ({ route }) => {
+const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
   const styles = createStyles();
   const navigation = useNavigation<NavigationProp<EventStackParamList>>();
   const dispatch = useDispatch();
+
   const { isManual, type } = route.params;
 
   const firstNameRef = useRef<InputRefMethods>(null);
@@ -57,7 +61,6 @@ const ManageGuests: React.FC<ManageGuestsProps> = ({ route }) => {
   const phoneRef = useRef<PhoneNumberInputRefMethods>(null);
   const emailRef = useRef<InputRefMethods>(null);
   const ticketTypeRef = useRef<InputRefMethods>(null);
-
   const actionSheetRef = useRef<BottomSheetMethods>(null);
 
   const [selectedTicketType, setSelectedTicketType] = useState<TicketType>();
@@ -76,6 +79,8 @@ const ManageGuests: React.FC<ManageGuestsProps> = ({ route }) => {
   );
 
   const [isDraftInvite, setIsDraftInvite] = useState<boolean>();
+  const [existingUserData, setExistingUserData] =
+    useState<existingUserType | null>(null);
 
   const { selectedUsers, selectedEvent, selectedManualUser } = useSelector(
     (state: RootState) => ({
@@ -169,6 +174,12 @@ const ManageGuests: React.FC<ManageGuestsProps> = ({ route }) => {
     }
 
     if (type === 'email') {
+      if (email && existingUserData) {
+        emailRef?.current?.setErrorMessage(
+          'This user is already in the database, enter a new email',
+        );
+        return;
+      }
       emailRef?.current?.validateInputs();
       if (
         !firstNameRef?.current?.validateInputs() ||
@@ -204,7 +215,7 @@ const ManageGuests: React.FC<ManageGuestsProps> = ({ route }) => {
         inviteMessage: inviteMessage,
         privateGuestNote: guestNote,
         email: email,
-        phoneNumber: phone,
+        phoneNumber: `${selectedCountry?.dial_code}${phone}`,
         firstName: firstName,
         lastName: lastName,
       };
@@ -258,115 +269,50 @@ const ManageGuests: React.FC<ManageGuestsProps> = ({ route }) => {
     }, []),
   );
 
-  const slicedSelectedUsers =
-    selectedUsers.length > 6 ? selectedUsers.slice(0, 6) : selectedUsers;
-
   return (
-    <View style={styles.container}>
-      <Header
-        headerTitle="Manage Invite"
-        showProgressBar={false}
-        rightIconWrapperStyle={{ backgroundColor: COLORS.black }}
-      />
+    <View
+      style={[
+        styles.container,
+        isManual === true &&
+          type === 'email' && {
+            marginTop: verticalMarginScale(16),
+          },
+      ]}>
+      {isManual === true && type === 'email' ? null : (
+        <Header
+          headerTitle={isManual ? 'Invite Guest' : 'Manage Invite'}
+          showProgressBar={false}
+          rightIconWrapperStyle={{ backgroundColor: COLORS.black }}
+        />
+      )}
       <ScrollView
         contentContainerStyle={{
           gap: verticalMarginScale(16),
           paddingBottom: verticalMarginScale(50),
         }}>
-        <View
-          style={[
-            styles.contentWrapper,
-            {
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            },
-          ]}>
-          {isManual ? (
-            <View style={{ flex: 1, gap: verticalMarginScale(24) }}>
-              <View style={styles.bannerTextContainer}>
-                <Image
-                  source={IMAGES.info}
-                  style={styles.bannerInfo}
-                  resizeMode="contain"
-                />
-                <CustomText style={{ flex: 1 }}>
-                  {
-                    'Your changes will only be saved in Rumor and will not impact your device’s contact list.'
-                  }
-                </CustomText>
-              </View>
-              <Input
-                ref={firstNameRef}
-                defaultValue={firstName}
-                label="First Name"
-                errorMessage="First name is required"
-                placeholder=""
-                onChangeText={setFirstName}
-                otherStyle={{ marginTop: 0 }}
-                inputFieldContainerStyle={styles.inputStyle}
-              />
-              <Input
-                ref={lastNameRef}
-                defaultValue={lastName}
-                label="Last Name"
-                errorMessage="Last name is required"
-                placeholder=""
-                onChangeText={setLastName}
-                otherStyle={{ marginTop: 0 }}
-                inputFieldContainerStyle={styles.inputStyle}
-              />
-              {type === 'contact' ? (
-                <PhoneNumberInput
-                  ref={phoneRef}
-                  label="Phone Number"
-                  onChangeText={text => setPhone(text)}
-                  onSelectCountry={setSelectedCountry}
-                  inputContainerStyle={styles.inputStyle}
-                />
-              ) : null}
-              {type === 'email' ? (
-                <Input
-                  ref={emailRef}
-                  defaultValue={email}
-                  label="Email"
-                  errorMessage="Please enter an email address in the correct format to continue"
-                  placeholder=""
-                  onChangeText={setEmail}
-                  otherStyle={{ marginTop: 0 }}
-                  inputFieldContainerStyle={styles.inputStyle}
-                />
-              ) : null}
-            </View>
-          ) : (
-            <>
-              <CustomText style={styles.title}>
-                {`${selectedUsers.length} Recipients`}
-              </CustomText>
-              <View style={styles.usersAvatarContainer}>
-                {slicedSelectedUsers.map((item, index) => {
-                  return (
-                    <AvatarInitials
-                      key={item.id}
-                      imgUrl={item.profilePicture}
-                      name={item.name}
-                      size={verticalScale(32)}
-                      containerStyle={{
-                        ...styles.avatarContainer,
-                        ...{
-                          marginRight:
-                            slicedSelectedUsers.length - 1 !== index
-                              ? -verticalScale(14)
-                              : 0,
-                        },
-                      }}
-                    />
-                  );
-                })}
-              </View>
-            </>
-          )}
-        </View>
+        {isManual ? (
+          <NewUserView
+            firstNameRef={firstNameRef}
+            lastNameRef={lastNameRef}
+            phoneRef={phoneRef}
+            emailRef={emailRef}
+            firstName={firstName}
+            lastName={lastName}
+            email={email}
+            phone={phone}
+            setFirstName={setFirstName}
+            setLastName={setLastName}
+            setEmail={setEmail}
+            setPhone={setPhone}
+            existingUserData={existingUserData}
+            setExistingUserData={setExistingUserData}
+            selectedCountry={selectedCountry}
+            setSelectedCountry={setSelectedCountry}
+            type={type}
+          />
+        ) : (
+          <ExistingUserView />
+        )}
 
         <View style={{ marginHorizontal: horizontalMarginScale(16) }}>
           <InviteDetails
@@ -389,7 +335,7 @@ const ManageGuests: React.FC<ManageGuestsProps> = ({ route }) => {
         </View>
       </ScrollView>
       <View style={styles.actionCtaContainer}>
-        {!isManual ? (
+        {!isManual && !directlySendToConfirm ? (
           <Button
             title={'Add to Drafts'}
             onPress={() => onPressCta(false)}
@@ -399,7 +345,11 @@ const ManageGuests: React.FC<ManageGuestsProps> = ({ route }) => {
         ) : null}
         <Button
           title={
-            isManual ? 'Send Invite' : `Send ${selectedUsers.length} Invites`
+            directlySendToConfirm
+              ? 'Add to Confirmed'
+              : isManual
+              ? 'Send Invite'
+              : `Send ${selectedUsers.length} Invites`
           }
           onPress={() => {
             if (isManual) {
@@ -426,4 +376,4 @@ const ManageGuests: React.FC<ManageGuestsProps> = ({ route }) => {
   );
 };
 
-export default ManageGuests;
+export default InviteGuest;

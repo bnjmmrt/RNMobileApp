@@ -32,14 +32,19 @@ import {
   verticalScale,
 } from 'src/utils/dimensions';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import useContacts from 'src/utils/hooks/useContactPermission';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import createStyles from './styles';
-import useContacts from 'src/utils/hooks/useContactPermission';
 
-interface InviteGuestsProps
-  extends NativeStackScreenProps<EventStackParamList, 'InviteGuestsScreen'> {}
+interface SelectGuestsToInviteProps
+  extends NativeStackScreenProps<
+    EventStackParamList,
+    'SelectGuestsToInviteScreen'
+  > {}
 
-const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
+const SelectGuestsToInviteScreen: React.FC<
+  SelectGuestsToInviteProps
+> = ({}) => {
   const styles = createStyles();
   const navigation = useNavigation<NavigationProp<EventStackParamList>>();
   const dispatch = useDispatch();
@@ -117,7 +122,7 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
 
   const onPressNext = () => {
     dispatch(setSelectedUsersToInvite(selectedUsers));
-    navigation.navigate(ROUTES.ManageGuestsScreen, {
+    navigation.navigate(ROUTES.InviteGuestScreen, {
       isManual: false,
       type: 'existing',
     });
@@ -125,9 +130,7 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
 
   const onPressInviteManually = async () => {
     await requestContactPermission();
-    if (permissionGranted) {
-      navigation.navigate(ROUTES.InviteGuestsManuallyScreen);
-    }
+    navigation.navigate(ROUTES.InviteGuestsManuallyScreen);
   };
 
   const renderItem = useCallback(
@@ -162,10 +165,6 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
       setAllUsers({ totalCount: 0, users: [] });
     }
   }, [isError]);
-
-  useEffect(() => {
-    requestContactPermission();
-  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -259,4 +258,4 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
   );
 };
 
-export default InviteGuests;
+export default SelectGuestsToInviteScreen;

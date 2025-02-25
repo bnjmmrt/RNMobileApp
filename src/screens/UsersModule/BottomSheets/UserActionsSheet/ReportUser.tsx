@@ -1,19 +1,19 @@
-import {BottomSheetScrollView, BottomSheetView} from '@gorhom/bottom-sheet';
-import React, {useRef} from 'react';
-import {Keyboard} from 'react-native';
-import {shallowEqual, useSelector} from 'react-redux';
+import { BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { useRef, useState } from 'react';
+import { Keyboard } from 'react-native';
+import { shallowEqual, useSelector } from 'react-redux';
 import Button from 'src/component/Button';
-import {CustomText} from 'src/component/CustomText';
+import { CustomText } from 'src/component/CustomText';
 import Header from 'src/component/Header/Header';
-import Input, {InputRefMethods} from 'src/component/Input/Input';
+import Input, { InputRefMethods } from 'src/component/Input/Input';
 import {
   UserDetailResponse,
   useReportUserMutation,
 } from 'src/redux/actions/usersApiAction';
-import {RootState} from 'src/redux/slices';
-import {verticalMarginScale} from 'src/utils/dimensions';
-import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
-import {styles} from './style';
+import { RootState } from 'src/redux/slices';
+import { verticalMarginScale } from 'src/utils/dimensions';
+import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
+import { styles } from './style';
 
 const ReportUser = ({
   onPressBack,
@@ -28,17 +28,24 @@ const ReportUser = ({
 }) => {
   const messageRef = useRef<InputRefMethods>(null);
 
-  const [reportUser, {error, isLoading}] = useReportUserMutation();
+  const [message, setMessage] = useState<string>('');
 
-  const {userDetails} = useSelector((state: RootState) => {
+  const [reportUser, { error, isLoading }] = useReportUserMutation();
+
+  const { userDetails } = useSelector((state: RootState) => {
     const queryResult = state.api.queries[
-      `fetchUserDetails(${JSON.stringify({user})})`
-    ] as {data: UserDetailResponse} | undefined;
+      `fetchUserDetails(${JSON.stringify({ user })})`
+    ] as { data: UserDetailResponse } | undefined;
 
     return {
       userDetails: queryResult?.data?.data ?? undefined,
     };
   }, shallowEqual);
+
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const hostRole = loginData?.roles?.find(
+    (role: { roleId: string; roleName: string }) => role.roleName === 'host',
+  );
 
   const onPressCta = async () => {
     Keyboard.dismiss();
@@ -47,8 +54,10 @@ const ReportUser = ({
       if (userDetails) {
         try {
           const response = await reportUser({
-            reportMessage: '',
+            reportMessage: message,
             user: user,
+            reportedToroleId: userDetails?.roleId,
+            reportedByRoleId: hostRole.roleId,
           }).unwrap();
 
           if (response.status === 200) {
@@ -87,8 +96,9 @@ const ReportUser = ({
           label="Report Message"
           defaultValue=""
           errorMessage="Please enter report message"
-          otherStyle={{marginTop: 0, marginBottom: verticalMarginScale(24)}}
+          otherStyle={{ marginTop: 0, marginBottom: verticalMarginScale(24) }}
           forBottomSheet={true}
+          onChangeText={setMessage}
         />
         <Button
           title="Submit Report"

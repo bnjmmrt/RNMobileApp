@@ -1,14 +1,16 @@
 import IMAGES from '@images/index';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useRef, useState} from 'react';
-import {ActivityIndicator, ScrollView, View} from 'react-native';
-import DynamicTabBar, {TabItem} from 'src/component/ActiveTabBar/DynamicTabBar';
-import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useRef, useState } from 'react';
+import { ActivityIndicator, ScrollView, View } from 'react-native';
+import DynamicTabBar, {
+  TabItem,
+} from 'src/component/ActiveTabBar/DynamicTabBar';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Header from 'src/component/Header/Header';
-import {AppStackParamList} from 'src/navigation/AppStack';
-import {useFetchUserDetailsQuery} from 'src/redux/actions/usersApiAction';
-import {BUTTON_LABLE, COLORS} from 'src/utils/constants';
-import {verticalMarginScale} from 'src/utils/dimensions';
+import { AppStackParamList } from 'src/navigation/AppStack';
+import { useFetchUserDetailsQuery } from 'src/redux/actions/usersApiAction';
+import { BUTTON_LABLE, COLORS } from 'src/utils/constants';
+import { verticalMarginScale } from 'src/utils/dimensions';
 import UserActionsSheet, {
   UserActionCurrentPageType,
 } from '../BottomSheets/UserActionsSheet';
@@ -38,18 +40,20 @@ const tabsData: TabItem[] = [
   },
 ];
 
-const UserDetails: React.FC<UserDetailsProps> = ({route}) => {
+const UserDetails: React.FC<UserDetailsProps> = ({ route }) => {
   const styles = userDetailsStyle();
   const actionSheetRef = useRef<BottomSheetMethods>(null);
-  const {user} = route?.params;
+  const { user } = route?.params;
 
   const [currentTab, setCurrentTab] = useState<TabItem>(tabsData[0]);
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
     useState<UserActionCurrentPageType>('');
 
-  const {data: userData, isLoading} = useFetchUserDetailsQuery({
+  const { data: userData, isLoading } = useFetchUserDetailsQuery({
     user: user,
   });
+
+  console.log('userData', userData);
 
   const handleTabChange = (tab: TabItem) => {
     setCurrentTab(tab);
@@ -67,14 +71,15 @@ const UserDetails: React.FC<UserDetailsProps> = ({route}) => {
         showBackButton={true}
       />
       {isLoading ? (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <View
+          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <ActivityIndicator color={COLORS.black} />
         </View>
       ) : null}
       {userData ? (
         <ScrollView
-          style={{marginTop: verticalMarginScale(16)}}
-          contentContainerStyle={{gap: verticalMarginScale(16)}}>
+          style={{ marginTop: verticalMarginScale(16) }}
+          contentContainerStyle={{ gap: verticalMarginScale(16) }}>
           <UserProfile user={user} />
 
           <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
