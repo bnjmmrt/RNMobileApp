@@ -68,6 +68,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
             style={{
               width: props.isQRShown ? Dimensions.get('window').width : 350,
               height: props.isQRShown ? Dimensions.get('window').height / 2 : 350,
+              marginTop: props.isQRShown ? 0: -25
             }}
           ><View style={{ alignItems: 'center', paddingTop: props.isQRShown ? 25 : 40, height: '100%' }}>
               {props.isQRShown ? (
