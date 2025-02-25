@@ -1,12 +1,18 @@
 import IMAGES from '@images/index';
 import moment from 'moment';
-import React, {useCallback} from 'react';
-import {FlatList, Image, ImageSourcePropType, View} from 'react-native';
-import {shallowEqual, useSelector} from 'react-redux';
-import {CustomText} from 'src/component/CustomText';
-import {UserDetailResponse} from 'src/redux/actions/usersApiAction';
-import {RootState} from 'src/redux/slices';
-import {horizontalMarginScale} from 'src/utils/dimensions';
+import React, { useCallback } from 'react';
+import {
+  FlatList,
+  Image,
+  ImageSourcePropType,
+  TextStyle,
+  View,
+} from 'react-native';
+import { shallowEqual, useSelector } from 'react-redux';
+import { CustomText } from 'src/component/CustomText';
+import { UserDetailResponse } from 'src/redux/actions/usersApiAction';
+import { RootState } from 'src/redux/slices';
+import { horizontalMarginScale } from 'src/utils/dimensions';
 import UserDetailCard from '../UserDetailCard';
 import createStyle from './style';
 
@@ -14,13 +20,13 @@ interface UserOverviewProps {
   user: string;
 }
 
-const UserOverview: React.FC<UserOverviewProps> = ({user}) => {
+const UserOverview: React.FC<UserOverviewProps> = ({ user }) => {
   const styles = createStyle();
 
-  const {userDetails} = useSelector((state: RootState) => {
+  const { userDetails } = useSelector((state: RootState) => {
     const queryResult = state.api.queries[
-      `fetchUserDetails(${JSON.stringify({user})})`
-    ] as {data: UserDetailResponse} | undefined;
+      `fetchUserDetails(${JSON.stringify({ user })})`
+    ] as { data: UserDetailResponse } | undefined;
 
     return {
       userDetails: queryResult?.data?.data ?? undefined,
@@ -66,19 +72,23 @@ const UserOverview: React.FC<UserOverviewProps> = ({user}) => {
   const InfoRow = ({
     icon,
     title = '',
+    titleCustomStyle,
   }: {
     title: string;
     icon: ImageSourcePropType;
+    titleCustomStyle?: TextStyle;
   }) => {
     return (
       <View style={styles.infoRowContainer}>
         <Image source={icon} resizeMode="contain" style={styles.infoRowIcon} />
-        <CustomText style={styles.infoRowTitle}>{title}</CustomText>
+        <CustomText style={[styles.infoRowTitle, titleCustomStyle]}>
+          {title}
+        </CustomText>
       </View>
     );
   };
 
-  const renderSocialPresenceRow = useCallback(({item}: {item: any}) => {
+  const renderSocialPresenceRow = useCallback(({ item }: { item: any }) => {
     return (
       <View style={styles.socialPresenceRowContainer}>
         <Image
@@ -95,7 +105,7 @@ const UserOverview: React.FC<UserOverviewProps> = ({user}) => {
 
   return (
     <UserDetailCard title={'Overview'}>
-      <CustomText style={[styles.sectionTitle, {marginTop: 0}]}>
+      <CustomText style={[styles.sectionTitle, { marginTop: 0 }]}>
         {'Information'}
       </CustomText>
       {userDetails?.gender ? (
@@ -122,7 +132,11 @@ const UserOverview: React.FC<UserOverviewProps> = ({user}) => {
         <InfoRow title={userDetails?.phoneNumber} icon={IMAGES.phone} />
       ) : null}
       {userDetails?.email ? (
-        <InfoRow title={userDetails?.email} icon={IMAGES.contact} />
+        <InfoRow
+          title={userDetails?.email}
+          icon={IMAGES.contact}
+          titleCustomStyle={{ textTransform: 'none' }}
+        />
       ) : null}
 
       {userDetails?.socialStats ? (
@@ -134,8 +148,8 @@ const UserOverview: React.FC<UserOverviewProps> = ({user}) => {
             data={socialPresenceData}
             renderItem={renderSocialPresenceRow}
             keyExtractor={(item, index) => index.toString()}
-            columnWrapperStyle={{gap: horizontalMarginScale(4)}}
-            contentContainerStyle={{gap: horizontalMarginScale(4)}}
+            columnWrapperStyle={{ gap: horizontalMarginScale(4) }}
+            contentContainerStyle={{ gap: horizontalMarginScale(4) }}
             numColumns={2}
           />
         </>
