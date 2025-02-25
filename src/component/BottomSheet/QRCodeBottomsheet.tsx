@@ -37,7 +37,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
   const cancelClick = () => {
     ref.current?.close();
   };
- 
+
   const [vipTooltipShown, setVipTooltipShown] = useState(false);
 
   const showTooltip = () => {
@@ -55,7 +55,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
             {props.title}
           </Text>
 
-          <Text style={[styles.subTitle]}>{dateFormat(props?.subTitle,'dddd, MMMM Do, hh:mm:A GT')}</Text>
+          <Text style={[styles.subTitle]}>{dateFormat(props?.subTitle, 'dddd, MMMM Do, hh:mm:A')}</Text>
           <View style={styles.pic_Container}>
             <AvatarInitials name={props.name} size={32} />
             <Text style={styles.name}>{props.name}</Text>
@@ -63,44 +63,44 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
           </View>
 
           <ImageBackground
-          resizeMode='contain'
-          source={props.isQRShown ? IMAGES.ticketBg: IMAGES.ticketBgSm}
-          style={{
-              width: Dimensions.get('window').width,
-              height:props.isQRShown ? Dimensions.get('window').height / 2 : Dimensions.get('window').height / 2.75,
-              }}
-          ><View style={{alignItems: 'center', paddingTop: 25, height: '100%'}}>
-          {props.isQRShown ? (
-            <Image
-              source={{ uri: props.imageURL }}
-              style={{
-                width: horizontalMarginScale(220),
-                height: verticalMarginScale(220),
-              }}
-            />
-          ) : (
-            <Image
-              resizeMode='contain'
-              source={IMAGES.ticket}
-              style={{
-                marginTop: verticalMarginScale(12),
-                width: horizontalMarginScale(220),
-                height: verticalMarginScale(130),
-              }}
-            />
-          )}
-         
-         <View style={styles.vipContainer}>
-          {/* <TooltipComponent/> */}
-            <Text style={styles.vipText}>VIP</Text>
-            <TouchableOpacity onPress={showTooltip}>
-               <Image source={IMAGES.info_filled} style={styles.icon} />
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.infoText}>{LABLE.SHOW_QR_CHECKIN_MESSAGE}</Text>
+            resizeMode='contain'
+            source={props.isQRShown ? IMAGES.ticketBg : IMAGES.ticketBgSm}
+            style={{
+              width: props.isQRShown ? Dimensions.get('window').width : 350,
+              height: props.isQRShown ? Dimensions.get('window').height / 2 : 350,
+            }}
+          ><View style={{ alignItems: 'center', paddingTop: props.isQRShown ? 25 : 40, height: '100%' }}>
+              {props.isQRShown ? (
+                <Image
+                  source={{ uri: props.imageURL }}
+                  style={{
+                    width: horizontalMarginScale(220),
+                    height: verticalMarginScale(220),
+                  }}
+                />
+              ) : (
+                <Image
+                  resizeMode='contain'
+                  source={IMAGES.ticket}
+                  style={{
+                    marginTop: verticalMarginScale(12),
+                    width: 232,
+                    height: 148,
+                  }}
+                />
+              )}
 
-        </View>
-        
+              <View style={styles.vipContainer}>
+                {/* <TooltipComponent/> */}
+                <Text style={styles.vipText}>VIP</Text>
+                <TouchableOpacity onPress={showTooltip}>
+                  <Image source={IMAGES.info_filled} style={styles.icon} />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.infoText}>{LABLE.SHOW_QR_CHECKIN_MESSAGE}</Text>
+
+            </View>
+
 
           </ImageBackground>
 
@@ -236,8 +236,8 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   icon: {
-    width: horizontalScale(16),
-    height: verticalScale(16),
+    width: 16,
+    height: 16,
   },
   infoText: {
     fontSize: fontScale(14),
