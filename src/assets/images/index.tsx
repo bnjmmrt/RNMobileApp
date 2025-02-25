@@ -131,6 +131,7 @@ const IMAGES = {
   menu_gray: require('./menu-gray.png'),
   user_gray: require('./user-gray.png'),
   ticketBg: require('./ticketBg.png'),
+  ticketBgSm: require('./ticketBgSm.png'),
   arrowDowngray: require('./arrow-down-gray.png'),
 };
 

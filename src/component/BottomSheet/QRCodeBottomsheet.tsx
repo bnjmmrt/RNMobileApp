@@ -64,11 +64,11 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
 
           <ImageBackground
           resizeMode='contain'
-          source={IMAGES.ticketBg}
+          source={props.isQRShown ? IMAGES.ticketBg: IMAGES.ticketBgSm}
           style={{
               width: Dimensions.get('window').width,
-              height: Dimensions.get('window').height / 2,
-              shadowOffset: {height: -1, width: -1}, shadowOpacity: 0.05}}
+              height:props.isQRShown ? Dimensions.get('window').height / 2 : Dimensions.get('window').height / 2.75,
+              }}
           ><View style={{alignItems: 'center', paddingTop: 25, height: '100%'}}>
           {props.isQRShown ? (
             <Image
@@ -80,9 +80,12 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
             />
           ) : (
             <Image
+              resizeMode='contain'
               source={IMAGES.ticket}
               style={{
                 marginTop: verticalMarginScale(12),
+                width: horizontalMarginScale(220),
+                height: verticalMarginScale(130),
               }}
             />
           )}
@@ -134,7 +137,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
             </View>
             <Image source={IMAGES.half_circle} style={styles.cardBottom} />
           </View> */}
-          <Text style={styles.infoText}>{LABLE.SHOW_QR_CHECKIN_MESSAGE}</Text>
+          {/* <Text style={styles.infoText}>{LABLE.SHOW_QR_CHECKIN_MESSAGE}</Text> */}
         </View>
       </ScrollView>
     </BottomSheetComponent>
