@@ -32,14 +32,19 @@ import {
   verticalScale,
 } from 'src/utils/dimensions';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import useContacts from 'src/utils/hooks/useContactPermission';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import createStyles from './styles';
-import useContacts from 'src/utils/hooks/useContactPermission';
 
-interface InviteGuestsProps
-  extends NativeStackScreenProps<EventStackParamList, 'InviteGuestsScreen'> {}
+interface SelectGuestsToInviteProps
+  extends NativeStackScreenProps<
+    EventStackParamList,
+    'SelectGuestsToInviteScreen'
+  > {}
 
-const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
+const SelectGuestsToInviteScreen: React.FC<
+  SelectGuestsToInviteProps
+> = ({}) => {
   const styles = createStyles();
   const navigation = useNavigation<NavigationProp<EventStackParamList>>();
   const dispatch = useDispatch();
@@ -117,7 +122,7 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
 
   const onPressNext = () => {
     dispatch(setSelectedUsersToInvite(selectedUsers));
-    navigation.navigate(ROUTES.ManageGuestsScreen, {
+    navigation.navigate(ROUTES.InviteGuestScreen, {
       isManual: false,
       type: 'existing',
     });
@@ -125,8 +130,18 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
 
   const onPressInviteManually = async () => {
     await requestContactPermission();
-    if (permissionGranted) {
-      navigation.navigate(ROUTES.InviteGuestsManuallyScreen);
+    navigation.navigate(ROUTES.InviteGuestsManuallyScreen);
+  };
+
+  const getEmptyStateMessage = () => {
+    if (filterNumber > 0 && searchText) {
+      return 'Please refine your search.';
+    } else if (filterNumber > 0) {
+      return 'Remove filters to expand your search';
+    } else if (searchText) {
+      return 'Please refine your search.';
+    } else {
+      return 'This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest';
     }
   };
 
@@ -162,10 +177,6 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
       setAllUsers({ totalCount: 0, users: [] });
     }
   }, [isError]);
-
-  useEffect(() => {
-    requestContactPermission();
-  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -223,8 +234,31 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
             }}>
             <EventEmptyRecord
               title="User not found"
-              subTitle="This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest"
+              subTitle={getEmptyStateMessage()}
               isLoading={isLoading}
+              footerContent={
+                !isLoading && filterNumber > 0 ? (
+                  <Button
+                    title={'Reset Filters'}
+                    imageSource={IMAGES.refresh}
+                    leftImageStyle={{
+                      height: verticalScale(16),
+                      width: verticalScale(16),
+                    }}
+                    onPress={onClearFilter}
+                    colorTheme="dark"
+                    textStyle={{ marginHorizontal: 0 }}
+                    style={{
+                      alignSelf: 'center',
+                      width: undefined,
+                      height: undefined,
+                      paddingHorizontal: horizontalMarginScale(12),
+                      paddingVertical: verticalMarginScale(12),
+                      gap: horizontalMarginScale(6),
+                    }}
+                  />
+                ) : null
+              }
             />
           </View>
         }
@@ -253,10 +287,9 @@ const InviteGuests: React.FC<InviteGuestsProps> = ({}) => {
         from="allUsersList"
         onApplyFilter={onApplyFilter}
         onClearFilter={onClearFilter}
-        showBottomSafeAreaView={false}
       />
     </View>
   );
 };
 
-export default InviteGuests;
+export default SelectGuestsToInviteScreen;

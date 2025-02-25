@@ -445,3 +445,8 @@ export const getRoleRole = (role: string) => {
       return 'Non-Member'
   }
 };
+
+export const dateFormat=(date:string,format:string)=>{
+
+  return moment(date).format(format)
+}

@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { addGuest, deleteGuest, resetGuest, setResponse, setSelectedGuest } from "src/redux/slices/rspvSlice"
 import { SwipeableGuestList } from "./SwipeableGuestList"
 import CustomSelectableText from "src/component/CustomSelectableText/CustomSelectableText"
-import { verticalMarginScale } from "src/utils/dimensions"
+import { fontScale, verticalMarginScale } from "src/utils/dimensions"
 import useContacts from "src/utils/hooks/useContactPermission"
 import BottomSheetComponent from "src/component/BottomSheet/BottomSheet"
 import RenderCancelPopup from "./RenderCancelPopup"
@@ -25,6 +25,7 @@ import useApi from "src/axios/useApi"
 import SelectReason from "./BottomSheetView/SelectReason"
 import MessageBox from "./BottomSheetView/MessageBox"
 import formatToDeviceTimeZone from "src/utils/formatToDeviceTimeZone"
+import { fontFamily } from "src/utils/functions"
 
 const reasons = [
     { id: 1, name: 'Scheduling Conflict' },
@@ -90,6 +91,7 @@ const optionList = [
 
 const RSVPInvitedUpcoming = () => {
     const { params } = useRoute();
+    const scrollRef = React.useRef(null);
     const { id, name, location, imageCover, startDate, endDate } = params.event;
     const [maxAdditionalGuests, setMaxAdditionalGuests] = React.useState(0);
     const status = params.event.currentGuestStatus;
@@ -116,6 +118,12 @@ const RSVPInvitedUpcoming = () => {
     React.useEffect(() => {
         getInvitees();
     }, []);
+    React.useEffect(() => {
+        setTimeout(() => {
+            scrollRef.current?.scrollToEnd({ animated: true });
+
+        }, 500);
+    }, [showInfo])
 
     React.useEffect(() => {
         if (deleteGuestSuccess) {
@@ -139,8 +147,15 @@ const RSVPInvitedUpcoming = () => {
         dispatch(setResponse(response));
     };
     const onAddGuest = async () => {
-        await requestContactPermission();
-        navigate('AddGuestOptionScreen');
+        if (calculateAvailableGuestPasses(combinedGuests, maxAdditionalGuests) === 0) {
+            scrollRef.current?.scrollToEnd({ animated: true });
+            setIsToastShown(true);
+        }
+        else {
+            await requestContactPermission();
+            navigate('AddGuestOptionScreen');
+        }
+
     };
     const onClickReason = () => {
         setActiveTab('reasons');
@@ -542,13 +557,15 @@ const RSVPInvitedUpcoming = () => {
                     bottomSheetRef.current.open();
                 }
             }}
-            onInfoClick={() => setShowInfo(!showInfo)}
+            onInfoClick={() => {
+                setShowInfo(!showInfo);
+            }}
         />
     );
     const renderUpcomingRSVPView = () => {
         return (
             <>
-                <ScrollView showsVerticalScrollIndicator={false}>
+                <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
                     <View style={{ flex: 1, paddingBottom: 24 }}>
                         <EventCard name={name} location={location?.location} imageCover={imageCover} dates={formatToDeviceTimeZone(startDate, endDate)} />
                         <StatusBanner isGoing={true} onPress={() => {
@@ -564,13 +581,20 @@ const RSVPInvitedUpcoming = () => {
                                 keyExtractor={(item, index) => index.toString()}
                                 ItemSeparatorComponent={() => <View style={{ height: 6 }} />}
                             />
-                            {calculateAvailableGuestPasses(combinedGuests, maxAdditionalGuests) > 0 && <Button
+                            <Button
                                 disabled={false}
                                 style={[styles.clearButton, styles.btnBorder]}
                                 title={BUTTON_LABLE.ADD_GUEST_DETAILS}
                                 colorTheme="white"
                                 onPress={onAddGuest}
-                            />}
+                            />
+                            {(isToastShown && calculateAvailableGuestPasses(combinedGuests, maxAdditionalGuests) === 0) && <View style={styles.toastNoGuest}>
+                                <TouchableOpacity onPress={() => setIsToastShown(false)}>
+                                    <Image source={IMAGES.close} />
+                                </TouchableOpacity>
+                                <CustomText style={{ color: COLORS.black, fontSize: fontScale(14) }}>No guest passes remaining.</CustomText>
+                            </View>}
+
                         </View>
                         {showInfo &&
                             <>
@@ -584,6 +608,7 @@ const RSVPInvitedUpcoming = () => {
                         }
                     </View>
                 </ScrollView>
+
                 <CustomText style={{ color: COLORS.light_gray, textAlign: 'center', paddingTop: 12, paddingBottom: 8 }}>Please add your additional guests’ details by {formatToDeviceTimeZone(startDate, endDate)}, or their passes will be canceled.</CustomText>
                 <Button
                     disabled={false}

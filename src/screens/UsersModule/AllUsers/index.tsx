@@ -1,15 +1,15 @@
 import IMAGES from '@images/index';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, RefreshControl, View} from 'react-native';
-import {useDispatch} from 'react-redux';
-import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { FlatList, RefreshControl, View } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import FiltersSheet from 'src/component/FilterSheet';
-import {InputRefMethods} from 'src/component/Input/Input';
+import { InputRefMethods } from 'src/component/Input/Input';
 import SearchInput from 'src/component/SearchInput';
-import {useFetchAllUsersQuery} from 'src/redux/actions/usersApiAction';
-import {changeBottomTabsVisibility} from 'src/redux/slices/bottomTabsConfigSlice';
+import { useFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
+import { changeBottomTabsVisibility } from 'src/redux/slices/bottomTabsConfigSlice';
 import {
   horizontalMarginScale,
   Hp,
@@ -19,7 +19,7 @@ import {
 import UserActionsSheet, {
   UserActionCurrentPageType,
 } from '../BottomSheets/UserActionsSheet';
-import UserListItem, {UserItemInterface} from '../UsersListItem';
+import UserListItem, { UserItemInterface } from '../UsersListItem';
 
 interface AllUserProps {}
 
@@ -32,7 +32,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   const [allUsers, setAllUsers] = useState<{
     users: UserItemInterface[];
     totalCount: number;
-  }>({totalCount: 0, users: []});
+  }>({ totalCount: 0, users: [] });
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>('');
   const [filterQuery, setFilterQuery] = useState<string>('');
@@ -42,7 +42,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
     useState<UserActionCurrentPageType>('');
 
-  const {data, isLoading, error, isError, refetch} = useFetchAllUsersQuery({
+  const { data, isLoading, error, isError, refetch } = useFetchAllUsersQuery({
     take: 10,
     skip: (currentPage - 1) * 10,
     searchValue: searchText,
@@ -97,8 +97,20 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
     setFilterNumber(0);
   };
 
+  const getEmptyStateMessage = () => {
+    if (filterNumber > 0 && searchText) {
+      return 'Please refine your search.';
+    } else if (filterNumber > 0) {
+      return 'Remove filters to expand your search';
+    } else if (searchText) {
+      return 'Please refine your search.';
+    } else {
+      return 'This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest';
+    }
+  };
+
   const renderItem = useCallback(
-    ({item}: {item: UserItemInterface}) => {
+    ({ item }: { item: UserItemInterface }) => {
       const isSelected = selectedUsers.some(user => user === item.id);
       return (
         <UserListItem
@@ -113,9 +125,9 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
 
   useEffect(() => {
     if (selectedUsers.length > 0) {
-      dispatch(changeBottomTabsVisibility({showBottomTabs: false}));
+      dispatch(changeBottomTabsVisibility({ showBottomTabs: false }));
     } else {
-      dispatch(changeBottomTabsVisibility({showBottomTabs: true}));
+      dispatch(changeBottomTabsVisibility({ showBottomTabs: true }));
     }
   }, [selectedUsers]);
 
@@ -134,12 +146,12 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
 
   useEffect(() => {
     if (isError) {
-      setAllUsers({totalCount: 0, users: []});
+      setAllUsers({ totalCount: 0, users: [] });
     }
   }, [isError]);
 
   return (
-    <View style={{marginTop: verticalMarginScale(8), flex: 1}}>
+    <View style={{ marginTop: verticalMarginScale(8), flex: 1 }}>
       <SearchInput
         ref={searchInputRef}
         onSearchTextChange={handleSearchTextChange}
@@ -149,7 +161,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
           filtersSheetRef?.current?.open();
         }}
         rightIconText={String(filterNumber || '') || ''}
-        mainContainerStyle={{marginHorizontal: horizontalMarginScale(20)}}
+        mainContainerStyle={{ marginHorizontal: horizontalMarginScale(20) }}
         defaultValue={searchText}
       />
       <FlatList
@@ -160,9 +172,9 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
         }}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{gap: verticalMarginScale(16)}}
+        contentContainerStyle={{ gap: verticalMarginScale(16) }}
         ListFooterComponent={
-          <View style={{marginBottom: verticalMarginScale(150)}} />
+          <View style={{ marginBottom: verticalMarginScale(150) }} />
         }
         ListEmptyComponent={
           <View
@@ -172,9 +184,32 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
               justifyContent: 'center',
             }}>
             <EventEmptyRecord
-              title="No Users"
-              subTitle="Please refine your search"
+              title="User not found"
+              subTitle={getEmptyStateMessage()}
               isLoading={isLoading}
+              footerContent={
+                !isLoading && filterNumber > 0 ? (
+                  <Button
+                    title={'Reset Filters'}
+                    imageSource={IMAGES.refresh}
+                    leftImageStyle={{
+                      height: verticalScale(16),
+                      width: verticalScale(16),
+                    }}
+                    onPress={onClearFilter}
+                    colorTheme="dark"
+                    textStyle={{ marginHorizontal: 0 }}
+                    style={{
+                      alignSelf: 'center',
+                      width: undefined,
+                      height: undefined,
+                      paddingHorizontal: horizontalMarginScale(12),
+                      paddingVertical: verticalMarginScale(12),
+                      gap: horizontalMarginScale(6),
+                    }}
+                  />
+                ) : null
+              }
             />
           </View>
         }
@@ -195,7 +230,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
             actionSheetRef?.current?.open();
           }}
           colorTheme="dark"
-          style={{position: 'absolute', bottom: verticalScale(30)}}
+          style={{ position: 'absolute', bottom: verticalScale(30) }}
         />
       ) : null}
       <UserActionsSheet
@@ -211,7 +246,6 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
         from="allUsersList"
         onApplyFilter={onApplyFilter}
         onClearFilter={onClearFilter}
-        showBottomSafeAreaView={false}
       />
     </View>
   );

@@ -1,5 +1,5 @@
-import {Dimensions, StyleSheet} from 'react-native';
-import {COLORS} from '../../../../utils/constants';
+import { Dimensions, StyleSheet } from 'react-native';
+import { COLORS } from '../../../../utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -7,7 +7,7 @@ import {
   verticalMarginScale,
   verticalScale,
 } from '../../../../utils/dimensions';
-import {fontFamily} from '../../../../utils/functions';
+import { fontFamily } from '../../../../utils/functions';
 
 let screenWidth: number = Dimensions.get('window').width;
 const socialPresenceCardWidth =
@@ -36,6 +36,7 @@ const createStyle = () => {
     infoRowTitle: {
       color: COLORS.black,
       fontFamily: fontFamily.ABCDiatype_Medium,
+      textTransform: 'capitalize',
     },
 
     socialPresenceRowContainer: {

@@ -1,27 +1,27 @@
-import {BottomSheetView} from '@gorhom/bottom-sheet';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, {
   forwardRef,
   useCallback,
   useImperativeHandle,
   useRef,
 } from 'react';
-import {shallowEqual, useSelector} from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import BottomSheetComponent, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
-import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import {
   useLazyFetchUserDetailsQuery,
   UserDetailResponse,
 } from 'src/redux/actions/usersApiAction';
-import {RootState} from 'src/redux/slices';
-import {verticalScale} from 'src/utils/dimensions';
+import { RootState } from 'src/redux/slices';
+import { verticalScale } from 'src/utils/dimensions';
 import AddToList from './AddToList';
 import CreateList from './CreateList';
 import MarkAsSpam from './MarkAsSpam';
 import ReportUser from './ReportUser';
-import {styles} from './style';
+import { styles } from './style';
 
 export type actionSheetFromType = 'usersList' | 'customLists' | 'userDetail';
 export type UserActionCurrentPageType =
@@ -47,7 +47,7 @@ const UserActionsSheet = forwardRef<
   UserListActionPropsInterface
 >(
   (
-    {user, from, selectedUsers, onSuccess, selectedAction, setSelectedAction},
+    { user, from, selectedUsers, onSuccess, selectedAction, setSelectedAction },
     ref,
   ) => {
     const sheetRef = useRef<BottomSheetMethods>(null);
@@ -59,10 +59,10 @@ const UserActionsSheet = forwardRef<
         sheetRef.current?.showFlashMessage(type, message),
     }));
 
-    const {userDetails} = useSelector((state: RootState) => {
+    const { userDetails } = useSelector((state: RootState) => {
       const queryResult = state.api.queries[
-        `fetchUserDetails(${JSON.stringify({user})})`
-      ] as {data: UserDetailResponse} | undefined;
+        `fetchUserDetails(${JSON.stringify({ user })})`
+      ] as { data: UserDetailResponse } | undefined;
 
       return {
         userDetails: queryResult?.data?.data ?? undefined,
@@ -100,7 +100,7 @@ const UserActionsSheet = forwardRef<
       setSelectedAction('');
       sheetRef?.current?.close();
       if (from === 'userDetail' && user) {
-        fetchUserDetails({user: user});
+        fetchUserDetails({ user: user });
       }
     };
 
@@ -130,11 +130,8 @@ const UserActionsSheet = forwardRef<
         enableDynamicSizing={getDyanamicSizeConfig()}
         onClose={() => {
           closeSheet();
-        }}
-        showBottomSafeAreaView={
-          from === 'usersList' ? false : from === 'customLists' ? false : true
-        }>
-        <BottomSheetView style={{flex: 1}}>
+        }}>
+        <BottomSheetView style={{ flex: 1 }}>
           {selectedAction === '' ? (
             <BottomSheetView style={styles.actionButtonContainer}>
               <Button

@@ -49,7 +49,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         skip,
         take,
       }: {
-        statusName: string,
+        statusName?: string;
         userId: string;
         queryString?: string;
         searchText?: string;
@@ -63,14 +63,14 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         if (searchText) {
           url = `${url}&findInNameAndDescription=${searchText}`;
         }
-        if (statusName) {
-          url = `${url}&status=${statusName}`;
-        }
+        // if (statusName) {
+        //   url = `${url}&status=${statusName}`;
+        // }
         if (queryString) {
           url = `${url}&${queryString}`;
         }
         return {
-          url: url,
+          url: `${url}&feed=true`,
           method: 'GET',
         };
       },
@@ -78,8 +78,17 @@ export const eventApiAction = createBaseApi.injectEndpoints({
     }),
 
     fetchEventDetails: builder.query({
-      query: ({ eventId, userId }: { eventId: string, userId: string }) => ({
+      query: ({ eventId, userId }: { eventId: string; userId: string }) => ({
         url: `v1/events/users/${userId}/events/${eventId}`,
+        method: 'GET',
+      }),
+      providesTags: ['EventDetails'],
+      keepUnusedDataFor: 0, // Adjust the tag if needed for cache invalidation
+    }),
+
+    fetchPublicEventDetails: builder.query({
+      query: ({ eventId }: { eventId: string }) => ({
+        url: `v1/events/event/${eventId}`,
         method: 'GET',
       }),
       providesTags: ['EventDetails'],
@@ -95,7 +104,6 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       keepUnusedDataFor: 0, // Adjust the tag if needed for cache invalidation
     }),
 
-
     fetchGuestStatusCount: builder.query({
       query: ({ eventId }: { eventId: string }) => ({
         url: `v1/events/${eventId}/guest-status-counts`,
@@ -104,7 +112,6 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       providesTags: ['GuestStatusCount'],
       keepUnusedDataFor: 0, // Adjust the tag if needed for cache invalidation
     }),
-
 
     fetchDashboardUpcomingEvents: builder.query({
       query: () => ({
@@ -124,5 +131,6 @@ export const {
   useFetchHostEventsQuery,
   useFetchGuestStatusCountQuery,
   useFetchDashboardUpcomingEventsQuery,
-  useFetchHostEventDetailsQuery
+  useFetchHostEventDetailsQuery,
+  useFetchPublicEventDetailsQuery,
 } = eventApiAction;
