@@ -8,6 +8,8 @@ import {
   Alert,
   ScrollView,
   TouchableOpacity,
+  ImageBackground,
+  Dimensions,
 } from 'react-native';
 import BottomSheetComponent from './BottomSheet';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
@@ -61,7 +63,45 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
             <Image source={IMAGES.info_filled} />
           </View>
 
-          <View style={styles.card}>
+          <ImageBackground
+          resizeMode='contain'
+          source={IMAGES.ticketBg}
+          style={{
+              width: Dimensions.get('window').width,
+              height: Dimensions.get('window').height / 2,
+              shadowOffset: {height: -1, width: -1}, shadowOpacity: 0.05}}
+          ><View style={{alignItems: 'center', paddingTop: 25, height: '100%'}}>
+          {props.isQRShown ? (
+            <Image
+              source={{ uri: props.imageURL }}
+              style={{
+                width: horizontalMarginScale(220),
+                height: verticalMarginScale(220),
+              }}
+            />
+          ) : (
+            <Image
+              source={IMAGES.ticket}
+              style={{
+                marginTop: verticalMarginScale(12),
+              }}
+            />
+          )}
+         
+         <View style={styles.vipContainer}>
+            <Text style={styles.vipText}>VIP</Text>
+            <TouchableOpacity onPress={showTooltip}>
+               <Image source={IMAGES.info_filled} style={styles.icon} />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.infoText}>{LABLE.SHOW_QR_CHECKIN_MESSAGE}</Text>
+
+        </View>
+        
+
+          </ImageBackground>
+
+          {/* <View style={styles.card}>
             <View style={styles.ticket}>
               {props.isQRShown ? (
                 <Image
@@ -86,7 +126,6 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                 ))}
               </View>
               <View style={styles.vipContainer}>
-              {/* { vipTooltipShown && <CustomTooltip />} */}
                 <Text style={styles.vipText}>VIP</Text>
                 <TouchableOpacity onPress={showTooltip}>
                   <Image source={IMAGES.info_filled} style={styles.icon} />
@@ -94,7 +133,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
               </View>
             </View>
             <Image source={IMAGES.half_circle} style={styles.cardBottom} />
-          </View>
+          </View> */}
           <Text style={styles.infoText}>{LABLE.SHOW_QR_CHECKIN_MESSAGE}</Text>
         </View>
       </ScrollView>
@@ -138,7 +177,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 6,
     borderRadius: 50,
-    marginBottom: 20,
   },
   name: {
     fontSize: fontScale(14),
@@ -155,7 +193,7 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
     shadowOffset: { width: 2, height: 4 },
     elevation: 10,
-    backgroundColor: Platform.OS === 'android' ? COLORS.white : COLORS.white,
+    backgroundColor: COLORS.white,
   },
   cardBottom: {
     width: horizontalScale(272),
@@ -185,12 +223,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent:'center',
-    
+    alignSelf: 'center',
+    marginTop: 40
   },
   vipText: {
     fontSize: fontScale(20),
     fontWeight: 'bold',
     marginRight: verticalMarginScale(10),
+    fontFamily: fontFamily.RomieTrial_Bold,
+    textAlign: 'center'
   },
   icon: {
     width: horizontalScale(16),
@@ -199,7 +240,8 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: fontScale(14),
     color: 'gray',
-    marginTop: verticalMarginScale(20),
+    marginTop: verticalMarginScale(50),
+    zIndex: 10
   },
 });
 

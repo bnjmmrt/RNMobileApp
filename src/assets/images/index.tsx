@@ -130,6 +130,7 @@ const IMAGES = {
   close_gray: require('./close-gray.png'),
   menu_gray: require('./menu-gray.png'),
   user_gray: require('./user-gray.png'),
+  ticketBg: require('./ticketBg.png')
 };
 
 export default IMAGES;

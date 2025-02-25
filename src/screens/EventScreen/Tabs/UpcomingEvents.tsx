@@ -55,8 +55,8 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
       if (role === ROLE.HOST) {
         setEvents(prev =>
           currentPage === 1
-            ? // ? data.data.eventsResponse
-              data.data.eventsResponse
+            ? data.data.eventsResponse
+            // ? data.data
             : [...prev, ...data.data.eventsResponse],
         );
       } else {
