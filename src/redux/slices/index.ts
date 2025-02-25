@@ -8,6 +8,7 @@ import appSettingsSlice from './appSettingsSlice';
 import bottomTabsConfigSlice from './bottomTabsConfigSlice';
 import rspvSlice from './rspvSlice';
 import inviteGuestsFlowSlice from './inviteGuestsFlowSlice';
+import eventSlice from './eventSlice';
 
 // Combine all reducers into a single root reducer
 export const rootReducer = combineReducers({
@@ -20,6 +21,7 @@ export const rootReducer = combineReducers({
   bottomTabBar: bottomTabsConfigSlice,
   rspv: rspvSlice,
   inviteGuestsFlow: inviteGuestsFlowSlice,
+  event: eventSlice,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

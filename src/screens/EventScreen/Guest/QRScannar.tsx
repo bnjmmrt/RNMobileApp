@@ -57,11 +57,9 @@ const QRCodeScanner = () => {
     );
     if (response.status === 200) {
       if (response.data.eventQr) {
-        navigation.navigate(ROUTES.GuestCheckInScreen, {
+        navigation.replace(ROUTES.GuestCheckInScreen, {
           guestId: response.data.guestId,
         });
-      }else {
-        FlashMessageComponent.show("error","some error")
       }
     }
   };
@@ -104,11 +102,8 @@ const QRCodeScanner = () => {
   if (!device) return <Text>Loading Camera...</Text>;
   if (loading)
     return (
-      <FullScreenLoader loading={loading}>
-        <View
-          style={styles.validationText}>
-          <Text>Validating QR code</Text>
-        </View>
+      <FullScreenLoader loading={loading} customStyle={{ backgroundColor: COLORS.transperantBackground,}}>
+        {null}
       </FullScreenLoader>
     );
 

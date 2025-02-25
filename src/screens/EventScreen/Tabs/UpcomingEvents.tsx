@@ -55,18 +55,18 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
       if (role === ROLE.HOST) {
         setEvents(prev =>
           currentPage === 1
-            ? // ? data.data.eventsResponse
-              data.data.eventsResponse
+            ? data.data.eventsResponse
+            // ? data.data
             : [...prev, ...data.data.eventsResponse],
         );
       } else {
-        setEvents(prev =>
-          currentPage === 1 ? data.data.data : [...prev, ...data.data.data],
-        );
+          setEvents(prev =>
+            currentPage === 1 ? data.data.data : [...prev, ...data.data.data],
+          );
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.data?.eventsResponse]);
+  }, [data?.data]);
 
   useEffect(() => {
     setRefreshing(isLoading);
