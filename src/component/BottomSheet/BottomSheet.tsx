@@ -17,7 +17,14 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { BackHandler, Platform, StyleSheet, View } from 'react-native';
+import {
+  BackHandler,
+  ColorValue,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  View,
+} from 'react-native';
 import FlashMessage from 'react-native-flash-message';
 import { COLORS } from '../../utils/constants';
 import { Wp } from '../../utils/dimensions';
@@ -27,6 +34,9 @@ import {
 } from '../FlashMessageComponent/FlashMessageComponent';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { BlurView } from '@react-native-community/blur';
+import { useDispatch } from 'react-redux';
+import { changeTopSafeAreaViewColor } from 'src/redux/slices/safeAreaViewConfigSlice';
 
 interface BottomSheetComponentProps {
   children: React.ReactNode;
@@ -38,7 +48,8 @@ interface BottomSheetComponentProps {
   footer?: any;
   backgroundColor?: string;
   enableDynamicSizing?: boolean;
-  showBottomSafeAreaView?: boolean;
+  activeSafeAreaViewColor?: ColorValue;
+  inActiveSafeAreaViewColor?: ColorValue;
 }
 
 export type BottomSheetMethods = {
@@ -60,13 +71,16 @@ const BottomSheetComponent = forwardRef<
       footer,
       backgroundColor,
       enableDynamicSizing = false,
-      showBottomSafeAreaView = true,
+      activeSafeAreaViewColor = '#595959',
+      inActiveSafeAreaViewColor = SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME
+        .topSafeAreaViewColor,
     },
     ref,
   ) => {
     const flashMessageRef = useRef<FlashMessage | null>(null);
     const sheetRef = useRef<BottomSheetModal>(null);
     const { dismissAll } = useBottomSheetModal();
+    const dispatch = useDispatch();
 
     const [isSheetOpen, setIsSheetOpen] = useState(false);
 
@@ -91,6 +105,23 @@ const BottomSheetComponent = forwardRef<
 
     const handleSheetChange = useCallback(
       (index: number) => {
+        if (index !== -1) {
+          dispatch(changeTopSafeAreaViewColor(activeSafeAreaViewColor));
+          if (Platform.OS === 'android') {
+            StatusBar.setBackgroundColor(activeSafeAreaViewColor, true);
+          }
+          StatusBar.setBarStyle('light-content', true);
+        } else {
+          dispatch(changeTopSafeAreaViewColor(inActiveSafeAreaViewColor));
+          if (Platform.OS === 'android') {
+            StatusBar.setBackgroundColor(inActiveSafeAreaViewColor, true);
+          }
+          StatusBar.setBarStyle(
+            SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME.statusBarStyle,
+            true,
+          );
+        }
+
         setIsSheetOpen(index !== -1);
         onChange?.(index);
       },
@@ -127,21 +158,6 @@ const BottomSheetComponent = forwardRef<
       return () => backHandler.remove();
     }, [isSheetOpen]);
 
-    useEffect(() => {
-      if (isSheetOpen) {
-        changeSafeAreaViewConfig({
-          ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-          showBottomSafeAreaView: false,
-          topSafeAreaViewColor: '#00000078',
-        });
-      } else {
-        changeSafeAreaViewConfig({
-          ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-          showBottomSafeAreaView: showBottomSafeAreaView,
-        });
-      }
-    }, [isSheetOpen]);
-
     return (
       <BottomSheetModal
         index={0}
@@ -156,7 +172,19 @@ const BottomSheetComponent = forwardRef<
             {...props}
             appearsOnIndex={0}
             disappearsOnIndex={-1}
-            opacity={0.48}
+            opacity={1}
+            enableTouchThrough
+            style={[
+              StyleSheet.absoluteFill,
+              { backgroundColor: 'transparent' },
+            ]}
+            children={
+              <BlurView
+                style={StyleSheet.absoluteFill}
+                blurType="dark"
+                blurAmount={2}
+              />
+            }
           />
         )}
         handleIndicatorStyle={[

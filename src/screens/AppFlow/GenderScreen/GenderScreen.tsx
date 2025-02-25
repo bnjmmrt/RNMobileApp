@@ -48,7 +48,8 @@ const GenderScreen: React.FC<GenderScreenProps> = ({navigation}) => {
 
   const handleBackPress = () => {
     dispatch(setPageProgress(1));
-    navigation.pop(2);
+    navigation.pop(2)
+    // navigation.navigate('MyDetailsScreen');
   };
 
   useFocusEffect(
@@ -69,6 +70,7 @@ const GenderScreen: React.FC<GenderScreenProps> = ({navigation}) => {
         <View style={styles.genderContainer}>
           {genderList.map(gender => (
             <TouchableOpacity
+            activeOpacity={0.7}
               key={gender.id}
               style={[
                 styles.genderButton,

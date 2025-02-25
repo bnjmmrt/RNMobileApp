@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef } from 'react';
-import { View, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { View, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LABLE, BUTTON_LABLE } from '../../utils/constants';
 import VerifyOtpStyles from './VerifyOtpStyles';
@@ -21,6 +21,7 @@ import { useVerifyOtp } from '../../redux/hooks/useVerifyOtp';
 import { setEmail, setPhone } from '../../redux/slices/appFlowSlice';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { verticalMarginScale } from 'src/utils/dimensions';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -40,15 +41,35 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     route.params.email,
     route.params.phone,
   );
-  const { verifyOtp, isLoading } = useVerifyOtp(
+  const { verifyOtp, isLoading ,error} = useVerifyOtp(
     isMemberExist,
     isGuest,
     route.params.email,
     route.params.phone,
     route.params.isEmail,
   );
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(()=>{
+    otpInputRef.current.setApiError(error);
+  },[error])
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardVisible(true);
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardVisible(false);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
   useEffect(() => {
     const sendTo = route.params.isEmail
       ? route.params.email

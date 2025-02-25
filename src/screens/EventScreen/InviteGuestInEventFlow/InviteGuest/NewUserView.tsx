@@ -71,47 +71,23 @@ const NewUserView: React.FC<NewUserViewProps> = ({
   const navigation = useNavigation<NavigationProp<EventStackParamList>>();
   const dispatch = useDispatch();
 
-  const { selectedUsers, selectedEvent, selectedManualUser, loginData } =
-    useSelector(
-      (state: RootState) => ({
-        selectedUsers: state.inviteGuestsFlow.selectedUsers,
-        selectedEvent: state.inviteGuestsFlow.selectedEvent,
-        selectedManualUser: state.inviteGuestsFlow.selectedManualUser,
-        loginData: state.auth.loginData,
-      }),
-      shallowEqual,
-    );
-
   const [
     getUserWithEmail,
     { error: getUserWithEmailError, isLoading: getUserWithEmailLoading },
   ] = useGetUserWithRolesByEmailMutation();
-  const [
-    getUserWithId,
-    { error: getUserWithIdError, isLoading: getUserWithIdLoading },
-  ] = useGetUserWithRolesByIdMutation();
-  const [
-    markUserFav,
-    { error: markUserFavError, isLoading: markUserFavLoading },
-  ] = useMarkUserFavMutation();
-  const [
-    unMarkUserFav,
-    { error: unMarkUserFavError, isLoading: unMarkUserFavLoading },
-  ] = useUnmarkUserFavMutation();
 
   const fetchUserByEmail = async () => {
     try {
       const emailResponse = await getUserWithEmail({ email: email }).unwrap();
       if (emailResponse.status === 200) {
-        console.log(emailResponse);
-
-        setExistingUserData(emailResponse?.data);
-        // const idResponse = await getUserWithId({
-        //   id: emailResponse?.data?.id,
-        // }).unwrap();
-        // if (emailResponse.status === 200) {
-        //   setExistingUserData(idResponse?.data);
-        // }
+        if (
+          emailResponse?.data?.roles.length === 1 &&
+          emailResponse?.data?.roles[0].name === 'member'
+        ) {
+          setExistingUserData(emailResponse?.data);
+        } else {
+          setExistingUserData(null);
+        }
       } else {
         setExistingUserData(null);
       }
@@ -119,31 +95,6 @@ const NewUserView: React.FC<NewUserViewProps> = ({
       setExistingUserData(null);
       console.error('Error fetching user:', error);
     }
-  };
-
-  const handleFavCta = async (user: string) => {
-    // try {
-    //   let response;
-    //   let payload = {
-    //     targetUserId: user,
-    //     user: loginData.id,
-    //   };
-    //   if (userDetails?.isFavourite) {
-    //     response = await unMarkUserFav(payload).unwrap();
-    //   } else {
-    //     response = await markUserFav(payload).unwrap();
-    //   }
-    //   if (response.status === 200) {
-    //     fetchUserDetails({ user: user });
-    //     FlashMessageComponent.show('success', 'User marked as favorite!');
-    //   } else {
-    //     const typedError = response as ApiErrorInterface;
-    //     FlashMessageComponent.show('error', getErrorMessage(typedError));
-    //   }
-    // } catch (error) {
-    //   const typedError = error as ApiErrorInterface;
-    //   FlashMessageComponent.show('error', getErrorMessage(typedError));
-    // }
   };
 
   useEffect(() => {

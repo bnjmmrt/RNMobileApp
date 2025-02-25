@@ -56,13 +56,13 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
         setEvents(prev =>
           currentPage === 1
             ? data.data.eventsResponse
-            // ? data.data
-            : [...prev, ...data.data.eventsResponse],
+            : // ? data.data
+              [...prev, ...data.data.eventsResponse],
         );
       } else {
-          setEvents(prev =>
-            currentPage === 1 ? data.data.data : [...prev, ...data.data.data],
-          );
+        setEvents(prev =>
+          currentPage === 1 ? data.data.data : [...prev, ...data.data.data],
+        );
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

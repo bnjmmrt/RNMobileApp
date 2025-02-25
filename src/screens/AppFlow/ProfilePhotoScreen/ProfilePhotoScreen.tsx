@@ -130,7 +130,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
           subTitle={LABLE.ADD_A_PHOTO_SUBTITLE}
         />
 
-        <View style={styles.profilePhotoContainer}>
+        <View style={[styles.profilePhotoContainer, { marginTop: 20 }]}>
           <FullScreenLoader
             loading={loading}
             customStyle={styles.profilePhotoContainer}>
@@ -160,6 +160,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
           <EditPictureBottomSheet
             ref={savePhotoBottomSheetRef}
             onPress={savePhoto}
+            onPencilClick={openPicker}
             submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
             cancelButtonText={BUTTON_LABLE.CANCEL}
             snapPoints={[Platform.OS == 'android' ? '50%' : '50%']}

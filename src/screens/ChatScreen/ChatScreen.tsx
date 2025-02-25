@@ -9,7 +9,7 @@ import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { View } from 'react-native-animatable';
 import { RootState } from 'src/redux/slices';
-interface ChatScreenProps extends NativeStackScreenProps<any, any> { }
+interface ChatScreenProps extends NativeStackScreenProps<any, any> {}
 
 const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
   const styles = ChatScreenStyle();
@@ -23,18 +23,25 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
-        showBottomSafeAreaView: false,
-      });
+      if (!hasFullAccess && role !== 'non_member') {
+        changeSafeAreaViewConfig({
+          ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
+          showBottomSafeAreaView: false,
+        });
+      }
     }, []),
   );
   return (
     <View style={styles.container}>
-      {hasFullAccess ?
-        role !== 'non_member' ? <BeforeAppStaticComponent isChatScreen={true} /> : <AfterAppStaticComponent />
-        : <BeforeAppStaticComponent isChatScreen={true} />
-      }
+      {hasFullAccess ? (
+        role !== 'non_member' ? (
+          <BeforeAppStaticComponent isChatScreen={true} />
+        ) : (
+          <AfterAppStaticComponent />
+        )
+      ) : (
+        <BeforeAppStaticComponent isChatScreen={true} />
+      )}
     </View>
   );
 };

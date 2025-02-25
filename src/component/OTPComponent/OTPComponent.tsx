@@ -1,9 +1,9 @@
-import React, {forwardRef, useImperativeHandle, useState, useRef} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import {OtpInput} from 'react-native-otp-entry';
-import {LABLE, BUTTON_LABLE, COLORS} from '../../utils/constants';
-import {fontFamily} from '../../utils/functions';
-import {CustomText} from '../CustomText';
+import React, { forwardRef, useImperativeHandle, useState, useRef } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { OtpInput } from 'react-native-otp-entry';
+import { LABLE, BUTTON_LABLE, COLORS } from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
+import { CustomText } from '../CustomText';
 import {
   fontScale,
   horizontalMarginScale,
@@ -14,6 +14,8 @@ import {
 type OTPComponentProps = {
   performCodeVerification: (code: string) => void;
   resendVerificationCode: (isResend: boolean) => void;
+  error:string
+
 };
 
 type OTPComponentHandle = {
@@ -26,23 +28,32 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
     const [errorMessage, setErrorMessage] = useState<string>('');
     const otpInput = useRef(null);
 
+    const setApiError = (error: string) => {
+      setErrorMessage(error)
+    }
+
     useImperativeHandle(ref, () => ({
       code,
       handleNextPress,
       validateCode,
       showInvalidCodeError,
-      clearOTP
+      clearOTP,
+      setApiError
     }));
 
     const clearOTP = () => {
       otpInput.current.clear(); // Clears the OTP input
     };
-  
+
     const validateCode = (): boolean => {
       if (code.length < 4) {
         setErrorMessage(LABLE.EROOR_ENTER_CODE);
         return false;
       }
+      // if (props.error != '') {
+      //   setErrorMessage(LABLE.INVALID_OTP);
+      //   return false;
+      // }
       setErrorMessage('');
       return true;
     };
@@ -81,7 +92,7 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
             setErrorMessage('');
           }}
           onFilled={(text: string) => console.log(`OTP is ${text}`)}
-          textInputProps={{accessibilityLabel: 'One-Time Password'}}
+          textInputProps={{ accessibilityLabel: 'One-Time Password' }}
           theme={{
             containerStyle: styles.container,
             pinCodeContainerStyle: errorMessage

@@ -55,18 +55,13 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      showEvents
-        ? changeSafeAreaViewConfig({
-            ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-            showBottomSafeAreaView: false,
-            showTopSafeAreaView: false,
-          })
-        : changeSafeAreaViewConfig({
-            ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
-            showBottomSafeAreaView: false,
-            showTopSafeAreaView: false,
-          });
-    }, [loginData?.isInvited]),
+      if (showEvents) {
+        changeSafeAreaViewConfig({
+          ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+          showBottomSafeAreaView: false,
+        });
+      }
+    }, [showEvents]),
   );
 
   const [currentTab, setCurrentTab] = useState<TabItem>(tabs[0]);

@@ -25,7 +25,7 @@ const CreativeFocusScreenStyles = () =>
       borderRadius: radiusScale(20),
       paddingVertical: verticalMarginScale(10),
       paddingHorizontal: horizontalMarginScale(15),
-      margin: verticalMarginScale(5),
+      margin: verticalMarginScale(2),
       backgroundColor: COLORS.lighter_gray,
     },
     selectedCategoryButton: {
