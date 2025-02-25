@@ -13,15 +13,16 @@ const ProfilePhotoScreenStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
-      bottom:Platform.OS==='android' ? 20 :0
+      bottom: Platform.OS === 'android' ? 20 : 0
     },
     btnSmallStyle: {
       width: 'auto',
-      height: verticalScale(50),
+      height: verticalScale(40),
       borderRadius: radiusScale(100),
       alignSelf: 'center',
       backgroundColor: COLORS.tabBorderColor,
       marginTop: Hp(1),
+      paddingHorizontal: 10
     },
     contentContainer: {
       flex: 1,
@@ -69,9 +70,9 @@ const ProfilePhotoScreenStyles = () => {
       color: COLORS.light_gray,
       fontSize: fontScale(14),
       fontFamily: fontFamily.ABCDiatype_Regular,
-      marginVertical: Hp(0.15),
+      marginVertical: Hp(0),
       textAlign: 'center',
-      paddingHorizontal:horizontalMarginScale(10)
+      paddingHorizontal: horizontalMarginScale(10)
     },
     numberContainer: {
       height: verticalScale(20),
@@ -79,7 +80,7 @@ const ProfilePhotoScreenStyles = () => {
       borderRadius: radiusScale(10),
       backgroundColor: COLORS.surfaceSecondary,
       fontSize: fontScale(14),
-      marginTop: Hp(1),
+      marginTop: Hp(1.5),
       alignItems: 'center',
       justifyContent: 'center',
       alignSelf: 'center'
@@ -92,7 +93,6 @@ const ProfilePhotoScreenStyles = () => {
     },
     btnRumor: {
       color: COLORS.black,
-      backgroundColor: COLORS.tabBorderColor,
       fontSize: fontScale(11),
     },
     iconStyle: {
@@ -102,7 +102,8 @@ const ProfilePhotoScreenStyles = () => {
     },
     emailStyle: {
       color: COLORS.black,
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      left: -5
     },
     divider: {
       height: 0.5,

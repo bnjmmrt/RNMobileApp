@@ -418,14 +418,12 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
         ref={filtersSheetRef}
         onSelect={handleFilterSelect}
         selectedValue={selectedFilter}
-        showBottomSafeAreaView={false}
       />
 
       <GuestListSortSheet
         ref={sortSheetRef}
         onSelect={handleSortSelect}
         selectedValue={selectedSort}
-        showBottomSafeAreaView={false}
       />
     </SafeAreaView>
   );

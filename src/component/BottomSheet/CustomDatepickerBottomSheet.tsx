@@ -79,7 +79,7 @@ const CustomDatepickerBottomSheet = forwardRef((props: Props, ref) => {
     }
     const monthNumber = (monthIndex + 1).toString().padStart(2, '0'); // Convert to two-digit month
     const dateString = `${selectedDay}/${monthNumber}/${selectedYear}`;
-    const formattedDate = moment(dateString, 'DD/MM/YYYY').format('MM-DD-YYYY');
+    const formattedDate = moment(dateString, 'DD/MM/YYYY').format('MM/DD/YYYY');
     console.log('Formatted Date:', formattedDate);
     return formattedDate;
   };

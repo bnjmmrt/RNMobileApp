@@ -349,7 +349,9 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
               ? 'Add to Confirmed'
               : isManual
               ? 'Send Invite'
-              : `Send ${selectedUsers.length} Invites`
+              : `Send ${selectedUsers.length} ${
+                  selectedUsers.length > 1 ? 'Invites' : 'Invite'
+                }`
           }
           onPress={() => {
             if (isManual) {

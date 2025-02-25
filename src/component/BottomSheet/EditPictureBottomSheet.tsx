@@ -1,5 +1,5 @@
 import React, { useRef, forwardRef, useState } from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
+import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
 import { COLORS } from '../../utils/constants';
 import Button from '../Button';
@@ -7,9 +7,11 @@ import { fontFamily } from '../../utils/functions';
 import { EndPoint } from '../../ApiManager/config';
 import useApi from '../../axios/useApi';
 import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalScale } from 'src/utils/dimensions';
+import IMAGES from '@images/index';
 
 interface EditPictureBottomSheetProps {
   onPress: () => void;
+  onPencilClick:() =>void;
   title?: string;
   submitButtonText: string;
   cancelButtonText: string;
@@ -40,7 +42,15 @@ const EditPictureBottomSheet = forwardRef(
                 source={{ uri: props.image }}
                 resizeMode="cover"
               />
+              <TouchableOpacity style={styles.iconContainer} onPress={props.onPencilClick}>
+                <Image
+                  resizeMode="contain"
+                  source={IMAGES.pencil}
+                  style={styles.ic_pencil}
+                />
+              </TouchableOpacity>
             </View>
+
           )}
 
           <Button
@@ -93,6 +103,22 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  iconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.black,
+    borderRadius: 50,
+    width: 40,
+    height: 40,
+    position: 'absolute',
+    right: 5,
+    bottom: 15,
+  },
+  ic_pencil: {
+    height: verticalScale(16),
+    width: horizontalScale(16),
+    tintColor: COLORS.white,
   },
 });
 

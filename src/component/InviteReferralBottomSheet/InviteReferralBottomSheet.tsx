@@ -148,7 +148,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
     try {
       await Share.share({
         message:
-          '"Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: [Rumor App Link]"',
+          'Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: [Rumor App Link]',
       });
     } catch (error) {
       console.error('Error sharing invite link:', error);

@@ -330,7 +330,8 @@ export const isIos = (): boolean => platform === 'ios';
 export const isAndroid = (): boolean => platform === 'android';
 
 export const convertDateFormat = (dateString: string): string => {
-  const [month, day, year] = dateString.split('-');
+  console.log("dateString",dateString)
+  const [month, day, year] = dateString.split('/');
   return `${year}-${month}-${day}`;
 };
 export const convertDateToFormatMMDDYYYY = (dateString: string) => {
@@ -444,3 +445,8 @@ export const getRoleRole = (role: string) => {
       return 'Non-Member'
   }
 };
+
+export const dateFormat=(date:string,format:string)=>{
+
+  return moment(date).format(format)
+}

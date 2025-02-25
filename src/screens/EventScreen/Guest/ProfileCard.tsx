@@ -159,12 +159,12 @@ const styles = StyleSheet.create({
   },
   guestCard: {
     backgroundColor: COLORS.white,
+    borderWidth: verticalScale(1),
     borderTopLeftRadius: radiusScale(16),
     borderTopRightRadius: radiusScale(16),
     borderBottomLeftRadius: radiusScale(8),
     borderBottomRightRadius: radiusScale(8),
     overflow: 'hidden',
-    borderWidth: verticalScale(1),
     borderColor: COLORS.neutralBorder,
   },
   guestCardContent: {

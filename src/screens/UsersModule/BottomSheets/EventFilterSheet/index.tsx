@@ -1,4 +1,4 @@
-import {BottomSheetFlatList, BottomSheetView} from '@gorhom/bottom-sheet';
+import { BottomSheetFlatList, BottomSheetView } from '@gorhom/bottom-sheet';
 import React, {
   forwardRef,
   useCallback,
@@ -11,11 +11,11 @@ import BottomSheetComponent, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
-import {COLORS} from 'src/utils/constants';
-import {verticalMarginScale, verticalScale} from 'src/utils/dimensions';
-import {styles} from './style';
+import { COLORS } from 'src/utils/constants';
+import { verticalMarginScale, verticalScale } from 'src/utils/dimensions';
+import { styles } from './style';
 
-export type FilterTypes = 'UPCOMING' | 'INVITED' | 'APPLIED' | 'PAST';
+export type FilterTypes = 'UPCOMING' | 'INVITED' | 'APPLIED' | 'PAST' | '';
 export type Filter = {
   label: string;
   value: FilterTypes;
@@ -31,7 +31,7 @@ export interface EventFilterSheetInterface {
 const EventFilterSheet = forwardRef<
   BottomSheetMethods,
   EventFilterSheetInterface
->(({selectedFilter, setSelectedFilter, filterData, onPressSave}, ref) => {
+>(({ selectedFilter, setSelectedFilter, filterData, onPressSave }, ref) => {
   const sheetRef = useRef<BottomSheetMethods>(null);
 
   const [tempSelectedFilter, setTempSelectedFilter] = useState<Filter | null>(
@@ -50,14 +50,14 @@ const EventFilterSheet = forwardRef<
   };
 
   const renderListRow = useCallback(
-    ({item, index}: {item: Filter; index: number}) => {
+    ({ item, index }: { item: Filter; index: number }) => {
       const isSelected = item.value === tempSelectedFilter?.value;
       return (
         <Button
           title={item.label}
           style={[
             styles.actionButton,
-            isSelected && {borderColor: COLORS.black},
+            isSelected && { borderColor: COLORS.black },
           ]}
           onPress={() => setTempSelectedFilter(item)}
         />
@@ -73,23 +73,22 @@ const EventFilterSheet = forwardRef<
   return (
     <BottomSheetComponent
       ref={sheetRef}
-      snapPoints={[`${verticalScale(39)}%`]}
+      snapPoints={[`${verticalScale(45)}%`]}
       enableDynamicSizing={false}
       onClose={() => {
         closeSheet();
-      }}
-      showBottomSafeAreaView={true}>
-      <BottomSheetView style={{flex: 1}}>
+      }}>
+      <BottomSheetView style={{ flex: 1 }}>
         <BottomSheetFlatList
           data={filterData}
           renderItem={renderListRow}
           keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={{gap: verticalScale(8)}}
+          contentContainerStyle={{ gap: verticalScale(8) }}
           ListFooterComponent={<></>}
           ListHeaderComponent={<></>}
           windowSize={4}
         />
-        <BottomSheetView style={{marginBottom: verticalMarginScale(40)}}>
+        <BottomSheetView style={{ marginBottom: verticalMarginScale(40) }}>
           <Button
             title="Save"
             colorTheme="dark"

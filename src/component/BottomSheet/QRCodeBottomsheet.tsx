@@ -1,9 +1,19 @@
-import React, {useRef, forwardRef} from 'react';
-import {View, StyleSheet, Text, Image, Platform, Alert, ScrollView} from 'react-native';
+import React, { useRef, forwardRef, useState } from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  Platform,
+  Alert,
+  ScrollView,
+  TouchableOpacity,
+  ImageBackground,
+  Dimensions,
+} from 'react-native';
 import BottomSheetComponent from './BottomSheet';
-import {BUTTON_LABLE, COLORS, LABLE} from '../../utils/constants';
-import Button from '../Button';
-import {fontFamily} from '../../utils/functions';
+import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
+import { dateFormat, fontFamily } from '../../utils/functions';
 import {
   fontScale,
   horizontalMarginScale,
@@ -12,58 +22,124 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import useCalender from 'src/utils/hooks/useCalender';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import IMAGES from '@images/index';
 import AvatarInitials from '../AvatarInitials';
+import TooltipComponent from '../TooltipComponent/TooltipComponent';
 
 interface QRCodeBottomsheetProps {
   title: string;
   subTitle: string;
   imageURL: string;
   name: string;
-  isQRShown:boolean
+  isQRShown: boolean;
 }
 const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
-
   const cancelClick = () => {
     ref.current?.close();
   };
 
+  const [vipTooltipShown, setVipTooltipShown] = useState(false);
+
+  const showTooltip = () => {
+    console.log('showTooltipshowTooltipshowTooltip');
+    setVipTooltipShown(true)
+  };
   return (
     <BottomSheetComponent
       ref={ref}
-      snapPoints={[props.isQRShown ? '93%' : '85%']}
+      snapPoints={[props.isQRShown ? '80%' : '75%']}
       onClose={() => console.log(ref)}>
-        <ScrollView>
-      <View style={styles.container}>
-        <Text style={styles.title}>{props.title}</Text>
+      <ScrollView>
+        <View style={styles.container}>
+          <Text numberOfLines={2} style={styles.title}>
+            {props.title}
+          </Text>
 
-        <Text style={[styles.subTitle]}>{props.subTitle}</Text>
-        <View style={styles.pic_Container}>
-          <AvatarInitials name={props.name} size={48} />
-          <Text style={styles.name}>{props.name}</Text>
-          <Image source={IMAGES.info_filled}  />
-        </View>
+          <Text style={[styles.subTitle]}>{dateFormat(props?.subTitle, 'dddd, MMMM Do, hh:mm:A')}</Text>
+          <View style={styles.pic_Container}>
+            <AvatarInitials name={props.name} size={32} />
+            <Text style={styles.name}>{props.name}</Text>
+            <Image source={IMAGES.info_filled} />
+          </View>
 
-        <View style={styles.card}>
+          <ImageBackground
+            resizeMode='contain'
+            source={props.isQRShown ? IMAGES.ticketBg : IMAGES.ticketBgSm}
+            style={{
+              width: props.isQRShown ? Dimensions.get('window').width : 350,
+              height: props.isQRShown ? Dimensions.get('window').height / 2 : 350,
+              marginTop: props.isQRShown ? 0: -25
+            }}
+          ><View style={{ alignItems: 'center', paddingTop: props.isQRShown ? 25 : 40, height: '100%' }}>
+              {props.isQRShown ? (
+                <Image
+                  source={{ uri: props.imageURL }}
+                  style={{
+                    width: horizontalMarginScale(220),
+                    height: verticalMarginScale(220),
+                  }}
+                />
+              ) : (
+                <Image
+                  resizeMode='contain'
+                  source={IMAGES.ticket}
+                  style={{
+                    marginTop: verticalMarginScale(12),
+                    width: 232,
+                    height: 148,
+                  }}
+                />
+              )}
+
+              <View style={styles.vipContainer}>
+                {/* <TooltipComponent/> */}
+                <Text style={styles.vipText}>VIP</Text>
+                <TouchableOpacity onPress={showTooltip}>
+                  <Image source={IMAGES.info_filled} style={styles.icon} />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.infoText}>{LABLE.SHOW_QR_CHECKIN_MESSAGE}</Text>
+
+            </View>
+
+
+          </ImageBackground>
+
+          {/* <View style={styles.card}>
             <View style={styles.ticket}>
-            <Image source={{ uri: props.imageURL} } style={{ width: 270, height: 270 }} resizeMode="contain" />
+              {props.isQRShown ? (
+                <Image
+                  source={{ uri: props.imageURL }}
+                  style={{
+                    width: horizontalMarginScale(232),
+                    height: verticalMarginScale(232),
+                  }}
+                />
+              ) : (
+                <Image
+                  source={IMAGES.ticket}
+                  style={{
+                    marginTop: verticalMarginScale(12),
+                  }}
+                />
+              )}
 
-              <View style={{flexDirection: 'row'}}>
-                {Array.from({length: 6}).map((_, index) => (
+              <View style={{ flexDirection: 'row' }}>
+                {Array.from({ length: 6 }).map((_, index) => (
                   <View key={index} style={styles.divider} />
                 ))}
               </View>
               <View style={styles.vipContainer}>
                 <Text style={styles.vipText}>VIP</Text>
-                <Image source={IMAGES.info_filled} style={styles.icon} />
+                <TouchableOpacity onPress={showTooltip}>
+                  <Image source={IMAGES.info_filled} style={styles.icon} />
+                </TouchableOpacity>
               </View>
             </View>
-          <Image source={IMAGES.half_circle} style={styles.cardBottom} />
+            <Image source={IMAGES.half_circle} style={styles.cardBottom} />
+          </View> */}
+          {/* <Text style={styles.infoText}>{LABLE.SHOW_QR_CHECKIN_MESSAGE}</Text> */}
         </View>
-        <Text style={styles.infoText}>{LABLE.SHOW_QR_CHECKIN_MESSAGE}</Text>
-      </View>
       </ScrollView>
     </BottomSheetComponent>
   );
@@ -72,7 +148,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: horizontalMarginScale(20),
-    paddingVertical: verticalMarginScale(12),
+    // paddingVertical: verticalMarginScale(16),
     gap: 8,
     // justifyContent:"center",
     alignItems: 'center',
@@ -91,8 +167,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subTitle: {
-    color: COLORS.light_gray,
-    fontSize: fontScale(14),
+    color: COLORS.black,
+    fontSize: fontScale(18),
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginTop: verticalMarginScale(2),
     marginBottom: verticalMarginScale(12),
@@ -105,7 +181,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 6,
     borderRadius: 50,
-    marginBottom: 20,
   },
   name: {
     fontSize: fontScale(14),
@@ -114,26 +189,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: verticalMarginScale(6),
   },
   card: {
-    width: horizontalScale(270),
+    width: horizontalScale(272),
     borderTopLeftRadius: radiusScale(10),
     borderTopEndRadius: radiusScale(10),
     shadowColor: COLORS.black,
     shadowOpacity: 0.5,
     shadowRadius: 15,
-    shadowOffset: {width: 2, height: 4},
+    shadowOffset: { width: 2, height: 4 },
     elevation: 10,
-    backgroundColor:Platform.OS === "android" ? COLORS.white:''
+    backgroundColor: COLORS.white,
   },
   cardBottom: {
-    width: horizontalScale(270),
+    width: horizontalScale(272),
     height: Platform.OS === 'android' ? 10 : 20,
-    top: Platform.OS === 'android' ? 10 : -7,
-    resizeMode:  Platform.OS === 'ios' ? 'contain':'cover',
+    top: 10,
+    resizeMode: Platform.OS === 'ios' ? 'contain' : 'cover',
   },
   ticket: {
-    paddingTop:verticalMarginScale(6),
+    paddingTop: verticalMarginScale(6),
     backgroundColor: COLORS.white,
-    width: horizontalScale(270),
+    width: horizontalScale(272),
     justifyContent: 'center',
     alignItems: 'center',
     borderTopLeftRadius: radiusScale(10),
@@ -144,28 +219,32 @@ const styles = StyleSheet.create({
     width: horizontalScale(40),
     height: verticalScale(4),
     backgroundColor: COLORS.borderGray,
-    borderRadius:radiusScale(50),
+    borderRadius: radiusScale(50),
     marginHorizontal: Platform.OS === 'android' ? 3.5 : 3.2,
-    marginVertical:verticalMarginScale(20),
+    marginVertical: verticalMarginScale(20),
   },
   vipContainer: {
-   
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'center',
+    marginTop: 40
   },
   vipText: {
     fontSize: fontScale(20),
     fontWeight: 'bold',
     marginRight: verticalMarginScale(10),
+    fontFamily: fontFamily.RomieTrial_Bold,
+    textAlign: 'center'
   },
   icon: {
-    width: horizontalScale(16),
-    height: verticalScale(16),
+    width: 16,
+    height: 16,
   },
   infoText: {
     fontSize: fontScale(14),
     color: 'gray',
-    marginTop: verticalMarginScale(20),
+    marginTop: verticalMarginScale(50),
+    zIndex: 10
   },
 });
 

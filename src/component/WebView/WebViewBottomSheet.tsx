@@ -34,7 +34,7 @@ const WebViewBottomSheet = forwardRef((props, ref) => {
         <BottomSheetComponent
             ref={ref}
             snapPoints={['90%']} // Adjustable snap points
-            backgroundColor={COLORS.black}
+            backgroundColor={COLORS.webBlack}
             onClose={() => onClose()}
         >
             <WebView
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     webView: {
         flex: 1,
         height: Hp(100),
-        backgroundColor: COLORS.black,
+        backgroundColor: COLORS.webBlack,
     },
 });
 

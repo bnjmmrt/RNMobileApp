@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
-import {SafeAreaView, View} from 'react-native';
-import {shallowEqual, useSelector} from 'react-redux';
-import {RootState} from 'src/redux/slices';
+import { SafeAreaView, View } from 'react-native';
+import { shallowEqual, useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
 
-export const SafeAreaViewWrapper: React.FC<{children: React.ReactNode}> = ({
+export const SafeAreaViewWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const {
@@ -23,13 +23,13 @@ export const SafeAreaViewWrapper: React.FC<{children: React.ReactNode}> = ({
   );
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       {showTopSafeAreaView ? (
-        <SafeAreaView style={{backgroundColor: topSafeAreaViewColor}} />
+        <SafeAreaView style={{ backgroundColor: topSafeAreaViewColor }} />
       ) : null}
       {children}
       {showBottomSafeAreaView ? (
-        <SafeAreaView style={{backgroundColor: bottomSafeAreaViewColor}} />
+        <SafeAreaView style={{ backgroundColor: bottomSafeAreaViewColor }} />
       ) : null}
     </View>
   );

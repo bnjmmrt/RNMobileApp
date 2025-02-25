@@ -38,6 +38,8 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   const lastNameRef = useRef<any>(null);
 
   const onNextClick = () => {
+    firstNameRef.current.validateInputs()
+    lastNameRef.current.validateInputs()
     if (
       firstNameRef.current.validateInputs() &&
       // firstNameRef.current.inputText.length > 2 &&
