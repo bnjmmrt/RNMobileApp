@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import BottomSheetComponent from './BottomSheet';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
-import Button from '../Button';
 import { dateFormat, fontFamily } from '../../utils/functions';
 import {
   fontScale,
@@ -21,13 +20,8 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import useCalender from 'src/utils/hooks/useCalender';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import IMAGES from '@images/index';
 import AvatarInitials from '../AvatarInitials';
-import CustomTooltip from '../TooltipComponent/TooltipComponent';
-import { Placement } from 'react-native-tooltip-2';
-import moment from 'moment';
 
 interface QRCodeBottomsheetProps {
   title: string;
@@ -40,11 +34,13 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
   const cancelClick = () => {
     ref.current?.close();
   };
+ 
+  const [vipTooltipShown, setVipTooltipShown] = useState(false);
 
-  const showTooltip=()=>{
-    console.log("showTooltipshowTooltipshowTooltip")
-   
-  }
+  const showTooltip = () => {
+    console.log('showTooltipshowTooltipshowTooltip');
+    setVipTooltipShown(true)
+  };
   return (
     <BottomSheetComponent
       ref={ref}
@@ -56,7 +52,9 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
             {props.title}
           </Text>
 
-          <Text style={[styles.subTitle]}>{dateFormat(props?.subTitle,'dddd, MMMM Do, h:A')}</Text>
+          <Text style={[styles.subTitle]}>
+            {dateFormat(props?.subTitle, 'dddd, MMMM Do, h:A')}
+          </Text>
           <View style={styles.pic_Container}>
             <AvatarInitials name={props.name} size={32} />
             <Text style={styles.name}>{props.name}</Text>
@@ -87,12 +85,11 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                   <View key={index} style={styles.divider} />
                 ))}
               </View>
-             
               <View style={styles.vipContainer}>
-              {/* { <CustomTooltip position={Placement.TOP} setToolTipVisible={setToolTipVisible} content="Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas."></CustomTooltip>} */}
+              {/* { vipTooltipShown && <CustomTooltip />} */}
                 <Text style={styles.vipText}>VIP</Text>
                 <TouchableOpacity onPress={showTooltip}>
-                   <Image source={IMAGES.info_filled} style={styles.icon} />
+                  <Image source={IMAGES.info_filled} style={styles.icon} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -187,6 +184,8 @@ const styles = StyleSheet.create({
   vipContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent:'center',
+    
   },
   vipText: {
     fontSize: fontScale(20),
