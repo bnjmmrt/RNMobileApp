@@ -34,6 +34,7 @@ export interface EventGuest {
   interest?: string[];
   invitationSource?: string;
   isBanned?: boolean;
+  isFavorite?: boolean;
   maxAdditionalGuests?: number;
   numFollowers?: string;
   partySize?: number;

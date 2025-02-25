@@ -34,6 +34,11 @@ import { EventGuest } from '../types';
 import { useManageGuestMutation } from 'src/redux/actions/eventApiAction';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
+import {
+  useMarkUserFavMutation,
+  useUnmarkUserFavMutation,
+} from 'src/redux/actions/usersApiAction';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 enum GuestStatus {
   DRAFT = 'DRAFT',
@@ -51,7 +56,7 @@ interface GuestDetailScreenProps extends NativeStackScreenProps<any, any> {
 const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   navigation,
   route,
-}) => {
+}): JSX.Element => {
   const guest = route.params?.guest as EventGuest;
   const status = guest?.status?.toLowerCase() || 'draft';
   const eventId = route.params?.eventId;
@@ -65,6 +70,9 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const declineSheetRef = useRef<BottomSheetMethods>(null);
 
   const [manageGuest] = useManageGuestMutation();
+  const [markUserFav] = useMarkUserFavMutation();
+  const [unmarkUserFav] = useUnmarkUserFavMutation();
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const [selectedTicketType, setSelectedTicketType] = useState<TicketType>();
   const [additionalGuests, setAdditionalGuests] = useState(0);
@@ -97,6 +105,16 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     }
   }, [guest?.ticketType, selectedEvent?.ticketTypes]);
 
+  // Set initial favorite status
+  useEffect(() => {
+    const setInitialFavoriteStatus = () => {
+      if (guest?.isFavorite !== undefined) {
+        setIsFavorite(guest.isFavorite);
+      }
+    };
+    setInitialFavoriteStatus();
+  }, [guest?.isFavorite]);
+
   const handleGuestAction = async (
     action: 'CREATE' | 'UPDATE' | 'DELETE',
     newStatus?: GuestStatus,
@@ -125,8 +143,30 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     }
   };
 
-  const handleFavorite = () => {
-    // Handle favorite action
+  const handleFavorite = async () => {
+    try {
+      if (!userId || !guest?.userId) {
+        FlashMessageComponent.show('error', 'Unable to update favorite status');
+        return;
+      }
+
+      if (isFavorite) {
+        await unmarkUserFav({
+          user: userId,
+          targetUserId: guest.userId,
+        }).unwrap();
+        FlashMessageComponent.show('success', 'Removed from favorites');
+      } else {
+        await markUserFav({
+          user: userId,
+          targetUserId: guest.userId,
+        }).unwrap();
+        FlashMessageComponent.show('success', 'Added to favorites');
+      }
+      setIsFavorite(!isFavorite);
+    } catch (error) {
+      FlashMessageComponent.show('error', 'Failed to update favorite status');
+    }
   };
 
   const handleProfile = () => {
@@ -275,7 +315,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             actionButtons={[
               {
                 title: 'Favorite',
-                icon: IMAGES.star_inactive,
+                icon: isFavorite ? IMAGES.star_active : IMAGES.star_inactive,
                 onPress: handleFavorite,
               },
               {
