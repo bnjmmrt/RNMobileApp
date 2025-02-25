@@ -64,14 +64,6 @@ const EventVenue: React.FC<EventVenueProps> = ({ item, handleCalendarPress }) =>
             <Image source={IMAGES.calendarCircle} />
           </TouchableOpacity>
         </View>
-        <GradientSeprator />
-        <View style={{ marginVertical: verticalMarginScale(10) }}>
-          <Text style={styles.title}>{"RSVP to See Location"}</Text>
-          <Text style={styles.subtitle}>{item?.location?.city}</Text>
-        </View>
-        {!isShowLocation && <TouchableOpacity onPress={addEventToCalender}>
-          <Image source={IMAGES.calender_event} />
-        </TouchableOpacity>}
       </View>
       <GradientSeprator />
       <View style={styles.locationContainer}>

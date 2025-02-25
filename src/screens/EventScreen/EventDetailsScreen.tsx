@@ -45,6 +45,7 @@ import { RootState } from 'src/redux/slices';
 import {
   useFetchEventDetailsQuery,
   useFetchHostEventDetailsQuery,
+  useFetchPublicEventDetailsQuery,
 } from 'src/redux/actions/eventApiAction';
 import IMAGES from '@images/index';
 import EventTalent from 'src/component/Event/EventTalent';
@@ -64,7 +65,7 @@ import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: any;
@@ -100,23 +101,22 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     }, []),
   );
 
-  const [acceptInvite, { isLoading: acceptLoading }] =
-    useAcceptInvitationMutation();
+  const [acceptInvite, { isLoading: acceptLoading }] = useAcceptInvitationMutation();
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
   const useFetchEventDetails =
     role === ROLE.HOST
       ? useFetchHostEventDetailsQuery
-      : useFetchEventDetailsQuery;
+      : route?.params?.isCurrentUserIsGuest ? useFetchPublicEventDetailsQuery : useFetchEventDetailsQuery;
   // Ensure argument structure remains consistent
   const queryArgs =
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const) // Type assertion to prevent union mismatch
       : ({
-          userId,
-          eventId: route?.params?.id,
-        } as const); // Type assertion
+        userId,
+        eventId: route?.params?.id,
+      } as const); // Type assertion
 
   const { data, refetch } = useFetchEventDetails(queryArgs as any, {
     refetchOnMountOrArgChange: true,
