@@ -11,9 +11,9 @@ import {
 } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
 import IMAGES from 'src/assets/images';
-import AvatarInitials from 'src/component/AvatarInitials';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
 import { EventGuest } from '../types';
+import FastImage from '@d11/react-native-fast-image';
 
 interface ActionButton {
   title: string;
@@ -36,9 +36,14 @@ const ProfileImage = ({
   profilePicture?: string;
 }) => {
   return (
-    <View style={styles.guestAvatar}>
-      <AvatarInitials name={name} size={80} imgUrl={profilePicture} />
-    </View>
+    <FastImage
+      source={{
+        uri:
+          profilePicture ||
+          'https://ui-avatars.com/api/?name=' + encodeURIComponent(name),
+      }}
+      style={styles.guestAvatar}
+    />
   );
 };
 

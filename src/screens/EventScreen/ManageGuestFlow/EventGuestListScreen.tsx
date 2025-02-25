@@ -216,11 +216,12 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
           <View style={styles.guestInfo}>
             <View style={styles.nameContainer}>
               <Text style={styles.guestName}>{item.name}</Text>
-              {item.additionalGuests && (
+
+              {Boolean(item.additionalGuests?.length) && (
                 <Text
                   style={
                     styles.inviteCount
-                  }>{` +${item.additionalGuests.length}`}</Text>
+                  }>{` +${item.additionalGuests?.length}`}</Text>
               )}
             </View>
 
