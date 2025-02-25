@@ -536,8 +536,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    height: verticalScale(200),
+    height: verticalScale(300),
+    objectFit: 'contain',
     transform: [{ scale: 1.5 }],
-    opacity: 0.7,
   },
 });
