@@ -64,7 +64,12 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
     }, []),
   );
   const handleBackPress = () => {
-    navigation.navigate(ROUTES.EventDetailsScreen, { eventId: eventId });
+    // navigation.navigate(ROUTES.EventDetailsScreen, { eventId: eventId });
+    navigation.goBack()
+  };
+
+  const handleProfilePress = () => {
+    navigation.navigate(ROUTES.UserDetail, { user: eventDetails?.guestProfile.userId });
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -76,6 +81,7 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
       {/* {true ? ( */}
       <ScrollView style={styles.container}>
         <ProfileCard
+        showGuestStatus={false}
           guest={{
             name: eventDetails?.guestProfile?.name,
             avatar: eventDetails?.guestProfile?.profilePicture,
@@ -84,7 +90,7 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
             followers: eventDetails?.guestProfile?.followsYou,
             location: eventDetails?.guestProfile?.location,
             status: eventDetails?.guestProfile?.status,
-            interests: eventDetails?.guestProfile?.interest,
+            interests: eventDetails?.guestProfile?.interest,    
             // isMember:
             //   eventDetails?.guestProfile?.roles[0].roleName === 'non_member'
             //     ? false
@@ -102,7 +108,7 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
             {
               title: LABLE.PROFILE,
               icon: IMAGES.arrow_up_right,
-              onPress: () => {},
+              onPress: handleProfilePress,
               otherStyle: styles.profileButton,
             },
           ]}

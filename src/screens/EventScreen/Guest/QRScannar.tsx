@@ -57,11 +57,9 @@ const QRCodeScanner = () => {
     );
     if (response.status === 200) {
       if (response.data.eventQr) {
-        navigation.navigate(ROUTES.GuestCheckInScreen, {
+        navigation.replace(ROUTES.GuestCheckInScreen, {
           guestId: response.data.guestId,
         });
-      }else {
-        FlashMessageComponent.show("error","some error")
       }
     }
   };

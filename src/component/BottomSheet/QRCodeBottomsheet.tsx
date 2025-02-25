@@ -24,6 +24,7 @@ import {
 } from 'src/utils/dimensions';
 import IMAGES from '@images/index';
 import AvatarInitials from '../AvatarInitials';
+import TooltipComponent from '../TooltipComponent/TooltipComponent';
 
 interface QRCodeBottomsheetProps {
   title: string;
@@ -87,6 +88,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
           )}
          
          <View style={styles.vipContainer}>
+          {/* <TooltipComponent/> */}
             <Text style={styles.vipText}>VIP</Text>
             <TouchableOpacity onPress={showTooltip}>
                <Image source={IMAGES.info_filled} style={styles.icon} />

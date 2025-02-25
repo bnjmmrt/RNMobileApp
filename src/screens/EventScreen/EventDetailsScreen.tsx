@@ -134,6 +134,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   // const [qrURL, setQrURL] = useState('');
   const [eventDetails, setEventDetails] = useState<any>({});
   const [calendarDetails, setCalendarDetails] = useState<any>({});
+  const [useQr, setUseQr] = useState<boolean>(false);
   useFocusEffect(
     useCallback(() => {
       refetch();
@@ -152,8 +153,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     return new Date(`${datePart}T${timePart}Z`).toISOString();
   };
   useEffect(() => {
-    // console.log('Event data:', data);
+    //  console.log('Event data:', data);
     if (data?.data) {
+      setUseQr(data.data.useQr)
       setEventDetails({
         title: data.data.name,
         subTitle: data.data.startDate,
@@ -221,7 +223,13 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
   const onViewTicketClick = () => {
     //API call
-    generateTicket();
+    if(useQr){
+      generateTicket();
+    }else{
+      setIsQRShown(false)
+      qrCodeBottomSheetRef?.current.open();
+    }
+   
   };
   const addCalenderEvents = () => {
     calenderEventsBottomSheetRef.current?.open();
@@ -247,8 +255,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const onCheckInClick = async () => {
+   if(useQr){
     dispatch(setEventId(route?.params?.id))
     navigation.navigate(ROUTES.QRCodeScanner);
+   }else{
+     navigateToViewList()
+   }
   };
 
   const onPressInviteGuests = () => {
@@ -256,6 +268,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     navigation.navigate(ROUTES.SelectGuestsToInviteScreen);
   };
 
+  const navigateToViewList=() =>{
+    navigation.navigate('EventGuestList', {
+      guests: data?.data?.guests || [],
+    })
+  }
+   
   const imageWrapperStyle = StyleSheet.create({
     wrapper: {
       height: verticalScale(528),
@@ -343,11 +361,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               style={styles.btnStyleLight}
               title="View Guest List"
               colorTheme="light"
-              onPress={() =>
-                navigation.navigate('EventGuestList', {
-                  guests: data?.data?.guests || [],
-                })
-              }
+              onPress={navigateToViewList}
             />
           </View>
 
