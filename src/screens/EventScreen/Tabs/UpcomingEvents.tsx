@@ -56,7 +56,7 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
         setEvents(prev =>
           currentPage === 1
             ? // ? data.data.eventsResponse
-              data.data
+              data.data.eventsResponse
             : [...prev, ...data.data.eventsResponse],
         );
       } else {
@@ -65,7 +65,8 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
         );
       }
     }
-  }, [data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.data?.eventsResponse]);
 
   useEffect(() => {
     setRefreshing(isLoading);
