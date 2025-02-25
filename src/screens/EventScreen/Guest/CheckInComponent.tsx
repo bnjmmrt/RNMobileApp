@@ -1,4 +1,5 @@
 import IMAGES from '@images/index';
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -11,6 +12,7 @@ import {
 } from 'react-native';
 import { Image } from 'react-native-animatable';
 import AvatarInitials from 'src/component/AvatarInitials';
+import { ROUTES } from 'src/navigation/Route';
 import { BUTTON_LABLE, COLORS, LABLE } from 'src/utils/constants';
 import {
   fontScale,
@@ -44,13 +46,18 @@ const renderItemComponent = (
   index: number,
   expandList: any[],
   toggleExpand: any,
+  navigation: any,
 ) => {
   const getAvatar = (item: any): any => {
     return (
       item?.additionalGuest?.firstName + ' ' + item?.additionalGuest?.lastName
     );
   };
-  console.log('getAvatar', getAvatar(item));
+  const handleProfilePress = () => {
+    navigation.navigate(ROUTES.UserDetail, {
+      user: item?.additionalGuest?.id,
+    });
+  };
   return (
     <View style={[styles.card, { padding: 0 }]}>
       <View style={[styles.guestCard, true && styles.bottomRadius]}>
@@ -118,7 +125,9 @@ const renderItemComponent = (
       </View>
 
       {expandList[index]?.isExpand && (
-        <TouchableOpacity style={styles.profileButton}>
+        <TouchableOpacity
+          style={styles.profileButton}
+          onPress={handleProfilePress}>
           <Image source={IMAGES.arrow_up_right} />
           <Text style={styles.profileText}>{BUTTON_LABLE.PROFILE}</Text>
         </TouchableOpacity>
@@ -133,6 +142,8 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   privateGuestNote,
   maxAdditionalGuests,
 }) => {
+  const navigation = useNavigation();
+  const [isShownCard, setIsShownCard] = useState(true);
   const [expandlist, setExpandList] = useState<
     {
       id: number;
@@ -178,49 +189,63 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
       ),
     );
   };
+  const handleCardShown = () => {
+    setIsShownCard(!isShownCard);
+  };
 
   return (
     <View style={styles.card}>
-      <View style={styles.header}>
+      <View style={[styles.header,{borderBottomWidth:!isShownCard ? 0 :1}]}>
         <Text style={styles.headerText}>{LABLE.GUEST_CHICKED_IN}</Text>
-        <TouchableOpacity style={styles.iconButton}>
-          <Image source={IMAGES.arrowUpgray} />
+        <TouchableOpacity style={styles.iconButton} onPress={handleCardShown}>
+          <Image
+            source={isShownCard ? IMAGES.arrowUpgray : IMAGES.arrowDowngray}
+          />
         </TouchableOpacity>
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.label}>
-          {LABLE.TICKET_TYPE} <Text style={styles.required}>*</Text>
-        </Text>
-        <View style={styles.dropdown}>
-          <Text style={styles.dropdownText}>{ticketType}</Text>
-          <Image source={IMAGES.downArrow} />
-        </View>
-      </View>
+      {isShownCard && (
+        <>
+          <View style={styles.section}>
+            <Text style={styles.label}>
+              {LABLE.TICKET_TYPE} <Text style={styles.required}>*</Text>
+            </Text>
+            <View style={styles.dropdown}>
+              <Text style={styles.dropdownText}>{ticketType}</Text>
+              <Image source={IMAGES.downArrow} />
+            </View>
+          </View>
 
-      <Text style={styles.sectionTitle}>{LABLE.LEAD_GUEST}</Text>
+          <Text style={styles.sectionTitle}>{LABLE.LEAD_GUEST}</Text>
 
-      <View style={styles.section}>
-        <Text style={styles.label}>{LABLE.GUEST_NOTE}</Text>
-        <TextInput
-          style={styles.input}
-          placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
-          defaultValue={privateGuestNote}
-          multiline
-          editable={false}
-        />
-      </View>
-      <Text style={styles.sectionTitle}>{LABLE.PLUS_1S}</Text>
-     <FlatList
-          data={expandlist || []}
-          keyExtractor={item => item?.id?.toString()}
-          nestedScrollEnabled
-          renderItem={({ item, index }) =>
-            renderItemComponent(item, index, expandlist, toggleExpand)
-          }
-          //   contentContainerStyle={styles.container}
-        />
-    
+          <View style={styles.section}>
+            <Text style={styles.label}>{LABLE.GUEST_NOTE}</Text>
+            <TextInput
+              style={styles.input}
+              placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
+              defaultValue={privateGuestNote}
+              multiline
+              editable={false}
+            />
+          </View>
+          <Text style={styles.sectionTitle}>{LABLE.PLUS_1S}</Text>
+          <FlatList
+            data={expandlist || []}
+            keyExtractor={item => item?.id?.toString()}
+            nestedScrollEnabled
+            renderItem={({ item, index }) =>
+              renderItemComponent(
+                item,
+                index,
+                expandlist,
+                toggleExpand,
+                navigation,
+              )
+            }
+            //   contentContainerStyle={styles.container}
+          />
+        </>
+      )}
     </View>
   );
 };

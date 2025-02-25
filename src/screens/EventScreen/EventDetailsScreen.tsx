@@ -45,6 +45,7 @@ import { RootState } from 'src/redux/slices';
 import {
   useFetchEventDetailsQuery,
   useFetchHostEventDetailsQuery,
+  useFetchPublicEventDetailsQuery,
 } from 'src/redux/actions/eventApiAction';
 import IMAGES from '@images/index';
 import EventTalent from 'src/component/Event/EventTalent';
@@ -57,13 +58,14 @@ import { setSelectedEventForInvite } from 'src/redux/slices/inviteGuestsFlowSlic
 import { EndPoint } from 'src/ApiManager/config';
 import useApi from 'src/axios/useApi';
 import moment from 'moment';
+import { setEventId } from 'src/redux/slices/eventSlice';
 import { BlurView } from '@react-native-community/blur';
 import LinearGradient from 'react-native-linear-gradient';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: any;
@@ -99,23 +101,22 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     }, []),
   );
 
-  const [acceptInvite, { isLoading: acceptLoading }] =
-    useAcceptInvitationMutation();
+  const [acceptInvite, { isLoading: acceptLoading }] = useAcceptInvitationMutation();
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
   const useFetchEventDetails =
     role === ROLE.HOST
       ? useFetchHostEventDetailsQuery
-      : useFetchEventDetailsQuery;
+      : route?.params?.isCurrentUserIsGuest ? useFetchPublicEventDetailsQuery : useFetchEventDetailsQuery;
   // Ensure argument structure remains consistent
   const queryArgs =
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const) // Type assertion to prevent union mismatch
       : ({
-          userId,
-          eventId: route?.params?.id,
-        } as const); // Type assertion
+        userId,
+        eventId: route?.params?.id,
+      } as const); // Type assertion
 
   const { data, refetch } = useFetchEventDetails(queryArgs as any, {
     refetchOnMountOrArgChange: true,
@@ -133,6 +134,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   // const [qrURL, setQrURL] = useState('');
   const [eventDetails, setEventDetails] = useState<any>({});
   const [calendarDetails, setCalendarDetails] = useState<any>({});
+  const [useQr, setUseQr] = useState<boolean>(false);
   useFocusEffect(
     useCallback(() => {
       refetch();
@@ -151,8 +153,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     return new Date(`${datePart}T${timePart}Z`).toISOString();
   };
   useEffect(() => {
-    // console.log('Event data:', data);
+    //  console.log('Event data:', data);
     if (data?.data) {
+      setUseQr(data.data.useQr)
       setEventDetails({
         title: data.data.name,
         subTitle: data.data.startDate,
@@ -208,14 +211,25 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       EndPoint.generate_ticket + data?.data?.guestId,
     );
     if (response.status === 200) {
+      if(response.data.eventQr)
+     {
       setEventDetails({ ...eventDetails, qrUrl: response.data.b64QRCode });
       qrCodeBottomSheetRef?.current.open();
+     }else{
+      FlashMessageComponent.show('error',"QR not genetaed")
+     }
     }
   };
 
   const onViewTicketClick = () => {
     //API call
-    generateTicket();
+    if(useQr){
+      generateTicket();
+    }else{
+      setIsQRShown(false)
+      qrCodeBottomSheetRef?.current.open();
+    }
+   
   };
   const addCalenderEvents = () => {
     calenderEventsBottomSheetRef.current?.open();
@@ -241,7 +255,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const onCheckInClick = async () => {
+   if(useQr){
+    dispatch(setEventId(route?.params?.id))
     navigation.navigate(ROUTES.QRCodeScanner);
+   }else{
+     navigateToViewList()
+   }
   };
 
   const onPressInviteGuests = () => {
@@ -249,6 +268,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     navigation.navigate(ROUTES.SelectGuestsToInviteScreen);
   };
 
+  const navigateToViewList=() =>{
+    navigation.navigate('EventGuestList', {
+      guests: data?.data?.guests || [],
+    })
+  }
+   
   const imageWrapperStyle = StyleSheet.create({
     wrapper: {
       height: verticalScale(528),
@@ -336,11 +361,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               style={styles.btnStyleLight}
               title="View Guest List"
               colorTheme="light"
-              onPress={() =>
-                navigation.navigate('EventGuestList', {
-                  guests: data?.data?.guests || [],
-                })
-              }
+              onPress={navigateToViewList}
             />
           </View>
 
@@ -394,17 +415,18 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           </View>
         )}
 
-        {isDeclinedByMe && (
-          <View style={{ margin: 20 }}>
-            <Button
-              disabled={false}
-              style={styles.btnStyle}
-              title={BUTTON_LABLE.DISCOVER_MORE_EVENTS}
-              colorTheme="dark"
-              onPress={onDiscoverMoreClick}
-            />
-          </View>
-        )}
+      <CalenderEventsBottomSheet
+        ref={calenderEventsBottomSheetRef}
+        eventDetails={calendarDetails}
+      />
+      <QRCodeBottomsheet
+        ref={qrCodeBottomSheetRef}
+        title={eventDetails?.title}
+        subTitle={eventDetails?.subTitle}
+        imageURL={eventDetails?.qrUrl}
+        isQRShown={isQRShown}
+        name={eventDetails?.name}
+      />
 
         <CalenderEventsBottomSheet
           ref={calenderEventsBottomSheetRef}
