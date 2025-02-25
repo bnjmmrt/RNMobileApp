@@ -121,16 +121,9 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
       // FlashMessageComponent.show('success', LABLE.OTP_VERIFIED_SUCCESSFULLY);
       dispatch(setPageProgress(3));
       dispatch(setIsEmailPhoneBothVerified(true));
-      navigation.navigate('GenderScreen');
+      navigation.replace('GenderScreen');
     } else {
-      otpInputRef.current && otpInputRef.current.handleNextPress();
-      setErrorMsg(LABLE.INVALID_OTP)
-      otpInputRef.current.clearOTP();
-
-      // FlashMessageComponent.show(
-      //   'error',
-      //   LABLE.SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN,
-      // );
+      otpInputRef.current?.showInvalidCodeError(LABLE.ERROR_VERIFY_CODE)
     }
   };
 
