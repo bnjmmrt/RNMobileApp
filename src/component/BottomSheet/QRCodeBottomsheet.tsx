@@ -54,9 +54,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
             {props.title}
           </Text>
 
-          <Text style={[styles.subTitle]}>
-            {dateFormat(props?.subTitle, 'dddd, MMMM Do, h:A')}
-          </Text>
+          <Text style={[styles.subTitle]}>{dateFormat(props?.subTitle,'dddd, MMMM Do, hh:mm:A GT')}</Text>
           <View style={styles.pic_Container}>
             <AvatarInitials name={props.name} size={32} />
             <Text style={styles.name}>{props.name}</Text>
@@ -222,7 +220,6 @@ const styles = StyleSheet.create({
   vipContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent:'center',
     alignSelf: 'center',
     marginTop: 40
   },
