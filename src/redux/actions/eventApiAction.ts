@@ -1,5 +1,7 @@
-import { ManageGuestPayload } from 'src/screens/EventScreen/types'
-import { GuestListResponse } from 'src/screens/EventScreen/types'
+import {
+  ManageGuestPayload,
+  GuestListResponse,
+} from 'src/screens/EventScreen/types';
 import { createBaseApi } from '../../ApiManager/createBaseApi';
 
 export const eventApiAction = createBaseApi.injectEndpoints({
@@ -132,44 +134,32 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       providesTags: ['EventGuestList'],
     }),
 
-    deleteGuest: builder.mutation({
-      query: ({ eventId, guestId }: { eventId: string; guestId: string }) => ({
-        url: `v1/events/${eventId}/guests/${guestId}`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['EventGuestList'],
-    }),
-
-    updateGuestStatus: builder.mutation({
+    manageGuest: builder.mutation({
       query: ({
         eventId,
         guestId,
+        action,
         payload,
       }: {
         eventId: string;
-        guestId: string;
-        payload: ManageGuestPayload;
-      }) => ({
-        url: `v1/events/${eventId}/guests/${guestId}`,
-        method: 'PUT',
-        body: payload,
-      }),
-      invalidatesTags: ['EventDetails', 'GuestStatusCount'],
-    }),
+        guestId?: string;
+        action: 'CREATE' | 'UPDATE' | 'DELETE';
+        payload?: ManageGuestPayload;
+      }) => {
+        const baseUrl = 'v1/events/manage-guests';
 
-    createGuest: builder.mutation({
-      query: ({
-        eventId,
-        payload,
-      }: {
-        eventId: string;
-        payload: ManageGuestPayload;
-      }) => ({
-        url: `v1/events/${eventId}/guests`,
-        method: 'POST',
-        body: payload,
-      }),
-      invalidatesTags: ['EventDetails', 'GuestStatusCount'],
+        return {
+          url: baseUrl,
+          method: 'POST',
+          body: {
+            eventId,
+            guestId,
+            action,
+            ...payload,
+          },
+        };
+      },
+      invalidatesTags: ['EventDetails', 'GuestStatusCount', 'EventGuestList'],
     }),
   }),
 });
@@ -183,8 +173,6 @@ export const {
   useFetchDashboardUpcomingEventsQuery,
   useFetchHostEventDetailsQuery,
   useGetGuestsQuery,
-  useDeleteGuestMutation,
-  useUpdateGuestStatusMutation,
-  useCreateGuestMutation,
+  useManageGuestMutation,
   useFetchPublicEventDetailsQuery,
 } = eventApiAction;

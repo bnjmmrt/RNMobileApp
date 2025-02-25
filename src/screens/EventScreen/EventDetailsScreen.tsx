@@ -1,18 +1,5 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useLayoutEffect,
-} from 'react';
-import {
-  View,
-  ScrollView,
-  StyleSheet,
-  Text,
-  SafeAreaView,
-  Platform,
-} from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { View, ScrollView, StyleSheet, Text, Platform } from 'react-native';
 import {
   BUTTON_LABLE,
   COLORS,
@@ -37,7 +24,6 @@ import { FlatList } from 'react-native-gesture-handler';
 import EventVenue from 'src/component/Event/EventVenue';
 import EventOverview from 'src/component/Event/EventOverview';
 import Button from 'src/component/Button';
-import EventAnouncements from 'src/component/Event/EventAnnouncements';
 import QRCodeBottomsheet from 'src/component/BottomSheet/QRCodeBottomsheet';
 import CalenderEventsBottomSheet from 'src/component/BottomSheet/CalenderEventsBottomSheet';
 import { useDispatch, useSelector } from 'react-redux';
@@ -137,6 +123,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   // const [qrURL, setQrURL] = useState('');
   const [eventDetails, setEventDetails] = useState<any>({});
   const [calendarDetails, setCalendarDetails] = useState<any>({});
+
   const [useQr, setUseQr] = useState<boolean>(false);
   useFocusEffect(
     useCallback(() => {
@@ -270,8 +257,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const navigateToViewList = () => {
+    dispatch(setSelectedEventForInvite(data.data));
     navigation.navigate('EventGuestList', {
-      guests: data?.data?.guests || [],
+      eventId: route?.params?.id,
     });
   };
 
@@ -283,8 +271,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       marginTop: verticalScale(20) + STATUS_BAR_HEIGHT,
     },
   });
-
-  console.log('guest list', data?.data?.guests, 'geuest list');
 
   return (
     <>

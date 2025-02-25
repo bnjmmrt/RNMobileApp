@@ -30,7 +30,7 @@ export interface EventGuest {
   declinedBy?: string;
   declinedByPicture?: string;
   email?: string;
-  gender?: 'MALE' | 'FEMALE' | 'OTHER';
+  gender?: 'MALE' | 'FEMALE' | 'OTHER' | 'NOT_APPLICABLE';
   interest?: string[];
   invitationSource?: string;
   isBanned?: boolean;
@@ -42,6 +42,7 @@ export interface EventGuest {
   ticketType?: string;
   userId?: string;
   vouches?: Vouch[];
+  privateGuestNote?: string;
 }
 
 export interface ManageGuestPayload {

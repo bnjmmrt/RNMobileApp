@@ -39,12 +39,7 @@ import GuestEmptyRecord from 'src/component/EmptyRecord/GuestEmptyRecord';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
 import { ROUTES } from 'src/navigation/Route';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  useDeleteGuestMutation,
-  useUpdateGuestStatusMutation,
-  useCreateGuestMutation,
-  useGetGuestsQuery,
-} from 'src/redux/actions/eventApiAction';
+import { useGetGuestsQuery } from 'src/redux/actions/eventApiAction';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 interface EventGuestListProps extends NativeStackScreenProps<any, any> {
@@ -99,57 +94,6 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     guest => guest.status === 'CONFIRMED',
   ).length;
   const totalGuestCount = guests.length;
-
-  // Add new API hooks
-  const [deleteGuest] = useDeleteGuestMutation();
-  const [updateGuestStatus] = useUpdateGuestStatusMutation();
-  const [createGuest] = useCreateGuestMutation();
-
-  // Test functions for the API actions
-  const handleDeleteGuest = async (guestId: string) => {
-    try {
-      const result = await deleteGuest({
-        eventId: '123', // Replace with actual event ID
-        guestId,
-      }).unwrap();
-      console.log('Delete guest result:', result);
-    } catch (error) {
-      console.error('Error deleting guest:', error);
-    }
-  };
-
-  const handleUpdateGuestStatus = async (
-    guestId: string,
-    newStatus: string,
-  ) => {
-    try {
-      const result = await updateGuestStatus({
-        eventId: '123', // Replace with actual event ID
-        guestId,
-        payload: {
-          guestStatus: newStatus as any,
-        },
-      }).unwrap();
-      console.log('Update guest status result:', result);
-    } catch (error) {
-      console.error('Error updating guest status:', error);
-    }
-  };
-
-  const handleCreateGuest = async () => {
-    try {
-      const result = await createGuest({
-        eventId: '123', // Replace with actual event ID
-        payload: {
-          guestStatus: 'DRAFT',
-          users: ['user123'], // Replace with actual user IDs
-        },
-      }).unwrap();
-      console.log('Create guest result:', result);
-    } catch (error) {
-      console.error('Error creating guest:', error);
-    }
-  };
 
   // Filter and sort guests
   const filteredAndSortedGuests = useMemo(() => {

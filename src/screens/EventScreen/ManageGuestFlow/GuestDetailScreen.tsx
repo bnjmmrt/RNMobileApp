@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import { COLORS, BUTTON_LABLE } from 'src/utils/constants';
 import { fontFamily } from 'src/utils/functions';
@@ -30,6 +31,18 @@ import TicketTypeBottomSheet, {
 } from '../InviteGuestInEventFlow/TicketTypeBottomSheet';
 import DeclineBottomSheet from '../Guest/DeclineBottomSheet';
 import { EventGuest } from '../types';
+import { useManageGuestMutation } from 'src/redux/actions/eventApiAction';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+
+enum GuestStatus {
+  DRAFT = 'DRAFT',
+  INVITED = 'INVITED',
+  CONFIRMED = 'CONFIRMED',
+  DECLINED = 'DECLINED',
+  APPLIED = 'APPLIED',
+  REFUSED = 'REFUSED',
+}
 
 interface GuestDetailScreenProps extends NativeStackScreenProps<any, any> {
   guest?: EventGuest;
@@ -41,51 +54,76 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 }) => {
   const guest = route.params?.guest as EventGuest;
   const status = guest?.status?.toLowerCase() || 'draft';
+  const eventId = route.params?.eventId;
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  const selectedEvent = useSelector(
+    (state: RootState) => state.inviteGuestsFlow.selectedEvent,
+  );
 
   const actionSheetRef = useRef<BottomSheetMethods>(null);
   const ticketTypeRef = useRef<any>(null);
   const declineSheetRef = useRef<BottomSheetMethods>(null);
 
-  const [selectedTicketType, setSelectedTicketType] =
-    React.useState<TicketType>();
-  const [additionalGuests, setAdditionalGuests] = React.useState(0);
-  const [inviteMessage, setInviteMessage] = React.useState('');
-  const [guestNote, setGuestNote] = React.useState('');
-  const [directlySendToConfirm, setDirectlySendToConfirm] =
-    React.useState(false);
+  const [manageGuest] = useManageGuestMutation();
+
+  const [selectedTicketType, setSelectedTicketType] = useState<TicketType>();
+  const [additionalGuests, setAdditionalGuests] = useState(0);
+  const [inviteMessage, setInviteMessage] = useState('');
+  const [guestNote, setGuestNote] = useState(guest?.privateGuestNote || '');
+  const [directlySendToConfirm, setDirectlySendToConfirm] = useState(false);
+
+  // console.log('guest', guest);
+
+  console.log('selectedEvent', selectedEvent);
 
   // Set initial additional guests count after component mounts
-  React.useEffect(() => {
+  useEffect(() => {
     const guestCount = guest?.additionalGuests?.length;
     if (typeof guestCount === 'number') {
       setAdditionalGuests(guestCount);
     }
   }, [guest?.additionalGuests]);
 
-  // Mock ticket types data
-  const mockTicketTypes: TicketType[] = [
-    {
-      id: '1',
-      name: 'Standard',
-      capacity: 100,
-      description: 'Standard ticket type',
-      enabled: true,
-    },
-    {
-      id: '2',
-      name: 'VIP',
-      capacity: 50,
-      description: 'VIP ticket type with premium benefits',
-      enabled: true,
-    },
-    {
-      id: '3',
-      name: 'Premium',
-      capacity: 25,
-      description: 'Premium ticket type with exclusive access',
-      enabled: true,
-    },
-  ];
+  // Set initial ticket type if guest has one
+  useEffect(() => {
+    if (guest?.ticketType && selectedEvent?.ticketTypes) {
+      // Find ticket type by name since guest.ticketType is the name
+      const matchingTicket = selectedEvent.ticketTypes.find(
+        (ticket: TicketType) => ticket.name === guest.ticketType,
+      );
+      if (matchingTicket) {
+        setSelectedTicketType(matchingTicket);
+      }
+    }
+  }, [guest?.ticketType, selectedEvent?.ticketTypes]);
+
+  const handleGuestAction = async (
+    action: 'CREATE' | 'UPDATE' | 'DELETE',
+    newStatus?: GuestStatus,
+  ) => {
+    try {
+      const payload = {
+        status: newStatus,
+        guestStatus: newStatus as GuestStatus,
+        ticketTypeId: selectedTicketType?.id,
+        additionalGuests,
+        inviteMessage,
+        guestNote,
+        directlySendToConfirm,
+      };
+
+      await manageGuest({
+        eventId,
+        guestId: guest?.id,
+        action,
+        payload,
+      }).unwrap();
+
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert('Error', 'Failed to update guest status');
+    }
+  };
 
   const handleFavorite = () => {
     // Handle favorite action
@@ -134,11 +172,6 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     }
   };
 
-  const handleDelete = () => {
-    // Handle delete action here
-    console.log('Deleting guest:', guest);
-  };
-
   const renderFooterButtons = () => {
     switch (status) {
       case 'draft':
@@ -154,13 +187,18 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                 style={styles.draftButton}
                 title={BUTTON_LABLE.SAVE_DRAFT}
                 colorTheme="light"
-                onPress={() => {}}
+                onPress={() => handleGuestAction('UPDATE', GuestStatus.DRAFT)}
               />
               <Button
                 style={styles.sendButton}
                 title={BUTTON_LABLE.SEND_INVITE}
                 colorTheme="dark"
-                onPress={() => {}}
+                onPress={() =>
+                  handleGuestAction(
+                    guest?.id ? 'UPDATE' : 'CREATE',
+                    GuestStatus.INVITED,
+                  )
+                }
               />
             </View>
           </>
@@ -177,7 +215,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               style={[styles.sendButton]}
               title={BUTTON_LABLE.APPROVE_REQUEST}
               colorTheme="dark"
-              onPress={() => {}}
+              onPress={() => handleGuestAction('UPDATE', GuestStatus.CONFIRMED)}
             />
           </>
         );
@@ -205,7 +243,9 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               style={[styles.sendButton]}
               title={BUTTON_LABLE.UPDATE_INVITE}
               colorTheme="dark"
-              onPress={() => {}}
+              onPress={() =>
+                handleGuestAction('UPDATE', guest?.status as GuestStatus)
+              }
             />
           </>
         );
@@ -251,7 +291,15 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
           <InviteDetails
             isCollapsible
             ticketTypeRef={ticketTypeRef}
-            selectedTicketType={selectedTicketType}
+            selectedTicketType={
+              selectedTicketType ||
+              (guest?.ticketType
+                ? {
+                    id: guest.ticketType, // We don't have the ID yet
+                    name: guest.ticketType, // But we have the name
+                  }
+                : undefined)
+            }
             onTicketTypePress={() => actionSheetRef?.current?.open()}
             additionalGuests={additionalGuests}
             onAdditionalGuestsChange={setAdditionalGuests}
@@ -260,6 +308,8 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             onInviteMessageChange={setInviteMessage}
             guestNote={guestNote}
             onGuestNoteChange={setGuestNote}
+            eventName={selectedEvent?.name}
+            eventStartDate={selectedEvent?.startDate}
             directlySendToConfirm={directlySendToConfirm}
             onDirectlySendToConfirmChange={setDirectlySendToConfirm}
           />
@@ -273,7 +323,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 
       <TicketTypeBottomSheet
         ref={actionSheetRef}
-        ticketTypes={mockTicketTypes}
+        ticketTypes={selectedEvent?.ticketTypes || []}
         selectedTicketType={selectedTicketType}
         setSelectedTicketType={setSelectedTicketType}
       />
@@ -281,7 +331,9 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       <DeclineBottomSheet
         ref={declineSheetRef}
         {...getDeclineSheetProps()}
-        onConfirm={handleDelete}
+        onConfirm={() => {
+          handleGuestAction('DELETE');
+        }}
       />
     </SafeAreaView>
   );

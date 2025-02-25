@@ -60,7 +60,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   actionButtons = [],
   showGuestStatus = true,
 }) => {
-  const isMember = guest.age && guest.profilePicture;
+  const isMember = Boolean(guest.age && guest.profilePicture);
 
   return (
     <>
