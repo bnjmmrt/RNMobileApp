@@ -33,7 +33,7 @@ const ReferralScreen: React.FC = () => {
   const loginData = useSelector((state: RootState) => state.auth?.loginData);
   const inviteFriendSheetRef = useRef<any>(null);
   const { goBack } = useNavigation();
-  const { requestContactPermission,permissionGranted } = useContacts();
+  const { requestContactPermission, permissionGranted } = useContacts();
 
   const [referrelRequests, setReferrelRequests] = useState<any[]>([]);
 
@@ -95,13 +95,13 @@ const ReferralScreen: React.FC = () => {
     }
   };
 
-  const onInvite= async () => {
-   await requestContactPermission();
-   if(permissionGranted){
-    setIsShown(true)
-    inviteFriendSheetRef?.current.open();
-   }
-    
+  const onInvite = async () => {
+    await requestContactPermission();
+    if (permissionGranted) {
+      setIsShown(true)
+      inviteFriendSheetRef?.current.open();
+    }
+
   }
 
   const renderContent = () => {
@@ -138,7 +138,7 @@ const ReferralScreen: React.FC = () => {
               message={
                 activeTab === 'referrals'
                   ? 'has requested your referral.'
-                  : `has requested your vouch for [${item?.eventName}]`
+                  : `has requested your vouch for ${item?.eventName}`
               }
               onApproveApi={() => handleApproveDeclineClick(true, item?.id)}
               onDeclineApi={() => handleApproveDeclineClick(false, item?.id)}
@@ -161,7 +161,7 @@ const ReferralScreen: React.FC = () => {
         onTabChange={handleTabChange}
         tabOneLabel="Referral Requests"
         tabTwoLabel="Vouch Requests"
-        countOne={referrelRequests?.length ? referrelRequests?.length: ""}
+        countOne={referrelRequests?.length ? referrelRequests?.length : ""}
         countTwo={vouchRequests?.length ? vouchRequests?.length : ""}
         width={Wp(88)}
       />
@@ -175,7 +175,7 @@ const ReferralScreen: React.FC = () => {
         colorTheme="dark"
         onPress={onInvite}
       />
-      { isShown && <InviteFriendsSheet ref={inviteFriendSheetRef} />}
+      {isShown && <InviteFriendsSheet ref={inviteFriendSheetRef} />}
     </SafeAreaView>
   );
 };

@@ -76,8 +76,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [isCurrentUserIsGuest, setIsCurrentGuestStatus] = useState(route?.params?.isCurrentUserIsGuest);
   const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
 
-  console.log(route?.params)
-
   const role = useSelector((state: RootState) => state.auth.role);
   // const insets = useSafeAreaInsets();
 
@@ -124,8 +122,13 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const { data, isLoading, refetch } = useFetchEventDetailsHook(queryArgs);
 
   useEffect(() => {
-    refetch();
+    console.log("RSVP Status:", rspvStatus);
+    refetch(); // Manually refetch when RSVP status changes
   }, [rspvStatus, refetch]);
+
+
+
+
 
 
 
@@ -149,14 +152,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [calendarDetails, setCalendarDetails] = useState<any>({});
 
   const [useQr, setUseQr] = useState<boolean>(false);
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     if(rspvStatus=="APPLIED") setIsCurrentGuestStatus(true);
-  //     setTimeout(() => {
-  //       refetch();
-  //     }, 1000);
-  //   }, [rspvStatus]),
-  // );
+
 
 
   useEffect(() => {

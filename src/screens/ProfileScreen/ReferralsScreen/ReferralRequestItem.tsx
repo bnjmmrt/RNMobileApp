@@ -10,12 +10,12 @@ import { fontFamily } from 'src/utils/functions';
 interface ReferralRequestItemProps {
     name: string;
     message: string;
-    image:string;
+    image: string;
     onApproveApi: () => Promise<void>;
-    onDeclineApi: () =>  Promise<void>;
+    onDeclineApi: () => Promise<void>;
 }
 
-const ReferralRequestItem: React.FC<ReferralRequestItemProps> = ({ name,image, message, onApproveApi, onDeclineApi }) => {
+const ReferralRequestItem: React.FC<ReferralRequestItemProps> = ({ name, image, message, onApproveApi, onDeclineApi }) => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [status, setStatus] = useState<'approve' | 'reject' | null>(null);
 
@@ -42,8 +42,8 @@ const ReferralRequestItem: React.FC<ReferralRequestItemProps> = ({ name,image, m
     return (
         <View style={[styles.container, isSubmitted && styles.row]}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-               { !image && <AvatarInitials name={name} size={radiusScale(48)} />}
-               { image && <Image source={{uri:image}} width={48} height={48} style={{borderRadius:radiusScale(100)}} />}
+                {!image && <AvatarInitials name={name} size={radiusScale(48)} />}
+                {image && <Image source={{ uri: image }} width={48} height={48} style={{ borderRadius: radiusScale(100) }} />}
                 {!isSubmitted && <View style={{ width: '85%' }}><Text style={styles.messageText}>{name} {message}</Text></View>}
             </View>
             <View style={[styles.content, isSubmitted && styles.contentRow]}>
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     actions: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        gap: 12,
+        gap: 8,
         marginTop: 2,
     },
     messageText: {
@@ -105,10 +105,12 @@ const styles = StyleSheet.create({
         fontFamily: fontFamily.ABCDiatype_Medium
     },
     requestText: {
-        fontSize: fontScale(14),
+        fontSize: fontScale(12),
         color: COLORS.light_gray,
         flexWrap: 'wrap',
-        marginTop: verticalMarginScale(4)
+        marginTop: verticalMarginScale(4),
+        fontFamily: fontFamily.ABCDiatype_Medium
+
     },
 });
 
