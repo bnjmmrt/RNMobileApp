@@ -15,29 +15,16 @@ import IMAGES from '@images/index';
 import { RootState } from 'src/redux/slices';
 import { FlashMessageComponent } from './FlashMessageComponent/FlashMessageComponent';
 import { verticalMarginScale } from 'src/utils/dimensions';
+import { Event } from 'src/types';
 
-interface Location {
-  location?: string;
-  city?: string;
-  latitude?: number;
-  longitude?: number;
-}
-
-interface EventItem {
-  startDate?: string;
-  endDate?: string;
-  location?: Location;
-  currentGuestStatus?: string;
-  showLocation?: boolean;
-}
 
 interface MapComponentProps {
-  item: EventItem;
+  item: Event;
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({ item }) => {
   const role = useSelector((state: RootState) => state.auth.role);
-  const isShowLocation = role === ROLE.HOST || item?.currentGuestStatus === 'confirmed';
+  const isShowLocation = role === ROLE.HOST || item?.currentGuestStatus === 'CONFIRMED';
 
   const latitude = item?.location?.latitude ?? 37.78825;
   const longitude = item?.location?.longitude ?? -122.4324;

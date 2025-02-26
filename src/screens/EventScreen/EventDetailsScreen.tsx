@@ -111,7 +111,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         userId,
         eventId: route?.params?.id,
       } as const); // Type assertion
-
   const useFetchEventDetailsHook =
     role === ROLE.HOST
       ? useFetchHostEventDetailsQuery
@@ -125,9 +124,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     console.log("RSVP Status:", rspvStatus);
     refetch(); // Manually refetch when RSVP status changes
   }, [rspvStatus, refetch]);
-
-
-
 
 
 
@@ -295,6 +291,80 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       marginTop: verticalScale(20) + STATUS_BAR_HEIGHT,
     },
   });
+  const renderHostButtons = () => {
+    if (loginData?.roles[0]?.roleName !== ROLE.HOST) {
+      return null;
+    }
+
+    return (
+      <>
+        {/* <Button
+          disabled={false}
+          style={styles.btnStyleLight}
+          title="View Guest List"
+          colorTheme="light"
+          onPress={navigateToViewList}
+        /> */}
+        <Button
+          disabled={false}
+          style={styles.btnStyleLight}
+          title={BUTTON_LABLE.INVITE_GUESTS}
+          colorTheme="light"
+          onPress={onPressInviteGuests}
+        />
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.CHECK_IN}
+          colorTheme="dark"
+          onPress={onCheckInClick}
+        />
+      </>
+    );
+  };
+  const renderRSVPButton = () => {
+    if (isDeclinedByHost || guestStatus === 'CONFIRMED' || loginData?.roles[0]?.roleName !== ROLE.MEMBER) {
+      return null;
+    }
+
+    return (
+      <View>
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={guestStatus === 'APPLIED' ? BUTTON_LABLE.UPDATE_APPLICATION : BUTTON_LABLE.RSVP}
+          colorTheme="dark"
+          onPress={onNextClick}
+        />
+      </View>
+    );
+  };
+
+  const renderConfirmedButtons = () => {
+    if (guestStatus !== 'CONFIRMED' || loginData?.roles[0]?.roleName !== ROLE.MEMBER) {
+      return null;
+    }
+
+    return (
+      <View style={{ margin: 20 }}>
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.VIEW_TICKET}
+          colorTheme="dark"
+          onPress={onViewTicketClick}
+          loading={loading}
+        />
+        <Button
+          disabled={false}
+          style={styles.btnStyleLight}
+          title={BUTTON_LABLE.UPDATE_RSVP}
+          colorTheme="light"
+          onPress={onNextClick}
+        />
+      </View>
+    );
+  };
 
   return (
     <>
@@ -369,22 +439,23 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
             {/* {<EventAnouncements talents={talents} />} */}
 
-            <Button
-              disabled={false}
-              style={styles.btnStyleLight}
-              title="View Guest List"
-              colorTheme="light"
-              onPress={navigateToViewList}
-            />
-          </View>
 
-          <Button
+          </View>
+          {/* {loginData?.roles[0]?.roleName === ROLE.HOST && <Button
+            disabled={false}
+            style={styles.btnStyleLight}
+            title="View Guest List"
+            colorTheme="light"
+            onPress={navigateToViewList}
+          />}
+
+          {loginData?.roles[0]?.roleName === ROLE.HOST && <Button
             disabled={false}
             style={styles.btnStyleLight}
             title={BUTTON_LABLE.INVITE_GUESTS}
             colorTheme="light"
             onPress={onPressInviteGuests}
-          />
+          />}
 
           {loginData?.roles[0]?.roleName === ROLE.HOST && (
             <Button
@@ -394,24 +465,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               colorTheme="dark"
               onPress={onCheckInClick}
             />
-          )}
+          )} */}
+          {renderHostButtons()}
         </ScrollView>
+        {renderRSVPButton()}
+        {renderConfirmedButtons()}
 
-        {!isDeclinedByHost && guestStatus !== 'CONFIRMED' && (
-          <View>
-            <Button
-              disabled={false}
-              style={styles.btnStyle}
-              title={
-                guestStatus == 'APPLIED'
-                  ? BUTTON_LABLE.UPDATE_APPLICATION
-                  : BUTTON_LABLE.RSVP
-              }
-              colorTheme="dark"
-              onPress={onNextClick}
-            />
-          </View>
-        )}
 
         <CalenderEventsBottomSheet
           ref={calenderEventsBottomSheetRef}
@@ -439,25 +498,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           name={eventDetails?.name}
         />
 
-        {guestStatus == 'CONFIRMED' && (
-          <View style={{ margin: 20 }}>
-            <Button
-              disabled={false}
-              style={styles.btnStyle}
-              title={BUTTON_LABLE.VIEW_TICKET}
-              colorTheme="dark"
-              onPress={onViewTicketClick}
-              loading={loading}
-            />
-            <Button
-              disabled={false}
-              style={styles.btnStyleLight}
-              title={BUTTON_LABLE.UPDATE_RSVP}
-              colorTheme="light"
-              onPress={onNextClick}
-            />
-          </View>
-        )}
+
 
         <BackButtonOverlay
           customStyle={{ top: 16 + STATUS_BAR_HEIGHT }}

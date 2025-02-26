@@ -15,6 +15,8 @@ import {
 } from '../../utils/dimensions';
 import { ROUTES } from 'src/navigation/Route';
 import { useNavigation } from '@react-navigation/native';
+import { formatEventDate } from 'src/utils/dateFunctions';
+import { CustomText } from '../CustomText';
 
 interface FeedItemProps {
   item: EventItem;
@@ -42,12 +44,12 @@ const FeedItem: React.FC<FeedItemProps> = ({ item }) => {
         />
       </View>
       <View style={styles.contentContainer}>
-        <Text numberOfLines={1} style={styles.title}>
+        <CustomText style={styles.title}>
           {item.name}
-        </Text>
-        <Text numberOfLines={1} style={styles.subtitle}>
-          {item.startDate}
-        </Text>
+        </CustomText>
+        <CustomText style={styles.subtitle}>
+          {formatEventDate(item.startDate, item.endDate)}
+        </CustomText>
       </View>
     </TouchableOpacity>
   );
@@ -82,7 +84,6 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: COLORS.light_gray,
-    fontSize: fontScale(12),
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginTop: verticalMarginScale(1),
   },
