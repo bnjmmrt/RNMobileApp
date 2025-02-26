@@ -323,7 +323,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     );
   };
   const renderRSVPButton = () => {
-    if (isDeclinedByHost || guestStatus === 'CONFIRMED' || role !== ROLE.MEMBER) {
+    if (isDeclinedByHost || guestStatus === 'CONFIRMED' || role === ROLE.HOST) {
       return null;
     }
 
@@ -341,7 +341,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const renderConfirmedButtons = () => {
-    if (guestStatus !== 'CONFIRMED' || role !== ROLE.MEMBER) {
+    if (guestStatus !== 'CONFIRMED' || role === ROLE.HOST) {
       return null;
     }
 
