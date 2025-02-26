@@ -14,6 +14,7 @@ type AvatarInitialsProps = {
   imgUrl?: string;
   onPress?: any;
   containerStyle?: ViewStyle;
+  listing?: boolean
 };
 
 const AvatarInitials: React.FC<AvatarInitialsProps> = ({
@@ -24,6 +25,7 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
   imgUrl,
   onPress,
   containerStyle,
+  listing
 }) => {
   const getInitials = (name: string): string => {
     if (!name) return '';
@@ -81,7 +83,7 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
       <Text
         style={[
           styles.text,
-          { color: textColor, fontSize: radiusScale(size) / 2.5 },
+          { color: textColor, fontSize: listing ? radiusScale(size) / 2.5 : radiusScale(size) / 1.5 },
         ]}>
         {initials}
       </Text>

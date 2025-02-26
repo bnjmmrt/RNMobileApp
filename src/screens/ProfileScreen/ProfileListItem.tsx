@@ -61,6 +61,7 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
       case PROFILE.FOLLOWING:
         console.log('Redirecting to Following...');
         redirectToProfileStack(ROUTES.FollowingScreen);
+        redirectToProfileStack(ROUTES.ConnectedAccountsScreen);
         // Example: navigate('/following');
         break;
 

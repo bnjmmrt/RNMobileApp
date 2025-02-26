@@ -101,7 +101,6 @@ const ReferralScreen: React.FC = () => {
       setIsShown(true)
       inviteFriendSheetRef?.current.open();
     }
-
   }
 
   const renderContent = () => {

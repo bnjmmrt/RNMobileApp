@@ -42,8 +42,8 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   const dispatch = useDispatch();
   const usernameRef = useRef<any>(null);
   const email = BUTTON_LABLE.SUPPORT_EMAIL_ID;
-  const subject = 'Rumor app';
-  const body = 'Rumor app';
+  const subject = BUTTON_LABLE.MAIL_SUBJECT;
+  const body = BUTTON_LABLE.MAIL_BODY;
   const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(
     subject,
   )}&body=${encodeURIComponent(body)}`;
@@ -76,7 +76,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       EndPoint.member_signUp,
       requestParams,
     );
- console.log("response",response)
+    console.log("response", response)
     if (response.status === 200) {
       const data = {
         ...loginData,
