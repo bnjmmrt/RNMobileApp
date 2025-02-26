@@ -258,6 +258,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
             id: guest.guestId,
             name: `${guest.firstName} ${guest.lastName}`,
             status: item.status,
+            userId: guest.id,
             profilePicture: undefined,
           };
           return renderInvitee(inviteeGuest);
@@ -282,6 +283,8 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
         </View>
       );
     }
+
+    console.log('filteredAndSortedGuests', filteredAndSortedGuests);
 
     return (
       <FlatList
