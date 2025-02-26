@@ -1,18 +1,5 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useLayoutEffect,
-} from 'react';
-import {
-  View,
-  ScrollView,
-  StyleSheet,
-  Text,
-  SafeAreaView,
-  Platform,
-} from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { View, ScrollView, StyleSheet, Text, Platform } from 'react-native';
 import {
   BUTTON_LABLE,
   COLORS,
@@ -37,7 +24,6 @@ import { FlatList } from 'react-native-gesture-handler';
 import EventVenue from 'src/component/Event/EventVenue';
 import EventOverview from 'src/component/Event/EventOverview';
 import Button from 'src/component/Button';
-import EventAnouncements from 'src/component/Event/EventAnnouncements';
 import QRCodeBottomsheet from 'src/component/BottomSheet/QRCodeBottomsheet';
 import CalenderEventsBottomSheet from 'src/component/BottomSheet/CalenderEventsBottomSheet';
 import { useDispatch, useSelector } from 'react-redux';
@@ -111,7 +97,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     }, []),
   );
 
-  const [acceptInvite, { isLoading: acceptLoading }] = useAcceptInvitationMutation();
+  const [acceptInvite, { isLoading: acceptLoading }] =
+    useAcceptInvitationMutation();
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
@@ -160,6 +147,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   // const [qrURL, setQrURL] = useState('');
   const [eventDetails, setEventDetails] = useState<any>({});
   const [calendarDetails, setCalendarDetails] = useState<any>({});
+
   const [useQr, setUseQr] = useState<boolean>(false);
   // useFocusEffect(
   //   useCallback(() => {
@@ -185,7 +173,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   useEffect(() => {
     //  console.log('Event data:', data);
     if (data?.data) {
-      setUseQr(data.data.useQr)
+      setUseQr(data.data.useQr);
       setEventDetails({
         title: data.data.name,
         subTitle: data.data.startDate,
@@ -245,7 +233,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         setEventDetails({ ...eventDetails, qrUrl: response.data.b64QRCode });
         qrCodeBottomSheetRef?.current.open();
       } else {
-        FlashMessageComponent.show('error', "QR not genetaed")
+        FlashMessageComponent.show('error', 'QR not genetaed');
       }
     }
   };
@@ -255,10 +243,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     if (useQr) {
       generateTicket();
     } else {
-      setIsQRShown(false)
+      setIsQRShown(false);
       qrCodeBottomSheetRef?.current.open();
     }
-
   };
   const addCalenderEvents = () => {
     calenderEventsBottomSheetRef.current?.open();
@@ -285,10 +272,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
   const onCheckInClick = async () => {
     if (useQr) {
-      dispatch(setEventId(route?.params?.id))
+      dispatch(setEventId(route?.params?.id));
       navigation.navigate(ROUTES.QRCodeScanner);
     } else {
-      navigateToViewList()
+      navigateToViewList();
     }
   };
 
@@ -298,10 +285,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const navigateToViewList = () => {
+    dispatch(setSelectedEventForInvite(data.data));
     navigation.navigate('EventGuestList', {
-      guests: data?.data?.guests || [],
-    })
-  }
+      eventId: route?.params?.id,
+    });
+  };
 
   const imageWrapperStyle = StyleSheet.create({
     wrapper: {

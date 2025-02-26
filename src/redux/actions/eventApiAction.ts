@@ -1,3 +1,7 @@
+import {
+  ManageGuestPayload,
+  GuestListResponse,
+} from 'src/screens/EventScreen/types';
 import { createBaseApi } from '../../ApiManager/createBaseApi';
 
 export const eventApiAction = createBaseApi.injectEndpoints({
@@ -114,11 +118,47 @@ export const eventApiAction = createBaseApi.injectEndpoints({
     }),
     fetchDashboardUpcomingEvents: builder.query({
       query: () => ({
-        url: `v1/events/dashboard/upcoming-events`,
+        url: 'v1/events/dashboard/upcoming-events',
         method: 'GET',
       }),
       providesTags: ['DashboardUpcomingEvents'],
       keepUnusedDataFor: 0, // Adjust the tag if needed for cache invalidation
+    }),
+
+    getGuests: builder.query<GuestListResponse, string>({
+      query: (eventId: string) => ({
+        url: `v1/events/${eventId}/guests/`,
+        method: 'GET',
+      }),
+      providesTags: ['EventGuestList'],
+    }),
+
+    manageGuest: builder.mutation({
+      query: ({
+        eventId,
+        guestId,
+        action,
+        payload,
+      }: {
+        eventId: string;
+        guestId?: string;
+        action: 'CREATE' | 'UPDATE' | 'DELETE';
+        payload?: ManageGuestPayload;
+      }) => {
+        const baseUrl = 'v1/events/manage-guests';
+
+        return {
+          url: baseUrl,
+          method: 'PUT',
+          body: {
+            eventId,
+            guestId,
+            action,
+            ...payload,
+          },
+        };
+      },
+      invalidatesTags: ['EventDetails', 'GuestStatusCount', 'EventGuestList'],
     }),
   }),
 });
@@ -131,6 +171,8 @@ export const {
   useFetchGuestStatusCountQuery,
   useFetchDashboardUpcomingEventsQuery,
   useFetchHostEventDetailsQuery,
+  useGetGuestsQuery,
+  useManageGuestMutation,
   useFetchPublicEventDetailsQuery,
   useLazyFetchEventDetailsQuery,
   useLazyFetchPublicEventDetailsQuery
