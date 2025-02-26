@@ -14,7 +14,7 @@ import {
 type OTPComponentProps = {
   performCodeVerification: (code: string) => void;
   resendVerificationCode: (isResend: boolean) => void;
-  error:string
+  error?:string
 
 };
 
@@ -43,6 +43,8 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
 
     const clearOTP = () => {
       otpInput.current.clear(); // Clears the OTP input
+      setCode('');
+      setErrorMessage('')
     };
 
     const validateCode = (): boolean => {

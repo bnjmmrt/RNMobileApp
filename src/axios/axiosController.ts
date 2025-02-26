@@ -1,6 +1,10 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import axios, {
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  AxiosError,
+} from 'axios';
 import { environment } from '../../environments/environment';
-import { getItem, TagKey } from '../utils/functions';
 import { FlashMessageComponent } from '../component/FlashMessageComponent/FlashMessageComponent';
 import { store } from 'src/redux/store';
 
@@ -25,7 +29,9 @@ axiosController.interceptors.request.use(
     }
 
     // Log the request URL and other details
-    const fullUrl = config.baseURL ? `${config.baseURL}${config.url}` : config.url;
+    const fullUrl = config.baseURL
+      ? `${config.baseURL}${config.url}`
+      : config.url;
     console.log('Request URL:', fullUrl);
     console.log('Request Method:', config.method);
     console.log('Request Headers:', config.headers);
@@ -37,48 +43,57 @@ axiosController.interceptors.request.use(
     }
     return config;
   },
-  (error: AxiosError) => Promise.reject(error)
+  (error: AxiosError) => Promise.reject(error),
 );
 
 // Response interceptor (e.g., handle global errors)
 // Response interceptor for global error handling
 axiosController.interceptors.response.use(
   (response: AxiosResponse) => {
-    // Log the response URL, status, and data
     console.log('Response URL:', response.config.url);
     console.log('Response Status:', response.status);
     console.log('Response Data:', response.data);
 
-    return response.data; // Return only the data part of the response
+    return response.data;
   },
-  // Only return the data part of the response
   (error: AxiosError) => {
     console.log('API Error:', error);
-
-    // Log the request URL if available
     const requestUrl = error.config?.url;
     if (requestUrl) {
       console.log('Request URL on error:', requestUrl);
     }
     const status = error.response?.status;
+    const errorMessage =
+      (error.response?.data as any)?.error?.message || error.message;
     if (status === 400) {
-      console.error('Bad request ----');
-      FlashMessageComponent.show('error', 'Something went wrong, please try again!');
-    } else
-      if (status === 401) {
-        FlashMessageComponent.show('error', "Unauthorized access - Token might be expired")
-        console.error('Unauthorized access - Token might be expired');
-      } else if (status === 403) {
-        console.error('Forbidden access');
-      } else if (status === 404) {
-        console.error('Resource not found');
-      } else if (status >= 500) {
-        console.error('Internal server error');
-      } else {
-        console.error('An error occurred:', error.message);
-      }
+      console.error('Bad request:', errorMessage);
+      FlashMessageComponent.show(
+        'error',
+        errorMessage || 'Something went wrong, please try again!',
+      );
+    } else if (status === 401) {
+      console.error('Unauthorized access - Token might be expired');
+      FlashMessageComponent.show(
+        'error',
+        'Unauthorized access - Token might be expired',
+      );
+    } else if (status === 403) {
+      console.error('Forbidden access:', errorMessage);
+      FlashMessageComponent.show('error', errorMessage || 'Forbidden access');
+    } else if (status === 404) {
+      console.error('Resource not found:', errorMessage);
+      FlashMessageComponent.show('error', 'Resource not found');
+    } else if (status >= 500) {
+      console.error('Internal server error:', errorMessage);
+      FlashMessageComponent.show(
+        'error',
+        'Internal server error. Please try again later.',
+      );
+    } else {
+      console.error('An error occurred:', errorMessage);
+      FlashMessageComponent.show('error', errorMessage);
+    }
 
-    return Promise.reject(error); // Propagate error
-  }
+    return Promise.reject(error);
+  },
 );
-

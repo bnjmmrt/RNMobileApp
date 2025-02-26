@@ -59,6 +59,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const bottomSheetRef = useRef(null);
 
   const userId = useSelector((state: RootState) => state.auth.userId);
+  const isGuest = useSelector((state: RootState) => state.auth.isGuest);
   const role = useSelector((state: RootState) => state.auth.role);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const profileData = useSelector((state: RootState) => state.appFlowApiData?.profileData);
@@ -142,7 +143,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       case 'member':
         return 'Member'
       case 'non_member':
-        return 'Non-Member'
+        if(isGuest) {
+          return 'Invited'
+        } else {
+          return 'Non-Member'
+        }
       case 'host':
         return 'Host'
       default:
@@ -214,7 +219,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
   useEffect(() => {
     let listItems = itemsExtras;
-    if (loginData.isInvited && role.toLocaleLowerCase() === 'non_member') {
+    if (role.toLocaleLowerCase() === 'non_member' && isGuest) {
       listItems = items;
     } else if (role.toLocaleLowerCase() === 'host') {
       listItems = hostItems
