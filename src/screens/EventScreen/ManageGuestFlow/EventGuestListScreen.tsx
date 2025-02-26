@@ -42,7 +42,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGetGuestsQuery } from 'src/redux/actions/eventApiAction';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { RootState } from 'src/redux/slices';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setEventId } from 'src/redux/slices/eventSlice';
 
 interface EventGuestListProps extends NativeStackScreenProps<any, any> {
   eventId?: string;
@@ -66,7 +67,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   const [selectedSort, setSelectedSort] = useState('name_asc');
   const filtersSheetRef = useRef<BottomSheetMethods>(null);
   const sortSheetRef = useRef<BottomSheetMethods>(null);
-
+  const dispatch = useDispatch();
   // Get eventId from route params or props
   const eventId = route?.params?.eventId;
 
@@ -303,6 +304,11 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     );
   };
 
+  const onCheckInPress = async () => {
+    dispatch(setEventId(eventId));
+    navigation.navigate(ROUTES.QRCodeScanner);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
@@ -315,7 +321,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
           <Text style={styles.title}>{LABLE.GUEST_LIST}</Text>
 
           {selectedEvent?.useQr ? (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={onCheckInPress}>
               <View style={styles.iconButton}>
                 <Image source={IMAGES.qr} style={styles.icon} />
               </View>
