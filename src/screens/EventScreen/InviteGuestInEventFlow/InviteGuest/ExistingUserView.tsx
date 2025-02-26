@@ -138,21 +138,12 @@ const ExistingUserView: React.FC<ExistingUserViewProps> = ({}) => {
       {selectedUsers.length === 1 ? (
         <View style={{ flex: 1, marginHorizontal: horizontalMarginScale(20) }}>
           <ProfileCard
-            guest={{
+            user={{
               name:
                 `${singleUserDetail?.data?.firstName} ${singleUserDetail?.data?.lastName}` ||
                 '',
               avatar: singleUserDetail?.data?.imageUrl,
-              roles:
-                singleUserDetail?.data?.role === 'member'
-                  ? [
-                      {
-                        roleName: singleUserDetail?.data?.role,
-                        roleId: '',
-                        status: singleUserDetail?.data?.status,
-                      },
-                    ]
-                  : [],
+              roles: singleUserDetail?.data?.focuses,
               age: singleUserDetail?.data?.age || 0,
               followers: selectedUsers[0].followerCount || '0',
               location: singleUserDetail?.data?.city,

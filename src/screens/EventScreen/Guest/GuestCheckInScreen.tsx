@@ -65,11 +65,13 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
   );
   const handleBackPress = () => {
     // navigation.navigate(ROUTES.EventDetailsScreen, { eventId: eventId });
-    navigation.goBack()
+    navigation.goBack();
   };
 
   const handleProfilePress = () => {
-    navigation.navigate(ROUTES.UserDetail, { user: eventDetails?.guestProfile.userId });
+    navigation.navigate(ROUTES.UserDetail, {
+      user: eventDetails?.guestProfile.userId,
+    });
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -81,20 +83,20 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
       {/* {true ? ( */}
       <ScrollView style={styles.container}>
         <ProfileCard
-        showGuestStatus={false}
-          guest={{
-            name: eventDetails?.guestProfile?.name,
+          showGuestStatus={false}
+          user={{
+            name: eventDetails?.guestProfile?.name || '',
             avatar: eventDetails?.guestProfile?.profilePicture,
             roles: eventDetails?.guestProfile?.roles,
             age: eventDetails?.guestProfile?.age,
             followers: eventDetails?.guestProfile?.followsYou,
             location: eventDetails?.guestProfile?.location,
             status: eventDetails?.guestProfile?.status,
-            interests: eventDetails?.guestProfile?.interest,    
-            // isMember:
-            //   eventDetails?.guestProfile?.roles[0].roleName === 'non_member'
-            //     ? false
-            //     : true,
+            interests: eventDetails?.guestProfile?.interest,
+            isMember:
+              eventDetails?.guestProfile?.roles[0].roleName === 'non_member'
+                ? false
+                : true,
           }}
           actionButtons={[
             {
