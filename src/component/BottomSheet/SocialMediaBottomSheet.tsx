@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    marginTop:verticalMarginScale(10),
+    marginTop:verticalMarginScale(5),
   },
   btnStyle: {
     borderRadius:radiusScale(100),

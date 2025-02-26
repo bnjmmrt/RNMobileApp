@@ -47,8 +47,9 @@ const GenderScreen: React.FC<GenderScreenProps> = ({navigation}) => {
   };
 
   const handleBackPress = () => {
-    dispatch(setPageProgress(1));
-    navigation.pop(2)
+    dispatch(setPageProgress(2));
+    // navigation.pop(2)
+    navigation.goBack();
     // navigation.navigate('MyDetailsScreen');
   };
 

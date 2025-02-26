@@ -5,9 +5,9 @@ import AvatarInitials from "../AvatarInitials";
 import { View } from "react-native-animatable";
 import IMAGES from "../../assets/images";
 import { COLORS } from "../../utils/constants";
-import { fontFamily } from "../../utils/functions";
+import { fontFamily, numberSpacing } from "../../utils/functions";
 import { useRequestMemberMutation } from "../../redux/actions/referralApiAction";
-import { fontScale, horizontalMarginScale, verticalMarginScale } from "src/utils/dimensions";
+import { fontScale, horizontalMarginScale, horizontalScale, verticalMarginScale } from "src/utils/dimensions";
 import { useVouchRequestMutation } from "src/redux/actions/rspvApiAction";
 
 export const RenderMemberList = (data: any) => {
@@ -38,9 +38,10 @@ export const RenderMemberList = (data: any) => {
         <View style={styles.listItem}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
                 <AvatarInitials name={item?.firstName + ' ' + item?.lastName} size={48} />
-                <View>
-                    <Text style={styles.name}>{item?.firstName} {item?.lastName}</Text>
-                    <Text style={styles.phone}>{item.phoneNumber}</Text>
+                <View style={{ width: horizontalScale(206) }}>
+                    <Text numberOfLines={1} style={styles.name}>{item?.firstName} {item?.lastName}</Text>
+                    <Text style={styles.phone}>{numberSpacing(item.phoneNumber, item.countryCode)}</Text>
+
                 </View>
             </View>
             <ButtonSmall
