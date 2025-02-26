@@ -8,6 +8,7 @@ import { ROLE } from 'src/utils/constants';
 import { ROUTES } from './Route';
 
 const MainNavigation: React.FC = () => {
+  const isGuest = useSelector((state: RootState) => state.auth.isGuest);
   // const loginData = useSelector((state: RootState) => state.auth.loginData);
   // const isVerified = loginData?.varifyStatus || 0;
 
@@ -73,7 +74,7 @@ const MainNavigation: React.FC = () => {
 
   const initialAppStackScreen =
     role === ROLE.NON_MEMBER
-      ? loginData?.token?.length > 0 ? ROUTES.BottomTabBar : ROUTES.BeforeAppStaticScreen
+      ? loginData?.token?.length > 0 || isGuest ? ROUTES.BottomTabBar : ROUTES.BeforeAppStaticScreen
       : ROUTES.BottomTabBar;
 
   return (

@@ -19,23 +19,12 @@ import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComp
 import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
 import GradientSeprator from '../GradientSeprator';
 import MapComponent from '../MapComponent';
+import { Event } from 'src/types';
 
-interface Location {
-  location?: string;
-  city?: string;
-  latitude?: number;
-  longitude?: number;
-}
-interface EventItem {
-  startDate?: string;
-  endDate?: string;
-  location?: Location;
-  currentGuestStatus?: string;
-  showLocation?: boolean;
-}
+
 
 interface EventVenueProps {
-  item: EventItem;
+  item: Event;
   handleCalendarPress: () => void
 
 }
@@ -46,23 +35,20 @@ const EventVenue: React.FC<EventVenueProps> = ({ item, handleCalendarPress }) =>
   const role = useSelector((state: RootState) => state.auth.role);
   // const dates = useMemo(() => formatToDeviceTimeZone(item?.startDate, item?.endDate));
 
-  const isShowLocation = role === ROLE.HOST || item?.currentGuestStatus === 'confirmed';
+  const isShowLocation = role === ROLE.HOST || item?.currentGuestStatus === 'CONFIRMED';
   const locationText = isShowLocation ? item?.location?.location : 'RSVP to See Location';
-
-  const addEventToCalender = () => {
-  }
 
   return (
     <View style={[styles.container]}>
-      <View style={{ flex: 1, padding: 5 }}>
+      <View style={{ flex: 1 }}>
         <View style={{ marginVertical: verticalMarginScale(10), flexDirection: 'row', justifyContent: 'space-between' }}>
           <View>
             <Text style={styles.title}>{dates[0]}</Text>
             <Text style={styles.subtitle}>{dates[1]}</Text>
           </View>
-          <TouchableOpacity onPress={handleCalendarPress}>
+          {item?.currentGuestStatus === 'CONFIRMED' && <TouchableOpacity onPress={handleCalendarPress}>
             <Image source={IMAGES.calendarCircle} />
-          </TouchableOpacity>
+          </TouchableOpacity>}
         </View>
       </View>
       <GradientSeprator />

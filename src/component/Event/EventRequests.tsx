@@ -7,13 +7,14 @@ import { useFetchGuestStatusCountQuery } from 'src/redux/actions/eventApiAction'
 
 interface EventOverviewProps {
   eventId: string; // Extend this type with actual item properties for better type safety.
+  checkedinCount: number
 }
 
-const EventRequests: React.FC<EventOverviewProps> = ({ eventId }) => {
+const EventRequests: React.FC<EventOverviewProps> = ({ eventId, checkedinCount }) => {
   const [confirmCount, setConfirmCount] = useState(0);
   const [inviteCount, setInviteCount] = useState(0);
   const [requestCount, setRequestCount] = useState(0);
-  const [checkInCount, setCheckInCount] = useState(0);
+  const [checkInCount, setCheckInCount] = useState(checkedinCount || 0);
   const { data } = useFetchGuestStatusCountQuery({ eventId });
 
   useEffect(() => {
@@ -21,7 +22,7 @@ const EventRequests: React.FC<EventOverviewProps> = ({ eventId }) => {
     setConfirmCount(data?.data?.confirmedCount || 0);
     setInviteCount(data?.data?.invitedCount || 0);
     setRequestCount(data?.data?.requestedCount || 0);
-    setCheckInCount(data?.data?.checkedInCount || 0);
+    // setCheckInCount(data?.data?.checkedInCount || 0);
 
   }, [data])
 

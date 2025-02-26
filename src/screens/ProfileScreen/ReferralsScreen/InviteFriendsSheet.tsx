@@ -1,5 +1,5 @@
 
-import React, { useState, useRef, forwardRef, useEffect } from 'react';
+import React, { useState, useRef, forwardRef, useEffect, useCallback } from 'react';
 import {
   StyleSheet,
   View,
@@ -60,20 +60,20 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
     }
   };
 
-  const handleSearch = (query: string) => {
+  const handleSearch = useCallback((query: string) => {
     if (debounceTimeoutRef.current) {
       clearTimeout(debounceTimeoutRef.current);
     }
 
     debounceTimeoutRef.current = setTimeout(() => {
-      const lowercasedQuery = query.toLowerCase();
+      const lowercasedQuery = query.toLowerCase().trim();
 
-      if (query.length === 0) {
+      if (lowercasedQuery.length === 0) {
         setFilteredContacts(contacts.slice(0, PAGE_SIZE));
         return;
       }
 
-      if (query.length < 2) {
+      if (lowercasedQuery.length < 2) {
         setFilteredContacts([]);
         return;
       }
@@ -85,7 +85,7 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
           .slice(0, PAGE_SIZE)
       );
     }, 500);
-  };
+  }, [contacts]);
 
 
   const handleLoadMore = () => {
@@ -135,7 +135,7 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
   ) => (
     <View style={styles.listItem}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-        <AvatarInitials name={item.name} size={48} />
+        <AvatarInitials name={item.name} size={48} listing={true}/>
         <View>
           <Text style={styles.name}>{item.name}</Text>
           <Text style={styles.phone}>{item.phoneNumber}</Text>
@@ -177,7 +177,7 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
     >
       <View style={{ paddingHorizontal: 20, flex: 1 }}>
         <Title title={BUTTON_LABLE.INVITES} align="center" />
-        <View style={{ flex: 1 ,marginTop:5}}>
+        <View style={{ flex: 1 ,marginTop:0}}>
           <Text style={styles.sectionSubtitle}>{BUTTON_LABLE.INVITE_FREINDS}</Text>
           <SearchInput
             placeholder={LABLE.SEARCH_FRIENDS}
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: verticalMarginScale(12),
+    paddingVertical: verticalMarginScale(10),
     paddingHorizontal: horizontalMarginScale(12),
     borderWidth: 1,
     borderColor: COLORS.borderGray,

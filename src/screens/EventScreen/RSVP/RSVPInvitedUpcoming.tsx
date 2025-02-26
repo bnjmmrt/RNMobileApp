@@ -9,10 +9,10 @@ import IMAGES from "@images/index"
 import { CustomText } from "src/component/CustomText"
 import Button from "src/component/Button"
 import { useDispatch, useSelector } from "react-redux"
-import { addGuest, deleteGuest, resetGuest, setResponse, setSelectedGuest } from "src/redux/slices/rspvSlice"
+import { addGuest, deleteGuest, resetGuest, setResponse, setRsvpStatus, setSelectedGuest } from "src/redux/slices/rspvSlice"
 import { SwipeableGuestList } from "./SwipeableGuestList"
 import CustomSelectableText from "src/component/CustomSelectableText/CustomSelectableText"
-import { fontScale, verticalMarginScale } from "src/utils/dimensions"
+import { fontScale, verticalMarginScale, verticalScale } from "src/utils/dimensions"
 import useContacts from "src/utils/hooks/useContactPermission"
 import BottomSheetComponent from "src/component/BottomSheet/BottomSheet"
 import RenderCancelPopup from "./RenderCancelPopup"
@@ -26,6 +26,7 @@ import SelectReason from "./BottomSheetView/SelectReason"
 import MessageBox from "./BottomSheetView/MessageBox"
 import formatToDeviceTimeZone from "src/utils/formatToDeviceTimeZone"
 import { fontFamily } from "src/utils/functions"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
 
 const reasons = [
     { id: 1, name: 'Scheduling Conflict' },
@@ -76,7 +77,7 @@ const StatusBanner = ({ isGoing, onPress }) => {
                 <Image source={IMAGES.tickGoing} />
                 <CustomText style={styles.statusText}> {'You are going'}</CustomText>
             </View>
-            <Image source={IMAGES.downArrow} style={{ width: 12, height: 12, resizeMode: 'contain' }} />
+            <Image source={IMAGES.downArrow} style={{ width: 10, height: 10, resizeMode: 'contain' }} />
         </TouchableOpacity>
         :
         <View style={styles.statusBanner}>
@@ -86,13 +87,13 @@ const StatusBanner = ({ isGoing, onPress }) => {
     );
 };
 const optionList = [
-    { id: 1, label: 'Cancel Application' },
+    { id: 1, label: 'Cancel RSVP' },
 ];
 
 const RSVPInvitedUpcoming = () => {
     const { params } = useRoute();
     const scrollRef = React.useRef(null);
-    const { id, name, location, imageCover, startDate, endDate } = params.event;
+    const { id, name, location, imageFlyer, startDate, endDate } = params.event;
     const [maxAdditionalGuests, setMaxAdditionalGuests] = React.useState(0);
     const status = params.event.currentGuestStatus;
     const { requestContactPermission } = useContacts();
@@ -185,17 +186,17 @@ const RSVPInvitedUpcoming = () => {
             case 'options':
                 return '20%';
             case 'cancel':
-                return Platform.OS == 'android' ? '95%' : '85%';
+                return Platform.OS == 'android' ? '95%' : '88%';
             case 'leave':
                 return '40%';
             case 'remove':
                 return '40%';
             case 'reasons':
-                return '65%';
+                return '60%';
             case 'noofguests':
                 return '40%';
             case 'success':
-                return '45%';
+                return '42%';
             case 'failed':
                 return '45%'
             default:
@@ -213,12 +214,14 @@ const RSVPInvitedUpcoming = () => {
                 return renderOptions();
             case 'cancel':
                 return <RenderCancelPopup id={id} onClose={() => {
+                    dispatch(setRsvpStatus("CANCELED"));
                     bottomSheetRef?.current?.close();
                     goBack();
                 }} setReasonSelected={setReasonSelected} reasonSelected={reasonSelected} />;
             case 'reasons':
                 return <SelectReason list={reasons}
                     handleSelect={(item) => {
+                        dispatch(setRsvpStatus("DECLINED"));
                         setSelectedReason(item);
                         setErrorMessage('')
                         bottomSheetRef?.current?.close();
@@ -244,7 +247,7 @@ const RSVPInvitedUpcoming = () => {
                         bottomSheetRef?.current?.close();
                         navigate('BottomTabBar')
                     }}
-                    btnStyle={[styles.clearButton, styles.btnBorder]}
+                    btnStyle={[styles.clearButton, styles.btnBorder, { height: verticalScale(48) }]}
                 />;
             case 'success':
                 return <MessageBox
@@ -257,7 +260,7 @@ const RSVPInvitedUpcoming = () => {
                         bottomSheetRef?.current?.close();
                         navigate('BottomTabBar')
                     }}
-                    btnStyle={[styles.clearButton, styles.btnBorder]}
+                    btnStyle={[styles.clearButton, styles.btnBorder, { height: verticalScale(48) }]}
                 />;
 
             default:
@@ -374,6 +377,7 @@ const RSVPInvitedUpcoming = () => {
                 console.log(accept_response)
                 dispatch(resetGuest());
                 setActiveTab('success');
+                dispatch(setRsvpStatus("CONFIRMED"));
                 bottomSheetRef?.current?.open();
             }
             else {
@@ -383,6 +387,7 @@ const RSVPInvitedUpcoming = () => {
                     guests: rspv?.guests,
                 });
                 dispatch(resetGuest());
+                dispatch(setRsvpStatus("CONFIRMED"));
                 getInvitees();
             }
 
@@ -427,7 +432,7 @@ const RSVPInvitedUpcoming = () => {
             <>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={{ flex: 1, paddingBottom: 24 }}>
-                        <EventCard name={name} location={location?.location} imageCover={imageCover} dates={formatToDeviceTimeZone(startDate, endDate)} />
+                        <EventCard name={name} location={location?.location} imageCover={imageFlyer} dates={formatToDeviceTimeZone(startDate, endDate)} />
                         <StatusBanner />
                         <View style={[styles.card, { flexDirection: 'column' }]}>
                             <View>
@@ -473,7 +478,7 @@ const RSVPInvitedUpcoming = () => {
                                     errorMessage={errorMessage}
                                     defaultValue={selectedReason?.name}
                                     onPress={onClickReason}
-                                    style={{ marginTop: verticalMarginScale(4) }}
+                                    style={{ marginTop: verticalMarginScale(4), height: verticalScale(48) }}
                                 />
                                 <Text style={styles.infoText}>{LABLE.RSVP_TEXT}</Text>
                             </View>
@@ -496,16 +501,23 @@ const RSVPInvitedUpcoming = () => {
                                 {rspv?.selectedGuest?.name != rspv?.guests[0]?.name && (
                                     <>
                                         <View style={{ gap: 6 }}>
-                                            {rspv.guests.map(guest => (
-                                                <SwipeableGuestList
-                                                    key={guest.id}
-                                                    guest={guest}
-                                                    onDelete={() => dispatch(deleteGuest({ phoneNumber: guest.phoneNumber, email: guest.email }))} />
-                                            ))}
+                                            {rspv.guests.map(guest => {
+                                                return (
+                                                    <GestureHandlerRootView>
+                                                        <SwipeableGuestList
+                                                            key={guest.id}
+                                                            guest={guest}
+                                                            onDelete={() => dispatch(deleteGuest({ phoneNumber: guest.phoneNumber, email: guest.email }))} />
+                                                    </GestureHandlerRootView>
+                                                )
+
+                                            }
+
+                                            )}
                                         </View>
                                         {rspv?.selectedGuest?.id > rspv?.guests?.length && <Button
                                             disabled={false}
-                                            style={[styles.clearButton, styles.btnBorder]}
+                                            style={[styles.clearButton, styles.btnBorder, { height: verticalScale(48) }]}
                                             title={BUTTON_LABLE.ADD_GUEST_DETAILS}
                                             colorTheme="white"
                                             onPress={onAddGuest}
@@ -524,6 +536,7 @@ const RSVPInvitedUpcoming = () => {
                         />
                     </View>
                 )}
+                {rspv.response == 'Yes' && <CustomText style={{ color: COLORS.light_gray, textAlign: 'center', paddingTop: 12, paddingBottom: 8, fontSize: fontScale(14) }}>Please add your additional guests’ details by {formatToDeviceTimeZone(startDate, endDate)}, or their passes will be canceled.</CustomText>}
 
                 <Button
                     disabled={false}
@@ -567,7 +580,7 @@ const RSVPInvitedUpcoming = () => {
             <>
                 <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
                     <View style={{ flex: 1, paddingBottom: 24 }}>
-                        <EventCard name={name} location={location?.location} imageCover={imageCover} dates={formatToDeviceTimeZone(startDate, endDate)} />
+                        <EventCard name={name} location={location?.location} imageCover={imageFlyer} dates={formatToDeviceTimeZone(startDate, endDate)} />
                         <StatusBanner isGoing={true} onPress={() => {
                             setActiveTab('options')
                             bottomSheetRef?.current.open()
@@ -581,9 +594,14 @@ const RSVPInvitedUpcoming = () => {
                                 keyExtractor={(item, index) => index.toString()}
                                 ItemSeparatorComponent={() => <View style={{ height: 6 }} />}
                             />
+                            {showInfo &&
+                                <>
+                                    <CustomText style={{ color: COLORS.black, marginTop: 12, marginLeft: 8, fontFamily: fontFamily.ABCDiatype_Medium, fontSize: fontScale(14) }}>This guest cannot be added as they may already have a status on the guest list for this event. Contact the host if you have any questions.</CustomText>
+                                </>
+                            }
                             <Button
                                 disabled={false}
-                                style={[styles.clearButton, styles.btnBorder]}
+                                style={[styles.clearButton, styles.btnBorder, { height: verticalScale(48) }]}
                                 title={BUTTON_LABLE.ADD_GUEST_DETAILS}
                                 colorTheme="white"
                                 onPress={onAddGuest}
@@ -596,16 +614,7 @@ const RSVPInvitedUpcoming = () => {
                             </View>}
 
                         </View>
-                        {showInfo &&
-                            <>
-                                <CustomText style={{ color: COLORS.black, marginTop: 12 }}>Guests can be declined for various reasons, such as:</CustomText>
-                                <View style={{ padding: 6 }}>
-                                    <CustomText style={{ color: COLORS.black }}>•  The guest has already requested an invited or was already invited by the host.</CustomText>
-                                    <CustomText style={{ color: COLORS.black }}>•  The guest has already requested an invited or was already invited by the host.</CustomText>
-                                    <CustomText style={{ color: COLORS.black }}>•  The guest has already requested an invited or was already invited by the host.</CustomText>
-                                </View>
-                            </>
-                        }
+
                     </View>
                 </ScrollView>
 
@@ -645,7 +654,7 @@ const RSVPInvitedUpcoming = () => {
                 <BottomSheetComponent
                     ref={bottomSheetRef}
                     onClose={() => { (activeView == "success" || activeView == "failed") && goBack() }}
-                    snapPoints={[getSnapPoints()]}>
+                    snapPoints={[getSnapPoints(), '90%']}>
                     <View style={styles.bottomSheetContent}>
                         {renderBottomSheetContent()}
                     </View>

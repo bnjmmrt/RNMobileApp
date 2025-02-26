@@ -44,6 +44,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
     (state: RootState) => state.appFlowApiData?.profileData,
   );
   const userId = useSelector((state: RootState) => state.auth.userId);
+  const isGuest = useSelector((state: RootState) => state.auth.isGuest);
 
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
@@ -212,7 +213,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
             </>
           )} */}
 
-          {!loginData?.isInvited && (
+          {!isGuest && (
             <View>
               <Text style={[styles.label]}>{LABLE.GENDER}</Text>
               <GenderComponent

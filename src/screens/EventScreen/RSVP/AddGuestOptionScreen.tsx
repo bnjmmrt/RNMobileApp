@@ -26,6 +26,7 @@ import AddGuestScreen from './AddGuestScreen';
 import GuestForm from './GuestForm';
 import { addGuest } from 'src/redux/slices/rspvSlice';
 import { useDispatch } from 'react-redux';
+import { CustomText } from 'src/component/CustomText';
 
 interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -81,7 +82,7 @@ const AddGuestOptionScreen: React.FC<EmailPhoneScreenProps> = ({
         showProgressBar={false}
       />
       <View style={styles.contentContainer}>
-        <Title subTitle={LABLE.ADD_A_PHOTO_SUBTITLE} align='center' />
+        <CustomText style={styles.descriptionText}>Provide details to add your additional guest.</CustomText>
         <TabBar
           onTabChange={handleTabChange}
           tabOneLabel="Add from Contacts"
@@ -127,7 +128,7 @@ const styles = StyleSheet.create({
   spacer: {
     flex: 1,
   },
-
+  descriptionText: { fontFamily: fontFamily.ABCDiatype_Medium, fontSize: fontScale(14), color: COLORS.light_gray, textAlign: 'center', marginVertical: verticalMarginScale(12) },
   contactContainer: {
     flex: 1,
     backgroundColor: COLORS.white,

@@ -32,6 +32,8 @@ import {
   useFetchEventDetailsQuery,
   useFetchHostEventDetailsQuery,
   useFetchPublicEventDetailsQuery,
+  useLazyFetchEventDetailsQuery,
+  useLazyFetchPublicEventDetailsQuery,
 } from 'src/redux/actions/eventApiAction';
 import IMAGES from '@images/index';
 import EventTalent from 'src/component/Event/EventTalent';
@@ -50,8 +52,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: any;
@@ -60,6 +63,8 @@ type RouteParams = {
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   navigation,
 }) => {
+
+
   const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
   const route = useRoute<RouteProp<RouteParams>>();
@@ -67,7 +72,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [isDeclinedByHost, setIsDeclinedByHost] = useState(false);
   const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const [isCurrentUserIsGuest, setIsCurrentGuestStatus] = useState(route?.params?.isCurrentUserIsGuest);
+  const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
+
   const role = useSelector((state: RootState) => state.auth.role);
   // const insets = useSafeAreaInsets();
 
@@ -92,24 +99,39 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
-  const useFetchEventDetails =
-    role === ROLE.HOST
-      ? useFetchHostEventDetailsQuery
-      : route?.params?.isCurrentUserIsGuest
-      ? useFetchPublicEventDetailsQuery
-      : useFetchEventDetailsQuery;
-  // Ensure argument structure remains consistent
+
+  useEffect(() => {
+    dispatch(setRsvpStatus(isCurrentUserIsGuest ? 'TRUE' : "NO_STATUS"));
+  }, [isCurrentUserIsGuest]);
   const queryArgs =
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const) // Type assertion to prevent union mismatch
       : ({
-          userId,
-          eventId: route?.params?.id,
-        } as const); // Type assertion
+        userId,
+        eventId: route?.params?.id,
+      } as const); // Type assertion
+  const useFetchEventDetailsHook =
+    role === ROLE.HOST
+      ? useFetchHostEventDetailsQuery
+      : rspvStatus === "NO_STATUS"
+        ? useFetchPublicEventDetailsQuery
+        : useFetchEventDetailsQuery;
 
-  const { data, refetch } = useFetchEventDetails(queryArgs as any, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data, isLoading, refetch } = useFetchEventDetailsHook(queryArgs);
+
+  useEffect(() => {
+    console.log("RSVP Status:", rspvStatus);
+    refetch(); // Manually refetch when RSVP status changes
+  }, [rspvStatus, refetch]);
+
+
+
+
+  // Ensure argument structure remains consistent
+
+
+
+
 
   // const { data, isLoading, refetch, isSuccess } = useFetchEventDetailsQuery(
   //   { eventId: route?.params?.id, userId: userId },
@@ -125,11 +147,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [calendarDetails, setCalendarDetails] = useState<any>({});
 
   const [useQr, setUseQr] = useState<boolean>(false);
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [refetch]),
-  );
+
+
 
   useEffect(() => {
     if (guestStatus === 'DECLINED') {
@@ -163,8 +182,19 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       });
     }
     if (data && data.data && data?.data?.collaborators) {
-      setCollaborators(data.data.collaborators);
+      let collaborator = {
+        ...data?.data?.owner,
+        name: data?.data?.owner.companyName,
+        role: {
+          id: data?.data?.owner.id,
+          name: 'host'
+        }
+      };
+
+      // Merge the owner as a collaborator with existing collaborators
+      setCollaborators([collaborator, ...data.data.collaborators]);
     }
+
     if (data && data.data && data?.data?.talents) {
       setTalents(data.data.talents);
     }
@@ -271,6 +301,80 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       marginTop: verticalScale(20) + STATUS_BAR_HEIGHT,
     },
   });
+  const renderHostButtons = () => {
+    if (role !== ROLE.HOST) {
+      return null;
+    }
+
+    return (
+      <>
+        {/* <Button
+          disabled={false}
+          style={styles.btnStyleLight}
+          title="View Guest List"
+          colorTheme="light"
+          onPress={navigateToViewList}
+        /> */}
+        <Button
+          disabled={false}
+          style={styles.btnStyleLight}
+          title={BUTTON_LABLE.INVITE_GUESTS}
+          colorTheme="light"
+          onPress={onPressInviteGuests}
+        />
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.CHECK_IN}
+          colorTheme="dark"
+          onPress={onCheckInClick}
+        />
+      </>
+    );
+  };
+  const renderRSVPButton = () => {
+    if (isDeclinedByHost || guestStatus === 'CONFIRMED' || role === ROLE.HOST) {
+      return null;
+    }
+
+    return (
+      <View>
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={guestStatus === 'APPLIED' ? BUTTON_LABLE.UPDATE_APPLICATION : BUTTON_LABLE.RSVP}
+          colorTheme="dark"
+          onPress={onNextClick}
+        />
+      </View>
+    );
+  };
+
+  const renderConfirmedButtons = () => {
+    if (guestStatus !== 'CONFIRMED' || role === ROLE.HOST) {
+      return null;
+    }
+
+    return (
+      <View style={{ margin: 20 }}>
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.VIEW_TICKET}
+          colorTheme="dark"
+          onPress={onViewTicketClick}
+          loading={loading}
+        />
+        <Button
+          disabled={false}
+          style={styles.btnStyleLight}
+          title={BUTTON_LABLE.UPDATE_RSVP}
+          colorTheme="light"
+          onPress={onNextClick}
+        />
+      </View>
+    );
+  };
 
   return (
     <>
@@ -317,7 +421,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
             <EventStatus
               status={guestStatus}
-              isDeclinedByMe={!isDeclinedByMe}
+              isDeclinedByMe={isDeclinedByMe}
             />
 
             {role !== ROLE.NON_MEMBER && (
@@ -345,24 +449,25 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
             {/* {<EventAnouncements talents={talents} />} */}
 
-            <Button
-              disabled={false}
-              style={styles.btnStyleLight}
-              title="View Guest List"
-              colorTheme="light"
-              onPress={navigateToViewList}
-            />
-          </View>
 
-          <Button
+          </View>
+          {/* {role === ROLE.HOST && <Button
+            disabled={false}
+            style={styles.btnStyleLight}
+            title="View Guest List"
+            colorTheme="light"
+            onPress={navigateToViewList}
+          />}
+
+          {role === ROLE.HOST && <Button
             disabled={false}
             style={styles.btnStyleLight}
             title={BUTTON_LABLE.INVITE_GUESTS}
             colorTheme="light"
             onPress={onPressInviteGuests}
-          />
+          />}
 
-          {loginData?.roles[0]?.roleName === ROLE.HOST && (
+          {role === ROLE.HOST && (
             <Button
               disabled={false}
               style={styles.btnStyle}
@@ -370,39 +475,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               colorTheme="dark"
               onPress={onCheckInClick}
             />
-          )}
+          )} */}
         </ScrollView>
+        {renderHostButtons()}
+        {renderRSVPButton()}
+        {renderConfirmedButtons()}
 
-        {!isDeclinedByHost && guestStatus !== 'CONFIRMED' && (
-          <View>
-            <Button
-              disabled={false}
-              style={styles.btnStyle}
-              title={
-                guestStatus == 'APPLIED'
-                  ? BUTTON_LABLE.UPDATE_APPLICATION
-                  : BUTTON_LABLE.RSVP
-              }
-              colorTheme="dark"
-              onPress={onNextClick}
-            />
-          </View>
-        )}
-
-        {guestStatus == 'DECLINED' && (
-          <View>
-            <Button
-              disabled={false}
-              style={styles.btnStyle}
-              loading={acceptLoading}
-              title={BUTTON_LABLE.RSVP}
-              colorTheme="dark"
-              onPress={() => {
-                onNextClick();
-              }}
-            />
-          </View>
-        )}
 
         <CalenderEventsBottomSheet
           ref={calenderEventsBottomSheetRef}
@@ -430,42 +508,23 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           name={eventDetails?.name}
         />
 
-        {guestStatus == 'CONFIRMED' && (
-          <View style={{ margin: 20 }}>
-            <Button
-              disabled={false}
-              style={styles.btnStyle}
-              title={BUTTON_LABLE.VIEW_TICKET}
-              colorTheme="dark"
-              onPress={onViewTicketClick}
-              loading={loading}
-            />
-            <Button
-              disabled={false}
-              style={styles.btnStyleLight}
-              title={BUTTON_LABLE.UPDATE_RSVP}
-              colorTheme="light"
-              onPress={onNextClick}
-            />
-          </View>
-        )}
-
         <BackButtonOverlay
           customStyle={{ top: 16 + STATUS_BAR_HEIGHT }}
           onPress={() => navigation.goBack()}
         />
-        <BackButtonOverlay
+
+        {role === ROLE.HOST && <BackButtonOverlay
           customStyle={{ right: 4, top: 16 + STATUS_BAR_HEIGHT }}
           imageSource={IMAGES.edits}
           onPress={() =>
             navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })
           }
-        />
-        <BackButtonOverlay
+        />}
+        {role === ROLE.HOST && <BackButtonOverlay
           customStyle={{ right: 55, top: 16 + STATUS_BAR_HEIGHT }}
           imageSource={IMAGES.share}
           onPress={() => navigation.goBack()}
-        />
+        />}
       </View>
     </>
   );

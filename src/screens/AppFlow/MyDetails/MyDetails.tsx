@@ -2,7 +2,12 @@ import React, { useCallback, useRef } from 'react';
 import { Text, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants';
+import {
+  LABLE,
+  BUTTON_LABLE,
+  ERROR_MESSAGE,
+  ROLE,
+} from '../../../utils/constants';
 import EmailPhoneStyles from './MyDetailsStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
@@ -22,7 +27,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
@@ -38,8 +43,8 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   const lastNameRef = useRef<any>(null);
 
   const onNextClick = () => {
-    firstNameRef.current.validateInputs()
-    lastNameRef.current.validateInputs()
+    firstNameRef.current.validateInputs();
+    lastNameRef.current.validateInputs();
     if (
       firstNameRef.current.validateInputs() &&
       // firstNameRef.current.inputText.length > 2 &&
@@ -49,7 +54,7 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
       dispatch(setFirstName(firstNameRef.current.inputText));
       dispatch(setLastName(lastNameRef.current.inputText));
       dispatch(setIsEmailVerified(false));
-      if (isEmailPhoneBothVerified) {
+      if (loginData?.roles[0]?.roleName === ROLE.HOST) {
         dispatch(setPageProgress(3));
         navigation.navigate('GenderScreen');
       } else {

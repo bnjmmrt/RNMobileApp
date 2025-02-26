@@ -9,6 +9,7 @@ import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
 import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
+import FastImage from '@d11/react-native-fast-image';
 
 interface EventHostItemProps {
   item: {};
@@ -24,8 +25,13 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item }) => {
 
 
   return (
-    <View style={[styles.container]}>
-      <Image source={IMAGES.backgroundLogin} style={styles.image} />
+    <View style={[styles.container, { width: role == ROLE.MEMBER ? 250 : 150 }]}>
+      <FastImage
+        style={[styles.image]}
+        source={{ uri: item?.companyLogo }}
+        defaultSource={IMAGES.backgroundLogin}
+        resizeMode="cover"
+      />
       <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 10, marginEnd: 20 }}>
         <Text style={styles.title}>{capitalizeFirstLetter(item?.name)}</Text>
         <Text style={styles.subtitle}>{capitalizeFirstLetter(item?.role?.name)}</Text>
@@ -50,6 +56,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderColor: COLORS.borderGray,
     flexDirection: 'row',
+    width: 250,
     alignSelf: 'flex-start',
     alignItems: 'center',
   },

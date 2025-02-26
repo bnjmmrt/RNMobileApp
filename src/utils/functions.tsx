@@ -6,6 +6,7 @@ import { configStatusBar, SafeAreaViewConfig, } from 'src/redux/slices/safeAreaV
 import store from 'src/redux/store';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import React from 'react';
+// import moment from 'moment-timezone';
 
 // ErrorText component with TypeScript props
 interface ErrorTextProps {
@@ -81,13 +82,22 @@ export function printLog(msg: string, value: any = ''): void {
   }
 }
 
-export const capitalizeFirstLetter = (text: string) => {
-  if (typeof text !== 'string') {
-    console.warn('Input is not a string');
+export const capitalizeFirstLetter = (text: string): string => {
+  if (typeof text !== 'string' || text.trim() === '') {
+    console.warn('Input is not a valid string');
     return '';
   }
-  return text.charAt(0).toUpperCase() + text.slice(1);
+
+  return text
+    .split('_') // Split by underscore
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
+    .join('-'); // Join with hyphen
 };
+
+// Example Usage
+console.log(capitalizeFirstLetter("co_host")); // Output: "Co-Host"
+console.log(capitalizeFirstLetter("host"));    // Output: "Host"
+console.log(capitalizeFirstLetter("admin_user")); // Output: "Admin-User"
 
 export const objectToQueryString = (
   obj: Record<string, string | number | boolean>,
@@ -330,7 +340,7 @@ export const isIos = (): boolean => platform === 'ios';
 export const isAndroid = (): boolean => platform === 'android';
 
 export const convertDateFormat = (dateString: string): string => {
-  console.log("dateString",dateString)
+  console.log("dateString", dateString)
   const [month, day, year] = dateString.split('/');
   return `${year}-${month}-${day}`;
 };
@@ -363,7 +373,16 @@ export const parseAndFormatDate = (dateString: string) => {
   // If invalid, return 18 years back from today
   return moment().subtract(18, 'years').format('YYYY-MM-DD');
 };
-
+export const numberSpacing = (number: any, callingCode: any) => {
+  const cleanedText = number.replace(/\D/g, '');
+  const fullNumber = `${callingCode}${cleanedText}`;
+  let parsedNumber = parsePhoneNumberFromString(fullNumber);
+  if (parsedNumber && parsedNumber.isValid()) {
+    return parsedNumber.formatInternational().replace(`${callingCode} `, ''); // Remove country code from input
+  } else {
+    return cleanedText; // Keep raw input if invalid
+  }
+};
 
 export const changeSafeAreaViewConfig = (config: SafeAreaViewConfig) => {
   store.store.dispatch(configStatusBar(config));
@@ -406,7 +425,7 @@ export const extractCountryCode = (phoneNumber: string) => {
   };
 };
 
-const getCountryFlag = (countryCode: string) => {
+export const getCountryFlag = (countryCode: string) => {
   return countryCode
     ? countryCode
       .toUpperCase()
@@ -446,7 +465,7 @@ export const getRoleRole = (role: string) => {
   }
 };
 
-export const dateFormat=(date:string,format:string)=>{
+export const dateFormat = (date: string, format: string) => {
 
   return moment(date).format(format)
 }
