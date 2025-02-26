@@ -340,6 +340,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
 
         <View style={{ marginHorizontal: horizontalMarginScale(16) }}>
           <InviteDetails
+            ticketTypeRef={ticketTypeRef}
             isCollapsible
             selectedTicketType={selectedTicketType}
             ticketTypeError={ticketTypeError}

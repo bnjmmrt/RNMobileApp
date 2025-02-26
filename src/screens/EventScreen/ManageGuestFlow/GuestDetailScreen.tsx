@@ -350,6 +350,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         <View style={styles.inviteSection}>
           <InviteDetails
             isCollapsible
+            ticketTypeError={''}
             ticketTypeRef={ticketTypeRef}
             selectedTicketType={
               selectedTicketType ||
