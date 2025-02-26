@@ -292,7 +292,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     },
   });
   const renderHostButtons = () => {
-    if (loginData?.roles[0]?.roleName !== ROLE.HOST) {
+    if (role !== ROLE.HOST) {
       return null;
     }
 
@@ -323,7 +323,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     );
   };
   const renderRSVPButton = () => {
-    if (isDeclinedByHost || guestStatus === 'CONFIRMED' || loginData?.roles[0]?.roleName !== ROLE.MEMBER) {
+    if (isDeclinedByHost || guestStatus === 'CONFIRMED' || role !== ROLE.MEMBER) {
       return null;
     }
 
@@ -341,7 +341,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const renderConfirmedButtons = () => {
-    if (guestStatus !== 'CONFIRMED' || loginData?.roles[0]?.roleName !== ROLE.MEMBER) {
+    if (guestStatus !== 'CONFIRMED' || role !== ROLE.MEMBER) {
       return null;
     }
 
@@ -441,7 +441,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
 
           </View>
-          {/* {loginData?.roles[0]?.roleName === ROLE.HOST && <Button
+          {/* {role === ROLE.HOST && <Button
             disabled={false}
             style={styles.btnStyleLight}
             title="View Guest List"
@@ -449,7 +449,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             onPress={navigateToViewList}
           />}
 
-          {loginData?.roles[0]?.roleName === ROLE.HOST && <Button
+          {role === ROLE.HOST && <Button
             disabled={false}
             style={styles.btnStyleLight}
             title={BUTTON_LABLE.INVITE_GUESTS}
@@ -457,7 +457,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             onPress={onPressInviteGuests}
           />}
 
-          {loginData?.roles[0]?.roleName === ROLE.HOST && (
+          {role === ROLE.HOST && (
             <Button
               disabled={false}
               style={styles.btnStyle}

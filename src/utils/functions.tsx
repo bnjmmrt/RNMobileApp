@@ -415,7 +415,7 @@ export const extractCountryCode = (phoneNumber: string) => {
   };
 };
 
-const getCountryFlag = (countryCode: string) => {
+export const getCountryFlag = (countryCode: string) => {
   return countryCode
     ? countryCode
       .toUpperCase()
@@ -455,7 +455,7 @@ export const getRoleRole = (role: string) => {
   }
 };
 
-export const dateFormat=(date:string,format:string)=>{
+export const dateFormat = (date: string, format: string) => {
 
   return moment(date).format(format)
 }
