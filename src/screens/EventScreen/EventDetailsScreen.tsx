@@ -376,6 +376,14 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     );
   };
 
+  const onPressManageInvite = () => {
+     dispatch(setSelectedEventForInvite(data.data));
+     navigation.navigate(ROUTES.EventGuestList, {
+       eventId: route?.params?.id,
+     });
+  };
+
+
   return (
     <>
       {/* <SafeAreaView style={{ backgroundColor: COLORS.white }} /> */}
@@ -439,11 +447,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             {role === ROLE.HOST && (
               <EventRequests
                 eventId={data?.data?.id}
-                onTicketBreakdownPress={() => {
-                  navigation.navigate(ROUTES.EventGuestList, {
-                    eventId: data?.data?.id,
-                  });
-                }}
+                onTicketBreakdownPress={onPressManageInvite}
               />
             )}
 
