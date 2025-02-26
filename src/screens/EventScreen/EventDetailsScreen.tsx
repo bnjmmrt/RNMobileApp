@@ -173,8 +173,19 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       });
     }
     if (data && data.data && data?.data?.collaborators) {
-      setCollaborators(data.data.collaborators);
+      let collaborator = {
+        ...data?.data?.owner,
+        name: data?.data?.owner.companyName,
+        role: {
+          id: data?.data?.owner.id,
+          name: 'host',
+        },
+      };
+
+      // Merge the owner as a collaborator with existing collaborators
+      setCollaborators([collaborator, ...data.data.collaborators]);
     }
+
     if (data && data.data && data?.data?.talents) {
       setTalents(data.data.talents);
     }
@@ -490,18 +501,23 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           customStyle={{ top: 16 + STATUS_BAR_HEIGHT }}
           onPress={() => navigation.goBack()}
         />
-        <BackButtonOverlay
-          customStyle={{ right: 4, top: 16 + STATUS_BAR_HEIGHT }}
-          imageSource={IMAGES.edits}
-          onPress={() =>
-            navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })
-          }
-        />
-        <BackButtonOverlay
-          customStyle={{ right: 55, top: 16 + STATUS_BAR_HEIGHT }}
-          imageSource={IMAGES.share}
-          onPress={() => navigation.goBack()}
-        />
+
+        {role === ROLE.HOST && (
+          <BackButtonOverlay
+            customStyle={{ right: 4, top: 16 + STATUS_BAR_HEIGHT }}
+            imageSource={IMAGES.edits}
+            onPress={() =>
+              navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })
+            }
+          />
+        )}
+        {role === ROLE.HOST && (
+          <BackButtonOverlay
+            customStyle={{ right: 55, top: 16 + STATUS_BAR_HEIGHT }}
+            imageSource={IMAGES.share}
+            onPress={() => navigation.goBack()}
+          />
+        )}
       </View>
     </>
   );
