@@ -3,28 +3,40 @@ import { useMemberLoginMutation } from '../../redux/actions/loginApiAction';
 import { FlashMessageComponent } from '../../component/FlashMessageComponent/FlashMessageComponent';
 import { LABLE } from 'src/utils/constants';
 
-export const useVerifyOtp = (isMemberExist: boolean, isGuest: boolean, email?: string, phone?: string, isEmail?: boolean) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [memberLogin] = useMemberLoginMutation();
-    const [error,setError] = useState('')
-    const verifyOtp = async (code: string, onSuccess: (data: any) => void) => {
-        try {
-            setIsLoading(true);
-            const requestParam = { email, phoneNumber: phone, code, isExist: isMemberExist, isGuest: isGuest };
-            const response = await memberLogin(requestParam).unwrap();
+export const useVerifyOtp = (
+  isMemberExist: boolean,
+  isGuest: boolean,
+  email?: string,
+  phone?: string,
+  isEmail?: boolean,
+) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [memberLogin] = useMemberLoginMutation();
+  const [error, setError] = useState('');
+  const verifyOtp = async (code: string, onSuccess: (data: any) => void) => {
+    try {
+      setIsLoading(true);
+      const requestParam = {
+        email,
+        phoneNumber: phone,
+        code,
+        isExist: isMemberExist,
+        isGuest: isGuest,
+      };
+      const response = await memberLogin(requestParam).unwrap();
 
-            if (response.status === 200) {
-                const data = { ...response.data, varifyStatus: isEmail ? 1 : 2 };
-                onSuccess(data);
-            }
-        } catch (error) {
-            // setError(LABLE.INVALID_OTP)
-            FlashMessageComponent.show('error', 'Something went wrong, please try again!');
-            console.error('Error verifying OTP:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+      if (response.status === 200) {
+        const data = { ...response.data, varifyStatus: isEmail ? 1 : 2 };
+        onSuccess(data);
+      }
+    } catch (error) {
+      // setError(LABLE.INVALID_OTP)
+      FlashMessageComponent.show('error', error?.data?.error?.message);
+      console.error('Error verifying OTP:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    return { verifyOtp, isLoading ,error};
+  return { verifyOtp, isLoading, error };
 };
