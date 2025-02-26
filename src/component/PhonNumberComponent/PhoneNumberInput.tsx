@@ -198,10 +198,10 @@ const PhoneNumberInput = forwardRef<
             onPress={() => setCountryPickerVisible(true)}
             disabled={disabled}>
             <Text style={styles.flag}>{flag}</Text>
-            <Image
+            {!disabled && <Image
               source={IMAGES.upDownArrow}
               style={[styles.arrowIcon, disabled && { opacity: 0.5 }]}
-            />
+            />}
             <Text style={styles.callingCode}>{callingCode}</Text>
           </TouchableOpacity>
 
