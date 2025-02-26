@@ -37,6 +37,7 @@ import { RootState } from 'src/redux/slices';
 import {
   useMarkUserFavMutation,
   useUnmarkUserFavMutation,
+  useFetchUserDetailsQuery,
 } from 'src/redux/actions/usersApiAction';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
@@ -59,7 +60,6 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 }): JSX.Element => {
   const guest = route.params?.guest as EventGuest;
   const status = guest?.status?.toLowerCase() || 'draft';
-  const eventId = route.params?.eventId;
   const userId = useSelector((state: RootState) => state.auth.userId);
   const selectedEvent = useSelector(
     (state: RootState) => state.inviteGuestsFlow.selectedEvent,
@@ -72,23 +72,22 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const [manageGuest] = useManageGuestMutation();
   const [markUserFav] = useMarkUserFavMutation();
   const [unmarkUserFav] = useUnmarkUserFavMutation();
+  const { data: userDetails, isLoading } = useFetchUserDetailsQuery(
+    { user: guest?.userId || '' },
+    { skip: !guest?.userId },
+  );
+
   const [isFavorite, setIsFavorite] = useState(false);
 
   const [selectedTicketType, setSelectedTicketType] = useState<TicketType>();
-  const [additionalGuests, setAdditionalGuests] = useState(0);
+  const [additionalGuests, setAdditionalGuests] = useState(
+    guest?.maxAdditionalGuests,
+  );
   const [inviteMessage, setInviteMessage] = useState('');
   const [guestNote, setGuestNote] = useState(guest?.privateGuestNote || '');
   const [directlySendToConfirm, setDirectlySendToConfirm] = useState(false);
 
   // console.log('guest', guest);
-
-  // Set initial additional guests count after component mounts
-  useEffect(() => {
-    const guestCount = guest?.additionalGuests?.length;
-    if (typeof guestCount === 'number') {
-      setAdditionalGuests(guestCount);
-    }
-  }, [guest?.additionalGuests]);
 
   // Set initial ticket type if guest has one
   useEffect(() => {
@@ -103,15 +102,12 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     }
   }, [guest?.ticketType, selectedEvent?.ticketTypes]);
 
-  // Set initial favorite status
+  // Set initial favorite status from user details
   useEffect(() => {
-    const setInitialFavoriteStatus = () => {
-      if (guest?.isFavorite !== undefined) {
-        setIsFavorite(guest.isFavorite);
-      }
-    };
-    setInitialFavoriteStatus();
-  }, [guest?.isFavorite]);
+    if (userDetails?.data?.isFavourite !== undefined) {
+      setIsFavorite(userDetails.data.isFavourite);
+    }
+  }, [userDetails?.data?.isFavourite]);
 
   const handleGuestAction = async (
     action: 'CREATE' | 'UPDATE' | 'DELETE',
@@ -122,14 +118,13 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         status: newStatus,
         guestStatus: newStatus as GuestStatus,
         ticketTypeId: selectedTicketType?.id,
-        additionalGuests,
+        maxAdditionalGuests: additionalGuests,
         inviteMessage,
-        guestNote,
+        privateGuestNote: guestNote,
         directlySendToConfirm,
       };
 
       await manageGuest({
-        eventId,
         guestId: guest?.id,
         action,
         payload,
@@ -293,6 +288,8 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     }
   };
 
+  console.log('userDetails', guest, 'isLoading', isLoading);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerTop}>
@@ -309,8 +306,31 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View>
           <ProfileCard
-            guest={guest}
+            user={{
+              name: guest.name,
+              avatar: userDetails?.data?.imageUrl || guest.profilePicture,
+              roles:
+                userDetails?.data?.focuses ||
+                guest.category?.map(cat => ({ name: cat, id: cat })) ||
+                [],
+              age: userDetails?.data?.age || guest.age,
+              followers:
+                userDetails?.data?.socialStats?.instagramFollowersCount?.toString() ||
+                guest.numFollowers?.toString() ||
+                '0',
+              location: guest.baseCity || userDetails?.data?.city,
+              isMember:
+                userDetails?.data?.role === 'member' ||
+                Boolean(guest.age && guest.baseCity),
+              status: userDetails?.data?.status || guest.status,
+              interests:
+                userDetails?.data?.interest?.split(', ') ||
+                guest.interest ||
+                [],
+              isFollowing: userDetails?.data?.isFollow || false,
+            }}
             showGuestStatus={true}
+            status={guest?.status}
             actionButtons={[
               {
                 title: 'Favorite',
@@ -340,9 +360,8 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                 : undefined)
             }
             onTicketTypePress={() => actionSheetRef?.current?.open()}
-            additionalGuests={additionalGuests}
+            additionalGuests={additionalGuests || 0}
             onAdditionalGuestsChange={setAdditionalGuests}
-            maxAdditionalGuests={guest?.maxAdditionalGuests || 5}
             inviteMessage={inviteMessage}
             onInviteMessageChange={setInviteMessage}
             guestNote={guestNote}
@@ -352,9 +371,12 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             directlySendToConfirm={directlySendToConfirm}
             onDirectlySendToConfirmChange={setDirectlySendToConfirm}
           />
-          <View style={{ marginTop: verticalMarginScale(16) }}>
-            <Questionnaire isCollapsible data={guest?.questions || []} />
-          </View>
+
+          {Boolean(guest?.questions?.length) && (
+            <View style={{ marginTop: verticalMarginScale(16) }}>
+              <Questionnaire isCollapsible data={guest?.questions || []} />
+            </View>
+          )}
         </View>
       </ScrollView>
 
