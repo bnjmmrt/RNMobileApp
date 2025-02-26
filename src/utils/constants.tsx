@@ -73,7 +73,8 @@ export const LABLE = {
     'Rumor will send you an email with a verification code.',
   RUMOR_WILL_SEND_YOU_A_TEXT_WITH_A_VERIFICATION_CODE:
     'Rumor will send you a text with a verification code.',
-  EROOR_ENTER_PHONE_NUMBER: 'Please enter a valid phone number',
+  EROOR_ENTER_PHONE_NUMBER: 'Please enter a phone number.',
+  EROOR_ENTER_VALID_PHONE_NUMBER:'Please enter a valid phone number.',
   EROOR_ENTER_EMAIL: 'Please enter a valid email address',
   ERROR_VERIFY_CODE:
     'The code you entered cannot be verified. Please try again.',

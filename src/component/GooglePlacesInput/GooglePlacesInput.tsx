@@ -32,6 +32,8 @@ interface GooglePlacesInputProps {
   errorMessage?: string | null;
   setError?: (error: string | null) => void;
   defaultValue?: string;
+  toggleLocationPicker?:()=>void
+  allowFullAddres?: boolean
 }
 const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
   setLocation,
@@ -39,6 +41,8 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
   defaultValue,
   errorMessage,
   setError,
+  toggleLocationPicker,
+  allowFullAddres
 }) => {
   const googlePlacesRef = useRef(null);
 
@@ -55,6 +59,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
         ref={googlePlacesRef}
         styles={{
           textInputContainer: {
+            
             borderRadius: radiusScale(8),
             borderWidth: 2,
             height: 60,
@@ -82,7 +87,8 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
             longitude: detail ? String(detail?.geometry?.location?.lng) : '',
           };
           setLocation(address);
-          setError(null);
+          setError && setError(null);
+          toggleLocationPicker && toggleLocationPicker()
           submit();
         }}
 
@@ -90,7 +96,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
         query={{
           key: environment.PLACES_API_KEY,
           language: 'en',
-          types: '(cities)',
+          types: allowFullAddres ? 'geocode' : '(cities)',
         }}
         renderLeftButton={() => (
           <View style={styles.iconContainer}>

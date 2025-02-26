@@ -36,7 +36,6 @@ const AddFromContacts: React.FC<MyDetailsScreenProps> = () => {
         const fetchContacts = async () => {
             if (permissionGranted) {
                 const formattedContacts = await getContacts();
-                console.log(formattedContacts)
                 setContacts(formattedContacts);
             }
         };

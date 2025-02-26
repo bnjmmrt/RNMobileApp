@@ -23,12 +23,12 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      if (!hasFullAccess && role !== 'non_member') {
+      // if (!hasFullAccess && role !== 'non_member') {
         changeSafeAreaViewConfig({
           ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
           showBottomSafeAreaView: false,
         });
-      }
+      // }
     }, []),
   );
   return (
