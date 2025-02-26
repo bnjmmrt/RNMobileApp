@@ -97,10 +97,10 @@ const ReferralScreen: React.FC = () => {
 
   const onInvite= async () => {
    await requestContactPermission();
-   if(permissionGranted){
+  //  if(permissionGranted){
     setIsShown(true)
     inviteFriendSheetRef?.current.open();
-   }
+  //  }
     
   }
 

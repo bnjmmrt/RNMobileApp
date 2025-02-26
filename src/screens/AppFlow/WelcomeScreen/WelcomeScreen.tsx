@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Image, Text, View } from 'react-native';
+import { Image, StatusBar, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import WelcomeScreenStyles from './WelcomeScreenStyles';
 import { COLORS, BUTTON_LABLE, LABLE } from '../../../utils/constants';
@@ -12,6 +12,7 @@ import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { RootState } from 'src/redux/slices';
 import { ROUTES } from 'src/navigation/Route';
+import GradientOverlay from 'src/screens/BeforeApplicationFlow/GradientOverlay';
 
 const WelcomeScreen: React.FC = () => {
   const navigation = useNavigation<any>();
@@ -48,6 +49,12 @@ const WelcomeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
+      {/* <GradientOverlay /> */}
       <View style={styles.imgCon}>
         <Image
           style={[styles.imgStyle]}
