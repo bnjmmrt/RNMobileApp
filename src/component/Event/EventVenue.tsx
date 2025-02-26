@@ -46,7 +46,7 @@ const EventVenue: React.FC<EventVenueProps> = ({ item, handleCalendarPress }) =>
   const role = useSelector((state: RootState) => state.auth.role);
   // const dates = useMemo(() => formatToDeviceTimeZone(item?.startDate, item?.endDate));
 
-  const isShowLocation = role === ROLE.HOST || item?.currentGuestStatus === 'confirmed';
+  const isShowLocation = role === ROLE.HOST || item?.currentGuestStatus === 'CONFIRMED';
   const locationText = isShowLocation ? item?.location?.location : 'RSVP to See Location';
 
   const addEventToCalender = () => {
@@ -54,7 +54,7 @@ const EventVenue: React.FC<EventVenueProps> = ({ item, handleCalendarPress }) =>
 
   return (
     <View style={[styles.container]}>
-      <View style={{ flex: 1, padding: 5 }}>
+      <View style={{ flex: 1 }}>
         <View style={{ marginVertical: verticalMarginScale(10), flexDirection: 'row', justifyContent: 'space-between' }}>
           <View>
             <Text style={styles.title}>{dates[0]}</Text>
