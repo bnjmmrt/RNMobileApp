@@ -95,25 +95,21 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   ).length;
   const totalGuestCount = guests.length;
 
-  // Filter and sort guests
   const filteredAndSortedGuests = useMemo(() => {
     let result = [...guests];
 
-    // Apply search filter
     if (searchText.trim()) {
       result = result.filter(guest =>
         guest.name.toLowerCase().includes(searchText.toLowerCase()),
       );
     }
 
-    // Apply status filter
     if (selectedFilter !== 'all') {
       result = result.filter(
         guest => guest.status.toLowerCase() === selectedFilter,
       );
     }
 
-    // Apply sorting
     result.sort((a, b) => {
       switch (selectedSort) {
         case 'name_asc':
@@ -132,7 +128,6 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     return result;
   }, [guests, searchText, selectedFilter, selectedSort]);
 
-  // Add calculation for confirmed guests from filtered list
   const confirmedGuests = filteredAndSortedGuests.filter(
     guest => guest.status === 'CONFIRMED',
   ).length;
@@ -200,6 +195,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
             screen: ROUTES.GuestDetailScreen,
             params: {
               guest: item,
+              eventId,
             },
           });
         }}>
