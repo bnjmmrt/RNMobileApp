@@ -26,6 +26,7 @@ import SelectReason from "./BottomSheetView/SelectReason"
 import MessageBox from "./BottomSheetView/MessageBox"
 import formatToDeviceTimeZone from "src/utils/formatToDeviceTimeZone"
 import { fontFamily } from "src/utils/functions"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
 
 const reasons = [
     { id: 1, name: 'Scheduling Conflict' },
@@ -185,7 +186,7 @@ const RSVPInvitedUpcoming = () => {
             case 'options':
                 return '20%';
             case 'cancel':
-                return Platform.OS == 'android' ? '95%' : '85%';
+                return Platform.OS == 'android' ? '95%' : '88%';
             case 'leave':
                 return '40%';
             case 'remove':
@@ -246,7 +247,7 @@ const RSVPInvitedUpcoming = () => {
                         bottomSheetRef?.current?.close();
                         navigate('BottomTabBar')
                     }}
-                    btnStyle={[styles.clearButton, styles.btnBorder]}
+                    btnStyle={[styles.clearButton, styles.btnBorder, { height: verticalScale(48) }]}
                 />;
             case 'success':
                 return <MessageBox
@@ -259,7 +260,7 @@ const RSVPInvitedUpcoming = () => {
                         bottomSheetRef?.current?.close();
                         navigate('BottomTabBar')
                     }}
-                    btnStyle={[styles.clearButton, styles.btnBorder]}
+                    btnStyle={[styles.clearButton, styles.btnBorder, { height: verticalScale(48) }]}
                 />;
 
             default:
@@ -500,12 +501,19 @@ const RSVPInvitedUpcoming = () => {
                                 {rspv?.selectedGuest?.name != rspv?.guests[0]?.name && (
                                     <>
                                         <View style={{ gap: 6 }}>
-                                            {rspv.guests.map(guest => (
-                                                <SwipeableGuestList
-                                                    key={guest.id}
-                                                    guest={guest}
-                                                    onDelete={() => dispatch(deleteGuest({ phoneNumber: guest.phoneNumber, email: guest.email }))} />
-                                            ))}
+                                            {rspv.guests.map(guest => {
+                                                return (
+                                                    <GestureHandlerRootView>
+                                                        <SwipeableGuestList
+                                                            key={guest.id}
+                                                            guest={guest}
+                                                            onDelete={() => dispatch(deleteGuest({ phoneNumber: guest.phoneNumber, email: guest.email }))} />
+                                                    </GestureHandlerRootView>
+                                                )
+
+                                            }
+
+                                            )}
                                         </View>
                                         {rspv?.selectedGuest?.id > rspv?.guests?.length && <Button
                                             disabled={false}

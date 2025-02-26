@@ -82,13 +82,22 @@ export function printLog(msg: string, value: any = ''): void {
   }
 }
 
-export const capitalizeFirstLetter = (text: string) => {
-  if (typeof text !== 'string') {
-    console.warn('Input is not a string');
+export const capitalizeFirstLetter = (text: string): string => {
+  if (typeof text !== 'string' || text.trim() === '') {
+    console.warn('Input is not a valid string');
     return '';
   }
-  return text.charAt(0).toUpperCase() + text.slice(1);
+
+  return text
+    .split('_') // Split by underscore
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
+    .join('-'); // Join with hyphen
 };
+
+// Example Usage
+console.log(capitalizeFirstLetter("co_host")); // Output: "Co-Host"
+console.log(capitalizeFirstLetter("host"));    // Output: "Host"
+console.log(capitalizeFirstLetter("admin_user")); // Output: "Admin-User"
 
 export const objectToQueryString = (
   obj: Record<string, string | number | boolean>,
@@ -416,7 +425,7 @@ export const extractCountryCode = (phoneNumber: string) => {
   };
 };
 
-const getCountryFlag = (countryCode: string) => {
+export const getCountryFlag = (countryCode: string) => {
   return countryCode
     ? countryCode
       .toUpperCase()

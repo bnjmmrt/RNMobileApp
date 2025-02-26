@@ -32,6 +32,7 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
   const navigation = useNavigation();
   // Handle the "Next" button press
   const role = useSelector((state: RootState) => state.auth.role);
+  const userId = useSelector((state: RootState) => state.auth.userId);
 
   const dates = formatDetailedEventDate(item?.startDate, item?.endDate,);
 
@@ -42,15 +43,42 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
     });
   };
 
+  const getUserRole = () => {
+    if (!item || !userId) return "";
+
+    // Check if the user is the owner
+    if (item?.owner?.id === userId) {
+      return "HOST";
+    }
+
+    // Check if the user is in the collaborators list
+    const collaborator = item.collaborators?.find(collab => collab.role?.id === userId);
+
+    if (collaborator) {
+      return collaborator?.role?.name?.toUpperCase().replace("_", "-");
+    }
+
+    return ""; // Default return if no match is found
+  };
+
   console.log('Sayyed event item :', item);
+  console.log('Sayyed  userId :', userId);
+  console.log('Sayyed  getUserRole :', getUserRole());
   return (
     <View style={styles.container}>
       <FastImage
         source={{ uri: item?.imageCover || item?.imageFlyer }}
         resizeMode={FastImage.resizeMode.cover}
         defaultSource={IMAGES.eventCoverPlaceholders1} // Your local placeholder image
-        style={styles.icon}
-      />
+        style={styles.icon}>
+        {role === ROLE.HOST && <View style={styles.roleContainer}>
+          <CustomText style={styles.roleText}>
+            {getUserRole()}
+          </CustomText>
+        </View>
+        }
+      </FastImage>
+
 
       <View style={styles.contentContainer}>
         <CustomText style={styles.titleStyle} textProps={{ numberOfLines: 1 }}>{item?.name}</CustomText>
@@ -118,6 +146,23 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: COLORS.light_gray,
+  },
+  roleContainer: {
+    backgroundColor: COLORS.white, // Ensure background is applied
+    borderRadius: 3, // Apply border radius
+    borderColor: COLORS.black, // Define border color
+    paddingVertical: 2,
+    paddingHorizontal: 5,
+    position: 'absolute',
+    zIndex: 2,
+    bottom: 1,
+    marginBottom: 5,
+    alignSelf: 'center',
+  },
+  roleText: {
+    color: COLORS.black,
+    fontSize: fontScale(12),
+    textAlign: 'center',
   },
 });
 

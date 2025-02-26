@@ -353,7 +353,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         />
       ) : (
         <View style={{ backgroundColor: COLORS.white }}>
-          <HeaderComponent isDarkTheme={false} />
+          {/* <HeaderComponent isDarkTheme={false} /> */}
 
           <ScrollView>
             <ProfileTopView
@@ -414,7 +414,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             onPress={savePhoto}
             submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
             cancelButtonText={BUTTON_LABLE.CANCEL}
-            snapPoints={[Platform.OS == 'android' ? '50%' : '45%']}
+            snapPoints={[Platform.OS == 'android' ? '50%' : '50%']}
             image={image}
           />
 
