@@ -48,7 +48,8 @@ export const SwipeableGuestList = ({ guest, onDelete, onInfoClick }) => {
     };
 
     const panGesture = Gesture.Pan()
-        .onBegin(() => runOnJS(setIsSwiping)(true))
+        .activeOffsetX([-10, 10]) // Ensures minor horizontal movements don't interfere
+        .simultaneousWithExternalGesture() // Allows swipe & scroll to work together
         .onUpdate((event) => {
             if (Math.abs(event.translationX) > Math.abs(event.translationY)) {
                 translateX.value = event.translationX;
@@ -62,7 +63,6 @@ export const SwipeableGuestList = ({ guest, onDelete, onInfoClick }) => {
                 translateX.value = withSpring(0);
                 runOnJS(setToggled)(false);
             }
-            runOnJS(setIsSwiping)(false);
         });
 
     const animatedStyle = useAnimatedStyle(() => ({
@@ -72,7 +72,7 @@ export const SwipeableGuestList = ({ guest, onDelete, onInfoClick }) => {
     return (
         <View style={styles.guestContainer}>
             <GestureDetector gesture={panGesture}>
-                <Animated.View style={[styles.swapDeletecontainer, animatedStyle]}>
+                <Animated.View style={[styles.swapDeletecontainer, animatedStyle]} hitSlop={{ top: 10, bottom: 10 }}>
                     <SwapDeleteComponent guest={guest} />
                 </Animated.View>
             </GestureDetector>
@@ -125,20 +125,6 @@ const styles = StyleSheet.create({
         borderRadius: radiusScale(16),
         padding: verticalMarginScale(12),
         backgroundColor: COLORS.white,
-    },
-    avatarContainer: {
-        width: horizontalScale(40),
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: '#ccc', // Placeholder color
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 12,
-    },
-    avatarText: {
-        fontSize: 14,
-        color: '#000', // Adjust for contrast
-        fontWeight: '600',
     },
     name: {
         fontSize: fontScale(14),
