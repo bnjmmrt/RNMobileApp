@@ -14,7 +14,7 @@ import {
 type OTPComponentProps = {
   performCodeVerification: (code: string) => void;
   resendVerificationCode: (isResend: boolean) => void;
-  error:string
+  error?:string
 
 };
 
