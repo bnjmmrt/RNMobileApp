@@ -314,12 +314,14 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
           </TouchableOpacity>
           <Text style={styles.title}>{LABLE.GUEST_LIST}</Text>
 
-          {selectedEvent?.useQr && (
+          {selectedEvent?.useQr ? (
             <TouchableOpacity>
               <View style={styles.iconButton}>
                 <Image source={IMAGES.qr} style={styles.icon} />
               </View>
             </TouchableOpacity>
+          ) : (
+            <View style={styles.phBTn} />
           )}
         </View>
 
@@ -392,6 +394,10 @@ const styles = StyleSheet.create({
     paddingVertical: verticalMarginScale(16),
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  phBTn: {
+    width: verticalScale(40),
+    height: verticalScale(40),
   },
   iconButton: {
     width: verticalScale(40),
