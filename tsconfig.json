@@ -8,7 +8,10 @@
       "@button/*": ["src/component/Button/*"],
       "@dimensions/*": ["src/utils/dimensions/*"],
       "string-constants/*": ["src/utils/constants/*"],
-      "src/*": ["src/*"]
+      "src/*": ["src/*"],
+      "crypto": [
+      "node_modules/crypto-js"
+    ]
     }
   }
 }
