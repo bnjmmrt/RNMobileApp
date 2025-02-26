@@ -37,7 +37,6 @@ interface InviteDetailsProps {
   onTicketTypePress?: () => void;
   additionalGuests: number;
   onAdditionalGuestsChange: (value: number) => void;
-  maxAdditionalGuests?: number;
   inviteMessage: string;
   onInviteMessageChange: (message: string) => void;
   guestNote: string;
@@ -46,6 +45,8 @@ interface InviteDetailsProps {
   eventStartDate?: string;
   directlySendToConfirm: boolean;
   onDirectlySendToConfirmChange: (value: boolean) => void;
+  ticketTypeRef: React.RefObject<InputRefMethods>;
+  maxAdditionalGuests?: number;
   ticketTypeError: string;
 }
 
@@ -61,7 +62,6 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   onTicketTypePress,
   additionalGuests,
   onAdditionalGuestsChange,
-  maxAdditionalGuests = 0,
   inviteMessage,
   onInviteMessageChange,
   guestNote,
@@ -70,10 +70,14 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   eventStartDate,
   directlySendToConfirm,
   onDirectlySendToConfirmChange,
+  ticketTypeRef,
+  maxAdditionalGuests,
   ticketTypeError,
 }) => {
   const inviteMessageRef = useRef<InputRefMethods>(null);
   const guestNoteRef = useRef<InputRefMethods>(null);
+
+  console.log('selectedTicketType', selectedTicketType);
 
   const renderContent = () => (
     <View style={{ gap: verticalMarginScale(24) }}>
@@ -110,15 +114,11 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
           <Counter
             counterValue={additionalGuests}
             onPressMinus={() =>
-              onAdditionalGuestsChange(
-                additionalGuests > 0 ? additionalGuests - 1 : additionalGuests,
-              )
+              onAdditionalGuestsChange(Math.max(0, additionalGuests - 1))
             }
             onPressPlus={() =>
               onAdditionalGuestsChange(
-                additionalGuests < maxAdditionalGuests
-                  ? additionalGuests + 1
-                  : additionalGuests,
+                Math.min(maxAdditionalGuests || 0, additionalGuests + 1),
               )
             }
           />

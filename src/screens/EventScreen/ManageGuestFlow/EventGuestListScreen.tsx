@@ -13,7 +13,7 @@ import {
   UIManager,
   ActivityIndicator,
 } from 'react-native';
-import { COLORS } from '../../../utils/constants';
+import { COLORS, LABLE } from '../../../utils/constants';
 import { fontFamily } from 'src/utils/functions';
 import {
   fontScale,
@@ -41,6 +41,8 @@ import { ROUTES } from 'src/navigation/Route';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGetGuestsQuery } from 'src/redux/actions/eventApiAction';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { RootState } from 'src/redux/slices';
+import { useSelector } from 'react-redux';
 
 interface EventGuestListProps extends NativeStackScreenProps<any, any> {
   eventId?: string;
@@ -67,6 +69,10 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
 
   // Get eventId from route params or props
   const eventId = route?.params?.eventId;
+
+  const selectedEvent = useSelector(
+    (state: RootState) => state.inviteGuestsFlow.selectedEvent,
+  );
 
   const {
     data: guestsData,
@@ -258,6 +264,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
             id: guest.guestId,
             name: `${guest.firstName} ${guest.lastName}`,
             status: item.status,
+            userId: guest.id,
             profilePicture: undefined,
           };
           return renderInvitee(inviteeGuest);
@@ -305,12 +312,15 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
               <Image source={IMAGES.leftArrow} style={styles.icon} />
             </View>
           </TouchableOpacity>
-          <Text style={styles.title}>Guest List</Text>
-          <TouchableOpacity>
-            <View style={styles.iconButton}>
-              <Image source={IMAGES.qr} style={styles.icon} />
-            </View>
-          </TouchableOpacity>
+          <Text style={styles.title}>{LABLE.GUEST_LIST}</Text>
+
+          {selectedEvent?.useQr && (
+            <TouchableOpacity>
+              <View style={styles.iconButton}>
+                <Image source={IMAGES.qr} style={styles.icon} />
+              </View>
+            </TouchableOpacity>
+          )}
         </View>
 
         <TouchableOpacity

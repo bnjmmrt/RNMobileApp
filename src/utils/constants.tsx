@@ -52,6 +52,7 @@ export const BUTTON_LABLE = {
   ADD: 'Add',
   DISCOVER_MORE_EVENTS: 'Discover More Events',
   CHECK_IN: 'Check In',
+  SHOW_TICKET_BREAKDOWN: 'Show Ticket Breakdown',
   SAVE_DRAFT: 'Save Draft',
   SEND_INVITE: 'Send Invite',
   APPROVE_REQUEST: 'Approve Request',
@@ -244,7 +245,8 @@ export const LABLE = {
   NO_CALENDAR_FOUND: 'No calendar found on this device.',
   ACCESS_CALENDAR: 'Calendar access is required to add events.',
   PERMISSION_DENIED: 'Permission Denied',
-  VIP_TOOLTIP_CONTENT: 'Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.'
+  VIP_TOOLTIP_CONTENT: 'Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.',
+  MANAGE_INVITE: 'Manage Invite',
 };
 export const EVENT = {
   EDIT_EVENT: 'Edit Event',

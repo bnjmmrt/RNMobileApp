@@ -61,14 +61,14 @@ export const FlashMessageComponent = {
     showMessage({
       message: '',
       type: 'default',
-      backgroundColor: 'transparent',
-      color: 'transperent',
       duration: 3000,
+      position: position,
+      hideStatusBar: false,
       style: {
         marginVertical: 0,
         paddingVertical: 0,
+        backgroundColor: 'transparent',
       },
-      position: position,
       renderCustomContent: () => (
         <View
           style={[

@@ -181,6 +181,10 @@ export interface UserDetailResponse {
       xFollowersCount?: number | undefined;
       snapchatFollowersCount?: number | undefined;
     };
+    focuses: {
+      id: string;
+      name: string;
+    }[];
     status: string;
     upcomingEvents: any[]; // Define specific type if available
   };
