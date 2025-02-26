@@ -12,12 +12,14 @@ interface RSVPState {
     response: 'Yes' | 'No' | null;
     guests: Guest[];
     selectedGuest: Guest | null;
+    rspvStatus: string;
 }
 
 const initialState: RSVPState = {
     response: null,
     guests: [],
     selectedGuest: null,
+    rspvStatus: '',
 };
 
 const rsvpSlice = createSlice({
@@ -63,9 +65,12 @@ const rsvpSlice = createSlice({
         resetRSVP() {
             return initialState;
         },
+        setRsvpStatus(state, action: PayloadAction<any>) {
+            state.rspvStatus = action.payload;
+        },
     },
 });
 
-export const { setResponse, addGuest, deleteGuest, setSelectedGuest, resetRSVP, resetGuest } = rsvpSlice.actions;
+export const { setResponse, addGuest, deleteGuest, setSelectedGuest, resetRSVP, resetGuest, setRsvpStatus } = rsvpSlice.actions;
 
 export default rsvpSlice.reducer;

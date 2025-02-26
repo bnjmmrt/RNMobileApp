@@ -48,6 +48,7 @@ interface InputProps {
   customRightImageStyle?: ImageStyle;
   customLeftImageStyle?: ImageStyle;
   extraInputProps?: TextInputProps;
+  labelStyle?: any;
 }
 
 export type InputRefMethods = {
@@ -78,6 +79,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     customLeftImageStyle,
     customRightImageStyle,
     extraInputProps,
+    labelStyle
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -126,7 +128,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     <View style={[styles.container, otherStyle]}>
       {/* Dynamic Label */}
       {label && (
-        <CustomText style={styles.label}>
+        <CustomText style={[styles.label, labelStyle]} >
           {label}
           {requiredText()}
         </CustomText>
@@ -213,13 +215,13 @@ const styles = StyleSheet.create({
   },
   leftImage: { width: 16, height: 16 },
   rightImage: {
-    width: 13,
-    height: 13,
+    width: 10,
+    height: 10,
     resizeMode: 'contain',
   },
   input: {
     flex: 1,
-    left:10,
+    left: 10,
     fontSize: fontScale(14),
     color: COLORS.black,
     fontWeight: '500',

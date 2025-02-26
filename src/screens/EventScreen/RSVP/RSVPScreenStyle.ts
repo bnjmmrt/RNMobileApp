@@ -98,10 +98,10 @@ export const styles = StyleSheet.create({
     },
     redButton: {
         backgroundColor: COLORS.errorText,
-        paddingVertical: verticalScale(12),
         alignItems: 'center',
         borderRadius: radiusScale(1000),
         height: 48,
+        justifyContent: 'center',
         marginTop: verticalScale(12),
     },
     optionText: {
@@ -112,5 +112,5 @@ export const styles = StyleSheet.create({
     cancelPopupContainer: { gap: verticalScale(8), marginTop: verticalScale(4) },
     leaveContainer: { paddingHorizontal: horizontalScale(12) },
     scrollView: { flex: 1 },
-    downArrowIcon: { width: 12, height: 12 },
+    downArrowIcon: { width: 10, height: 10 },
 });

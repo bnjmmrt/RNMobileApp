@@ -10,7 +10,8 @@ import {
 import Button from '../../../component/Button';
 import Input from '../../../component/Input/Input';
 import PhoneNumberInput from 'src/component/PhonNumberComponent/PhoneNumberInput';
-import { fontScale, horizontalMarginScale } from 'src/utils/dimensions';
+import { fontScale, horizontalMarginScale, verticalMarginScale } from 'src/utils/dimensions';
+import { fontFamily } from 'src/utils/functions';
 
 interface GuestFormProps {
     hasPhone: boolean;
@@ -71,11 +72,13 @@ const GuestForm: React.FC<GuestFormProps> = ({ hasPhone, data, onSubmit }) => {
                     ref={firstNameRef}
                     label={LABLE.FIRST_NAME}
                     errorMessage={ERROR_MESSAGE.FIRST_NAME}
+                    labelStyle={{ fontFamily: fontFamily.ABCDiatype_Medium }}
                 />
                 <Input
                     ref={lastNameRef}
                     label={LABLE.LAST_NAME}
                     errorMessage={ERROR_MESSAGE.LAST_NAME}
+                    labelStyle={{ fontFamily: fontFamily.ABCDiatype_Medium }}
                 />
                 {hasPhone ? (
                     <>
@@ -86,6 +89,7 @@ const GuestForm: React.FC<GuestFormProps> = ({ hasPhone, data, onSubmit }) => {
                     <Input
                         ref={emailInputRef}
                         label={LABLE.EMAIL}
+                        labelStyle={{ fontFamily: fontFamily.ABCDiatype_Medium }}
                         errorMessage={"Please enter an email address in the correct format to continue"}
                     />
                 )}
@@ -116,7 +120,8 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: fontScale(14),
-        fontWeight: 'bold',
+        fontFamily: fontFamily.ABCDiatype_Medium,
+        marginTop: verticalMarginScale(20)
     },
 });
 
