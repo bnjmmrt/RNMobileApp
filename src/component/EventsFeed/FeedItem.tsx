@@ -1,10 +1,10 @@
 import FastImage from '@d11/react-native-fast-image';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {Dimensions, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {ROUTES} from 'src/navigation/Route';
+import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ROUTES } from 'src/navigation/Route';
 import IMAGES from '../../assets/images';
-import {COLORS} from '../../utils/constants';
+import { COLORS } from '../../utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -12,8 +12,9 @@ import {
   verticalMarginScale,
   verticalScale,
 } from '../../utils/dimensions';
-import {CustomText} from '../CustomText';
-import type {EventItem} from './EventsFeed';
+import { CustomText } from '../CustomText';
+import type { EventItem } from './EventsFeed';
+import { formatEventDate } from 'src/utils/dateFunctions';
 
 let screenWidth: number = Dimensions.get('window').width;
 
@@ -22,7 +23,7 @@ interface FeedItemProps {
   from?: 'AllEvents' | 'UserDetail';
 }
 
-const FeedItem: React.FC<FeedItemProps> = ({item, from = 'AllEvents'}) => {
+const FeedItem: React.FC<FeedItemProps> = ({ item, from = 'AllEvents' }) => {
   const navigation = useNavigation();
 
   const handlEventPress = () => {
@@ -43,11 +44,11 @@ const FeedItem: React.FC<FeedItemProps> = ({item, from = 'AllEvents'}) => {
 
   return (
     <TouchableOpacity
-      style={{width: getCardWidth()}}
+      style={{ width: getCardWidth() }}
       onPress={() => handlEventPress()}>
       <View style={[styles.imageContainer]}>
         <FastImage
-          source={{uri: item.imageCover || item.imageFlyer}}
+          source={{ uri: item.imageCover || item.imageFlyer }}
           resizeMode={FastImage.resizeMode.cover}
           defaultSource={IMAGES.eventCoverPlaceholders1}
           style={styles.icon}
@@ -56,13 +57,13 @@ const FeedItem: React.FC<FeedItemProps> = ({item, from = 'AllEvents'}) => {
       {item.name || item.startDate ? (
         <View style={styles.contentContainer}>
           {item.name ? (
-            <CustomText textProps={{numberOfLines: 1}} style={styles.title}>
+            <CustomText textProps={{ numberOfLines: 1 }} style={styles.title}>
               {item.name}
             </CustomText>
           ) : null}
           {item.startDate ? (
-            <CustomText textProps={{numberOfLines: 1}} style={styles.subtitle}>
-              {item.startDate}
+            <CustomText textProps={{ numberOfLines: 1 }} style={styles.subtitle}>
+              {formatEventDate(item.startDate, item.endDate)}
             </CustomText>
           ) : null}
         </View>
@@ -91,7 +92,6 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: COLORS.light_gray,
-    fontSize: fontScale(12),
     marginTop: verticalMarginScale(4),
   },
 });

@@ -180,7 +180,7 @@ export const LABLE = {
   OTP_VERIFIED_SUCCESSFULLY: 'OTP verified successfully!',
   SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:
     'Something went wrong, please try again',
-    INVALID_OTP:"The code you entered cannot be verified. Please try again.",
+  INVALID_OTP: "The code you entered cannot be verified. Please try again.",
   ABOUT_THE_EVENT: 'About the Event',
   GUEST_LIST: 'Guest List',
   FEATURE_TALENT: 'Featured Talent',
@@ -235,15 +235,15 @@ export const LABLE = {
   SEARCH_USERS: 'Search Users',
   MANAGE_GUESTS: 'Manage Guests',
   USER_ALREADY_CHECKED_IN: 'User already checked-in',
-  SHOW_QR_CHECKIN_MESSAGE:'Show this QR code at event check-in',
-  NEVER_MISS_MOMENT:'Never miss a moment.\nSync this event to your calendar.',
-  ADD_TO_CALENDAR:'Add To Calendar',
-  ADD_TO_APPLE_CALENDAR:'Add to Apple Calendar',
-  ADD_TO_GOOGLE_CALENDAR:'Add to Google Calendar',
-  NO_CALENDAR_FOUND:'No calendar found on this device.',
-  ACCESS_CALENDAR:'Calendar access is required to add events.',
-  PERMISSION_DENIED:'Permission Denied',
-  VIP_TOOLTIP_CONTENT:'Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.'
+  SHOW_QR_CHECKIN_MESSAGE: 'Show this QR code at event check-in',
+  NEVER_MISS_MOMENT: 'Never miss a moment.\nSync this event to your calendar.',
+  ADD_TO_CALENDAR: 'Add To Calendar',
+  ADD_TO_APPLE_CALENDAR: 'Add to Apple Calendar',
+  ADD_TO_GOOGLE_CALENDAR: 'Add to Google Calendar',
+  NO_CALENDAR_FOUND: 'No calendar found on this device.',
+  ACCESS_CALENDAR: 'Calendar access is required to add events.',
+  PERMISSION_DENIED: 'Permission Denied',
+  VIP_TOOLTIP_CONTENT: 'Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.'
 };
 export const EVENT = {
   EDIT_EVENT: 'Edit Event',
@@ -257,7 +257,8 @@ export const EVENT = {
   EVENT_DESCRIPTION: 'Event Description',
   HIDE_ADDRESS: 'Hide full address for confirmed guests',
   FEATURE_TALENT: 'Featured Talent',
-
+  TOTAL_CONFIRMED: "Total Confirmed:",
+  TOTAL_CHECKEDIN: "Total Checked-In:",
 
 }
 
@@ -371,7 +372,7 @@ export const COLORS = {
   neutralBorder: '#E1E3E6',
   borderBlur: '#BFBFBF',
   bgGray: '#EAEAEA',
-  webBlack:'#181818'
+  webBlack: '#181818'
 };
 
 

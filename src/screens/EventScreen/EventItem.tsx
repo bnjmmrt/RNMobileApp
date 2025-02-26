@@ -7,7 +7,7 @@ import { CustomText } from 'src/component/CustomText';
 import { ROUTES } from 'src/navigation/Route';
 import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
 import ButtonSmall from '../../component/ButtonSmall';
-import { BUTTON_LABLE, COLORS } from '../../utils/constants';
+import { BUTTON_LABLE, COLORS, EVENT, LABLE, ROLE } from '../../utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -17,16 +17,23 @@ import {
   verticalScale,
 } from '../../utils/dimensions';
 import { fontFamily } from '../../utils/functions';
+import { formatDetailedEventDate } from 'src/utils/dateFunctions';
+import { Event } from 'src/types';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+
+
 
 interface EventItemProps {
-  item: {};
+  item: Event;
 }
 const EventItem: React.FC<EventItemProps> = ({ item }) => {
   // Handle the "Next" button press
   const navigation = useNavigation();
   // Handle the "Next" button press
+  const role = useSelector((state: RootState) => state.auth.role);
 
-  const dates = formatToDeviceTimeZone(item?.startDate, item?.endDate, false);
+  const dates = formatDetailedEventDate(item?.startDate, item?.endDate,);
 
   const handlEventPress = () => {
     navigation.navigate(ROUTES.EventStack, {
@@ -46,16 +53,22 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
       />
 
       <View style={styles.contentContainer}>
-        <CustomText style={styles.titleStyle}>{item?.name}</CustomText>
-        <CustomText style={styles.subtitle} textProps={{ numberOfLines: 2 }}>
-          {`${dates[0]}, ${dates[1]}`}
-        </CustomText>
-        {item?.location?.city ? (
+        <CustomText style={styles.titleStyle} textProps={{ numberOfLines: 1 }}>{item?.name}</CustomText>
+        <CustomText style={styles.subtitle} textProps={{ numberOfLines: 2 }}>{dates} </CustomText>
+        {role === ROLE.HOST ? (
+          <>
+            <CustomText style={styles.subtitle}>
+              {EVENT.TOTAL_CONFIRMED} {item?.totalConfirmedGuests}
+            </CustomText>
+            <CustomText style={styles.subtitle}>
+              {EVENT.TOTAL_CHECKEDIN} {item?.totalCheckedInGuests}
+            </CustomText>
+          </>
+        ) : item?.location?.city && (
           <CustomText style={styles.subtitle} textProps={{ numberOfLines: 2 }}>
-            {item?.location?.city}
+            {item.location.city}
           </CustomText>
-        ) : null}
-
+        )}
         <ButtonSmall
           disabled={false}
           style={styles.btnStyle}
@@ -71,7 +84,7 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
 const styles = StyleSheet.create({
   btnStyle: {
     borderRadius: 100,
-    marginTop: verticalMarginScale(16),
+    marginTop: verticalMarginScale(10),
     paddingVertical: verticalMarginScale(8),
     paddingHorizontal: horizontalMarginScale(12),
     alignSelf: 'flex-start',
@@ -101,11 +114,10 @@ const styles = StyleSheet.create({
   titleStyle: {
     fontSize: fontScale(24),
     fontFamily: fontFamily.RomieTrial_Bold,
-    marginBottom: verticalMarginScale(8),
+    marginBottom: verticalMarginScale(10),
   },
   subtitle: {
     color: COLORS.light_gray,
-    fontSize: fontScale(12),
   },
 });
 
