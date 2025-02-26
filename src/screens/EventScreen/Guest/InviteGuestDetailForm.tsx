@@ -45,6 +45,7 @@ interface InviteDetailsProps {
   directlySendToConfirm: boolean;
   onDirectlySendToConfirmChange: (value: boolean) => void;
   ticketTypeRef: React.RefObject<InputRefMethods>;
+  maxAdditionalGuests?: number;
 }
 
 if (Platform.OS === 'android') {
@@ -68,9 +69,12 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   directlySendToConfirm,
   onDirectlySendToConfirmChange,
   ticketTypeRef,
+  maxAdditionalGuests,
 }) => {
   const inviteMessageRef = useRef<InputRefMethods>(null);
   const guestNoteRef = useRef<InputRefMethods>(null);
+
+  console.log('selectedTicketType', selectedTicketType);
 
   const renderContent = () => (
     <View style={{ gap: verticalMarginScale(24) }}>
@@ -110,7 +114,11 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
             onPressMinus={() =>
               onAdditionalGuestsChange(Math.max(0, additionalGuests - 1))
             }
-            onPressPlus={() => onAdditionalGuestsChange(additionalGuests + 1)}
+            onPressPlus={() =>
+              onAdditionalGuestsChange(
+                Math.min(maxAdditionalGuests || 0, additionalGuests + 1),
+              )
+            }
           />
         </View>
       </View>

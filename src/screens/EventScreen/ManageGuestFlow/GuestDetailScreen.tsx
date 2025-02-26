@@ -9,7 +9,7 @@ import {
   SafeAreaView,
   Alert,
 } from 'react-native';
-import { COLORS, BUTTON_LABLE } from 'src/utils/constants';
+import { COLORS, BUTTON_LABLE, LABLE } from 'src/utils/constants';
 import { fontFamily } from 'src/utils/functions';
 import {
   fontScale,
@@ -73,7 +73,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const [manageGuest] = useManageGuestMutation();
   const [markUserFav] = useMarkUserFavMutation();
   const [unmarkUserFav] = useUnmarkUserFavMutation();
-  const { data: userDetails, isLoading } = useFetchUserDetailsQuery(
+  const { data: userDetails } = useFetchUserDetailsQuery(
     { user: guest?.userId || '' },
     { skip: !guest?.userId },
   );
@@ -125,6 +125,11 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         action,
         payload,
       }).unwrap();
+
+      FlashMessageComponent.show(
+        'success',
+        `${guest.name}'s invite has been updated`,
+      );
 
       navigation.goBack();
     } catch (error) {
@@ -296,7 +301,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             <Image source={IMAGES.leftArrow} style={styles.icon} />
           </View>
         </TouchableOpacity>
-        <Text style={styles.title}>Manage Invite</Text>
+        <Text style={styles.title}>{LABLE.MANAGE_INVITE}</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -362,6 +367,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             onInviteMessageChange={setInviteMessage}
             guestNote={guestNote}
             onGuestNoteChange={setGuestNote}
+            maxAdditionalGuests={selectedEvent?.limitOnePlus}
             eventName={selectedEvent?.name}
             eventStartDate={selectedEvent?.startDate}
             directlySendToConfirm={directlySendToConfirm}
