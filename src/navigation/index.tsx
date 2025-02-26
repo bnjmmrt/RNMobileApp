@@ -74,7 +74,7 @@ const MainNavigation: React.FC = () => {
 
   const initialAppStackScreen =
     role === ROLE.NON_MEMBER
-      ? loginData?.token?.length > 0 && isGuest ? ROUTES.BottomTabBar : ROUTES.BeforeAppStaticScreen
+      ? loginData?.token?.length > 0 || isGuest ? ROUTES.BottomTabBar : ROUTES.BeforeAppStaticScreen
       : ROUTES.BottomTabBar;
 
   return (
