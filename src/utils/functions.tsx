@@ -6,6 +6,7 @@ import { configStatusBar, SafeAreaViewConfig, } from 'src/redux/slices/safeAreaV
 import store from 'src/redux/store';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import React from 'react';
+// import moment from 'moment-timezone';
 
 // ErrorText component with TypeScript props
 interface ErrorTextProps {
@@ -455,7 +456,7 @@ export const getRoleRole = (role: string) => {
   }
 };
 
-export const dateFormat=(date:string,format:string)=>{
+export const dateFormat = (date: string, format: string) => {
 
   return moment(date).format(format)
 }

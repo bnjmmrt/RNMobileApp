@@ -43,7 +43,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
   const googlePlacesRef = useRef(null);
 
   useEffect(() => {
-    
+
     if (defaultValue) {
       googlePlacesRef?.current &&
         googlePlacesRef?.current?.setAddressText(defaultValue);
@@ -67,7 +67,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
             fontSize: fontScale(14),
             fontFamily: fontFamily.ABCDiatype_Regular,
           },
-          container:{flex:0}
+          container: { flex: 0 }
         }}
         minLength={3}
         enablePoweredByContainer={false}
@@ -85,7 +85,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
           setError(null);
           submit();
         }}
-        
+
         fetchDetails={true}
         query={{
           key: environment.PLACES_API_KEY,

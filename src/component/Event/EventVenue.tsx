@@ -19,23 +19,12 @@ import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComp
 import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
 import GradientSeprator from '../GradientSeprator';
 import MapComponent from '../MapComponent';
+import { Event } from 'src/types';
 
-interface Location {
-  location?: string;
-  city?: string;
-  latitude?: number;
-  longitude?: number;
-}
-interface EventItem {
-  startDate?: string;
-  endDate?: string;
-  location?: Location;
-  currentGuestStatus?: string;
-  showLocation?: boolean;
-}
+
 
 interface EventVenueProps {
-  item: EventItem;
+  item: Event;
   handleCalendarPress: () => void
 
 }
@@ -48,9 +37,6 @@ const EventVenue: React.FC<EventVenueProps> = ({ item, handleCalendarPress }) =>
 
   const isShowLocation = role === ROLE.HOST || item?.currentGuestStatus === 'CONFIRMED';
   const locationText = isShowLocation ? item?.location?.location : 'RSVP to See Location';
-
-  const addEventToCalender = () => {
-  }
 
   return (
     <View style={[styles.container]}>
