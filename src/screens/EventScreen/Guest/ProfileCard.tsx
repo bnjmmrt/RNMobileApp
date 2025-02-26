@@ -156,7 +156,6 @@ const styles = StyleSheet.create({
     paddingLeft: horizontalMarginScale(16),
     paddingRight: horizontalMarginScale(8),
     paddingTop: verticalMarginScale(8),
-    // marginBottom: verticalMarginScale(-40),
     zIndex: 1,
     flexDirection: 'row',
     alignItems: 'center',

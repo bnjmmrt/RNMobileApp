@@ -23,6 +23,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import IMAGES from '@images/index';
 import Button from 'src/component/Button';
 import ProfileCard from '../Guest/ProfileCard';
+import AddedBySection from '../Guest/AddedBySection';
 import InviteDetails from '../Guest/InviteGuestDetailForm';
 import Questionnaire from '../Guest/Questionnaire';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
@@ -38,6 +39,7 @@ import {
   useMarkUserFavMutation,
   useUnmarkUserFavMutation,
   useFetchUserDetailsQuery,
+  useFetchAllUsersQuery,
 } from 'src/redux/actions/usersApiAction';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { ROUTES } from 'src/navigation/Route';
@@ -73,6 +75,16 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const [manageGuest] = useManageGuestMutation();
   const [markUserFav] = useMarkUserFavMutation();
   const [unmarkUserFav] = useUnmarkUserFavMutation();
+  const { data: addedByUserData } = useFetchAllUsersQuery({
+    take: 10,
+    skip: 0,
+    searchValue: '',
+  });
+
+  console.log('addedByUserData', addedByUserData?.data?.users, guest?.addedBy);
+
+  const addedByUser = addedByUserData?.data?.users?.[0];
+
   const { data: userDetails } = useFetchUserDetailsQuery(
     { user: guest?.userId || '' },
     { skip: !guest?.userId },
@@ -291,6 +303,8 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     }
   };
 
+  console.log('addedByUser', addedByUser);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerTop}>
@@ -344,6 +358,12 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                 onPress: handleProfile,
               },
             ]}
+          />
+          <AddedBySection
+            user={{
+              name: guest.addedBy || '',
+              id: guest.addedBy || '',
+            }}
           />
         </View>
 
@@ -497,6 +517,17 @@ const styles = StyleSheet.create({
   spamButton: {
     flex: 1,
     backgroundColor: COLORS.errorText,
+  },
+  addedByWrapper: {
+    marginTop: verticalMarginScale(-8),
+    marginBottom: verticalMarginScale(8),
+    backgroundColor: COLORS.white,
+    borderBottomLeftRadius: radiusScale(8),
+    borderBottomRightRadius: radiusScale(8),
+    borderColor: COLORS.neutralBorder,
+    borderWidth: verticalScale(1),
+    borderTopWidth: 0,
+    paddingVertical: verticalMarginScale(8),
   },
 });
 
