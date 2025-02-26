@@ -1,12 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants';
 import BaseCityScreenStyles from './BaseCityScreenStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
-import IMAGES from '../../../assets/images';
 import Header from '../../../component/Header/Header';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/slices';
@@ -15,23 +12,12 @@ import {
   setBaseCity,
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
-import LocationPickerModal from '../../../component/BottomSheet/LocationPickerModal';
-import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
 import { useFocusEffect } from '@react-navigation/native';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import GooglePlacesInput from 'src/component/GooglePlacesInput/GooglePlacesInput';
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import {
-  fontScale,
-  horizontalMarginScale,
-  verticalMarginScale,
-  verticalScale,
-} from 'src/utils/dimensions';
-import { DateType } from 'react-native-ui-datepicker';
-import Chip from 'src/component/Chip';
 import { SelectedSingleFilter } from 'src/component/FilterSheet';
-import { FilterOptionTypes } from 'src/component/FilterSheet/FilterOptions';
+import { View } from 'react-native-animatable';
 
 export type SelectedFilters = {
   [id: string]: SelectedSingleFilter;
@@ -45,7 +31,6 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({ navigation }) => {
 console.log(selectedCity)
 
   const styles = BaseCityScreenStyles();
-  const [isShown, setIsShown] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const onNextClick = () => {

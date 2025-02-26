@@ -1,67 +1,90 @@
-import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react';
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Address } from '../../../redux/slices/appFlowSlice';
 import { LABLE, ERROR_MESSAGE, COLORS } from '../../../utils/constants';
 import IMAGES from '../../../assets/images';
-import LocationPickerModal from '../../../component/BottomSheet/LocationPickerModal';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
-import { fontScale, horizontalMarginScale, radiusScale, verticalScale, Wp } from '../../../utils/dimensions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalScale,
+  Wp,
+} from '../../../utils/dimensions';
+import LocationPickerBottomSheet from 'src/component/BottomSheet/LocationPickerBottomSheet';
 
 interface BaseCityComponentProps {
   location?: Address;
 }
 
-const BaseCityComponent = forwardRef(({ location }: BaseCityComponentProps, ref) => {
-  console.log("Sayyed my location:", location)
-  const defaultAddress: Address = {
-    placeId: 'ChIJkbeSa_BfYzARphNChaFPjNc',
-    address: 'India',
-  };
+const BaseCityComponent = forwardRef(
+  ({ location }: BaseCityComponentProps, ref) => {
+    console.log('Sayyed my location:', location);
+    const defaultAddress: Address = {
+      placeId: 'ChIJkbeSa_BfYzARphNChaFPjNc',
+      address: 'India',
+    };
 
-  // Initialize state with location prop or default address
-  const [selectedCity, setSelectedCity] = useState<Address>(location || defaultAddress);
-  const [isShown, setIsShown] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    // Initialize state with location prop or default address
+    const [selectedCity, setSelectedCity] = useState<Address>(
+      location || defaultAddress,
+    );
+    const [isShown, setIsShown] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const locationRef = useRef<any>(null);
+    // Sync state when location prop changes
+    useEffect(() => {
+      if (location) {
+        setSelectedCity(location);
+      }
+    }, [location]);
 
-  // Sync state when location prop changes
-  useEffect(() => {
-    if (location) {
-      setSelectedCity(location);
-    }
-  }, [location]);
+    useImperativeHandle(ref, () => ({
+      validateBaseCity,
+      selectedCity,
+    }));
 
-  useImperativeHandle(ref, () => ({
-    validateBaseCity,
-    selectedCity,
-  }));
+    const validateBaseCity = () => {
+      if (!selectedCity?.address) {
+        setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_YOUR_BASE_CITY);
+        return false;
+      }
+      setErrorMessage(null);
+      return true;
+    };
 
-  const validateBaseCity = () => {
-    if (!selectedCity?.address) {
-      setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_YOUR_BASE_CITY);
-      return false;
-    }
-    setErrorMessage(null);
-    return true;
-  };
+    const toggleLocationPicker = () => locationRef?.current?.open();
 
-  const toggleLocationPicker = () => setIsShown((prev) => !prev);
-
-  return (
-    <>
-      <TouchableOpacity onPress={toggleLocationPicker} style={styles.container}>
-        <CustomSelectableText
-          placeholder={LABLE.SEARCH_FOR_A_LOCATION}
-          leftImage={IMAGES.search}
-          errorMessage={errorMessage}
-          defaultValue={selectedCity?.address}
+    return (
+      <>
+        <TouchableOpacity
           onPress={toggleLocationPicker}
-        />
-      </TouchableOpacity>
+          style={styles.container}>
+          <CustomSelectableText
+            placeholder={LABLE.SEARCH_FOR_A_LOCATION}
+            leftImage={IMAGES.search}
+            errorMessage={errorMessage}
+            defaultValue={selectedCity?.address}
+            onPress={toggleLocationPicker}
+          />
+        </TouchableOpacity>
 
-      {isShown && <LocationPickerModal setLocation={setSelectedCity} setIsShown={setIsShown} />}
-    </>
-  );
-});
+        <LocationPickerBottomSheet
+          ref={locationRef}
+          setLocation={setSelectedCity}
+          setIsShown={setIsShown}
+          toggleLocationPicker={toggleLocationPicker}
+        />
+      </>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {
