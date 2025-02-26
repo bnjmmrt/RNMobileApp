@@ -150,7 +150,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
         return {
           url: baseUrl,
-          method: 'POST',
+          method: 'PUT',
           body: {
             eventId,
             guestId,

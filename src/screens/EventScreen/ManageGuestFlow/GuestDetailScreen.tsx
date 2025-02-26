@@ -82,8 +82,6 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 
   // console.log('guest', guest);
 
-  console.log('selectedEvent', selectedEvent);
-
   // Set initial additional guests count after component mounts
   useEffect(() => {
     const guestCount = guest?.additionalGuests?.length;
@@ -139,6 +137,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 
       navigation.goBack();
     } catch (error) {
+      console.log('error', error);
       Alert.alert('Error', 'Failed to update guest status');
     }
   };
@@ -372,7 +371,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         ref={declineSheetRef}
         {...getDeclineSheetProps()}
         onConfirm={() => {
-          handleGuestAction('DELETE');
+          handleGuestAction('DELETE', GuestStatus.DECLINED);
         }}
       />
     </SafeAreaView>
