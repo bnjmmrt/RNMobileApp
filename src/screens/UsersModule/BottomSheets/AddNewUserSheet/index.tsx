@@ -148,7 +148,7 @@ const AddNewUserSheet = forwardRef<
   return (
     <BottomSheetComponent
       ref={sheetRef}
-      snapPoints={[`${verticalScale(70)}%`]}
+      snapPoints={[`${verticalScale(80)}%`]}
       enableDynamicSizing={true}
       onClose={() => resetForm()}>
       <BottomSheetScrollView style={styles.container}>
@@ -194,9 +194,8 @@ const AddNewUserSheet = forwardRef<
             style={styles.userPreviewContainer}
             onPress={onPressExsitingUser}>
             <AvatarInitials
-              name={`${existingUser?.user?.firstName || ''} ${
-                existingUser?.user?.lastName || ''
-              }`}
+              name={`${existingUser?.user?.firstName || ''} ${existingUser?.user?.lastName || ''
+                }`}
               size={48}
               imgUrl={existingUser?.user?.imageUrl}
             />

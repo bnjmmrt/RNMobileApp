@@ -82,7 +82,7 @@ const PhoneNumberInput = forwardRef<
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const [selectedCountry, setSelectedCountry] = useState('');
-    const [maxLength,setMaxLength] = useState(12)
+    const [maxLength, setMaxLength] = useState(12)
     const handleCountrySelect = (selectedCountry: any) => {
       setPhoneNumber('')
       console.log(selectedCountry)
@@ -140,7 +140,7 @@ const PhoneNumberInput = forwardRef<
       }
     };
 
-    const getMaxPhoneNumberLength = (countryCode:any) => {
+    const getMaxPhoneNumberLength = (countryCode: any) => {
       try {
         const exampleNumber = getExampleNumber(countryCode);
         return exampleNumber ? exampleNumber.nationalNumber.length : 10; // Default to 10 if no example found
@@ -148,23 +148,23 @@ const PhoneNumberInput = forwardRef<
         return 10; // Fallback max length
       }
     };
-    const handleChange = (text:any) => {
+    const handleChange = (text: any) => {
       // Remove non-numeric characters except "+"
-      const cleanedText = text.replace(/\D/g, ''); 
-    
+      const cleanedText = text.replace(/\D/g, '');
+
       // Ensure that text is not empty
       if (!cleanedText) {
         setPhoneNumber('');
         return;
       }
-    
+
       // Combine with country code
       const fullNumber = `${callingCode}${cleanedText}`;
       console.log('Full Number:', fullNumber);
 
       // Parse the number
       let parsedNumber = parsePhoneNumberFromString(fullNumber);
-    console.log(parsedNumber)
+      console.log(parsedNumber)
       if (parsedNumber && parsedNumber.isValid()) {
         setPhoneNumber(parsedNumber.formatInternational().replace(`${callingCode} `, '')); // Remove country code from input
       } else {
@@ -191,10 +191,10 @@ const PhoneNumberInput = forwardRef<
             onPress={() => setCountryPickerVisible(true)}
             disabled={disabled}>
             <Text style={styles.flag}>{flag}</Text>
-            <Image
+            {!disabled && <Image
               source={IMAGES.upDownArrow}
               style={[styles.arrowIcon, disabled && { opacity: 0.5 }]}
-            />
+            />}
             <Text style={styles.callingCode}>{callingCode}</Text>
           </TouchableOpacity>
 
