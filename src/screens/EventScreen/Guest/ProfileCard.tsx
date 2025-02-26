@@ -35,6 +35,7 @@ interface ActionButton {
   icon: any;
   onPress: () => void;
   otherStyle?: any;
+  loading?: boolean;
 }
 
 interface ProfileCardProps {
@@ -141,7 +142,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <TouchableOpacity
             key={index}
             style={[styles.actionButton, button.otherStyle]}
-            onPress={button.onPress}>
+            onPress={button.onPress}
+            disabled={button.loading}>
             <Image source={button.icon} style={styles.actionButtonIcon} />
             <Text style={styles.actionButtonText}>{button.title}</Text>
           </TouchableOpacity>
@@ -156,7 +158,6 @@ const styles = StyleSheet.create({
     paddingLeft: horizontalMarginScale(16),
     paddingRight: horizontalMarginScale(8),
     paddingTop: verticalMarginScale(8),
-    // marginBottom: verticalMarginScale(-40),
     zIndex: 1,
     flexDirection: 'row',
     alignItems: 'center',
