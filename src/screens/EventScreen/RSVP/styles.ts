@@ -5,7 +5,7 @@ import { fontFamily } from "src/utils/functions";
 
 export const styles = StyleSheet.create({
     container: { flex: 1, padding: verticalMarginScale(10) },
-    bottomSheetContent: { paddingHorizontal: horizontalScale(16) },
+    bottomSheetContent: { paddingHorizontal: horizontalScale(12) },
     card: {
         flexDirection: 'row',
         backgroundColor: 'white',
