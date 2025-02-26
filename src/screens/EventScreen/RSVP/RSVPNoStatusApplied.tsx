@@ -379,7 +379,7 @@ const RSVPNoStatusApplied: React.FC = () => {
     return (
         <SafeAreaView style={styles.container}>
             <Header
-                headerTitle="RSPV"
+                headerTitle="RSVP"
                 showProgressBar={false}
                 onPress={() => {
                     if (currentGuestStatus === "APPLIED") {

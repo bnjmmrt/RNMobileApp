@@ -60,9 +60,9 @@ const EventVenue: React.FC<EventVenueProps> = ({ item, handleCalendarPress }) =>
             <Text style={styles.title}>{dates[0]}</Text>
             <Text style={styles.subtitle}>{dates[1]}</Text>
           </View>
-          <TouchableOpacity onPress={handleCalendarPress}>
+          {item?.currentGuestStatus === 'CONFIRMED' && <TouchableOpacity onPress={handleCalendarPress}>
             <Image source={IMAGES.calendarCircle} />
-          </TouchableOpacity>
+          </TouchableOpacity>}
         </View>
       </View>
       <GradientSeprator />

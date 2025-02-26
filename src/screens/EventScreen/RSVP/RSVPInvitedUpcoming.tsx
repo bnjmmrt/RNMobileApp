@@ -87,7 +87,7 @@ const StatusBanner = ({ isGoing, onPress }) => {
     );
 };
 const optionList = [
-    { id: 1, label: 'Cancel Application' },
+    { id: 1, label: 'Cancel RSVP' },
 ];
 
 const RSVPInvitedUpcoming = () => {
@@ -196,7 +196,7 @@ const RSVPInvitedUpcoming = () => {
             case 'noofguests':
                 return '40%';
             case 'success':
-                return '45%';
+                return '42%';
             case 'failed':
                 return '45%'
             default:
@@ -536,7 +536,7 @@ const RSVPInvitedUpcoming = () => {
                         />
                     </View>
                 )}
-                <CustomText style={{ color: COLORS.light_gray, textAlign: 'center', paddingTop: 12, paddingBottom: 8, fontSize: fontScale(14) }}>Please add your additional guests’ details by {formatToDeviceTimeZone(startDate, endDate)}, or their passes will be canceled.</CustomText>
+                {rspv.response == 'Yes' && <CustomText style={{ color: COLORS.light_gray, textAlign: 'center', paddingTop: 12, paddingBottom: 8, fontSize: fontScale(14) }}>Please add your additional guests’ details by {formatToDeviceTimeZone(startDate, endDate)}, or their passes will be canceled.</CustomText>}
 
                 <Button
                     disabled={false}
@@ -594,6 +594,11 @@ const RSVPInvitedUpcoming = () => {
                                 keyExtractor={(item, index) => index.toString()}
                                 ItemSeparatorComponent={() => <View style={{ height: 6 }} />}
                             />
+                            {showInfo &&
+                                <>
+                                    <CustomText style={{ color: COLORS.black, marginTop: 12, marginLeft: 8, fontFamily: fontFamily.ABCDiatype_Medium, fontSize: fontScale(14) }}>This guest cannot be added as they may already have a status on the guest list for this event. Contact the host if you have any questions.</CustomText>
+                                </>
+                            }
                             <Button
                                 disabled={false}
                                 style={[styles.clearButton, styles.btnBorder, { height: verticalScale(48) }]}
@@ -609,11 +614,7 @@ const RSVPInvitedUpcoming = () => {
                             </View>}
 
                         </View>
-                        {showInfo &&
-                            <>
-                                <CustomText style={{ color: COLORS.black, marginTop: 12, fontFamily: fontFamily.ABCDiatype_Medium, fontSize: fontScale(14) }}>This guest cannot be added as they may already have a status on the guest list for this event. Contact the host if you have any questions.</CustomText>
-                            </>
-                        }
+
                     </View>
                 </ScrollView>
 

@@ -70,7 +70,7 @@ const RenderCancelPopup = ({ reasonSelected, setReasonSelected, id, onClose }) =
                 disabled={declineLoading}
                 style={styles.redButton}>
                 {declineLoading ? <ActivityIndicator /> : <Text style={[styles.optionText, { color: COLORS.white }]}>
-                    Cancel RSPV
+                    Cancel RSVP
                 </Text>}
             </TouchableOpacity>
         </View>
