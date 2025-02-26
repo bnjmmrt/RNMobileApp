@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   LayoutAnimation,
   Platform,
   UIManager,
+  ActivityIndicator,
 } from 'react-native';
 import { COLORS } from '../../../utils/constants';
 import { fontFamily } from 'src/utils/functions';
@@ -24,7 +25,7 @@ import {
 } from 'src/utils/dimensions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
-import { guestListMock, GuestItem } from '../mocks/guestListMock';
+import { EventGuest } from '../types';
 import IMAGES from 'src/assets/images';
 import SearchInput from 'src/component/SearchInput';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
@@ -38,8 +39,12 @@ import GuestEmptyRecord from 'src/component/EmptyRecord/GuestEmptyRecord';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
 import { ROUTES } from 'src/navigation/Route';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useGetGuestsQuery } from 'src/redux/actions/eventApiAction';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
-interface EventGuestListProps extends NativeStackScreenProps<any, any> {}
+interface EventGuestListProps extends NativeStackScreenProps<any, any> {
+  eventId?: string;
+}
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -47,7 +52,10 @@ if (Platform.OS === 'android') {
   }
 }
 
-const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
+const EventGuestList: React.FC<EventGuestListProps> = ({
+  navigation,
+  route,
+}) => {
   const [searchText, setSearchText] = useState('');
   const [expandedGuests, setExpandedGuests] = useState<{
     [key: string]: boolean;
@@ -57,34 +65,51 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
   const filtersSheetRef = useRef<BottomSheetMethods>(null);
   const sortSheetRef = useRef<BottomSheetMethods>(null);
 
-  // Use mock data for now
-  const guests = guestListMock;
+  // Get eventId from route params or props
+  const eventId = route?.params?.eventId;
+
+  const {
+    data: guestsData,
+    error: guestsError,
+    isLoading: isLoadingGuests,
+    refetch: refetchGuests,
+  } = useGetGuestsQuery(eventId);
+
+  // Use API data or fallback to mock data
+  const guests: EventGuest[] = useMemo(() => {
+    const apiGuests = guestsData?.data?.users || [];
+
+    return apiGuests;
+  }, [guestsData?.data?.users]);
+
+  useEffect(() => {
+    if (guestsError) {
+      console.error('Error fetching guests:', guestsError);
+      FlashMessageComponent.show('error', 'Failed to load guests');
+    }
+  }, [guestsError]);
 
   // Calculate total confirmed guests from entire list
   const totalConfirmedGuests = guests.filter(
-    guest => guest.status === 'Confirmed',
+    guest => guest.status === 'CONFIRMED',
   ).length;
   const totalGuestCount = guests.length;
 
-  // Filter and sort guests
   const filteredAndSortedGuests = useMemo(() => {
     let result = [...guests];
 
-    // Apply search filter
     if (searchText.trim()) {
       result = result.filter(guest =>
         guest.name.toLowerCase().includes(searchText.toLowerCase()),
       );
     }
 
-    // Apply status filter
     if (selectedFilter !== 'all') {
       result = result.filter(
         guest => guest.status.toLowerCase() === selectedFilter,
       );
     }
 
-    // Apply sorting
     result.sort((a, b) => {
       switch (selectedSort) {
         case 'name_asc':
@@ -92,8 +117,8 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
         case 'name_desc':
           return b.name.localeCompare(a.name);
         case 'party_size':
-          const aSize = a.invitees?.length || 0;
-          const bSize = b.invitees?.length || 0;
+          const aSize = a.additionalGuests?.length || 0;
+          const bSize = b.additionalGuests?.length || 0;
           return bSize - aSize;
         default:
           return 0;
@@ -103,9 +128,8 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
     return result;
   }, [guests, searchText, selectedFilter, selectedSort]);
 
-  // Add calculation for confirmed guests from filtered list
   const confirmedGuests = filteredAndSortedGuests.filter(
-    guest => guest.status === 'Confirmed',
+    guest => guest.status === 'CONFIRMED',
   ).length;
 
   const toggleExpand = (guestId: string) => {
@@ -133,7 +157,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
     navigation.navigate('AddGuestScreen');
   };
 
-  const renderInvitee = ({ item }: { item: GuestItem }) => (
+  const renderInvitee = (item: EventGuest) => (
     <View style={styles.inviteeItem}>
       <View style={styles.inviteeLeftContainer}>
         <Image source={IMAGES.nested_badge} style={[styles.nestedIcon]} />
@@ -141,7 +165,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
           <FastImage
             source={{
               uri:
-                item.avatar ||
+                item.profilePicture ||
                 'https://ui-avatars.com/api/?name=' +
                   encodeURIComponent(item.name),
             }}
@@ -153,20 +177,16 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
         </View>
       </View>
 
-      {item.status === 'Confirmed' && (
+      {item.status === 'CONFIRMED' && (
         <Image
           source={IMAGES.confirmed_badge}
           style={[styles.confirmedBadge]}
         />
       )}
-
-      <View style={styles.vipContainer}>
-        <Text style={styles.vipText}>VIP</Text>
-      </View>
     </View>
   );
 
-  const renderGuestItem = ({ item }: { item: GuestItem }) => (
+  const renderGuestItem = ({ item }: { item: EventGuest }) => (
     <View>
       <TouchableOpacity
         style={styles.guestItem}
@@ -175,6 +195,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
             screen: ROUTES.GuestDetailScreen,
             params: {
               guest: item,
+              eventId,
             },
           });
         }}>
@@ -182,7 +203,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
           <FastImage
             source={{
               uri:
-                item.avatar ||
+                item.profilePicture ||
                 'https://ui-avatars.com/api/?name=' +
                   encodeURIComponent(item.name),
             }}
@@ -191,11 +212,12 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
           <View style={styles.guestInfo}>
             <View style={styles.nameContainer}>
               <Text style={styles.guestName}>{item.name}</Text>
-              {item.invitees && (
+
+              {Boolean(item.additionalGuests?.length) && (
                 <Text
                   style={
                     styles.inviteCount
-                  }>{` +${item.invitees.length}`}</Text>
+                  }>{` +${item.additionalGuests?.length}`}</Text>
               )}
             </View>
 
@@ -203,18 +225,13 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
           </View>
         </View>
         <View style={styles.rightContainer}>
-          {item.status === 'Confirmed' && (
+          {item.status === 'CONFIRMED' && (
             <Image
               source={IMAGES.confirmed_badge}
               style={[styles.confirmedBadge]}
             />
           )}
-          {item.isVip && (
-            <View style={styles.vipContainer}>
-              <Text style={styles.vipText}>VIP</Text>
-            </View>
-          )}
-          {item.invitees && (
+          {item.additionalGuests && item.additionalGuests.length > 0 && (
             <TouchableOpacity
               style={styles.expandButton}
               onPress={() => toggleExpand(item.id)}>
@@ -236,12 +253,28 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
             ? { maxHeight: 1000 }
             : { maxHeight: 0, overflow: 'hidden' },
         ]}>
-        {item.invitees?.map(invitee => renderInvitee({ item: invitee }))}
+        {item.additionalGuests?.map(guest => {
+          const inviteeGuest: EventGuest = {
+            id: guest.guestId,
+            name: `${guest.firstName} ${guest.lastName}`,
+            status: item.status,
+            profilePicture: undefined,
+          };
+          return renderInvitee(inviteeGuest);
+        })}
       </Animated.View>
     </View>
   );
 
   const renderContent = () => {
+    if (isLoadingGuests) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={COLORS.blueDark} />
+        </View>
+      );
+    }
+
     if (filteredAndSortedGuests.length === 0) {
       return (
         <View style={{ flex: 1 }}>
@@ -257,6 +290,8 @@ const EventGuestList: React.FC<EventGuestListProps> = ({ navigation }) => {
         keyExtractor={item => item.id}
         contentContainerStyle={[styles.listContainer, { paddingBottom: 60 }]}
         showsVerticalScrollIndicator={false}
+        refreshing={isLoadingGuests}
+        onRefresh={refetchGuests}
       />
     );
   };
@@ -504,6 +539,11 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     position: 'relative',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

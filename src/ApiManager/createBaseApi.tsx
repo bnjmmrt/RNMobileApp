@@ -1,15 +1,28 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {
+  createApi,
+  fetchBaseQuery,
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+} from '@reduxjs/toolkit/query/react';
 import { environment } from '../../environments/environment';
 
 // Middleware for logging requests and responses
-const logMiddleware = async (args, api, extraOptions, baseQuery) => {
+const logMiddleware = async (
+  args: string | FetchArgs,
+  api: Parameters<BaseQueryFn>[1],
+  extraOptions: Parameters<BaseQueryFn>[2],
+  baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>,
+) => {
   const {
     url,
     method = 'GET',
     body,
   } = typeof args === 'string' ? { url: args } : args;
 
-  console.log(`[API Request] ${method} ${environment.BASE_URL}${url}`, { body });
+  console.log(`[API Request] ${method} ${environment.BASE_URL}${url}`, {
+    body,
+  });
 
   const result = await baseQuery(args, api, extraOptions);
 
@@ -23,7 +36,11 @@ const logMiddleware = async (args, api, extraOptions, baseQuery) => {
 };
 
 // Custom base query function
-export const customBaseQuery = (args, api, extraOptions) =>
+export const customBaseQuery: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = (args, api, extraOptions) =>
   logMiddleware(
     args,
     api,
@@ -31,7 +48,7 @@ export const customBaseQuery = (args, api, extraOptions) =>
     fetchBaseQuery({
       baseUrl: environment.BASE_URL,
       prepareHeaders: (headers, { getState }) => {
-        const token = getState().auth?.token; // Replace with your token logic
+        const token = (getState() as any).auth?.token; // Replace with your token logic
         console.log('Token:', token);
         if (token) {
           headers.set('Authorization', `Bearer ${token}`);
@@ -60,7 +77,8 @@ export const createBaseApi = createApi({
     'HostEvents',
     'Filters',
     'GuestStatusCount',
-    'DashboardUpcomingEvents'
+    'DashboardUpcomingEvents',
+    'EventGuestList',
   ], // Accept tagTypes as a parameter
   endpoints: () => ({}),
   keepUnusedDataFor: 0, // Optional: Adjust cache duration

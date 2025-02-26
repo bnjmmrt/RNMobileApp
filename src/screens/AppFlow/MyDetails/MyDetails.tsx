@@ -49,13 +49,13 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
       dispatch(setFirstName(firstNameRef.current.inputText));
       dispatch(setLastName(lastNameRef.current.inputText));
       dispatch(setIsEmailVerified(false));
-      if (isEmailPhoneBothVerified) {
-        dispatch(setPageProgress(3));
-        navigation.navigate('GenderScreen');
-      } else {
+      // if (isEmailPhoneBothVerified) {
+      //   dispatch(setPageProgress(3));
+      //   navigation.navigate('GenderScreen');
+      // } else {
         dispatch(setPageProgress(2));
         navigation.navigate('EnterEmailPhone');
-      }
+      // }
     }
   };
 
