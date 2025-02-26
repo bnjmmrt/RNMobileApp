@@ -43,7 +43,7 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
         skip: (currentPage - 1) * 10,
       } as const); // Type assertion
 
-  const { data, isLoading } = useFetchEvents(queryArgs);
+  const { data, isLoading, refetch } = useFetchEvents(queryArgs);
 
   // const { data, isLoading } = useFetchEventsQuery({
   //   userId,
@@ -53,21 +53,25 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
   //   skip: (currentPage - 1) * 10,
   // });
 
+
   useEffect(() => {
     if (data) {
       if (role === ROLE.HOST) {
         setEvents(prev =>
           currentPage === 1
             ? data.data.eventsResponse
-            : [...prev, ...data.data],
+            : // ? data.data
+            [...prev, ...data.data.eventsResponse],
         );
       } else {
         setEvents(prev =>
-          currentPage === 1 ? data.data : [...prev, ...data.data],
+          currentPage === 1 ? data.data.data : [...prev, ...data.data.data],
         );
       }
     }
-  }, [data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.data]);
+
 
   useEffect(() => {
     setRefreshing(isLoading);
@@ -75,10 +79,15 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
 
   const handleRefresh = () => {
     setCurrentPage(1);
+    refetch()
   };
 
+  useEffect(() => {
+    refetch()
+  }, [currentPage])
+
   const loadMore = () => {
-    if (data?.currentPage < data?.totalPages && !isLoading) {
+    if (currentPage < data?.data?.totalPages && !isLoading) {
       setCurrentPage(prev => prev + 1);
     }
   };
