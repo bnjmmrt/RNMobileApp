@@ -121,9 +121,15 @@ const PhoneNumberInput = forwardRef<
     }));
 
     const validatePhoneNumber = () => {
-      const mobileNumber = `${callingCode}${phoneNumber}`;
-      const isValid = isValidPhoneNumber(mobileNumber, code);
-      if (!isValid) {
+      if (phoneNumber != '') {
+        const mobileNumber = `${callingCode}${phoneNumber}`;
+        const isValid = isValidPhoneNumber(mobileNumber, code);
+        if (!isValid) {
+          setErrorMessage(LABLE.EROOR_ENTER_VALID_PHONE_NUMBER);
+          return false;
+        }
+      }
+      else {
         setErrorMessage(LABLE.EROOR_ENTER_PHONE_NUMBER);
         return false;
       }

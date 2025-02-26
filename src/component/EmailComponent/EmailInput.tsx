@@ -53,7 +53,7 @@ const EmailInput = forwardRef((_, ref) => {
           errorMessage && styles.errorInputWrapper,
           disabled && styles.disabledInput,
         ]}>
-        <Image source={IMAGES.email} style={styles.icon} />
+        <Image source={IMAGES.email} style={[styles.icon, { tintColor: errorMessage ? COLORS.errorText : COLORS.light_gray }]} />
         <TextInput
           style={[styles.input, disabled && { color: COLORS.light_gray }]}
           placeholder="example@gmail.com"
