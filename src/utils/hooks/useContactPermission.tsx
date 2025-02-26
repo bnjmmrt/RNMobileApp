@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
 import Contacts from 'react-native-contacts';
-import { getCountryCallingCode, parsePhoneNumberFromString } from 'libphonenumber-js';
-import { getCountry } from "react-native-localize";
+import {
+  getCountryCallingCode,
+  parsePhoneNumberFromString,
+} from 'libphonenumber-js';
+import { getCountry } from 'react-native-localize';
 import { getCountryFlag } from '../functions';
-
-
 
 type PermissionStatus = boolean | null;
 export type ContactItem = {
@@ -20,10 +21,21 @@ const useContacts = () => {
     useState<PermissionStatus>(null);
   const currentCountry = getCountry();
 
-
-  const getPhoneNumber = (phoneNumber) => {
+  const getPhoneNumber = (phoneNumber: string) => {
     const phone = parsePhoneNumberFromString(phoneNumber);
-    return phone ? { countryCode: phone.countryCallingCode, flag: getCountryFlag(phone.country), phoneNumber: phone.nationalNumber.replace(/\D/g, ''), currentCountry: phone.country } : { currentCountry, flag: getCountryFlag(currentCountry), countryCode: getCountryCallingCode(`${currentCountry}`), phoneNumber: phoneNumber.replace(/\D/g, '') };
+    return phone
+      ? {
+          countryCode: phone.countryCallingCode,
+          flag: getCountryFlag(phone.country),
+          phoneNumber: phone.nationalNumber.replace(/\D/g, ''),
+          currentCountry: phone.country,
+        }
+      : {
+          currentCountry,
+          flag: getCountryFlag(currentCountry),
+          countryCode: getCountryCallingCode(`${currentCountry}`),
+          phoneNumber: phoneNumber.replace(/\D/g, ''),
+        };
   };
 
   const getContacts = async (): Promise<ContactItem[]> => {
@@ -36,7 +48,6 @@ const useContacts = () => {
           phoneNumber: contact.phoneNumbers[0]?.number || '',
           firstName: contact.givenName,
           lastName: contact.familyName,
-
         }))
         .filter(contact => contact.phoneNumber);
 
@@ -116,7 +127,7 @@ const useContacts = () => {
     requestContactPermission,
     getContacts,
     getContactNumbersOnly,
-    getPhoneNumber
+    getPhoneNumber,
   };
 };
 

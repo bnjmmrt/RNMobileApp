@@ -54,7 +54,7 @@ import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: any;
@@ -63,8 +63,6 @@ type RouteParams = {
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   navigation,
 }) => {
-
-
   const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
   const route = useRoute<RouteProp<RouteParams>>();
@@ -72,7 +70,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [isDeclinedByHost, setIsDeclinedByHost] = useState(false);
   const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
-  const [isCurrentUserIsGuest, setIsCurrentGuestStatus] = useState(route?.params?.isCurrentUserIsGuest);
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const [isCurrentUserIsGuest, setIsCurrentGuestStatus] = useState(
+    route?.params?.isCurrentUserIsGuest,
+  );
   const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
 
   const role = useSelector((state: RootState) => state.auth.role);
@@ -99,39 +100,31 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
-
   useEffect(() => {
-    dispatch(setRsvpStatus(isCurrentUserIsGuest ? 'TRUE' : "NO_STATUS"));
+    dispatch(setRsvpStatus(isCurrentUserIsGuest ? 'TRUE' : 'NO_STATUS'));
   }, [isCurrentUserIsGuest]);
   const queryArgs =
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const) // Type assertion to prevent union mismatch
       : ({
-        userId,
-        eventId: route?.params?.id,
-      } as const); // Type assertion
+          userId,
+          eventId: route?.params?.id,
+        } as const); // Type assertion
   const useFetchEventDetailsHook =
     role === ROLE.HOST
       ? useFetchHostEventDetailsQuery
-      : rspvStatus === "NO_STATUS"
-        ? useFetchPublicEventDetailsQuery
-        : useFetchEventDetailsQuery;
+      : rspvStatus === 'NO_STATUS'
+      ? useFetchPublicEventDetailsQuery
+      : useFetchEventDetailsQuery;
 
   const { data, isLoading, refetch } = useFetchEventDetailsHook(queryArgs);
 
   useEffect(() => {
-    console.log("RSVP Status:", rspvStatus);
+    console.log('RSVP Status:', rspvStatus);
     refetch(); // Manually refetch when RSVP status changes
   }, [rspvStatus, refetch]);
 
-
-
-
   // Ensure argument structure remains consistent
-
-
-
-
 
   // const { data, isLoading, refetch, isSuccess } = useFetchEventDetailsQuery(
   //   { eventId: route?.params?.id, userId: userId },
@@ -147,8 +140,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [calendarDetails, setCalendarDetails] = useState<any>({});
 
   const [useQr, setUseQr] = useState<boolean>(false);
-
-
 
   useEffect(() => {
     if (guestStatus === 'DECLINED') {
@@ -187,7 +178,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         name: data?.data?.owner.companyName,
         role: {
           id: data?.data?.owner.id,
-          name: 'host'
+          name: 'host',
         }
       };
 
@@ -342,7 +333,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         <Button
           disabled={false}
           style={styles.btnStyle}
-          title={guestStatus === 'APPLIED' ? BUTTON_LABLE.UPDATE_APPLICATION : BUTTON_LABLE.RSVP}
+          title={
+            guestStatus === 'APPLIED'
+              ? BUTTON_LABLE.UPDATE_APPLICATION
+              : BUTTON_LABLE.RSVP
+          }
           colorTheme="dark"
           onPress={onNextClick}
         />
@@ -427,10 +422,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
             <Text style={styles.titleStyle}>{route?.params?.name}</Text>
 
-            <EventStatus
-              status={guestStatus}
-              isDeclinedByMe={isDeclinedByMe}
-            />
+            <EventStatus status={guestStatus} isDeclinedByMe={isDeclinedByMe} />
 
             {role !== ROLE.NON_MEMBER && (
               <FlatList
@@ -461,8 +453,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             {talents.length > 0 && <EventTalent talents={talents} />}
 
             {/* {<EventAnouncements talents={talents} />} */}
-
-
           </View>
           {/* {role === ROLE.HOST && <Button
             disabled={false}
@@ -493,7 +483,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         {renderHostButtons()}
         {renderRSVPButton()}
         {renderConfirmedButtons()}
-
 
         <CalenderEventsBottomSheet
           ref={calenderEventsBottomSheetRef}
@@ -526,18 +515,22 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           onPress={() => navigation.goBack()}
         />
 
-        {role === ROLE.HOST && <BackButtonOverlay
-          customStyle={{ right: 4, top: 16 + STATUS_BAR_HEIGHT }}
-          imageSource={IMAGES.edits}
-          onPress={() =>
-            navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })
-          }
-        />}
-        {role === ROLE.HOST && <BackButtonOverlay
-          customStyle={{ right: 55, top: 16 + STATUS_BAR_HEIGHT }}
-          imageSource={IMAGES.share}
-          onPress={() => navigation.goBack()}
-        />}
+        {role === ROLE.HOST && (
+          <BackButtonOverlay
+            customStyle={{ right: 4, top: 16 + STATUS_BAR_HEIGHT }}
+            imageSource={IMAGES.edits}
+            onPress={() =>
+              navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })
+            }
+          />
+        )}
+        {role === ROLE.HOST && (
+          <BackButtonOverlay
+            customStyle={{ right: 55, top: 16 + STATUS_BAR_HEIGHT }}
+            imageSource={IMAGES.share}
+            onPress={() => navigation.goBack()}
+          />
+        )}
       </View>
     </>
   );
