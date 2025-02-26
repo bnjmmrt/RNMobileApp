@@ -436,7 +436,16 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               />
             )}
 
-            {role == ROLE.HOST && <EventRequests eventId={data?.data?.id} />}
+            {role === ROLE.HOST && (
+              <EventRequests
+                eventId={data?.data?.id}
+                onTicketBreakdownPress={() => {
+                  navigation.navigate(ROUTES.EventGuestList, {
+                    eventId: data?.data?.id,
+                  });
+                }}
+              />
+            )}
 
             <EventVenue
               item={data?.data}
