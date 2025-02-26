@@ -37,7 +37,7 @@ interface MapComponentProps {
 
 const MapComponent: React.FC<MapComponentProps> = ({ item }) => {
   const role = useSelector((state: RootState) => state.auth.role);
-  const isShowLocation = role === ROLE.HOST || item?.currentGuestStatus === 'confirmed';
+  const isShowLocation = role === ROLE.HOST || item?.currentGuestStatus === 'CONFIRMED';
 
   const latitude = item?.location?.latitude ?? 37.78825;
   const longitude = item?.location?.longitude ?? -122.4324;
