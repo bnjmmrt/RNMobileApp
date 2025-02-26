@@ -13,7 +13,7 @@ import {
   UIManager,
   ActivityIndicator,
 } from 'react-native';
-import { COLORS } from '../../../utils/constants';
+import { COLORS, LABLE } from '../../../utils/constants';
 import { fontFamily } from 'src/utils/functions';
 import {
   fontScale,
@@ -308,7 +308,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
               <Image source={IMAGES.leftArrow} style={styles.icon} />
             </View>
           </TouchableOpacity>
-          <Text style={styles.title}>Guest List</Text>
+          <Text style={styles.title}>{LABLE.GUEST_LIST}</Text>
           <TouchableOpacity>
             <View style={styles.iconButton}>
               <Image source={IMAGES.qr} style={styles.icon} />

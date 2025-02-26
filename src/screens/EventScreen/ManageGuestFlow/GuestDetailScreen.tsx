@@ -40,6 +40,7 @@ import {
   useFetchUserDetailsQuery,
 } from 'src/redux/actions/usersApiAction';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { ROUTES } from 'src/navigation/Route';
 
 enum GuestStatus {
   DRAFT = 'DRAFT',
@@ -87,12 +88,8 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const [guestNote, setGuestNote] = useState(guest?.privateGuestNote || '');
   const [directlySendToConfirm, setDirectlySendToConfirm] = useState(false);
 
-  // console.log('guest', guest);
-
-  // Set initial ticket type if guest has one
   useEffect(() => {
     if (guest?.ticketType && selectedEvent?.ticketTypes) {
-      // Find ticket type by name since guest.ticketType is the name
       const matchingTicket = selectedEvent.ticketTypes.find(
         (ticket: TicketType) => ticket.name === guest.ticketType,
       );
@@ -102,7 +99,6 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     }
   }, [guest?.ticketType, selectedEvent?.ticketTypes]);
 
-  // Set initial favorite status from user details
   useEffect(() => {
     if (userDetails?.data?.isFavourite !== undefined) {
       setIsFavorite(userDetails.data.isFavourite);
@@ -164,7 +160,9 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   };
 
   const handleProfile = () => {
-    // Handle profile action
+    navigation.navigate(ROUTES.UserDetail, {
+      user: guest?.userId,
+    });
   };
 
   const getDeclineSheetProps = () => {
@@ -287,8 +285,6 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         return null;
     }
   };
-
-  console.log('userDetails', guest, 'isLoading', isLoading);
 
   return (
     <SafeAreaView style={styles.container}>
