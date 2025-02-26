@@ -179,7 +179,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         role: {
           id: data?.data?.owner.id,
           name: 'host',
-        },
+        }
       };
 
       // Merge the owner as a collaborator with existing collaborators
