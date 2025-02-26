@@ -466,8 +466,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               onPress={onCheckInClick}
             />
           )} */}
-          {renderHostButtons()}
         </ScrollView>
+        {renderHostButtons()}
         {renderRSVPButton()}
         {renderConfirmedButtons()}
 

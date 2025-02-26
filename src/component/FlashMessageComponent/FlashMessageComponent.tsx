@@ -62,7 +62,7 @@ export const FlashMessageComponent = {
       message: '',
       type: 'default',
       backgroundColor: 'transparent',
-      color: '#fff',
+      color: 'transperent',
       duration: 3000,
       style: {
         marginVertical: 0,

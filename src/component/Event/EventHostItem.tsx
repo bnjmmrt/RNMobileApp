@@ -25,7 +25,7 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item }) => {
 
 
   return (
-    <View style={[styles.container]}>
+    <View style={[styles.container, { width: role == ROLE.MEMBER ? 250 : 150 }]}>
       <FastImage
         style={[styles.image]}
         source={{ uri: item?.companyLogo }}
@@ -34,7 +34,7 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item }) => {
       />
       <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 10, marginEnd: 20 }}>
         <Text style={styles.title}>{capitalizeFirstLetter(item?.name)}</Text>
-        <Text style={styles.subtitle}>{capitalizeFirstLetter(item?.role?.name).replace("_", "-")}</Text>
+        <Text style={styles.subtitle}>{capitalizeFirstLetter(item?.role?.name)}</Text>
       </View>
 
       {role == ROLE.MEMBER && <ButtonSmall
@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderColor: COLORS.borderGray,
     flexDirection: 'row',
+    width: 250,
     alignSelf: 'flex-start',
     alignItems: 'center',
   },
