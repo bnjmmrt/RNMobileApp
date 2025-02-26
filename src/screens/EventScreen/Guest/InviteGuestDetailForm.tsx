@@ -36,7 +36,6 @@ interface InviteDetailsProps {
   onTicketTypePress?: () => void;
   additionalGuests: number;
   onAdditionalGuestsChange: (value: number) => void;
-  maxAdditionalGuests?: number;
   inviteMessage: string;
   onInviteMessageChange: (message: string) => void;
   guestNote: string;
@@ -60,7 +59,6 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   onTicketTypePress,
   additionalGuests,
   onAdditionalGuestsChange,
-  maxAdditionalGuests = 0,
   inviteMessage,
   onInviteMessageChange,
   guestNote,
@@ -110,17 +108,9 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
           <Counter
             counterValue={additionalGuests}
             onPressMinus={() =>
-              onAdditionalGuestsChange(
-                additionalGuests > 0 ? additionalGuests - 1 : additionalGuests,
-              )
+              onAdditionalGuestsChange(Math.max(0, additionalGuests - 1))
             }
-            onPressPlus={() =>
-              onAdditionalGuestsChange(
-                additionalGuests < maxAdditionalGuests
-                  ? additionalGuests + 1
-                  : additionalGuests,
-              )
-            }
+            onPressPlus={() => onAdditionalGuestsChange(additionalGuests + 1)}
           />
         </View>
       </View>
