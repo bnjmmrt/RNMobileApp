@@ -43,6 +43,8 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
 
     const clearOTP = () => {
       otpInput.current.clear(); // Clears the OTP input
+      setCode('');
+      setErrorMessage('')
     };
 
     const validateCode = (): boolean => {

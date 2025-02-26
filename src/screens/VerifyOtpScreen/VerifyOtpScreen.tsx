@@ -126,18 +126,12 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   );
 
   const callVerifyOTP = (code: string) => {
-    verifyOtp(code, redirectToHome).then((data: any) => {
-      console.log('callVerifyOTP', otpInputRef?.current.validateCode());
-      if (!data) {
-        setErrorMsg(LABLE.ERROR_VERIFY_CODE);
-        otpInputRef?.current?.showInvalidCodeError(LABLE.ERROR_VERIFY_CODE);
-      }
-    });
+    verifyOtp(code, redirectToHome)
   };
 
   const clearOTPAndResend = () => {
     otpInputRef.current.clearOTP();
-    otpInputRef?.current?.showInvalidCodeError(LABLE.EROOR_ENTER_CODE);
+    setErrorMsg('')
     sendOtp(true);
   };
   return (
