@@ -4,12 +4,14 @@ import { ContactItem } from 'src/utils/hooks/useContactPermission';
 
 export interface UserDetailsState {
   selectedUsers: UserItemInterface[];
+  removedUsers: UserItemInterface[];
   selectedManualUser: ContactItem | null;
   selectedEvent: EventDetailInterface | null;
 }
 
 const initialState: UserDetailsState = {
   selectedUsers: [],
+  removedUsers: [],
   selectedManualUser: null,
   selectedEvent: null,
 };
@@ -23,6 +25,12 @@ const inviteGuestsFlowSlice = createSlice({
       action: PayloadAction<UserItemInterface[]>,
     ) {
       state.selectedUsers = action.payload;
+    },
+    removeSelectedUsersToInvite(
+      state,
+      action: PayloadAction<UserItemInterface[]>,
+    ) {
+      state.removedUsers = action.payload;
     },
     setSelectedManualUser(state, action: PayloadAction<ContactItem>) {
       state.selectedManualUser = action.payload;
@@ -40,6 +48,7 @@ export const {
   setSelectedUsersToInvite,
   setSelectedManualUser,
   setSelectedEventForInvite,
+  removeSelectedUsersToInvite,
 } = inviteGuestsFlowSlice.actions;
 
 export default inviteGuestsFlowSlice.reducer;

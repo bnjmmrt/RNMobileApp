@@ -20,7 +20,10 @@ import { EventStackParamList } from 'src/navigation/EventStack';
 import { ROUTES } from 'src/navigation/Route';
 import { useFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
 import { RootState } from 'src/redux/slices';
-import { setSelectedUsersToInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
+import {
+  removeSelectedUsersToInvite,
+  setSelectedUsersToInvite,
+} from 'src/redux/slices/inviteGuestsFlowSlice';
 import UserListItem, {
   UserItemInterface,
 } from 'src/screens/UsersModule/UsersListItem';
@@ -177,6 +180,13 @@ const SelectGuestsToInviteScreen: React.FC<
       setAllUsers({ totalCount: 0, users: [] });
     }
   }, [isError]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(setSelectedUsersToInvite([]));
+      dispatch(removeSelectedUsersToInvite([]));
+    };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {

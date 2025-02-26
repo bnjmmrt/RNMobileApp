@@ -115,6 +115,14 @@ export const usersApiAction = createBaseApi.injectEndpoints({
       }),
       invalidatesTags: ['UserDetail'],
     }),
+    deleteUser: builder.mutation({
+      query: (requestParam: { user: string }) => ({
+        url: `${EndPoint.user}${requestParam.user}`,
+        method: 'DELETE',
+        body: {},
+      }),
+      invalidatesTags: ['UserDetail'],
+    }),
   }),
 });
 
@@ -134,6 +142,8 @@ export const {
 
   useFetchUserFiltersQuery,
   useLazyFetchUserFiltersQuery,
+
+  useDeleteUserMutation,
 } = usersApiAction;
 
 export interface UserDetailResponse {

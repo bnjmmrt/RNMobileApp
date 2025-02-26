@@ -1,6 +1,10 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
-import parsePhoneNumberFromString, { CountryCode, isValidPhoneNumber, AsYouType, formatNumber, parseNumber, formatIncompletePhoneNumber, getExampleNumber } from 'libphonenumber-js';
+import parsePhoneNumberFromString, {
+  CountryCode,
+  getExampleNumber,
+  isValidPhoneNumber,
+} from 'libphonenumber-js';
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import {
   StyleSheet,
@@ -48,6 +52,7 @@ export type PhoneNumberInputRefMethods = {
   callingCode: string;
   setDisabled: React.Dispatch<React.SetStateAction<boolean>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  setCode: React.Dispatch<React.SetStateAction<CountryCode>>;
 };
 
 const PhoneNumberInput = forwardRef<
@@ -82,10 +87,11 @@ const PhoneNumberInput = forwardRef<
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const [selectedCountry, setSelectedCountry] = useState('');
-    const [maxLength, setMaxLength] = useState(12)
+    const [maxLength, setMaxLength] = useState(12);
+
     const handleCountrySelect = (selectedCountry: any) => {
-      setPhoneNumber('')
-      console.log(selectedCountry)
+      setPhoneNumber('');
+      console.log(selectedCountry);
       dispatch(setCountryCallingCode(selectedCountry.callingCode));
       dispatch(setCountryCodeFlag(selectedCountry.flag));
       setFlag(selectedCountry.flag);
@@ -95,8 +101,8 @@ const PhoneNumberInput = forwardRef<
       setFlag(selectedCountry.flag);
       setCode(selectedCountry.code);
       setCallingCode(selectedCountry.dial_code);
-      setSelectedCountry(selectedCountry)
-      setMaxLength(getMaxPhoneNumberLength(selectedCountry.dial_code))
+      setSelectedCountry(selectedCountry);
+      setMaxLength(getMaxPhoneNumberLength(selectedCountry.dial_code));
       setCountryPickerVisible(false);
       if (onSelectCountry) {
         onSelectCountry(selectedCountry);
@@ -117,7 +123,7 @@ const PhoneNumberInput = forwardRef<
       callingCode,
       setDisabled,
       setErrorMessage,
-      setCode
+      setCode,
     }));
 
     const validatePhoneNumber = () => {
@@ -128,8 +134,7 @@ const PhoneNumberInput = forwardRef<
           setErrorMessage(LABLE.EROOR_ENTER_VALID_PHONE_NUMBER);
           return false;
         }
-      }
-      else {
+      } else {
         setErrorMessage(LABLE.EROOR_ENTER_PHONE_NUMBER);
         return false;
       }
@@ -171,9 +176,11 @@ const PhoneNumberInput = forwardRef<
 
       // Parse the number
       let parsedNumber = parsePhoneNumberFromString(fullNumber);
-      console.log(parsedNumber)
+      console.log(parsedNumber);
       if (parsedNumber && parsedNumber.isValid()) {
-        setPhoneNumber(parsedNumber.formatInternational().replace(`${callingCode} `, '')); // Remove country code from input
+        setPhoneNumber(
+          parsedNumber.formatInternational().replace(`${callingCode} `, ''),
+        ); // Remove country code from input
       } else {
         setPhoneNumber(cleanedText); // Keep raw input if invalid
       }
@@ -198,10 +205,12 @@ const PhoneNumberInput = forwardRef<
             onPress={() => setCountryPickerVisible(true)}
             disabled={disabled}>
             <Text style={styles.flag}>{flag}</Text>
-            {!disabled && <Image
-              source={IMAGES.upDownArrow}
-              style={[styles.arrowIcon, disabled && { opacity: 0.5 }]}
-            />}
+            {!disabled && (
+              <Image
+                source={IMAGES.upDownArrow}
+                style={[styles.arrowIcon, disabled && { opacity: 0.5 }]}
+              />
+            )}
             <Text style={styles.callingCode}>{callingCode}</Text>
           </TouchableOpacity>
 
@@ -215,7 +224,7 @@ const PhoneNumberInput = forwardRef<
             maxLength={maxLength}
             // onChangeText={handleChange}
             onChangeText={(text: string) => {
-              handleChange(text)
+              handleChange(text);
               setErrorMessage('');
               if (onChangeText) {
                 onChangeText(text);
@@ -294,7 +303,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: fontFamily.ABCDiatype_Regular,
     color: COLORS.black,
     paddingHorizontal: 5,
