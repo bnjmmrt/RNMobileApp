@@ -72,7 +72,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [isDeclinedByHost, setIsDeclinedByHost] = useState(false);
   const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
   const [isCurrentUserIsGuest, setIsCurrentGuestStatus] = useState(route?.params?.isCurrentUserIsGuest);
   const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
 
@@ -183,8 +182,19 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       });
     }
     if (data && data.data && data?.data?.collaborators) {
-      setCollaborators(data.data.collaborators);
+      let collaborator = {
+        ...data?.data?.owner,
+        name: data?.data?.owner.companyName,
+        role: {
+          id: data?.data?.owner.id,
+          name: 'host'
+        }
+      };
+
+      // Merge the owner as a collaborator with existing collaborators
+      setCollaborators([collaborator, ...data.data.collaborators]);
     }
+
     if (data && data.data && data?.data?.talents) {
       setTalents(data.data.talents);
     }
@@ -498,24 +508,23 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           name={eventDetails?.name}
         />
 
-
-
         <BackButtonOverlay
           customStyle={{ top: 16 + STATUS_BAR_HEIGHT }}
           onPress={() => navigation.goBack()}
         />
-        <BackButtonOverlay
+
+        {role === ROLE.HOST && <BackButtonOverlay
           customStyle={{ right: 4, top: 16 + STATUS_BAR_HEIGHT }}
           imageSource={IMAGES.edits}
           onPress={() =>
             navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })
           }
-        />
-        <BackButtonOverlay
+        />}
+        {role === ROLE.HOST && <BackButtonOverlay
           customStyle={{ right: 55, top: 16 + STATUS_BAR_HEIGHT }}
           imageSource={IMAGES.share}
           onPress={() => navigation.goBack()}
-        />
+        />}
       </View>
     </>
   );

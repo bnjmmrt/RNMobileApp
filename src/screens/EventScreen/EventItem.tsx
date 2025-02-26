@@ -52,7 +52,7 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
     }
 
     // Check if the user is in the collaborators list
-    const collaborator = item.collaborators?.find(collab => collab.role?.id === userId);
+    const collaborator = item.collaborators?.find(collab => collab?.id === userId);
 
     if (collaborator) {
       return collaborator?.role?.name?.toUpperCase().replace("_", "-");
