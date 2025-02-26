@@ -103,7 +103,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
 
     if (role == 'non_member') {
       const screenName =
-        data?.token?.length > 0 ? 'BottomTabBar' : 'BeforeAppStaticScreen';
+        data?.token?.length > 0 || isGuest ? 'BottomTabBar' : 'BeforeAppStaticScreen';
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
