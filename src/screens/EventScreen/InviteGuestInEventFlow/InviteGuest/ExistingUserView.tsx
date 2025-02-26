@@ -106,7 +106,9 @@ const ExistingUserView: React.FC<ExistingUserViewProps> = ({}) => {
             },
           ]}
           onPress={() => {
-            eventNavigation.navigate(ROUTES.SelectedGuestsToInviteScreen);
+            eventNavigation.navigate(ROUTES.SelectedGuestsToInviteScreen, {
+              users: selectedUsers,
+            });
           }}>
           <CustomText style={styles.title}>
             {`${selectedUsers.length} Recipients`}

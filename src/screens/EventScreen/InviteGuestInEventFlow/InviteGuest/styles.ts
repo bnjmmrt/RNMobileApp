@@ -3,7 +3,6 @@ import { COLORS } from 'src/utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
-  horizontalScale,
   radiusScale,
   verticalMarginScale,
   verticalScale,
@@ -103,8 +102,8 @@ const createStyles = () => {
     },
 
     inputStyle: {
-      height: null,
-      paddingVertical: verticalScale(12),
+      // height: verticalScale(40),
+      // paddingVertical: verticalScale(12),
     },
 
     userPreviewContainer: {

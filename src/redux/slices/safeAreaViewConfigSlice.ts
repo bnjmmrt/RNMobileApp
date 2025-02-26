@@ -31,8 +31,6 @@ export const statusBarSlice = createSlice({
       return { ...state, ...action?.payload };
     },
     changeTopSafeAreaViewColor: (state, action: PayloadAction<ColorValue>) => {
-      console.log(action);
-
       return {
         ...state,
         topSafeAreaViewColor: action.payload,

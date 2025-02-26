@@ -59,7 +59,7 @@ export const FlashMessageComponent = {
     position: 'top' | 'bottom' = 'bottom',
   ) => {
     showMessage({
-      message,
+      message: '',
       type: 'default',
       backgroundColor: 'transparent',
       color: 'transperent',

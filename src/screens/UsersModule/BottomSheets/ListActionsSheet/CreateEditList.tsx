@@ -1,17 +1,17 @@
-import {BottomSheetView} from '@gorhom/bottom-sheet';
-import React, {useEffect, useRef, useState} from 'react';
-import {Keyboard} from 'react-native';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { useEffect, useRef, useState } from 'react';
+import { Keyboard } from 'react-native';
 import Button from 'src/component/Button';
-import {CustomText} from 'src/component/CustomText';
-import Input, {InputRefMethods} from 'src/component/Input/Input';
+import { CustomText } from 'src/component/CustomText';
+import Input, { InputRefMethods } from 'src/component/Input/Input';
 import {
   useAddNewCustomListMutation,
   useEditCustomListMutation,
 } from 'src/redux/actions/listsApiAction';
-import {verticalMarginScale} from 'src/utils/dimensions';
-import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
-import {listActionCurrentPageType} from '.';
-import {styles} from './style';
+import { verticalMarginScale } from 'src/utils/dimensions';
+import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
+import { listActionCurrentPageType } from '.';
+import { styles } from './style';
 
 const EditListName = ({
   onSuccessAdd,
@@ -32,11 +32,11 @@ const EditListName = ({
 
   const [customName, setCustomName] = useState<string>(listName || '');
 
-  const [addNewCustomList, {error, isLoading: createListLoading}] =
+  const [addNewCustomList, { error, isLoading: createListLoading }] =
     useAddNewCustomListMutation();
   const [
     editCustomList,
-    {error: editCustomListError, isLoading: editListLoading},
+    { error: editCustomListError, isLoading: editListLoading },
   ] = useEditCustomListMutation();
 
   const resetForm = () => {
@@ -65,8 +65,6 @@ const EditListName = ({
   };
 
   const onPressEditList = async () => {
-    console.log(';sss;s;s');
-
     listNameRef?.current?.validateInputs();
     if (listNameRef?.current?.validateInputs() && listId) {
       try {

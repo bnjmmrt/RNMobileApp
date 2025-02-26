@@ -53,8 +53,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({ route }) => {
     user: user,
   });
 
-  console.log('userData', userData);
-
   const handleTabChange = (tab: TabItem) => {
     setCurrentTab(tab);
   };

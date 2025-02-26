@@ -19,6 +19,7 @@ import { RootState } from 'src/redux/slices';
 import { verticalScale } from 'src/utils/dimensions';
 import AddToList from './AddToList';
 import CreateList from './CreateList';
+import DeleteUser from './DeleteUser';
 import MarkAsSpam from './MarkAsSpam';
 import ReportUser from './ReportUser';
 import { styles } from './style';
@@ -30,6 +31,7 @@ export type UserActionCurrentPageType =
   | 'markSpam'
   | 'unmarkSpam'
   | 'report'
+  | 'delete'
   | '';
 export interface UserListActionPropsInterface {
   from: actionSheetFromType;
@@ -75,6 +77,8 @@ const UserActionsSheet = forwardRef<
       selectedAction === 'report'
         ? [`${verticalScale(50)}%`]
         : selectedAction === 'markSpam'
+        ? [`${verticalScale(30)}%`]
+        : selectedAction === 'delete'
         ? [`${verticalScale(30)}%`]
         : selectedAction === 'addToList'
         ? [`${verticalScale(60)}%`]
@@ -134,6 +138,13 @@ const UserActionsSheet = forwardRef<
         <BottomSheetView style={{ flex: 1 }}>
           {selectedAction === '' ? (
             <BottomSheetView style={styles.actionButtonContainer}>
+              {/* <Button
+                title={'Delete User'}
+                onPress={() => {
+                  setSelectedAction('delete');
+                }}
+                style={styles.actionButton}
+              /> */}
               <Button
                 title="Add to list"
                 onPress={() => {
@@ -167,6 +178,13 @@ const UserActionsSheet = forwardRef<
           ) : null}
           {selectedAction === 'markSpam' ? (
             <MarkAsSpam
+              showError={showError}
+              showSuccess={showSuccess}
+              user={user || ''}
+            />
+          ) : null}
+          {selectedAction === 'delete' ? (
+            <DeleteUser
               showError={showError}
               showSuccess={showSuccess}
               user={user || ''}
