@@ -70,7 +70,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     defaultValue = '',
     onChangeText,
     otherStyle,
-    editable,
+    editable = true,
     isRequired = false,
     forBottomSheet = false,
     inputFieldContainerStyle,
@@ -145,6 +145,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
               : styles.errorInputWrapper
             : null,
           inputFieldContainerStyle,
+          { backgroundColor: !editable ? COLORS.borderGray : COLORS.white }
         ]}>
         {leftImage && (
           <Image
@@ -156,7 +157,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
           {...props}
           blurOnSubmit={blurOnSubmit}
           editable={editable}
-          style={[styles.input, multiline ? styles.multilineInput : null]}
+          style={[styles.input, multiline ? styles.multilineInput : null, { color: editable ? COLORS.black : COLORS.neutral_disabled }]}
           value={inputText}
           placeholder={placeholder}
           onChangeText={text => {
@@ -207,7 +208,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: horizontalMarginScale(16),
-    height: verticalScale(56),
+    height: verticalScale(50),
   },
   multilineInputContainer: {
     height: verticalScale(160),

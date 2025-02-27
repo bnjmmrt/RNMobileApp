@@ -25,6 +25,22 @@ export interface Owner {
     lastName: string;
 }
 
+interface EventType {
+    description: string;
+    enabled: boolean
+    id: string;
+    name: string;
+}
+
+interface AgeLimit {
+    description: string;
+    enabled: boolean
+    id: string;
+    maxAge: number
+    minAge: number
+    name: string;
+}
+
 
 
 export interface Event {
@@ -39,6 +55,13 @@ export interface Event {
     totalCheckedInGuests?: number;
     totalConfirmedGuests?: number;
     showLocation?: boolean;
-    collaborators?: Collaborator[]
-    owner?: Owner
+    autoPublished?: boolean;
+    isPrivate?: boolean;
+    useQr?: boolean;
+    collaborators?: Collaborator[];
+    owner?: Owner;
+    limitOnePlus?: number;
+    eventType?: EventType;
+    ageLimit?: AgeLimit;
+
 }

@@ -1,8 +1,8 @@
 import { TabItem } from 'src/component/ActiveTabBar/DynamicTabBar';
 
 export const BUTTON_LABLE = {
-  MAIL_SUBJECT:"Rumor Application Verification",
-  MAIL_BODY:"Hi Rumor Team, I'd like to verify my identity for my Rumor application.My verification code is: RUMORAPP",
+  MAIL_SUBJECT: "Rumor Application Verification",
+  MAIL_BODY: "Hi Rumor Team, I'd like to verify my identity for my Rumor application.My verification code is: RUMORAPP",
   ENTER: 'Enter',
   NEXT: 'Next',
   RSVP: 'RSVP',
@@ -74,7 +74,7 @@ export const LABLE = {
   RUMOR_WILL_SEND_YOU_A_TEXT_WITH_A_VERIFICATION_CODE:
     'Rumor will send you a text with a verification code.',
   EROOR_ENTER_PHONE_NUMBER: 'Please enter a phone number.',
-  EROOR_ENTER_VALID_PHONE_NUMBER:'Please enter a valid phone number.',
+  EROOR_ENTER_VALID_PHONE_NUMBER: 'Please enter a valid phone number.',
   EROOR_ENTER_EMAIL: 'Please enter a valid email address',
   ERROR_VERIFY_CODE:
     'The code you entered cannot be verified. Please try again.',
@@ -244,7 +244,8 @@ export const LABLE = {
   NO_CALENDAR_FOUND: 'No calendar found on this device.',
   ACCESS_CALENDAR: 'Calendar access is required to add events.',
   PERMISSION_DENIED: 'Permission Denied',
-  VIP_TOOLTIP_CONTENT: 'Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.'
+  VIP_TOOLTIP_CONTENT: 'Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.',
+  EVENT_SETTING_INFO: "Edit event settings on Rumor’s web platform.\nClick the button below to take you there."
 };
 export const EVENT = {
   EDIT_EVENT: 'Edit Event',
@@ -258,10 +259,20 @@ export const EVENT = {
   EVENT_DESCRIPTION: 'Event Description',
   HIDE_ADDRESS: 'Hide full address for confirmed guests',
   FEATURE_TALENT: 'Featured Talent',
-  TOTAL_CONFIRMED: "Total Confirmed:",
-  TOTAL_CHECKEDIN: "Total Checked-In:",
+  TOTAL_CONFIRMED: 'Total Confirmed:',
+  TOTAL_CHECKEDIN: 'Total Checked-In:',
+  VISIBILITY: 'Visibility',
+  EVENT_TYPE: 'Event Type',
+  PLUS_1_LIMIT: 'Plus 1 Limit',
+  AGE_LIMIT: 'Age Limit',
+  EVENT_PUBLISH_SETTINGS: 'Event Publish Settings',
+  TICKET_TYPES: 'Ticket Types',
+  UTILIZE_QR_CODES_FOR_EVENT_CHECK_IN: 'Utilize QR codes for event check-in?',
+  EVENT_COLLABORATORS: 'Event Collaborators',
+  QUESTIONNAIRE: 'Questionnaire',
+  UPDATE_SETTINGS_ON_WEB: 'Update Settings on Web'
+};
 
-}
 
 export const PROFILE = {
   EDIT_PROFILE: 'Edit Profile',
@@ -319,6 +330,7 @@ export const ERROR_MESSAGE = {
   WEBSITE_ERROR: 'Please enter your URL.',
   COMPANY_NAME_ERROR: 'Company Name is required',
   TCKET_ERROR_MESSAGE: 'Ticket is not associated with a guest for this event.',
+  EMPTY: '',
 };
 
 export const COLORS = {

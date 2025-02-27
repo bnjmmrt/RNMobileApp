@@ -134,6 +134,8 @@ const IMAGES = {
   ticketBgSm: require('./ticketBgSm.png'),
   arrowDowngray: require('./arrow-down-gray.png'),
   refresh: require('./refresh.png'),
+  add: require('./add.png'),
+  help: require('./help-circle.png'),
 };
 
 export default IMAGES;
