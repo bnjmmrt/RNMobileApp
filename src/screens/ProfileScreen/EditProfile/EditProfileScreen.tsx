@@ -47,8 +47,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
   const userId = useSelector((state: RootState) => state.auth.userId);
   const isGuest = useSelector((state: RootState) => state.auth.isGuest);
 
-  console.log('loginDatat', loginData)
-
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
   const phoneNumberInputRef = useRef<any>(null);
@@ -76,33 +74,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
       phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
       phoneNumberInputRef?.current.setCallingCode(null);
     }
-    // if (loginData?.isSignUpCompleted) {
-    //   phoneNumberInputRef?.current.setDisabled(true);
-    //   phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
-    //   // phoneNumberInputRef?.current.setCallingCode(
-    //   //   phoneNumberDetails?.countryCallingCode,
-    //   // );
-    //   phoneNumberInputRef?.current.setCallingCode(null);
-    //   phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
-    //   emailInputRef?.current.setDisabled(true);
-    //   emailInputRef?.current.setEmailAddress(profileData?.email);
-    // }
-
-    // if (loginData?.varifyStatus === 2) {
-    //   emailInputRef?.current.setDisabled(true);
-    //   emailInputRef?.current.setEmailAddress(profileData?.email);
-    //   phoneNumberInputRef?.current.setDisabled(true);
-    //   phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
-    //   phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
-    //   phoneNumberInputRef?.current.setCallingCode(null);
-    // }
-
-    // if (loginData?.varifyStatus === 1) {
-    //   emailInputRef?.current.setDisabled(true);
-    //   emailInputRef?.current.setEmailAddress(profileData?.email);
-    // }
-
-    // getUserSettingAndDetails();
   }, []);
 
   const fetchUserById = async () => {
