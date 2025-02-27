@@ -8,6 +8,7 @@ import {
   COLORS,
   PROFILE,
   genderList,
+  ROLE,
 } from '../../../utils/constants';
 import Button from '../../../component/Button';
 import Input from '../../../component/Input/Input';
@@ -45,6 +46,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
   );
   const userId = useSelector((state: RootState) => state.auth.userId);
   const isGuest = useSelector((state: RootState) => state.auth.isGuest);
+
+  console.log('loginDatat', loginData)
 
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
@@ -102,7 +105,43 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
     // getUserSettingAndDetails();
   }, []);
 
+  const fetchUserById = async () => {
+    try {
+      const response: any = await apiRequest('post',
+        EndPoint.get_user_with_role_by_id,
+        { id: userId },
+      );
+      if (response.status === 200) {
+        dispatch(setProfileData(response?.data));
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
+  };
+
   const onConfirmClick = async () => {
+    if (isGuest && loginData.roles[0]?.roleName === ROLE.NON_MEMBER) {
+      if (
+        firstNameRef.current.validateInputs() &&
+        lastNameRef.current.validateInputs()) {
+        const requestObject: any = {
+          // email: profileData?.email,
+          firstName: firstNameRef.current.inputText,
+          lastName: lastNameRef.current.inputText,
+        };
+
+        const response: any = await apiRequest(
+          'put',
+          EndPoint.user_profile + userId,
+          requestObject,
+        );
+        if (response.status === 200) {
+          fetchUserById()
+          FlashMessageComponent.show('success', 'Profile Updated Successfully');
+          handleBackPress();
+        }
+      }
+    }
     if (
       firstNameRef.current.validateInputs() &&
       lastNameRef.current.validateInputs() &&
@@ -143,7 +182,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
           EndPoint.user + userId,
         );
         if (responseUser.status === 200) {
-          dispatch(setProfileData(responseUser?.data));
+          dispatch(setProfileData({...responseUser?.data, profilePicture: responseUser?.data?.imageUrl}));
         }
         FlashMessageComponent.show('success', 'Profile Updated Successfully');
         handleBackPress();
@@ -170,7 +209,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
             ref={firstNameRef}
             label={LABLE.FIRST_NAME}
             errorMessage={ERROR_MESSAGE.FIRST_NAME}
-            defaultValue={profileData?.firstName}
+            defaultValue={isGuest ? profileData?.name : profileData?.firstName}
           />
           <Input
             ref={lastNameRef}
