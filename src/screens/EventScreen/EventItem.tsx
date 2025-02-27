@@ -61,9 +61,7 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
     return ""; // Default return if no match is found
   };
 
-  console.log('Sayyed event item :', item);
-  console.log('Sayyed  userId :', userId);
-  console.log('Sayyed  getUserRole :', getUserRole());
+
   return (
     <View style={styles.container}>
       <FastImage

@@ -136,7 +136,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
   };
 
 
-  const uploadFile = async () => {
+  const uploadFile = async (image: string) => {
     const mimeType = `images/${image.split('.').pop()}`;
     const fileName = image.split('/').pop();
 
@@ -152,14 +152,10 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
     });
   };
 
-  useEffect(() => {
-    image && savePhoto()
-  }, [image])
-
-  const savePhoto = async () => {
+  const savePhoto = async (image: string) => {
     if (image) {
       // setIsToastShown(false);
-      const response: any = await uploadFile();
+      const response: any = await uploadFile(image);
       console.log('savePhoto', response);
       if (response.status === 200) {
         // setIsToastShown(false);
@@ -177,7 +173,6 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
 
   const openCamera = async () => {
     editPhotoBottomSheetRef.current?.close();
-
     ImagePicker.openPicker({
       width: 300,
       height: 400,
@@ -185,14 +180,14 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
       cropperCircleOverlay: false,
     }).then((image: ImageOrVideo) => {
       setImage(image.path);
-      // savePhotoBottomSheetRef.current?.open();
+      savePhoto(image.path)
     });
   };
 
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         <View style={styles.contentContainer}>
 
           <View>
@@ -267,8 +262,6 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
 
           <HostEventTalent talents={item?.talents} />
 
-
-
         </View>
 
 
@@ -282,6 +275,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
         cancelButtonText={BUTTON_LABLE.CANCEL}
         snapPoints={[Platform.OS == 'android' ? '20%' : '20%']}
         image={null}
+        onPencilClick={openCamera}
       />
 
       <Button

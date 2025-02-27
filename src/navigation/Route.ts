@@ -22,6 +22,8 @@ export const ROUTES = {
   HostEditProfileScreen: 'HostEditProfileScreen',
   HostConnectedAccountsScreen: 'HostConnectedAccountsScreen',
   WelcomeScreen: 'WelcomeScreen',
+  AddAnnouncementScreen:"AddAnnouncementScreen",
+  AnnouncementScreen:"AnnouncementScreen",
   EditEventScreen: 'EditEventScreen',
   EditEventDetails: 'EditEventDetails',
   EditEventSettings: 'EditEventSettings',
