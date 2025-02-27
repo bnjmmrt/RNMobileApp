@@ -13,6 +13,25 @@ export interface Role {
 export interface Collaborator {
     id?: string;
     role?: Role;
+    addGuestsToDrafts: boolean
+    chatWithAllGuests: boolean
+    chatWithGuestsByCollaborator: boolean
+    checkInGuests: boolean
+    companyLogo: string
+    companyName: string
+    displayName: string
+    displayNameListEvent: boolean
+    editEventDetailsSettings: boolean
+    email: string
+    generateEventReports: boolean
+    inviteGuestsToEvent: boolean
+    isFollowedByCurrentGuest: boolean
+    limitInvitations: boolean
+    manageDedicatedSignUpForm: boolean
+    manageInAppRsvpRequests: boolean
+    name: string
+    postAnnouncementsByCollaborator: boolean
+    postAnnouncementsToAllGuests: boolean
 }
 
 export interface Owner {
@@ -41,6 +60,22 @@ interface AgeLimit {
     name: string;
 }
 
+interface TicketTypes {
+    capacity: number
+    description: string
+    enabled: boolean
+    id: string
+    name: string
+}
+
+interface QuizQuestions {
+    enabled: boolean
+    id: string
+    order: number
+    question: string
+    required: boolean
+}
+
 
 
 export interface Event {
@@ -63,5 +98,7 @@ export interface Event {
     limitOnePlus?: number;
     eventType?: EventType;
     ageLimit?: AgeLimit;
+    ticketTypes?: TicketTypes[];
+    quizQuestions?: QuizQuestions[];
 
 }

@@ -138,6 +138,10 @@ const IMAGES = {
   add: require('./add.png'),
   help: require('./help-circle.png'),
   upload: require('./upload.png'),
+  logo: require('./logo.png'),
+  revolve: require('./revolve.png'),
+  arrow_go: require('./arrow-go.png'),
+
 };
 
 export default IMAGES;

@@ -12,11 +12,13 @@ import {
   ImageStyle,
   ActivityIndicator,
 } from 'react-native';
-import { fontScale, Hp,
+import {
+  fontScale, Hp,
   radiusScale,
   verticalMarginScale,
   verticalScale,
-  Wp} from '../utils/dimensions';
+  Wp
+} from '../utils/dimensions';
 import { fontFamily } from '../utils/functions';
 import { COLORS } from '../utils/constants';
 import { CustomText } from './CustomText';
