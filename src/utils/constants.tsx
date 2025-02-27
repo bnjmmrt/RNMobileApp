@@ -62,7 +62,8 @@ export const BUTTON_LABLE = {
   INVITE_GUESTS: 'Invite Guests',
   INVITE_FROM_CONTACTS: 'Invite from Contacts',
   INVITE_MANUALLY: 'Invite Manually',
-  CLEAR: "Clear"
+  CLEAR: "Clear",
+  RELOAD:'Reload'
 } as const;
 
 export const LABLE = {
@@ -248,6 +249,7 @@ export const LABLE = {
   VIP_TOOLTIP_CONTENT: 'Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.',
   EVENT_SETTING_INFO: "Edit event settings on Rumor’s web platform.\nClick the button below to take you there.",
   MANAGE_INVITE: 'Manage Invite',
+  YOU_ARE_OFFLINE:'You’re Offline'
 };
 export const EVENT = {
   EDIT_EVENT: 'Edit Event',
@@ -337,6 +339,7 @@ export const ERROR_MESSAGE = {
   FILE_SIZE_EXCEED: "File size exceeds the 5MB limit. Please upload a smaller file.",
   SOMETHING_WENT_WRONG: "Something went wrong, Please try again later",
   TCKET_ERROR_MESSAGE: 'Ticket is not associated with a guest for this event.',
+  NO_INTERNET:'You’re not connected to the internet.\nPlease check your connection and try again.',
   EMPTY: '',
 };
 
