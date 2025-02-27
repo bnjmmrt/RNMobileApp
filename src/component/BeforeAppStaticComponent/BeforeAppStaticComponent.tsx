@@ -13,6 +13,7 @@ import SliderImg1 from '../../assets/svgs/images/SliderImg1.svg'
 import SliderImg2 from '../../assets/svgs/images/SliderImg2.svg'
 import SliderImg3 from '../../assets/svgs/images/SliderImg3.svg'
 import SliderImg4 from '../../assets/svgs/images/SliderImg4.svg'
+import CustomCarousel from './CustomCarosal';
 
 interface BeforeAppStaticComponentProps {
   isChatScreen: boolean;
@@ -90,17 +91,17 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           onScroll={handleImageClick}
         /> */}
 
-
-        {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} onScroll={handleImageClick}> */}
+<CustomCarousel isChatScreen={isChatScreen} />
+        {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} onScroll={handleImageClick}>
         <Pressable style={{alignItems: 'center'}} onPress={handleImageClick}>
           <Image source={current.uri} style={styles.image} />
-          {/* {current.uri} */}
+          {current.uri}
         </Pressable>
-        {/* </ScrollView> */}
+        </ScrollView> */}
 
 
 
-        {!isChatScreen ? (
+        {/* {!isChatScreen ? (
           <View style={styles.dotContainer}>
             {[4, 6, 8, 6, 4].map((size, index) => (
               <View
@@ -129,7 +130,7 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           subTitleMargin={verticalMarginScale(8)}
           centerTextAlign={true}
           isDarkTheme={true}
-        />
+        /> */}
 
         <View style={{ height: Hp(2) }} />
 
