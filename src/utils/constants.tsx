@@ -62,7 +62,8 @@ export const BUTTON_LABLE = {
   INVITE_GUESTS: 'Invite Guests',
   INVITE_FROM_CONTACTS: 'Invite from Contacts',
   INVITE_MANUALLY: 'Invite Manually',
-  CLEAR: "Clear"
+  CLEAR: "Clear",
+  RELOAD:'Reload'
 } as const;
 
 export const LABLE = {
@@ -247,6 +248,7 @@ export const LABLE = {
   PERMISSION_DENIED: 'Permission Denied',
   VIP_TOOLTIP_CONTENT: 'Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.',
   MANAGE_INVITE: 'Manage Invite',
+  YOU_ARE_OFFLINE:'You’re Offline'
 };
 export const EVENT = {
   EDIT_EVENT: 'Edit Event',
@@ -321,6 +323,7 @@ export const ERROR_MESSAGE = {
   WEBSITE_ERROR: 'Please enter your URL.',
   COMPANY_NAME_ERROR: 'Company Name is required',
   TCKET_ERROR_MESSAGE: 'Ticket is not associated with a guest for this event.',
+  NO_INTERNET:'You’re not connected to the internet.\nPlease check your connection and try again.'
 };
 
 export const COLORS = {
