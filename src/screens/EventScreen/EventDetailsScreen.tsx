@@ -70,6 +70,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [isDeclinedByHost, setIsDeclinedByHost] = useState(false);
   const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const [isCurrentUserIsGuest, setIsCurrentGuestStatus] = useState(
+    route?.params?.isCurrentUserIsGuest,
+  );
   const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
 
   const role = useSelector((state: RootState) => state.auth.role);
@@ -103,11 +107,15 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         userId,
         eventId: route?.params?.id,
       } as const); // Type assertion
+  const useFetchEventDetailsHook =
+    role === ROLE.HOST
+      ? useFetchHostEventDetailsQuery
+      : useFetchEventDetailsQuery;
 
-  const { data, isLoading, refetch } = useFetchEventDetailsQuery(queryArgs);
+  const { data, isLoading, refetch } = useFetchEventDetailsHook(queryArgs);
 
   useEffect(() => {
-    refetch();
+    refetch(); // Manually refetch when RSVP status changes
   }, [rspvStatus, refetch]);
 
   // Ensure argument structure remains consistent
