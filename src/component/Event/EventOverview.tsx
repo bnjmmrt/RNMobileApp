@@ -4,9 +4,10 @@ import { fontFamily } from '../../utils/functions';
 import { COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '@images/index';
 import { fontScale } from 'src/utils/dimensions';
+import { Event } from 'src/types';
 
 interface EventOverviewProps {
-  item: {}; // Extend this type with actual item properties for better type safety.
+  item: Event; // Extend this type with actual item properties for better type safety.
 }
 
 const MAX_LINES = 4;
@@ -17,7 +18,7 @@ const EventOverview: React.FC<EventOverviewProps> = ({ item }) => {
   const handleToggle = () => setExpanded((prev) => !prev);
 
   // Check if "Read More" is needed
-  const shouldShowReadMore = item?.description?.split(' ').length > 30;
+  const shouldShowReadMore = item?.description && item?.description?.split(' ').length > 26;
 
   return (
     <View style={styles.container}>
@@ -55,13 +56,14 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.borderGray,
     borderRadius: 15,
-    padding: 15,
+    paddingHorizontal: 15,
+    paddingTop: 20,
     backgroundColor: COLORS.white,
   },
   title: {
     color: COLORS.black2,
     fontSize: fontScale(16),
-    marginBottom: 10,
+    marginBottom: 5,
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
   subtitle: {

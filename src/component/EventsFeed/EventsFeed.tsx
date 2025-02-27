@@ -40,6 +40,7 @@ import FeedFilterItem from './FeedFilterItem';
 import FeedItem from './FeedItem';
 import FeedSeriesDetail from './FeedSeriesDetail';
 import EventEmptyRecord from '../EmptyRecord/EventEmptyRecord';
+import { formatDetailedEventDate } from 'src/utils/dateFunctions';
 
 export interface EventItem {
   admissionType: {
@@ -210,6 +211,8 @@ const EventsFeed = () => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const userId = useSelector((state: RootState) => state.auth.userId);
   const isInvited = loginData?.isInvited || false;
+  const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
+
 
   const { data, isLoading, error, isError, refetch } = useFetchAllEventsQuery({
     statusName: 'UPCOMING_STATUS',
@@ -220,6 +223,16 @@ const EventsFeed = () => {
     skip: (currentPage - 1) * 6,
   });
 
+  const date1 = formatDetailedEventDate("2025-02-28 17:00:00+00", "2025-02-28 18:00:00+00")
+  const date2 = formatDetailedEventDate("2025-02-26 21:10:00+00", "2025-02-26 21:30:00+00")
+  const date3 = formatDetailedEventDate("2025-01-21 21:10:00+00", "2025-03-26 21:30:00+00")
+  const date4 = formatDetailedEventDate("2025-02-24 21:10:00+00", "2025-02-24 21:30:00+00")
+
+  console.log("Sayyed Date1:", date1)
+  console.log("Sayyed Date2:", date2)
+  console.log("Sayyed Date3:", date3)
+  console.log("Sayyed Date4:", date4)
+
   const debouncedSearch = useCallback(
     debounce((text: string) => setSearchTerm(text), 500),
     [],
@@ -227,6 +240,10 @@ const EventsFeed = () => {
   const handleSearchChange = useCallback((text: string) => {
     debouncedSearch(text);
   }, []);
+
+  useEffect(() => {
+    refetch();
+  }, [rspvStatus, refetch]);
 
 
   const handleNotify = useCallback(() => {
@@ -237,13 +254,13 @@ const EventsFeed = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Sayyed currentPage:", currentPage)
-  }, [currentPage])
+    console.log('Sayyed currentPage:', currentPage);
+  }, [currentPage]);
 
   const handleLoadMore = useCallback(() => {
-    const totalPages = data?.totalPages || 10
+    const totalPages = data?.totalPages || 10;
     if (data?.currentPage < totalPages && !isLoading) {
-      setCurrentPage((prev) => prev + 1);
+      setCurrentPage(prev => prev + 1);
     }
   }, [allEvents]);
 
@@ -447,7 +464,6 @@ const EventsFeed = () => {
         from="discoverEvents"
         onApplyFilter={onApplyFilter}
         onClearFilter={onClearFilter}
-        showBottomSafeAreaView={false}
         selectedFiltersInParent={selectedFilters}
       />
     </View>

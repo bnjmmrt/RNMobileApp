@@ -59,6 +59,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const bottomSheetRef = useRef(null);
 
   const userId = useSelector((state: RootState) => state.auth.userId);
+  const isGuest = useSelector((state: RootState) => state.auth.isGuest);
   const role = useSelector((state: RootState) => state.auth.role);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const profileData = useSelector((state: RootState) => state.appFlowApiData?.profileData);
@@ -142,7 +143,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       case 'member':
         return 'Member'
       case 'non_member':
-        return 'Non-Member'
+        if(isGuest) {
+          return 'Invited'
+        } else {
+          return 'Non-Member'
+        }
       case 'host':
         return 'Host'
       default:
@@ -164,25 +169,25 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   ];
 
   const itemsExtras: ListItem[] = [
-    { id: '11', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit },
-    { id: '12', title: PROFILE.FOLLOWING, image: IMAGES.following },
-    { id: '13', title: PROFILE.REFERRALS, image: IMAGES.thumbsUp },
+    { id: '1', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit },
+    { id: '2', title: PROFILE.FOLLOWING, image: IMAGES.following },
+    { id: '3', title: PROFILE.REFERRALS, image: IMAGES.thumbsUp },
     // {
     //   id: '14',
     //   title: PROFILE.CONNECTED_ACCOUNTS,
     //   image: IMAGES.connectedAccount,
     // },
-    { id: '15', title: PROFILE.MY_INTERESTS, image: IMAGES.heart },
-    { id: '16', title: PROFILE.NOTIFICATION, image: IMAGES.notification },
-    { id: '17', title: PROFILE.FEEDBACK, image: IMAGES.feedback },
+    { id: '5', title: PROFILE.MY_INTERESTS, image: IMAGES.heart },
+    { id: '6', title: PROFILE.NOTIFICATION, image: IMAGES.notification },
+    { id: '7', title: PROFILE.FEEDBACK, image: IMAGES.feedback },
     {
-      id: '18',
+      id: '8',
       title: PROFILE.CONTACT_SUPPORT,
       image: IMAGES.contact,
       onPress: contactSupportModal,
     },
     {
-      id: '19',
+      id: '9',
       title: PROFILE.DELETE_ACCOUNT,
       image: '',
       onPress: deleteAccount,
@@ -214,7 +219,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
   useEffect(() => {
     let listItems = itemsExtras;
-    if (loginData.isInvited && role.toLocaleLowerCase() === 'non_member') {
+    if (role.toLocaleLowerCase() === 'non_member' && isGuest) {
       listItems = items;
     } else if (role.toLocaleLowerCase() === 'host') {
       listItems = hostItems
@@ -348,7 +353,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         />
       ) : (
         <View style={{ backgroundColor: COLORS.white }}>
-          <HeaderComponent isDarkTheme={false} />
+          {/* <HeaderComponent isDarkTheme={false} /> */}
 
           <ScrollView>
             <ProfileTopView
@@ -409,7 +414,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             onPress={savePhoto}
             submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
             cancelButtonText={BUTTON_LABLE.CANCEL}
-            snapPoints={[Platform.OS == 'android' ? '50%' : '45%']}
+            snapPoints={[Platform.OS == 'android' ? '50%' : '50%']}
             image={image}
           />
 

@@ -1,7 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Contacts from 'react-native-contacts';
-
 import { FlatList, Text } from 'react-native';
 import { RenderMemberList } from 'src/component/InviteReferralBottomSheet/RenderMemberList';
 import SearchInput from 'src/component/SearchInput';
@@ -9,9 +7,7 @@ import Title from 'src/component/Title/Title';
 import { COLORS } from 'src/utils/constants';
 import { fontFamily } from 'src/utils/functions';
 import useContacts from 'src/utils/hooks/useContactPermission';
-import useContactPermission from 'src/utils/hooks/useContactPermission';
 import { useFetchMembersQuery, useGetConfirmedMembersMutation } from 'src/redux/actions/referralApiAction';
-import { useRoute } from '@react-navigation/native';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import { Hp } from 'src/utils/dimensions';
 interface ContactItem {
@@ -19,21 +15,14 @@ interface ContactItem {
     phone: string;
 }
 
-const RequestVouch = ({ onClose, eventId }: { onClose: () => void, eventId: string }) => {
+const RequestVouch = ({ onClose, eventId, vouchData }: { onClose: () => void, eventId: string, vouchData: any }) => {
     const { getContacts, getContactNumbersOnly } = useContacts();
-    const [contacts, setContacts] = useState<ContactItem[]>([]);
     const [members, setMembers] = useState<ContactItem[]>([]);
 
     const [getConfirmedMembers] = useGetConfirmedMembersMutation();
 
-    const [filteredContacts, setFilteredContacts] = useState<ContactItem[]>([]);
     const [filteredMembers, setFilteredMembers] = useState<ContactItem[]>([]);
-    const [requestSent, setRequestSent] = useState<string[]>([]);
-    const [searchQuery, setSearchQuery] = useState('');
-    const searchInputRef = useRef(null);
-    const [selectedTab, setSelectedTab] = useState('01');
     const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const [currentPage, setCurrentPage] = useState(1);
 
 
     useEffect(() => {
@@ -44,55 +33,58 @@ const RequestVouch = ({ onClose, eventId }: { onClose: () => void, eventId: stri
         try {
             const contacts = await getContactNumbersOnly();
             const response = await getConfirmedMembers({ contacts });
+            const vouchUserId = vouchData && vouchData.map(request => request.idUserVouch);
             if (response?.data?.data) {
-                setMembers(response?.data?.data);
-                setFilteredMembers(response?.data?.data);
+                const membersWithSentFlag = response.data.data.map(member => ({
+                    ...member,
+                    isSent: vouchUserId.includes(member.userId)
+                }));
+                setMembers(membersWithSentFlag);
+                setFilteredMembers(membersWithSentFlag);
             }
 
         } catch (error) {
             console.error('Error fetching contacts:', error);
         }
     };
+    useEffect(() => {
+        return () => {
+            if (debounceTimeoutRef.current) {
+                clearTimeout(debounceTimeoutRef.current);
+            }
+        };
+    }, []);
 
-    // const handleGetConfirmedMembers = async () => {
-    //     try {
-    //         const response = await getConfirmedMembers({ contacts: ['+915555555556', '+915555555557', '+915555555558'] });
-    //         console.log('Confirmed Members:', response);
-    //     } catch (error) {
-    //         console.error('Error fetching confirmed members:', error);
-    //     }
-    // };
-
-    const handleSearch = (query: string) => {
+    const handleSearch = useCallback((query: string) => {
         if (debounceTimeoutRef.current) {
             clearTimeout(debounceTimeoutRef.current);
         }
 
         debounceTimeoutRef.current = setTimeout(() => {
-            const lowercasedQuery = query.toLowerCase();
+            const lowercasedQuery = query.toLowerCase().trim();
 
-            if (query.length === 0) {
+            if (lowercasedQuery.length === 0) {
                 setFilteredMembers(members);
                 return;
             }
 
-            if (query.length < 2) {
+            if (lowercasedQuery.length < 2) {
                 setFilteredMembers([]);
-                setFilteredContacts([]);
                 return;
             }
-            setFilteredMembers(
-                members.filter((member) =>
-                    member?.name?.toLowerCase().includes(lowercasedQuery)
-                )
+
+            const filtered = members.filter(member =>
+                `${member.firstName} ${member.lastName}`.toLowerCase().includes(lowercasedQuery)
             );
+            setFilteredMembers(filtered);
         }, 500);
-    };
+    }, [members]);
+
 
     return (
         <View style={{ gap: 12 }}>
             <Title title={"Select a Member to Vouch for You"} align="center" />
-            <SearchInput placeholder='Search friends..' onSearchTextChange={handleSearch} />
+            <SearchInput placeholder='Search friends' onSearchTextChange={handleSearch} />
             <View style={{ gap: 6 }}>
                 <Text style={styles.title}>{"Friends who are members"}</Text>
                 <Text style={styles.description}>{"Request a vouch from a Rumor member to boost your event application."}</Text>

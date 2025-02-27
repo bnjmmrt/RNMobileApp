@@ -1,28 +1,29 @@
 /* eslint-disable react-native/no-inline-styles */
+import IMAGES from '@images/index';
+import moment from 'moment';
 import React, { useRef } from 'react';
 import {
   Image,
-  TouchableOpacity,
-  View,
-  StyleSheet,
   Platform,
+  StyleSheet,
+  TouchableOpacity,
   UIManager,
+  View,
 } from 'react-native';
-import { CustomText } from '../../../component/CustomText';
-import Input, { InputRefMethods } from '../../../component/Input/Input';
-import Counter from '../../../component/Counter';
-import Button from '../../../component/Button';
-import IMAGES from '@images/index';
-import moment from 'moment';
+import { COLORS } from 'src/utils/constants';
 import {
+  fontScale,
   horizontalMarginScale,
   horizontalScale,
   radiusScale,
   verticalMarginScale,
   verticalScale,
-  fontScale,
 } from 'src/utils/dimensions';
-import { COLORS } from 'src/utils/constants';
+import { fontFamily } from 'src/utils/functions';
+import Button from '../../../component/Button';
+import Counter from '../../../component/Counter';
+import { CustomText } from '../../../component/CustomText';
+import Input, { InputRefMethods } from '../../../component/Input/Input';
 import CollapseWrap from './CollapseWrap';
 
 export interface TicketType {
@@ -36,7 +37,6 @@ interface InviteDetailsProps {
   onTicketTypePress?: () => void;
   additionalGuests: number;
   onAdditionalGuestsChange: (value: number) => void;
-  maxAdditionalGuests?: number;
   inviteMessage: string;
   onInviteMessageChange: (message: string) => void;
   guestNote: string;
@@ -46,6 +46,8 @@ interface InviteDetailsProps {
   directlySendToConfirm: boolean;
   onDirectlySendToConfirmChange: (value: boolean) => void;
   ticketTypeRef: React.RefObject<InputRefMethods>;
+  maxAdditionalGuests?: number;
+  ticketTypeError: string;
 }
 
 if (Platform.OS === 'android') {
@@ -60,7 +62,6 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   onTicketTypePress,
   additionalGuests,
   onAdditionalGuestsChange,
-  maxAdditionalGuests = 0,
   inviteMessage,
   onInviteMessageChange,
   guestNote,
@@ -70,9 +71,13 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   directlySendToConfirm,
   onDirectlySendToConfirmChange,
   ticketTypeRef,
+  maxAdditionalGuests,
+  ticketTypeError,
 }) => {
   const inviteMessageRef = useRef<InputRefMethods>(null);
   const guestNoteRef = useRef<InputRefMethods>(null);
+
+  console.log('selectedTicketType', selectedTicketType);
 
   const renderContent = () => (
     <View style={{ gap: verticalMarginScale(24) }}>
@@ -82,43 +87,38 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
           justifyContent: 'space-between',
           gap: horizontalMarginScale(8),
         }}>
-        <Input
-          ref={ticketTypeRef}
-          isRequired
-          label="Ticket Type"
-          defaultValue={selectedTicketType?.name || 'Select Ticket Type'}
-          errorMessage=""
-          rightImage={IMAGES.arrowRight}
-          inputFieldContainerStyle={{
-            height: verticalScale(40),
-            borderRadius: radiusScale(12),
-          }}
-          otherStyle={{ marginTop: 0, flex: 1 }}
-          customRightImageStyle={{
-            height: verticalScale(16),
-            width: horizontalScale(16),
-            transform: [{ rotate: '90deg' }],
-          }}
-          editable={false}
-          extraInputProps={{
-            onPress: onTicketTypePress,
-          }}
-        />
+        <View style={{ flex: 1 }}>
+          <CustomText style={styles.label}>{'Ticket Type'}</CustomText>
+          <TouchableOpacity
+            style={styles.selectTicketTypeContainer}
+            onPress={onTicketTypePress}>
+            <CustomText>
+              {selectedTicketType?.name || 'Select Ticket Type'}
+            </CustomText>
+            <Image
+              source={IMAGES.arrowRight}
+              style={{
+                height: verticalScale(16),
+                width: horizontalScale(16),
+                transform: [{ rotate: '90deg' }],
+              }}
+            />
+          </TouchableOpacity>
+          {ticketTypeError ? (
+            <CustomText style={styles.errorText}>{ticketTypeError}</CustomText>
+          ) : null}
+        </View>
 
         <View>
           <CustomText style={styles.label}>{'Additional Guest'}</CustomText>
           <Counter
             counterValue={additionalGuests}
             onPressMinus={() =>
-              onAdditionalGuestsChange(
-                additionalGuests > 0 ? additionalGuests - 1 : additionalGuests,
-              )
+              onAdditionalGuestsChange(Math.max(0, additionalGuests - 1))
             }
             onPressPlus={() =>
               onAdditionalGuestsChange(
-                additionalGuests < maxAdditionalGuests
-                  ? additionalGuests + 1
-                  : additionalGuests,
+                Math.min(maxAdditionalGuests || 0, additionalGuests + 1),
               )
             }
           />
@@ -225,7 +225,8 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
 
 const styles = StyleSheet.create({
   label: {
-    paddingBottom: horizontalMarginScale(2),
+    marginBottom: verticalMarginScale(4),
+    fontFamily: fontFamily.ABCDiatype_Medium,
   },
   inviteMessageInputContainer: {
     borderWidth: verticalScale(1),
@@ -241,7 +242,7 @@ const styles = StyleSheet.create({
     borderBottomColor: COLORS.tabBorderColor,
   },
   bypassLabel: {
-    fontSize: fontScale(14),
+    fontSize: fontScale(12),
   },
   bypassTextContainer: {
     marginTop: verticalMarginScale(6),
@@ -269,6 +270,22 @@ const styles = StyleSheet.create({
     height: undefined,
     paddingVertical: verticalMarginScale(6),
     paddingHorizontal: horizontalMarginScale(12),
+  },
+
+  selectTicketTypeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: verticalScale(1),
+    borderColor: COLORS.borderGray,
+    borderRadius: radiusScale(12),
+    paddingHorizontal: horizontalMarginScale(12),
+    height: verticalScale(40),
+    justifyContent: 'space-between',
+  },
+  errorText: {
+    fontSize: fontScale(12),
+    marginTop: verticalMarginScale(5),
+    color: COLORS.errorText,
   },
 });
 

@@ -35,29 +35,29 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
   const queryArgs =
     role === ROLE.HOST
       ? ({
-          status: 'UPCOMING_STATUS',
-          searchText,
-          take: 10,
-          skip: (currentPage - 1) * 10,
-        } as const) // Type assertion to prevent union mismatch
+        status: 'UPCOMING_STATUS',
+        searchText,
+        take: 10,
+        skip: (currentPage - 1) * 10,
+      } as const) // Type assertion to prevent union mismatch
       : ({
-          userId,
-          guestEventStatus: 'UPCOMING',
-          searchText,
-          take: 10,
-          skip: (currentPage - 1) * 10,
-        } as const); // Type assertion
+        userId,
+        guestEventStatus: 'UPCOMING',
+        searchText,
+        take: 10,
+        skip: (currentPage - 1) * 10,
+      } as const); // Type assertion
 
-  const { data, isLoading } = useFetchEvents(queryArgs);
+  const { data, isLoading, refetch } = useFetchEvents(queryArgs);
 
   useEffect(() => {
     if (data) {
       if (role === ROLE.HOST) {
         setEvents(prev =>
           currentPage === 1
-            ? // ? data.data.eventsResponse
-              data.data.eventsResponse
-            : [...prev, ...data.data.eventsResponse],
+            ? data.data.eventsResponse
+            : // ? data.data
+            [...prev, ...data.data.eventsResponse],
         );
       } else {
         setEvents(prev =>
@@ -66,7 +66,7 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.data?.eventsResponse]);
+  }, [data?.data]);
 
   useEffect(() => {
     setRefreshing(isLoading);
@@ -74,10 +74,15 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
 
   const handleRefresh = () => {
     setCurrentPage(1);
+    refetch()
   };
 
+  useEffect(() => {
+    refetch()
+  }, [currentPage])
+
   const loadMore = () => {
-    if (data?.currentPage < data?.totalPages && !isLoading) {
+    if (currentPage < data?.data?.totalPages && !isLoading) {
       setCurrentPage(prev => prev + 1);
     }
   };

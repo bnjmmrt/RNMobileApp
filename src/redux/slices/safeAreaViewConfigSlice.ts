@@ -1,6 +1,6 @@
-import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {ColorValue, StatusBarStyle} from 'react-native';
-import {COLORS} from 'src/utils/constants';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { ColorValue, StatusBarStyle } from 'react-native';
+import { COLORS } from 'src/utils/constants';
 
 export interface SafeAreaViewConfig {
   showTopSafeAreaView: boolean;
@@ -28,11 +28,18 @@ export const statusBarSlice = createSlice({
       state,
       action: PayloadAction<Partial<SafeAreaViewConfig>>,
     ) => {
-      return {...state, ...action?.payload};
+      return { ...state, ...action?.payload };
+    },
+    changeTopSafeAreaViewColor: (state, action: PayloadAction<ColorValue>) => {
+      return {
+        ...state,
+        topSafeAreaViewColor: action.payload,
+      };
     },
   },
 });
 
-export const {configStatusBar} = statusBarSlice?.actions;
+export const { configStatusBar, changeTopSafeAreaViewColor } =
+  statusBarSlice?.actions;
 
 export default statusBarSlice?.reducer;

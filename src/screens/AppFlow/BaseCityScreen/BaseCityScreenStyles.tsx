@@ -37,6 +37,13 @@ const BaseCityScreenStyles = () => {
       fontSize: fontScale(16),
       color: COLORS.white,
     },
+    errorText: {
+      fontSize: fontScale(12),
+      marginTop: verticalMarginScale(5),
+      color: COLORS.errorText,
+      position:'absolute',
+      top:10
+    },
   });
 };
 

@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import { ScrollView, Text, View, Linking, Platform } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { LABLE, BUTTON_LABLE, genderList } from '../../../utils/constants';
+import { LABLE, BUTTON_LABLE, genderList, COLORS } from '../../../utils/constants';
 import IdentityVerificationStyles from './IdentityVerificationStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
@@ -27,6 +27,7 @@ import { FlashMessageComponent } from '../../../component/FlashMessageComponent/
 import { useFocusEffect } from '@react-navigation/native';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import { fontScale, horizontalScale, Hp, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 
 interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
 
@@ -41,13 +42,14 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   const dispatch = useDispatch();
   const usernameRef = useRef<any>(null);
   const email = BUTTON_LABLE.SUPPORT_EMAIL_ID;
-  const subject = 'Rumor app';
-  const body = 'Rumor app';
+  const subject = BUTTON_LABLE.MAIL_SUBJECT;
+  const body = BUTTON_LABLE.MAIL_BODY;
   const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(
     subject,
   )}&body=${encodeURIComponent(body)}`;
 
   const onNextClick = async () => {
+
     const requestParams: any = {
       address: {
         address: userDetails.baseCity.address,
@@ -69,13 +71,12 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       socialUrl: '',
       profilePicture: userDetails.profilePic,
     };
-    console.log('requestParams', requestParams);
     const response: any = await apiRequest(
       'post',
       EndPoint.member_signUp,
       requestParams,
     );
-
+    console.log("response", response)
     if (response.status === 200) {
       const data = {
         ...loginData,
@@ -168,11 +169,21 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
             <Text style={styles.numberText}>1</Text>
           </View>
           <Text style={styles.subTitle}>{LABLE.SEND_DIRECT_MSG_CODE}</Text>
-          <Text style={styles.subTitle}>
-            <Text style={styles.btnRumor}>{LABLE.RUMORAPP}</Text>
-            {' to '}
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: verticalMarginScale(5) }}>
+            <View style={{
+              paddingVertical: verticalScale(5), backgroundColor: COLORS.tabBorderColor, borderRadius: 5,
+              paddingHorizontal: horizontalScale(5), alignItems: 'center', justifyContent: 'center', alignSelf: 'center'
+            }}>
+              <Text style={{
+                color: COLORS.black,
+                fontSize: fontScale(11),
+              }}>{LABLE.RUMORAPP}</Text>
+            </View>
+
+            <Text style={styles.subTitle}>{'to'}</Text>
             <Text style={styles.emailStyle}>@therumor</Text>
-          </Text>
+          </View>
+
 
           <View style={styles.numberContainer}>
             <Text style={styles.numberText}>2</Text>
@@ -191,13 +202,21 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
             {LABLE.DONT_USE_INSTAGRAM}
           </Text>
           <Text style={styles.subTitle}>{LABLE.EMAIL_THE_CODE}</Text>
-          <Text style={styles.subTitle}>
-            <Text style={styles.btnRumor}>{LABLE.RUMORAPP}</Text>
-            {' to '}
-            <Text style={styles.emailStyle}>
-              {BUTTON_LABLE.SUPPORT_EMAIL_ID}
-            </Text>
-          </Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: verticalMarginScale(5) }}>
+            <View style={{
+              paddingVertical: verticalScale(5), backgroundColor: COLORS.tabBorderColor, borderRadius: 5,
+              paddingHorizontal: horizontalScale(5), alignItems: 'center', justifyContent: 'center', alignSelf: 'center'
+            }}>
+              <Text style={{
+                color: COLORS.black,
+                fontSize: fontScale(11),
+              }}>{LABLE.RUMORAPP}</Text>
+            </View>
+
+            <Text style={styles.subTitle}>{'to'}</Text>
+            <Text style={styles.emailStyle}> {BUTTON_LABLE.SUPPORT_EMAIL_ID}</Text>
+          </View>
+
           <Button
             disabled={false}
             style={styles.btnSmallStyle}

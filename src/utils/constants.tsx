@@ -1,6 +1,8 @@
 import { TabItem } from 'src/component/ActiveTabBar/DynamicTabBar';
 
 export const BUTTON_LABLE = {
+  MAIL_SUBJECT:"Rumor Application Verification",
+  MAIL_BODY:"Hi Rumor Team, I'd like to verify my identity for my Rumor application.My verification code is: RUMORAPP",
   ENTER: 'Enter',
   NEXT: 'Next',
   RSVP: 'RSVP',
@@ -50,6 +52,7 @@ export const BUTTON_LABLE = {
   ADD: 'Add',
   DISCOVER_MORE_EVENTS: 'Discover More Events',
   CHECK_IN: 'Check In',
+  SHOW_TICKET_BREAKDOWN: 'Show Ticket Breakdown',
   SAVE_DRAFT: 'Save Draft',
   SEND_INVITE: 'Send Invite',
   APPROVE_REQUEST: 'Approve Request',
@@ -71,7 +74,8 @@ export const LABLE = {
     'Rumor will send you an email with a verification code.',
   RUMOR_WILL_SEND_YOU_A_TEXT_WITH_A_VERIFICATION_CODE:
     'Rumor will send you a text with a verification code.',
-  EROOR_ENTER_PHONE_NUMBER: 'Please enter a valid phone number',
+  EROOR_ENTER_PHONE_NUMBER: 'Please enter a phone number.',
+  EROOR_ENTER_VALID_PHONE_NUMBER:'Please enter a valid phone number.',
   EROOR_ENTER_EMAIL: 'Please enter a valid email address',
   ERROR_VERIFY_CODE:
     'The code you entered cannot be verified. Please try again.',
@@ -154,7 +158,7 @@ export const LABLE = {
   IF_YOU_HAVE_ANY_REFERRAL_CODE: 'If you have a referral code, enter it below.',
   ENTER_CODE: 'Enter Code',
   SELECT_A_REFERRAL: 'Select a Referral',
-  SEARCH_FRIENDS: 'Search friends..',
+  SEARCH_FRIENDS: 'Search friends',
   FRIENDS_WHO_ARE_MEMBERS: 'Friends who are members',
   REQUEST_A_REFERRAL:
     'Request a referral from a Rumor member to boost your application.',
@@ -178,6 +182,7 @@ export const LABLE = {
   OTP_VERIFIED_SUCCESSFULLY: 'OTP verified successfully!',
   SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:
     'Something went wrong, please try again',
+  INVALID_OTP: "The code you entered cannot be verified. Please try again.",
   ABOUT_THE_EVENT: 'About the Event',
   GUEST_LIST: 'Guest List',
   FEATURE_TALENT: 'Featured Talent',
@@ -232,14 +237,16 @@ export const LABLE = {
   SEARCH_USERS: 'Search Users',
   MANAGE_GUESTS: 'Manage Guests',
   USER_ALREADY_CHECKED_IN: 'User already checked-in',
-  SHOW_QR_CHECKIN_MESSAGE:'Show this QR code at event check-in',
-  NEVER_MISS_MOMENT:'Never miss a moment.\nSync this event to your calendar.',
-  ADD_TO_CALENDAR:'Add To Calendar',
-  ADD_TO_APPLE_CALENDAR:'Add to Apple Calendar',
-  ADD_TO_GOOGLE_CALENDAR:'Add to Google Calendar',
-  NO_CALENDAR_FOUND:'No calendar found on this device.',
-  ACCESS_CALENDAR:'Calendar access is required to add events.',
-  PERMISSION_DENIED:'Permission Denied'
+  SHOW_QR_CHECKIN_MESSAGE: 'Show this QR code at event check-in',
+  NEVER_MISS_MOMENT: 'Never miss a moment.\nSync this event to your calendar.',
+  ADD_TO_CALENDAR: 'Add To Calendar',
+  ADD_TO_APPLE_CALENDAR: 'Add to Apple Calendar',
+  ADD_TO_GOOGLE_CALENDAR: 'Add to Google Calendar',
+  NO_CALENDAR_FOUND: 'No calendar found on this device.',
+  ACCESS_CALENDAR: 'Calendar access is required to add events.',
+  PERMISSION_DENIED: 'Permission Denied',
+  VIP_TOOLTIP_CONTENT: 'Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.',
+  MANAGE_INVITE: 'Manage Invite',
 };
 export const EVENT = {
   EDIT_EVENT: 'Edit Event',
@@ -253,7 +260,8 @@ export const EVENT = {
   EVENT_DESCRIPTION: 'Event Description',
   HIDE_ADDRESS: 'Hide full address for confirmed guests',
   FEATURE_TALENT: 'Featured Talent',
-
+  TOTAL_CONFIRMED: "Total Confirmed:",
+  TOTAL_CHECKEDIN: "Total Checked-In:",
 
 }
 
@@ -367,6 +375,7 @@ export const COLORS = {
   neutralBorder: '#E1E3E6',
   borderBlur: '#BFBFBF',
   bgGray: '#EAEAEA',
+  webBlack: '#181818'
 };
 
 

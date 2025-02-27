@@ -1,6 +1,9 @@
 /**
  * @format
  */
+if(__DEV__) {
+    import('./ReactotronConfig').then(() => console.warn('Reactotron Configured'))
+  }
 import 'react-native-get-random-values';
 import {AppRegistry} from 'react-native';
 import App from './App';

@@ -5,7 +5,7 @@ import { fontFamily } from "src/utils/functions";
 
 export const styles = StyleSheet.create({
     container: { flex: 1, padding: verticalMarginScale(10) },
-    bottomSheetContent: { paddingHorizontal: horizontalScale(16) },
+    bottomSheetContent: { paddingHorizontal: horizontalScale(12) },
     card: {
         flexDirection: 'row',
         backgroundColor: 'white',
@@ -42,9 +42,9 @@ export const styles = StyleSheet.create({
         flex: 1,
     },
     info: {
-        marginLeft: horizontalMarginScale(10),
+        marginLeft: horizontalMarginScale(16),
         justifyContent: 'center',
-        width: '75%'
+        width: '73%'
     },
     title: {
         fontSize: fontScale(24),
@@ -64,7 +64,6 @@ export const styles = StyleSheet.create({
     bottomText: { paddingHorizontal: verticalMarginScale(12), textAlign: 'center' },
     label: {
         fontSize: fontScale(14),
-        fontWeight: '500',
         marginTop: verticalMarginScale(2),
     },
     btnStyle: {
@@ -79,7 +78,7 @@ export const styles = StyleSheet.create({
         backgroundColor: COLORS.white,
         borderColor: COLORS.lighter_gray,
         width: '48%',
-        height: verticalScale(50),
+        height: verticalScale(40),
     },
     btnBorder: {
         width: '100%',
@@ -101,6 +100,9 @@ export const styles = StyleSheet.create({
         left: 0,
         right: 0,
         alignItems: 'center',
+    },
+    toastNoGuest: {
+        marginTop: verticalMarginScale(20), padding: 12, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: COLORS.bgRed, borderRadius: 12
     },
     customSelectText: {
         marginTop: verticalMarginScale(4),
@@ -137,8 +139,8 @@ export const styles = StyleSheet.create({
     },
     redButton: {
         backgroundColor: COLORS.errorText,
-        paddingVertical: verticalScale(12),
         alignItems: 'center',
+        justifyContent: 'center',
         borderRadius: radiusScale(1000),
         height: 48,
         marginTop: verticalScale(20),

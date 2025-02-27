@@ -22,7 +22,10 @@ import {
   useInviteNewGuestsMutation,
 } from 'src/redux/actions/inviteGuestsApiAction';
 import { RootState } from 'src/redux/slices';
-import { setSelectedUsersToInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
+import {
+  removeSelectedUsersToInvite,
+  setSelectedUsersToInvite,
+} from 'src/redux/slices/inviteGuestsFlowSlice';
 import InviteDetails from 'src/screens/EventScreen/Guest/InviteGuestDetailForm';
 import { COLORS } from 'src/utils/constants';
 import {
@@ -34,6 +37,7 @@ import {
   changeSafeAreaViewConfig,
   getErrorMessage,
 } from 'src/utils/functions';
+import useContacts from 'src/utils/hooks/useContactPermission';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import TicketTypeBottomSheet, { TicketType } from '../TicketTypeBottomSheet';
 import ExistingUserView from './ExistingUserView';
@@ -53,6 +57,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
   const styles = createStyles();
   const navigation = useNavigation<NavigationProp<EventStackParamList>>();
   const dispatch = useDispatch();
+  const { getPhoneNumber } = useContacts();
 
   const { isManual, type } = route.params;
 
@@ -64,6 +69,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
   const actionSheetRef = useRef<BottomSheetMethods>(null);
 
   const [selectedTicketType, setSelectedTicketType] = useState<TicketType>();
+  const [ticketTypeError, setTicketTypeError] = useState<string>('');
   const [additionalGuests, setAdditionalGuests] = useState<number>(0);
   const [inviteMessage, setInviteMessage] = useState<string>('');
   const [guestNote, setGuestNote] = useState<string>('');
@@ -82,14 +88,16 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
   const [existingUserData, setExistingUserData] =
     useState<existingUserType | null>(null);
 
-  const { selectedUsers, selectedEvent, selectedManualUser } = useSelector(
-    (state: RootState) => ({
-      selectedUsers: state.inviteGuestsFlow.selectedUsers,
-      selectedEvent: state.inviteGuestsFlow.selectedEvent,
-      selectedManualUser: state.inviteGuestsFlow.selectedManualUser,
-    }),
-    shallowEqual,
-  );
+  const { selectedUsers, removedUsers, selectedEvent, selectedManualUser } =
+    useSelector(
+      (state: RootState) => ({
+        selectedUsers: state.inviteGuestsFlow.selectedUsers,
+        removedUsers: state.inviteGuestsFlow.removedUsers,
+        selectedEvent: state.inviteGuestsFlow.selectedEvent,
+        selectedManualUser: state.inviteGuestsFlow.selectedManualUser,
+      }),
+      shallowEqual,
+    );
 
   const [
     inviteGuests,
@@ -102,10 +110,12 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
 
   const validateForm = () => {
     if (!selectedTicketType) {
-      ticketTypeRef?.current?.setErrorMessage('Ticket type required');
+      console.log('inn');
+
+      setTicketTypeError('Ticket type required');
       return false;
     }
-    ticketTypeRef?.current?.setErrorMessage('');
+    setTicketTypeError('');
     return true;
   };
 
@@ -140,7 +150,8 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
                 : 'Guests have been saved as drafts'
             }`,
           );
-          dispatch(setSelectedUsersToInvite([]));
+          dispatch(setSelectedUsersToInvite(removedUsers));
+          dispatch(removeSelectedUsersToInvite([]));
           navigation.goBack();
         } else {
           const typedError = response as ApiErrorInterface;
@@ -258,8 +269,21 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
     if (isManual && type === 'contact') {
       setFirstName(selectedManualUser?.firstName || '');
       setLastName(selectedManualUser?.lastName || '');
-      phoneRef?.current?.setPhoneNumber(selectedManualUser?.phoneNumber || '');
-      setPhone(selectedManualUser?.phoneNumber || '');
+      // phoneRef?.current?.setPhoneNumber(selectedManualUser?.phoneNumber || '');
+      if (selectedManualUser?.phoneNumber) {
+        const phoneData = getPhoneNumber(selectedManualUser?.phoneNumber);
+        phoneRef?.current?.setPhoneNumber(phoneData.phoneNumber);
+        phoneRef?.current?.setFlag(phoneData.flag);
+        phoneRef?.current?.setCallingCode(phoneData.countryCode);
+        phoneRef?.current?.setCode(phoneData.currentCountry);
+        setPhone(selectedManualUser?.phoneNumber || '');
+        setSelectedCountry({
+          code: phoneData.currentCountry || '',
+          dial_code: phoneData.countryCode,
+          flag: phoneData.flag,
+          name: phoneData.currentCountry || '',
+        });
+      }
     }
   }, [isManual, type, selectedManualUser]);
 
@@ -316,9 +340,10 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
 
         <View style={{ marginHorizontal: horizontalMarginScale(16) }}>
           <InviteDetails
+            ticketTypeRef={ticketTypeRef}
             isCollapsible
             selectedTicketType={selectedTicketType}
-            ticketTypeRef={ticketTypeRef}
+            ticketTypeError={ticketTypeError}
             onTicketTypePress={() => actionSheetRef?.current?.open()}
             additionalGuests={additionalGuests}
             onAdditionalGuestsChange={setAdditionalGuests}
@@ -349,7 +374,9 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
               ? 'Add to Confirmed'
               : isManual
               ? 'Send Invite'
-              : `Send ${selectedUsers.length} Invites`
+              : `Send ${selectedUsers.length} ${
+                  selectedUsers.length > 1 ? 'Invites' : 'Invite'
+                }`
           }
           onPress={() => {
             if (isManual) {

@@ -1,10 +1,10 @@
-import React, {useState, forwardRef, useImperativeHandle} from 'react';
-import {View, Text, StyleSheet, TextInput, Alert} from 'react-native';
-import {Image} from 'react-native-animatable';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
+import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
-import {COLORS, LABLE} from '../../utils/constants';
-import {useNavigation} from '@react-navigation/native';
-import {verticalScale} from 'src/utils/dimensions';
+import { COLORS, LABLE } from '../../utils/constants';
+import { useNavigation } from '@react-navigation/native';
+import { verticalScale } from 'src/utils/dimensions';
 
 const EmailInput = forwardRef((_, ref) => {
   const [emailAddress, setEmailAddress] = useState('');
@@ -23,7 +23,10 @@ const EmailInput = forwardRef((_, ref) => {
 
   // Validate email format
   const validateEmailAddress = () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+    console.log(emailRegex.test(emailAddress))
     if (!emailRegex.test(emailAddress)) {
       setErrorMessage(LABLE.EROOR_ENTER_EMAIL);
       return false;
@@ -50,9 +53,9 @@ const EmailInput = forwardRef((_, ref) => {
           errorMessage && styles.errorInputWrapper,
           disabled && styles.disabledInput,
         ]}>
-        <Image source={IMAGES.email} style={styles.icon} />
+        <Image source={IMAGES.email} style={[styles.icon, { tintColor: errorMessage ? COLORS.errorText : COLORS.light_gray }]} />
         <TextInput
-          style={[styles.input, disabled && {color: COLORS.light_gray}]}
+          style={[styles.input, disabled && { color: COLORS.light_gray }]}
           placeholder="example@gmail.com"
           keyboardType="email-address"
           focusable={true} // Enable input focus

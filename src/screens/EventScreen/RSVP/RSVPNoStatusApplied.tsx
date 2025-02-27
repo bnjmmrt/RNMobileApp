@@ -9,6 +9,7 @@ import {
     ScrollView,
     FlatList,
     ActivityIndicator,
+    Platform,
 } from 'react-native';
 import BottomSheetComponent from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
@@ -27,12 +28,14 @@ import {
 } from 'src/redux/actions/rspvApiAction';
 import { verticalScale } from 'src/utils/dimensions';
 import { EventCard } from '../RSVP/RSVPInvitedUpcoming';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import useApi from 'src/axios/useApi';
 import { styles } from './RSVPScreenStyle';
 import RequestVouch from './RequestVouch';
 import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
+import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
+import { fontFamily } from 'src/utils/functions';
 
 type Guest = {
     id: number;
@@ -51,13 +54,14 @@ const RSVPNoStatusApplied: React.FC = () => {
     const { goBack, navigate } = useNavigation();
     const userId = useSelector((state: RootState) => state.auth.userId);
     const { apiRequest, loading } = useApi();
+    const dispatch = useDispatch();
 
-    const { name, location, startDate, status, quizQuestions, limitOnePlus, id, currentGuestStatus, imageCover, endDate } =
+    const { name, location, startDate, status, quizQuestions, limitOnePlus, id, currentGuestStatus, imageFlyer, endDate } =
         params?.event;
-
 
     const [eventQuestions, setEventQuestions] = useState([]);
     const [selectedGuests, setSelectedGuests] = useState<any>(null);
+    const [vouchData, setVouchData] = useState<any>([]);
     const [activeView, setActiveTab] = useState<string>('');
     const { requestContactPermission } = useContactPermission();
     const guestInputRef = useRef(null);
@@ -90,9 +94,10 @@ const RSVPNoStatusApplied: React.FC = () => {
         if (currentGuestStatus === "APPLIED") {
             const response: any = await apiRequest('get', `v1/users/${userId}/events/${id}/request`);
             setEventQuestions(response?.data?.questions)
+            setSelectedGuests(getGuestFromId(response?.data?.additionalRequestedGuests));
+            setVouchData(response?.data?.vouches)
         }
         else {
-            console.log(formattdQuestions(quizQuestions), "--->>")
             setEventQuestions(formattdQuestions(quizQuestions));
         }
     };
@@ -105,10 +110,11 @@ const RSVPNoStatusApplied: React.FC = () => {
                     questionId: q.id,
                     answer: inputRefs.current[q.id]?.inputText || '',
                 })),
-                guests: selectedGuests ? selectedGuests.id : 0,
+                additionalGuests: selectedGuests ? selectedGuests.id : 0,
             }).unwrap();
             console.log('Application submitted:', response);
             setActiveTab('submit');
+            dispatch(setRsvpStatus("APPLIED"));
             bottomSheetRef.current?.open();
         } catch (error) {
             console.error('Error submitting application:', error);
@@ -124,10 +130,11 @@ const RSVPNoStatusApplied: React.FC = () => {
                     questionId: q.questionId,
                     answer: inputRefs.current[q.questionId]?.inputText || '',
                 })),
-                guests: selectedGuests ? selectedGuests.id : 0,
+                additionalGuests: selectedGuests ? selectedGuests.id : 0,
             }).unwrap();
             console.log('Application submitted:', response);
             setActiveTab('submit');
+            dispatch(setRsvpStatus("APPLIED"));
             bottomSheetRef.current?.open();
         } catch (error) {
             console.error('Error submitting application:', error);
@@ -143,10 +150,11 @@ const RSVPNoStatusApplied: React.FC = () => {
                     questionId: q.questionId,
                     answer: inputRefs.current[q.questionId]?.inputText || '',
                 })),
-                guests: selectedGuests ? selectedGuests.id : 0,
+                additionalGuests: selectedGuests ? selectedGuests.id : 0,
             }).unwrap();
             console.log('Application updated:', response);
             setActiveTab('submit');
+            dispatch(setRsvpStatus("APPLIED"));
             bottomSheetRef.current?.open();
         } catch (error) {
             console.error('Error updating application:', error);
@@ -158,6 +166,7 @@ const RSVPNoStatusApplied: React.FC = () => {
             const response = await deleteApplication({ eventId: id, id: userId }).unwrap();
             console.log('Application canceled:', response);
             bottomSheetRef?.current?.close();
+            dispatch(setRsvpStatus("NO_STATUS"));
             goBack();
         } catch (error) {
             console.error('Error canceling application:', error);
@@ -236,7 +245,7 @@ const RSVPNoStatusApplied: React.FC = () => {
             case 'guests':
                 return renderNumberOfGuests(limitOnePlus);
             case 'vouch':
-                return <RequestVouch eventId={id} />;
+                return <RequestVouch eventId={id} vouchData={vouchData} />;
             case 'options':
                 return renderOptions();
             case 'cancel':
@@ -253,7 +262,7 @@ const RSVPNoStatusApplied: React.FC = () => {
             case 'guests':
                 return '40%';
             case 'submit':
-                return '70%';
+                return Platform.OS == "android" ? "70%" : '65%';
             case 'options':
                 return '20%';
             case 'cancel':
@@ -272,6 +281,10 @@ const RSVPNoStatusApplied: React.FC = () => {
         }
 
         return guestList;
+    };
+    const getGuestFromId = (id: number): Guest => {
+        if (id === 0) return { id: 0, label: 'No Guests' };
+        return { id, label: `${id} Guest${id > 1 ? 's' : ''}` };
     };
 
     const renderNumberOfGuests = (limitOnePlus: number) => {
@@ -366,7 +379,7 @@ const RSVPNoStatusApplied: React.FC = () => {
     return (
         <SafeAreaView style={styles.container}>
             <Header
-                headerTitle="RSPV"
+                headerTitle="RSVP"
                 showProgressBar={false}
                 onPress={() => {
                     if (currentGuestStatus === "APPLIED") {
@@ -381,7 +394,7 @@ const RSVPNoStatusApplied: React.FC = () => {
             />
             <ScrollView style={styles.scrollView}>
                 <View style={styles.contentContainer}>
-                    <EventCard name={name} location={location?.location} imageCover={imageCover} dates={formatToDeviceTimeZone(startDate, endDate)} />
+                    <EventCard name={name} location={location?.location} imageCover={imageFlyer} dates={formatToDeviceTimeZone(startDate, endDate)} />
                     {currentGuestStatus === "APPLIED" && (
                         <View style={styles.yellowBoxRightButton}>
                             <View style={styles.waitingResponseContainer}>
@@ -402,6 +415,9 @@ const RSVPNoStatusApplied: React.FC = () => {
                     {eventQuestions && eventQuestions.map(q => (
                         <Input
                             key={q.questionId}
+                            labelStyle={{
+                                fontFamily: fontFamily.ABCDiatype_Medium
+                            }}
                             defaultValue={q?.answer}
                             inputFieldContainerStyle={{ height: verticalScale(48) }}
                             isRequired={q.required}
@@ -413,10 +429,13 @@ const RSVPNoStatusApplied: React.FC = () => {
                         <Input
                             inputFieldContainerStyle={{ height: verticalScale(48) }}
                             editable={false}
+                            labelStyle={{
+                                fontFamily: fontFamily.ABCDiatype_Medium
+                            }}
                             isRequired={true}
                             ref={guestInputRef}
                             rightImage={IMAGES.downArrow}
-                            placeholder={selectedGuests?.label}
+                            defaultValue={selectedGuests?.label}
                             label="Request access for additional guests?"
                             onPressImage={() => {
                                 setActiveTab('guests');

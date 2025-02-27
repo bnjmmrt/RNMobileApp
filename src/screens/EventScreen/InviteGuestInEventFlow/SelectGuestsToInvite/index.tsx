@@ -20,7 +20,10 @@ import { EventStackParamList } from 'src/navigation/EventStack';
 import { ROUTES } from 'src/navigation/Route';
 import { useFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
 import { RootState } from 'src/redux/slices';
-import { setSelectedUsersToInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
+import {
+  removeSelectedUsersToInvite,
+  setSelectedUsersToInvite,
+} from 'src/redux/slices/inviteGuestsFlowSlice';
 import UserListItem, {
   UserItemInterface,
 } from 'src/screens/UsersModule/UsersListItem';
@@ -133,6 +136,18 @@ const SelectGuestsToInviteScreen: React.FC<
     navigation.navigate(ROUTES.InviteGuestsManuallyScreen);
   };
 
+  const getEmptyStateMessage = () => {
+    if (filterNumber > 0 && searchText) {
+      return 'Please refine your search.';
+    } else if (filterNumber > 0) {
+      return 'Remove filters to expand your search';
+    } else if (searchText) {
+      return 'Please refine your search.';
+    } else {
+      return 'This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest';
+    }
+  };
+
   const renderItem = useCallback(
     ({ item }: { item: UserItemInterface }) => {
       const isSelected = selectedUsers.some(user => user.id === item.id);
@@ -165,6 +180,13 @@ const SelectGuestsToInviteScreen: React.FC<
       setAllUsers({ totalCount: 0, users: [] });
     }
   }, [isError]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(setSelectedUsersToInvite([]));
+      dispatch(removeSelectedUsersToInvite([]));
+    };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -222,8 +244,31 @@ const SelectGuestsToInviteScreen: React.FC<
             }}>
             <EventEmptyRecord
               title="User not found"
-              subTitle="This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest"
+              subTitle={getEmptyStateMessage()}
               isLoading={isLoading}
+              footerContent={
+                !isLoading && filterNumber > 0 ? (
+                  <Button
+                    title={'Reset Filters'}
+                    imageSource={IMAGES.refresh}
+                    leftImageStyle={{
+                      height: verticalScale(16),
+                      width: verticalScale(16),
+                    }}
+                    onPress={onClearFilter}
+                    colorTheme="dark"
+                    textStyle={{ marginHorizontal: 0 }}
+                    style={{
+                      alignSelf: 'center',
+                      width: undefined,
+                      height: undefined,
+                      paddingHorizontal: horizontalMarginScale(12),
+                      paddingVertical: verticalMarginScale(12),
+                      gap: horizontalMarginScale(6),
+                    }}
+                  />
+                ) : null
+              }
             />
           </View>
         }
@@ -252,7 +297,6 @@ const SelectGuestsToInviteScreen: React.FC<
         from="allUsersList"
         onApplyFilter={onApplyFilter}
         onClearFilter={onClearFilter}
-        showBottomSafeAreaView={false}
       />
     </View>
   );

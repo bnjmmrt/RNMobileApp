@@ -1,6 +1,10 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
-import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js';
+import parsePhoneNumberFromString, {
+  CountryCode,
+  getExampleNumber,
+  isValidPhoneNumber,
+} from 'libphonenumber-js';
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import {
   StyleSheet,
@@ -48,6 +52,7 @@ export type PhoneNumberInputRefMethods = {
   callingCode: string;
   setDisabled: React.Dispatch<React.SetStateAction<boolean>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  setCode: React.Dispatch<React.SetStateAction<CountryCode>>;
 };
 
 const PhoneNumberInput = forwardRef<
@@ -81,8 +86,12 @@ const PhoneNumberInput = forwardRef<
     const [disabled, setDisabled] = useState(false);
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const [selectedCountry, setSelectedCountry] = useState('');
+    const [maxLength, setMaxLength] = useState(12);
 
     const handleCountrySelect = (selectedCountry: any) => {
+      setPhoneNumber('');
+      console.log(selectedCountry);
       dispatch(setCountryCallingCode(selectedCountry.callingCode));
       dispatch(setCountryCodeFlag(selectedCountry.flag));
       setFlag(selectedCountry.flag);
@@ -92,6 +101,8 @@ const PhoneNumberInput = forwardRef<
       setFlag(selectedCountry.flag);
       setCode(selectedCountry.code);
       setCallingCode(selectedCountry.dial_code);
+      setSelectedCountry(selectedCountry);
+      setMaxLength(getMaxPhoneNumberLength(selectedCountry.dial_code));
       setCountryPickerVisible(false);
       if (onSelectCountry) {
         onSelectCountry(selectedCountry);
@@ -112,12 +123,18 @@ const PhoneNumberInput = forwardRef<
       callingCode,
       setDisabled,
       setErrorMessage,
+      setCode,
     }));
 
     const validatePhoneNumber = () => {
-      const mobileNumber = `${callingCode}${phoneNumber}`;
-      const isValid = isValidPhoneNumber(mobileNumber, code);
-      if (!isValid) {
+      if (phoneNumber != '') {
+        const mobileNumber = `${callingCode}${phoneNumber}`;
+        const isValid = isValidPhoneNumber(mobileNumber, code);
+        if (!isValid) {
+          setErrorMessage(LABLE.EROOR_ENTER_VALID_PHONE_NUMBER);
+          return false;
+        }
+      } else {
         setErrorMessage(LABLE.EROOR_ENTER_PHONE_NUMBER);
         return false;
       }
@@ -132,6 +149,40 @@ const PhoneNumberInput = forwardRef<
           isEmail: false,
         });
         // Alert.alert("Success!!", `Phone Number: ${callingCode} ${phoneNumber}`);
+      }
+    };
+
+    const getMaxPhoneNumberLength = (countryCode: any) => {
+      try {
+        const exampleNumber = getExampleNumber(countryCode);
+        return exampleNumber ? exampleNumber.nationalNumber.length : 10; // Default to 10 if no example found
+      } catch (error) {
+        return 10; // Fallback max length
+      }
+    };
+    const handleChange = (text: any) => {
+      // Remove non-numeric characters except "+"
+      const cleanedText = text.replace(/\D/g, '');
+
+      // Ensure that text is not empty
+      if (!cleanedText) {
+        setPhoneNumber('');
+        return;
+      }
+
+      // Combine with country code
+      const fullNumber = `${callingCode}${cleanedText}`;
+      console.log('Full Number:', fullNumber);
+
+      // Parse the number
+      let parsedNumber = parsePhoneNumberFromString(fullNumber);
+      console.log(parsedNumber);
+      if (parsedNumber && parsedNumber.isValid()) {
+        setPhoneNumber(
+          parsedNumber.formatInternational().replace(`${callingCode} `, ''),
+        ); // Remove country code from input
+      } else {
+        setPhoneNumber(cleanedText); // Keep raw input if invalid
       }
     };
 
@@ -154,23 +205,26 @@ const PhoneNumberInput = forwardRef<
             onPress={() => setCountryPickerVisible(true)}
             disabled={disabled}>
             <Text style={styles.flag}>{flag}</Text>
-            <Image
-              source={IMAGES.upDownArrow}
-              style={[styles.arrowIcon, disabled && { opacity: 0.5 }]}
-            />
+            {!disabled && (
+              <Image
+                source={IMAGES.upDownArrow}
+                style={[styles.arrowIcon, disabled && { opacity: 0.5 }]}
+              />
+            )}
             <Text style={styles.callingCode}>{callingCode}</Text>
           </TouchableOpacity>
 
           <InputComponent
             // style={styles.input}
             style={[styles.input, disabled && { color: COLORS.light_gray }]}
-            placeholder="Enter phone number"
+            // placeholder="Enter phone number"
             keyboardType="phone-pad"
             returnKeyType="done"
             value={phoneNumber}
-            maxLength={12}
+            maxLength={maxLength}
+            // onChangeText={handleChange}
             onChangeText={(text: string) => {
-              setPhoneNumber(text);
+              handleChange(text);
               setErrorMessage('');
               if (onChangeText) {
                 onChangeText(text);
@@ -190,6 +244,7 @@ const PhoneNumberInput = forwardRef<
           pickerButtonOnPress={handleCountrySelect}
           closeCountryModal={closeCountryModal}
           show={isCountryPickerVisible}
+          selectedCountry={selectedCountry}
           lang="en"
         />
       </View>
@@ -248,7 +303,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: fontFamily.ABCDiatype_Regular,
     color: COLORS.black,
     paddingHorizontal: 5,

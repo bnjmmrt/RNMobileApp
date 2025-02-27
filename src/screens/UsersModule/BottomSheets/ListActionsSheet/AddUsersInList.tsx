@@ -1,38 +1,52 @@
-import {BottomSheetFlatList, BottomSheetView} from '@gorhom/bottom-sheet';
+import { BottomSheetFlatList, BottomSheetView } from '@gorhom/bottom-sheet';
 import IMAGES from '@images/index';
-import React, {useCallback, useEffect, useState} from 'react';
-import {Image, TouchableOpacity, View} from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Image, TouchableOpacity, View } from 'react-native';
 import AvatarInitials from 'src/component/AvatarInitials';
 import Button from 'src/component/Button';
-import {CustomText} from 'src/component/CustomText';
+import { CustomText } from 'src/component/CustomText';
+import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import SearchInput from 'src/component/SearchInput';
-import {useAddUsersToCustomListMutation} from 'src/redux/actions/listsApiAction';
-import {useFetchAllUsersQuery} from 'src/redux/actions/usersApiAction';
-import {horizontalMarginScale, verticalMarginScale} from 'src/utils/dimensions';
-import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
-import {UserItemInterface} from '../../UsersListItem';
-import {styles} from './style';
+import { AppStackParamList } from 'src/navigation/AppStack';
+import { ROUTES } from 'src/navigation/Route';
+import { useAddUsersToCustomListMutation } from 'src/redux/actions/listsApiAction';
+import { useFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
+import {
+  horizontalMarginScale,
+  Hp,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
+import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
+import { UserItemInterface } from '../../UsersListItem';
+import { styles } from './style';
 
 const AddUsersInList = ({
   onSuccess,
+  closeSheet,
   showError,
   listId,
   listName,
+  selectedUsers: users,
 }: {
   onSuccess: () => void;
+  closeSheet: () => void;
   showError: (message: string) => void;
   listId: string;
   listName: string;
+  selectedUsers?: string[];
 }) => {
+  const navigation = useNavigation<NavigationProp<AppStackParamList>>();
+
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
   const [allUsers, setAllUsers] = useState<{
     users: UserItemInterface[];
     totalCount: number;
-  }>({totalCount: 0, users: []});
+  }>({ totalCount: 0, users: [] });
 
-  const {data, isLoading} = useFetchAllUsersQuery({
+  const { data, isLoading } = useFetchAllUsersQuery({
     take: 10,
     skip: (currentPage - 1) * 10,
     searchValue: searchText,
@@ -40,7 +54,7 @@ const AddUsersInList = ({
 
   const [
     addUsersToList,
-    {error: addUsersToListError, isLoading: addUsersToListLoading},
+    { error: addUsersToListError, isLoading: addUsersToListLoading },
   ] = useAddUsersToCustomListMutation();
 
   const loadMore = () => {
@@ -96,7 +110,7 @@ const AddUsersInList = ({
   };
 
   const renderListRow = useCallback(
-    ({item, index}: {item: UserItemInterface; index: number}) => {
+    ({ item, index }: { item: UserItemInterface; index: number }) => {
       const isSelected = selectedUsers.some(user => user === item.id);
       return (
         <TouchableOpacity
@@ -116,7 +130,12 @@ const AddUsersInList = ({
             />
             <CustomText style={styles.username}>{item.name}</CustomText>
           </View>
-          <TouchableOpacity style={styles.userArrowWrapper}>
+          <TouchableOpacity
+            style={styles.userArrowWrapper}
+            onPress={() => {
+              closeSheet();
+              navigation.navigate(ROUTES.UserDetail, { user: item.id });
+            }}>
             <Image source={IMAGES.arrowRight} />
           </TouchableOpacity>
         </TouchableOpacity>
@@ -139,15 +158,21 @@ const AddUsersInList = ({
   }, [data]);
 
   return (
-    <BottomSheetView style={{flex: 1}}>
+    <BottomSheetView style={{ flex: 1 }}>
       <CustomText style={styles.addUserTitle}>
         {'Select Users to Add to List'}
       </CustomText>
       <BottomSheetFlatList
-        data={allUsers?.users || []}
+        data={
+          users
+            ? allUsers.users.filter(
+                item1 => !users.some(item2 => item2 === item1.id),
+              )
+            : allUsers?.users || []
+        }
         renderItem={renderListRow}
         keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{gap: verticalMarginScale(8)}}
+        contentContainerStyle={{ gap: verticalMarginScale(8) }}
         style={{
           marginBottom: verticalMarginScale(12),
           marginHorizontal: horizontalMarginScale(12),
@@ -163,6 +188,20 @@ const AddUsersInList = ({
             defaultValue={searchText}
             onSearchTextChange={handleSearchTextChange}
           />
+        }
+        ListEmptyComponent={
+          <View
+            style={{
+              height: Hp(30),
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <EventEmptyRecord
+              title="Users not found"
+              subTitle={''}
+              isLoading={isLoading}
+            />
+          </View>
         }
         showsVerticalScrollIndicator={false}
         onEndReached={loadMore}

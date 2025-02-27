@@ -26,10 +26,7 @@ const DeclineBottomSheet = forwardRef<
   DeclineBottomSheetProps
 >(({ title, description, buttonText, onConfirm }, ref) => {
   return (
-    <BottomSheet
-      ref={ref}
-      snapPoints={[`${verticalScale(30)}%`, '40%']}
-      showBottomSafeAreaView={false}>
+    <BottomSheet ref={ref} snapPoints={[`${verticalScale(30)}%`, '40%']}>
       <View style={styles.container}>
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{title}</Text>

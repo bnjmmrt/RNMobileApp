@@ -13,7 +13,6 @@ import {
 interface SheetProps {
   onSelect: (value: string) => void;
   selectedValue: string;
-  showBottomSafeAreaView?: boolean;
 }
 
 interface OptionType {
@@ -26,7 +25,7 @@ export const filterOptions: OptionType[] = [
   { id: 'confirmed', label: 'Confirmed' },
   { id: 'invited', label: 'Invited' },
   { id: 'requests', label: 'Requested' },
-  { id: 'drafts', label: 'Drafts' },
+  { id: 'draft', label: 'Draft' },
   { id: 'declined', label: 'Declined' },
 ];
 
@@ -37,14 +36,13 @@ export const sortOptions: OptionType[] = [
 ];
 
 export const GuestListFilterSheet = forwardRef<BottomSheetMethods, SheetProps>(
-  ({ onSelect, selectedValue, showBottomSafeAreaView = true }, ref) => {
+  ({ onSelect, selectedValue }, ref) => {
     const bottomSheetRef = ref as MutableRefObject<BottomSheetMethods>;
 
     return (
       <BottomSheet
         ref={ref}
         snapPoints={['43%', '65%']}
-        showBottomSafeAreaView={showBottomSafeAreaView}
         enableDynamicSizing={false}>
         <View style={styles.container}>
           {filterOptions.map(option => (
@@ -68,14 +66,11 @@ export const GuestListFilterSheet = forwardRef<BottomSheetMethods, SheetProps>(
 );
 
 export const GuestListSortSheet = forwardRef<BottomSheetMethods, SheetProps>(
-  ({ onSelect, selectedValue, showBottomSafeAreaView = true }, ref) => {
+  ({ onSelect, selectedValue }, ref) => {
     const bottomSheetRef = ref as MutableRefObject<BottomSheetMethods>;
 
     return (
-      <BottomSheet
-        ref={ref}
-        snapPoints={['30%', '50%', '75%']}
-        showBottomSafeAreaView={showBottomSafeAreaView}>
+      <BottomSheet ref={ref} snapPoints={['30%', '50%', '75%']}>
         <View style={styles.container}>
           {sortOptions.map(option => (
             <TouchableOpacity

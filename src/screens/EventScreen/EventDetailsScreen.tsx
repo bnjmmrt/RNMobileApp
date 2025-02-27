@@ -1,18 +1,5 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useLayoutEffect,
-} from 'react';
-import {
-  View,
-  ScrollView,
-  StyleSheet,
-  Text,
-  SafeAreaView,
-  Platform,
-} from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { View, ScrollView, StyleSheet, Text, Platform } from 'react-native';
 import {
   BUTTON_LABLE,
   COLORS,
@@ -37,7 +24,6 @@ import { FlatList } from 'react-native-gesture-handler';
 import EventVenue from 'src/component/Event/EventVenue';
 import EventOverview from 'src/component/Event/EventOverview';
 import Button from 'src/component/Button';
-import EventAnouncements from 'src/component/Event/EventAnnouncements';
 import QRCodeBottomsheet from 'src/component/BottomSheet/QRCodeBottomsheet';
 import CalenderEventsBottomSheet from 'src/component/BottomSheet/CalenderEventsBottomSheet';
 import { useDispatch, useSelector } from 'react-redux';
@@ -45,6 +31,9 @@ import { RootState } from 'src/redux/slices';
 import {
   useFetchEventDetailsQuery,
   useFetchHostEventDetailsQuery,
+  useFetchPublicEventDetailsQuery,
+  useLazyFetchEventDetailsQuery,
+  useLazyFetchPublicEventDetailsQuery,
 } from 'src/redux/actions/eventApiAction';
 import IMAGES from '@images/index';
 import EventTalent from 'src/component/Event/EventTalent';
@@ -57,11 +46,13 @@ import { setSelectedEventForInvite } from 'src/redux/slices/inviteGuestsFlowSlic
 import { EndPoint } from 'src/ApiManager/config';
 import useApi from 'src/axios/useApi';
 import moment from 'moment';
+import { setEventId } from 'src/redux/slices/eventSlice';
 import { BlurView } from '@react-native-community/blur';
 import LinearGradient from 'react-native-linear-gradient';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -80,6 +71,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const [isCurrentUserIsGuest, setIsCurrentGuestStatus] = useState(
+    route?.params?.isCurrentUserIsGuest,
+  );
+  const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
+
   const role = useSelector((state: RootState) => state.auth.role);
   // const insets = useSafeAreaInsets();
 
@@ -104,11 +100,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
-  const useFetchEventDetails =
-    role === ROLE.HOST
-      ? useFetchHostEventDetailsQuery
-      : useFetchEventDetailsQuery;
-  // Ensure argument structure remains consistent
+  useEffect(() => {
+    dispatch(setRsvpStatus(isCurrentUserIsGuest ? 'TRUE' : 'NO_STATUS'));
+  }, [isCurrentUserIsGuest]);
   const queryArgs =
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const) // Type assertion to prevent union mismatch
@@ -116,10 +110,21 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           userId,
           eventId: route?.params?.id,
         } as const); // Type assertion
+  const useFetchEventDetailsHook =
+    role === ROLE.HOST
+      ? useFetchHostEventDetailsQuery
+      : rspvStatus === 'NO_STATUS'
+      ? useFetchPublicEventDetailsQuery
+      : useFetchEventDetailsQuery;
 
-  const { data, refetch } = useFetchEventDetails(queryArgs as any, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data, isLoading, refetch } = useFetchEventDetailsHook(queryArgs);
+
+  useEffect(() => {
+    console.log('RSVP Status:', rspvStatus);
+    refetch(); // Manually refetch when RSVP status changes
+  }, [rspvStatus, refetch]);
+
+  // Ensure argument structure remains consistent
 
   // const { data, isLoading, refetch, isSuccess } = useFetchEventDetailsQuery(
   //   { eventId: route?.params?.id, userId: userId },
@@ -133,11 +138,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   // const [qrURL, setQrURL] = useState('');
   const [eventDetails, setEventDetails] = useState<any>({});
   const [calendarDetails, setCalendarDetails] = useState<any>({});
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [refetch]),
-  );
+
+  const [useQr, setUseQr] = useState<boolean>(false);
 
   useEffect(() => {
     if (guestStatus === 'DECLINED') {
@@ -151,8 +153,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     return new Date(`${datePart}T${timePart}Z`).toISOString();
   };
   useEffect(() => {
-    // console.log('Event data:', data);
+    //  console.log('Event data:', data);
     if (data?.data) {
+      setUseQr(data.data.useQr);
       setEventDetails({
         title: data.data.name,
         subTitle: data.data.startDate,
@@ -170,8 +173,19 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       });
     }
     if (data && data.data && data?.data?.collaborators) {
-      setCollaborators(data.data.collaborators);
+      let collaborator = {
+        ...data?.data?.owner,
+        name: data?.data?.owner.companyName,
+        role: {
+          id: data?.data?.owner.id,
+          name: 'host',
+        }
+      };
+
+      // Merge the owner as a collaborator with existing collaborators
+      setCollaborators([collaborator, ...data.data.collaborators]);
     }
+
     if (data && data.data && data?.data?.talents) {
       setTalents(data.data.talents);
     }
@@ -208,14 +222,23 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       EndPoint.generate_ticket + data?.data?.guestId,
     );
     if (response.status === 200) {
-      setEventDetails({ ...eventDetails, qrUrl: response.data.b64QRCode });
-      qrCodeBottomSheetRef?.current.open();
+      if (response.data.eventQr) {
+        setEventDetails({ ...eventDetails, qrUrl: response.data.b64QRCode });
+        qrCodeBottomSheetRef?.current.open();
+      } else {
+        FlashMessageComponent.show('error', 'QR not genetaed');
+      }
     }
   };
 
   const onViewTicketClick = () => {
     //API call
-    generateTicket();
+    if (useQr) {
+      generateTicket();
+    } else {
+      setIsQRShown(false);
+      qrCodeBottomSheetRef?.current.open();
+    }
   };
   const addCalenderEvents = () => {
     calenderEventsBottomSheetRef.current?.open();
@@ -241,12 +264,24 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const onCheckInClick = async () => {
-    navigation.navigate(ROUTES.QRCodeScanner);
+    if (useQr) {
+      dispatch(setEventId(route?.params?.id));
+      navigation.navigate(ROUTES.QRCodeScanner);
+    } else {
+      navigateToViewList();
+    }
   };
 
   const onPressInviteGuests = () => {
     dispatch(setSelectedEventForInvite(data.data));
     navigation.navigate(ROUTES.SelectGuestsToInviteScreen);
+  };
+
+  const navigateToViewList = () => {
+    dispatch(setSelectedEventForInvite(data.data));
+    navigation.navigate('EventGuestList', {
+      eventId: route?.params?.id,
+    });
   };
 
   const imageWrapperStyle = StyleSheet.create({
@@ -257,6 +292,92 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       marginTop: verticalScale(20) + STATUS_BAR_HEIGHT,
     },
   });
+  const renderHostButtons = () => {
+    if (role !== ROLE.HOST) {
+      return null;
+    }
+
+    return (
+      <>
+        {/* <Button
+          disabled={false}
+          style={styles.btnStyleLight}
+          title="View Guest List"
+          colorTheme="light"
+          onPress={navigateToViewList}
+        /> */}
+        <Button
+          disabled={false}
+          style={styles.btnStyleLight}
+          title={BUTTON_LABLE.INVITE_GUESTS}
+          colorTheme="light"
+          onPress={onPressInviteGuests}
+        />
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.CHECK_IN}
+          colorTheme="dark"
+          onPress={onCheckInClick}
+        />
+      </>
+    );
+  };
+  const renderRSVPButton = () => {
+    if (isDeclinedByHost || guestStatus === 'CONFIRMED' || role === ROLE.HOST) {
+      return null;
+    }
+
+    return (
+      <View>
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={
+            guestStatus === 'APPLIED'
+              ? BUTTON_LABLE.UPDATE_APPLICATION
+              : BUTTON_LABLE.RSVP
+          }
+          colorTheme="dark"
+          onPress={onNextClick}
+        />
+      </View>
+    );
+  };
+
+  const renderConfirmedButtons = () => {
+    if (guestStatus !== 'CONFIRMED' || role === ROLE.HOST) {
+      return null;
+    }
+
+    return (
+      <View style={{ margin: 20 }}>
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.VIEW_TICKET}
+          colorTheme="dark"
+          onPress={onViewTicketClick}
+          loading={loading}
+        />
+        <Button
+          disabled={false}
+          style={styles.btnStyleLight}
+          title={BUTTON_LABLE.UPDATE_RSVP}
+          colorTheme="light"
+          onPress={onNextClick}
+        />
+      </View>
+    );
+  };
+
+  const onPressManageInvite = () => {
+     dispatch(setSelectedEventForInvite(data.data));
+     navigation.navigate(ROUTES.EventGuestList, {
+       eventId: route?.params?.id,
+     });
+  };
+
 
   return (
     <>
@@ -301,10 +422,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
             <Text style={styles.titleStyle}>{route?.params?.name}</Text>
 
-            <EventStatus
-              status={guestStatus}
-              isDeclinedByMe={!isDeclinedByMe}
-            />
+            <EventStatus status={guestStatus} isDeclinedByMe={isDeclinedByMe} />
 
             {role !== ROLE.NON_MEMBER && (
               <FlatList
@@ -318,7 +436,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               />
             )}
 
-            {role == ROLE.HOST && <EventRequests eventId={data?.data?.id} />}
+            {role === ROLE.HOST && (
+              <EventRequests
+                eventId={data?.data?.id}
+                onTicketBreakdownPress={onPressManageInvite}
+              />
+            )}
 
             <EventVenue
               item={data?.data}
@@ -330,29 +453,24 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             {talents.length > 0 && <EventTalent talents={talents} />}
 
             {/* {<EventAnouncements talents={talents} />} */}
-
-            <Button
-              disabled={false}
-              style={styles.btnStyleLight}
-              title="View Guest List"
-              colorTheme="light"
-              onPress={() =>
-                navigation.navigate('EventGuestList', {
-                  guests: data?.data?.guests || [],
-                })
-              }
-            />
           </View>
+          {/* {role === ROLE.HOST && <Button
+            disabled={false}
+            style={styles.btnStyleLight}
+            title="View Guest List"
+            colorTheme="light"
+            onPress={navigateToViewList}
+          />}
 
-          <Button
+          {role === ROLE.HOST && <Button
             disabled={false}
             style={styles.btnStyleLight}
             title={BUTTON_LABLE.INVITE_GUESTS}
             colorTheme="light"
             onPress={onPressInviteGuests}
-          />
+          />}
 
-          {loginData?.roles[0]?.roleName === ROLE.HOST && (
+          {role === ROLE.HOST && (
             <Button
               disabled={false}
               style={styles.btnStyle}
@@ -360,51 +478,24 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               colorTheme="dark"
               onPress={onCheckInClick}
             />
-          )}
+          )} */}
         </ScrollView>
+        {renderHostButtons()}
+        {renderRSVPButton()}
+        {renderConfirmedButtons()}
 
-        {!isDeclinedByHost && guestStatus !== 'CONFIRMED' && (
-          <View>
-            <Button
-              disabled={false}
-              style={styles.btnStyle}
-              title={
-                guestStatus == 'APPLIED'
-                  ? BUTTON_LABLE.UPDATE_APPLICATION
-                  : BUTTON_LABLE.RSVP
-              }
-              colorTheme="dark"
-              onPress={onNextClick}
-            />
-          </View>
-        )}
-
-        {guestStatus == 'DECLINED' && (
-          <View>
-            <Button
-              disabled={false}
-              style={styles.btnStyle}
-              loading={acceptLoading}
-              title={BUTTON_LABLE.RSVP}
-              colorTheme="dark"
-              onPress={() => {
-                onNextClick();
-              }}
-            />
-          </View>
-        )}
-
-        {isDeclinedByMe && (
-          <View style={{ margin: 20 }}>
-            <Button
-              disabled={false}
-              style={styles.btnStyle}
-              title={BUTTON_LABLE.DISCOVER_MORE_EVENTS}
-              colorTheme="dark"
-              onPress={onDiscoverMoreClick}
-            />
-          </View>
-        )}
+        <CalenderEventsBottomSheet
+          ref={calenderEventsBottomSheetRef}
+          eventDetails={calendarDetails}
+        />
+        <QRCodeBottomsheet
+          ref={qrCodeBottomSheetRef}
+          title={eventDetails?.title}
+          subTitle={eventDetails?.subTitle}
+          imageURL={eventDetails?.qrUrl}
+          isQRShown={isQRShown}
+          name={eventDetails?.name}
+        />
 
         <CalenderEventsBottomSheet
           ref={calenderEventsBottomSheetRef}
@@ -419,42 +510,27 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           name={eventDetails?.name}
         />
 
-        {guestStatus == 'CONFIRMED' && (
-          <View style={{ margin: 20 }}>
-            <Button
-              disabled={false}
-              style={styles.btnStyle}
-              title={BUTTON_LABLE.VIEW_TICKET}
-              colorTheme="dark"
-              onPress={onViewTicketClick}
-              loading={loading}
-            />
-            <Button
-              disabled={false}
-              style={styles.btnStyleLight}
-              title={BUTTON_LABLE.UPDATE_RSVP}
-              colorTheme="light"
-              onPress={onNextClick}
-            />
-          </View>
-        )}
-
         <BackButtonOverlay
           customStyle={{ top: 16 + STATUS_BAR_HEIGHT }}
           onPress={() => navigation.goBack()}
         />
-        <BackButtonOverlay
-          customStyle={{ right: 4, top: 16 + STATUS_BAR_HEIGHT }}
-          imageSource={IMAGES.edits}
-          onPress={() =>
-            navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })
-          }
-        />
-        <BackButtonOverlay
-          customStyle={{ right: 55, top: 16 + STATUS_BAR_HEIGHT }}
-          imageSource={IMAGES.share}
-          onPress={() => navigation.goBack()}
-        />
+
+        {role === ROLE.HOST && (
+          <BackButtonOverlay
+            customStyle={{ right: 4, top: 16 + STATUS_BAR_HEIGHT }}
+            imageSource={IMAGES.edits}
+            onPress={() =>
+              navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })
+            }
+          />
+        )}
+        {role === ROLE.HOST && (
+          <BackButtonOverlay
+            customStyle={{ right: 55, top: 16 + STATUS_BAR_HEIGHT }}
+            imageSource={IMAGES.share}
+            onPress={() => navigation.goBack()}
+          />
+        )}
       </View>
     </>
   );

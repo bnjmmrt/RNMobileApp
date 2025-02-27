@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import FastImage from '@d11/react-native-fast-image';
 import { COLORS } from 'src/utils/constants';
 import {
   fontScale,
@@ -10,74 +9,65 @@ import {
   verticalScale,
   horizontalScale,
 } from 'src/utils/dimensions';
-import { fontFamily, getRoleRole } from 'src/utils/functions';
+import { fontFamily } from 'src/utils/functions';
 import IMAGES from 'src/assets/images';
-import AvatarInitials from 'src/component/AvatarInitials';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
+import FastImage from '@d11/react-native-fast-image';
+
+interface User {
+  name: string;
+  avatar?: string;
+  roles?: Array<{
+    name: string;
+    id: string;
+  }>;
+  age?: number;
+  followers?: string;
+  location?: string;
+  isMember?: boolean;
+  status?: string;
+  interests?: string[];
+  isFollowing?: boolean;
+}
 
 interface ActionButton {
   title: string;
   icon: any;
   onPress: () => void;
   otherStyle?: any;
-}
-interface Role {
-  roleId: string;
-  roleName: string;
-  status: string;
+  loading?: boolean;
 }
 
 interface ProfileCardProps {
-  guest: {
-    name: string;
-    avatar?: string;
-    roles?: Role[];
-    age: number;
-    followers?: string;
-    location?: string;
-    isMember?: boolean;
-    isFollowing?: boolean;
-    status?: string;
-    interests?: string[];
-  };
+  user?: User;
   actionButtons: ActionButton[];
-  showGuestStatus: boolean;
+  showGuestStatus?: boolean;
+  status?: string;
 }
 
 const ProfileImage = ({
   name,
-  avatar,
-  isMember,
+  profilePicture,
 }: {
   name: string;
-  avatar?: string;
-  isMember?: boolean;
+  profilePicture?: string;
 }) => {
-  //  if (isMember) {
-  //   return (
-  //     <FastImage
-  //       source={{
-  //         uri:
-  //           avatar ||
-  //           'https://ui-avatars.com/api/?name=' +
-  //             encodeURIComponent(name || ''),
-  //       }}
-  //       style={styles.guestAvatar}
-  //     />
-  //   );
-  // }
-
   return (
-    <View style={styles.guestAvatar}>
-      <AvatarInitials name={name} size={80} imgUrl={avatar} />
-    </View>
+    <FastImage
+      source={{
+        uri:
+          profilePicture ||
+          'https://ui-avatars.com/api/?name=' + encodeURIComponent(name),
+      }}
+      style={styles.guestAvatar}
+    />
   );
 };
 
-const MemberBadge = ({ role }: { role: string }) => (
+const MemberBadge = () => (
   <View style={styles.memberBadge}>
     <Image source={IMAGES.check_verified} style={styles.memberBadgeIcon} />
-    <Text style={styles.memberBadgeText}>{getRoleRole(role)}</Text>
+    <Text style={styles.memberBadgeText}>Member</Text>
   </View>
 );
 
@@ -88,21 +78,20 @@ const NonMemberBadge = () => (
 );
 
 const ProfileCard: React.FC<ProfileCardProps> = ({
-  guest,
+  user,
   actionButtons = [],
   showGuestStatus = true,
+  status = 'DRAFT',
 }) => {
-  console.log('ismember', guest.interests);
   return (
     <>
       <View style={styles.guestCard}>
         <View style={styles.guestCardHeader}>
           <View>
-            {showGuestStatus ? (
-              <StatusLabel status={guest?.status || 'Drafts'} />
-            ) : null}
+            {showGuestStatus ? <StatusLabel status={status} /> : null}
           </View>
-          {guest.isFollowing ? (
+
+          {user?.isFollowing ? (
             <View style={styles.followIndicator}>
               <Image source={IMAGES.user_check} style={styles.followIcon} />
             </View>
@@ -111,44 +100,41 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         <View style={styles.guestCardContent}>
           <View style={styles.profileImageContainer}>
             <ProfileImage
-              name={guest.name}
-              avatar={guest.avatar}
-              isMember={guest.isMember}
+              name={user?.name || ''}
+              profilePicture={user?.avatar}
             />
-            {guest.isMember && guest?.roles ? (
-              <MemberBadge role={guest?.roles[0].roleName} />
-            ) : (
-              <NonMemberBadge />
-            )}
+            {user?.isMember ? <MemberBadge /> : <NonMemberBadge />}
           </View>
-          <Text style={styles.name}>{guest?.name}</Text>
+          <Text style={styles.name}>{user?.name}</Text>
 
-          {/* {guest.isMember && ( */}
-          <>
-            <View style={styles.roleContainer}>
-              {guest?.interests?.map((interest: string, index: number) => (
-                <View key={index} style={styles.role}>
-                  <Text style={styles.roleText}>{interest}</Text>
+          {user?.isMember && (
+            <>
+              <View style={styles.roleContainer}>
+                {user?.roles?.map((role, index) => (
+                  <View key={index} style={styles.role}>
+                    <Text style={styles.roleText}>{role.name}</Text>
+                  </View>
+                ))}
+              </View>
+
+              <View style={styles.statsContainer}>
+                <View style={[styles.statItem, styles.leftStatItem]}>
+                  <Image source={IMAGES.hourglass} style={styles.statIcon} />
+                  <Text style={styles.statText}>
+                    {user?.age || 'N/A'} Years Old
+                  </Text>
                 </View>
-              ))}
-            </View>
-
-            <View style={styles.statsContainer}>
-              <View style={[styles.statItem, styles.leftStatItem]}>
-                <Image source={IMAGES.hourglass} style={styles.statIcon} />
-                <Text style={styles.statText}>{guest?.age} Years Old</Text>
+                <View style={[styles.statItem, styles.centerStatItem]}>
+                  <Image source={IMAGES.user_check} style={styles.statIcon} />
+                  <Text style={styles.statText}>{user?.followers || '0'}</Text>
+                </View>
+                <View style={[styles.statItem, styles.rightStatItem]}>
+                  <Image source={IMAGES.location} style={styles.statIcon} />
+                  <Text style={styles.statText}>{user?.location || 'N/A'}</Text>
+                </View>
               </View>
-              <View style={[styles.statItem, styles.centerStatItem]}>
-                <Image source={IMAGES.user_check} style={styles.statIcon} />
-                <Text style={styles.statText}>{guest?.followers}</Text>
-              </View>
-              <View style={[styles.statItem, styles.rightStatItem]}>
-                <Image source={IMAGES.location} style={styles.statIcon} />
-                <Text style={styles.statText}>{guest?.location}</Text>
-              </View>
-            </View>
-          </>
-          {/* )} */}
+            </>
+          )}
         </View>
       </View>
       <View style={styles.actionButtons}>
@@ -156,7 +142,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <TouchableOpacity
             key={index}
             style={[styles.actionButton, button.otherStyle]}
-            onPress={button.onPress}>
+            onPress={button.onPress}
+            disabled={button.loading}>
             <Image source={button.icon} style={styles.actionButtonIcon} />
             <Text style={styles.actionButtonText}>{button.title}</Text>
           </TouchableOpacity>
@@ -171,7 +158,6 @@ const styles = StyleSheet.create({
     paddingLeft: horizontalMarginScale(16),
     paddingRight: horizontalMarginScale(8),
     paddingTop: verticalMarginScale(8),
-    // marginBottom: verticalMarginScale(-40),
     zIndex: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -196,12 +182,12 @@ const styles = StyleSheet.create({
   },
   guestCard: {
     backgroundColor: COLORS.white,
+    borderWidth: verticalScale(1),
     borderTopLeftRadius: radiusScale(16),
     borderTopRightRadius: radiusScale(16),
     borderBottomLeftRadius: radiusScale(8),
     borderBottomRightRadius: radiusScale(8),
     overflow: 'hidden',
-    borderWidth: verticalScale(1),
     borderColor: COLORS.neutralBorder,
   },
   guestCardContent: {

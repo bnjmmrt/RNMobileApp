@@ -1,13 +1,16 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import Header from 'src/component/Header/Header';
 import { EventStackParamList } from 'src/navigation/EventStack';
 import { RootState } from 'src/redux/slices';
-import { setSelectedUsersToInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
+import {
+  removeSelectedUsersToInvite,
+  setSelectedUsersToInvite,
+} from 'src/redux/slices/inviteGuestsFlowSlice';
 import UserListItem, {
   UserItemInterface,
 } from 'src/screens/UsersModule/UsersListItem';
@@ -28,42 +31,72 @@ interface SelectedGuestsToInviteScreenProps
 
 const SelectedGuestsToInviteScreen: React.FC<
   SelectedGuestsToInviteScreenProps
-> = ({}) => {
+> = ({ route }) => {
   const styles = createStyles();
   const dispatch = useDispatch();
+  const { users } = route?.params || {};
 
-  const { selectedUsers } = useSelector(
+  const { selectedUsers, removedUsers } = useSelector(
     (state: RootState) => ({
       selectedUsers: state.inviteGuestsFlow.selectedUsers,
+      removedUsers: state.inviteGuestsFlow.removedUsers,
     }),
     shallowEqual,
   );
 
-  const onSelectUser = (user: UserItemInterface) => {
-    const isSelected = selectedUsers.some(
-      selectedUser => selectedUser.id === user.id,
-    );
-    if (isSelected) {
-      const newArray = selectedUsers.filter(u => u.id !== user.id);
-      dispatch(setSelectedUsersToInvite(newArray));
+  const [tempSelectedUsers, setTempSelectedUsers] = useState<
+    { isSelected: boolean; user: UserItemInterface }[]
+  >([]);
+
+  const onSelectUser = (
+    user: {
+      isSelected: boolean;
+      user: UserItemInterface;
+    },
+    index: number,
+  ) => {
+    let tempArray = [...tempSelectedUsers];
+
+    tempArray[index] = {
+      ...tempArray[index],
+      isSelected: !user.isSelected,
+    };
+    if (user.isSelected) {
+      // Removing from selectedUsers and adding to removedUsers
+      const newRemovedArray = [...removedUsers, user.user];
+      dispatch(removeSelectedUsersToInvite(newRemovedArray));
+
+      const newSelectedArray = selectedUsers.filter(u => u.id !== user.user.id);
+      dispatch(setSelectedUsersToInvite(newSelectedArray));
     } else {
-      const newArray = [...selectedUsers, user];
-      dispatch(setSelectedUsersToInvite(newArray));
+      // Adding to selectedUsers and removing from removedUsers
+      const newSelectedArray = [...selectedUsers, user.user];
+      dispatch(setSelectedUsersToInvite(newSelectedArray));
+
+      const newRemovedArray = removedUsers.filter(u => u.id !== user.user.id);
+      dispatch(removeSelectedUsersToInvite(newRemovedArray));
     }
+
+    setTempSelectedUsers(tempArray);
   };
 
   const renderItem = useCallback(
-    ({ item }: { item: UserItemInterface }) => {
-      const isSelected = selectedUsers.some(user => user.id === item.id);
+    ({
+      item,
+      index,
+    }: {
+      item: { isSelected: boolean; user: UserItemInterface };
+      index: number;
+    }) => {
       return (
         <UserListItem
-          item={item}
-          onSelectUser={onSelectUser}
-          isSelected={isSelected}
+          item={item.user}
+          onSelectUser={() => onSelectUser(item, index)}
+          isSelected={item.isSelected}
         />
       );
     },
-    [selectedUsers],
+    [tempSelectedUsers],
   );
 
   useFocusEffect(
@@ -74,6 +107,15 @@ const SelectedGuestsToInviteScreen: React.FC<
     }, []),
   );
 
+  useEffect(() => {
+    if (users) {
+      let tempData = users.map(item => {
+        return { isSelected: true, user: item };
+      });
+      setTempSelectedUsers(tempData);
+    }
+  }, [users]);
+
   return (
     <View style={styles.container}>
       <Header
@@ -82,7 +124,7 @@ const SelectedGuestsToInviteScreen: React.FC<
       />
 
       <FlatList
-        data={selectedUsers || []}
+        data={tempSelectedUsers || []}
         style={{
           marginHorizontal: horizontalMarginScale(20),
           marginTop: verticalMarginScale(16),
@@ -93,6 +135,7 @@ const SelectedGuestsToInviteScreen: React.FC<
         ListFooterComponent={
           <View style={{ marginBottom: verticalMarginScale(150) }} />
         }
+        extraData={tempSelectedUsers}
         ListEmptyComponent={
           <View
             style={{

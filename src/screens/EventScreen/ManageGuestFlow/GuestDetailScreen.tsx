@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  Alert,
 } from 'react-native';
-import { COLORS, BUTTON_LABLE } from 'src/utils/constants';
+import { COLORS, BUTTON_LABLE, LABLE } from 'src/utils/constants';
 import { fontFamily } from 'src/utils/functions';
 import {
   fontScale,
@@ -22,6 +23,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import IMAGES from '@images/index';
 import Button from 'src/component/Button';
 import ProfileCard from '../Guest/ProfileCard';
+import AddedBySection from '../Guest/AddedBySection';
 import InviteDetails from '../Guest/InviteGuestDetailForm';
 import Questionnaire from '../Guest/Questionnaire';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
@@ -29,70 +31,176 @@ import TicketTypeBottomSheet, {
   TicketType,
 } from '../InviteGuestInEventFlow/TicketTypeBottomSheet';
 import DeclineBottomSheet from '../Guest/DeclineBottomSheet';
+import { EventGuest } from '../types';
+import { useManageGuestMutation } from 'src/redux/actions/eventApiAction';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+import {
+  useMarkUserFavMutation,
+  useUnmarkUserFavMutation,
+  useFetchUserDetailsQuery,
+} from 'src/redux/actions/usersApiAction';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { ROUTES } from 'src/navigation/Route';
 
-interface GuestDetailScreenProps extends NativeStackScreenProps<any, any> {}
+enum GuestStatus {
+  DRAFT = 'DRAFT',
+  INVITED = 'INVITED',
+  CONFIRMED = 'CONFIRMED',
+  DECLINED = 'DECLINED',
+  APPLIED = 'APPLIED',
+  REFUSED = 'REFUSED',
+}
+
+interface GuestDetailScreenProps extends NativeStackScreenProps<any, any> {
+  guest?: EventGuest;
+}
 
 const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   navigation,
   route,
-}) => {
-  const guest = route.params?.guest;
-  const status = guest?.status?.toLowerCase() || 'drafts';
+}): JSX.Element => {
+  const guest = route.params?.guest as EventGuest;
+  const status = guest?.status?.toLowerCase() || 'draft';
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  const selectedEvent = useSelector(
+    (state: RootState) => state.inviteGuestsFlow.selectedEvent,
+  );
 
   const actionSheetRef = useRef<BottomSheetMethods>(null);
+  const ticketTypeRef = useRef<any>(null);
   const declineSheetRef = useRef<BottomSheetMethods>(null);
 
-  const [selectedTicketType, setSelectedTicketType] =
-    React.useState<TicketType>();
-  const [additionalGuests, setAdditionalGuests] = React.useState(0);
-  const [inviteMessage, setInviteMessage] = React.useState('');
-  const [guestNote, setGuestNote] = React.useState('');
-  const [directlySendToConfirm, setDirectlySendToConfirm] =
-    React.useState(false);
+  const [manageGuest] = useManageGuestMutation();
+  const [markUserFav] = useMarkUserFavMutation();
+  const [unmarkUserFav] = useUnmarkUserFavMutation();
 
-  // Mock ticket types data
-  const mockTicketTypes: TicketType[] = [
-    {
-      id: '1',
-      name: 'Standard',
-      capacity: 100,
-      description: 'Standard ticket type',
-      enabled: true,
-    },
-    {
-      id: '2',
-      name: 'VIP',
-      capacity: 50,
-      description: 'VIP ticket type with premium benefits',
-      enabled: true,
-    },
-    {
-      id: '3',
-      name: 'Premium',
-      capacity: 25,
-      description: 'Premium ticket type with exclusive access',
-      enabled: true,
-    },
-  ];
+  const { data: userDetails } = useFetchUserDetailsQuery(
+    { user: guest?.userId || '' },
+    { skip: !guest?.userId },
+  );
 
-  const handleFavorite = () => {
-    // Handle favorite action
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const [selectedTicketType, setSelectedTicketType] = useState<TicketType>();
+  const [additionalGuests, setAdditionalGuests] = useState(
+    guest?.maxAdditionalGuests,
+  );
+  const [inviteMessage, setInviteMessage] = useState('');
+  const [guestNote, setGuestNote] = useState(guest?.privateGuestNote || '');
+  const [directlySendToConfirm, setDirectlySendToConfirm] = useState(false);
+
+  const [isLoadingFavorite, setIsLoadingFavorite] = useState(false);
+  const [isLoadingAction, setIsLoadingAction] = useState(false);
+  const [isLoadingDecline, setIsLoadingDecline] = useState(false);
+
+  useEffect(() => {
+    if (guest?.ticketType && selectedEvent?.ticketTypes) {
+      const matchingTicket = selectedEvent.ticketTypes.find(
+        (ticket: TicketType) => ticket.name === guest.ticketType,
+      );
+      if (matchingTicket) {
+        setSelectedTicketType(matchingTicket);
+      }
+    }
+  }, [guest?.ticketType, selectedEvent?.ticketTypes]);
+
+  useEffect(() => {
+    if (userDetails?.data?.isFavourite !== undefined) {
+      setIsFavorite(userDetails.data.isFavourite);
+    }
+  }, [userDetails?.data?.isFavourite]);
+
+  const handleGuestAction = async (
+    action: 'CREATE' | 'UPDATE' | 'DELETE',
+    newStatus?: GuestStatus,
+  ) => {
+    try {
+      setIsLoadingAction(true);
+      const payload = {
+        status: newStatus,
+        guestStatus: newStatus as GuestStatus,
+        ticketTypeId: selectedTicketType?.id,
+        maxAdditionalGuests: additionalGuests,
+        inviteMessage,
+        privateGuestNote: guestNote,
+        directlySendToConfirm,
+      };
+
+      await manageGuest({
+        guestId: guest?.id,
+        action,
+        payload,
+      }).unwrap();
+
+      FlashMessageComponent.show(
+        'success',
+        `${guest.name}'s invite has been updated`,
+      );
+
+      navigation.goBack();
+    } catch (error) {
+      console.log('error', error);
+      Alert.alert('Error', 'Failed to update guest status');
+    } finally {
+      setIsLoadingAction(false);
+    }
+  };
+
+  const handleFavorite = async () => {
+    try {
+      setIsLoadingFavorite(true);
+      if (!userId || !guest?.userId) {
+        FlashMessageComponent.show('error', 'Unable to update favorite status');
+        return;
+      }
+
+      if (isFavorite) {
+        await unmarkUserFav({
+          user: userId,
+          targetUserId: guest.userId,
+        }).unwrap();
+        FlashMessageComponent.show('success', 'Removed from favorites');
+      } else {
+        await markUserFav({
+          user: userId,
+          targetUserId: guest.userId,
+        }).unwrap();
+        FlashMessageComponent.show('success', 'Added to favorites');
+      }
+      setIsFavorite(!isFavorite);
+    } catch (error) {
+      FlashMessageComponent.show('error', 'Failed to update favorite status');
+    } finally {
+      setIsLoadingFavorite(false);
+    }
+  };
+
+  const handleDeclineAction = async () => {
+    try {
+      setIsLoadingDecline(true);
+      await handleGuestAction('DELETE', GuestStatus.INVITED);
+    } finally {
+      setIsLoadingDecline(false);
+    }
   };
 
   const handleProfile = () => {
-    // Handle profile action
+    navigation.navigate(ROUTES.UserDetail, {
+      user: guest?.userId,
+    });
   };
 
   const getDeclineSheetProps = () => {
     switch (status) {
-      case 'drafts':
+      case 'draft':
         return {
           title: 'Remove Guest from Drafts',
           description:
             'Are you sure you want to remove \nselected guests from Drafts?',
           buttonText: 'Remove from Drafts',
         };
-      case 'requested':
+      case 'applied':
         return {
           title: 'Delete Request',
           description:
@@ -122,50 +230,73 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     }
   };
 
-  const handleDelete = () => {
-    // Handle delete action here
-    console.log('Deleting guest:', guest);
-  };
-
   const renderFooterButtons = () => {
     switch (status) {
-      case 'drafts':
+      case 'draft':
         return (
           <>
             <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => declineSheetRef.current?.open()}>
-              <Image source={IMAGES.trash} style={styles.trashIcon} />
+              style={[
+                styles.deleteButton,
+                isLoadingDecline && styles.disabledButton,
+              ]}
+              onPress={() => declineSheetRef.current?.open()}
+              disabled={isLoadingDecline}>
+              <Image
+                source={IMAGES.trash}
+                style={[
+                  styles.trashIcon,
+                  isLoadingDecline && styles.disabledIcon,
+                ]}
+              />
             </TouchableOpacity>
             <View style={styles.footerButtons}>
               <Button
                 style={styles.draftButton}
                 title={BUTTON_LABLE.SAVE_DRAFT}
                 colorTheme="light"
-                onPress={() => {}}
+                onPress={() => handleGuestAction('UPDATE', GuestStatus.DRAFT)}
+                loading={isLoadingAction}
               />
               <Button
                 style={styles.sendButton}
                 title={BUTTON_LABLE.SEND_INVITE}
                 colorTheme="dark"
-                onPress={() => {}}
+                onPress={() =>
+                  handleGuestAction(
+                    guest?.id ? 'UPDATE' : 'CREATE',
+                    GuestStatus.INVITED,
+                  )
+                }
+                loading={isLoadingAction}
               />
             </View>
           </>
         );
-      case 'requested':
+      case 'applied':
         return (
           <>
             <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => declineSheetRef.current?.open()}>
-              <Image source={IMAGES.trash} style={styles.trashIcon} />
+              style={[
+                styles.deleteButton,
+                isLoadingDecline && styles.disabledButton,
+              ]}
+              onPress={() => declineSheetRef.current?.open()}
+              disabled={isLoadingDecline}>
+              <Image
+                source={IMAGES.trash}
+                style={[
+                  styles.trashIcon,
+                  isLoadingDecline && styles.disabledIcon,
+                ]}
+              />
             </TouchableOpacity>
             <Button
               style={[styles.sendButton]}
               title={BUTTON_LABLE.APPROVE_REQUEST}
               colorTheme="dark"
-              onPress={() => {}}
+              onPress={() => handleGuestAction('UPDATE', GuestStatus.CONFIRMED)}
+              loading={isLoadingAction}
             />
           </>
         );
@@ -177,38 +308,37 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               title={BUTTON_LABLE.MARK_AS_SPAM}
               colorTheme="dark"
               onPress={() => declineSheetRef.current?.open()}
+              loading={isLoadingAction}
             />
           </>
         );
       case 'confirmed':
-        return (
-          <>
-            <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => declineSheetRef.current?.open()}>
-              <Image source={IMAGES.trash} style={styles.trashIcon} />
-            </TouchableOpacity>
-            <Button
-              style={[styles.sendButton]}
-              title={BUTTON_LABLE.UPDATE_INVITE}
-              colorTheme="dark"
-              onPress={() => {}}
-            />
-          </>
-        );
       case 'invited':
         return (
           <>
             <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => declineSheetRef.current?.open()}>
-              <Image source={IMAGES.trash} style={styles.trashIcon} />
+              style={[
+                styles.deleteButton,
+                isLoadingDecline && styles.disabledButton,
+              ]}
+              onPress={() => declineSheetRef.current?.open()}
+              disabled={isLoadingDecline}>
+              <Image
+                source={IMAGES.trash}
+                style={[
+                  styles.trashIcon,
+                  isLoadingDecline && styles.disabledIcon,
+                ]}
+              />
             </TouchableOpacity>
             <Button
               style={[styles.sendButton]}
               title={BUTTON_LABLE.UPDATE_INVITE}
               colorTheme="dark"
-              onPress={() => {}}
+              onPress={() =>
+                handleGuestAction('UPDATE', guest?.status as GuestStatus)
+              }
+              loading={isLoadingAction}
             />
           </>
         );
@@ -220,92 +350,100 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerTop}>
-        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => navigation.goBack()}>
           <View style={styles.iconButton}>
             <Image source={IMAGES.leftArrow} style={styles.icon} />
           </View>
         </TouchableOpacity>
-        <Text style={styles.title}>Manage Invite</Text>
+        <Text style={styles.title}>{LABLE.MANAGE_INVITE}</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View>
           <ProfileCard
-            guest={{
-              name: guest?.name || '',
-              avatar: guest?.avatar,
-              roles: guest?.roles || [],
-              age: guest?.age,
-              followers: guest?.followers,
-              location: guest?.location,
-              isMember: guest?.isMember,
-              status: guest?.status,
+            user={{
+              name: guest.name,
+              avatar: userDetails?.data?.imageUrl || guest.profilePicture,
+              roles:
+                userDetails?.data?.focuses ||
+                guest.category?.map(cat => ({ name: cat, id: cat })) ||
+                [],
+              age: userDetails?.data?.age || guest.age,
+              followers:
+                userDetails?.data?.socialStats?.instagramFollowersCount?.toString() ||
+                guest.numFollowers?.toString() ||
+                '0',
+              location: userDetails?.data?.city || '.',
+              isMember:
+                userDetails?.data?.role === 'member' ||
+                Boolean(guest.age && guest.baseCity),
+              status: userDetails?.data?.status || guest.status,
+              interests:
+                userDetails?.data?.interest?.split(', ') ||
+                guest.interest ||
+                [],
+              isFollowing: userDetails?.data?.isFollow || false,
             }}
+            showGuestStatus={true}
+            status={guest?.status}
             actionButtons={[
               {
                 title: 'Favorite',
-                icon: IMAGES.star_inactive,
+                icon: isFavorite ? IMAGES.star_active : IMAGES.star_inactive,
                 onPress: handleFavorite,
+                loading: isLoadingFavorite,
               },
               {
                 title: 'Profile',
                 icon: IMAGES.arrow_up_right,
                 onPress: handleProfile,
+                loading: false,
               },
             ]}
+          />
+          <AddedBySection
+            user={{
+              name: guest.addedBy || '',
+              id: guest.addedBy || '',
+            }}
           />
         </View>
 
         <View style={styles.inviteSection}>
           <InviteDetails
             isCollapsible
-            selectedTicketType={selectedTicketType}
+            ticketTypeError={''}
+            ticketTypeRef={ticketTypeRef}
+            selectedTicketType={
+              selectedTicketType ||
+              (guest?.ticketType
+                ? {
+                    id: guest.ticketType, // We don't have the ID yet
+                    name: guest.ticketType, // But we have the name
+                  }
+                : undefined)
+            }
             onTicketTypePress={() => actionSheetRef?.current?.open()}
-            additionalGuests={additionalGuests}
+            additionalGuests={additionalGuests || 0}
             onAdditionalGuestsChange={setAdditionalGuests}
-            maxAdditionalGuests={5}
             inviteMessage={inviteMessage}
             onInviteMessageChange={setInviteMessage}
             guestNote={guestNote}
             onGuestNoteChange={setGuestNote}
+            maxAdditionalGuests={guest?.partySize}
+            eventName={selectedEvent?.name}
+            eventStartDate={selectedEvent?.startDate}
             directlySendToConfirm={directlySendToConfirm}
             onDirectlySendToConfirmChange={setDirectlySendToConfirm}
           />
-          <View style={{ marginTop: verticalMarginScale(16) }}>
-            <Questionnaire
-              isCollapsible
-              data={
-                guest?.questionnaire || [
-                  {
-                    question:
-                      'Have you attended one of our events in the past?',
-                    answer: "Yes! Last year's Super Bowl party in Arizona",
-                  },
-                  {
-                    question:
-                      'Any guest references that are currently members?',
-                    answer: 'Close friends - Olivia Culpo, Arielle Charnas',
-                  },
-                  {
-                    question: 'What interests you most about this event?',
-                    answer:
-                      'The networking opportunities and creative collaborations',
-                  },
-                  {
-                    question:
-                      'Do you have any dietary restrictions or preferences?',
-                    answer: 'No specific requirements',
-                  },
-                  {
-                    question:
-                      'Would you be interested in contributing to the event (e.g., performing, speaking)?',
-                    answer:
-                      'Yes, would love to share my experience in the industry',
-                  },
-                ]
-              }
-            />
-          </View>
+
+          {Boolean(guest?.questions?.length) && (
+            <View style={{ marginTop: verticalMarginScale(16) }}>
+              <Questionnaire isCollapsible data={guest?.questions || []} />
+            </View>
+          )}
         </View>
       </ScrollView>
 
@@ -313,7 +451,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 
       <TicketTypeBottomSheet
         ref={actionSheetRef}
-        ticketTypes={mockTicketTypes}
+        ticketTypes={selectedEvent?.ticketTypes || []}
         selectedTicketType={selectedTicketType}
         setSelectedTicketType={setSelectedTicketType}
       />
@@ -321,7 +459,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       <DeclineBottomSheet
         ref={declineSheetRef}
         {...getDeclineSheetProps()}
-        onConfirm={handleDelete}
+        onConfirm={handleDeclineAction}
       />
     </SafeAreaView>
   );
@@ -421,6 +559,23 @@ const styles = StyleSheet.create({
   spamButton: {
     flex: 1,
     backgroundColor: COLORS.errorText,
+  },
+  addedByWrapper: {
+    marginTop: verticalMarginScale(-8),
+    marginBottom: verticalMarginScale(8),
+    backgroundColor: COLORS.white,
+    borderBottomLeftRadius: radiusScale(8),
+    borderBottomRightRadius: radiusScale(8),
+    borderColor: COLORS.neutralBorder,
+    borderWidth: verticalScale(1),
+    borderTopWidth: 0,
+    paddingVertical: verticalMarginScale(8),
+  },
+  disabledButton: {
+    opacity: 0.5,
+  },
+  disabledIcon: {
+    opacity: 0.7,
   },
 });
 

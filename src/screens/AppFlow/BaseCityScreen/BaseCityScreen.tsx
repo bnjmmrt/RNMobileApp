@@ -1,35 +1,36 @@
-import React, {useCallback, useState} from 'react';
-import {TouchableOpacity, View} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {LABLE, BUTTON_LABLE, ERROR_MESSAGE} from '../../../utils/constants';
+import React, { useCallback, useState } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants';
 import BaseCityScreenStyles from './BaseCityScreenStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
-import IMAGES from '../../../assets/images';
 import Header from '../../../component/Header/Header';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../redux/slices';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/slices';
 import {
   Address,
   setBaseCity,
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
-import LocationPickerModal from '../../../component/BottomSheet/LocationPickerModal';
-import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
-import {useFocusEffect} from '@react-navigation/native';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { useFocusEffect } from '@react-navigation/native';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import GooglePlacesInput from 'src/component/GooglePlacesInput/GooglePlacesInput';
+import { SelectedSingleFilter } from 'src/component/FilterSheet';
+import { View } from 'react-native-animatable';
 
+export type SelectedFilters = {
+  [id: string]: SelectedSingleFilter;
+};
 interface BaseCityScreenProps extends NativeStackScreenProps<any, any> {}
 
-const BaseCityScreen: React.FC<BaseCityScreenProps> = ({navigation}) => {
+const BaseCityScreen: React.FC<BaseCityScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
   const baseCity = useSelector((state: RootState) => state.appFlow.baseCity);
   const [selectedCity, setSelectedCity] = useState<Address>(baseCity);
+console.log(selectedCity)
 
   const styles = BaseCityScreenStyles();
-  const [isShown, setIsShown] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const onNextClick = () => {
@@ -54,9 +55,9 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({navigation}) => {
     navigation.goBack();
   };
 
-  const openLocationPicker = () => {
-    console.log('clicked');
-    setIsShown(!isShown);
+  const onChangeLocationValue = (location: any) => {
+    console.log('setSelectedFiltered', location);
+    setSelectedCity(location);
   };
 
   useFocusEffect(
@@ -74,7 +75,7 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({navigation}) => {
           title={LABLE.WHERE_DO_YOU_CALL_HOME}
           subTitle={LABLE.WE_WILL_RECOMMEND_EVENTS_AND_EXPERIENCES_NEAR_YOU}
         />
-        <TouchableOpacity onPress={openLocationPicker}>
+        {/* <TouchableOpacity onPress={openLocationPicker}>
           <CustomSelectableText
             placeholder={LABLE.SEARCH_FOR_A_LOCATION}
             leftImage={IMAGES.search}
@@ -89,7 +90,66 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({navigation}) => {
             setLocation={setSelectedCity}
             setIsShown={setIsShown}
           />
-        )}
+        )} */}
+
+        <GooglePlacesInput
+        defaultValue={selectedCity.address}
+          errorMessage={errorMessage}
+          setError={setErrorMessage}
+          submit={() => {}}
+          setLocation={location => {
+            onChangeLocationValue({
+              placeId: location.placeId,
+              address: location.address,
+              lat: location.latitude,
+              long: location.longitude,
+            });
+          }}
+        />
+
+        {/* {errorMessage ? (
+          <Text style={[styles.errorText]}>{errorMessage}</Text>
+        ) : null} */}
+        {/* {showSelectedLocationChip && (
+            // <BottomSheetScrollView
+            //   contentContainerStyle={{
+            //     gap: horizontalMarginScale(4),
+            //     flexDirection: 'row',
+            //     flexWrap: 'wrap',
+            //   }}
+            //   style={{marginTop: verticalMarginScale(16)}}
+            //   scrollEnabled={false}>
+            //   {selectedFilters[id].value.map(
+            //     (
+            //       item: {
+            //         id: string | DateType;
+            //         name: string;
+            //         lat?: string;
+            //         long?: string;
+            //       },
+            //       index: number,
+            //     ) => {
+            //       return (
+            //         <Chip
+            //           title={item.name}
+            //           isSelected={
+            //             selectedFilters
+            //               ? selectedFilters[id]?.value?.includes(item)
+            //               : false || false
+            //           }
+            //           onPress={optionId => {
+            //             onChangeFilterOptionValue({
+            //               id: String(item.id),
+            //               name: item.name,
+            //             })
+            //           }}
+            //           id={String(item.id)}
+            //         />
+            //       );
+            //     },
+            //   )}
+            // </BottomSheetScrollView>
+          )} */}
       </View>
 
       <Button
