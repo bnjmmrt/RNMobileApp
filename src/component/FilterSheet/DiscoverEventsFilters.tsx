@@ -1,10 +1,11 @@
 import {
   BottomSheetFlatList,
   BottomSheetFlatListMethods,
-  BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
+import moment from 'moment';
 import React, {useCallback, useRef} from 'react';
 import {InteractionManager} from 'react-native';
+import {DateType} from 'react-native-ui-datepicker';
 import GradientSeprator from 'src/component/GradientSeprator';
 import {feedList} from 'src/utils/constants';
 import {horizontalMarginScale} from 'src/utils/dimensions';
@@ -33,7 +34,13 @@ const DiscoverEventsFilters = ({
   const onChangeFilterOptionValue = (
     id: string,
     optionType: FilterOptionTypes,
-    value: {id: string; name: string} | string[],
+    value: {
+      id: string;
+      name: string;
+      date?: DateType[];
+      lat?: string;
+      long?: string;
+    },
   ) => {
     let tempSelectedFilter = {...selectedFilters};
 
@@ -75,31 +82,43 @@ const DiscoverEventsFilters = ({
         if (value.long) {
           tempSelectedFilter['longitude'] = {
             type: optionType,
-            value: [value.long],
+            value: [{id: value.long, name: value.name}],
           };
         }
         if (value.lat) {
           tempSelectedFilter['latitude'] = {
             type: optionType,
-            value: [value.lat],
+            value: [{id: value.lat, name: ''}],
           };
         }
       }
     } else if (optionType === 'dateRange') {
-      if (!Array.isArray(value)) {
-        if (value.name === 'minStartDate') {
-          tempSelectedFilter['minStartDate'] = {
-            type: 'minStartDate',
-            value: [value],
-          };
-        }
-        if (value.name === 'maxEndDate') {
-          tempSelectedFilter['maxEndDate'] = {
-            type: 'maxEndDate',
-            value: [value],
-          };
-        }
-      }
+      const startDate = value?.date[0];
+      const endDate = value?.date[1];
+      tempSelectedFilter['minStartDate'] = {
+        type: 'minStartDate',
+        value: [
+          {
+            id: moment(new Date(startDate)).format('YYYY-MM-DD'),
+            date: startDate,
+            name:
+              moment(new Date(startDate)).format('MMM DD, YYYY') +
+                ' - ' +
+                moment(new Date(endDate)).format('MMM DD, YYYY') || '',
+          },
+        ],
+      };
+
+      tempSelectedFilter['maxEndDate'] = {
+        type: 'maxEndDate',
+        value: [
+          {
+            id: moment(new Date(endDate)).format('YYYY-MM-DD'),
+            date: endDate,
+            name: '',
+          },
+        ],
+      };
     }
     setSelectedFilters(tempSelectedFilter);
   };
@@ -132,6 +151,7 @@ const DiscoverEventsFilters = ({
             onChangeOptionValue={onChangeFilterOptionValue}
             setDisableApplyCta={setDisableApplyCta}
             showSelectedLocationChip={false}
+            onOpenNestedAccordian={() => scrollToOpenedAccordian(index)}
           />
         </FilterAccordian>
       );
@@ -169,16 +189,15 @@ const DiscoverEventsFilters = ({
   ];
 
   return (
-    <BottomSheetScrollView>
-      <BottomSheetFlatList
-        data={filterData || []}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => `filters_header_${index.toString()}`}
-        showsVerticalScrollIndicator={false}
-        ItemSeparatorComponent={itemSeparatorComponent}
-        contentContainerStyle={{marginHorizontal: horizontalMarginScale(12)}}
-      />
-    </BottomSheetScrollView>
+    <BottomSheetFlatList
+      ref={filtersListRef}
+      data={filterData || []}
+      renderItem={renderItem}
+      keyExtractor={(item, index) => `filters_header_${index.toString()}`}
+      showsVerticalScrollIndicator={false}
+      ItemSeparatorComponent={itemSeparatorComponent}
+      contentContainerStyle={{marginHorizontal: horizontalMarginScale(12)}}
+    />
   );
 };
 

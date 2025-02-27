@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.borderGray,
     borderRadius: 15,
-    padding: 15,
+    paddingHorizontal: 15,
+    paddingTop: 20,
     backgroundColor: COLORS.white,
   },
   icon: {
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
   title: {
     color: COLORS.black2,
     fontSize: 16,
-    marginBottom: 10,
+    marginBottom: 5,
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
   divider: {

@@ -1,11 +1,14 @@
 import { TabItem } from 'src/component/ActiveTabBar/DynamicTabBar';
 
 export const BUTTON_LABLE = {
+  MAIL_SUBJECT:"Rumor Application Verification",
+  MAIL_BODY:"Hi Rumor Team, I'd like to verify my identity for my Rumor application.My verification code is: RUMORAPP",
   ENTER: 'Enter',
   NEXT: 'Next',
   RSVP: 'RSVP',
   APPLY_TO_BE_HOST: 'Apply to be a Host',
   GET_STARTED: 'Get Started',
+  SAVE_TO_FILE: 'Save to Files',
   RESEND: 'Resend',
   SUBMTI_APPLICATION: 'Submit Application',
   UPDATE_APPLICATION: 'Update Application',
@@ -48,7 +51,19 @@ export const BUTTON_LABLE = {
   ADD_GUEST_DETAILS: 'Add Guest Details',
   ADD: 'Add',
   DISCOVER_MORE_EVENTS: 'Discover More Events',
-};
+  CHECK_IN: 'Check In',
+  SHOW_TICKET_BREAKDOWN: 'Show Ticket Breakdown',
+  SAVE_DRAFT: 'Save Draft',
+  SEND_INVITE: 'Send Invite',
+  APPROVE_REQUEST: 'Approve Request',
+  UPDATE_INVITE: 'Update Invite',
+  MARK_AS_SPAM: 'Mark as Spam',
+  PROFILE: 'Profile',
+  INVITE_GUESTS: 'Invite Guests',
+  INVITE_FROM_CONTACTS: 'Invite from Contacts',
+  INVITE_MANUALLY: 'Invite Manually',
+  CLEAR: "Clear"
+} as const;
 
 export const LABLE = {
   WELCOME: 'Welcome to Rumors!',
@@ -59,35 +74,36 @@ export const LABLE = {
     'Rumor will send you an email with a verification code.',
   RUMOR_WILL_SEND_YOU_A_TEXT_WITH_A_VERIFICATION_CODE:
     'Rumor will send you a text with a verification code.',
-  EROOR_ENTER_PHONE_NUMBER: 'Please enter a valid phone number',
+  EROOR_ENTER_PHONE_NUMBER: 'Please enter a phone number.',
+  EROOR_ENTER_VALID_PHONE_NUMBER:'Please enter a valid phone number.',
   EROOR_ENTER_EMAIL: 'Please enter a valid email address',
   ERROR_VERIFY_CODE:
     'The code you entered cannot be verified. Please try again.',
   EROOR_ENTER_CODE: 'Please enter a verification code',
   ENTER_YOUR_VERIFICATION_CODE: 'Enter your verification code',
   SEND_TO: 'Sent to ',
-  DONT_GET_CODE: 'Didn’t get a code?',
-  ENTER_YOUR_NAME: 'Let’s start with your name.',
+  DONT_GET_CODE: "Didn't get a code?",
+  ENTER_YOUR_NAME: "Let's start with your name.",
   FIRST_NAME: 'First Name',
   LAST_NAME: 'Last Name',
-  WHATS_YOUR_EMAIL_ADDRESS: 'What’s your email address?',
-  WHATS_YOUR_PHONE_NUMBER: 'What’s your phone number?',
+  WHATS_YOUR_EMAIL_ADDRESS: "What's your email address?",
+  WHATS_YOUR_PHONE_NUMBER: "What's your phone number?",
   WHATS_YOUR_PHONE_NUMBER_SUBTITLE:
-    'We’ll contact you for membership and event updates.',
+    "We'll contact you for membership and event updates.",
   WHATS_YOUR_EMAIL_SUBTITLE:
     "We'll contact you for membership and event updates.",
   EMAIL_ADDRESS: 'Email Address',
-  WHATS_YOUR_GENDER: 'What’s your gender?',
+  WHATS_YOUR_GENDER: "What's your gender?",
   SELECT_THE_OPTION_THAT_BEST_DESCRIBES_YOU:
     'Select the option that best describes you.',
-  WHEN_IS_YOUR_BIRTHDAY: 'When’s your birthday?',
+  WHEN_IS_YOUR_BIRTHDAY: "When's your birthday?",
   WE_WILL_USE_THIS_INFORMATION_TO_TAILOR_YOUR_EXPERIENCE:
-    'We’ll use this information to tailor your experience.',
+    "We'll use this information to tailor your experience.",
   WHERE_DO_YOU_CALL_HOME: 'Where do you call home?',
   WE_WILL_RECOMMEND_EVENTS_AND_EXPERIENCES_NEAR_YOU:
-    'We’ll recommend events and experiences near you.',
+    "We'll recommend events and experiences near you.",
   WHAT_IS_YOUR_CREATIVE_OR_PROFESSIONAL_FOCUS:
-    'What’s your creative or professional focus?',
+    "What's your creative or professional focus?",
   YOU_CAN_CHOOSE_UP_TO_3_CATEGORIES: 'You can choose up to 3 categories',
   SEARCH_FOR_A_LOCATION: 'Search for a Location…',
   DATE_PLACEHOLDER: 'MM/DD/YYYY',
@@ -107,11 +123,11 @@ export const LABLE = {
   SET_UP_YOUR_ACCOUNT: 'Set up your account',
   ACCOUNT_SETTINGS: 'Account Settings',
   IDENTITY_VERIFICATION: 'Identity Verification',
-  IDENTITY_VERIFICATION_TITLE: 'Last step, what’s your Instagram?',
+  IDENTITY_VERIFICATION_TITLE: "Last step, what's your Instagram?",
   IDENTITY_VERIFICATION_SUBTITLE: 'This helps us verify your online identity.',
   CHOOSE_YOUR_INTERESTS: 'Choose your interests',
   CHOOSE_YOUR_INTERESTS_SUBTITLE:
-    'Select topics of interests so we can curate experiences you’ll want to attend.',
+    "Select topics of interests so we can curate experiences you'll want to attend.",
   ADD_A_PHOTO: 'Add a photo',
   ADD_A_PHOTO_SUBTITLE: 'Upload a profile photo to complete your profile.',
   CHAT_WITH_HOST: 'Chat\nwith hosts.',
@@ -135,20 +151,20 @@ export const LABLE = {
   COMPLETE_VERIFICATION: 'Complete Verification',
   SEND_DIRECT_MSG_CODE: 'Send direct message with the code:',
   WE_WILL_REVIEW_APP:
-    'We’ll review your application after we receive your message.',
+    "We'll review your application after we receive your message.",
   EMAIL_THE_CODE: 'Email the code to:',
   DONT_USE_INSTAGRAM: "Don't use Instagram?",
   REFERRAL_CODE: 'Referral Code',
   IF_YOU_HAVE_ANY_REFERRAL_CODE: 'If you have a referral code, enter it below.',
   ENTER_CODE: 'Enter Code',
   SELECT_A_REFERRAL: 'Select a Referral',
-  SEARCH_FRIENDS: 'Search friends..',
+  SEARCH_FRIENDS: 'Search friends',
   FRIENDS_WHO_ARE_MEMBERS: 'Friends who are members',
   REQUEST_A_REFERRAL:
     'Request a referral from a Rumor member to boost your application.',
   CONTACTS: 'Contacts',
   INVITE_FRIENDS_TO: 'Invite friends to fast track your membership approval.',
-  YOU_ARE_ON_WAITLIST: 'You’re on\nthe waitlist.',
+  YOU_ARE_ON_WAITLIST: "You're on the waitlist.",
   FULL_ACCESS_UNLOCK:
     'Full access will be unlocked once your application is approved.',
   FASTRACK_YOUR_APPLICATION: 'Want to fast-track your application?',
@@ -156,17 +172,19 @@ export const LABLE = {
   INVITE_YOUR_FRIEND: 'Invite your friends to join Rumor.',
   SELECT_YOUR_BIRTHDAY_BELOW: 'Select your birthday below',
   WELCOME_NOTE_LINE_1:
-    "Your application has been approved. You’re now part of a private network connecting you to experiences from the world's top event organizers.",
+    "Your application has been approved. You're now part of a private network connecting you to experiences from the world's top event organizers.",
   WELCOME_NOTE_LINE_2:
     'At Rumor, we value positivity, respect, and meaningful connections. Please take a moment to review our',
   WELCOME_NOTE_LINE_3:
-    'We’re excited to have you in our community and can’t wait for you to explore everything Rumor has to offer.',
+    "We're excited to have you in our community and can't wait for you to explore everything Rumor has to offer.",
   LOGOUT: 'Log Out',
   COMING_SOON: 'Coming Soon…',
   OTP_VERIFIED_SUCCESSFULLY: 'OTP verified successfully!',
   SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN:
     'Something went wrong, please try again',
+  INVALID_OTP: "The code you entered cannot be verified. Please try again.",
   ABOUT_THE_EVENT: 'About the Event',
+  GUEST_LIST: 'Guest List',
   FEATURE_TALENT: 'Featured Talent',
   EVENT_ANNOUNCEMENTS: 'Event Announcements',
   NO_EVENT_ANNOUNCEMENTS: 'No event announcements',
@@ -176,7 +194,7 @@ export const LABLE = {
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent bland',
   PHONE_NUMBER: 'Phone Number',
   RSVP_TEXT: `If you select ‘No’, you cannot change your response. If you later decide you’d like to attend, you’ll need to request another invite from the host.`,
-  WE_WERE_SORRY_CANT_MAKE_IT: 'We’re sorry you         can’t make it.',
+  WE_WERE_SORRY_CANT_MAKE_IT: 'We’re sorry you can’t make it.',
   YOU_DECLINED_THIS_INVITATION: 'You declined this invitation',
   DISCOVER_MORE_EVENTS: 'Discover More Events',
   RSVP_QUESTION_DETAILS:
@@ -191,8 +209,7 @@ export const LABLE = {
     'Easily sync your phone contacts to invite friends to join you at events.',
   SYNC_CONTACT_SEETTINGS: 'Sync Contacts in Settings',
   ADD_GUEST: 'Add Guest',
-  ADD_GUSET_SUBTITLE:
-    'Your changes will only be saved in Rumor and will not impact your device’s contact list.',
+  ADD_GUSET_SUBTITLE: `Your changes will only be saved in Rumor and will not impact your device's contact list.`,
   YOUR_RSPV_IS: 'Your RSVP is confirmed!',
   YOU_CAN_RETURN_TO_THE:
     'You can return to the event page anytime for more details or to access your event confirmation.',
@@ -201,7 +218,52 @@ export const LABLE = {
   BIO: 'Bio',
   COMPANY_DESCRIPTION: 'Description of Company',
   ENTER_FEEDBACK: 'Enter Feedback',
+  INVITED: 'Invited',
+  REQUESTS: 'Requests',
+  CONFIRMED: 'Confirmed',
+  CHECKED_IN: 'Checked-In',
+  CHECK_IN: 'Check-In',
+  PROFILE: 'Profile',
+  PENDING_DETAILS: 'Pending Details',
+  GUEST_CHICKED_IN: 'Guest Check-in',
+  STANDARD: 'Standard',
+  LEAD_GUEST: 'Lead Guest',
+  GUEST_NOTE: 'Guest Note',
+  PLUS_1S: 'Pluse 1s',
+  PENDING: 'Pending',
+  PLACEHOLDER_PRIVATE_NOTE: 'Add a private note. Not visible to the guest.',
+  TICKET_TYPE: 'Ticket Type',
+  USER_NOT_FOUND: 'User not found',
+  SEARCH_USERS: 'Search Users',
+  MANAGE_GUESTS: 'Manage Guests',
+  USER_ALREADY_CHECKED_IN: 'User already checked-in',
+  SHOW_QR_CHECKIN_MESSAGE: 'Show this QR code at event check-in',
+  NEVER_MISS_MOMENT: 'Never miss a moment.\nSync this event to your calendar.',
+  ADD_TO_CALENDAR: 'Add To Calendar',
+  ADD_TO_APPLE_CALENDAR: 'Add to Apple Calendar',
+  ADD_TO_GOOGLE_CALENDAR: 'Add to Google Calendar',
+  NO_CALENDAR_FOUND: 'No calendar found on this device.',
+  ACCESS_CALENDAR: 'Calendar access is required to add events.',
+  PERMISSION_DENIED: 'Permission Denied',
+  VIP_TOOLTIP_CONTENT: 'Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.',
+  MANAGE_INVITE: 'Manage Invite',
 };
+export const EVENT = {
+  EDIT_EVENT: 'Edit Event',
+  DETAILS: 'Details',
+  SETTINGS: 'Settings',
+  EVENT_NAME: 'Event Name',
+  START_DATE: 'Start Date',
+  END_DATE: 'End Date',
+  LOCATION: 'Location',
+  FURTHER_INSTRUCTION: 'Further Instructions',
+  EVENT_DESCRIPTION: 'Event Description',
+  HIDE_ADDRESS: 'Hide full address for confirmed guests',
+  FEATURE_TALENT: 'Featured Talent',
+  TOTAL_CONFIRMED: "Total Confirmed:",
+  TOTAL_CHECKEDIN: "Total Checked-In:",
+
+}
 
 export const PROFILE = {
   EDIT_PROFILE: 'Edit Profile',
@@ -262,7 +324,8 @@ export const ERROR_MESSAGE = {
   COLLABORATOR_ERROR:'Choose a collaborator',
   ANNOUNCEMENT_DETAIL_ERROR:"Enter announcement details",
   FILE_SIZE_EXCEED:"File size exceeds the 5MB limit. Please upload a smaller file.",
-  SOMETHING_WENT_WRONG:"Something went wrong, Please try again later"
+  SOMETHING_WENT_WRONG:"Something went wrong, Please try again later",
+  TCKET_ERROR_MESSAGE: 'Ticket is not associated with a guest for this event.',
 };
 
 export const COLORS = {
@@ -308,7 +371,19 @@ export const COLORS = {
   grayFeedLocation2: '#E0E0E0FA',
   grayFeedLocation3: '#54545657',
   blueDark: '#0D729D',
+  LIGHT: 'LIGHT',
+  DARK: 'DARK',
+
+  neutral_disabled: '#9C9C9C',
+  neutral_surface: '#D8D8D8',
+  yellowbackground: '#F1B422',
+  neutralBorder: '#E1E3E6',
+  borderBlur: '#BFBFBF',
+  bgGray: '#EAEAEA',
+  webBlack: '#181818'
 };
+
+
 
 export const feedList = [
   'After Parties',
@@ -356,7 +431,7 @@ export const memberTabData: TabItem[] = [
     id: '3',
     label: BUTTON_LABLE.APPLIED,
     title: 'No Events Here',
-    subTitle: 'You haven’t applied to any events yet.',
+    subTitle: "You haven't applied to any events yet.",
   },
   {
     id: '4',
@@ -386,6 +461,20 @@ export const hostTabData: TabItem[] = [
   },
 ];
 
+export const editEventsTab: TabItem[] = [
+  {
+    id: '1',
+    label: EVENT.DETAILS,
+    title: '',
+    subTitle: '.',
+  },
+  {
+    id: '2',
+    label: EVENT.SETTINGS,
+    title: '',
+    subTitle: '',
+  },
+];
 export const StatusEnum = {
   NO_STATUS: 0,
   DRAFT: 1,
@@ -575,15 +664,15 @@ export const eventData = {
     useQr: false,
     userId: '5774aa32-abe5-45a8-a27f-e743ca61f291',
   },
-  "status": 200
-}
+  status: 200,
+};
 
 export const ANNOUNCCEMENTS_DATA = [
   {
-    id: "1",
-    title: "The Event location has moved to the following address...",
+    id: '1',
+    title: 'The Event location has moved to the following address...',
     description: 'The Event location has moved to the following address...',
-    date: "10/05/2025",
+    date: '10/05/2025',
     imageKeyUrl: 'https://picsum.photos/200/300',
     media: [],
     time:'Today, 4:00PM',
@@ -593,10 +682,10 @@ export const ANNOUNCCEMENTS_DATA = [
     ticketType:['All Ticket Types','Revolve','Uncommon']
   },
   {
-    id: "1",
-    title: "The Event location has moved to the following address...",
+    id: '1',
+    title: 'The Event location has moved to the following address...',
     description: LABLE.DUMMY_TEXT,
-    date: "10/05/2025",
+    date: '10/05/2025',
     media: [],
     time:'Today, 9:00PM',
     profileImg:'',
@@ -605,14 +694,19 @@ export const ANNOUNCCEMENTS_DATA = [
     ticketType:['All Ticket Types','Uncommon']
   },
   {
-    id: "1",
-    title: "The Event location has moved to the following address...",
+    id: '1',
+    title: 'The Event location has moved to the following address...',
     description: LABLE.DUMMY_TEXT,
-    date: "10/05/2025",
+    date: '10/05/2025',
     media: [
-      { type: "image", uri: "https://picsum.photos/200/300" },
-      { type: "image", uri: "https://picsum.photos/200/300" },
-      { type: "pdf", name: "Guests File Rumor", size: "9.83 MB" },
+      { type: 'image', uri: 'https://picsum.photos/200/300' },
+      { type: 'image', uri: 'https://picsum.photos/200/300' },
+      {
+        type: 'pdf',
+        name: 'Guests File Rumor',
+        size: '9.83 MB',
+        uri: 'https://www.aeee.in/wp-content/uploads/2020/08/Sample-pdf.pdf',
+      },
     ],
     time:'Today, 6:00PM',
     profileImg:'',
@@ -621,15 +715,14 @@ export const ANNOUNCCEMENTS_DATA = [
     ticketType:['Revolve','Uncommon']
   },
   {
-    id: "1",
-    title: "The Event location has moved to the following address...",
+    id: '1',
+    title: 'The Event location has moved to the following address...',
     description: LABLE.DUMMY_TEXT,
-    date: "10/05/2025",
+    date: '10/05/2025',
     media: [
-
-      { type: "image", uri: "https://picsum.photos/200/300" },
-      { type: "pdf", name: "Guests File Rumor", size: "9.83 MB" },
-      { type: "image", uri: "https://picsum.photos/200/300" },
+      { type: 'image', uri: 'https://picsum.photos/200/300' },
+      { type: 'pdf', name: 'Guests File Rumor', size: '9.83 MB' },
+      { type: 'image', uri: 'https://picsum.photos/200/300' },
     ],
     time:'4:00PM',
     profileImg:'',
@@ -639,8 +732,6 @@ export const ANNOUNCCEMENTS_DATA = [
   },
   // Add more objects for additional list items
 ];
-
-
 
 export const genderList = [
   { id: 0, gender: 'Male', value: 'MALE' },

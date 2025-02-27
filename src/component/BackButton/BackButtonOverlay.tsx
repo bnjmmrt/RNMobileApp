@@ -1,14 +1,15 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet, View, Image } from 'react-native';
+import { TouchableOpacity, StyleSheet, View, Image, ViewStyle } from 'react-native';
 import { Wp, Hp } from '../../utils/dimensions';
 import IMAGES from '../../assets/images';
 import { COLORS } from '../../utils/constants';
 
-const BackButtonOverlay = ({ onPress }: { onPress: () => void }) => {
+const BackButtonOverlay = ({ onPress, customStyle, imageSource }: { onPress: () => void, customStyle?: ViewStyle, imageSource?: any }) => {
+  const containerStyle = [styles.container, customStyle];
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity style={containerStyle} onPress={onPress}>
       <View style={styles.iconWrapper}>
-        <Image source={IMAGES.leftArrow} />
+        <Image source={imageSource || IMAGES.leftArrow} />
       </View>
     </TouchableOpacity>
   );

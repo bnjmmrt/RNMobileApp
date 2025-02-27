@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useRef } from 'react';
-import { View, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { View, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { LABLE, BUTTON_LABLE } from '../../utils/constants';
+import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../utils/constants';
 import VerifyOtpStyles from './VerifyOtpStyles';
 import BackButton from '../../component/BackButton/BackButton';
 import Button from '../../component/Button';
@@ -12,7 +12,12 @@ import {
   CommonActions,
   useFocusEffect,
 } from '@react-navigation/native';
-import { setAuthToken, setLoginData, setRole, setUserId } from '../../redux/slices/authSlice';
+import {
+  setAuthToken,
+  setLoginData,
+  setRole,
+  setUserId,
+} from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
 import FullScreenLoader from '../../component/FullScreenLoader';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
@@ -21,6 +26,8 @@ import { useVerifyOtp } from '../../redux/hooks/useVerifyOtp';
 import { setEmail, setPhone } from '../../redux/slices/appFlowSlice';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { verticalMarginScale } from 'src/utils/dimensions';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -40,15 +47,41 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     route.params.email,
     route.params.phone,
   );
-  const { verifyOtp, isLoading } = useVerifyOtp(
+  const { verifyOtp, isLoading, error } = useVerifyOtp(
     isMemberExist,
     isGuest,
     route.params.email,
     route.params.phone,
     route.params.isEmail,
   );
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  useEffect(() => {
+    otpInputRef.current.setApiError(error);
+  }, [error]);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true);
+      },
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false);
+      },
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
   useEffect(() => {
     const sendTo = route.params.isEmail
       ? route.params.email
@@ -70,7 +103,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
 
     if (role == 'non_member') {
       const screenName =
-        data?.token?.length > 0 ? 'BottomTabBar' : 'BeforeAppStaticScreen';
+        data?.token?.length > 0 || isGuest ? 'BottomTabBar' : 'BeforeAppStaticScreen';
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
@@ -91,37 +124,48 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
       changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
     }, []),
   );
+
+  const callVerifyOTP = (code: string) => {
+    verifyOtp(code, redirectToHome)
+  };
+
+  const clearOTPAndResend = () => {
+    otpInputRef.current.clearOTP();
+    setErrorMsg('')
+    sendOtp(true);
+  };
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}>
-      <FullScreenLoader loading={isLoading}>
-        <View style={styles.container}>
-          <BackButton onPress={handleBackPress} />
-          <View style={styles.contentContainer}>
-            <TitleSubtitle
-              title={LABLE.ENTER_YOUR_VERIFICATION_CODE}
-              subTitle={`${LABLE.SEND_TO}${route.params.isEmail ? route.params.email : route.params.phone
-                }`}
-            />
-            <OTPComponent
-              ref={otpInputRef}
-              performCodeVerification={(code: string) =>
-                verifyOtp(code, redirectToHome)
-              }
-              resendVerificationCode={() => sendOtp(true)}
-            />
-            <View style={styles.spacer} />
-            <Button
-              disabled={false}
-              style={styles.btnStyle}
-              title={BUTTON_LABLE.GET_STARTED}
-              colorTheme="dark"
-              onPress={onNextClick}
-            />
-          </View>
+      {/* <FullScreenLoader loading={isLoading}> */}
+      <View style={styles.container}>
+        <BackButton onPress={handleBackPress} />
+        <View style={styles.contentContainer}>
+          <TitleSubtitle
+            title={LABLE.ENTER_YOUR_VERIFICATION_CODE}
+            subTitle={`${LABLE.SEND_TO}${
+              route.params.isEmail ? route.params.email : route.params.phone
+            }`}
+          />
+          <OTPComponent
+            error={errorMsg}
+            ref={otpInputRef}
+            performCodeVerification={(code: string) => callVerifyOTP(code)}
+            resendVerificationCode={clearOTPAndResend}
+          />
+          <View style={styles.spacer} />
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={BUTTON_LABLE.GET_STARTED}
+            colorTheme="dark"
+            onPress={onNextClick}
+            loading={isLoading}
+          />
         </View>
-      </FullScreenLoader>
+      </View>
+      {/* </FullScreenLoader> */}
     </KeyboardAvoidingView>
   );
 };

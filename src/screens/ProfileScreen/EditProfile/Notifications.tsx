@@ -92,7 +92,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = () => {
 
     if (response.status === 200) {
       dispatch(setNotificationSettings(response.data.notificationsSettings));
-      FlashMessageComponent.show('success','Settings updated successfully')
+      // FlashMessageComponent.show('success','Settings updated successfully')
     }
   };
 

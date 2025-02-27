@@ -1,28 +1,29 @@
-import React, {useCallback, useRef, useState} from 'react';
-import {View} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {LABLE, BUTTON_LABLE} from '../../../utils/constants';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
 import EnterEmailPhoneStyles from './EnterEmailPhoneStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   setEmail,
   setPageProgress,
   setPhone,
 } from '../../../redux/slices/appFlowSlice';
-import {RootState} from '../../../redux/slices';
+import { RootState } from '../../../redux/slices';
 import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
 import EmailInput from '../../../component/EmailComponent/EmailInput';
-import {useFocusEffect} from '@react-navigation/native';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { useFocusEffect } from '@react-navigation/native';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { verticalMarginScale } from 'src/utils/dimensions';
 
-interface EnterEmailPhoneProps extends NativeStackScreenProps<any, any> {}
+interface EnterEmailPhoneProps extends NativeStackScreenProps<any, any> { }
 
-const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({navigation}) => {
+const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
   const dispatch = useDispatch();
   // const isEmailVerified = useSelector((state: RootState) => state.appFlow.isEmailVerified);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
@@ -30,14 +31,29 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({navigation}) => {
   const styles = EnterEmailPhoneStyles();
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
 
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardVisible(true);
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardVisible(false);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
   const onNextClick = () => {
     if (loginData?.varifyStatus === 1) {
       if (phoneNumberInputRef.current.validatePhoneNumber()) {
         dispatch(
           setPhone(
             phoneNumberInputRef.current.callingCode +
-              phoneNumberInputRef.current.phoneNumber,
+            phoneNumberInputRef.current.phoneNumber,
           ),
         );
         navigation.navigate('VerifyEmail', {
@@ -60,7 +76,7 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({navigation}) => {
 
   const handleBackPress = () => {
     dispatch(setPageProgress(1));
-    navigation.navigate('MyDetailsScreen');
+    navigation.goBack();
   };
 
   useFocusEffect(
@@ -70,7 +86,8 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({navigation}) => {
   );
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <Header
         headerTitle={isEmailVerified === 1 ? LABLE.PHONE : LABLE.EMAIL}
         onPress={handleBackPress}
@@ -98,12 +115,14 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({navigation}) => {
 
       <Button
         disabled={false}
-        style={styles.btnStyle}
+        style={[styles.btnStyle, {
+          marginBottom: keyboardVisible ? verticalMarginScale(60) : 0,
+        }]}
         title={BUTTON_LABLE.NEXT}
         colorTheme="dark"
         onPress={onNextClick}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

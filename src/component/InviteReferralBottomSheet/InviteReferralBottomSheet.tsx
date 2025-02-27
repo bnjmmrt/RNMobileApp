@@ -14,12 +14,12 @@ import ButtonSmall from '../ButtonSmall';
 import Button from '../Button';
 import IMAGES from '../../assets/images';
 import TabBar from '../ActiveTabBar/TabBar';
-import { changeSafeAreaViewConfig, fontFamily } from '../../utils/functions';
+import { changeSafeAreaViewConfig, fontFamily, numberSpacing } from '../../utils/functions';
 import { useFetchMembersQuery, useGetConfirmedMembersMutation, useGetReferralRequestQuery, useRequestMemberMutation } from '../../redux/actions/referralApiAction';
 import { RenderMemberList } from './RenderMemberList';
 import Header from '../Header/Header';
 import SearchInput from '../SearchInput';
-import { fontScale, horizontalMarginScale, Hp, verticalMarginScale } from 'src/utils/dimensions';
+import { fontScale, horizontalMarginScale, horizontalScale, Hp, verticalMarginScale } from 'src/utils/dimensions';
 import EventEmptyRecord from '../EmptyRecord/EventEmptyRecord';
 import { useFocusEffect } from '@react-navigation/native';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
@@ -28,7 +28,8 @@ import useApi from 'src/axios/useApi';
 
 interface ContactItem {
   name: string;
-  phone: string;
+  phoneNumber: string;
+  countryCode:string
 }
 
 const PAGE_SIZE = 30;
@@ -148,7 +149,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
     try {
       await Share.share({
         message:
-          '"Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: [Rumor App Link]"',
+          'Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: [Rumor App Link]',
       });
     } catch (error) {
       console.error('Error sharing invite link:', error);
@@ -178,13 +179,11 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
     isSent: boolean
   ) => (
     <View style={styles.listItem}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-        <AvatarInitials name={item.name} size={48} />
-        <View>
-          <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.phone}>{item.phoneNumber}</Text>
+        <AvatarInitials name={item.name} size={40} listing={true} />
+        <View style={{ width:horizontalScale(206)}}>
+          <Text numberOfLines={1} style={styles.name}>{item.name}</Text>
+          <Text style={styles.phone}>{numberSpacing(item.phoneNumber,item.countryCode)}</Text>
         </View>
-      </View>
       <ButtonSmall
         disabled={isSent}
         style={styles.smallBtnStyle}
@@ -224,12 +223,12 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
 
         {selectedTab === '01' && (
           <View style={{ flex: 1, gap: 8, marginTop: verticalMarginScale(12) }}>
-            <SearchInput
+            {permissionGranted && <SearchInput
               placeholder={LABLE.SEARCH_FRIENDS}
               onSearchTextChange={(query) => {
                 handleSearch(query);
               }}
-            />
+            />}
             {permissionGranted && <View>
               <Text style={styles.sectionTitle}>{LABLE.FRIENDS_WHO_ARE_MEMBERS}</Text>
               <Text style={styles.sectionSubtitle}>{LABLE.REQUEST_A_REFERRAL}</Text>
@@ -244,7 +243,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
                   <View style={{ height: Hp(50), justifyContent: 'center', alignItems: 'center' }}>
                     <EventEmptyRecord title='No Results' subTitle='No Contacts are members at this time' />
                   </View> :
-                  <View style={{ height: Hp(50), justifyContent: 'center', alignItems: 'center' }}>
+                  <View style={{ height: Hp(65), justifyContent: 'center', alignItems: 'center' }}>
                     <EventEmptyRecord title='Access your contacts' subTitle='Easily sync your phone contacts to request referrals from members and invite friends to join you on Rumor' />
                     <ButtonSmall
                       colorTheme="dark"
@@ -266,12 +265,12 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
 
         {selectedTab === '02' && (
           <View style={{ flex: 1, gap: 8, marginTop: verticalMarginScale(12) }}>
-            <SearchInput
+            {permissionGranted && <SearchInput
               placeholder={LABLE.SEARCH_FRIENDS}
               onSearchTextChange={(query) => {
                 handleSearch(query);
               }}
-            />
+            />}
             {permissionGranted && <View>
               <Text style={styles.sectionTitle}>{LABLE.CONTACTS}</Text>
               <Text style={styles.sectionSubtitle}>{LABLE.INVITE_FRIENDS_TO}</Text>
@@ -280,7 +279,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
               data={filteredContacts}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={
-                <View style={{ height: Hp(50), justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ height: Hp(65), justifyContent: 'center', alignItems: 'center' }}>
                   <EventEmptyRecord title='Access your contacts' subTitle='Easily sync your phone contacts to request referrals from members and invite friends to join you on Rumor' />
                   <ButtonSmall
                     colorTheme="dark"
@@ -308,7 +307,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
         )}
 
 
-        {footerComponent()}
+        {permissionGranted && footerComponent()}
       </View>
 
 
@@ -350,11 +349,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 16,
+    gap:8
   },
   name: {
     fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Regular,
-    color: COLORS.black
+    color: COLORS.black,
   },
   phone: {
     fontSize: fontScale(12),

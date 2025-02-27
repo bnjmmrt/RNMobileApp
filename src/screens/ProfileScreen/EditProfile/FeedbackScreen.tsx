@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     color: COLORS.light_gray,
     fontSize: fontScale(13),
     fontFamily: fontFamily.ABCDiatype_Regular,
-    marginVertical: Hp(1),
+    marginVertical: Hp(0),
     textAlign: 'center',
     marginBottom: verticalMarginScale(16),
   },

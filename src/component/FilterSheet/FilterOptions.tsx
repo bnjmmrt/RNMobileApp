@@ -11,7 +11,7 @@ import {
 } from 'src/utils/dimensions';
 import {SelectedFilters} from '.';
 import {styles} from './style';
-import DateTimePicker from 'react-native-ui-datepicker';
+import DateTimePicker, {DateType} from 'react-native-ui-datepicker';
 import {Image, TouchableOpacity} from 'react-native';
 import IMAGES from '@images/index';
 import {CustomText} from '../CustomText';
@@ -25,7 +25,9 @@ export type FilterOptionTypes =
   | 'baseCityFilter'
   | 'location'
   | 'partySize'
-  | 'dateRange';
+  | 'dateRange'
+  | 'minStartDate'
+  | 'maxEndDate';
 
 export type FilterOption = {
   id: string;
@@ -41,6 +43,7 @@ const FilterOptions = ({
   onChangeOptionValue,
   setDisableApplyCta,
   showSelectedLocationChip = true,
+  onOpenNestedAccordian,
 }: {
   id: string;
   optionType: FilterOptionTypes;
@@ -49,10 +52,17 @@ const FilterOptions = ({
   onChangeOptionValue: (
     id: string,
     optionType: FilterOptionTypes,
-    value: {id: string; name: string} | string[],
+    value: {
+      id: string;
+      name: string;
+      date?: DateType[];
+      lat?: string;
+      long?: string;
+    },
   ) => void;
   setDisableApplyCta: React.Dispatch<React.SetStateAction<boolean>>;
-  showSelectedLocationChip: boolean;
+  showSelectedLocationChip?: boolean;
+  onOpenNestedAccordian?: () => void;
 }) => {
   const minAgeInputRef = useRef<InputRefMethods>(null);
   const maxAgeInputRef = useRef<InputRefMethods>(null);
@@ -125,7 +135,12 @@ const FilterOptions = ({
         <BottomSheetView style={styles.container}>
           <TouchableOpacity
             style={[styles.inputWrapper]}
-            onPress={() => setDatePickerVisible(prev => !prev)}>
+            onPress={() => {
+              setDatePickerVisible(prev => !prev);
+              if (onOpenNestedAccordian) {
+                onOpenNestedAccordian();
+              }
+            }}>
             <Image
               source={IMAGES.calendar}
               style={styles.icon}
@@ -161,12 +176,13 @@ const FilterOptions = ({
                 mode="range"
                 startDate={
                   selectedFilters['minStartDate']?.value[0]
-                    ? selectedFilters['minStartDate']?.value[0]?.id
+                    ? selectedFilters['minStartDate']?.value[0]?.date ||
+                      undefined
                     : undefined
                 }
                 endDate={
                   selectedFilters['maxEndDate']?.value[0]
-                    ? selectedFilters['maxEndDate']?.value[0]?.id
+                    ? selectedFilters['maxEndDate']?.value[0]?.date || undefined
                     : undefined
                 }
                 headerButtonStyle={styles.headerButtonStyle}
@@ -194,19 +210,11 @@ const FilterOptions = ({
                   />
                 }
                 onChange={({startDate, endDate}) => {
-                  console.log(startDate, endDate);
-                  if (startDate) {
-                    onChangeOptionValue('minStartDate', optionType, {
-                      id: startDate,
-                      name: 'minStartDate',
-                    });
-                  }
-                  if (endDate) {
-                    onChangeOptionValue('maxEndDate', optionType, {
-                      id: endDate,
-                      name: 'maxEndDate',
-                    });
-                  }
+                  onChangeOptionValue(id, optionType, {
+                    id: id,
+                    date: [startDate, endDate],
+                    name: id,
+                  });
                 }}
               />
             </BottomSheetView>
@@ -275,7 +283,15 @@ const FilterOptions = ({
               style={{marginTop: verticalMarginScale(16)}}
               scrollEnabled={false}>
               {selectedFilters[id].value.map(
-                (item: {id: string; name: string}, index: number) => {
+                (
+                  item: {
+                    id: string | DateType;
+                    name: string;
+                    lat?: string;
+                    long?: string;
+                  },
+                  index: number,
+                ) => {
                   return (
                     <Chip
                       title={item.name}
@@ -286,11 +302,11 @@ const FilterOptions = ({
                       }
                       onPress={optionId => {
                         onChangeOptionValue(id, optionType, {
-                          id: item.id,
+                          id: String(item.id),
                           name: item.name,
                         });
                       }}
-                      id={item.id}
+                      id={String(item.id)}
                     />
                   );
                 },

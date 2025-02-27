@@ -16,7 +16,7 @@ import Header from '../../../component/Header/Header';
 import useApi from '../../../axios/useApi';
 import { EndPoint } from '../../../ApiManager/config';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
-import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { changeSafeAreaViewConfig, fontFamily } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import {
   fontScale,
@@ -30,6 +30,7 @@ import PhoneNumberInput from 'src/component/PhonNumberComponent/PhoneNumberInput
 import GuestForm from './GuestForm';
 import { useDispatch } from 'react-redux';
 import { addGuest } from 'src/redux/slices/rspvSlice';
+import { CustomText } from 'src/component/CustomText';
 
 interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -75,7 +76,7 @@ const AddGuestScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
 
       <View style={styles.viewContainer}>
         <View style={styles.contentContainer}>
-          <Title subTitle={LABLE.ADD_A_PHOTO_SUBTITLE} align="center" />
+          <CustomText style={[styles.descriptionText]}>Your changes will only be saved in Rumor and will not impact your device’s contact list.</CustomText>
           <GuestForm data={params?.data} hasPhone onSubmit={(e) => {
             dispatch(addGuest(e))
             navigation.pop(2);
@@ -92,6 +93,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
   },
+  descriptionText: { fontFamily: fontFamily.ABCDiatype_Medium, fontSize: fontScale(14), color: COLORS.light_gray, textAlign: 'center', marginBottom: verticalMarginScale(12), marginHorizontal: horizontalMarginScale(12) },
   viewContainer: {
     flex: 1,
     alignItems: 'center',
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingVertical: verticalMarginScale(10),
+    paddingVertical: verticalMarginScale(10)
 
   },
   label: {

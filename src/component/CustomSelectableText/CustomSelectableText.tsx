@@ -56,7 +56,7 @@ const CustomSelectableText: React.FC<CustomSelectableTextProps> = ({
         ]}>
         {leftImage && <Image source={leftImage} style={styles.leftImage} />}
 
-        {defaultValue ? <Text style={[styles.inputText, { width: leftImage ? "90%" : '96.5%' }]}>{defaultValue}</Text> : <Text style={styles.inputTextPlaceholder}>{placeholder}</Text>}
+        {defaultValue ? <Text style={[styles.inputText, { width: leftImage ? "90%" : '96.5%' }]}>{defaultValue}</Text> : <Text style={[styles.inputTextPlaceholder,{ width: leftImage ? "90%" : '96.5%' }]}>{placeholder}</Text>}
 
         {rightImage && <Image source={rightImage} style={styles.leftImage} />}
       </TouchableOpacity>
@@ -72,7 +72,7 @@ const CustomSelectableText: React.FC<CustomSelectableTextProps> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    marginTop: verticalMarginScale(24),
+    // marginTop: verticalMarginScale(24),
   },
   label: {
     paddingVertical: verticalMarginScale(2),

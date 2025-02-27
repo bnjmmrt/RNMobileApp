@@ -96,7 +96,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
 
   const handleBackPress = () => {
     dispatch(setPageProgress(7));
-    navigation.navigate('SelectInterestScreen');
+    navigation.goBack();
   };
 
   const openPicker = () => {
@@ -130,7 +130,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
           subTitle={LABLE.ADD_A_PHOTO_SUBTITLE}
         />
 
-        <View style={styles.profilePhotoContainer}>
+        <View style={[styles.profilePhotoContainer, { marginTop: 20 }]}>
           <FullScreenLoader
             loading={loading}
             customStyle={styles.profilePhotoContainer}>
@@ -160,6 +160,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
           <EditPictureBottomSheet
             ref={savePhotoBottomSheetRef}
             onPress={savePhoto}
+            onPencilClick={openPicker}
             submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
             cancelButtonText={BUTTON_LABLE.CANCEL}
             snapPoints={[Platform.OS == 'android' ? '50%' : '50%']}
@@ -181,6 +182,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
         style={styles.btnStyle}
         title={BUTTON_LABLE.NEXT}
         colorTheme="dark"
+        loading={loading}
         onPress={onNextClick}
       />
     </SafeAreaView>

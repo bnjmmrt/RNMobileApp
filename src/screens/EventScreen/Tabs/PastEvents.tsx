@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, ActivityIndicator } from 'react-native';
-import { useFetchEventsQuery, useFetchHostEventsQuery } from '../../../redux/actions/eventApiAction';
+import {
+  useFetchEventsQuery,
+  useFetchHostEventsQuery,
+} from '../../../redux/actions/eventApiAction';
 import EventItem from '../EventItem';
 import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
 import { Hp } from '../../../utils/dimensions';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
+import { ROLE } from 'src/utils/constants';
 
 interface PastEventsProps {
   userId: string;
@@ -20,28 +24,26 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
   const role = useSelector((state: RootState) => state.auth.role);
 
   const useFetchEvents =
-    role === 'host'
-      ? useFetchHostEventsQuery
-      : useFetchEventsQuery;
+    role === ROLE.HOST ? useFetchHostEventsQuery : useFetchEventsQuery;
 
   // Ensure argument structure remains consistent
   const queryArgs =
-    role === 'host'
+    role === ROLE.HOST
       ? ({
-        status: 'UPCOMING',
+        status: 'PAST_STATUS',
         searchText,
         take: 10,
         skip: (currentPage - 1) * 10,
       } as const) // Type assertion to prevent union mismatch
       : ({
         userId,
-        guestEventStatus: 'UPCOMING',
+        guestEventStatus: 'PAST',
         searchText,
         take: 10,
         skip: (currentPage - 1) * 10,
       } as const); // Type assertion
 
-  const { data, isLoading } = useFetchEvents(queryArgs);
+  const { data, isLoading, refetch } = useFetchEvents(queryArgs);
 
   // const { data, isLoading } = useFetchEventsQuery({
   //   userId,
@@ -51,24 +53,42 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
   //   skip: (currentPage - 1) * 10,
   // });
 
+
   useEffect(() => {
     if (data) {
-      setEvents((prev) => (currentPage === 1 ? data.data : [...prev, ...data.data]));
+      if (role === ROLE.HOST) {
+        setEvents(prev =>
+          currentPage === 1
+            ? data.data.eventsResponse
+            : // ? data.data
+            [...prev, ...data.data.eventsResponse],
+        );
+      } else {
+        setEvents(prev =>
+          currentPage === 1 ? data.data.data : [...prev, ...data.data.data],
+        );
+      }
     }
-  }, [data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.data]);
+
 
   useEffect(() => {
-    setRefreshing(isLoading)
-  }, [isLoading])
+    setRefreshing(isLoading);
+  }, [isLoading]);
 
   const handleRefresh = () => {
-    setCurrentPage(1)
+    setCurrentPage(1);
+    refetch()
   };
 
+  useEffect(() => {
+    refetch()
+  }, [currentPage])
 
   const loadMore = () => {
-    if (data?.currentPage < data?.totalPages && !isLoading) {
-      setCurrentPage((prev) => prev + 1);
+    if (currentPage < data?.data?.totalPages && !isLoading) {
+      setCurrentPage(prev => prev + 1);
     }
   };
 
@@ -87,8 +107,17 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
           ListFooterComponent={isLoading && <ActivityIndicator />}
         />
       ) : (
-        <View style={{ height: Hp(55), alignItems: 'center', justifyContent: 'center' }}>
-          <EventEmptyRecord title={tab.title} subTitle={tab.subTitle} isLoading={isLoading} />
+        <View
+          style={{
+            height: Hp(55),
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <EventEmptyRecord
+            title={tab.title}
+            subTitle={tab.subTitle}
+            isLoading={isLoading}
+          />
         </View>
       )}
     </View>

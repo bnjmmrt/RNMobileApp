@@ -71,7 +71,7 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
 
   const handleBackPress = () => {
     dispatch(setPageProgress(5));
-    navigation.navigate('BaseCityScreen');
+    navigation.goBack();
   };
 
   useFocusEffect(

@@ -1,4 +1,4 @@
-import {BottomSheetView} from '@gorhom/bottom-sheet';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, {
   forwardRef,
   useEffect,
@@ -10,16 +10,23 @@ import BottomSheetComponent, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
-import {CustomText} from 'src/component/CustomText';
-import {verticalScale} from 'src/utils/dimensions';
+import { CustomText } from 'src/component/CustomText';
+import { verticalScale } from 'src/utils/dimensions';
 import AllUsersFilters from './AllUsersFilters';
 import DiscoverEventsFilters from './DiscoverEventsFilters';
-import {FilterOptionTypes} from './FilterOptions';
-import {styles} from './style';
+import { FilterOptionTypes } from './FilterOptions';
+import { styles } from './style';
+import { DateType } from 'react-native-ui-datepicker';
 
 export type SelectedSingleFilter = {
   type: FilterOptionTypes;
-  value: {id: string; name: string}[];
+  value: {
+    id: string | DateType;
+    name: string;
+    date?: DateType;
+    lat?: string;
+    long?: string;
+  }[];
 };
 export type SelectedFilters = {
   [id: string]: SelectedSingleFilter;
@@ -33,7 +40,6 @@ type FiltersSheetProps = {
   ) => void;
   onClearFilter: () => void;
   from: 'allUsersList' | 'discoverEvents';
-  showBottomSafeAreaView: boolean;
   selectedFiltersInParent?: SelectedFilters;
 };
 
@@ -52,23 +58,15 @@ export const getFilterQuery = (selectedFilters: SelectedFilters) => {
     .join('&');
 
   const filtersCount = Object.values(selectedFilters).filter(
-    filter => Array.isArray(filter.value) && filter.value.length > 0,
+    filter =>
+      Array.isArray(filter.value) && filter.value.some(item => item.name),
   ).length;
 
-  return {queryString, filtersCount};
+  return { queryString, filtersCount };
 };
 
 const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
-  (
-    {
-      onApplyFilter,
-      onClearFilter,
-      from,
-      showBottomSafeAreaView,
-      selectedFiltersInParent,
-    },
-    ref,
-  ) => {
+  ({ onApplyFilter, onClearFilter, from, selectedFiltersInParent }, ref) => {
     const sheetRef = useRef<BottomSheetMethods>(null);
 
     useImperativeHandle(ref, () => ({
@@ -82,7 +80,7 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
     const [disableApplyCta, setDisableApplyCta] = useState<boolean>(false);
 
     const onPressApplyFilter = async () => {
-      const {queryString, filtersCount} = getFilterQuery(selectedFilters);
+      const { queryString, filtersCount } = getFilterQuery(selectedFilters);
 
       onApplyFilter(
         queryString,
@@ -118,8 +116,7 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
         ref={sheetRef}
         snapPoints={[`${verticalScale(88)}%`]}
         enableDynamicSizing={false}
-        onClose={() => {}}
-        showBottomSafeAreaView={showBottomSafeAreaView}>
+        onClose={() => {}}>
         <BottomSheetView style={styles.container}>
           <CustomText style={styles.title}>{getHeading()}</CustomText>
 

@@ -69,8 +69,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   icon: {
-    width: 14,
-    height: 14,
+    width: 16,
+    height: 16,
     resizeMode: 'contain'
   },
 });

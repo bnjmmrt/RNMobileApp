@@ -1,58 +1,109 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
-import { fontFamily } from '../../utils/functions';
-import { Wp, Hp, horizontalScale, verticalScale } from '../../utils/dimensions';
-import ButtonSmall from '../../component/ButtonSmall';
 import FastImage from '@d11/react-native-fast-image';
-import { useNavigation } from '@react-navigation/native';
-import { ROUTES } from 'src/navigation/Route';
 import IMAGES from '@images/index';
+import { useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { CustomText } from 'src/component/CustomText';
+import { ROUTES } from 'src/navigation/Route';
+import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
+import ButtonSmall from '../../component/ButtonSmall';
+import { BUTTON_LABLE, COLORS, EVENT, LABLE, ROLE } from '../../utils/constants';
+import {
+  fontScale,
+  horizontalMarginScale,
+  horizontalScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+} from '../../utils/dimensions';
+import { fontFamily } from '../../utils/functions';
+import { formatDetailedEventDate } from 'src/utils/dateFunctions';
+import { Event } from 'src/types';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+
+
 
 interface EventItemProps {
-  item: {};
+  item: Event;
 }
 const EventItem: React.FC<EventItemProps> = ({ item }) => {
-
   // Handle the "Next" button press
   const navigation = useNavigation();
   // Handle the "Next" button press
+  const role = useSelector((state: RootState) => state.auth.role);
+  const userId = useSelector((state: RootState) => state.auth.userId);
 
+  const dates = formatDetailedEventDate(item?.startDate, item?.endDate,);
 
   const handlEventPress = () => {
     navigation.navigate(ROUTES.EventStack, {
       screen: ROUTES.EventDetailsScreen,
-      params: item
+      params: item,
     });
   };
 
+  const getUserRole = () => {
+    if (!item || !userId) return "";
+
+    // Check if the user is the owner
+    if (item?.owner?.id === userId) {
+      return "HOST";
+    }
+
+    // Check if the user is in the collaborators list
+    const collaborator = item.collaborators?.find(collab => collab?.id === userId);
+
+    if (collaborator) {
+      return collaborator?.role?.name?.toUpperCase().replace("_", "-");
+    }
+
+    return ""; // Default return if no match is found
+  };
+
+  console.log('Sayyed event item :', item);
+  console.log('Sayyed  userId :', userId);
+  console.log('Sayyed  getUserRole :', getUserRole());
   return (
     <View style={styles.container}>
-      <View style={[styles.imageContainer]}>
-        <FastImage
-          source={{ uri: item?.imageCover }}
-          resizeMode={FastImage.resizeMode.cover}
-          defaultSource={IMAGES.eventCoverPlaceholders1} // Your local placeholder image
-          style={styles.icon}
-        />
-      </View>
-      <View style={styles.contentContainer}>
-        <Text style={styles.titleStyle}>{item?.name}</Text>
-        <Text style={styles.subtitle} numberOfLines={2}>
-          {item?.startDate}
-        </Text>
-        <Text style={styles.subtitle} numberOfLines={2}>
-          {item?.location?.location}
-        </Text>
-        <View style={{ alignItems: 'flex-start', flexDirection: 'row' }}>
-          <ButtonSmall
-            disabled={false}
-            style={styles.btnStyle}
-            title={BUTTON_LABLE.VIEW_EVENT}
-            colorTheme={'dark'}
-            onPress={handlEventPress}
-          />
+      <FastImage
+        source={{ uri: item?.imageCover || item?.imageFlyer }}
+        resizeMode={FastImage.resizeMode.cover}
+        defaultSource={IMAGES.eventCoverPlaceholders1} // Your local placeholder image
+        style={styles.icon}>
+        {role === ROLE.HOST && <View style={styles.roleContainer}>
+          <CustomText style={styles.roleText}>
+            {getUserRole()}
+          </CustomText>
         </View>
+        }
+      </FastImage>
+
+
+      <View style={styles.contentContainer}>
+        <CustomText style={styles.titleStyle} textProps={{ numberOfLines: 1 }}>{item?.name}</CustomText>
+        <CustomText style={styles.subtitle} textProps={{ numberOfLines: 2 }}>{dates} </CustomText>
+        {role === ROLE.HOST ? (
+          <>
+            <CustomText style={styles.subtitle}>
+              {EVENT.TOTAL_CONFIRMED} {item?.totalConfirmedGuests}
+            </CustomText>
+            <CustomText style={styles.subtitle}>
+              {EVENT.TOTAL_CHECKEDIN} {item?.totalCheckedInGuests}
+            </CustomText>
+          </>
+        ) : item?.location?.city && (
+          <CustomText style={styles.subtitle} textProps={{ numberOfLines: 2 }}>
+            {item.location.city}
+          </CustomText>
+        )}
+        <ButtonSmall
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.VIEW_EVENT}
+          colorTheme={'dark'}
+          onPress={handlEventPress}
+        />
       </View>
     </View>
   );
@@ -61,59 +112,57 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
 const styles = StyleSheet.create({
   btnStyle: {
     borderRadius: 100,
-    paddingHorizontal: 10,
-    marginTop: 10,
-    paddingVertical: 7,
+    marginTop: verticalMarginScale(10),
+    paddingVertical: verticalMarginScale(8),
+    paddingHorizontal: horizontalMarginScale(12),
+    alignSelf: 'flex-start',
   },
   container: {
     flexDirection: 'row',
-    padding: 10,
-    flex: 1,
-    // width: Wp(90),
-    height: Hp(24),
-    backgroundColor: COLORS.white,
+    paddingHorizontal: horizontalMarginScale(16),
+    paddingVertical: verticalMarginScale(16),
     borderColor: COLORS.borderGray,
-    // alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: radiusScale(16),
     borderWidth: 1,
     marginBottom: 10,
-  },
-  imageContainer: {
-    alignItems: 'center',
-    // height: 100,
+    gap: horizontalMarginScale(16),
   },
   contentContainer: {
     flexDirection: 'column',
-    paddingHorizontal: 10,
-    paddingVertical: 15,
+    paddingVertical: verticalMarginScale(18),
     flex: 1,
     backgroundColor: COLORS.white,
   },
-  errorInputWrapper: {
-    borderColor: COLORS.borderRed,
-    backgroundColor: COLORS.bgRed,
-  },
   icon: {
-    borderRadius: 10,
+    borderRadius: radiusScale(8),
     height: horizontalScale(175),
     width: verticalScale(120),
-    backgroundColor: COLORS.borderGray
+    backgroundColor: COLORS.borderGray,
   },
   titleStyle: {
-    fontSize: 22,
+    fontSize: fontScale(24),
     fontFamily: fontFamily.RomieTrial_Bold,
-    marginBottom: 5,
+    marginBottom: verticalMarginScale(10),
   },
   subtitle: {
     color: COLORS.light_gray,
-    fontSize: 12,
-    fontFamily: fontFamily.ABCDiatype_Regular,
-    marginTop: 1,
   },
-  errorText: {
-    fontSize: 12,
-    marginTop: 5,
-    color: COLORS.errorText,
+  roleContainer: {
+    backgroundColor: COLORS.white, // Ensure background is applied
+    borderRadius: 3, // Apply border radius
+    borderColor: COLORS.black, // Define border color
+    paddingVertical: 2,
+    paddingHorizontal: 5,
+    position: 'absolute',
+    zIndex: 2,
+    bottom: 1,
+    marginBottom: 5,
+    alignSelf: 'center',
+  },
+  roleText: {
+    color: COLORS.black,
+    fontSize: fontScale(12),
+    textAlign: 'center',
   },
 });
 

@@ -1,42 +1,46 @@
 import IMAGES from '@images/index';
-import {useFocusEffect} from '@react-navigation/native';
-import {debounce} from 'lodash';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { debounce } from 'lodash';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   FlatList,
   Image,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import {useSelector} from 'react-redux';
-import {useFetchAllEventsQuery} from 'src/redux/actions/eventApiAction';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { useSelector } from 'react-redux';
+import { useFetchAllEventsQuery } from 'src/redux/actions/eventApiAction';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 import HeaderComponent from '../../component/HeaderComponent';
-import {RootState} from '../../redux/slices';
-import {Address} from '../../redux/slices/appFlowSlice';
-import {COLORS} from '../../utils/constants';
+import { RootState } from '../../redux/slices';
+import { Address } from '../../redux/slices/appFlowSlice';
+import { COLORS } from '../../utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
   horizontalScale,
+  Hp,
   radiusScale,
   verticalMarginScale,
   verticalScale,
   Wp,
 } from '../../utils/dimensions';
-import {changeSafeAreaViewConfig, fontFamily} from '../../utils/functions';
-import {BottomSheetMethods} from '../BottomSheet/BottomSheet';
-import FiltersSheet, {getFilterQuery, SelectedFilters} from '../FilterSheet';
-import {InputRefMethods} from '../Input/Input';
+import { changeSafeAreaViewConfig, fontFamily } from '../../utils/functions';
+import { BottomSheetMethods } from '../BottomSheet/BottomSheet';
+import FiltersSheet, { getFilterQuery, SelectedFilters } from '../FilterSheet';
+import { InputRefMethods } from '../Input/Input';
 import SearchInput from '../SearchInput';
 import FeaturedFeedItem from './FeaturedFeedItem';
 import FeedDetail from './FeedDetail';
 import FeedFilterItem from './FeedFilterItem';
 import FeedItem from './FeedItem';
 import FeedSeriesDetail from './FeedSeriesDetail';
+import EventEmptyRecord from '../EmptyRecord/EventEmptyRecord';
+import { formatDetailedEventDate } from 'src/utils/dateFunctions';
 
 export interface EventItem {
   admissionType: {
@@ -171,7 +175,7 @@ export interface EventItem {
 
 export interface SeriesItem {
   name: string;
-  image: {uri: string};
+  image: { uri: string };
   about: string;
   period: string;
   events: EventItem[];
@@ -207,12 +211,27 @@ const EventsFeed = () => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const userId = useSelector((state: RootState) => state.auth.userId);
   const isInvited = loginData?.isInvited || false;
+  const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
 
-  const {data, isLoading, error, isError, refetch} = useFetchAllEventsQuery({
+
+  const { data, isLoading, error, isError, refetch } = useFetchAllEventsQuery({
+    statusName: 'UPCOMING_STATUS',
     searchText: searchTerm,
     queryString: filterQuery,
     userId: userId,
+    take: 6,
+    skip: (currentPage - 1) * 6,
   });
+
+  const date1 = formatDetailedEventDate("2025-02-28 17:00:00+00", "2025-02-28 18:00:00+00")
+  const date2 = formatDetailedEventDate("2025-02-26 21:10:00+00", "2025-02-26 21:30:00+00")
+  const date3 = formatDetailedEventDate("2025-01-21 21:10:00+00", "2025-03-26 21:30:00+00")
+  const date4 = formatDetailedEventDate("2025-02-24 21:10:00+00", "2025-02-24 21:30:00+00")
+
+  console.log("Sayyed Date1:", date1)
+  console.log("Sayyed Date2:", date2)
+  console.log("Sayyed Date3:", date3)
+  console.log("Sayyed Date4:", date4)
 
   const debouncedSearch = useCallback(
     debounce((text: string) => setSearchTerm(text), 500),
@@ -222,6 +241,11 @@ const EventsFeed = () => {
     debouncedSearch(text);
   }, []);
 
+  useEffect(() => {
+    refetch();
+  }, [rspvStatus, refetch]);
+
+
   const handleNotify = useCallback(() => {
     setResponseSubmitted(true);
     setTimeout(() => {
@@ -229,11 +253,21 @@ const EventsFeed = () => {
     }, 3000);
   }, []);
 
+  useEffect(() => {
+    console.log('Sayyed currentPage:', currentPage);
+  }, [currentPage]);
+
   const handleLoadMore = useCallback(() => {
-    // if (pagination.skip < allEvents.length) {
-    //   setPagination(prev => ({...prev, skip: prev.skip + prev.take}));
-    // }
+    const totalPages = data?.totalPages || 10;
+    if (data?.currentPage < totalPages && !isLoading) {
+      setCurrentPage(prev => prev + 1);
+    }
   }, [allEvents]);
+
+  const onRefreshPage = () => {
+    setCurrentPage(1);
+    refetch();
+  };
 
   const onApplyFilter = (
     queryString: string,
@@ -258,9 +292,9 @@ const EventsFeed = () => {
   };
 
   useEffect(() => {
-    if (data) {
-      const eventsRes = data?.data;
-      const featuredEventsRes = data?.data.filter(
+    if (data?.data?.data) {
+      const eventsRes = data?.data?.data;
+      const featuredEventsRes = data?.data?.data?.filter(
         (item: any) => item.featuredEventSection,
       );
       setFeaturedEvents(featuredEventsRes);
@@ -270,16 +304,23 @@ const EventsFeed = () => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-        showBottomSafeAreaView: false,
-      });
+      if (isInvited) {
+        changeSafeAreaViewConfig({
+          ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
+          showBottomSafeAreaView: false,
+        });
+      } else {
+        changeSafeAreaViewConfig({
+          ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+          showBottomSafeAreaView: false,
+        });
+      }
     }, []),
   );
 
   const renderFilters = useCallback(() => {
     const onRemoveFilter = (filterKey: string, valueIndex: number) => {
-      let tempSelectedFilters = {...selectedFilters};
+      let tempSelectedFilters = { ...selectedFilters };
       tempSelectedFilters = {
         ...tempSelectedFilters,
         [filterKey]: {
@@ -289,17 +330,17 @@ const EventsFeed = () => {
           ),
         },
       };
-      const {queryString, filtersCount} = getFilterQuery(tempSelectedFilters);
+      const { queryString, filtersCount } = getFilterQuery(tempSelectedFilters);
       onApplyFilter(queryString, filtersCount, tempSelectedFilters);
     };
 
     return (
-      <View style={{alignSelf: 'flex-start', flexDirection: 'row'}}>
+      <View style={{ alignSelf: 'flex-start', flexDirection: 'row' }}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           style={[styles.filterScrollView, {}]}
-          contentContainerStyle={{gap: horizontalMarginScale(4)}}>
+          contentContainerStyle={{ gap: horizontalMarginScale(4) }}>
           {Object.entries(selectedFilters).map(([key, filter]) => {
             return (
               <>
@@ -337,7 +378,7 @@ const EventsFeed = () => {
     [featuredEvents.length],
   );
 
-  const renderItem = useCallback(({item}: {item: any}) => {
+  const renderItem = useCallback(({ item }: { item: any }) => {
     return <FeedItem item={item} />;
   }, []);
 
@@ -376,11 +417,30 @@ const EventsFeed = () => {
           marginHorizontal: horizontalMarginScale(20),
           marginTop: verticalMarginScale(20),
         }}
-        columnWrapperStyle={{gap: horizontalMarginScale(20)}}
-        contentContainerStyle={{gap: horizontalMarginScale(20)}}
+        columnWrapperStyle={{ gap: horizontalMarginScale(20) }}
+        contentContainerStyle={{ gap: horizontalMarginScale(20) }}
         showsVerticalScrollIndicator={false}
         ListFooterComponent={
-          <View style={{marginBottom: verticalScale(100)}} />
+          <View style={{ marginBottom: verticalScale(100) }} />
+        }
+        ListEmptyComponent={
+          <View
+            style={{
+              height: Hp(55),
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <EventEmptyRecord
+              title="No Events"
+              subTitle="There are no events available"
+              isLoading={isLoading}
+            />
+          </View>
+        }
+        refreshControl={
+          allEvents?.length > 0 ? (
+            <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
+          ) : undefined
         }
       />
 
@@ -404,7 +464,6 @@ const EventsFeed = () => {
         from="discoverEvents"
         onApplyFilter={onApplyFilter}
         onClearFilter={onClearFilter}
-        showBottomSafeAreaView={false}
         selectedFiltersInParent={selectedFilters}
       />
     </View>
