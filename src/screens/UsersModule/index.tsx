@@ -1,14 +1,16 @@
 import IMAGES from '@images/index';
-import {useFocusEffect} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useCallback, useRef, useState} from 'react';
-import {View} from 'react-native';
-import DynamicTabBar, {TabItem} from 'src/component/ActiveTabBar/DynamicTabBar';
-import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
+import { useFocusEffect } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useCallback, useRef, useState } from 'react';
+import { View } from 'react-native';
+import DynamicTabBar, {
+  TabItem,
+} from 'src/component/ActiveTabBar/DynamicTabBar';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Header from 'src/component/Header/Header';
-import {BUTTON_LABLE, COLORS} from 'src/utils/constants';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { BUTTON_LABLE, COLORS } from 'src/utils/constants';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import AllUsers from './AllUsers';
 import AddNewUserSheet from './BottomSheets/AddNewUserSheet';
 import ListActionsSheet, {
@@ -16,6 +18,7 @@ import ListActionsSheet, {
 } from './BottomSheets/ListActionsSheet';
 import Lists from './Lists';
 import UsersScreenStyle from './style';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 const tabsData: TabItem[] = [
   {
@@ -34,7 +37,7 @@ const tabsData: TabItem[] = [
 
 interface UserModuleProps extends NativeStackScreenProps<any, any> {}
 
-const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
+const UserModule: React.FC<UserModuleProps> = ({ navigation }) => {
   const addNewUserSheetRef = useRef<BottomSheetMethods>(null);
   const listActionSheetRef = useRef<BottomSheetMethods>(null);
   const styles = UsersScreenStyle();
@@ -48,6 +51,8 @@ const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
   };
 
   const onPressHeaderPlus = () => {
+    FlashMessageComponent.show('success', 'Test');
+    return;
     if (currentTab) {
       if (currentTab.id === '1') {
         addNewUserSheetRef?.current?.open();
@@ -76,7 +81,7 @@ const UserModule: React.FC<UserModuleProps> = ({navigation}) => {
         rightIcon={IMAGES.plus}
         onPressRightIcon={onPressHeaderPlus}
         showBackButton={false}
-        rightIconWrapperStyle={{backgroundColor: COLORS.black}}
+        rightIconWrapperStyle={{ backgroundColor: COLORS.black }}
       />
       <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
 

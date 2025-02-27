@@ -2,20 +2,22 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import EventDetailsScreen from 'src/screens/EventScreen/EventDetailsScreen';
 import EventScreen from 'src/screens/EventScreen/EventScreen';
+import GuestCheckInScreen from 'src/screens/EventScreen/Guest/GuestCheckInScreen';
+import QRCodeScanner from 'src/screens/EventScreen/Guest/QRScannar';
 import InviteGuest from 'src/screens/EventScreen/InviteGuestInEventFlow/InviteGuest';
+import InviteGuestsManually from 'src/screens/EventScreen/InviteGuestInEventFlow/InviteGuestsManually';
+import SelectedGuestsToInviteScreen from 'src/screens/EventScreen/InviteGuestInEventFlow/SelectedGuestsToInvite';
+import SelectGuestsToInvite from 'src/screens/EventScreen/InviteGuestInEventFlow/SelectGuestsToInvite';
+import EventGuestList from 'src/screens/EventScreen/ManageGuestFlow/EventGuestListScreen';
+import GuestDetailScreen from 'src/screens/EventScreen/ManageGuestFlow/GuestDetailScreen';
 import AddGuestOptionScreen from 'src/screens/EventScreen/RSVP/AddGuestOptionScreen';
 import AddGuestScreen from 'src/screens/EventScreen/RSVP/AddGuestScreen';
 import RSVPInvitedUpcoming from 'src/screens/EventScreen/RSVP/RSVPInvitedUpcoming';
 import RSVPNoStatusApplied from 'src/screens/EventScreen/RSVP/RSVPNoStatusApplied';
-import SelectGuestsToInvite from 'src/screens/EventScreen/InviteGuestInEventFlow/SelectGuestsToInvite';
-import EventGuestList from 'src/screens/EventScreen/ManageGuestFlow/EventGuestListScreen';
-import GuestCheckInScreen from 'src/screens/EventScreen/Guest/GuestCheckInScreen';
-import QRCodeScanner from 'src/screens/EventScreen/Guest/QRScannar';
-import GuestDetailScreen from 'src/screens/EventScreen/ManageGuestFlow/GuestDetailScreen';
+import { UserItemInterface } from 'src/screens/UsersModule/UsersListItem';
 import { ROUTES } from './Route';
-import InviteGuestsManually from 'src/screens/EventScreen/InviteGuestInEventFlow/InviteGuestsManually';
-import SelectedGuestsToInviteScreen from 'src/screens/EventScreen/InviteGuestInEventFlow/SelectedGuestsToInvite';
-
+import AddAnnouncementScreen from 'src/screens/EventScreen/Announcement/AddAnnouncement/AddAnnouncementScreen';
+import Announcement from 'src/screens/EventScreen/Announcement';
 // Define the param list for the stack navigator
 export type EventStackParamList = {
   EventScreen: undefined;
@@ -29,7 +31,9 @@ export type EventStackParamList = {
   QRCodeScanner: undefined;
   GuestDetailScreen: { guest: any };
   [ROUTES.SelectGuestsToInviteScreen]: undefined;
-  [ROUTES.SelectedGuestsToInviteScreen]: undefined;
+  [ROUTES.SelectedGuestsToInviteScreen]: {
+    users: UserItemInterface[];
+  };
   [ROUTES.InviteGuestScreen]: {
     isManual: boolean;
     type: 'contact' | 'email' | 'existing';
@@ -92,10 +96,21 @@ export const EventStack: React.FC = () => {
         component={AddGuestScreen}
         options={{ headerShown: false }}
       />
-
-      <Stack.Screen name="QRCodeScanner"
-      component={QRCodeScanner} 
-      options={{ headerShown: false }}/>
+      <Stack.Screen
+        name="AddAnnouncementScreen"
+        component={AddAnnouncementScreen}
+        options={{ headerShown: false }}
+      />
+       <Stack.Screen
+        name="Announcement"
+        component={Announcement}
+          options={{ headerShown: false }}
+         />
+      <Stack.Screen
+        name="QRCodeScanner"
+        component={QRCodeScanner}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name={ROUTES.SelectGuestsToInviteScreen}
         component={SelectGuestsToInvite}

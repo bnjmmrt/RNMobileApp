@@ -9,7 +9,7 @@ import {
   SafeAreaView,
   Alert,
 } from 'react-native';
-import { COLORS, BUTTON_LABLE } from 'src/utils/constants';
+import { COLORS, BUTTON_LABLE, LABLE } from 'src/utils/constants';
 import { fontFamily } from 'src/utils/functions';
 import {
   fontScale,
@@ -23,6 +23,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import IMAGES from '@images/index';
 import Button from 'src/component/Button';
 import ProfileCard from '../Guest/ProfileCard';
+import AddedBySection from '../Guest/AddedBySection';
 import InviteDetails from '../Guest/InviteGuestDetailForm';
 import Questionnaire from '../Guest/Questionnaire';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
@@ -37,8 +38,10 @@ import { RootState } from 'src/redux/slices';
 import {
   useMarkUserFavMutation,
   useUnmarkUserFavMutation,
+  useFetchUserDetailsQuery,
 } from 'src/redux/actions/usersApiAction';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { ROUTES } from 'src/navigation/Route';
 
 enum GuestStatus {
   DRAFT = 'DRAFT',
@@ -59,7 +62,6 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 }): JSX.Element => {
   const guest = route.params?.guest as EventGuest;
   const status = guest?.status?.toLowerCase() || 'draft';
-  const eventId = route.params?.eventId;
   const userId = useSelector((state: RootState) => state.auth.userId);
   const selectedEvent = useSelector(
     (state: RootState) => state.inviteGuestsFlow.selectedEvent,
@@ -72,28 +74,28 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const [manageGuest] = useManageGuestMutation();
   const [markUserFav] = useMarkUserFavMutation();
   const [unmarkUserFav] = useUnmarkUserFavMutation();
+
+  const { data: userDetails } = useFetchUserDetailsQuery(
+    { user: guest?.userId || '' },
+    { skip: !guest?.userId },
+  );
+
   const [isFavorite, setIsFavorite] = useState(false);
 
   const [selectedTicketType, setSelectedTicketType] = useState<TicketType>();
-  const [additionalGuests, setAdditionalGuests] = useState(0);
+  const [additionalGuests, setAdditionalGuests] = useState(
+    guest?.maxAdditionalGuests,
+  );
   const [inviteMessage, setInviteMessage] = useState('');
   const [guestNote, setGuestNote] = useState(guest?.privateGuestNote || '');
   const [directlySendToConfirm, setDirectlySendToConfirm] = useState(false);
 
-  // console.log('guest', guest);
+  const [isLoadingFavorite, setIsLoadingFavorite] = useState(false);
+  const [isLoadingAction, setIsLoadingAction] = useState(false);
+  const [isLoadingDecline, setIsLoadingDecline] = useState(false);
 
-  // Set initial additional guests count after component mounts
-  useEffect(() => {
-    const guestCount = guest?.additionalGuests?.length;
-    if (typeof guestCount === 'number') {
-      setAdditionalGuests(guestCount);
-    }
-  }, [guest?.additionalGuests]);
-
-  // Set initial ticket type if guest has one
   useEffect(() => {
     if (guest?.ticketType && selectedEvent?.ticketTypes) {
-      // Find ticket type by name since guest.ticketType is the name
       const matchingTicket = selectedEvent.ticketTypes.find(
         (ticket: TicketType) => ticket.name === guest.ticketType,
       );
@@ -103,47 +105,51 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     }
   }, [guest?.ticketType, selectedEvent?.ticketTypes]);
 
-  // Set initial favorite status
   useEffect(() => {
-    const setInitialFavoriteStatus = () => {
-      if (guest?.isFavorite !== undefined) {
-        setIsFavorite(guest.isFavorite);
-      }
-    };
-    setInitialFavoriteStatus();
-  }, [guest?.isFavorite]);
+    if (userDetails?.data?.isFavourite !== undefined) {
+      setIsFavorite(userDetails.data.isFavourite);
+    }
+  }, [userDetails?.data?.isFavourite]);
 
   const handleGuestAction = async (
     action: 'CREATE' | 'UPDATE' | 'DELETE',
     newStatus?: GuestStatus,
   ) => {
     try {
+      setIsLoadingAction(true);
       const payload = {
         status: newStatus,
         guestStatus: newStatus as GuestStatus,
         ticketTypeId: selectedTicketType?.id,
-        additionalGuests,
+        maxAdditionalGuests: additionalGuests,
         inviteMessage,
-        guestNote,
+        privateGuestNote: guestNote,
         directlySendToConfirm,
       };
 
       await manageGuest({
-        eventId,
         guestId: guest?.id,
         action,
         payload,
       }).unwrap();
 
+      FlashMessageComponent.show(
+        'success',
+        `${guest.name}'s invite has been updated`,
+      );
+
       navigation.goBack();
     } catch (error) {
       console.log('error', error);
       Alert.alert('Error', 'Failed to update guest status');
+    } finally {
+      setIsLoadingAction(false);
     }
   };
 
   const handleFavorite = async () => {
     try {
+      setIsLoadingFavorite(true);
       if (!userId || !guest?.userId) {
         FlashMessageComponent.show('error', 'Unable to update favorite status');
         return;
@@ -165,11 +171,24 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       setIsFavorite(!isFavorite);
     } catch (error) {
       FlashMessageComponent.show('error', 'Failed to update favorite status');
+    } finally {
+      setIsLoadingFavorite(false);
+    }
+  };
+
+  const handleDeclineAction = async () => {
+    try {
+      setIsLoadingDecline(true);
+      await handleGuestAction('DELETE', GuestStatus.INVITED);
+    } finally {
+      setIsLoadingDecline(false);
     }
   };
 
   const handleProfile = () => {
-    // Handle profile action
+    navigation.navigate(ROUTES.UserDetail, {
+      user: guest?.userId,
+    });
   };
 
   const getDeclineSheetProps = () => {
@@ -217,9 +236,19 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         return (
           <>
             <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => declineSheetRef.current?.open()}>
-              <Image source={IMAGES.trash} style={styles.trashIcon} />
+              style={[
+                styles.deleteButton,
+                isLoadingDecline && styles.disabledButton,
+              ]}
+              onPress={() => declineSheetRef.current?.open()}
+              disabled={isLoadingDecline}>
+              <Image
+                source={IMAGES.trash}
+                style={[
+                  styles.trashIcon,
+                  isLoadingDecline && styles.disabledIcon,
+                ]}
+              />
             </TouchableOpacity>
             <View style={styles.footerButtons}>
               <Button
@@ -227,6 +256,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                 title={BUTTON_LABLE.SAVE_DRAFT}
                 colorTheme="light"
                 onPress={() => handleGuestAction('UPDATE', GuestStatus.DRAFT)}
+                loading={isLoadingAction}
               />
               <Button
                 style={styles.sendButton}
@@ -238,6 +268,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                     GuestStatus.INVITED,
                   )
                 }
+                loading={isLoadingAction}
               />
             </View>
           </>
@@ -246,15 +277,26 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         return (
           <>
             <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => declineSheetRef.current?.open()}>
-              <Image source={IMAGES.trash} style={styles.trashIcon} />
+              style={[
+                styles.deleteButton,
+                isLoadingDecline && styles.disabledButton,
+              ]}
+              onPress={() => declineSheetRef.current?.open()}
+              disabled={isLoadingDecline}>
+              <Image
+                source={IMAGES.trash}
+                style={[
+                  styles.trashIcon,
+                  isLoadingDecline && styles.disabledIcon,
+                ]}
+              />
             </TouchableOpacity>
             <Button
               style={[styles.sendButton]}
               title={BUTTON_LABLE.APPROVE_REQUEST}
               colorTheme="dark"
               onPress={() => handleGuestAction('UPDATE', GuestStatus.CONFIRMED)}
+              loading={isLoadingAction}
             />
           </>
         );
@@ -266,6 +308,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               title={BUTTON_LABLE.MARK_AS_SPAM}
               colorTheme="dark"
               onPress={() => declineSheetRef.current?.open()}
+              loading={isLoadingAction}
             />
           </>
         );
@@ -274,9 +317,19 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         return (
           <>
             <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => declineSheetRef.current?.open()}>
-              <Image source={IMAGES.trash} style={styles.trashIcon} />
+              style={[
+                styles.deleteButton,
+                isLoadingDecline && styles.disabledButton,
+              ]}
+              onPress={() => declineSheetRef.current?.open()}
+              disabled={isLoadingDecline}>
+              <Image
+                source={IMAGES.trash}
+                style={[
+                  styles.trashIcon,
+                  isLoadingDecline && styles.disabledIcon,
+                ]}
+              />
             </TouchableOpacity>
             <Button
               style={[styles.sendButton]}
@@ -285,6 +338,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               onPress={() =>
                 handleGuestAction('UPDATE', guest?.status as GuestStatus)
               }
+              loading={isLoadingAction}
             />
           </>
         );
@@ -303,32 +357,64 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             <Image source={IMAGES.leftArrow} style={styles.icon} />
           </View>
         </TouchableOpacity>
-        <Text style={styles.title}>Manage Invite</Text>
+        <Text style={styles.title}>{LABLE.MANAGE_INVITE}</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View>
           <ProfileCard
-            guest={guest}
+            user={{
+              name: guest.name,
+              avatar: userDetails?.data?.imageUrl || guest.profilePicture,
+              roles:
+                userDetails?.data?.focuses ||
+                guest.category?.map(cat => ({ name: cat, id: cat })) ||
+                [],
+              age: userDetails?.data?.age || guest.age,
+              followers:
+                userDetails?.data?.socialStats?.instagramFollowersCount?.toString() ||
+                guest.numFollowers?.toString() ||
+                '0',
+              location: userDetails?.data?.city || '.',
+              isMember:
+                userDetails?.data?.role === 'member' ||
+                Boolean(guest.age && guest.baseCity),
+              status: userDetails?.data?.status || guest.status,
+              interests:
+                userDetails?.data?.interest?.split(', ') ||
+                guest.interest ||
+                [],
+              isFollowing: userDetails?.data?.isFollow || false,
+            }}
             showGuestStatus={true}
+            status={guest?.status}
             actionButtons={[
               {
                 title: 'Favorite',
                 icon: isFavorite ? IMAGES.star_active : IMAGES.star_inactive,
                 onPress: handleFavorite,
+                loading: isLoadingFavorite,
               },
               {
                 title: 'Profile',
                 icon: IMAGES.arrow_up_right,
                 onPress: handleProfile,
+                loading: false,
               },
             ]}
+          />
+          <AddedBySection
+            user={{
+              name: guest.addedBy || '',
+              id: guest.addedBy || '',
+            }}
           />
         </View>
 
         <View style={styles.inviteSection}>
           <InviteDetails
             isCollapsible
+            ticketTypeError={''}
             ticketTypeRef={ticketTypeRef}
             selectedTicketType={
               selectedTicketType ||
@@ -340,21 +426,24 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                 : undefined)
             }
             onTicketTypePress={() => actionSheetRef?.current?.open()}
-            additionalGuests={additionalGuests}
+            additionalGuests={additionalGuests || 0}
             onAdditionalGuestsChange={setAdditionalGuests}
-            maxAdditionalGuests={guest?.maxAdditionalGuests || 5}
             inviteMessage={inviteMessage}
             onInviteMessageChange={setInviteMessage}
             guestNote={guestNote}
             onGuestNoteChange={setGuestNote}
+            maxAdditionalGuests={guest?.partySize}
             eventName={selectedEvent?.name}
             eventStartDate={selectedEvent?.startDate}
             directlySendToConfirm={directlySendToConfirm}
             onDirectlySendToConfirmChange={setDirectlySendToConfirm}
           />
-          <View style={{ marginTop: verticalMarginScale(16) }}>
-            <Questionnaire isCollapsible data={guest?.questions || []} />
-          </View>
+
+          {Boolean(guest?.questions?.length) && (
+            <View style={{ marginTop: verticalMarginScale(16) }}>
+              <Questionnaire isCollapsible data={guest?.questions || []} />
+            </View>
+          )}
         </View>
       </ScrollView>
 
@@ -370,9 +459,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       <DeclineBottomSheet
         ref={declineSheetRef}
         {...getDeclineSheetProps()}
-        onConfirm={() => {
-          handleGuestAction('DELETE', GuestStatus.DECLINED);
-        }}
+        onConfirm={handleDeclineAction}
       />
     </SafeAreaView>
   );
@@ -472,6 +559,23 @@ const styles = StyleSheet.create({
   spamButton: {
     flex: 1,
     backgroundColor: COLORS.errorText,
+  },
+  addedByWrapper: {
+    marginTop: verticalMarginScale(-8),
+    marginBottom: verticalMarginScale(8),
+    backgroundColor: COLORS.white,
+    borderBottomLeftRadius: radiusScale(8),
+    borderBottomRightRadius: radiusScale(8),
+    borderColor: COLORS.neutralBorder,
+    borderWidth: verticalScale(1),
+    borderTopWidth: 0,
+    paddingVertical: verticalMarginScale(8),
+  },
+  disabledButton: {
+    opacity: 0.5,
+  },
+  disabledIcon: {
+    opacity: 0.7,
   },
 });
 

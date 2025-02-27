@@ -12,20 +12,37 @@ import {
 import { fontFamily } from 'src/utils/functions';
 import IMAGES from 'src/assets/images';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
-import { EventGuest } from '../types';
 import FastImage from '@d11/react-native-fast-image';
+
+interface User {
+  name: string;
+  avatar?: string;
+  roles?: Array<{
+    name: string;
+    id: string;
+  }>;
+  age?: number;
+  followers?: string;
+  location?: string;
+  isMember?: boolean;
+  status?: string;
+  interests?: string[];
+  isFollowing?: boolean;
+}
 
 interface ActionButton {
   title: string;
   icon: any;
   onPress: () => void;
   otherStyle?: any;
+  loading?: boolean;
 }
 
 interface ProfileCardProps {
-  guest: EventGuest;
+  user?: User;
   actionButtons: ActionButton[];
-  showGuestStatus: boolean;
+  showGuestStatus?: boolean;
+  status?: string;
 }
 
 const ProfileImage = ({
@@ -61,38 +78,41 @@ const NonMemberBadge = () => (
 );
 
 const ProfileCard: React.FC<ProfileCardProps> = ({
-  guest,
+  user,
   actionButtons = [],
   showGuestStatus = true,
+  status = 'DRAFT',
 }) => {
-  const isMember = Boolean(guest.age && guest.profilePicture);
-
   return (
     <>
       <View style={styles.guestCard}>
         <View style={styles.guestCardHeader}>
           <View>
-            {showGuestStatus ? (
-              <StatusLabel status={guest.status || 'DRAFT'} />
-            ) : null}
+            {showGuestStatus ? <StatusLabel status={status} /> : null}
           </View>
+
+          {user?.isFollowing ? (
+            <View style={styles.followIndicator}>
+              <Image source={IMAGES.user_check} style={styles.followIcon} />
+            </View>
+          ) : null}
         </View>
         <View style={styles.guestCardContent}>
           <View style={styles.profileImageContainer}>
             <ProfileImage
-              name={guest.name}
-              profilePicture={guest.profilePicture}
+              name={user?.name || ''}
+              profilePicture={user?.avatar}
             />
-            {isMember ? <MemberBadge /> : <NonMemberBadge />}
+            {user?.isMember ? <MemberBadge /> : <NonMemberBadge />}
           </View>
-          <Text style={styles.name}>{guest.name}</Text>
+          <Text style={styles.name}>{user?.name}</Text>
 
-          {isMember && (
+          {user?.isMember && (
             <>
               <View style={styles.roleContainer}>
-                {guest.category?.map((category: string, index: number) => (
+                {user?.roles?.map((role, index) => (
                   <View key={index} style={styles.role}>
-                    <Text style={styles.roleText}>{category}</Text>
+                    <Text style={styles.roleText}>{role.name}</Text>
                   </View>
                 ))}
               </View>
@@ -101,18 +121,16 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                 <View style={[styles.statItem, styles.leftStatItem]}>
                   <Image source={IMAGES.hourglass} style={styles.statIcon} />
                   <Text style={styles.statText}>
-                    {guest.age || 'N/A'} Years Old
+                    {user?.age || 'N/A'} Years Old
                   </Text>
                 </View>
                 <View style={[styles.statItem, styles.centerStatItem]}>
                   <Image source={IMAGES.user_check} style={styles.statIcon} />
-                  <Text style={styles.statText}>
-                    {guest.numFollowers || '0'}
-                  </Text>
+                  <Text style={styles.statText}>{user?.followers || '0'}</Text>
                 </View>
                 <View style={[styles.statItem, styles.rightStatItem]}>
                   <Image source={IMAGES.location} style={styles.statIcon} />
-                  <Text style={styles.statText}>{guest.baseCity || 'N/A'}</Text>
+                  <Text style={styles.statText}>{user?.location || 'N/A'}</Text>
                 </View>
               </View>
             </>
@@ -124,7 +142,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <TouchableOpacity
             key={index}
             style={[styles.actionButton, button.otherStyle]}
-            onPress={button.onPress}>
+            onPress={button.onPress}
+            disabled={button.loading}>
             <Image source={button.icon} style={styles.actionButtonIcon} />
             <Text style={styles.actionButtonText}>{button.title}</Text>
           </TouchableOpacity>
@@ -139,7 +158,6 @@ const styles = StyleSheet.create({
     paddingLeft: horizontalMarginScale(16),
     paddingRight: horizontalMarginScale(8),
     paddingTop: verticalMarginScale(8),
-    // marginBottom: verticalMarginScale(-40),
     zIndex: 1,
     flexDirection: 'row',
     alignItems: 'center',

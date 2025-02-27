@@ -41,7 +41,7 @@ export interface EventGuest {
   profilePicture?: string;
   questions?: Array<{ question: string; answer: string }>;
   ticketType?: string;
-  userId?: string;
+  userId: string;
   vouches?: Vouch[];
   privateGuestNote?: string;
 }

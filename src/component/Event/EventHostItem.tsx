@@ -1,9 +1,24 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import { Text, StyleSheet, View, Image } from 'react-native';
 import { capitalizeFirstLetter, fontFamily } from '../../utils/functions';
-import { BUTTON_LABLE, COLORS, EVENT_STATUS, ROLE } from '../../utils/constants';
+import {
+  BUTTON_LABLE,
+  COLORS,
+  EVENT_STATUS,
+  ROLE,
+} from '../../utils/constants';
 import IMAGES from '@images/index';
-import { Hp, Wp } from 'src/utils/dimensions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  horizontalScale,
+  Hp,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+} from 'src/utils/dimensions';
 import ButtonSmall from '../ButtonSmall';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
 import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
@@ -12,17 +27,16 @@ import { RootState } from 'src/redux/slices';
 import FastImage from '@d11/react-native-fast-image';
 
 interface EventHostItemProps {
-  item: {};
+  item: any;
 }
 
 const handlEventPress = () => {
   // navigation.navigate('EventDetailsScreen', {item});
-  FlashMessageComponent.show('success', "in Prrogress..")
+  FlashMessageComponent.show('success', 'in Prrogress..');
 };
 
 const EventHostItem: React.FC<EventHostItemProps> = ({ item }) => {
   const role = useSelector((state: RootState) => state.auth.role);
-
 
   return (
     <View style={[styles.container]}>
@@ -34,16 +48,20 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item }) => {
       />
       <View style={{ paddingHorizontal: 10, marginEnd: 20 }}>
         <Text style={styles.title}>{capitalizeFirstLetter(item?.name)}</Text>
-        <Text style={styles.subtitle}>{capitalizeFirstLetter(item?.role?.name)}</Text>
+        <Text style={styles.subtitle}>
+          {capitalizeFirstLetter(item?.role?.name)}
+        </Text>
       </View>
 
-      {role == ROLE.MEMBER && <ButtonSmall
-        disabled={false}
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.FOLLOW}
-        colorTheme={'dark'}
-        onPress={handlEventPress}
-      />}
+      {role == ROLE.MEMBER && (
+        <ButtonSmall
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.FOLLOW}
+          colorTheme={'dark'}
+          onPress={handlEventPress}
+        />
+      )}
     </View>
   );
 };
@@ -51,7 +69,7 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item }) => {
 const styles = StyleSheet.create({
   container: {
     borderWidth: 2,
-    padding: 10,
+    padding: verticalMarginScale(8),
     marginRight: 10,
     borderRadius: 30,
     borderColor: COLORS.borderGray,
@@ -61,18 +79,24 @@ const styles = StyleSheet.create({
   },
   image: {
     resizeMode: 'center',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: horizontalScale(40),
+    height: verticalScale(40),
+    borderRadius: radiusScale(20),
+  },
+  infoContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingLeft: horizontalMarginScale(8),
+    // marginEnd: 20,
   },
   title: {
     color: COLORS.black2,
-    fontSize: 16,
+    fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Regular,
   },
   subtitle: {
     color: COLORS.light_gray,
-    fontSize: 14,
+    fontSize: fontScale(12),
     fontFamily: fontFamily.ABCDiatype_Regular,
   },
   btnStyle: {

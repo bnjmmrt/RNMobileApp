@@ -4,35 +4,34 @@ import {
   useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ActivityIndicator, FlatList, View} from 'react-native';
-import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { FlatList, View } from 'react-native';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import Header from 'src/component/Header/Header';
 import SearchInput from 'src/component/SearchInput';
-import {AppStackParamList} from 'src/navigation/AppStack';
-import {useFetchCustomListUsersQuery} from 'src/redux/actions/listsApiAction';
-import {COLORS} from 'src/utils/constants';
+import { AppStackParamList } from 'src/navigation/AppStack';
+import { useFetchCustomListUsersQuery } from 'src/redux/actions/listsApiAction';
 import {
   horizontalMarginScale,
   Hp,
   verticalMarginScale,
 } from 'src/utils/dimensions';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import DeleteListUsersSheet from '../BottomSheets/DeleteListUsersSheet';
 import ListActionsSheet, {
   listActionCurrentPageType,
 } from '../BottomSheets/ListActionsSheet';
-import UserListItem, {UserItemInterface} from '../UsersListItem';
+import UserListItem, { UserItemInterface } from '../UsersListItem';
 import createStyle from './style';
 
 interface ListDetailsProps
   extends NativeStackScreenProps<AppStackParamList, 'ListDetail'> {}
 
-const ListDetails: React.FC<ListDetailsProps> = ({route}) => {
+const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
   const styles = createStyle();
   const navigation = useNavigation<NavigationProp<AppStackParamList>>();
   const searchInputRef = useRef<any>(null);
@@ -48,10 +47,10 @@ const ListDetails: React.FC<ListDetailsProps> = ({route}) => {
     count: number;
     name: string;
     id: string;
-  }>({count: 0, users: [], id: '', name: ''});
+  }>({ count: 0, users: [], id: '', name: '' });
   const [currentPage, setCurrentPage] = useState(1);
 
-  const {data, isLoading, refetch} = useFetchCustomListUsersQuery({
+  const { data, isLoading, refetch } = useFetchCustomListUsersQuery({
     take: 10,
     skip: (currentPage - 1) * 10,
     listId: route.params.list,
@@ -109,7 +108,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({route}) => {
   };
 
   const renderItem = useCallback(
-    ({item}: {item: UserItemInterface}) => {
+    ({ item }: { item: UserItemInterface }) => {
       const isSelected = selectedUsers.some(
         user => user === item.listMappingId,
       );
@@ -149,48 +148,42 @@ const ListDetails: React.FC<ListDetailsProps> = ({route}) => {
         }}
         showBackButton={true}
       />
-      <View style={{marginHorizontal: horizontalMarginScale(20), flex: 1}}>
+      <View style={{ marginHorizontal: horizontalMarginScale(20), flex: 1 }}>
         <SearchInput
           ref={searchInputRef}
           onSearchTextChange={handleSearchTextChange}
           placeholder="Search..."
           // rightIcon={IMAGES.filter_lines}
-          mainContainerStyle={{marginHorizontal: 0}}
+          mainContainerStyle={{ marginHorizontal: 0 }}
         />
-        {isLoading ? (
-          <View
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-            <ActivityIndicator color={COLORS.black} />
-          </View>
-        ) : null}
 
         <FlatList
           data={allUsers.users || []}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={{gap: verticalMarginScale(16)}}
+          contentContainerStyle={{ gap: verticalMarginScale(16) }}
           ListHeaderComponent={<View />}
           ListFooterComponent={<View />}
           onEndReached={loadMore}
           onEndReachedThreshold={0.4}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
-            <>
-              {!isLoading ? (
-                <View
-                  style={{
-                    height: Hp(55),
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <EventEmptyRecord
-                    title="Your List is Empty"
-                    subTitle={`Start building your list by adding users.\nClick the button below to begin.`}
-                    isLoading={false}
-                  />
-                </View>
-              ) : null}
-            </>
+            <View
+              style={{
+                height: Hp(55),
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <EventEmptyRecord
+                title="Your List is Empty"
+                subTitle={
+                  route.params.listType === 'custom'
+                    ? `Start building your list by adding users.\nClick the button below to begin.`
+                    : ''
+                }
+                isLoading={isLoading}
+              />
+            </View>
           }
         />
       </View>
@@ -225,6 +218,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({route}) => {
         onSuccess={onListActionSheetSuccess}
         listType={route.params.listType}
         listUserCount={allUsers.users.length}
+        selectedUsers={allUsers.users.map(item => item.id) || []}
       />
     </View>
   );

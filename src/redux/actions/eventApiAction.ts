@@ -46,7 +46,6 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     fetchAllEvents: builder.query({
       query: ({
-        statusName,
         userId,
         queryString,
         searchText,
@@ -135,12 +134,10 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     manageGuest: builder.mutation({
       query: ({
-        eventId,
         guestId,
         action,
         payload,
       }: {
-        eventId: string;
         guestId?: string;
         action: 'CREATE' | 'UPDATE' | 'DELETE';
         payload?: ManageGuestPayload;
@@ -151,8 +148,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
           url: baseUrl,
           method: 'PUT',
           body: {
-            eventId,
-            guestId,
+            inclusiveIds: [guestId],
             action,
             ...payload,
           },

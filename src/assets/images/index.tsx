@@ -136,6 +136,7 @@ const IMAGES = {
   refresh: require('./refresh.png'),
   add: require('./add.png'),
   help: require('./help-circle.png'),
+  upload: require('./upload.png'),
 };
 
 export default IMAGES;

@@ -52,6 +52,7 @@ export const BUTTON_LABLE = {
   ADD: 'Add',
   DISCOVER_MORE_EVENTS: 'Discover More Events',
   CHECK_IN: 'Check In',
+  SHOW_TICKET_BREAKDOWN: 'Show Ticket Breakdown',
   SAVE_DRAFT: 'Save Draft',
   SEND_INVITE: 'Send Invite',
   APPROVE_REQUEST: 'Approve Request',
@@ -245,7 +246,8 @@ export const LABLE = {
   ACCESS_CALENDAR: 'Calendar access is required to add events.',
   PERMISSION_DENIED: 'Permission Denied',
   VIP_TOOLTIP_CONTENT: 'Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.',
-  EVENT_SETTING_INFO: "Edit event settings on Rumor’s web platform.\nClick the button below to take you there."
+  EVENT_SETTING_INFO: "Edit event settings on Rumor’s web platform.\nClick the button below to take you there.",
+  MANAGE_INVITE: 'Manage Invite',
 };
 export const EVENT = {
   EDIT_EVENT: 'Edit Event',
@@ -329,6 +331,11 @@ export const ERROR_MESSAGE = {
   FEEDBACK_ERROR: 'Please enter your Feedback.',
   WEBSITE_ERROR: 'Please enter your URL.',
   COMPANY_NAME_ERROR: 'Company Name is required',
+  TICKET_TYPE_ERROR: 'Select at least one ticket type',
+  COLLABORATOR_ERROR: 'Choose a collaborator',
+  ANNOUNCEMENT_DETAIL_ERROR: "Enter announcement details",
+  FILE_SIZE_EXCEED: "File size exceeds the 5MB limit. Please upload a smaller file.",
+  SOMETHING_WENT_WRONG: "Something went wrong, Please try again later",
   TCKET_ERROR_MESSAGE: 'Ticket is not associated with a guest for this event.',
   EMPTY: '',
 };
@@ -680,6 +687,11 @@ export const ANNOUNCCEMENTS_DATA = [
     date: '10/05/2025',
     imageKeyUrl: 'https://picsum.photos/200/300',
     media: [],
+    time: 'Today, 4:00PM',
+    profileImg: '',
+    addedBy: 'Event Collaborator',
+    recipientsCount: '2000',
+    ticketType: ['All Ticket Types', 'Revolve', 'Uncommon']
   },
   {
     id: '1',
@@ -687,6 +699,11 @@ export const ANNOUNCCEMENTS_DATA = [
     description: LABLE.DUMMY_TEXT,
     date: '10/05/2025',
     media: [],
+    time: 'Today, 9:00PM',
+    profileImg: '',
+    addedBy: 'Event Collaborator 2',
+    recipientsCount: '908',
+    ticketType: ['All Ticket Types', 'Uncommon']
   },
   {
     id: '1',
@@ -703,6 +720,11 @@ export const ANNOUNCCEMENTS_DATA = [
         uri: 'https://www.aeee.in/wp-content/uploads/2020/08/Sample-pdf.pdf',
       },
     ],
+    time: 'Today, 6:00PM',
+    profileImg: '',
+    addedBy: 'Event Collaborator 3',
+    recipientsCount: '1852',
+    ticketType: ['Revolve', 'Uncommon']
   },
   {
     id: '1',
@@ -714,6 +736,11 @@ export const ANNOUNCCEMENTS_DATA = [
       { type: 'pdf', name: 'Guests File Rumor', size: '9.83 MB' },
       { type: 'image', uri: 'https://picsum.photos/200/300' },
     ],
+    time: '4:00PM',
+    profileImg: '',
+    addedBy: 'Event Collaborator 4',
+    recipientsCount: '1986',
+    ticketType: ['All Ticket Types']
   },
   // Add more objects for additional list items
 ];
@@ -724,3 +751,54 @@ export const genderList = [
   { id: 2, gender: 'Non-binary', value: 'NON_BINARY' },
   { id: 3, gender: 'Prefer not to say', value: 'NOT_APPLICABLE' },
 ];
+
+export const ticketTypeList = [
+  { id: 0, label: 'All Ticket Types' },
+  { id: 1, label: 'VIP' },
+  { id: 2, label: 'Standard' },
+  { id: 3, label: 'Backstage' },
+  { id: 4, label: 'GA' },
+];
+
+export const collaboratorList = [
+  { id: 0, label: 'All Event Collaborators' },
+  { id: 1, label: 'Uncommon (Host)' },
+  { id: 2, label: 'PTC (Co-host)' },
+  { id: 3, label: 'ABC (Guest List Contributor)' },
+];
+
+export const ANNOUNCEMENT = {
+  New_Announcement: 'New Announcement',
+  Recipient_Details: 'Recipient Details',
+  Announcement_Description: 'Confirmed guests will receive the post via email, SMS and in-app notification. It will also be shown on the event page.',
+  Ticket_Type: 'Ticket Type',
+  Added_by: 'Added by',
+  Send_to: 'Send to:',
+  Announcement_Details: "Announcement Details",
+  Announcement: "Announcements",
+  Share_updates: "Share updates or important event details...",
+  Attachments: "Attachments",
+  Attachments_Descripiton: "Upload up to 3 files. Allowed File types: JPEG, PNG, PDF.  Max file size: 5 MB.  ",
+  Post_Announcement: "Post Announcement",
+  Choose_Document: "Choose Document",
+  Choose_from_file: "Choose from file",
+  Choose_photo_or_video: "Choose photo or video",
+  ADD_ATTACHMENT: "ADD ATTACHMENT",
+  CANCEL: "Cancel",
+  Recipients: "Recipients",
+  No_results: "No results",
+  Please_refine_your_search: "Please refine your search.",
+  Choose_Photo: "Choose Photo",
+  READ_MORE: "Read more",
+  READ_LESS: "Show less",
+  Delete: "Delete",
+  Update_Announcement: "Update Announcement",
+  Update_Event_Announcement: "Update Event Announcement",
+  update_text: "Are you sure you want to update this announcement? Changes will be reflected in the event page.",
+  Delete_Event_Announcement: "Delete Event Announcement",
+  delete_text: "Are you sure you want to remove this announcement from the event page?",
+  leave_title: "Are you sure you want to leave? ",
+  leave_text: "You have unsaved changes. Are you sure you want to leave without saving?",
+  announcement_des: "Announcements will be sent immediately to [X] recipients",
+  Leave_Without_Saving: "Leave Without Saving"
+};

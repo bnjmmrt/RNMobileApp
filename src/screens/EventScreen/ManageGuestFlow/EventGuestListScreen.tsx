@@ -13,7 +13,7 @@ import {
   UIManager,
   ActivityIndicator,
 } from 'react-native';
-import { COLORS } from '../../../utils/constants';
+import { COLORS, LABLE } from '../../../utils/constants';
 import { fontFamily } from 'src/utils/functions';
 import {
   fontScale,
@@ -41,6 +41,9 @@ import { ROUTES } from 'src/navigation/Route';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGetGuestsQuery } from 'src/redux/actions/eventApiAction';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { RootState } from 'src/redux/slices';
+import { useDispatch, useSelector } from 'react-redux';
+import { setEventId } from 'src/redux/slices/eventSlice';
 
 interface EventGuestListProps extends NativeStackScreenProps<any, any> {
   eventId?: string;
@@ -64,9 +67,13 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   const [selectedSort, setSelectedSort] = useState('name_asc');
   const filtersSheetRef = useRef<BottomSheetMethods>(null);
   const sortSheetRef = useRef<BottomSheetMethods>(null);
-
+  const dispatch = useDispatch();
   // Get eventId from route params or props
   const eventId = route?.params?.eventId;
+
+  const selectedEvent = useSelector(
+    (state: RootState) => state.inviteGuestsFlow.selectedEvent,
+  );
 
   const {
     data: guestsData,
@@ -258,6 +265,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
             id: guest.guestId,
             name: `${guest.firstName} ${guest.lastName}`,
             status: item.status,
+            userId: guest.id,
             profilePicture: undefined,
           };
           return renderInvitee(inviteeGuest);
@@ -296,6 +304,11 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     );
   };
 
+  const onCheckInPress = async () => {
+    dispatch(setEventId(eventId));
+    navigation.navigate(ROUTES.QRCodeScanner);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
@@ -305,12 +318,17 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
               <Image source={IMAGES.leftArrow} style={styles.icon} />
             </View>
           </TouchableOpacity>
-          <Text style={styles.title}>Guest List</Text>
-          <TouchableOpacity>
-            <View style={styles.iconButton}>
-              <Image source={IMAGES.qr} style={styles.icon} />
-            </View>
-          </TouchableOpacity>
+          <Text style={styles.title}>{LABLE.GUEST_LIST}</Text>
+
+          {selectedEvent?.useQr ? (
+            <TouchableOpacity onPress={onCheckInPress}>
+              <View style={styles.iconButton}>
+                <Image source={IMAGES.qr} style={styles.icon} />
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.phBTn} />
+          )}
         </View>
 
         <TouchableOpacity
@@ -382,6 +400,10 @@ const styles = StyleSheet.create({
     paddingVertical: verticalMarginScale(16),
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  phBTn: {
+    width: verticalScale(40),
+    height: verticalScale(40),
   },
   iconButton: {
     width: verticalScale(40),

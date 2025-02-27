@@ -1,11 +1,15 @@
 import { BottomSheetFlatList, BottomSheetView } from '@gorhom/bottom-sheet';
 import IMAGES from '@images/index';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
 import AvatarInitials from 'src/component/AvatarInitials';
 import Button from 'src/component/Button';
 import { CustomText } from 'src/component/CustomText';
+import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import SearchInput from 'src/component/SearchInput';
+import { AppStackParamList } from 'src/navigation/AppStack';
+import { ROUTES } from 'src/navigation/Route';
 import { useAddUsersToCustomListMutation } from 'src/redux/actions/listsApiAction';
 import { useFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
 import {
@@ -16,10 +20,6 @@ import {
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { UserItemInterface } from '../../UsersListItem';
 import { styles } from './style';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { AppStackParamList } from 'src/navigation/AppStack';
-import { ROUTES } from 'src/navigation/Route';
-import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 
 const AddUsersInList = ({
   onSuccess,
@@ -27,12 +27,14 @@ const AddUsersInList = ({
   showError,
   listId,
   listName,
+  selectedUsers: users,
 }: {
   onSuccess: () => void;
   closeSheet: () => void;
   showError: (message: string) => void;
   listId: string;
   listName: string;
+  selectedUsers?: string[];
 }) => {
   const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
@@ -161,7 +163,13 @@ const AddUsersInList = ({
         {'Select Users to Add to List'}
       </CustomText>
       <BottomSheetFlatList
-        data={allUsers?.users || []}
+        data={
+          users
+            ? allUsers.users.filter(
+                item1 => !users.some(item2 => item2 === item1.id),
+              )
+            : allUsers?.users || []
+        }
         renderItem={renderListRow}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{ gap: verticalMarginScale(8) }}

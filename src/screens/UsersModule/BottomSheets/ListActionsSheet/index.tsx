@@ -56,6 +56,7 @@ const ListActionsSheet = forwardRef<
       listType,
       from,
       listUserCount,
+      selectedUsers,
     },
     ref,
   ) => {
@@ -228,6 +229,7 @@ const ListActionsSheet = forwardRef<
               listId={selectedListData?.id || selectedListId || ''}
               listName={selectedListData?.name || selectedListName || ''}
               showError={showError}
+              selectedUsers={selectedUsers}
             />
           ) : null}
         </BottomSheetView>

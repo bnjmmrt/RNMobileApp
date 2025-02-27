@@ -1,14 +1,14 @@
-import {BottomSheetView} from '@gorhom/bottom-sheet';
-import React, {forwardRef, useImperativeHandle, useRef} from 'react';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import BottomSheetComponent, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
-import {CustomText} from 'src/component/CustomText';
-import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import {useRemoveUsersFromCustomListMutation} from 'src/redux/actions/listsApiAction';
-import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
-import {styles} from './style';
+import { CustomText } from 'src/component/CustomText';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { useRemoveUsersFromCustomListMutation } from 'src/redux/actions/listsApiAction';
+import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
+import { styles } from './style';
 
 interface DeleteListUsersPropsInterface {
   listName: string;
@@ -20,7 +20,7 @@ interface DeleteListUsersPropsInterface {
 const DeleteListUsersSheet = forwardRef<
   BottomSheetMethods,
   DeleteListUsersPropsInterface
->(({listName, listId, selectedUsers = [], onSuccess}, ref) => {
+>(({ listName, listId, selectedUsers = [], onSuccess }, ref) => {
   const sheetRef = useRef<BottomSheetMethods>(null);
   useImperativeHandle(ref, () => ({
     open: () => sheetRef.current?.open(),
@@ -31,7 +31,7 @@ const DeleteListUsersSheet = forwardRef<
 
   const [
     removeUsersFromList,
-    {error: removeUsersFromListError, isLoading: removeUsersFromListLoading},
+    { error: removeUsersFromListError, isLoading: removeUsersFromListLoading },
   ] = useRemoveUsersFromCustomListMutation();
 
   const onPressRemoveUsers = async () => {
@@ -67,7 +67,7 @@ const DeleteListUsersSheet = forwardRef<
       ref={sheetRef}
       snapPoints={['50%']} // Adjustable snap points
       enableDynamicSizing
-      onClose={() => console.log('Bottom sheet closed')}>
+      onClose={() => {}}>
       <BottomSheetView style={styles.actionContentWrapper}>
         <CustomText style={styles.title}>{'Remove user from list?'}</CustomText>
         <CustomText style={styles.message}>

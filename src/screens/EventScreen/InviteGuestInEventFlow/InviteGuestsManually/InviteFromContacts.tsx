@@ -8,6 +8,8 @@ import { CustomText } from 'src/component/CustomText';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import SearchInput from 'src/component/SearchInput';
 import { EventStackParamList } from 'src/navigation/EventStack';
+import { ROUTES } from 'src/navigation/Route';
+import { setSelectedManualUser } from 'src/redux/slices/inviteGuestsFlowSlice';
 import {
   horizontalMarginScale,
   Hp,
@@ -16,8 +18,6 @@ import {
 } from 'src/utils/dimensions';
 import useContacts, { ContactItem } from 'src/utils/hooks/useContactPermission';
 import createStyles from './styles';
-import { ROUTES } from 'src/navigation/Route';
-import { setSelectedManualUser } from 'src/redux/slices/inviteGuestsFlowSlice';
 
 interface InviteFromContactsProps {}
 
@@ -68,7 +68,7 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
     return (
       <View style={styles.listItem}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <AvatarInitials name={item.name} size={verticalScale(40)} />
+          <AvatarInitials name={item.name} size={verticalScale(40)} listing />
           <View>
             <CustomText style={styles.name}>{item.name}</CustomText>
             <CustomText style={styles.phone}>{item.phoneNumber}</CustomText>
