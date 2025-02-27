@@ -30,8 +30,7 @@ const HostEventTalent: React.FC<HostEventTalentProps> = ({ talents }) => {
     <View style={styles.container}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: verticalMarginScale(12) }}>
         <CustomText style={styles.title}>{LABLE.FEATURE_TALENT}</CustomText>
-        <CircleButtonOverlay onPress={() => { }} customStyle={{ position: 'relative', }} imageSource={IMAGES.plus} size={36} theme={COLORS.LIGHT} />
-
+        <CircleButtonOverlay onPress={() => { }} customStyle={{ position: 'relative', }} imageSource={IMAGES.add} size={32} theme={COLORS.LIGHT} />
       </View>
 
       <FlatList

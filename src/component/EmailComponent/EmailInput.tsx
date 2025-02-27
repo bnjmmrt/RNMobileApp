@@ -60,6 +60,9 @@ const EmailInput = forwardRef((_, ref) => {
           keyboardType="email-address"
           focusable={true} // Enable input focus
           autoCapitalize="none" // Disable automatic capitalization
+          autoComplete="off"
+          autoCorrect={false}
+          autoFocus={true}
           value={emailAddress}
           onChangeText={text => {
             setEmailAddress(text);
