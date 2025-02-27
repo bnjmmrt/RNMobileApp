@@ -179,7 +179,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const handleDeclineAction = async () => {
     try {
       setIsLoadingDecline(true);
-      await handleGuestAction('DELETE', GuestStatus.DECLINED);
+      await handleGuestAction('DELETE', GuestStatus.INVITED);
     } finally {
       setIsLoadingDecline(false);
     }
@@ -375,7 +375,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                 userDetails?.data?.socialStats?.instagramFollowersCount?.toString() ||
                 guest.numFollowers?.toString() ||
                 '0',
-              location: guest.baseCity || userDetails?.data?.city,
+              location: userDetails?.data?.city || '.',
               isMember:
                 userDetails?.data?.role === 'member' ||
                 Boolean(guest.age && guest.baseCity),
