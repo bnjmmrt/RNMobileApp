@@ -1,9 +1,9 @@
-import React, {useRef, forwardRef} from 'react';
-import {View, StyleSheet, Text, Image, Platform, ViewStyle} from 'react-native';
+import React, { useRef, forwardRef } from 'react';
+import { View, StyleSheet, Text, Image, Platform, ViewStyle } from 'react-native';
 import BottomSheetComponent from './BottomSheet';
-import {BUTTON_LABLE, COLORS, EVENT_STATUS} from '../../utils/constants';
+import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
 import Button from '../Button';
-import {fontFamily} from '../../utils/functions';
+import { fontFamily } from '../../utils/functions';
 import {
   fontScale,
   horizontalMarginScale,
@@ -27,6 +27,8 @@ interface ConfirmationBottomSheetProps {
   btnStyle?: any;
   isSuccess?: boolean;
   back?: () => void;
+  isAnnouncement?: boolean;
+  colorTheme?: string
 }
 const ConfirmationBottomSheet = forwardRef(
   (props: ConfirmationBottomSheetProps, ref) => {
@@ -64,13 +66,18 @@ const ConfirmationBottomSheet = forwardRef(
               <Text style={styles.statusText}> {'You are going'}</Text>
             </View>
           ) : (
-            <View style={styles.statusBanner}>
-              <Image source={IMAGES.tickDeclined} />
-              <Text style={styles.statusText}>
-                {' '}
-                {EVENT_STATUS.DECLINED_BY_YOU}
-              </Text>
-            </View>
+            <>
+              {props.isAnnouncement ? null :
+                <View style={styles.statusBanner}>
+                  <Image source={IMAGES.tickDeclined} />
+                  <Text style={styles.statusText}>
+                    {' '}
+                    {EVENT_STATUS.DECLINED_BY_YOU}
+                  </Text>
+                </View>
+              }
+            </>
+
           )}
           {props.subTitle && (
             <Text style={[styles.subTitle]}>{props.subTitle}</Text>
@@ -79,7 +86,7 @@ const ConfirmationBottomSheet = forwardRef(
             disabled={false}
             style={props.btnStyle ? props.btnStyle : styles.btnStyle}
             title={props.btnLabel}
-            colorTheme={props.btnStyle ? 'white' : 'dark'}
+            colorTheme={props.colorTheme ? props.colorTheme : props.btnStyle ? 'white' : 'dark'}
             onPress={close}
           />
         </View>

@@ -39,16 +39,14 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item }) => {
   const role = useSelector((state: RootState) => state.auth.role);
 
   return (
-    <View
-      style={[styles.container, { width: role == ROLE.MEMBER ? 250 : 160 }]}>
+    <View style={[styles.container]}>
       <FastImage
         style={[styles.image]}
         source={{ uri: item?.companyLogo }}
         defaultSource={IMAGES.backgroundLogin}
         resizeMode="cover"
       />
-      <View
-        style={styles.infoContainer}>
+      <View style={{ paddingHorizontal: 10, marginEnd: 20 }}>
         <Text style={styles.title}>{capitalizeFirstLetter(item?.name)}</Text>
         <Text style={styles.subtitle}>
           {capitalizeFirstLetter(item?.role?.name)}
@@ -76,7 +74,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderColor: COLORS.borderGray,
     flexDirection: 'row',
-    width: 250,
     alignSelf: 'flex-start',
     alignItems: 'center',
   },

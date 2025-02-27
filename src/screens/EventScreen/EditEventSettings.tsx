@@ -1,123 +1,70 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
-import useApi from 'src/axios/useApi';
-import { BUTTON_LABLE, COLORS, editEventsTab, ERROR_MESSAGE, EVENT, LABLE } from 'src/utils/constants';
-import { TabItem } from 'src/component/ActiveTabBar/DynamicTabBar';
-import { EndPoint } from 'src/ApiManager/config';
+import { COLORS, ERROR_MESSAGE, EVENT, LABLE } from 'src/utils/constants';
 import Input from 'src/component/Input/Input';
-import DatePickerComponent from '../ProfileScreen/EditProfile/DatePickerComponent';
 import Button from 'src/component/Button';
-import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale } from 'src/utils/dimensions';
-import BaseCityComponent from '../ProfileScreen/EditProfile/BaseCityComponent';
+import { fontScale, radiusScale, verticalMarginScale } from 'src/utils/dimensions';
+import ShowInfoComponent from 'src/component/ShowInfoComponent';
+import { CustomText } from 'src/component/CustomText';
+import { fontFamily } from 'src/utils/functions';
+import GradientSeprator from 'src/component/GradientSeprator';
+import { Event } from 'src/types';
 
 
 interface EditEventSettingsProps {
-  eventId: string;
+  event: Event;
 }
 
-const EditEventSettings: React.FC<EditEventSettingsProps> = ({
-  eventId,
-}) => {
-  const { apiRequest, loading, error } = useApi();
-  const dispatch = useDispatch();
-  const [currentTab, setCurrentTab] = useState<TabItem>(editEventsTab[0]);
-
-
-
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
+const EditEventSettings: React.FC<EditEventSettingsProps> = ({ event }) => {
   const profileData = useSelector(
     (state: RootState) => state.appFlowApiData?.profileData,
   );
   const userId = useSelector((state: RootState) => state.auth.userId);
 
-  const firstNameRef = useRef<any>(null);
-  const lastNameRef = useRef<any>(null);
-  const baseCityRef = useRef<any>(null);
-  const birthDayRef = useRef<any>(null);
-
 
   const onConfirmClick = async () => {
-    if (
-      firstNameRef.current.validateInputs() &&
-      lastNameRef.current.validateInputs() &&
-      birthDayRef.current.validateBirthDate() &&
-      baseCityRef.current.validateBaseCity()
-    ) {
-      const requestObject: any = {
-        address: {
-          address: baseCityRef.current.selectedCity.address,
-          city: '',
-          latitude: '',
-          longitude: '',
-          placeId: baseCityRef.current.selectedCity.placeId,
-          regionCode: '',
-        },
-        birthDate: birthDayRef.current.selectedDate,//convertDateFormat(birthDayRef.current.selectedDate),
-        firstName: firstNameRef.current.inputText,
-        lastName: lastNameRef.current.inputText,
-
-      };
-      console.log('requestObject', requestObject);
-
-      const response: any = await apiRequest(
-        'put',
-        EndPoint.user_profile + userId,
-        requestObject,
-      );
-      if (response.status === 200) {
-        const responseUser: any = await apiRequest(
-          'get',
-          EndPoint.user + userId,
-        );
-        if (responseUser.status === 200) {
-          dispatch(setProfileData(responseUser?.data));
-        }
-        FlashMessageComponent.show('success', 'Profile Updated Successfully');
-        handleBackPress();
-      }
-    }
   };
 
-  const handleBackPress = () => {
-    // navigation.goBack()
-  };
-
+  const renderInputView = (title: string, value: string) => {
+    return (
+      <Input
+        editable={false}
+        otherStyle={{ marginTop: verticalMarginScale(15) }}
+        inputFieldContainerStyle={{ paddingHorizontal: verticalMarginScale(10) }}
+        label={title}
+        errorMessage={ERROR_MESSAGE.FIRST_NAME}
+        defaultValue={value}
+      />
+    )
+  }
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.contentContainer}>
-          <Input
-            ref={firstNameRef}
-            label={LABLE.FIRST_NAME}
-            errorMessage={ERROR_MESSAGE.FIRST_NAME}
-            defaultValue={profileData?.firstName}
-          />
-          <Input
-            ref={lastNameRef}
-            label={LABLE.LAST_NAME}
-            errorMessage={ERROR_MESSAGE.LAST_NAME}
-            defaultValue={profileData?.lastName}
-          />
+          <ShowInfoComponent title={LABLE.EVENT_SETTING_INFO} />
+          {renderInputView(EVENT.VISIBILITY, event?.isPrivate ? "Private" : "public")}
+          {renderInputView(EVENT.EVENT_TYPE, event?.eventType?.name || '')}
+          {renderInputView(EVENT.PLUS_1_LIMIT, `Up to ${event?.limitOnePlus}` || '')}
+          {renderInputView(EVENT.AGE_LIMIT, `${event?.ageLimit?.minAge}+` || '')}
+          {renderInputView(EVENT.EVENT_PUBLISH_SETTINGS, event?.autoPublished ? 'Publish automatically once approved' : 'Publish manually once approved')}
 
 
+          <View style={{ alignItems: 'center', marginVertical: verticalMarginScale(20) }}>
+            <GradientSeprator />
+            <CustomText style={{ fontFamily: fontFamily.RomieTrial_Bold, fontSize: fontScale(24), marginTop: verticalMarginScale(20) }}>{EVENT.TICKET_TYPES}</CustomText>
+          </View>
 
-          {!loginData?.isInvited && (
-            <View>
-
-              <Text style={[styles.label]}>{LABLE.BIRTHDAY}</Text>
-              <DatePickerComponent ref={birthDayRef} birthDate={profileData.dateOfBirth} />
-
-              <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
-              <BaseCityComponent ref={baseCityRef} />
+          {renderInputView(EVENT.UTILIZE_QR_CODES_FOR_EVENT_CHECK_IN, event?.useQr ? 'Yes' : 'No')}
 
 
-            </View>
-          )}
+          <View style={{ alignItems: 'center', marginVertical: verticalMarginScale(20) }}>
+            <GradientSeprator />
+            <CustomText style={{ fontFamily: fontFamily.RomieTrial_Bold, fontSize: fontScale(24), marginTop: verticalMarginScale(20) }}>{EVENT.EVENT_COLLABORATORS}</CustomText>
+          </View>
+
 
         </View>
 
@@ -127,10 +74,9 @@ const EditEventSettings: React.FC<EditEventSettingsProps> = ({
       <Button
         disabled={false}
         style={styles.btnStyle}
-        title={BUTTON_LABLE.CONFIRM}
+        title={EVENT.UPDATE_SETTINGS_ON_WEB}
         colorTheme="dark"
         onPress={onConfirmClick}
-        loading={loading}
       />
     </View>
   );
@@ -149,7 +95,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     // paddingVertical: verticalMarginScale(10),
-    paddingHorizontal: horizontalMarginScale(20),
+    // paddingHorizontal: horizontalMarginScale(20),
   },
   scrollContainer: { paddingBottom: verticalMarginScale(40) },
   label: {

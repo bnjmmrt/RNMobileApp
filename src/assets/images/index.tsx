@@ -135,6 +135,9 @@ const IMAGES = {
   arrowDowngray: require('./arrow-down-gray.png'),
   refresh: require('./refresh.png'),
   wifi_off: require('./wifi-off.png'),
+  add: require('./add.png'),
+  help: require('./help-circle.png'),
+  upload: require('./upload.png'),
 };
 
 export default IMAGES;
