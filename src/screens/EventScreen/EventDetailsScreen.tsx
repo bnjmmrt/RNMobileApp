@@ -54,7 +54,7 @@ import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: any;
@@ -70,10 +70,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [isDeclinedByHost, setIsDeclinedByHost] = useState(false);
   const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const [isCurrentUserIsGuest, setIsCurrentGuestStatus] = useState(
-    route?.params?.isCurrentUserIsGuest,
-  );
   const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
 
   const role = useSelector((state: RootState) => state.auth.role);
@@ -100,28 +96,18 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
-  useEffect(() => {
-    dispatch(setRsvpStatus(isCurrentUserIsGuest ? 'TRUE' : 'NO_STATUS'));
-  }, [isCurrentUserIsGuest]);
   const queryArgs =
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const) // Type assertion to prevent union mismatch
       : ({
-          userId,
-          eventId: route?.params?.id,
-        } as const); // Type assertion
-  const useFetchEventDetailsHook =
-    role === ROLE.HOST
-      ? useFetchHostEventDetailsQuery
-      : rspvStatus === 'NO_STATUS'
-      ? useFetchPublicEventDetailsQuery
-      : useFetchEventDetailsQuery;
+        userId,
+        eventId: route?.params?.id,
+      } as const); // Type assertion
 
-  const { data, isLoading, refetch } = useFetchEventDetailsHook(queryArgs);
+  const { data, isLoading, refetch } = useFetchEventDetailsQuery(queryArgs);
 
   useEffect(() => {
-    console.log('RSVP Status:', rspvStatus);
-    refetch(); // Manually refetch when RSVP status changes
+    refetch();
   }, [rspvStatus, refetch]);
 
   // Ensure argument structure remains consistent
@@ -372,10 +358,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const onPressManageInvite = () => {
-     dispatch(setSelectedEventForInvite(data.data));
-     navigation.navigate(ROUTES.EventGuestList, {
-       eventId: route?.params?.id,
-     });
+    dispatch(setSelectedEventForInvite(data.data));
+    navigation.navigate(ROUTES.EventGuestList, {
+      eventId: route?.params?.id,
+    });
   };
 
 
