@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image, Text, Pressable, FlatList } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+} from 'react-native';
 import { fontScale, Hp, verticalMarginScale, Wp } from '../../utils/dimensions';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '../../assets/images/index';
@@ -9,11 +13,7 @@ import { ScrollView } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import { useNavigation } from '@react-navigation/native';
 import { CustomText } from '../CustomText';
-import SliderImg1 from '../../assets/svgs/images/SliderImg1.svg'
-import SliderImg2 from '../../assets/svgs/images/SliderImg2.svg'
-import SliderImg3 from '../../assets/svgs/images/SliderImg3.svg'
-import SliderImg4 from '../../assets/svgs/images/SliderImg4.svg'
-import CustomCarousel from './CustomCarosal';
+import CustomCarousel from '../Carousel/CarouselComponent';
 
 interface BeforeAppStaticComponentProps {
   isChatScreen: boolean;
@@ -55,26 +55,19 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
     isChatScreen ? listData[2] : listData[0],
   );
 
-  const handleImageClick = () => {
+  const handleImageClick = (index:number) => {
+    console.log("index",index)
     if (isChatScreen) {
       setCurrent(listData[2]);
     } else {
-      const nextIndex = (current.id + 1) % listData.length;
-      setCurrent(listData[nextIndex]);
+      // const nextIndex = (current.id + 1) % listData.length;
+      setCurrent(listData[index]);
     }
   };
 
   const onButtonClick = () => {
     navigation.navigate('AppFlowStack');
   };
-
-  // const renderImageItem = ({item}:{item:any}) => {
-  //   return (
-  //     <Pressable onPress={handleImageClick}>
-  //       <Image source={item.uri} style={styles.image} />
-  //     </Pressable>
-  //   )
-  // }
 
   return (
     <View style={styles.container}>
@@ -83,23 +76,7 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           <Image source={IMAGES.rumorLogo} style={styles.logoImgStyle} />
         </View>
 
-        {/* <FlatList
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          data={listData}
-          renderItem={renderImageItem}
-          onScroll={handleImageClick}
-        /> */}
-
-<CustomCarousel isChatScreen={isChatScreen} />
-        {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} onScroll={handleImageClick}>
-        <Pressable style={{alignItems: 'center'}} onPress={handleImageClick}>
-          <Image source={current.uri} style={styles.image} />
-          {current.uri}
-        </Pressable>
-        </ScrollView> */}
-
-
+        <CustomCarousel list={listData} onScroll={handleImageClick} />
 
         {/* {!isChatScreen ? (
           <View style={styles.dotContainer}>
@@ -120,7 +97,8 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           </View>
         ) : (
           <View style={styles.dotContainer} />
-        )}
+        )} */}
+
 
         <TitleSubtitle
           style={styles.titleSubtitle}
