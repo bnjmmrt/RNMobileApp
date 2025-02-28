@@ -180,7 +180,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
             ref={firstNameRef}
             label={LABLE.FIRST_NAME}
             errorMessage={ERROR_MESSAGE.FIRST_NAME}
-            defaultValue={isGuest ? profileData?.name : profileData?.firstName}
+            defaultValue={profileData?.firstName}
           />
           <Input
             ref={lastNameRef}
