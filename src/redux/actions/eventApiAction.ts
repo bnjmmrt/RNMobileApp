@@ -132,6 +132,14 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       providesTags: ['EventGuestList'],
     }),
 
+    fetchGuestDetails: builder.query({
+      query: (guestId: string) => ({
+        url: `v1/events/guest-details/${guestId}`,
+        method: 'GET',
+      }),
+      providesTags: ['GuestDetails'],
+    }),
+
     manageGuest: builder.mutation({
       query: ({
         guestId,
@@ -171,5 +179,6 @@ export const {
   useManageGuestMutation,
   useFetchPublicEventDetailsQuery,
   useLazyFetchEventDetailsQuery,
-  useLazyFetchPublicEventDetailsQuery
+  useLazyFetchPublicEventDetailsQuery,
+  useFetchGuestDetailsQuery,
 } = eventApiAction;

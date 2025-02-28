@@ -201,7 +201,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
           navigation.navigate(ROUTES.EventStack, {
             screen: ROUTES.GuestDetailScreen,
             params: {
-              guest: item,
+              guestId: item.id,
               eventId,
             },
           });
