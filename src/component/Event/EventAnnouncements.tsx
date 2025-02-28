@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, StyleSheet, View, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, StyleSheet, View, FlatList, TouchableOpacity, ScrollView, Image } from 'react-native';
 import FastImage from '@d11/react-native-fast-image';
 import AvatarInitials from '../AvatarInitials';
 import { ANNOUNCCEMENTS_DATA, COLORS, LABLE } from '../../utils/constants';
@@ -8,11 +8,17 @@ import { fontFamily } from '../../utils/functions';
 import { fontScale, horizontalScale, verticalScale, verticalMarginScale, horizontalMarginScale } from 'src/utils/dimensions';
 import ImagePdfViewer from './ImagePdfViewer';
 
-const EventAnnouncements = ({ talents }) => {
+interface EventAnnouncementProps {
+  talents: Event;
+  handleAddPress: () => void
+}
+
+
+const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ talents, handleAddPress }) => {
   const [viewerVisible, setViewerVisible] = useState(false);
   const [media, setMedia] = useState([]);
 
-  const MediaItem = ({ item, media }) => (
+  const MediaItem = ({ item, media }: { item: any, media: any }) => (
     item.type === "image" ? (
       <TouchableOpacity onPress={() => {
         setMedia(media)
@@ -29,7 +35,7 @@ const EventAnnouncements = ({ talents }) => {
     )
   );
 
-  const EventItem = ({ item }) => {
+  const EventItem = ({ item }: { item: any }) => {
     const [expanded, setExpanded] = useState(false);
     const shouldShowReadMore = item?.description?.split(' ').length > 30;
     const displayedText = expanded || !shouldShowReadMore ? item.description : `${item.description.substring(0, 100)}...`;
@@ -63,14 +69,21 @@ const EventAnnouncements = ({ talents }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>{LABLE.EVENT_ANNOUNCEMENTS}</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Text style={styles.heading}>{LABLE.EVENT_ANNOUNCEMENTS}</Text>
+        <TouchableOpacity onPress={handleAddPress}>
+          <Image source={IMAGES.calendarCircle} />
+        </TouchableOpacity>
+      </View>
       <View style={styles.divider} />
       <FlatList
         data={ANNOUNCCEMENTS_DATA}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <EventItem item={item} />}
         ListEmptyComponent={
-          <Text style={styles.heading}>{LABLE.NO_EVENT_ANNOUNCEMENTS}</Text>
+          <View>
+            <Text style={styles.heading}>{LABLE.NO_EVENT_ANNOUNCEMENTS}</Text>
+          </View>
         }
       />
       {viewerVisible && <ImagePdfViewer

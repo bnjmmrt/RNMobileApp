@@ -188,6 +188,7 @@ export const LABLE = {
   FEATURE_TALENT: 'Featured Talent',
   EVENT_ANNOUNCEMENTS: 'Event Announcements',
   NO_EVENT_ANNOUNCEMENTS: 'No event announcements',
+  ADD_EVENT_ANNOUNCEMENTS_ERROR:"You can’t post event announcements until you have confirmed guests on the guest list.",
   READ_MORE: 'Read More',
   FEATURED_TALENT: 'Featured Talent',
   DUMMY_TEXT:
