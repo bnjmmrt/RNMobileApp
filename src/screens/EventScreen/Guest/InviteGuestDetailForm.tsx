@@ -73,6 +73,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   ticketTypeRef,
   maxAdditionalGuests,
   ticketTypeError,
+
 }) => {
   const inviteMessageRef = useRef<InputRefMethods>(null);
   const guestNoteRef = useRef<InputRefMethods>(null);
