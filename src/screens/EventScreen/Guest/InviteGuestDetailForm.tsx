@@ -73,12 +73,9 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   ticketTypeRef,
   maxAdditionalGuests,
   ticketTypeError,
-
 }) => {
   const inviteMessageRef = useRef<InputRefMethods>(null);
   const guestNoteRef = useRef<InputRefMethods>(null);
-
-  console.log('selectedTicketType', selectedTicketType);
 
   const renderContent = () => (
     <View style={{ gap: verticalMarginScale(24) }}>

@@ -56,7 +56,7 @@ enum GuestStatus {
 }
 
 interface GuestDetailScreenProps extends NativeStackScreenProps<any, any> {
-  guest?: EventGuest;
+  guestProfile?: EventGuest;
 }
 
 const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
@@ -74,9 +74,9 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       skip: !guestId,
     });
 
-  const guest = guestDetails?.data?.guestProfile;
+  const guestProfile = guestDetails?.data?.guestProfile;
   const guestDetail = guestDetails?.data?.guestDetail;
-  const status = guest?.status?.toLowerCase() || 'draft';
+  const status = guestProfile?.status?.toLowerCase() || 'draft';
 
   const actionSheetRef = useRef<BottomSheetMethods>(null);
   const ticketTypeRef = useRef<any>(null);
@@ -99,7 +99,6 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const [isLoadingDecline, setIsLoadingDecline] = useState(false);
 
   useEffect(() => {
-    console.log('guestDetail', guestDetail);
     if (guestDetail) {
       setInviteMessage(guestDetail.inviteMessage || '');
       setAdditionalGuests(guestDetail.maxAdditionalGuests || 0);
@@ -119,10 +118,10 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   }, [guestDetail?.ticketType, selectedEvent?.ticketTypes]);
 
   useEffect(() => {
-    if (guest?.favorite !== undefined) {
-      setIsFavorite(guest.favorite);
+    if (guestProfile?.favorite !== undefined) {
+      setIsFavorite(guestProfile.favorite);
     }
-  }, [guest?.favorite]);
+  }, [guestProfile?.favorite]);
 
   const handleGuestAction = async (
     action: 'CREATE' | 'UPDATE' | 'DELETE',
@@ -141,20 +140,20 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       };
 
       await manageGuest({
-        guestId: guest?.guestId,
+        guestId: guestProfile?.guestId,
         action,
         payload,
       }).unwrap();
 
       FlashMessageComponent.show(
         'success',
-        `${guest?.name}'s invite has been updated`,
+        `${guestProfile?.name}'s invite has been updated`,
       );
 
       navigation.goBack();
     } catch (error) {
       console.log('error', error);
-      Alert.alert('Error', 'Failed to update guest status');
+      Alert.alert('Error', 'Failed to update guestProfile status');
     } finally {
       setIsLoadingAction(false);
     }
@@ -163,7 +162,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const handleFavorite = async () => {
     try {
       setIsLoadingFavorite(true);
-      if (!loggedInUserId || !guest?.userId) {
+      if (!loggedInUserId || !guestProfile?.userId) {
         FlashMessageComponent.show('error', 'Unable to update favorite status');
         return;
       }
@@ -171,13 +170,13 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       if (isFavorite) {
         await unmarkUserFav({
           user: loggedInUserId,
-          targetUserId: guest.userId,
+          targetUserId: guestProfile.userId,
         }).unwrap();
         FlashMessageComponent.show('success', 'Removed from favorites');
       } else {
         await markUserFav({
           user: loggedInUserId,
-          targetUserId: guest.userId,
+          targetUserId: guestProfile.userId,
         }).unwrap();
         FlashMessageComponent.show('success', 'Added to favorites');
       }
@@ -198,9 +197,10 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     }
   };
 
-  const handleProfile = () => {
+  const handleProfile = (id?: string) => {
+    console.log(guestDetail)
     navigation.navigate(ROUTES.UserDetail, {
-      user: guest?.userId,
+      user: id,
     });
   };
 
@@ -224,7 +224,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         return {
           title: 'Cancel Invite',
           description:
-            'Are you sure you want to cancel selected guest invites? \nThey will be notified.',
+            'Are you sure you want to cancel selected guestProfile invites? \nThey will be notified.',
           buttonText: 'Cancel Invite',
         };
       case 'declined':
@@ -277,7 +277,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                 colorTheme="dark"
                 onPress={() =>
                   handleGuestAction(
-                    guest?.id ? 'UPDATE' : 'CREATE',
+                    guestProfile?.id ? 'UPDATE' : 'CREATE',
                     GuestStatus.INVITED,
                   )
                 }
@@ -349,7 +349,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               title={BUTTON_LABLE.UPDATE_INVITE}
               colorTheme="dark"
               onPress={() =>
-                handleGuestAction('UPDATE', guest?.status as GuestStatus)
+                handleGuestAction('UPDATE', guestProfile?.status as GuestStatus)
               }
               loading={isLoadingAction}
             />
@@ -378,7 +378,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     });
   };
 
-  if (isLoadingGuestDetails || !guest) {
+  if (isLoadingGuestDetails || !guestProfile) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.headerTop}>
@@ -415,24 +415,24 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         <View>
           <ProfileCard
             user={{
-              name: guest.name,
-              avatar: guest.profilePicture,
+              name: guestProfile.name,
+              avatar: guestProfile.profilePicture,
               roles:
-                guest.category?.map((cat: string) => ({
+                guestProfile.category?.map((cat: string) => ({
                   name: cat,
                   id: cat,
                 })) || [],
-              age: guest.age,
-              followers: guest.numFollowers?.toString() || '0',
-              location: guest.address?.address || '.',
-              isMember: guest.roles?.some(
+              age: guestProfile.age,
+              followers: guestProfile.numFollowers?.toString() || '0',
+              location: guestProfile.address?.address || '.',
+              isMember: guestProfile.roles?.some(
                 (role: any) => role.roleName === 'member',
               ),
-              status: guest.status,
-              isFollowing: guest.followsYou,
+              status: guestProfile.status,
+              isFollowing: guestProfile.followsYou,
             }}
             showGuestStatus={true}
-            status={guest.status}
+            status={guestProfile.status}
             actionButtons={[
               {
                 title: 'Favorite',
@@ -443,19 +443,20 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               {
                 title: 'Profile',
                 icon: IMAGES.arrow_up_right,
-                onPress: handleProfile,
+                onPress: () => handleProfile(guestProfile?.userId),
                 loading: false,
               },
             ]}
           />
 
-          {guest.addedBy && (
+          {guestProfile.addedBy && (
             <AddedBySection
               user={{
-                name: guest.addedBy || '',
-                id: guestDetail.addedBy || '',
-                avatar: guestDetail.addedByPicture || '',
+                name: guestProfile.addedBy || '',
+                id: guestProfile.addedById || '',
+                avatar: guestProfile.addedByPicture || '',
               }}
+              onPress={() => handleProfile(guestProfile.addedById)}
             />
           )}
         </View>
@@ -473,7 +474,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             onInviteMessageChange={setInviteMessage}
             guestNote={guestNote}
             onGuestNoteChange={setGuestNote}
-            maxAdditionalGuests={guest.additionalGuests?.length || 0}
+            maxAdditionalGuests={guestProfile.additionalGuests?.length || 0}
             eventName={selectedEvent?.name}
             eventStartDate={selectedEvent?.startDate}
             directlySendToConfirm={directlySendToConfirm}

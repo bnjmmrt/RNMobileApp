@@ -12,7 +12,7 @@ import {
 import { fontFamily } from 'src/utils/functions';
 import IMAGES from 'src/assets/images';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
-import FastImage from '@d11/react-native-fast-image';
+import AvatarInitials from 'src/component/AvatarInitials';
 
 interface User {
   name: string;
@@ -44,25 +44,6 @@ interface ProfileCardProps {
   showGuestStatus?: boolean;
   status?: string;
 }
-
-const ProfileImage = ({
-  name,
-  profilePicture,
-}: {
-  name: string;
-  profilePicture?: string;
-}) => {
-  return (
-    <FastImage
-      source={{
-        uri:
-          profilePicture ||
-          'https://ui-avatars.com/api/?name=' + encodeURIComponent(name),
-      }}
-      style={styles.guestAvatar}
-    />
-  );
-};
 
 const MemberBadge = () => (
   <View style={styles.memberBadge}>
@@ -99,9 +80,10 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         </View>
         <View style={styles.guestCardContent}>
           <View style={styles.profileImageContainer}>
-            <ProfileImage
+            <AvatarInitials
               name={user?.name || ''}
-              profilePicture={user?.avatar}
+              imgUrl={user?.avatar}
+              size={80}
             />
             {user?.isMember ? <MemberBadge /> : <NonMemberBadge />}
           </View>
