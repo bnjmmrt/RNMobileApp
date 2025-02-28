@@ -124,11 +124,23 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       keepUnusedDataFor: 0, // Adjust the tag if needed for cache invalidation
     }),
 
-    getGuests: builder.query<GuestListResponse, string>({
-      query: (eventId: string) => ({
-        url: `v1/events/${eventId}/guests/`,
-        method: 'GET',
-      }),
+    getGuests: builder.query({
+      query: ({
+        eventId,
+        queryString,
+      }: {
+        eventId?: string;
+        queryString?: string;
+      }) => {
+        let url = `v1/events/${eventId}/guests/`;
+        if (queryString) {
+          url = `${url}?${queryString}`;
+        }
+        return {
+          url,
+          method: 'GET',
+        };
+      },
       providesTags: ['EventGuestList'],
     }),
 
