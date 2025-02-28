@@ -1,15 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import {
-  Dimensions,
-  Image,
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import type {
   GooglePlaceData,
   GooglePlaceDetail,
+  GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import {
@@ -20,11 +14,11 @@ import {
   verticalScale,
 } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
+import useLocation from 'src/utils/hooks/useLocation';
 import { environment } from '../../../environments/environment';
 import IMAGES from '../../assets/images';
 import { Address } from '../../redux/slices/appFlowSlice';
 import { COLORS } from '../../utils/constants';
-const { height } = Dimensions.get('window');
 
 interface GooglePlacesInputProps {
   setLocation: (location: Address) => void;
@@ -32,8 +26,9 @@ interface GooglePlacesInputProps {
   errorMessage?: string | null;
   setError?: (error: string | null) => void;
   defaultValue?: string;
-  toggleLocationPicker?:()=>void
-  allowFullAddres?: boolean
+  toggleLocationPicker?: () => void;
+  allowFullAddres?: boolean;
+  autoFetchCurrentLocation?: boolean;
 }
 const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
   setLocation,
@@ -42,24 +37,64 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
   errorMessage,
   setError,
   toggleLocationPicker,
-  allowFullAddres
+  allowFullAddres,
+  autoFetchCurrentLocation,
 }) => {
-  const googlePlacesRef = useRef(null);
+  const googlePlacesRef = useRef<GooglePlacesAutocompleteRef>(null);
+  const {
+    currentAddress,
+    currentPlaceId,
+    hasLocationPermission,
+    currentLocation,
+    initiateLocationFetch,
+  } = useLocation(false);
+
+  // useEffect(() => {
+  //   if (defaultValue) {
+  //     googlePlacesRef?.current &&
+  //       googlePlacesRef?.current?.setAddressText(defaultValue);
+  //   }
+  // }, [defaultValue]);
 
   useEffect(() => {
+    if (
+      hasLocationPermission &&
+      currentAddress &&
+      currentLocation &&
+      currentPlaceId
+    ) {
+      const address: Address = {
+        address: currentAddress,
+        placeId: currentPlaceId,
+        latitude: String(currentLocation) || '',
+        longitude: String(currentLocation) || '',
+      };
+      setLocation(address);
+      setError && setError(null);
+      toggleLocationPicker && toggleLocationPicker();
+      submit();
+      googlePlacesRef?.current &&
+        googlePlacesRef?.current?.setAddressText(currentAddress);
+    }
+  }, [hasLocationPermission, currentAddress, currentLocation, currentPlaceId]);
 
-    if (defaultValue) {
+  useEffect(() => {
+    if (!defaultValue) {
+      if (autoFetchCurrentLocation) {
+        initiateLocationFetch();
+      }
+    } else {
       googlePlacesRef?.current &&
         googlePlacesRef?.current?.setAddressText(defaultValue);
     }
-  }, []);
+  }, [autoFetchCurrentLocation, defaultValue]);
+
   return (
     <>
       <GooglePlacesAutocomplete
         ref={googlePlacesRef}
         styles={{
           textInputContainer: {
-            
             borderRadius: radiusScale(8),
             borderWidth: 2,
             height: 60,
@@ -72,7 +107,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
             fontSize: fontScale(14),
             fontFamily: fontFamily.ABCDiatype_Regular,
           },
-          container: { flex: 0 }
+          container: { flex: 0 },
         }}
         minLength={3}
         enablePoweredByContainer={false}
@@ -88,10 +123,9 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
           };
           setLocation(address);
           setError && setError(null);
-          toggleLocationPicker && toggleLocationPicker()
+          toggleLocationPicker && toggleLocationPicker();
           submit();
         }}
-
         fetchDetails={true}
         query={{
           key: environment.PLACES_API_KEY,
