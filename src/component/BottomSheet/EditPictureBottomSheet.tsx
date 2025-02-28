@@ -11,7 +11,7 @@ import IMAGES from '@images/index';
 
 interface EditPictureBottomSheetProps {
   onPress: () => void;
-  onPencilClick:() =>void;
+  onPencilClick?:() =>void;
   title?: string;
   submitButtonText: string;
   cancelButtonText: string;
