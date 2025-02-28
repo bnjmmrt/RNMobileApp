@@ -125,7 +125,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
         if (responseUser.status === 200) {
           dispatch(setProfileData(responseUser?.data));
         }
-        FlashMessageComponent.show('success', 'Profile Updated Successfully');
+        FlashMessageComponent.show('success', LABLE.PROFILE_UPDATED_SUCCESSFULLY);
         handleBackPress();
       }
     }

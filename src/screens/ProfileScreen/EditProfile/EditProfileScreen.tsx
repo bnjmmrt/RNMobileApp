@@ -108,7 +108,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
         );
         if (response.status === 200) {
           fetchUserById()
-          FlashMessageComponent.show('success', 'Profile Updated Successfully');
+          FlashMessageComponent.show('success', LABLE.PROFILE_UPDATED_SUCCESSFULLY);
           handleBackPress();
         }
       }
@@ -155,7 +155,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
         if (responseUser.status === 200) {
           dispatch(setProfileData({...responseUser?.data, profilePicture: responseUser?.data?.imageUrl}));
         }
-        FlashMessageComponent.show('success', 'Profile Updated Successfully');
+        FlashMessageComponent.show('success', LABLE.PROFILE_UPDATED_SUCCESSFULLY);
         handleBackPress();
       }
     }
