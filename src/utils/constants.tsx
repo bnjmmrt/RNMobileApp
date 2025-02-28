@@ -249,7 +249,8 @@ export const LABLE = {
   VIP_TOOLTIP_CONTENT: 'Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.',
   EVENT_SETTING_INFO: "Edit event settings on Rumor’s web platform.\nClick the button below to take you there.",
   MANAGE_INVITE: 'Manage Invite',
-  YOU_ARE_OFFLINE:'You’re Offline'
+  YOU_ARE_OFFLINE:'You’re Offline',
+  NOTIFICATIONS:'Notifications'
 };
 export const EVENT = {
   EDIT_EVENT: 'Edit Event',

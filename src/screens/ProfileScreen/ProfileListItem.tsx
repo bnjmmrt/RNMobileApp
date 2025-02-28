@@ -94,7 +94,7 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
         navigation.navigate('EventStack', {
           screen: 'AddAnnouncementScreen'
         });
-        // redirectToProfileStack(ROUTES.NotificationsScreen);
+        // redirectToProfileStack(ROUTES.NotificationSettingsScreen);
         break;
 
       case PROFILE.FEEDBACK:

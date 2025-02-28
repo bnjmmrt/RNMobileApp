@@ -47,6 +47,8 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
     ? `${profileData?.firstName} ${profileData?.lastName}`
     : '';
   const navigation = useNavigation();
+
+  const handleNotificationPress=()=> navigation.navigate(ROUTES.NotificationsScreen)
   return (
     <View
       style={[
@@ -85,6 +87,7 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
       </View>
       <View style={[styles.iconsWrapper]}>
         <TouchableOpacity
+        onPress={handleNotificationPress}
           style={[
             styles.iconButton,
             { backgroundColor: backgroundColorNotification },
