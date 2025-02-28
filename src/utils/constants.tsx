@@ -63,7 +63,8 @@ export const BUTTON_LABLE = {
   INVITE_FROM_CONTACTS: 'Invite from Contacts',
   INVITE_MANUALLY: 'Invite Manually',
   CLEAR: "Clear",
-  RELOAD:'Reload'
+  RELOAD:'Reload',
+  DELETE:'Delete'
 } as const;
 
 export const LABLE = {
@@ -250,7 +251,9 @@ export const LABLE = {
   EVENT_SETTING_INFO: "Edit event settings on Rumor’s web platform.\nClick the button below to take you there.",
   MANAGE_INVITE: 'Manage Invite',
   YOU_ARE_OFFLINE:'You’re Offline',
-  NOTIFICATIONS:'Notifications'
+  NOTIFICATIONS:'Notifications',
+  NO_NOTIFICATIONS_YET:'No notifications yet',
+  NOTIFICATIONS_SUB_TITLE:"We'll let you know when updates arrive!"
 };
 export const EVENT = {
   EDIT_EVENT: 'Edit Event',

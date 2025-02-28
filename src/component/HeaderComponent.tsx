@@ -97,6 +97,11 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
             source={IMAGES.bell}
             tintColor={tintColor}
           />
+           {/* <Image
+            // style={[styles.imgStyle, rightImageStyle]}
+            source={IMAGES.notification_badge}
+            tintColor={tintColor}
+          /> */}
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.profileButton}
