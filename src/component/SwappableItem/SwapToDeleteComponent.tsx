@@ -36,8 +36,8 @@ const SwapToDeleteComponent: React.FC<SwappableItemProps> = ({
     if (onDelete) {
       runOnJS(onDelete)(item.id);
     }
+    translateX.value = withTiming(0, { duration: 200 });
     runOnJS(setToggled)(false);
-    translateX.value = withSpring(0);
   };
 
   const panGesture = Gesture.Pan()

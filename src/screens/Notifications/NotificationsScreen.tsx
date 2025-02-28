@@ -138,7 +138,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
   const handleBackPress = () => navigation.goBack();
   const handleDelete = (id: string) => {
     console.log('Delete item:', id);
-    setNotifications(notifications.filter(notification => notification.id !== id))
+    // setNotifications(notifications.filter(notification => notification.id !== id))
   };
 
   const renderItem = (item: any) => {

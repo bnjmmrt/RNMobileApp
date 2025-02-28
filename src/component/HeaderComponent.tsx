@@ -92,16 +92,15 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
             styles.iconButton,
             { backgroundColor: backgroundColorNotification },
           ]}>
+            <Image
+            style={styles.badge}
+            source={IMAGES.notification_badge}
+          />
           <Image
             style={[styles.imgStyle, rightImageStyle]}
             source={IMAGES.bell}
             tintColor={tintColor}
           />
-           {/* <Image
-            // style={[styles.imgStyle, rightImageStyle]}
-            source={IMAGES.notification_badge}
-            tintColor={tintColor}
-          /> */}
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.profileButton}
@@ -177,6 +176,7 @@ const styles = StyleSheet.create({
   imgStyle: {
     resizeMode: 'contain',
   },
+  badge:{position:'absolute',top:-4,right:-3}
 });
 
 export default HeaderComponent;
