@@ -24,7 +24,6 @@ import {
   radiusScale,
 } from 'src/utils/dimensions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import FastImage from '@d11/react-native-fast-image';
 import { EventGuest } from '../types';
 import IMAGES from 'src/assets/images';
 import SearchInput from 'src/component/SearchInput';
@@ -45,6 +44,7 @@ import { RootState } from 'src/redux/slices';
 import { useDispatch, useSelector } from 'react-redux';
 import { setEventId } from 'src/redux/slices/eventSlice';
 import FiltersSheet from 'src/component/FilterSheet';
+import AvatarInitials from 'src/component/AvatarInitials';
 
 interface EventGuestListProps extends NativeStackScreenProps<any, any> {
   eventId?: string;
@@ -182,32 +182,37 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   };
 
   const renderInvitee = (item: EventGuest) => (
-    <View style={styles.inviteeItem}>
+    <TouchableOpacity
+      style={styles.inviteeItem}
+      onPress={() => {
+        navigation.navigate(ROUTES.EventStack, {
+          screen: ROUTES.GuestDetailScreen,
+          params: {
+            guestId: item.id,
+            eventId,
+          },
+        });
+      }}>
       <View style={styles.inviteeLeftContainer}>
         <Image source={IMAGES.nested_badge} style={[styles.nestedIcon]} />
         <View style={styles.leftContainer}>
-          <FastImage
-            source={{
-              uri:
-                item.profilePicture ||
-                'https://ui-avatars.com/api/?name=' +
-                  encodeURIComponent(item.name),
-            }}
-            style={styles.inviteeAvatar}
+          <AvatarInitials
+            name={item.name}
+            imgUrl={item.profilePicture}
+            size={24}
           />
           <View style={styles.guestInfo}>
             <Text style={[styles.guestName]}>{item.name}</Text>
           </View>
         </View>
       </View>
-
       {item.status === 'CONFIRMED' && (
         <Image
           source={IMAGES.confirmed_badge}
           style={[styles.confirmedBadge]}
         />
       )}
-    </View>
+    </TouchableOpacity>
   );
 
   const renderGuestItem = ({ item }: { item: EventGuest }) => (
@@ -224,14 +229,10 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
           });
         }}>
         <View style={styles.leftContainer}>
-          <FastImage
-            source={{
-              uri:
-                item.profilePicture ||
-                'https://ui-avatars.com/api/?name=' +
-                  encodeURIComponent(item.name),
-            }}
-            style={styles.avatar}
+          <AvatarInitials
+            name={item.name}
+            imgUrl={item.profilePicture}
+            size={40}
           />
           <View style={styles.guestInfo}>
             <View style={styles.nameContainer}>
@@ -484,16 +485,7 @@ const styles = StyleSheet.create({
   arrowIconRotated: {
     transform: [{ rotate: '180deg' }],
   },
-  avatar: {
-    width: verticalScale(40),
-    height: verticalScale(40),
-    borderRadius: radiusScale(20),
-  },
-  inviteeAvatar: {
-    width: verticalScale(24),
-    height: verticalScale(24),
-    borderRadius: radiusScale(16),
-  },
+
   guestInfo: {
     gap: verticalMarginScale(4),
   },
