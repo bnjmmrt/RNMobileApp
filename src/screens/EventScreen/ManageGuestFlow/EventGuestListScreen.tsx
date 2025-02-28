@@ -24,7 +24,6 @@ import {
   radiusScale,
 } from 'src/utils/dimensions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import FastImage from '@d11/react-native-fast-image';
 import { EventGuest } from '../types';
 import IMAGES from 'src/assets/images';
 import SearchInput from 'src/component/SearchInput';
@@ -44,6 +43,8 @@ import { FlashMessageComponent } from 'src/component/FlashMessageComponent/Flash
 import { RootState } from 'src/redux/slices';
 import { useDispatch, useSelector } from 'react-redux';
 import { setEventId } from 'src/redux/slices/eventSlice';
+import FiltersSheet from 'src/component/FilterSheet';
+import AvatarInitials from 'src/component/AvatarInitials';
 
 interface EventGuestListProps extends NativeStackScreenProps<any, any> {
   eventId?: string;
@@ -59,6 +60,8 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   navigation,
   route,
 }) => {
+  const eventId = route?.params?.eventId;
+
   const [searchText, setSearchText] = useState('');
   const [expandedGuests, setExpandedGuests] = useState<{
     [key: string]: boolean;
@@ -67,9 +70,10 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   const [selectedSort, setSelectedSort] = useState('name_asc');
   const filtersSheetRef = useRef<BottomSheetMethods>(null);
   const sortSheetRef = useRef<BottomSheetMethods>(null);
+  const searchFilterRef = useRef<BottomSheetMethods>(null);
+  const [filterQuery, setFilterQuery] = useState<string>('');
+  const [filterNumber, setFilterNumber] = useState<number>(0);
   const dispatch = useDispatch();
-  // Get eventId from route params or props
-  const eventId = route?.params?.eventId;
 
   const selectedEvent = useSelector(
     (state: RootState) => state.inviteGuestsFlow.selectedEvent,
@@ -79,10 +83,10 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     data: guestsData,
     error: guestsError,
     isLoading: isLoadingGuests,
+    isFetching: isFetchingGuests,
     refetch: refetchGuests,
-  } = useGetGuestsQuery(eventId);
+  } = useGetGuestsQuery({ eventId, queryString: filterQuery });
 
-  // Use API data or fallback to mock data
   const guests: EventGuest[] = useMemo(() => {
     const apiGuests = guestsData?.data?.users || [];
 
@@ -164,33 +168,51 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     navigation.navigate('AddGuestScreen');
   };
 
+  const onApplyFilter = (
+    queryString: string,
+    numberOfFiltersApplied: number,
+  ) => {
+    setFilterQuery(queryString);
+    setFilterNumber(numberOfFiltersApplied);
+  };
+
+  const onClearFilter = () => {
+    setFilterQuery('');
+    setFilterNumber(0);
+  };
+
   const renderInvitee = (item: EventGuest) => (
-    <View style={styles.inviteeItem}>
+    <TouchableOpacity
+      style={styles.inviteeItem}
+      onPress={() => {
+        navigation.navigate(ROUTES.EventStack, {
+          screen: ROUTES.GuestDetailScreen,
+          params: {
+            guestId: item.id,
+            eventId,
+          },
+        });
+      }}>
       <View style={styles.inviteeLeftContainer}>
         <Image source={IMAGES.nested_badge} style={[styles.nestedIcon]} />
         <View style={styles.leftContainer}>
-          <FastImage
-            source={{
-              uri:
-                item.profilePicture ||
-                'https://ui-avatars.com/api/?name=' +
-                  encodeURIComponent(item.name),
-            }}
-            style={styles.inviteeAvatar}
+          <AvatarInitials
+            name={item.name}
+            imgUrl={item.profilePicture}
+            size={24}
           />
           <View style={styles.guestInfo}>
             <Text style={[styles.guestName]}>{item.name}</Text>
           </View>
         </View>
       </View>
-
       {item.status === 'CONFIRMED' && (
         <Image
           source={IMAGES.confirmed_badge}
           style={[styles.confirmedBadge]}
         />
       )}
-    </View>
+    </TouchableOpacity>
   );
 
   const renderGuestItem = ({ item }: { item: EventGuest }) => (
@@ -201,20 +223,16 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
           navigation.navigate(ROUTES.EventStack, {
             screen: ROUTES.GuestDetailScreen,
             params: {
-              guest: item,
+              guestId: item.id,
               eventId,
             },
           });
         }}>
         <View style={styles.leftContainer}>
-          <FastImage
-            source={{
-              uri:
-                item.profilePicture ||
-                'https://ui-avatars.com/api/?name=' +
-                  encodeURIComponent(item.name),
-            }}
-            style={styles.avatar}
+          <AvatarInitials
+            name={item.name}
+            imgUrl={item.profilePicture}
+            size={40}
           />
           <View style={styles.guestInfo}>
             <View style={styles.nameContainer}>
@@ -275,7 +293,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   );
 
   const renderContent = () => {
-    if (isLoadingGuests) {
+    if (isLoadingGuests || isFetchingGuests) {
       return (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={COLORS.blueDark} />
@@ -357,8 +375,9 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
             placeholder="Search for Event Guests..."
             rightIcon={IMAGES.filter_lines}
             onPressRightIcon={() => {
-              sortSheetRef?.current?.open();
+              searchFilterRef?.current?.open();
             }}
+            rightIconText={String(filterNumber || '') || ''}
             mainContainerStyle={{ marginHorizontal: horizontalMarginScale(20) }}
           />
         </View>
@@ -383,6 +402,13 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
         ref={sortSheetRef}
         onSelect={handleSortSelect}
         selectedValue={selectedSort}
+      />
+
+      <FiltersSheet
+        ref={searchFilterRef}
+        from="allUsersList"
+        onApplyFilter={onApplyFilter}
+        onClearFilter={onClearFilter}
       />
     </SafeAreaView>
   );
@@ -459,16 +485,7 @@ const styles = StyleSheet.create({
   arrowIconRotated: {
     transform: [{ rotate: '180deg' }],
   },
-  avatar: {
-    width: verticalScale(40),
-    height: verticalScale(40),
-    borderRadius: radiusScale(20),
-  },
-  inviteeAvatar: {
-    width: verticalScale(24),
-    height: verticalScale(24),
-    borderRadius: radiusScale(16),
-  },
+
   guestInfo: {
     gap: verticalMarginScale(4),
   },
