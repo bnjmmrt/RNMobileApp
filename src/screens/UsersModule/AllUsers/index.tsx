@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
-import FiltersSheet from 'src/component/FilterSheet';
+import FiltersSheet, { SelectedFilters } from 'src/component/FilterSheet';
 import { InputRefMethods } from 'src/component/Input/Input';
 import SearchInput from 'src/component/SearchInput';
 import { useFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
@@ -38,6 +38,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   const [filterQuery, setFilterQuery] = useState<string>('');
   const [filterNumber, setFilterNumber] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
 
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
     useState<UserActionCurrentPageType>('');
@@ -85,16 +86,23 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   const onApplyFilter = (
     queryString: string,
     numberOfFiltersApplied: number,
+    selectedFilters?: SelectedFilters,
   ) => {
     setCurrentPage(1);
     setFilterQuery(queryString);
     setFilterNumber(numberOfFiltersApplied);
+
+    if (selectedFilters) {
+      console.log('selectedFilters', selectedFilters);
+      setSelectedFilters(selectedFilters);
+    }
   };
 
   const onClearFilter = () => {
     setCurrentPage(1);
     setFilterQuery('');
     setFilterNumber(0);
+    setSelectedFilters({});
   };
 
   const getEmptyStateMessage = () => {
@@ -246,6 +254,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
         from="allUsersList"
         onApplyFilter={onApplyFilter}
         onClearFilter={onClearFilter}
+        selectedFiltersInParent={selectedFilters}
       />
     </View>
   );
