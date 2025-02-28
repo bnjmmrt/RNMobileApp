@@ -20,7 +20,7 @@ export const getStatusColor = (statusText: string) => {
       return { bg: COLORS.bgBlue, text: COLORS.blueDark };
     case 'draft':
       return { bg: COLORS.lighter_gray, text: COLORS.black2 };
-    case 'requested':
+    case 'applied':
       return { bg: COLORS.black, text: COLORS.white };
     case 'all':
       return { bg: COLORS.lighter_gray, text: COLORS.neutral_disabled };
