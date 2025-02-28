@@ -34,7 +34,6 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
     {
       id: 1,
       uri: IMAGES.frame2,
-      // uri: <SliderImg2 height={320} width={320}/>,
       title: LABLE.UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS,
       subTitle: LABLE.CONNECT_WITH_WORLD,
     },
@@ -109,7 +108,7 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           subTitleMargin={verticalMarginScale(8)}
           centerTextAlign={true}
           isDarkTheme={true}
-        />
+        /> */}
 
         <View style={{ height: Hp(2) }} />
 

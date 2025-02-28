@@ -134,9 +134,14 @@ const IMAGES = {
   ticketBgSm: require('./ticketBgSm.png'),
   arrowDowngray: require('./arrow-down-gray.png'),
   refresh: require('./refresh.png'),
+  wifi_off: require('./wifi-off.png'),
   add: require('./add.png'),
   help: require('./help-circle.png'),
   upload: require('./upload.png'),
+  logo: require('./logo.png'),
+  revolve: require('./revolve.png'),
+  arrow_go: require('./arrow-go.png'),
+
 };
 
 export default IMAGES;

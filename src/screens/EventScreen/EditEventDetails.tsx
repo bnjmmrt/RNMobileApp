@@ -262,8 +262,6 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
 
           <HostEventTalent talents={item?.talents} />
 
-
-
         </View>
 
 
