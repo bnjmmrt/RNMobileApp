@@ -30,6 +30,7 @@ import FeatureTalentBottomSheet from 'src/component/BottomSheet/FeatureTalentBot
 import moment from 'moment';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import { useNavigation } from '@react-navigation/native';
+import { current } from '@reduxjs/toolkit';
 
 
 interface Location {
@@ -69,6 +70,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
   const [showAddress, setshowAddress] = useState(item?.showLocation || false);
   let today = new Date();
   const [selected, setSelected] = useState<DateType>();
+  const [selectedStartDate, setSelectedStartDate] = useState(item?.startDate || '');
 
 
   const latitude = item?.location?.latitude ?? 37.78825;
@@ -92,6 +94,12 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
   const startDateRef = useRef<any>(null);
   const endDateRef = useRef<any>(null);
   const editPhotoBottomSheetRef = useRef<any>(null);
+
+  useEffect(() => {
+    const formattedStartDate = moment.utc(startDateRef?.current?.selectedDate).format("YYYY-MM-DDTHH:mm:ss[Z]");
+    setSelectedStartDate(formattedStartDate);
+    console.log("FORMATED START DATE: " + formattedStartDate)
+  }, [selectedStartDate])
 
 
 
@@ -138,6 +146,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
       talents: filteredTalent,
       startDate: formattedStartDate,
       endDate: formattedEndDate,
+      showLocation: showAddress
+
     };
 
     console.log("Request Payload:", requestObject);
@@ -233,27 +243,19 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
               defaultSource={IMAGES.eventCoverPlaceholders1} // Placeholder
               style={styles.coverImageStyle}
             />
-
             <CircleButtonOverlay onPress={() => { editPhotoBottomSheetRef.current?.open() }} />
-
           </View>
-
-
           <Input
             ref={eventNameRef}
             label={EVENT.EVENT_NAME}
             errorMessage={ERROR_MESSAGE.FIRST_NAME}
             defaultValue={item?.name}
           />
-
-
           <View>
             <CustomText style={[styles.label]}>{EVENT.START_DATE}</CustomText>
-            <DatePickerComponent type={'DateTime'} ref={startDateRef} birthDate={item?.startDate} />
-
+            <DatePickerComponent type={'DateTime'} ref={startDateRef} onDateChange={(e) => setSelectedStartDate(e)} birthDate={item?.startDate} />
             <CustomText style={[styles.label]}>{EVENT.END_DATE}</CustomText>
-            <DatePickerComponent type={'DateTime'} ref={endDateRef} birthDate={item?.endDate} />
-
+            <DatePickerComponent type={'DateTime'} startDate={selectedStartDate} ref={endDateRef} birthDate={item?.endDate} />
           </View>
 
           <View>

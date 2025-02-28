@@ -41,7 +41,7 @@ const FeatureTalentBottomSheet = forwardRef<BottomSheetMethods, FeatureTalentBot
             width: 120,
             height: 120,
             cropping: true,
-            cropperCircleOverlay: false,
+            cropperCircleOverlay: true,
         }).then((image: ImageOrVideo) => {
             setImageError(false); // Clear error on selection
             savePhoto(image.path);

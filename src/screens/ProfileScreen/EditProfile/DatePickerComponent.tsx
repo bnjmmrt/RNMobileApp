@@ -27,6 +27,7 @@ const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) =>
   const handleDateChange = (date: string) => {
     setErrorMessage(null);
     setSelectedDate(date);
+    props?.onDateChange && props?.onDateChange(date);
   };
 
   const validateBirthDate = () => {
@@ -54,6 +55,7 @@ const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) =>
       />
       {props?.type == "DateTime" ? <CustomDateTimePickerBottomSheet
         ref={bottomSheetRef}
+        minDate={props?.startDate}
         setSelectedDate={handleDateChange}
         date={selectedDate}
       /> : <DatepickerBottomSheet

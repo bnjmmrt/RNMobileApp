@@ -16,7 +16,6 @@ interface Props {
 }
 
 const CustomDateTimePickerBottomSheet = forwardRef((props: Props, ref) => {
-
     const formatDate = (dateString: string) => {
         const date = moment(dateString, "YYYY-MM-DD HH:mm:ssZ", true);
 
@@ -27,6 +26,8 @@ const CustomDateTimePickerBottomSheet = forwardRef((props: Props, ref) => {
         return date.utc().format("YYYY-MM-DD HH:mm");
     };
     const myDate = formatDate(props.date);
+    // const formattedMinDate = props?.minDate ? formatDate(props?.minDate) : undefined;
+
 
     const [selectedDate, setSelectedDate] = useState(myDate);
 
@@ -46,6 +47,8 @@ const CustomDateTimePickerBottomSheet = forwardRef((props: Props, ref) => {
                             <DateTimePicker
                                 mode="single"
                                 timePicker
+                                is24hour={false}
+                                minDate={props?.minDate || new Date()}
                                 timePickerDecelerationRate={'fast'}
                                 date={selectedDate.toString()}
                                 headerButtonStyle={styles.headerButtonStyle}

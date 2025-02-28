@@ -10,7 +10,7 @@ interface UseApiReturn<T> {
     url: string,
     data?: Record<string, unknown> | FormData | null,
     params?: Record<string, unknown> | null,
-    headers?: Record<string, string>, // Optional headers parameter
+    headers?: Record<string, string>,
   ) => Promise<T>;
   loading: boolean;
   error: AxiosError | null;
@@ -35,13 +35,14 @@ const useApi = <T>(): UseApiReturn<T> => {
         const config: AxiosRequestConfig = {
           params,
           headers,
+          ...(method === 'delete' && data ? { data } : {}), // Ensure DELETE supports a body
         };
 
-        const response = await axiosController[method](url, data, config);
-        return response; // Return the response to the caller
+        const response = await axiosController[method](url, method === 'delete' ? config : data, config);
+        return response.data; // Return only the response data
       } catch (err) {
         setError(err as AxiosError);
-        throw err; // Rethrow error for specific handling if needed
+        throw err;
       } finally {
         setLoading(false);
       }
