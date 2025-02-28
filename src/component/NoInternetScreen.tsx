@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, StyleSheet, Image, Text } from 'react-native';
 import { Wp, Hp, fontScale, verticalScale } from '../utils/dimensions';
 import IMAGES from '../assets/images/index';
@@ -9,9 +9,24 @@ import {
   ERROR_MESSAGE,
   LABLE,
 } from 'src/utils/constants';
-import { fontFamily } from 'src/utils/functions';
+import { changeSafeAreaViewConfig, fontFamily } from 'src/utils/functions';
+import RNRestart from 'react-native-restart'
+import { useFocusEffect } from '@react-navigation/native';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
 const NoInternetScreen: React.FC = () => {
+  useFocusEffect(
+      useCallback(() => {
+        changeSafeAreaViewConfig({
+          ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
+          showTopSafeAreaView: false,
+          topSafeAreaViewColor: 'transparent',
+          translucent: true,
+          showBottomSafeAreaView: false,
+          bottomSafeAreaViewColor: 'transparent',
+        });
+      }, []),
+    );
   return (
     <View style={styles.container}>
       <Image source={IMAGES.backgroundLogin} style={styles.imageStyle} />
@@ -27,7 +42,7 @@ const NoInternetScreen: React.FC = () => {
           style={styles.btnStyle}
           title={BUTTON_LABLE.RELOAD}
           textStyle={styles.btnTextStyle}
-          onPress={() => console.log('ngf')}
+          onPress={() => RNRestart.restart()}
         />
       </View>
     </View>
