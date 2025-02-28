@@ -108,7 +108,7 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           subTitleMargin={verticalMarginScale(8)}
           centerTextAlign={true}
           isDarkTheme={true}
-        /> */}
+        />
 
         <View style={{ height: Hp(2) }} />
 

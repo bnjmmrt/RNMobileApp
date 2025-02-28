@@ -350,11 +350,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   };
 
   const getUserName = () => {
-    if (isGuest && loginData.roles[0]?.roleName === ROLE.NON_MEMBER) {
-      return profileData.name;
-    } else {
+    // if (isGuest && loginData.roles[0]?.roleName === ROLE.NON_MEMBER) {
+    //   return profileData.name;
+    // } else {
       return profileData?.firstName ? `${profileData?.firstName} ${profileData?.lastName}` : ''
-    }
+    // }
   }
 
   return (

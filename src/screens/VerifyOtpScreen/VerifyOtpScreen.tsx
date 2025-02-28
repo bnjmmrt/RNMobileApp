@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../utils/constants';
+import {
+  LABLE,
+  BUTTON_LABLE,
+  ROLE,
+} from '../../utils/constants';
 import VerifyOtpStyles from './VerifyOtpStyles';
 import BackButton from '../../component/BackButton/BackButton';
 import Button from '../../component/Button';
@@ -19,15 +23,17 @@ import {
   setUserId,
 } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
-import FullScreenLoader from '../../component/FullScreenLoader';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
 import { useSendOtp } from '../../redux//hooks/useSendOtp';
 import { useVerifyOtp } from '../../redux/hooks/useVerifyOtp';
-import { setEmail, setPhone } from '../../redux/slices/appFlowSlice';
+import {
+  setEmail,
+  setFirstName,
+  setLastName,
+  setPhone,
+} from '../../redux/slices/appFlowSlice';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
-import { verticalMarginScale } from 'src/utils/dimensions';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -59,7 +65,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   useEffect(() => {
-    otpInputRef.current.setApiError(error);
+    otpInputRef?.current?.setApiError(error);
   }, [error]);
 
   useEffect(() => {
@@ -99,15 +105,28 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     dispatch(setAuthToken(data?.token || ''));
     dispatch(setEmail(route.params.email || ''));
     dispatch(setPhone(route.params.phone || ''));
-    const role = data.roles[0]?.roleName || 'non_member';
+    const role = data.roles[0]?.roleName || ROLE.NON_MEMBER;
 
-    if (role == 'non_member') {
+    if (role == ROLE.NON_MEMBER) {
       const screenName =
-        data?.token?.length > 0 || isGuest ? 'BottomTabBar' : 'BeforeAppStaticScreen';
+        data?.token?.length > 0 || isGuest
+          ? 'BottomTabBar'
+          : 'BeforeAppStaticScreen';
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
           routes: [{ name: 'AppStack', params: { screen: screenName } }],
+        }),
+      );
+    } else if (role == ROLE.HOST) {
+      dispatch(setFirstName(data?.user?.firstName));
+      dispatch(setLastName(data?.user?.lastName));
+      dispatch(setEmail(data?.user?.email));
+      dispatch(setPhone(data?.user?.phoneNumber));
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'AppStack', params: { screen: 'BottomTabBar' } }],
         }),
       );
     } else {
@@ -126,12 +145,12 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   );
 
   const callVerifyOTP = (code: string) => {
-    verifyOtp(code, redirectToHome)
+    verifyOtp(code, redirectToHome);
   };
 
   const clearOTPAndResend = () => {
-    otpInputRef.current.clearOTP();
-    setErrorMsg('')
+    otpInputRef?.current?.clearOTP();
+    setErrorMsg('');
     sendOtp(true);
   };
   return (
