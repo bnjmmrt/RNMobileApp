@@ -145,7 +145,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
               : styles.errorInputWrapper
             : null,
           inputFieldContainerStyle,
-          { backgroundColor: !editable ? COLORS.borderGray : COLORS.white }
+          // { backgroundColor: !editable ? COLORS.borderGray : COLORS.white }
         ]}>
         {leftImage && (
           <Image
