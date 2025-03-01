@@ -47,6 +47,8 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
     ? `${profileData?.firstName} ${profileData?.lastName}`
     : '';
   const navigation = useNavigation();
+
+  const handleNotificationPress=()=> navigation.navigate(ROUTES.NotificationsScreen)
   return (
     <View
       style={[
@@ -85,10 +87,15 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
       </View>
       <View style={[styles.iconsWrapper]}>
         <TouchableOpacity
+        onPress={handleNotificationPress}
           style={[
             styles.iconButton,
             { backgroundColor: backgroundColorNotification },
           ]}>
+            <Image
+            style={styles.badge}
+            source={IMAGES.notification_badge}
+          />
           <Image
             style={[styles.imgStyle, rightImageStyle]}
             source={IMAGES.bell}
@@ -169,6 +176,7 @@ const styles = StyleSheet.create({
   imgStyle: {
     resizeMode: 'contain',
   },
+  badge:{position:'absolute',top:-4,right:-3}
 });
 
 export default HeaderComponent;

@@ -141,6 +141,8 @@ const IMAGES = {
   logo: require('./logo.png'),
   revolve: require('./revolve.png'),
   arrow_go: require('./arrow-go.png'),
+  deleteGray: require('./delete-gray.png'),
+  notification_badge: require('./notification-badge.png'),
 
 };
 
