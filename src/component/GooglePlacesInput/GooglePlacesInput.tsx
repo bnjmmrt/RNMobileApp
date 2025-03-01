@@ -134,7 +134,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
         }}
         renderLeftButton={() => (
           <View style={styles.iconContainer}>
-            <Image source={IMAGES.location} style={styles.leftImage} />
+            <Image source={defaultValue ? IMAGES.location : errorMessage ? IMAGES.search_error : IMAGES.search} style={styles.leftImage} />
           </View>
         )}
         disableScroll={false}

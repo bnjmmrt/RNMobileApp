@@ -129,7 +129,7 @@ export const LABLE = {
   IDENTITY_VERIFICATION_SUBTITLE: 'This helps us verify your online identity.',
   CHOOSE_YOUR_INTERESTS: 'Choose your interests',
   CHOOSE_YOUR_INTERESTS_SUBTITLE:
-    "Select topics of interests so we can curate experiences you'll want to attend.",
+    "Select topics of interests so we can curate experiences\nyou'll want to attend.",
   ADD_A_PHOTO: 'Add a photo',
   ADD_A_PHOTO_SUBTITLE: 'Upload a profile photo to complete your profile.',
   CHAT_WITH_HOST: 'Chat\nwith hosts.',
@@ -153,7 +153,7 @@ export const LABLE = {
   COMPLETE_VERIFICATION: 'Complete Verification',
   SEND_DIRECT_MSG_CODE: 'Send direct message with the code:',
   WE_WILL_REVIEW_APP:
-    "We'll review your application after we receive your message.",
+    "We'll review your application after we receive\nyour message.",
   EMAIL_THE_CODE: 'Email the code to:',
   DONT_USE_INSTAGRAM: "Don't use Instagram?",
   REFERRAL_CODE: 'Referral Code',
@@ -254,7 +254,8 @@ export const LABLE = {
   NOTIFICATIONS:'Notifications',
   NO_NOTIFICATIONS_YET:'No notifications yet',
   NOTIFICATIONS_SUB_TITLE:"We'll let you know when updates arrive!",
-  PROFILE_UPDATED_SUCCESSFULLY:'Profile Updated Successfully'
+  PROFILE_UPDATED_SUCCESSFULLY:'Profile Updated Successfully',
+  PLEASE_SELECT_ONE: 'Please select one'
 };
 export const EVENT = {
   EDIT_EVENT: 'Edit Event',
