@@ -115,6 +115,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const { data, isLoading, refetch } = useFetchEventDetailsHook(queryArgs);
 
   useEffect(() => {
+    console.log(rspvStatus)
     refetch(); // Manually refetch when RSVP status changes
   }, [rspvStatus, refetch]);
 
@@ -381,7 +382,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           <View style={styles.blurredBackgroundContainer}>
             <FastImage
               source={{
-                uri: route?.params?.imageCover || route?.params?.imageFlyer,
+                uri: data?.data?.imageCover || data?.data?.imageFlyer,
               }}
               resizeMode={FastImage.resizeMode.cover}
               defaultSource={IMAGES.eventCoverPlaceholders1}
@@ -406,7 +407,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             <View style={imageWrapperStyle.wrapper}>
               <FastImage
                 source={{
-                  uri: route?.params?.imageCover || route?.params?.imageFlyer,
+                  uri: data?.data?.imageCover || data?.data?.imageFlyer,
                 }}
                 resizeMode={FastImage.resizeMode.cover}
                 defaultSource={IMAGES.eventCoverPlaceholders1}
@@ -414,7 +415,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               />
             </View>
 
-            <Text style={styles.titleStyle}>{route?.params?.name}</Text>
+            <Text style={styles.titleStyle}>{data?.data?.name}</Text>
 
             <EventStatus status={guestStatus} isDeclinedByMe={isDeclinedByMe} />
 
