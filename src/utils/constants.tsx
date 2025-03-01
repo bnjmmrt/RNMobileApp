@@ -253,7 +253,8 @@ export const LABLE = {
   YOU_ARE_OFFLINE:'You’re Offline',
   NOTIFICATIONS:'Notifications',
   NO_NOTIFICATIONS_YET:'No notifications yet',
-  NOTIFICATIONS_SUB_TITLE:"We'll let you know when updates arrive!"
+  NOTIFICATIONS_SUB_TITLE:"We'll let you know when updates arrive!",
+  PROFILE_UPDATED_SUCCESSFULLY:'Profile Updated Successfully'
 };
 export const EVENT = {
   EDIT_EVENT: 'Edit Event',
