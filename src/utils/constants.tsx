@@ -134,22 +134,22 @@ export const LABLE = {
   ADD_A_PHOTO_SUBTITLE: 'Upload a profile photo to complete your profile.',
   CHAT_WITH_HOST: 'Chat\nwith hosts.',
   SEARCH_FOR_EVENT: 'Search for an event…',
-  ACCESS_THE_MOST_VALUABLE_CALENDAR: 'Access the most valuable calendar.',
+  ACCESS_THE_MOST_VALUABLE_CALENDAR: 'Access the most \n valuable calendar.',
   TWO_MINUTES_TO_COMPLETE: '~2 min to Complete',
-  STREAMLINE_YOUR_LIFESTYLE: 'Streamline your lifestyle.',
+  STREAMLINE_YOUR_LIFESTYLE: 'Streamline\nyour lifestyle.',
   MANAGE_YOUR_EVENTS:
     'Manage your events, chats, and passes—all in one\nplace.',
   CONNECT_WITH_WORLD:
-    "Connect with the world's top event organizers. Get discovered and invited to events that matter.",
+    "Connect with the world's top event organizers. Get\ndiscovered and invited to events that matter.",
   CONNECT_DIRECTLY_WITH_PEOPLE:
-    'Connect directly with the people behind the events. Request invites and confirm details seamlessly.',
-  UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS: 'Unlock access to exclusive events',
+    'Connect directly with the people behind the events.\nRequest invites and confirm details seamlessly.',
+  UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS: 'Unlock access\nto exclusive events.',
   GET_DISCOVERY_BY_THE_WORLD:
     "Get discovered by the world's top event organizers and receive invites to events that matter.",
   DISCOVER_EXPERIENCES_ACROSS_ART:
     'Discover experiences across art, fashion, music, and more — listed by renowned hosts.',
   DISCOVER_EXPERIENCES_IN_ART:
-    'Discover experiences in art, fashion, music, and more—curated by renowned hosts.',
+    'Discover experiences in art, fashion, music, and more \n—curated by renowned hosts.',
   COMPLETE_VERIFICATION: 'Complete Verification',
   SEND_DIRECT_MSG_CODE: 'Send direct message with the code:',
   WE_WILL_REVIEW_APP:

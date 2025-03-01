@@ -1,6 +1,5 @@
-import IMAGES from '@images/index';
 import * as React from 'react';
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import Carousel, {
   ICarouselInstance,
@@ -27,18 +26,17 @@ const  CustomCarousel:React.FC<CustomCarouselProps>=({ list,onScroll }) =>{
 
   return (
     <View
-   
       style={styles.container}>
       <Carousel
         // autoPlayInterval={2000}
         data={list}
-        height={330}
+        height={329}
         loop={true}
         width={width}
         mode="parallax"
         modeConfig={{
           parallaxScrollingScale: 0.99,
-          parallaxScrollingOffset: 55,
+          parallaxScrollingOffset: 60,
         }}
         onProgressChange={progress}
         renderItem={({ item }) => (
@@ -51,7 +49,7 @@ const  CustomCarousel:React.FC<CustomCarouselProps>=({ list,onScroll }) =>{
       <Pagination.Basic
         progress={progress}
         data={list.map(item => (item))}
-        size={12}
+        size={8}
         dotStyle={{
           borderRadius: 100,
           backgroundColor: '#262626',
