@@ -140,7 +140,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
           ? selectedCreativeFocus.map((item: any) => item.id)
           : profileData?.creativeFocus.map((item: any) => item.id),
       };
-      console.log('requestObject', requestObject);
 
       const response: any = await apiRequest(
         'put',
