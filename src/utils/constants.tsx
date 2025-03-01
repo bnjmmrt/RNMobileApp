@@ -166,9 +166,9 @@ export const LABLE = {
     'Request a referral from a Rumor member to boost your application.',
   CONTACTS: 'Contacts',
   INVITE_FRIENDS_TO: 'Invite friends to fast track your membership approval.',
-  YOU_ARE_ON_WAITLIST: "You're on the waitlist.",
+  YOU_ARE_ON_WAITLIST: "You're on\nthe waitlist.",
   FULL_ACCESS_UNLOCK:
-    'Full access will be unlocked once your application is approved.',
+    'Full access will be unlocked once your application is\napproved.',
   FASTRACK_YOUR_APPLICATION: 'Want to fast-track your application?',
   REQUEST_REFERRAL_FROM_RUMOR: 'Request referrals from Rumor members.',
   INVITE_YOUR_FRIEND: 'Invite your friends to join Rumor.',
