@@ -144,7 +144,8 @@ const IMAGES = {
   deleteGray: require('./delete-gray.png'),
   notification_badge: require('./notification-badge.png'),
   calendar_error: require('./calendar_error.png'),
-  search_error: require('./search-md-error.png')
+  search_error: require('./search-md-error.png'),
+  email_error: require('./email-error.png'),
 };
 
 export default IMAGES;
