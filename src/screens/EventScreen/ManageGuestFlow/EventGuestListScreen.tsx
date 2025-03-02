@@ -165,11 +165,13 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
 
   const handleAddGuest = () => {
     // Navigate to add guest screen or open add guest modal
-    navigation.navigate('AddGuestScreen');
+    navigation.navigate(ROUTES.InviteGuestScreen, {
+      isManual: false,
+      type: 'new',
+    });
   };
 
   const handleResetFilters = () => {
-    setSearchText('');
     setFilterQuery('');
     setFilterNumber(0);
     setSelectedFilter('all');

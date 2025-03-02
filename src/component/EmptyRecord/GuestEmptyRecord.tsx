@@ -30,8 +30,11 @@ const GuestEmptyRecord: React.FC<GuestEmptyRecordProps> = ({
         </Text>
         <TouchableOpacity
           style={styles.addButton}
-          onPress={isSearchResult ? onResetFilters : onAddGuest}>
-          <Image source={isSearchResult ? IMAGES.plus : IMAGES.refresh} style={styles.plusIcon} />
+          onPress={isSearchResult ? onAddGuest : onResetFilters}>
+          <Image
+            source={isSearchResult ? IMAGES.plus : IMAGES.refresh}
+            style={styles.plusIcon}
+          />
           <Text style={styles.buttonText}>
             {isSearchResult ? 'New Guests' : 'Reset Filters'}
           </Text>
