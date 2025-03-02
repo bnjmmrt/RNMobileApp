@@ -7,16 +7,24 @@ import { fontFamily } from '../../utils/functions';
 
 interface GuestEmptyRecordProps {
   onAddGuest?: () => void;
+  isSearchResult?: boolean;
 }
 
-const GuestEmptyRecord: React.FC<GuestEmptyRecordProps> = ({ onAddGuest }) => {
+const GuestEmptyRecord: React.FC<GuestEmptyRecordProps> = ({
+  onAddGuest,
+  isSearchResult = false,
+}) => {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <Image source={IMAGES.noRecord} style={styles.image} />
-        <Text style={styles.title}>No users found</Text>
+        <Text style={styles.title}>
+          {isSearchResult ? 'No users found' : 'No guests yet'}
+        </Text>
         <Text style={styles.subtitle}>
-          Expand your search or invite a new guest
+          {isSearchResult
+            ? 'Expand your search or invite a new guest'
+            : 'Start adding guests to your event'}
         </Text>
         <TouchableOpacity style={styles.addButton} onPress={onAddGuest}>
           <Image source={IMAGES.plus} style={styles.plusIcon} />

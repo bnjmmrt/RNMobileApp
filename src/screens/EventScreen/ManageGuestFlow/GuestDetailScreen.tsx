@@ -198,7 +198,6 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   };
 
   const handleProfile = (id?: string) => {
-    console.log(guestDetail)
     navigation.navigate(ROUTES.UserDetail, {
       user: id,
     });
@@ -392,7 +391,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
           <Text style={styles.title}>{LABLE.MANAGE_INVITE}</Text>
         </View>
         <View style={[styles.scrollContent, styles.loaderContainer]}>
-          <ActivityIndicator size="large" color={COLORS.black} />
+          <ActivityIndicator color={COLORS.black} />
         </View>
       </SafeAreaView>
     );

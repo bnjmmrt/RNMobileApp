@@ -256,6 +256,13 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
               style={[styles.confirmedBadge]}
             />
           )}
+
+          {item.ticketType && (
+            <View style={styles.ticketTypeContainer}>
+              <Text style={styles.ticketTypeText}>{item.ticketType}</Text>
+            </View>
+          )}
+
           {item.additionalGuests && item.additionalGuests.length > 0 && (
             <TouchableOpacity
               style={styles.expandButton}
@@ -296,7 +303,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     if (isLoadingGuests || isFetchingGuests) {
       return (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={COLORS.blueDark} />
+          <ActivityIndicator color={COLORS.black} />
         </View>
       );
     }
@@ -321,6 +328,8 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
       />
     );
   };
+
+  console.log('filteredAndSortedGuests', filteredAndSortedGuests[0]);
 
   const onCheckInPress = async () => {
     dispatch(setEventId(eventId));
@@ -504,14 +513,13 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 
-  vipContainer: {
+  ticketTypeContainer: {
     paddingHorizontal: horizontalMarginScale(6),
     paddingVertical: verticalMarginScale(2),
     backgroundColor: COLORS.bgBlue,
     borderRadius: radiusScale(12),
-    maxWidth: horizontalScale(32),
   },
-  vipText: {
+  ticketTypeText: {
     fontSize: fontScale(12),
     lineHeight: fontScale(14),
     color: COLORS.blueDark,
