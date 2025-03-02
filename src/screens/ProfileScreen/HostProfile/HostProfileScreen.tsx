@@ -1,6 +1,7 @@
 import IMAGES from '@images/index';
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   Linking,
@@ -19,11 +20,20 @@ import Header from 'src/component/Header/Header';
 import Title from 'src/component/Title/Title';
 import { COLORS } from 'src/utils/constants';
 import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale, Wp } from 'src/utils/dimensions';
-import { fontFamily } from 'src/utils/functions';
+import { fontFamily, removeSignature } from 'src/utils/functions';
 import ReportHostView from './ReportHostView';
 import ReportAndBlockHostView from './ReportandBlockView';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { mockProfileDetails, useFetchProfileDetailsQuery } from 'src/redux/actions/profileListApiAction';
+import useApi from 'src/axios/useApi';
+import FastImage from '@d11/react-native-fast-image';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import FollowButton from 'src/component/FollowButton/FollowButton';
+import { useDispatch, useSelector } from 'react-redux';
+import { setRefresh } from 'src/redux/slices/rspvSlice';
+import { RootState } from 'src/redux/slices';
+import { ROUTES } from 'src/navigation/Route';
+import Blocked from 'src/assets/svgs/icons/Blocked.svg';
 
 type ViewType = 'options' | 'report' | 'block' | 'unblock' | 'reportAndBlock' | null;
 
@@ -36,14 +46,51 @@ const HostProfileScreen: React.FC = () => {
   const bottomSheetRef = useRef<BottomSheetRef | null>(null);
   const { params } = useRoute();
   const [activeView, setActiveView] = useState<ViewType>(null);
-  const { goBack } = useNavigation();
-  // const { data, isLoading, error } = useFetchProfileDetailsQuery(params?.hostId); 
-  const data = mockProfileDetails;
+  const { goBack, setParams, navigate } = useNavigation<any>();
+  const dispatch = useDispatch();
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const refresh = useSelector((state: RootState) => state.rspv.refresh);
 
+
+
+  const { data, isLoading, error, refetch, isSuccess } = useFetchProfileDetailsQuery(params?.hostId);
+  const { apiRequest, loading: apiLoading, error: apiError } = useApi();
+
+  const [hostRoleId, setHostRoleId] = useState(null);
+
+  useEffect(() => {
+    const fetchHostRoleId = async () => {
+      const id = await getHostRoleIdFromAPI();
+      setHostRoleId(id);
+    };
+
+    fetchHostRoleId();
+  }, [params?.hostId]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refresh])
+  );
+  // const data = mockProfileDetails;
+  useEffect(() => {
+    dispatch(setRefresh(false))
+  }, [refresh])
 
   const handleOpenBottomSheet = (view: ViewType) => {
     setActiveView(view);
     bottomSheetRef.current?.open();
+  };
+  const getHostRoleIdFromAPI = async () => {
+    try {
+      const response = await apiRequest('post', 'v1/auth/get-user-with-roles-by-id', { id: params?.hostId });
+      const hostRole = response.data.roles.find(role => role.name === "host");
+      return hostRole ? hostRole.id : null;
+    } catch (error) {
+      console.error("Error fetching user roles:", error);
+      return null;
+    }
   };
 
   const renderBottomSheetContent = () => {
@@ -56,23 +103,42 @@ const HostProfileScreen: React.FC = () => {
           />
         );
       case 'report':
-        return <ReportHostView onClose={() => bottomSheetRef.current?.close()} />;
+        return <ReportHostView roleId={loginData?.roles[0]?.roleId} hostRoleId={hostRoleId} userId={userId} onClose={() => bottomSheetRef.current?.close()} hostId={params?.hostId} />;
       case 'block':
         return (
           <BlockHostView
             onPress={(e: string) => handleOpenBottomSheet(e as ViewType)}
-            onClose={() => bottomSheetRef.current?.close()}
+            onClose={(e) => {
+              bottomSheetRef.current?.close()
+              if (e) {
+                refetch()
+              }
+            }}
+            userId={userId}
+            hostId={params?.hostId}
+            roleId={loginData?.roles[0]?.roleId} hostRoleId={hostRoleId}
           />
         );
       case 'unblock':
         return (
           <UnBlockHostView
             onPress={(e: string) => handleOpenBottomSheet(e as ViewType)}
-            onClose={() => bottomSheetRef.current?.close()}
+            onClose={(e) => {
+              bottomSheetRef.current?.close()
+              e && refetch();
+            }}
+            userId={userId}
+            hostId={params?.hostId}
+            roleId={loginData?.roles[0]?.roleId} hostRoleId={hostRoleId}
           />
         );
       case 'reportAndBlock':
-        return <ReportAndBlockHostView onClose={() => bottomSheetRef.current?.close()} />;
+        return <ReportAndBlockHostView
+          roleId={loginData?.roles[0]?.roleId} hostRoleId={hostRoleId}
+          userId={userId} onClose={(e) => {
+            bottomSheetRef.current?.close()
+            e && refetch();
+          }} hostId={params?.hostId} />;
       default:
         return null;
     }
@@ -84,6 +150,8 @@ const HostProfileScreen: React.FC = () => {
         return '25%';
       case 'block':
         return '40%';
+      case 'unblock':
+        return '40%';
       default:
         return '55%';
     }
@@ -91,21 +159,39 @@ const HostProfileScreen: React.FC = () => {
 
   const profile = data?.data;
   const socialMediaLinks = profile?.socialMedia || {};
+  console.log(profile?.pendingEvents)
 
+
+  const handlEventPress = (item) => {
+    navigate(ROUTES.EventStack, {
+      screen: ROUTES.EventDetailsScreen,
+      params: item
+    });
+  };
+  const socialMediaData = Object.keys(socialMediaLinks)
+    .map((key) => ({
+      id: key,
+      icon: IMAGES[key],
+      url: socialMediaLinks[key],
+    }))
+    .filter((item) => item.icon && item.url !== "");
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <Header
         showProgressBar={false}
         rightIcon={IMAGES.dots}
         onPressRightIcon={() => handleOpenBottomSheet('options')}
+        // onPressRightIcon={() => handleOpenBottomSheet('unblock')}
         showBackButton={true}
-        onPress={goBack}
       />
 
       <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
         <View style={{ paddingHorizontal: horizontalMarginScale(20) }}>
-          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <AvatarInitials imgUrl={profile?.companyLogo || ''} size={radiusScale(96)} />
+          <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: verticalMarginScale(16), gap: verticalMarginScale(4) }}>
+            <View style={{ marginBottom: verticalMarginScale(12) }}>
+              <AvatarInitials imgUrl={removeSignature(profile?.companyLogo) || ''} size={radiusScale(96)} />
+              {false && <Blocked height={32} width={32} style={{ position: 'absolute', bottom: 0, right: -5 }} />}
+            </View>
             <Title
               title={profile?.companyName || 'Company Name'}
               subTitle={profile?.bio || 'Bio not available'}
@@ -113,23 +199,26 @@ const HostProfileScreen: React.FC = () => {
             />
             <FlatList
               horizontal
-              contentContainerStyle={{ gap: 16, marginVertical: 16 }}
-              data={Object.keys(socialMediaLinks).map((key) => ({
-                id: key,
-                icon: IMAGES[key],
-                url: socialMediaLinks[key],
-              }))}
+              contentContainerStyle={
+                socialMediaData.length > 0
+                  ? { marginBottom: verticalMarginScale(16), marginTop: verticalMarginScale(6) }
+                  : {}
+              }
+              data={socialMediaData}
               renderItem={({ item }) => (
-                item.icon && <TouchableOpacity onPress={() => Linking.openURL(item?.url)}>
-                  <Image style={{ width: 20, height: 20 }} source={item.icon} />
+                <TouchableOpacity
+                  onPress={() =>
+                    item?.url ? Linking.openURL(item?.url) : FlashMessageComponent.show('success', 'Link not available')
+                  }
+                >
+                  <Image style={{ width: 20, height: 20, marginRight: verticalMarginScale(8) }} source={item.icon} />
                 </TouchableOpacity>
               )}
             />
-            <ButtonSmall
-              style={styles.smallBtnStyle}
-              title={profile?.isMemberFollowingHost ? 'Following' : 'Follow'}
-              colorTheme={profile?.isMemberFollowingHost ? 'dark' : 'dark'}
-              borderType="SOLID"
+            <FollowButton
+              isFollowing={profile?.isMemberFollowingHost}
+              id={profile?.id}
+              handleRefresh={true}
             />
           </View>
           <Text style={styles.headerText}>Upcoming Events</Text>
@@ -140,13 +229,15 @@ const HostProfileScreen: React.FC = () => {
             contentContainerStyle={{ gap: 16, marginVertical: verticalMarginScale(12) }}
             data={profile?.pendingEvents || []}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => { }}>
-                <Image
+              <TouchableOpacity onPress={() => { handlEventPress(item) }}>
+                <FastImage
+                  defaultSource={IMAGES.eventCoverPlaceholders1}
                   style={{ width: Wp('42%'), height: verticalScale(245), borderRadius: 8 }}
-                  source={{ uri: item.imageCover }}
+                  source={{ uri: removeSignature(item?.imageFlyer) }}
                 />
                 <Text style={styles.eventNameText}>{item.name}</Text>
                 <Text style={styles.dateText}>{item.startDate}</Text>
+                <Text style={styles.dateText}>{item.location}</Text>
               </TouchableOpacity>
             )}
           />
@@ -158,10 +249,11 @@ const HostProfileScreen: React.FC = () => {
             data={profile?.pastEvents || []}
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => { }}>
-                <Image
+              <TouchableOpacity onPress={() => { handlEventPress(item) }}>
+                <FastImage
+                  defaultSource={IMAGES.eventCoverPlaceholders1}
                   style={{ width: Wp('42%'), height: verticalScale(245), borderRadius: 8 }}
-                  source={{ uri: item.imageCover }}
+                  source={{ uri: removeSignature(item.imageFlyer) }}
                 />
                 <Text style={styles.eventNameText}>{item.name}</Text>
                 <Text style={styles.dateText}>{item.startDate}</Text>
@@ -182,51 +274,98 @@ const HostProfileScreen: React.FC = () => {
 };
 
 interface BlockHostViewProps {
-  onClose: () => void;
+  onClose: Function;
   onPress: (view: string) => void;
+  userId: string;
+  hostId: string;
+  hostRoleId: string;
+  roleId: string;
 }
 
-const BlockHostView: React.FC<BlockHostViewProps> = ({ onClose, onPress }) => (
-  <View style={{ paddingHorizontal: 12, gap: 8 }}>
-    <Title
-      align="center"
-      title="Block Host"
-      subTitle="Are you sure you want to block this host?\nIf they invite you to an event in the future, your invite will automatically be declined."
-    />
-    <TouchableOpacity onPress={() => { }} style={styles.redButton}>
-      <Text style={[styles.optionText, { color: COLORS.white }]}>Block</Text>
-    </TouchableOpacity>
-    <TouchableOpacity onPress={() => onPress('reportAndBlock')} style={styles.blackStripe}>
-      <Text style={styles.optionText}>Report & Block</Text>
-    </TouchableOpacity>
-  </View>
-);
+const BlockHostView: React.FC<BlockHostViewProps> = ({ onClose, onPress, userId, hostId, roleId, hostRoleId }) => {
+  const { apiRequest, loading, error } = useApi();
+  const handleBlock = async () => {
+    try {
+      const response = await apiRequest('post', `v1/auth/users/${userId}/hosts/${hostId}/block`, {
+        blockedByRoleId: roleId,
+        blockedToRoleId: hostRoleId,
+      });
+      if (response) {
+        FlashMessageComponent.show('success', 'Host has been blocked successfully');
+        onClose(true);
+      } else {
+        // Alert.alert('Error', response?.message || 'Something went wrong');
+      }
+    } catch (error) {
+      // Alert.alert('Error', error?.message || 'Failed to block host');
+    }
+  };
+
+  return (
+    <View style={{ paddingHorizontal: 12, gap: 8 }}>
+      <Title
+        align="center"
+        title="Block Host"
+        subTitle={`Are you sure you want to block this host?\nIf they invite you to an event in the future, your invite will automatically be declined.`}
+      />
+      <TouchableOpacity disabled={loading} onPress={handleBlock} style={styles.redButton}>
+        {loading ? <ActivityIndicator /> : <Text style={[styles.optionText, { color: COLORS.white }]}>Block</Text>}
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => onPress('reportAndBlock')} style={styles.blackStripe}>
+        <Text style={styles.optionText}>Report & Block</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 interface UnBlockHostViewProps {
-  onClose: () => void;
+  onClose: Function;
   onPress: (view: string) => void;
+  userId: string;
+  hostId: string;
+  hostRoleId: string;
+  roleId: string;
 }
 
-const UnBlockHostView: React.FC<UnBlockHostViewProps> = ({ onClose, onPress }) => (
-  <View style={{ paddingHorizontal: 12, gap: 8 }}>
-    <Title
-      align="center"
-      title="Unblock Host"
-      subTitle="Are you sure you want to unblock this host?\nUnblocking this host will allow them to send you new event invites and chat messages."
-    />
+const UnBlockHostView: React.FC<UnBlockHostViewProps> = ({ onClose, onPress, userId, hostId, roleId, hostRoleId }) => {
+  const { apiRequest, loading, error } = useApi();
+  const handleUnblock = async () => {
+    try {
+      const response = await apiRequest('post', `v1/auth/users/${userId}/hosts/${hostId}/unblock`, {
+        blockedByRoleId: roleId,
+        blockedToRoleId: hostRoleId,
+      });
+      FlashMessageComponent.show('success', 'Host has been unblocked successfully');
+      onClose(true);
 
-    <Button
-      disabled={false}
-      style={styles.btnStyle}
-      title={'Unblock'}
-      colorTheme="dark"
-      onPress={() => { }}
-    />
-    <TouchableOpacity onPress={onClose} style={styles.blackStripe}>
-      <Text style={styles.optionText}>Cancel</Text>
-    </TouchableOpacity>
-  </View>
-);
+    } catch (error) {
+      // Alert.alert('Error', error?.message || 'Failed to unblock host');
+    }
+  };
+
+  return (
+    <View style={{ paddingHorizontal: 12, gap: 8 }}>
+      <Title
+        align="center"
+        title="Unblock Host"
+        subTitle="Are you sure you want to unblock this host?\nUnblocking this host will allow them to send you new event invites and chat messages."
+      />
+
+      <Button
+        disabled={false}
+        style={styles.btnStyle}
+        title={'Unblock'}
+        loading={loading}
+        colorTheme="dark"
+        onPress={handleUnblock}
+      />
+      <TouchableOpacity onPress={onClose} style={styles.blackStripe}>
+        <Text style={styles.optionText}>Cancel</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
 
 const RenderOptions = ({ onClose, onPress }: { onClose: () => void }) => (
   <View style={{ paddingHorizontal: 12, gap: 8 }}>
@@ -257,7 +396,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(24),
     fontFamily: fontFamily.RomieTrial_Bold,
     color: COLORS.black,
-    marginTop: verticalMarginScale(20),
+    marginTop: verticalMarginScale(16),
   },
   eventNameText: {
     fontSize: fontScale(16),
@@ -266,7 +405,7 @@ const styles = StyleSheet.create({
     marginTop: verticalMarginScale(12),
   },
   dateText: {
-    fontSize: fontScale(14),
+    fontSize: fontScale(12),
     fontFamily: fontFamily.ABCDiatype_Medium,
     color: COLORS.light_gray,
     marginTop: verticalMarginScale(2)
@@ -282,7 +421,7 @@ const styles = StyleSheet.create({
   },
   redButton: {
     backgroundColor: COLORS.errorText,
-    paddingVertical: 12, alignItems: 'center', borderRadius: 1000, height: 48, marginTop: verticalMarginScale(12)
+    justifyContent: 'center', alignItems: 'center', borderRadius: 1000, height: 48, marginTop: verticalMarginScale(12)
   },
   blackStripe: {
     paddingVertical: verticalMarginScale(12),

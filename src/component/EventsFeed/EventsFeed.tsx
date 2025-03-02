@@ -252,8 +252,10 @@ const EventsFeed = () => {
   }, [currentPage]);
 
   const handleLoadMore = useCallback(() => {
-    const totalPages = data?.totalPages || 10;
-    if (data?.currentPage < totalPages && !isLoading) {
+    const totalCount = data?.data?.totalCount;
+    console.log("totalCount", totalCount)
+    console.log("AllEvent", allEvents?.length)
+    if (allEvents?.length < totalCount && !isLoading) {
       setCurrentPage(prev => prev + 1);
     }
   }, [allEvents]);
@@ -292,9 +294,12 @@ const EventsFeed = () => {
         (item: any) => item.featuredEventSection,
       );
       setFeaturedEvents(featuredEventsRes);
-      setAllEvents(eventsRes);
+      setAllEvents(prev =>
+        currentPage === 1 ? eventsRes : [...prev, ...eventsRes],
+      );
     }
   }, [data]);
+
 
   useFocusEffect(
     useCallback(() => {

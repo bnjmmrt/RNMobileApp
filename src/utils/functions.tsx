@@ -352,6 +352,9 @@ export const convertDateToFormatMMDDYYYY = (dateString: string) => {
     console.log(error);
   }
 };
+export const removeSignature = (url: string) => {
+  return url ? url.split('?')[0] : url;
+}
 export const formatDate = (date: Date) => {
   return date
     .toLocaleDateString('en-US', {
