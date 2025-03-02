@@ -19,6 +19,7 @@ const EmailInput = forwardRef((_, ref) => {
     setEmailAddress,
     emailAddress,
     setDisabled,
+    setErrorMessage
   }));
 
   // Validate email format
