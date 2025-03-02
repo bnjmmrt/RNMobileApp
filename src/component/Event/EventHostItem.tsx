@@ -25,6 +25,7 @@ import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComp
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import FastImage from '@d11/react-native-fast-image';
+import FollowButton from '../FollowButton/FollowButton';
 
 interface EventHostItemProps {
   item: any;
@@ -37,7 +38,7 @@ const handlEventPress = () => {
 
 const EventHostItem: React.FC<EventHostItemProps> = ({ item }) => {
   const role = useSelector((state: RootState) => state.auth.role);
-
+  console.log("ITEM", item)
   return (
     <View style={[styles.container]}>
       <FastImage
@@ -53,13 +54,10 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item }) => {
         </Text>
       </View>
 
-      {role == ROLE.MEMBER && (
-        <ButtonSmall
-          disabled={false}
-          style={styles.btnStyle}
-          title={BUTTON_LABLE.FOLLOW}
-          colorTheme={'dark'}
-          onPress={handlEventPress}
+      {(role == ROLE.MEMBER && item.role.name == "host") && (
+        <FollowButton
+          id={item.id}
+          isFollowing={item.isFollowedByCurrentGuest}
         />
       )}
     </View>

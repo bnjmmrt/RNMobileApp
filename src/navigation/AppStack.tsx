@@ -14,6 +14,7 @@ import EventDetailsScreen from 'src/screens/EventScreen/EventDetailsScreen';
 import EditEventDetails from 'src/screens/EventScreen/EditEventDetails';
 import EditEventSettings from 'src/screens/EventScreen/EditEventSettings';
 import EditEventScreen from 'src/screens/EventScreen/EditEventScreen';
+import NotificationsScreen from 'src/screens/Notifications/NotificationsScreen';
 
 export type customListType = 'follower' | 'favorite' | 'custom';
 export type AppStackParamList = {
@@ -72,6 +73,7 @@ export const AppStack: React.FC<AppStackProps> = ({
         component={EditEventScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name={ROUTES.NotificationsScreen} component={NotificationsScreen}  options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };

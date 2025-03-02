@@ -90,7 +90,7 @@ const GenderScreen: React.FC<GenderScreenProps> = ({navigation}) => {
         </View>
         {isToastShown && (
           <Toast
-            message={'Please select at least one'}
+            message={LABLE.PLEASE_SELECT_ONE}
             onClose={() => setIsToastShown(false)}
           />
         )}

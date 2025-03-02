@@ -16,7 +16,7 @@ import IMAGES from '../../../assets/images';
 import { useMemberSignUp } from '../../../redux/hooks/useMemberSignUp';
 import useApi from '../../../axios/useApi';
 import { EndPoint } from '../../../ApiManager/config';
-import { changeSafeAreaViewConfig, convertDateFormat } from '../../../utils/functions';
+import { changeSafeAreaViewConfig, convertDateFormat, fontFamily } from '../../../utils/functions';
 import {
   setAuthToken,
   setLoginData,
@@ -157,33 +157,25 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         />
         <Input
           ref={usernameRef}
-          placeholder={'@username'}
+          placeholder={'@Username'}
           leftImage={IMAGES.instagramLogo}
-          // iconStyle={styles.iconStyle}
           errorMessage={'Please enter username'}
           defaultValue={''}
         />
         <View style={styles.mainContainer}>
-          <Text style={styles.title}>{LABLE.COMPLETE_VERIFICATION}</Text>
+          <Text style={styles.title}>{LABLE.COMPLETE_VERIFICATION}:</Text>
           <View style={styles.numberContainer}>
             <Text style={styles.numberText}>1</Text>
           </View>
           <Text style={styles.subTitle}>{LABLE.SEND_DIRECT_MSG_CODE}</Text>
-          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: verticalMarginScale(5) }}>
-            <View style={{
-              paddingVertical: verticalScale(5), backgroundColor: COLORS.tabBorderColor, borderRadius: 5,
-              paddingHorizontal: horizontalScale(5), alignItems: 'center', justifyContent: 'center', alignSelf: 'center'
-            }}>
-              <Text style={{
-                color: COLORS.black,
-                fontSize: fontScale(11),
-              }}>{LABLE.RUMORAPP}</Text>
+          <View style={styles.rumorTextContainer}>
+            <View style={styles.btnRumorContainer}>
+              <Text style={styles.btnRumor}>{LABLE.RUMORAPP}</Text>
             </View>
 
-            <Text style={styles.subTitle}>{'to'}</Text>
+            <Text style={[styles.subTitle, {paddingHorizontal: 0}]}>{' to '}</Text>
             <Text style={styles.emailStyle}>@therumor</Text>
           </View>
-
 
           <View style={styles.numberContainer}>
             <Text style={styles.numberText}>2</Text>
@@ -198,25 +190,18 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
             onPress={goToInstagram}
           />
           <View style={styles.divider} />
-          <Text style={[styles.title, { marginVertical: 20 }]}>
+          <Text style={[styles.title, { marginVertical: 15 }]}>
             {LABLE.DONT_USE_INSTAGRAM}
           </Text>
           <Text style={styles.subTitle}>{LABLE.EMAIL_THE_CODE}</Text>
-          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: verticalMarginScale(5) }}>
-            <View style={{
-              paddingVertical: verticalScale(5), backgroundColor: COLORS.tabBorderColor, borderRadius: 5,
-              paddingHorizontal: horizontalScale(5), alignItems: 'center', justifyContent: 'center', alignSelf: 'center'
-            }}>
-              <Text style={{
-                color: COLORS.black,
-                fontSize: fontScale(11),
-              }}>{LABLE.RUMORAPP}</Text>
+          <View style={styles.rumorTextContainer}>
+            <View style={styles.btnRumorContainer}>
+              <Text style={styles.btnRumor}>{LABLE.RUMORAPP}</Text>
             </View>
 
-            <Text style={styles.subTitle}>{'to'}</Text>
-            <Text style={styles.emailStyle}> {BUTTON_LABLE.SUPPORT_EMAIL_ID}</Text>
+            <Text style={[styles.subTitle, {paddingHorizontal: 0}]}>{' to '}</Text>
+            <Text style={styles.emailStyle}>{BUTTON_LABLE.SUPPORT_EMAIL_ID}</Text>
           </View>
-
           <Button
             disabled={false}
             style={styles.btnSmallStyle}

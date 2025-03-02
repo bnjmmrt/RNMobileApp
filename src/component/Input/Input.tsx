@@ -145,7 +145,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
               : styles.errorInputWrapper
             : null,
           inputFieldContainerStyle,
-          { backgroundColor: !editable ? COLORS.borderGray : COLORS.white }
+          { backgroundColor: !editable ? COLORS.borderGray : errorMessage ? COLORS.bgRed : COLORS.white }
         ]}>
         {leftImage && (
           <Image
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: horizontalMarginScale(16),
+    paddingHorizontal: horizontalMarginScale(12),
     height: verticalScale(50),
   },
   multilineInputContainer: {

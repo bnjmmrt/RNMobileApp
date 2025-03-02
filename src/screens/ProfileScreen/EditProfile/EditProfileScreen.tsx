@@ -108,7 +108,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
         );
         if (response.status === 200) {
           fetchUserById()
-          FlashMessageComponent.show('success', 'Profile Updated Successfully');
+          FlashMessageComponent.show('success', LABLE.PROFILE_UPDATED_SUCCESSFULLY);
           handleBackPress();
         }
       }
@@ -140,7 +140,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
           ? selectedCreativeFocus.map((item: any) => item.id)
           : profileData?.creativeFocus.map((item: any) => item.id),
       };
-      console.log('requestObject', requestObject);
 
       const response: any = await apiRequest(
         'put',
@@ -155,7 +154,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
         if (responseUser.status === 200) {
           dispatch(setProfileData({...responseUser?.data, profilePicture: responseUser?.data?.imageUrl}));
         }
-        FlashMessageComponent.show('success', 'Profile Updated Successfully');
+        FlashMessageComponent.show('success', LABLE.PROFILE_UPDATED_SUCCESSFULLY);
         handleBackPress();
       }
     }
@@ -180,7 +179,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
             ref={firstNameRef}
             label={LABLE.FIRST_NAME}
             errorMessage={ERROR_MESSAGE.FIRST_NAME}
-            defaultValue={isGuest ? profileData?.name : profileData?.firstName}
+            defaultValue={profileData?.firstName}
           />
           <Input
             ref={lastNameRef}
@@ -236,7 +235,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
               <DatePickerComponent ref={birthDayRef} birthDate={profileData.dateOfBirth} />
 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
-              <BaseCityComponent ref={baseCityRef} />
+              <BaseCityComponent location={{address: profileData?.city, placeId: profileData?.placeId}} ref={baseCityRef} />
 
               <Text
                 style={[
