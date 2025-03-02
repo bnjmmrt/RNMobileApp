@@ -16,6 +16,11 @@ const AnnouncementStyles = () => {
             borderRadius: 8,
             marginRight: 10,
         },
+        pdfIcon: {
+            width: 30,
+            height: 30,
+            marginBottom: 10,
+        },
         pdfContainer: {
             width: horizontalScale(95),
             height: verticalScale(128),
@@ -40,7 +45,7 @@ const AnnouncementStyles = () => {
         },
         name: {
             color: COLORS.black2,
-            fontSize: fontScale(18),
+            fontSize: fontScale(16),
             flex: 1,
             fontWeight: '400',
             fontFamily: fontFamily.ABCDiatype_Medium,
@@ -49,6 +54,7 @@ const AnnouncementStyles = () => {
         toggleContainer: {
             flexDirection: 'row',
             alignItems: 'center',
+            marginVertical: verticalMarginScale(5)
         },
         toggleText: {
             color: COLORS.black2,
@@ -85,8 +91,9 @@ const AnnouncementStyles = () => {
         },
         Detailcontainer: {
             marginHorizontal: horizontalMarginScale(1),
-            marginVertical: verticalMarginScale(10),
-            padding: horizontalMarginScale(16),
+            marginVertical: verticalMarginScale(1),
+            paddingHorizontal: horizontalMarginScale(15),
+            paddingVertical: horizontalMarginScale(10),
             borderWidth: 1,
             borderColor: COLORS.borderGray,
             borderRadius: radiusScale(16),
@@ -176,8 +183,8 @@ const AnnouncementStyles = () => {
             paddingHorizontal: horizontalScale(10),
             paddingVertical: verticalScale(3),
             borderRadius: radiusScale(128),
-            borderWidth:1,
-            borderColor:COLORS.tabBorderColor,
+            borderWidth: 1,
+            borderColor: COLORS.tabBorderColor,
             backgroundColor: COLORS.tabBorderColor,
             justifyContent: 'center',
             alignItems: 'center',
@@ -188,12 +195,12 @@ const AnnouncementStyles = () => {
             tintColor: COLORS.black
         },
         headerTitle: {
+            width: verticalScale(140),
             fontSize: fontScale(16),
             color: COLORS.black,
             fontFamily: fontFamily.ABCDiatype_Regular,
-            textAlign: 'center',
             fontWeight: '500',
-            left: 5
+            left: 10
         },
         headerDes: {
             fontSize: fontScale(14),
@@ -225,9 +232,10 @@ const AnnouncementStyles = () => {
             fontFamily: fontFamily.ABCDiatype_Medium,
         },
         title: {
-            fontSize: fontScale(24),
-            fontFamily: fontFamily.RomieTrial_Bold,
-            textAlign: 'left',
+            color: COLORS.black2,
+            fontSize: fontScale(12),
+            textAlign: 'center',
+            fontFamily: fontFamily.ABCDiatype_Medium,
         },
         recipientHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }
     })

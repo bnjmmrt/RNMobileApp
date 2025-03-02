@@ -126,7 +126,7 @@ const AddAnnouncementStyles = () => {
       borderRadius: radiusScale(128),
       borderWidth:1,
       borderColor:COLORS.tabBorderColor,
-      backgroundColor: COLORS.tabBorderColor,
+      backgroundColor: COLORS.borderGray,
       justifyContent: 'center',
       alignItems: 'center',
     },

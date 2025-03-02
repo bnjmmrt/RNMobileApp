@@ -18,6 +18,7 @@ const IMAGES = {
   qr: require('./qr-code.png'),
   sort: require('./sort.png'),
   iconRumor: require('./icon_rumor.png'),
+  pdf: require('./pdf.jpeg'),
   introVideo: require('./intro_video.mp4'),
   pencil: require('./pencil-01.png'),
   rumorLogo: require('./Wordmark.png'),

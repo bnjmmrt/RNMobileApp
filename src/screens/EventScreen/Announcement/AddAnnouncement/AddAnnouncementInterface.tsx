@@ -1,6 +1,6 @@
 export interface attachmentArrInterface {
     type: string,
-    uri: string,
+    media: string,
     name: string,
     thumbnil: string
 }
@@ -28,4 +28,9 @@ export interface addAnnouncementRequestInterface {
     "announcement": string,
     "attachments": any[],
     "recipients": any[]
+}
+
+export interface editAnnouncementRequestInterface {
+    "announcement": string,
+    "attachments": any[],
 }

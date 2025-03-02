@@ -187,9 +187,11 @@ export const LABLE = {
   GUEST_LIST: 'Guest List',
   FEATURE_TALENT: 'Featured Talent',
   EVENT_ANNOUNCEMENTS: 'Event Announcements',
-  NO_EVENT_ANNOUNCEMENTS: 'No event announcements',
+  NO_EVENT_ANNOUNCEMENTS: 'You have no announcements',
+  PAST_EVENT_ANNOUNCEMENTS_ERROR:"You can’t post event announcements for past events.",
   ADD_EVENT_ANNOUNCEMENTS_ERROR:"You can’t post event announcements until you have confirmed guests on the guest list.",
   READ_MORE: 'Read More',
+  VIEW_ALL: 'View All',
   FEATURED_TALENT: 'Featured Talent',
   DUMMY_TEXT:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent bland',
@@ -758,6 +760,7 @@ export const collaboratorList = [
 
 export const ANNOUNCEMENT = {
   New_Announcement: 'New Announcement',
+  Edit_Announcement:'Edit Announcement',
   Recipient_Details: 'Recipient Details',
   Announcement_Description: 'Confirmed guests will receive the post via email, SMS and in-app notification. It will also be shown on the event page.',
   Ticket_Type: 'Ticket Type',
@@ -773,9 +776,11 @@ export const ANNOUNCEMENT = {
   Choose_from_file:"Choose from file",
   Choose_photo_or_video:"Choose photo or video",
   ADD_ATTACHMENT:"ADD ATTACHMENT",
+  POSTED_BY:"Posted by",
   CANCEL:"Cancel",
   Recipients:"Recipients",
   No_results:"No results",
+  No_Recipients:"No recipients",
   Please_refine_your_search:"Please refine your search.",
   Choose_Photo:"Choose Photo",
   READ_MORE:"Read more",

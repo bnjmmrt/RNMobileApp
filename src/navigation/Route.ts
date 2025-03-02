@@ -23,7 +23,7 @@ export const ROUTES = {
   HostConnectedAccountsScreen: 'HostConnectedAccountsScreen',
   WelcomeScreen: 'WelcomeScreen',
   AddAnnouncementScreen:"AddAnnouncementScreen",
-  AnnouncementScreen:"AnnouncementScreen",
+  Announcement:"Announcement",
   EditEventScreen: 'EditEventScreen',
   EditEventDetails: 'EditEventDetails',
   EditEventSettings: 'EditEventSettings',

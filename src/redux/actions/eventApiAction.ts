@@ -178,8 +178,8 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     // fetch event announcement for host 
     fetchHostEventsAnnouncement: builder.query({
-      query: ({ eventId }: { eventId: string; }) => ({
-        url: `/events/v1/event/${eventId}/event-announcement`,
+      query: ({ eventId }: { eventId: any; }) => ({
+        url: `/events/v1/event/${eventId}/event-announcements`,
         method: 'GET',
       }),
       providesTags: ['HostEventsAnnouncment']
@@ -204,13 +204,38 @@ export const eventApiAction = createBaseApi.injectEndpoints({
     }),
 
     // delete announcement 
-    deleteEventAnnouncement: builder.query({
+    deleteEventAnnouncement: builder.mutation({
       query: ({ eventId, announcementId }: { eventId: string; announcementId: string }) => ({
-        url: `/events/v1/event/${eventId}/event-announcement-guest/${announcementId}`,
+        url: `/events/v1/event/${eventId}/event-announcement/${announcementId}`,
+        method: 'DELETE',
+      }),
+    }),
+
+    //edit announcement
+    editEventAnnouncement: builder.mutation({
+      query: ({
+        eventId,
+        announcementId,
+        payload,
+      }: {
+        eventId: string;
+        announcementId: string;
+        payload: addAnnouncementRequestInterface;
+      }) => ({
+        url: `/events/v1/event/${eventId}/event-announcement/${announcementId}`,
+        method: 'POST',
+        body: payload,
+      }),
+    }),
+    // fetch announcement detail  for host 
+    fetchAnnouncementDetail: builder.query({
+      query: ({ eventId, announcementId }: { eventId: string; announcementId:string }) => ({
+        url: `/events/v1/event/${eventId}/event-announcement/${announcementId}`,
         method: 'GET',
       }),
-      providesTags: ['DeleteAnnouncement'],
+      providesTags: ['AnnouncmentDetail'],
     }),
+
 
   }),
 });
@@ -229,8 +254,10 @@ export const {
   useLazyFetchEventDetailsQuery,
   useLazyFetchPublicEventDetailsQuery,
   useCreateEventAnnouncementMutation,
-  useDeleteEventAnnouncementQuery,
+  useDeleteEventAnnouncementMutation,
   useFetchAnnouncementRecipientsQuery,
   useFetchHostEventsAnnouncementQuery,
   useFetchSelectedRecipientsQuery,
+  useEditEventAnnouncementMutation,
+  useFetchAnnouncementDetailQuery
 } = eventApiAction;

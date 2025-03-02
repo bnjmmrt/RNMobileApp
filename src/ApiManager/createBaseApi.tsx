@@ -83,7 +83,8 @@ export const createBaseApi = createApi({
     'AnnouncmentRecipient',
     'SelectedRecipient',
     'CreateEventsAnnouncment',
-    'DeleteAnnouncement'
+    'DeleteAnnouncement',
+    'AnnouncmentDetail'
   ], // Accept tagTypes as a parameter
   endpoints: () => ({}),
   keepUnusedDataFor: 0, // Optional: Adjust cache duration
