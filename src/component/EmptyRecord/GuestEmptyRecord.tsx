@@ -8,27 +8,33 @@ import { fontFamily } from '../../utils/functions';
 interface GuestEmptyRecordProps {
   onAddGuest?: () => void;
   isSearchResult?: boolean;
+  onResetFilters?: () => void;
 }
 
 const GuestEmptyRecord: React.FC<GuestEmptyRecordProps> = ({
   onAddGuest,
   isSearchResult = false,
+  onResetFilters,
 }) => {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <Image source={IMAGES.noRecord} style={styles.image} />
         <Text style={styles.title}>
-          {isSearchResult ? 'No users found' : 'No guests yet'}
+          {isSearchResult ? 'No Users found' : 'No guests'}
         </Text>
         <Text style={styles.subtitle}>
           {isSearchResult
-            ? 'Expand your search or invite a new guest'
-            : 'Start adding guests to your event'}
+            ? 'Remove filters to expand your search'
+            : 'Expand your search or invite a new guest'}
         </Text>
-        <TouchableOpacity style={styles.addButton} onPress={onAddGuest}>
-          <Image source={IMAGES.plus} style={styles.plusIcon} />
-          <Text style={styles.buttonText}>New Guest</Text>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={isSearchResult ? onResetFilters : onAddGuest}>
+          <Image source={isSearchResult ? IMAGES.plus : IMAGES.refresh} style={styles.plusIcon} />
+          <Text style={styles.buttonText}>
+            {isSearchResult ? 'New Guests' : 'Reset Filters'}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

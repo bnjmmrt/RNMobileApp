@@ -168,6 +168,14 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     navigation.navigate('AddGuestScreen');
   };
 
+  const handleResetFilters = () => {
+    setSearchText('');
+    setFilterQuery('');
+    setFilterNumber(0);
+    setSelectedFilter('all');
+    setSelectedSort('name_asc');
+  };
+
   const onApplyFilter = (
     queryString: string,
     numberOfFiltersApplied: number,
@@ -311,7 +319,11 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     if (filteredAndSortedGuests.length === 0) {
       return (
         <View style={{ flex: 1 }}>
-          <GuestEmptyRecord onAddGuest={handleAddGuest} />
+          <GuestEmptyRecord
+            onAddGuest={handleAddGuest}
+            isSearchResult={Boolean(searchText.trim())}
+            onResetFilters={handleResetFilters}
+          />
         </View>
       );
     }
