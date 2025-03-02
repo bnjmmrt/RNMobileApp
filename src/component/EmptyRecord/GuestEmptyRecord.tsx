@@ -7,20 +7,37 @@ import { fontFamily } from '../../utils/functions';
 
 interface GuestEmptyRecordProps {
   onAddGuest?: () => void;
+  isSearchResult?: boolean;
+  onResetFilters?: () => void;
 }
 
-const GuestEmptyRecord: React.FC<GuestEmptyRecordProps> = ({ onAddGuest }) => {
+const GuestEmptyRecord: React.FC<GuestEmptyRecordProps> = ({
+  onAddGuest,
+  isSearchResult = false,
+  onResetFilters,
+}) => {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <Image source={IMAGES.noRecord} style={styles.image} />
-        <Text style={styles.title}>No users found</Text>
-        <Text style={styles.subtitle}>
-          Expand your search or invite a new guest
+        <Text style={styles.title}>
+          {isSearchResult ? 'No Users found' : 'No guests'}
         </Text>
-        <TouchableOpacity style={styles.addButton} onPress={onAddGuest}>
-          <Image source={IMAGES.plus} style={styles.plusIcon} />
-          <Text style={styles.buttonText}>New Guest</Text>
+        <Text style={styles.subtitle}>
+          {isSearchResult
+            ? 'Remove filters to expand your search'
+            : 'Expand your search or invite a new guest'}
+        </Text>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={isSearchResult ? onAddGuest : onResetFilters}>
+          <Image
+            source={isSearchResult ? IMAGES.plus : IMAGES.refresh}
+            style={styles.plusIcon}
+          />
+          <Text style={styles.buttonText}>
+            {isSearchResult ? 'New Guests' : 'Reset Filters'}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
