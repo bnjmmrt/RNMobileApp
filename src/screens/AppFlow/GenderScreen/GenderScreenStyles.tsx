@@ -31,8 +31,8 @@ const GenderScreenStyles = () => {
       backgroundColor: COLORS.lighter_gray,
       borderColor:COLORS.borderGray,
       borderWidth:1.5,
-      marginVertical: Hp(0.5),
-      marginHorizontal: Wp(1),
+      marginVertical: Hp(0.25),
+      marginHorizontal: Wp(0.5),
       alignItems: 'center',
     },
     selectedGenderButton: {

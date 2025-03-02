@@ -91,18 +91,18 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
 
       case PROFILE.NOTIFICATION:
         console.log('Redirecting to Notifications...');
-        navigation.navigate('EventStack', {
-          screen: 'AddAnnouncementScreen'
-        });
-        // redirectToProfileStack(ROUTES.NotificationsScreen);
+        // navigation.navigate('EventStack', {
+        //   screen: 'AddAnnouncementScreen'
+        // });
+        redirectToProfileStack(ROUTES.NotificationSettingsScreen, {});
         break;
 
       case PROFILE.FEEDBACK:
         console.log('Redirecting to Feedback...');
-        navigation.navigate('EventStack', {
-          screen: 'Announcement'
-        });
-        // redirectToProfileStack(ROUTES.FeedbackScreen);
+        // navigation.navigate('EventStack', {
+        //   screen: 'Announcement'
+        // });
+        redirectToProfileStack(ROUTES.FeedbackScreen);
         break;
 
       case PROFILE.CONTACT_SUPPORT:

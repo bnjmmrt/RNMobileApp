@@ -110,7 +110,7 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           isDarkTheme={true}
         />
 
-        <View style={{ height: Hp(2) }} />
+        <View style={{ height: Hp(5) }} />
 
         {!isChatScreen && (
           <Button
@@ -152,8 +152,8 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: verticalMarginScale(60),
-    marginBottom: verticalMarginScale(40),
+    marginTop: verticalMarginScale(40),
+    marginBottom: verticalMarginScale(25),
   },
   logoImgStyle: {
     resizeMode: 'contain',

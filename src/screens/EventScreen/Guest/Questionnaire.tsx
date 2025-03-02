@@ -4,6 +4,7 @@ import { CustomText } from '../../../component/CustomText';
 import CollapseWrap from './CollapseWrap';
 import { fontScale, verticalMarginScale } from 'src/utils/dimensions';
 import { COLORS } from 'src/utils/constants';
+import { fontFamily } from 'src/utils/functions';
 
 interface QuestionnaireProps {
   isCollapsible?: boolean;
@@ -56,8 +57,8 @@ const styles = StyleSheet.create({
   question: {
     fontSize: fontScale(18),
     lineHeight: fontScale(24),
-    fontWeight: '500',
     color: COLORS.black,
+    fontFamily: fontFamily.ABCDiatype_Bold,
     flexShrink: 1,
   },
   answer: {

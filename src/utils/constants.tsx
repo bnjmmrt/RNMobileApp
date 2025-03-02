@@ -63,7 +63,8 @@ export const BUTTON_LABLE = {
   INVITE_FROM_CONTACTS: 'Invite from Contacts',
   INVITE_MANUALLY: 'Invite Manually',
   CLEAR: "Clear",
-  RELOAD:'Reload'
+  RELOAD:'Reload',
+  DELETE:'Delete'
 } as const;
 
 export const LABLE = {
@@ -128,31 +129,31 @@ export const LABLE = {
   IDENTITY_VERIFICATION_SUBTITLE: 'This helps us verify your online identity.',
   CHOOSE_YOUR_INTERESTS: 'Choose your interests',
   CHOOSE_YOUR_INTERESTS_SUBTITLE:
-    "Select topics of interests so we can curate experiences you'll want to attend.",
+    "Select topics of interests so we can curate experiences\nyou'll want to attend.",
   ADD_A_PHOTO: 'Add a photo',
   ADD_A_PHOTO_SUBTITLE: 'Upload a profile photo to complete your profile.',
   CHAT_WITH_HOST: 'Chat\nwith hosts.',
   SEARCH_FOR_EVENT: 'Search for an event…',
-  ACCESS_THE_MOST_VALUABLE_CALENDAR: 'Access the most valuable calendar.',
+  ACCESS_THE_MOST_VALUABLE_CALENDAR: 'Access the most \n valuable calendar.',
   TWO_MINUTES_TO_COMPLETE: '~2 min to Complete',
-  STREAMLINE_YOUR_LIFESTYLE: 'Streamline your lifestyle.',
+  STREAMLINE_YOUR_LIFESTYLE: 'Streamline\nyour lifestyle.',
   MANAGE_YOUR_EVENTS:
     'Manage your events, chats, and passes—all in one\nplace.',
   CONNECT_WITH_WORLD:
-    "Connect with the world's top event organizers. Get discovered and invited to events that matter.",
+    "Connect with the world's top event organizers. Get\ndiscovered and invited to events that matter.",
   CONNECT_DIRECTLY_WITH_PEOPLE:
-    'Connect directly with the people behind the events. Request invites and confirm details seamlessly.',
-  UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS: 'Unlock access to exclusive events',
+    'Connect directly with the people behind the events.\nRequest invites and confirm details seamlessly.',
+  UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS: 'Unlock access\nto exclusive events.',
   GET_DISCOVERY_BY_THE_WORLD:
     "Get discovered by the world's top event organizers and receive invites to events that matter.",
   DISCOVER_EXPERIENCES_ACROSS_ART:
     'Discover experiences across art, fashion, music, and more — listed by renowned hosts.',
   DISCOVER_EXPERIENCES_IN_ART:
-    'Discover experiences in art, fashion, music, and more—curated by renowned hosts.',
+    'Discover experiences in art, fashion, music, and more \n—curated by renowned hosts.',
   COMPLETE_VERIFICATION: 'Complete Verification',
   SEND_DIRECT_MSG_CODE: 'Send direct message with the code:',
   WE_WILL_REVIEW_APP:
-    "We'll review your application after we receive your message.",
+    "We'll review your application after we receive\nyour message.",
   EMAIL_THE_CODE: 'Email the code to:',
   DONT_USE_INSTAGRAM: "Don't use Instagram?",
   REFERRAL_CODE: 'Referral Code',
@@ -165,9 +166,9 @@ export const LABLE = {
     'Request a referral from a Rumor member to boost your application.',
   CONTACTS: 'Contacts',
   INVITE_FRIENDS_TO: 'Invite friends to fast track your membership approval.',
-  YOU_ARE_ON_WAITLIST: "You're on the waitlist.",
+  YOU_ARE_ON_WAITLIST: "You're on\nthe waitlist.",
   FULL_ACCESS_UNLOCK:
-    'Full access will be unlocked once your application is approved.',
+    'Full access will be unlocked once your application is\napproved.',
   FASTRACK_YOUR_APPLICATION: 'Want to fast-track your application?',
   REQUEST_REFERRAL_FROM_RUMOR: 'Request referrals from Rumor members.',
   INVITE_YOUR_FRIEND: 'Invite your friends to join Rumor.',
@@ -250,7 +251,11 @@ export const LABLE = {
   EVENT_SETTING_INFO: "Edit event settings on Rumor’s web platform.\nClick the button below to take you there.",
   MANAGE_INVITE: 'Manage Invite',
   YOU_ARE_OFFLINE:'You’re Offline',
-  PROFILE_UPDATED_SUCCESSFULLY:'Profile Updated Successfully'
+  NOTIFICATIONS:'Notifications',
+  NO_NOTIFICATIONS_YET:'No notifications yet',
+  NOTIFICATIONS_SUB_TITLE:"We'll let you know when updates arrive!",
+  PROFILE_UPDATED_SUCCESSFULLY:'Profile Updated Successfully',
+  PLEASE_SELECT_ONE: 'Please select one'
 };
 export const EVENT = {
   EDIT_EVENT: 'Edit Event',

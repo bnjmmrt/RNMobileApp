@@ -404,7 +404,7 @@ export const changeSafeAreaViewConfig = (config: SafeAreaViewConfig) => {
   StatusBar.setBarStyle(config.statusBarStyle, true);
 };
 export const validateAge = (selectedDate: string) => {
-  const [month, day, year] = selectedDate.split('-').map(Number);
+  const [month, day, year] = selectedDate.split('/').map(Number);
   const selectedDateObj = new Date(year, month - 1, day);
   const today = new Date();
   const eighteenYearsAgo = new Date();

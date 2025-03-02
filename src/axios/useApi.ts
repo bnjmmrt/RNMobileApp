@@ -27,7 +27,7 @@ const useApi = <T>(): UseApiReturn<T> => {
       data: Record<string, unknown> | FormData | null = null,
       params: Record<string, unknown> | null = null,
       headers: Record<string, string> = {},
-    ): Promise<T> => {
+    ): Promise<any> => {
       setLoading(true);
       setError(null);
 
@@ -40,6 +40,7 @@ const useApi = <T>(): UseApiReturn<T> => {
 
         const response = await axiosController[method](url, method === 'delete' ? config : data, config);
         return response;
+        
       } catch (err) {
         setError(err as AxiosError);
         throw err;

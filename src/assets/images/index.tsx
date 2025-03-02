@@ -141,7 +141,10 @@ const IMAGES = {
   logo: require('./logo.png'),
   revolve: require('./revolve.png'),
   arrow_go: require('./arrow-go.png'),
-
+  deleteGray: require('./delete-gray.png'),
+  notification_badge: require('./notification-badge.png'),
+  calendar_error: require('./calendar_error.png'),
+  search_error: require('./search-md-error.png')
 };
 
 export default IMAGES;

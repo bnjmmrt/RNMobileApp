@@ -165,7 +165,17 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
 
   const handleAddGuest = () => {
     // Navigate to add guest screen or open add guest modal
-    navigation.navigate('AddGuestScreen');
+    navigation.navigate(ROUTES.InviteGuestScreen, {
+      isManual: false,
+      type: 'new',
+    });
+  };
+
+  const handleResetFilters = () => {
+    setFilterQuery('');
+    setFilterNumber(0);
+    setSelectedFilter('all');
+    setSelectedSort('name_asc');
   };
 
   const onApplyFilter = (
@@ -256,6 +266,13 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
               style={[styles.confirmedBadge]}
             />
           )}
+
+          {item.ticketType && (
+            <View style={styles.ticketTypeContainer}>
+              <Text style={styles.ticketTypeText}>{item.ticketType}</Text>
+            </View>
+          )}
+
           {item.additionalGuests && item.additionalGuests.length > 0 && (
             <TouchableOpacity
               style={styles.expandButton}
@@ -296,7 +313,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     if (isLoadingGuests || isFetchingGuests) {
       return (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={COLORS.blueDark} />
+          <ActivityIndicator color={COLORS.black} />
         </View>
       );
     }
@@ -304,7 +321,11 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     if (filteredAndSortedGuests.length === 0) {
       return (
         <View style={{ flex: 1 }}>
-          <GuestEmptyRecord onAddGuest={handleAddGuest} />
+          <GuestEmptyRecord
+            onAddGuest={handleAddGuest}
+            isSearchResult={Boolean(searchText.trim())}
+            onResetFilters={handleResetFilters}
+          />
         </View>
       );
     }
@@ -321,6 +342,8 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
       />
     );
   };
+
+  console.log('filteredAndSortedGuests', filteredAndSortedGuests[0]);
 
   const onCheckInPress = async () => {
     dispatch(setEventId(eventId));
@@ -504,14 +527,13 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 
-  vipContainer: {
+  ticketTypeContainer: {
     paddingHorizontal: horizontalMarginScale(6),
     paddingVertical: verticalMarginScale(2),
     backgroundColor: COLORS.bgBlue,
     borderRadius: radiusScale(12),
-    maxWidth: horizontalScale(32),
   },
-  vipText: {
+  ticketTypeText: {
     fontSize: fontScale(12),
     lineHeight: fontScale(14),
     color: COLORS.blueDark,
