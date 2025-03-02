@@ -39,7 +39,7 @@ const useApi = <T>(): UseApiReturn<T> => {
         };
 
         const response = await axiosController[method](url, method === 'delete' ? config : data, config);
-        return response.data; // Return only the response data
+        return response;
       } catch (err) {
         setError(err as AxiosError);
         throw err;

@@ -1,25 +1,32 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import ButtonSmall from '../ButtonSmall';
 import IMAGES from '@images/index';
 import useApi from 'src/axios/useApi';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import { useUnfollowHostMutation } from 'src/redux/actions/referralApiAction';
+import { setRefresh } from 'src/redux/slices/rspvSlice';
 
 interface FollowButtonProps {
     id: string;
     isFollowing: boolean;
+    handleRefresh?: any
 }
 
-const FollowButton: React.FC<FollowButtonProps> = ({ id, isFollowing }) => {
+const FollowButton: React.FC<FollowButtonProps> = ({ id, isFollowing, handleRefresh }) => {
     const [following, setFollowing] = useState(isFollowing);
+    useEffect(() => {
+        setFollowing(isFollowing)
+    }, [isFollowing])
     const userId = useSelector((state: RootState) => state.auth.userId);
+    const dispatch = useDispatch();
     const { apiRequest, loading } = useApi();
 
     const handleFollow = async () => {
-        const status = await followUnfollow(id, following);
         setFollowing(!following);
+        const status = await followUnfollow(id, following);
+        handleRefresh && dispatch(setRefresh(true))
 
     };
 
@@ -39,7 +46,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({ id, isFollowing }) => {
 
     return (
         <ButtonSmall
-            style={styles.smallBtnStyle}
+            style={following ? styles.smallBtnStyle : styles.smallFollowBtnStyle}
             title={following ? 'Following' : 'Follow'}
             colorTheme={following ? 'dark' : 'dark'}
             leftIcon={following ? IMAGES.check : null}
@@ -52,6 +59,10 @@ const FollowButton: React.FC<FollowButtonProps> = ({ id, isFollowing }) => {
 const styles = StyleSheet.create({
     smallBtnStyle: {
         paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 100,
+    },
+    smallFollowBtnStyle: {
         paddingVertical: 6,
         borderRadius: 100,
     },
