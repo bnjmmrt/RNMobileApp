@@ -163,7 +163,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
               ? configData.subTitle
               : LABLE.CHOOSE_YOUR_INTERESTS_SUBTITLE
           }
-          align='center'
+          // align='center'
         />
 
         <View style={styles.categoryContainer}>

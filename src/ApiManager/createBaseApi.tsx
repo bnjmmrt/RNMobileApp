@@ -29,7 +29,7 @@ const logMiddleware = async (
   if (result.error) {
     console.error(`[API Error] ${method} ${url}`, result.error);
   } else {
-    console.log(`[API Response] ${method} ${url}`, result.data);
+    console.log(`[API Response] ${method} ${url}`, JSON.stringify(result.data));
   }
 
   return result;

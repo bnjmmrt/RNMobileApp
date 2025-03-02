@@ -4,7 +4,7 @@ import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
 import EditProfileScreen from '../screens/ProfileScreen/EditProfile/EditProfileScreen';
 import ConnectedAccountsScreen from '../screens/ProfileScreen/EditProfile/ConnectedAccountsScreen';
 import SelectInterestScreen from '../screens/AppFlow/SelectInterestScreen/SelectInterestScreen';
-import NotificationsSettingsScreen from '../screens/ProfileScreen/EditProfile/Notifications';
+import NotificationSettingsScreen from '../screens/ProfileScreen/EditProfile/NotificationSettingsScreen';
 import FeedbackScreen from '../screens/ProfileScreen/EditProfile/FeedbackScreen';
 import HostProfileScreen from 'src/screens/ProfileScreen/HostProfile/HostProfileScreen';
 import ReferralScreen from 'src/screens/ProfileScreen/ReferralsScreen/ReferralScreen';
@@ -19,7 +19,7 @@ export type ProfileStackParamList = {
   ProfileScreen: undefined;
   ConnectedAccountsScreen: undefined;
   SelectInterestScreen: undefined;
-  NotificationsSettingsScreen: undefined;
+  NotificationSettingsScreen: undefined;
   FeedbackScreen: undefined;
   HostProfileScreen: undefined;
   ReferralScreen: undefined;
@@ -60,8 +60,8 @@ export const ProfileStack: React.FC = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="NotificationsSettingsScreen"
-        component={NotificationsSettingsScreen}
+        name="NotificationSettingsScreen"
+        component={NotificationSettingsScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

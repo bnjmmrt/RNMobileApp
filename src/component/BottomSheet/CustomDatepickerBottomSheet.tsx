@@ -32,7 +32,7 @@ const CustomDatepickerBottomSheet = forwardRef((props: Props, ref) => {
 
 
   const years = useMemo(
-    () => Array.from({ length: 2025 - 1970 }, (_, i) => `${1970 + i}`),
+    () => Array.from({ length: 2025 - 1900 }, (_, i) => `${1900 + i}`),
     []
   );
 
@@ -123,17 +123,17 @@ const CustomDatepickerBottomSheet = forwardRef((props: Props, ref) => {
               wrapperHeight={140}
               highlightBorderWidth={2}
               highlightColor={COLORS.bgGreen}
-              itemHeight={50}
+              itemHeight={35}
               data={months}
               selectedValue={selectedMonth}
               onValueChange={handleMonthChange}
-              contentStyle={{ width: 110 }}
+              contentStyle={styles.month}
             />
             <WheelPicker
               wrapperHeight={140}
               highlightBorderWidth={2}
               highlightColor={COLORS.bgGreen}
-              itemHeight={50}
+              itemHeight={35}
               data={days}
               selectedValue={selectedDay}
               onValueChange={(value: string) => setSelectedDay(value)}
@@ -144,7 +144,7 @@ const CustomDatepickerBottomSheet = forwardRef((props: Props, ref) => {
               wrapperHeight={140}
               highlightBorderWidth={2}
               highlightColor={COLORS.bgGreen}
-              itemHeight={50}
+              itemHeight={35}
               data={years}
               selectedValue={selectedYear}
               onValueChange={handleYearChange}
@@ -198,6 +198,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 255, 0, 0.2)',
     transform: [{ translateY: -25 }],
   },
+  month: {
+    width: 120,
+    alignItems: 'flex-start',
+    paddingLeft: 20
+  }
 });
 
 export default CustomDatepickerBottomSheet;

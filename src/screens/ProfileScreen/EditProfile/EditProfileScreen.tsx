@@ -140,7 +140,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
           ? selectedCreativeFocus.map((item: any) => item.id)
           : profileData?.creativeFocus.map((item: any) => item.id),
       };
-      console.log('requestObject', requestObject);
 
       const response: any = await apiRequest(
         'put',
@@ -236,7 +235,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
               <DatePickerComponent ref={birthDayRef} birthDate={profileData.dateOfBirth} />
 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
-              <BaseCityComponent ref={baseCityRef} />
+              <BaseCityComponent location={{address: profileData?.city, placeId: profileData?.placeId}} ref={baseCityRef} />
 
               <Text
                 style={[
