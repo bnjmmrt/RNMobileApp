@@ -450,6 +450,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         <EditPictureBottomSheet
           ref={savePhotoBottomSheetRef}
           onPress={savePhoto}
+          onPencilClick={openCamera}
           submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
           cancelButtonText={BUTTON_LABLE.CANCEL}
           snapPoints={[Platform.OS == 'android' ? '50%' : '50%']}
