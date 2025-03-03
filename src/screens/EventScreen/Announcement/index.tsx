@@ -25,39 +25,55 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
     const eventData = route?.params
     const styles = AnnouncementStyles()
     const [announcementData, setannouncementData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [refreshing, setRefreshing] = useState<boolean>(false);
     const [viewerVisible, setViewerVisible] = useState(false);
     const [media, setMedia] = useState([]);
-    const queryArgs = ({ eventId: eventData?.id })
+    const [companyName, setCompanyName] = useState('');
+    const [companyLogo, setCompanyLogo] = useState('');
+
+    const queryArgs = ({
+        eventId: eventData?.id,
+        take: 10,
+        skip: (currentPage - 1) * 10
+    })
     const { data, isLoading, refetch } = useFetchHostEventsAnnouncementQuery(queryArgs);
+    useEffect(() => {
+        if (data) {
+            setannouncementData((prev) => (currentPage === 1 ? data?.data?.result : [...prev, ...announcementRecipientsData?.data?.result]));
+        }
+    }, [data]);
+
+    useEffect(() => {
+        setRefreshing(isLoading)
+    }, [isLoading])
+
+    const handleRefresh = () => {
+        setCurrentPage(1)
+    };
+
+    const loadMore = () => {
+        if (data?.currentPage < data?.totalPages && !isLoading) {
+            setCurrentPage((prev) => prev + 1);
+        }
+    };
 
     console.log("announcementData index", data?.data)
     const handleBackPress = () => {
         navigation.goBack()
     };
-    useEffect(() => {
-        if (data != undefined) {
-            setannouncementData(data?.data);
-        }
-    }, [data]);
     useFocusEffect(
         React.useCallback(() => {
             refetch()
         }, [data])
     );
-    const onRefreshPage = () => {
-        console.log("hiihihi")
-        refetch();
-    };
-    // const loadMore = () => {
-    //     if (announcementList.length < data?.data?.totalCount && !isLoading) {
-    //         setCurrentPage(prev => prev + 1);
-    //     }
-    // };
 
-    const MediaItem = ({ item, media }: { item: any, media: any }) => (
+    const MediaItem = ({ item, media, name, image }: { item: any, media: any, name: any, image: any }) => (
         item.mediaType === "image" ? (
             <TouchableOpacity onPress={() => {
                 setMedia(media)
+                setCompanyName(name)
+                setCompanyLogo(image)
                 setViewerVisible(true)
             }}>
                 <FastImage source={{ uri: item?.media }} style={styles.mediaImage} />
@@ -65,11 +81,12 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
         ) : (
             <TouchableOpacity onPress={() => {
                 setMedia(media)
+                setCompanyName(name)
+                setCompanyLogo(image)
                 setViewerVisible(true)
             }} style={styles.pdfContainer}>
                 <Image source={IMAGES.pdf} style={styles.pdfIcon} resizeMode='contain' />
                 <Text style={styles.title} numberOfLines={2}>{item?.mediaName}</Text>
-                {/* <Text style={styles.pdfSize}>{item.size}</Text> */}
             </TouchableOpacity>
         )
     );
@@ -110,7 +127,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
                     <Text numberOfLines={expanded ? undefined : 3} style={styles.name}>{displayedText}</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                         {item?.attachments?.map((mediaItem: string, index: number) => (
-                            <MediaItem key={index} item={mediaItem} media={item.attachments} />
+                            <MediaItem key={index} item={mediaItem} media={item.attachments} name={name} image={imageKeyUrl}/>
                         ))}
                     </ScrollView>
                     {!expanded && shouldShowReadMore ? (
@@ -128,7 +145,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
                 <View style={styles.recipientHeader}>
                     <Text style={styles.headerDes}>{ANNOUNCEMENT.Send_to}</Text>
                     <View style={styles.countWrapper}>
-                        <Text style={styles.label}>{item?.recipients == undefined ? 'All' : item?.recipients?.length} {ANNOUNCEMENT.Recipients}</Text>
+                        <Text style={styles.label}>{item?.recipientCount} {ANNOUNCEMENT.Recipients}</Text>
                     </View>
                 </View>
                 <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ marginVertical: verticalMarginScale(10) }}>
@@ -156,7 +173,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
             </View>
         );
     };
-    const onClose=()=>{
+    const onClose = () => {
         console.log("c")
         setViewerVisible(false)
     }
@@ -187,14 +204,14 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
                         renderItem={({ item }) => <AnnouncementItem item={item} />}
                         keyExtractor={(item, index) => index.toString()}
                         contentContainerStyle={{ gap: verticalMarginScale(16) }}
-                    // onEndReached={loadMore}
-                    // onEndReachedThreshold={0.4}
-                    // showsVerticalScrollIndicator={false}
-                    // refreshControl={
-                    //     announcementData.length > 0 ? (
-                    //         <RefreshControl refreshing={false} onRefresh={onRefreshPage} />
-                    //     ) : undefined
-                    // }
+                        onEndReached={loadMore}
+                        onEndReachedThreshold={0.4}
+                        showsVerticalScrollIndicator={false}
+                        refreshControl={
+                            announcementData.length > 0 ? (
+                                <RefreshControl refreshing={false} onRefresh={handleRefresh} />
+                            ) : undefined
+                        }
                     />
                 </View>
             </ScrollView>
@@ -202,6 +219,8 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
                 visible={viewerVisible}
                 onClose={onClose}
                 mediaItems={media}
+                name={companyName}
+                logo={companyLogo}
             />}
         </View>
     );

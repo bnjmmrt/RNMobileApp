@@ -31,6 +31,8 @@ interface ImagePdfViewerProps {
     visible: boolean;
     onClose: () => void;
     mediaItems: MediaItem[];
+    name: string,
+    logo: string
 }
 
 const { width, height } = Dimensions.get("window");
@@ -39,6 +41,8 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
     visible,
     onClose,
     mediaItems,
+    name,
+    logo
 }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const bottomSheetRef = useRef(null);
@@ -70,41 +74,42 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
     };
 
     const saveImageToGallery = async (imageUrl: string) => {
-        try {
-            // Request permission for Android devices
-            if (Platform.OS === 'android') {
-                const granted = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-                );
+        Alert.alert('File Download', 'In Progress');
+        // try {
+        //     // Request permission for Android devices
+        //     if (Platform.OS === 'android') {
+        //         const granted = await PermissionsAndroid.request(
+        //             PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+        //         );
 
-                if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-                    Alert.alert('Permission Denied', 'Cannot save image without permission');
-                    return;
-                }
-            }
+        //         if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+        //             Alert.alert('Permission Denied', 'Cannot save image without permission');
+        //             return;
+        //         }
+        //     }
 
-            // Define the file path to save
-            const fileName = `image_${Date.now()}.jpg`;
-            const path = `${RNFS.CachesDirectoryPath}/${fileName}`;
+        //     // Define the file path to save
+        //     const fileName = `image_${Date.now()}.jpg`;
+        //     const path = `${RNFS.CachesDirectoryPath}/${fileName}`;
 
-            // Download the image to a temporary location
-            const downloadResult = await RNFS.downloadFile({
-                fromUrl: imageUrl,
-                toFile: path,
-            }).promise;
+        //     // Download the image to a temporary location
+        //     const downloadResult = await RNFS.downloadFile({
+        //         fromUrl: imageUrl,
+        //         toFile: path,
+        //     }).promise;
 
-            if (downloadResult.statusCode === 200) {
-                // Save to gallery
-                // await CameraRoll.saveAsset(path, { type: 'photo' });
-                await CameraRoll.save(path, { type: 'photo' });
-                Alert.alert('Success', 'Image saved to gallery!');
-            } else {
-                Alert.alert('Error', 'Failed to download image');
-            }
-        } catch (error) {
-            console.error(error);
-            Alert.alert('Error', 'Something went wrong while saving the image');
-        }
+        //     if (downloadResult.statusCode === 200) {
+        //         // Save to gallery
+        //         // await CameraRoll.saveAsset(path, { type: 'photo' });
+        //         await CameraRoll.save(path, { type: 'photo' });
+        //         Alert.alert('Success', 'Image saved to gallery!');
+        //     } else {
+        //         Alert.alert('Error', 'Failed to download image');
+        //     }
+        // } catch (error) {
+        //     console.error(error);
+        //     Alert.alert('Error', 'Something went wrong while saving the image');
+        // }
     };
 
     const renderMedia = () => {
@@ -160,14 +165,14 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
                         style={[styles.container]}>
                         <FastImage
                             style={[styles.image]}
-                            source={IMAGES.frame}
+                            source={{ uri: logo }}
                             defaultSource={IMAGES.backgroundLogin}
                             resizeMode="cover"
                         />
                         <View
                             style={styles.infoContainer}>
                             <Text style={styles.subtitle}>{ANNOUNCEMENT.POSTED_BY}</Text>
-                            <Text style={styles.title}>Vaishali Pal</Text>
+                            <Text style={styles.title}>{name}</Text>
                         </View>
                     </View>
                     {/* <Button

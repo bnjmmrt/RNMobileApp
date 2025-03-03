@@ -17,17 +17,18 @@ interface EventAnnouncementProps {
 }
 
 
-const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleAddPress, handleViewAll, announcementData }) => {
+const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleAddPress, handleViewAll,announcementData }) => {
   const [viewerVisible, setViewerVisible] = useState(false);
   const [media, setMedia] = useState([]);
   const [showAll, setShowAll] = useState(false);
   const [announcementListData, setannouncementListData] = useState([]);
-
-  console.log("announcementData", announcementData?.data)
+  const queryArgs = ({ eventId: eventId,take:3,skip:0 })
+  console.log("queryArgs", queryArgs)
+  const { data, isLoading } = useFetchHostEventsAnnouncementQuery(queryArgs);
 
   useEffect(() => {
     if (announcementData != undefined) {
-      setannouncementListData(announcementData?.data);
+      setannouncementListData(announcementData?.data?.result);
       setShowAll(announcementData?.data?.length > 2)
     }
   }, [announcementData]);
@@ -97,7 +98,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
       </View>
       <View style={styles.divider} />
       <FlatList
-        data={announcementListData.slice(0, 3)}
+        data={announcementListData?.slice(0, 3)}
         keyExtractor={(item) => item?.id}
         renderItem={({ item }) => <EventItem item={item} />}
         ListEmptyComponent={
@@ -107,7 +108,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
         }
       />
 
-      {announcementListData.length != 0 && (
+      {announcementListData?.length != 0 && (
         <View style={{ paddingVertical: 5 }}>
           <View style={styles.divider} />
           <TouchableOpacity onPress={handleViewAll} style={[styles.toggleContainer, { marginTop: 5 }]}>
