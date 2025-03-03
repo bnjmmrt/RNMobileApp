@@ -153,7 +153,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
 }) => {
   const navigation = useNavigation();
   const { apiRequest, loading, error } = useApi();
-  const [checkedIn, setCheckedIn] = useState(guestProfile.checkIn);
+  const [checkedIn, setCheckedIn] = useState(guestProfile?.checkIn);
   const [isShownCard, setIsShownCard] = useState(true);
   const [guestNote, setGuestNote] = useState(privateGuestNote);
   const [expandlist, setExpandList] = useState<
@@ -312,7 +312,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
               placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
               defaultValue={privateGuestNote}
               multiline
-              editable={status === 'CONFIRMED'? true : false}
+              editable={status === 'CONFIRMED'? true : true}
               onBlur={manageGuests}
             />
           </View>
