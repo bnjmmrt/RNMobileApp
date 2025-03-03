@@ -51,8 +51,6 @@ const UserModule: React.FC<UserModuleProps> = ({ navigation }) => {
   };
 
   const onPressHeaderPlus = () => {
-    FlashMessageComponent.show('success', 'Test');
-    return;
     if (currentTab) {
       if (currentTab.id === '1') {
         addNewUserSheetRef?.current?.open();

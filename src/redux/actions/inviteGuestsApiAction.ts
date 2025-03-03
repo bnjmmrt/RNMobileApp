@@ -3,7 +3,7 @@ import { createBaseApi } from '../../ApiManager/createBaseApi';
 
 export const inviteGuestsApiAction = createBaseApi.injectEndpoints({
   endpoints: builder => ({
-    inviteGuests: builder.mutation({
+    inviteGuest: builder.mutation({
       query: ({
         payload,
         eventId,
@@ -66,7 +66,7 @@ export const inviteGuestsApiAction = createBaseApi.injectEndpoints({
 });
 
 export const {
-  useInviteGuestsMutation,
+  useInviteGuestMutation,
   useInviteNewGuestsMutation,
   useGetUserWithRolesByEmailMutation,
   useGetUserWithRolesByIdMutation,

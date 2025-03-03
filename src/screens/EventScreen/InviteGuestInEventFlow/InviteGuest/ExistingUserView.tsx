@@ -136,7 +136,7 @@ const ExistingUserView: React.FC<ExistingUserViewProps> = ({}) => {
         </TouchableOpacity>
       ) : null}
 
-      {selectedUsers.length === 1 ? (
+      {selectedUsers.length === 1 && singleUserDetail ? (
         <View style={{ flex: 1, marginHorizontal: horizontalMarginScale(20) }}>
           <ProfileCard
             user={{
