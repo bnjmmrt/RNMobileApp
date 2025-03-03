@@ -11,12 +11,17 @@ import {
   FlatList,
 } from 'react-native';
 import { Image } from 'react-native-animatable';
+import { useSelector } from 'react-redux';
+import { EndPoint } from 'src/ApiManager/config';
+import useApi from 'src/axios/useApi';
 import AvatarInitials from 'src/component/AvatarInitials';
 import { ROUTES } from 'src/navigation/Route';
+import { RootState } from 'src/redux/slices';
 import { BUTTON_LABLE, COLORS, LABLE } from 'src/utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
+  horizontalScale,
   radiusScale,
   verticalMarginScale,
   verticalScale,
@@ -40,6 +45,8 @@ interface CheckInComponentProps {
   ticketType: string;
   privateGuestNote: string;
   maxAdditionalGuests: number;
+  status?: string;
+  guestProfile?: any;
 }
 const renderItemComponent = (
   item: any,
@@ -141,9 +148,14 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   ticketType,
   privateGuestNote,
   maxAdditionalGuests,
+  status,
+  guestProfile,
 }) => {
   const navigation = useNavigation();
+  const { apiRequest, loading, error } = useApi();
+  const [checkedIn, setCheckedIn] = useState(guestProfile.checkIn);
   const [isShownCard, setIsShownCard] = useState(true);
+  const [guestNote, setGuestNote] = useState(privateGuestNote);
   const [expandlist, setExpandList] = useState<
     {
       id: number;
@@ -152,7 +164,10 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
       additionalGuest: any;
     }[]
   >([]);
-
+  const selectedEvent = useSelector(
+    (state: RootState) => state.inviteGuestsFlow.selectedEvent,
+  );
+  
   const pendingGuestCount = maxAdditionalGuests - additionalGuests.length;
   const guestString = pendingGuestCount > 1 ? ' Guests' : ' Guest';
 
@@ -192,10 +207,45 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   const handleCardShown = () => {
     setIsShownCard(!isShownCard);
   };
+  const validateDetails = async () => {
+    const response: any = await apiRequest(
+      'post',
+      `v1/events/guest/ticket/${guestProfile.guestId}/validate`,
+      {
+        checkIn: !checkedIn,
+      },
+    );
+    if (response.status === 200) {
+      setCheckedIn(response.data.checkInStatus)
+    }
+  };
 
+  const handleCheckIn = () => {
+    validateDetails();
+  };
+
+  const manageGuests = async () => {
+
+    const response: any = await apiRequest(
+      'put',
+      EndPoint.event_manage_guests+'?eventId='+selectedEvent?.id,
+      {
+        action: 'UPDATE',
+        bulkUploadStatus: false,
+        exclusiveIds: [],
+        guestStatus: 'CONFIRMED',
+        inclusiveIds: additionalGuests.map(guest => guest.id),
+        isSelectedAll: false,
+        privateGuestNote: guestNote,
+      },
+    );
+    if (response.status === 200) {
+    }
+  };
   return (
     <View style={styles.card}>
-      <View style={[styles.header,{borderBottomWidth:!isShownCard ? 0 :1}]}>
+      <View
+        style={[styles.header, { borderBottomWidth: !isShownCard ? 0 : 1 }]}>
         <Text style={styles.headerText}>{LABLE.GUEST_CHICKED_IN}</Text>
         <TouchableOpacity style={styles.iconButton} onPress={handleCardShown}>
           <Image
@@ -206,26 +256,64 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
 
       {isShownCard && (
         <>
-          <View style={styles.section}>
-            <Text style={styles.label}>
-              {LABLE.TICKET_TYPE} <Text style={styles.required}>*</Text>
-            </Text>
-            <View style={styles.dropdown}>
-              <Text style={styles.dropdownText}>{ticketType}</Text>
-              <Image source={IMAGES.downArrow} />
+          {status !== 'CONFIRMED' ? (
+            <View style={styles.section}>
+              <Text style={styles.label}>
+                {LABLE.TICKET_TYPE} <Text style={styles.required}>*</Text>
+              </Text>
+              <View style={styles.dropdown}>
+                <Text style={styles.dropdownText}>{ticketType}</Text>
+                <Image source={IMAGES.downArrow} />
+              </View>
             </View>
-          </View>
+          ) : (
+            <View style={styles.guestCheckInCard}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <AvatarInitials
+                  size={32}
+                  name={guestProfile?.name}
+                  imgUrl={guestProfile?.profilePicture}
+                />
+                <View style={{ paddingLeft: verticalMarginScale(8) }}>
+                  <Text style={styles.username}>{guestProfile?.name}</Text>
+                </View>
+              </View>
+
+              <TouchableOpacity
+                style={[
+                  styles.checkInButton,
+                  styles.whiteBtn,
+                  checkedIn && styles.greenBtn,
+                ]}
+                onPress={handleCheckIn}>
+                <Image
+                  source={
+                    checkedIn ? IMAGES.checkedinCurved : IMAGES.checkinCurved
+                  }
+                  style={styles.actionButtonIcon}
+                />
+                <Text style={styles.actionButtonText}>
+                  {checkedIn ? LABLE.CHECKED_IN : LABLE.CHECK_IN}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
 
           <Text style={styles.sectionTitle}>{LABLE.LEAD_GUEST}</Text>
 
           <View style={styles.section}>
             <Text style={styles.label}>{LABLE.GUEST_NOTE}</Text>
             <TextInput
-              style={styles.input}
+              onChangeText={text => setGuestNote(text)}
+              style={[
+                styles.input,
+                { backgroundColor: status === 'CONFIRMED' && COLORS.white },
+              ]}
               placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
               defaultValue={privateGuestNote}
               multiline
-              editable={false}
+              editable={status === 'CONFIRMED'? true : false}
+              onBlur={manageGuests}
             />
           </View>
           <Text style={styles.sectionTitle}>{LABLE.PLUS_1S}</Text>
@@ -357,6 +445,23 @@ const styles = StyleSheet.create({
     paddingVertical: verticalMarginScale(8),
     borderRadius: radiusScale(25),
     marginRight: verticalMarginScale(8),
+    height: verticalScale(40),
+  },
+  whiteBtn: {
+    backgroundColor: COLORS.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: COLORS.bgGray,
+  },
+  greenBtn: {
+    backgroundColor: COLORS.bgGreen,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: COLORS.borderGreen,
   },
   checkInText: {
     color: '#555',
@@ -416,6 +521,49 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+  guestCheckInCard: {
+    backgroundColor: COLORS.lighter_gray,
+    padding: verticalMarginScale(16),
+    borderRadius: radiusScale(16),
+    borderColor: COLORS.borderGray,
+    borderWidth: 1,
+
+    marginTop: verticalMarginScale(16),
+  },
+  username: {
+    fontSize: fontScale(14),
+    fontWeight: '500',
+  },
+  actionButton: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'row',
+    height: verticalScale(40),
+    gap: horizontalMarginScale(4),
+    backgroundColor: COLORS.white,
+    borderRadius: radiusScale(20),
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: verticalScale(1),
+    borderColor: COLORS.borderGray,
+  },
+  actionButtonText: {
+    fontSize: fontScale(14),
+    paddingLeft: 8,
+    color: COLORS.black,
+    fontWeight: '500',
+  },
+  actionButtonIcon: {
+    width: horizontalScale(16),
+    height: verticalScale(16),
+  },
+  // checkInButton: {
+  //   flex: 0,
+  //   backgroundColor: COLORS.bgGreen,
+  //   borderWidth: 1,
+  //   borderColor: COLORS.borderGreen,
+  //   width: '70%',
+  // },
 });
 
 export default CheckInComponent;
