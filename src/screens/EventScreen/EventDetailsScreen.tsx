@@ -580,7 +580,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           <BackButtonOverlay
             customStyle={{ right: 55, top: 16 + STATUS_BAR_HEIGHT }}
             imageSource={IMAGES.share}
-            onPress={() => navigation.goBack()}
+            onPress={() => FlashMessageComponent.show("info", "In Progress")}
           />
         )}
       </View>

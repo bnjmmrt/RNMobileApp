@@ -3,25 +3,28 @@ import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
 import { COLORS } from '../../utils/constants';
 import Button from '../Button';
-import { fontFamily } from '../../utils/functions';
+import { fontFamily, removeSignature } from '../../utils/functions';
 import { EndPoint } from '../../ApiManager/config';
 import useApi from '../../axios/useApi';
-import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalScale } from 'src/utils/dimensions';
+import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import IMAGES from '@images/index';
+import FastImage from '@d11/react-native-fast-image';
 
 interface EditPictureBottomSheetProps {
   onPress: () => void;
-  onPencilClick?:() =>void;
+  onPencilClick?: () => void;
   title?: string;
   submitButtonText: string;
   cancelButtonText: string;
   snapPoints: any;
   image: any | null;
+  eventImage?: string
 }
 const EditPictureBottomSheet = forwardRef(
   (props: EditPictureBottomSheetProps, ref) => {
     const inputRef = useRef(null);
     // const [image, setImage] = useState<string>(image);
+    console.log(props)
 
     const cancelClick = () => {
       ref.current?.close();
@@ -52,6 +55,16 @@ const EditPictureBottomSheet = forwardRef(
             </View>
 
           )}
+          {props?.eventImage &&
+            <FastImage
+              source={{
+                uri: removeSignature(props?.eventImage),
+              }}
+              resizeMode={FastImage.resizeMode.cover}
+              defaultSource={IMAGES.eventCoverPlaceholders1} // Placeholder
+              style={styles.coverImageStyle}
+            />
+          }
 
           <Button
             disabled={false}
@@ -78,10 +91,11 @@ const EditPictureBottomSheet = forwardRef(
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: horizontalMarginScale(20),
-    gap: 12,
+    gap: 8,
   },
   btnStyle: {
     borderRadius: fontScale(100),
+    height: 48
   },
   clearButton: {
     borderWidth: horizontalScale(1),
@@ -119,6 +133,20 @@ const styles = StyleSheet.create({
     height: verticalScale(16),
     width: horizontalScale(16),
     tintColor: COLORS.white,
+  },
+  coverImageStyle: {
+    marginVertical: verticalMarginScale(20),
+    backgroundColor: COLORS.borderGray,
+    borderRadius: 20,
+    height: verticalScale(348),
+    width: horizontalScale(238),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 5,
+    alignSelf: 'center'
+
   },
 });
 

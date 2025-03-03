@@ -12,7 +12,7 @@ import {
 } from 'src/utils/dimensions';
 import ShowInfoComponent from 'src/component/ShowInfoComponent';
 import { CustomText } from 'src/component/CustomText';
-import { fontFamily } from 'src/utils/functions';
+import { fontFamily, removeSignature } from 'src/utils/functions';
 import GradientSeprator from 'src/component/GradientSeprator';
 import { Collaborator, Event } from 'src/types';
 import FastImage from '@d11/react-native-fast-image';
@@ -34,7 +34,7 @@ const EditEventSettings: React.FC<EditEventSettingsProps> = ({ event }) => {
     return [owner, ...(event?.collaborators || [])];
   }, [event]);
 
-  const onConfirmClick = useCallback(async () => {}, []);
+  const onConfirmClick = useCallback(async () => { }, []);
 
   const getUserRole = useCallback(
     (item: Collaborator) => {

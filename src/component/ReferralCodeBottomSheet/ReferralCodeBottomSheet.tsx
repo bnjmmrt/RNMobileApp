@@ -1,5 +1,5 @@
 import React, { useRef, forwardRef } from 'react';
-import { Platform, View, StyleSheet } from 'react-native';
+import { Platform, View, StyleSheet, StatusBar } from 'react-native';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
 import {
   horizontalMarginScale,
@@ -21,6 +21,7 @@ import { useSubmitReferralCodeMutation } from '../../redux/actions/referralApiAc
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { RootState } from 'src/redux/slices';
 import { useSelector } from 'react-redux';
+import GradientOverlay from 'src/screens/BeforeApplicationFlow/GradientOverlay';
 
 const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   const inputRef = useRef(null);
@@ -40,7 +41,7 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
         ref.current?.close();
       } catch (error) {
         console.log(error?.data?.error);
-        inputRef.current.setErrorMessage(error?.data?.error?.message);
+        inputRef.current.setErrorMessage("Please enter a valid referral code");
       }
     }
   };
@@ -48,12 +49,15 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   return (
     <BottomSheetComponent
       ref={ref}
+      activeSafeAreaViewColor={"#121f22"}
+      inActiveSafeAreaViewColor={'#121f22'}
       snapPoints={[`${verticalScale(45)}%`]}
       onClose={() => console.log(ref)}
       activeSafeAreaViewColor={'#121f22'}
       inActiveSafeAreaViewColor={'#121f22'}
       // footer={}
     >
+
       <BottomSheetScrollView style={styles.container}>
         <Title
           title={LABLE.REFERRAL_CODE}
