@@ -1,4 +1,4 @@
-import {COLORS} from './constants';
+import { COLORS } from './constants';
 
 export const SAFEWAREAVIEW_CONFIG = {
   DEFAULT_SCHEME: {
@@ -22,7 +22,7 @@ export const SAFEWAREAVIEW_CONFIG = {
     topSafeAreaViewColor: '#121f22',
     showBottomSafeAreaView: true,
     bottomSafeAreaViewColor: '#151012',
-    statusBarStyle: 'default',
+    statusBarStyle: 'light-content',
     translucent: false,
   },
 } as const;

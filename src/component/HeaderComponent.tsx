@@ -1,21 +1,20 @@
 import React from 'react';
 import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
   Image,
-  View,
   ImageStyle,
   StyleProp,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { fontScale, Hp, Wp } from '../utils/dimensions';
+import { shallowEqual, useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+import { fontFamily } from 'src/utils/functions';
 import IMAGES from '../assets/images';
 import { COLORS } from '../utils/constants';
-import AvatarInitials from './AvatarInitials';
-import { fontFamily } from 'src/utils/functions';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/redux/slices';
-import FastImage from '@d11/react-native-fast-image';
+import { fontScale, Wp } from '../utils/dimensions';
+import HeaderProfileSwitcher from './HeaderProfileSwitcher';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from 'src/navigation/Route';
 
@@ -35,20 +34,19 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
   const backgroundColorNotification = isDarkTheme
     ? COLORS.dark_gray
     : COLORS.tabBorderColor;
-  const role = useSelector((state: RootState) => state.auth.role);
-  const profileData = useSelector(
-    (state: RootState) => state.appFlowApiData?.profileData,
+
+  const { role } = useSelector(
+    (state: RootState) => ({
+      role: state.auth.role,
+    }),
+    shallowEqual,
   );
-  const profilePic =
-    role.toLocaleLowerCase() === 'host'
-      ? profileData?.companyLogo
-      : profileData?.imageUrl;
-  const name = profileData?.firstName
-    ? `${profileData?.firstName} ${profileData?.lastName}`
-    : '';
+
   const navigation = useNavigation();
 
-  const handleNotificationPress=()=> navigation.navigate(ROUTES.NotificationsScreen)
+  const handleNotificationPress = () =>
+    navigation.navigate(ROUTES.NotificationsScreen);
+
   return (
     <View
       style={[
@@ -87,43 +85,19 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
       </View>
       <View style={[styles.iconsWrapper]}>
         <TouchableOpacity
-        onPress={handleNotificationPress}
+          onPress={handleNotificationPress}
           style={[
             styles.iconButton,
             { backgroundColor: backgroundColorNotification },
           ]}>
-            <Image
-            style={styles.badge}
-            source={IMAGES.notification_badge}
-          />
+          <Image style={styles.badge} source={IMAGES.notification_badge} />
           <Image
             style={[styles.imgStyle, rightImageStyle]}
             source={IMAGES.bell}
             tintColor={tintColor}
           />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.profileButton}
-          onPress={() => navigation.navigate(ROUTES.ProfileScreen)}>
-          {profilePic ? (
-            <FastImage
-              style={[styles.profilePhotoContainer]}
-              source={{ uri: profilePic }}
-              resizeMode="cover"
-            />
-          ) : (
-            <View style={styles.profilePhotoContainer}>
-              <AvatarInitials name={name} size={48} />
-            </View>
-          )}
-
-          {/* <AvatarInitials name={"Bessie Cooper"} size={48} /> */}
-
-          {/* <Image
-                        style={[styles.imgStyle, rightImageStyle]}
-                        source={IMAGES.imageText}
-                    /> */}
-        </TouchableOpacity>
+        <HeaderProfileSwitcher isDarkTheme={isDarkTheme} />
       </View>
     </View>
   );
@@ -145,6 +119,7 @@ const styles = StyleSheet.create({
   },
   iconsWrapper: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   iconButton: {
     width: 44,
@@ -155,28 +130,21 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     backgroundColor: COLORS.tabBorderColor,
   },
-  profileButton: {
-    width: 48,
-    height: 48,
+  profileButtonContainer: {
+    paddingHorizontal: 4,
+    paddingVertical: 4,
+    borderRadius: 99,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 24,
-    marginHorizontal: 5,
-    backgroundColor: COLORS.tabBorderColor,
+    flexDirection: 'row',
+    backgroundColor: COLORS.lighter_gray,
+    overflow: 'hidden',
   },
-  profilePhotoContainer: {
-    height: 48,
-    width: 48,
-    borderRadius: 24,
-    backgroundColor: COLORS.tabBorderColor,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  avatarContainer: {},
   imgStyle: {
     resizeMode: 'contain',
   },
-  badge:{position:'absolute',top:-4,right:-3}
+  badge: { position: 'absolute', top: -4, right: -3 },
 });
 
 export default HeaderComponent;

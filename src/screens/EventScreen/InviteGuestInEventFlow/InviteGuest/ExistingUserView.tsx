@@ -26,14 +26,13 @@ const ExistingUserView: React.FC<ExistingUserViewProps> = ({}) => {
   const styles = createStyles();
   const userNavigation = useNavigation<NavigationProp<AppStackParamList>>();
   const eventNavigation = useNavigation<NavigationProp<EventStackParamList>>();
-  const dispatch = useDispatch();
 
   const [isFavorite, setIsFavorite] = useState<boolean>();
 
-  const { selectedUsers, loginData } = useSelector(
+  const { selectedUsers, userId } = useSelector(
     (state: RootState) => ({
       selectedUsers: state.inviteGuestsFlow.selectedUsers,
-      loginData: state.auth.loginData,
+      userId: state.auth.userId,
     }),
     shallowEqual,
   );
@@ -57,7 +56,7 @@ const ExistingUserView: React.FC<ExistingUserViewProps> = ({}) => {
       let response;
       let payload = {
         targetUserId: user,
-        user: loginData.id,
+        user: userId,
       };
       if (isFavorite) {
         response = await unMarkUserFav(payload).unwrap();

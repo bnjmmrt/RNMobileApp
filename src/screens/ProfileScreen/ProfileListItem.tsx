@@ -35,8 +35,6 @@ interface ListItemProps {
 
 const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
   const navigation = useNavigation<NavigationProp>();
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const userId = useSelector((state: RootState) => state.auth.userId);
   const role = useSelector((state: RootState) => state.auth.role);
 
   const redirectToProfileStack = (screenName: string, params = {}) => {
@@ -73,7 +71,7 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
       case PROFILE.CONNECTED_ACCOUNTS:
         console.log('Redirecting to Connected Accounts...');
         screenName =
-          loginData?.roles[0].roleName === 'host'
+          role === 'host'
             ? ROUTES.HostConnectedAccountsScreen
             : ROUTES.ConnectedAccountsScreen;
         redirectToProfileStack(screenName);

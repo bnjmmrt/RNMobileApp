@@ -3,7 +3,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import ChatScreenStyle from './ChatScreenStyle';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 import AfterAppStaticComponent from '../../component/BeforeAppStaticComponent/AfterAppStaticComponent';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
@@ -14,23 +14,29 @@ interface ChatScreenProps extends NativeStackScreenProps<any, any> {}
 const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
   const styles = ChatScreenStyle();
 
-  const { isSignUpCompleted, token } = useSelector(
-    (state: RootState) => state.auth.loginData,
+  const { role, token } = useSelector(
+    (state: RootState) => ({
+      token: state.auth.token,
+      role: state.auth.role,
+    }),
+    shallowEqual,
   );
-  const role = useSelector((state: RootState) => state.auth.role);
 
-  const hasFullAccess = isSignUpCompleted || token.length > 0;
+  const hasFullAccess = token?.length > 0;
 
   useFocusEffect(
     useCallback(() => {
-      // if (!hasFullAccess && role !== 'non_member') {
+      if (!hasFullAccess && role !== 'non_member') {
         changeSafeAreaViewConfig({
           ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
           showBottomSafeAreaView: false,
         });
-      // }
+      }
     }, []),
   );
+
+  console.log(hasFullAccess, role !== 'non_member');
+
   return (
     <View style={styles.container}>
       {hasFullAccess ? (
