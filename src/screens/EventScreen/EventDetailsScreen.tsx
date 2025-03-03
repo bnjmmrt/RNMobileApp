@@ -85,7 +85,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const { data: eventCount } = useFetchGuestStatusCountQuery({ eventId });
   const annqueryArgs = ({ eventId: eventId })
   const [eventLocalId, setEventLocalID] = useState(eventId)
-  const { data: announcementData,refetch:refetchAnnouncement } = useFetchHostEventsAnnouncementQuery(annqueryArgs);
+  const { data: announcementData, refetch: refetchAnnouncement } = useFetchHostEventsAnnouncementQuery(annqueryArgs);
 
   const role = useSelector((state: RootState) => state.auth.role);
   // const insets = useSafeAreaInsets();
@@ -266,16 +266,16 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     // if (date1.isBefore(date2)) {
     //   FlashMessageComponent.show('error', LABLE.PAST_EVENT_ANNOUNCEMENTS_ERROR);
     // } else {
-    if (eventCount?.data?.confirmedCount == 0) {
-      setshowError(true)
-    }
-    else {
-      navigation.navigate(ROUTES.EventStack, {
-        screen: ROUTES.AddAnnouncementScreen,
-        params: { eventData, announcementId: null }
-      });
-      // }
-    }
+      if (eventCount?.data?.confirmedCount == 0) {
+        setshowError(true)
+      }
+      else {
+        navigation.navigate(ROUTES.EventStack, {
+          screen: ROUTES.AddAnnouncementScreen,
+          params: { eventData, announcementId: null }
+        });
+      }
+    // }
   }
   const acceptInvitation = async () => {
     try {

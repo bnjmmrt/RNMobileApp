@@ -198,17 +198,39 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     // fetch event announcement for host 
     fetchHostEventsAnnouncement: builder.query({
-      query: ({ eventId }: { eventId: any; }) => ({
-        url: `/events/v1/event/${eventId}/event-announcements`,
-        method: 'GET',
-      }),
+      query: ({ 
+        eventId, 
+        take,
+        skip, 
+      }: {
+          eventId: any; 
+          take: number;
+          skip: number;
+        }) => ({
+          url: `/events/v1/event/${eventId}/event-announcements?take=${take}&skip=${skip}`,
+          method: 'GET',
+        }),
       providesTags: ['HostEventsAnnouncment']
     }),
 
     // fetch event receipient for host 
     fetchAnnouncementRecipients: builder.query({
-      query: ({ eventId, ticketType, addedBy }: { eventId: string; ticketType: string; addedBy: string }) => ({
-        url: `/events/v1/event/${eventId}/event-announcement-guest?ticketType=${ticketType}&addedBy=${addedBy}`,
+      query: ({
+        eventId,
+        ticketType,
+        addedBy,
+        searchText,
+        take,
+        skip,
+      }: {
+        eventId: string;
+        ticketType: string;
+        addedBy: string;
+        searchText: string;
+        take: number;
+        skip: number;
+      }) => ({
+        url: `/events/v1/event/${eventId}/event-announcement-guest?ticketType=${ticketType}&addedBy=${addedBy}&findByName=${searchText}&take=${take}&skip=${skip}`,
         method: 'GET',
       }),
       providesTags: ['AnnouncmentRecipient'],
@@ -216,8 +238,20 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     // fetch selected event receipient for edit announcement 
     fetchSelectedRecipients: builder.query({
-      query: ({ eventId, announcementId }: { eventId: string; announcementId: string }) => ({
-        url: `/events/v1/event/${eventId}/event-announcement-guest/${announcementId}`,
+      query: ({
+        eventId,
+        announcementId,
+        searchText,
+        take,
+        skip,
+      }: {
+        eventId: string;
+        announcementId: string;
+        searchText: string;
+        take: number;
+        skip: number;
+      }) => ({
+        url: `/events/v1/event/${eventId}/event-announcement-guest/${announcementId}?findByName=${searchText}&take=${take}&skip=${skip}`,
         method: 'GET',
       }),
       providesTags: ['SelectedRecipient'],
@@ -249,7 +283,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
     }),
     // fetch announcement detail  for host 
     fetchAnnouncementDetail: builder.query({
-      query: ({ eventId, announcementId }: { eventId: string; announcementId:string }) => ({
+      query: ({ eventId, announcementId }: { eventId: string; announcementId: string }) => ({
         url: `/events/v1/event/${eventId}/event-announcement/${announcementId}`,
         method: 'GET',
       }),

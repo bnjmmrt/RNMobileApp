@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Image, TouchableOpacity, ActivityIndicator } fr
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
 import { COLORS } from '../../utils/constants';
 import Button from '../Button';
-import { fontFamily } from '../../utils/functions';
+import { fontFamily, removeSignature } from '../../utils/functions';
 import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import IMAGES from '@images/index';
 import ImagePlaceHolder from '../../assets/svgs/icons/ImagePlaceholder.svg';
@@ -135,7 +135,7 @@ const FeatureTalentBottomSheet = forwardRef<BottomSheetMethods, FeatureTalentBot
                     {loading ? (
                         <ActivityIndicator />
                     ) : image ? (
-                        <Image source={{ uri: image }} style={styles.profilePhoto} />
+                        <Image source={{ uri: removeSignature(image) }} style={styles.profilePhoto} />
                     ) : (
                         imageError ? <ImageErrorPlaceHolder height={96} width={96} /> : <ImagePlaceHolder height={96} width={96} />
                     )}

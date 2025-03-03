@@ -49,7 +49,9 @@ const HostProfileScreen: React.FC = () => {
   const { goBack, setParams, navigate } = useNavigation<any>();
   const dispatch = useDispatch();
   const userId = useSelector((state: RootState) => state.auth.userId);
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const roleId = useSelector(
+    (state: RootState) => state.auth.roleId,
+  );
   const refresh = useSelector((state: RootState) => state.rspv.refresh);
 
 
@@ -103,7 +105,7 @@ const HostProfileScreen: React.FC = () => {
           />
         );
       case 'report':
-        return <ReportHostView roleId={loginData?.roles[0]?.roleId} hostRoleId={hostRoleId} userId={userId} onClose={() => bottomSheetRef.current?.close()} hostId={params?.hostId} />;
+        return <ReportHostView roleId={roleId} hostRoleId={hostRoleId} userId={userId} onClose={() => bottomSheetRef.current?.close()} hostId={params?.hostId} />;
       case 'block':
         return (
           <BlockHostView
@@ -116,7 +118,7 @@ const HostProfileScreen: React.FC = () => {
             }}
             userId={userId}
             hostId={params?.hostId}
-            roleId={loginData?.roles[0]?.roleId} hostRoleId={hostRoleId}
+            roleId={roleId} hostRoleId={hostRoleId}
           />
         );
       case 'unblock':
@@ -129,12 +131,12 @@ const HostProfileScreen: React.FC = () => {
             }}
             userId={userId}
             hostId={params?.hostId}
-            roleId={loginData?.roles[0]?.roleId} hostRoleId={hostRoleId}
+            roleId={roleId} hostRoleId={hostRoleId}
           />
         );
       case 'reportAndBlock':
         return <ReportAndBlockHostView
-          roleId={loginData?.roles[0]?.roleId} hostRoleId={hostRoleId}
+          roleId={roleId} hostRoleId={hostRoleId}
           userId={userId} onClose={(e) => {
             bottomSheetRef.current?.close()
             e && refetch();
