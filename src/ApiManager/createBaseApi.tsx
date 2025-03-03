@@ -80,6 +80,12 @@ export const createBaseApi = createApi({
     'DashboardUpcomingEvents',
     'EventGuestList',
     'GuestDetails',
+    'HostEventsAnnouncment',
+    'AnnouncmentRecipient',
+    'SelectedRecipient',
+    'CreateEventsAnnouncment',
+    'DeleteAnnouncement',
+    'AnnouncmentDetail'
   ], // Accept tagTypes as a parameter
   endpoints: () => ({}),
   keepUnusedDataFor: 0, // Optional: Adjust cache duration

@@ -19,15 +19,16 @@ const EmailInput = forwardRef((_, ref) => {
     setEmailAddress,
     emailAddress,
     setDisabled,
-    setErrorMessage
+    setErrorMessage,
   }));
 
   // Validate email format
   const validateEmailAddress = () => {
     // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    const emailRegex =
+      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-    console.log(emailRegex.test(emailAddress))
+    console.log(emailRegex.test(emailAddress));
     if (!emailRegex.test(emailAddress)) {
       setErrorMessage(LABLE.EROOR_ENTER_EMAIL);
       return false;
@@ -55,8 +56,11 @@ const EmailInput = forwardRef((_, ref) => {
           disabled && styles.disabledInput,
         ]}>
         <Image
-          source={errorMessage? IMAGES.email_error : IMAGES.email}
-          style={[styles.icon, { tintColor: errorMessage ? COLORS.errorText : COLORS.light_gray }]}
+          source={errorMessage ? IMAGES.email_error : IMAGES.email}
+          style={[
+            styles.icon,
+            { tintColor: errorMessage ? COLORS.errorText : COLORS.light_gray },
+          ]}
         />
         <TextInput
           style={[styles.input, disabled && { color: COLORS.light_gray }]}

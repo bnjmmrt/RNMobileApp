@@ -42,6 +42,8 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
     navigate('InviteReferralScreen');
   };
 
+  console.log('llll');
+
   useFocusEffect(
     useCallback(() => {
       const fetchUserById = async () => {

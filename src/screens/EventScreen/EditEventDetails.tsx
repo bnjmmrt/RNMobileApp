@@ -1,16 +1,38 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Linking, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Linking,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import useApi from 'src/axios/useApi';
-import { BUTTON_LABLE, COLORS, editEventsTab, ERROR_MESSAGE, EVENT, LABLE } from 'src/utils/constants';
+import {
+  BUTTON_LABLE,
+  COLORS,
+  editEventsTab,
+  ERROR_MESSAGE,
+  EVENT,
+  LABLE,
+} from 'src/utils/constants';
 import { EndPoint } from 'src/ApiManager/config';
 import Input from 'src/component/Input/Input';
 import DatePickerComponent from '../ProfileScreen/EditProfile/DatePickerComponent';
 import Button from 'src/component/Button';
-import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  horizontalScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+} from 'src/utils/dimensions';
 import BaseCityComponent from '../ProfileScreen/EditProfile/BaseCityComponent';
 import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
@@ -33,13 +55,12 @@ import { useNavigation } from '@react-navigation/native';
 import { current } from '@reduxjs/toolkit';
 import { removeSignature } from 'src/utils/functions';
 
-
 interface Location {
   location?: string;
   city?: string;
   latitude?: number;
   longitude?: number;
-  placeId?: string
+  placeId?: string;
 }
 
 interface EventItem {
@@ -54,25 +75,23 @@ interface EventItem {
   showLocation?: boolean;
   name: string;
   furtherInstructions: string;
-  talents: []
+  talents: [];
 }
 
 interface EditEventDetailsProps {
   item: EventItem;
 }
 
-const EditEventDetails: React.FC<EditEventDetailsProps> = ({
-  item,
-}) => {
-
+const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
   const { goBack } = useNavigation();
   const [showAddress, setshowAddress] = useState(item?.showLocation || false);
   let today = new Date();
   const [selected, setSelected] = useState<DateType>();
-  const [selectedStartDate, setSelectedStartDate] = useState(item?.startDate || '');
-
+  const [selectedStartDate, setSelectedStartDate] = useState(
+    item?.startDate || '',
+  );
 
   const latitude = item?.location?.latitude ?? 37.78825;
   const longitude = item?.location?.longitude ?? -122.4324;
@@ -97,20 +116,28 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
   const editPhotoBottomSheetRef = useRef<any>(null);
 
   useEffect(() => {
-    const formattedStartDate = moment.utc(startDateRef?.current?.selectedDate).format("YYYY-MM-DDTHH:mm:ss[Z]");
+    const formattedStartDate = moment
+      .utc(startDateRef?.current?.selectedDate)
+      .format('YYYY-MM-DDTHH:mm:ss[Z]');
     setSelectedStartDate(formattedStartDate);
-    console.log("FORMATED START DATE: " + formattedStartDate)
-  }, [selectedStartDate])
-
-
+    console.log('FORMATED START DATE: ' + formattedStartDate);
+  }, [selectedStartDate]);
 
   const [eventName, setEventName] = useState(item?.name || '');
   const [startDate, setStartDate] = useState(item.startDate);
   const [endDate, setEndDate] = useState(item.endDate);
-  const [furtherInstructions, setFurtherInstructions] = useState(item?.furtherInstructions || '');
-  const [eventDescription, setEventDescription] = useState(item?.description || '');
+  const [furtherInstructions, setFurtherInstructions] = useState(
+    item?.furtherInstructions || '',
+  );
+  const [eventDescription, setEventDescription] = useState(
+    item?.description || '',
+  );
   const [featureTalent, setFeatureTalent] = useState(item?.talents || []);
-  const [image, setImage] = useState<string>(removeSignature(item?.imageCover) || removeSignature(item?.imageFlyer) || '');
+  const [image, setImage] = useState<string>(
+    removeSignature(item?.imageCover) ||
+    removeSignature(item?.imageFlyer) ||
+    '',
+  );
   const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
 
   // console.log("Sayyed item:", item)
@@ -125,58 +152,68 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
       FlashMessageComponent.show("error", "Please fill in all required fields correctly.");
       return;
     }
-    const formattedStartDate = moment.utc(startDateRef?.current?.selectedDate).format("YYYY-MM-DDTHH:mm:ss[Z]");
-    const formattedEndDate = moment.utc(endDateRef?.current?.selectedDate).format("YYYY-MM-DDTHH:mm:ss[Z]");
+    const formattedStartDate = moment
+      .utc(startDateRef?.current?.selectedDate)
+      .format('YYYY-MM-DDTHH:mm:ss[Z]');
+    const formattedEndDate = moment
+      .utc(endDateRef?.current?.selectedDate)
+      .format('YYYY-MM-DDTHH:mm:ss[Z]');
     const filteredTalent = featureTalent.map(({ id, ...rest }) =>
-      rest.action === "create" ? rest : { id, ...rest }
+      rest.action === 'create' ? rest : { id, ...rest },
     );
     // Construct the request object
     const requestObject = {
       name: eventNameRef.current.inputText,
       description: eventDescriptionRef.current.inputText,
       eventLocation: {
-        city: eventAddress?.address || "",
+        city: eventAddress?.address || '',
         latitude: Number(eventAddress?.latitude) || 0,
-        location: baseCityRef.current.selectedCity?.address || "",
+        location: baseCityRef.current.selectedCity?.address || '',
         longitude: Number(eventAddress?.longitude) || 0,
-        placeId: eventAddress?.placeId || "",
+        placeId: eventAddress?.placeId || '',
       },
       furtherInstructions: furtherInstructioneRef.current.inputText,
       imageFlyer: image,
       talents: filteredTalent,
       startDate: formattedStartDate,
       endDate: formattedEndDate,
-      showLocation: showAddress
-
+      showLocation: showAddress,
     };
 
-    console.log("Request Payload:", requestObject);
+    console.log('Request Payload:', requestObject);
 
     try {
-      const response = await apiRequest("put", EndPoint.edit_event + item.id, requestObject);
-      console.log(response, "RESPONSE")
-      dispatch(setRsvpStatus("UPDATE" + Date.now()));
+      const response = await apiRequest(
+        'put',
+        EndPoint.edit_event + item.id,
+        requestObject,
+      );
+      console.log(response, 'RESPONSE');
+      dispatch(setRsvpStatus('UPDATE' + Date.now()));
 
 
       if (response.status === 200) {
-        FlashMessageComponent.show("success", "Event Updated Successfully");
+        FlashMessageComponent.show('success', 'Event Updated Successfully');
         goBack();
         handleBackPress();
       } else {
-        FlashMessageComponent.show("error", "Failed to update event. Please try again.");
+        FlashMessageComponent.show(
+          'error',
+          'Failed to update event. Please try again.',
+        );
       }
     } catch (error) {
-      console.error("Error updating event:", error);
-      FlashMessageComponent.show("error", "An error occurred while updating the event.");
+      console.error('Error updating event:', error);
+      FlashMessageComponent.show(
+        'error',
+        'An error occurred while updating the event.',
+      );
     }
   };
-
-
 
   const handleBackPress = () => {
     //navigation.goBack()
   };
-
 
   const uploadFile = async (image: string) => {
     const mimeType = `images/${image.split('.').pop()}`;
@@ -223,18 +260,18 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
       cropping: true,
       cropperCircleOverlay: false,
     }).then((image: ImageOrVideo) => {
-      savePhoto(image.path)
+      savePhoto(image.path);
     });
   };
 
-  useEffect(() => {
-  }, [eventAddress])
+  useEffect(() => { }, [eventAddress]);
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}>
         <View style={styles.contentContainer}>
-
           <View>
             <FastImage
               source={{
@@ -244,7 +281,11 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
               defaultSource={IMAGES.eventCoverPlaceholders1} // Placeholder
               style={styles.coverImageStyle}
             />
-            <CircleButtonOverlay onPress={() => { editPhotoBottomSheetRef.current?.open() }} />
+            <CircleButtonOverlay
+              onPress={() => {
+                editPhotoBottomSheetRef.current?.open();
+              }}
+            />
           </View>
           <Input
             ref={eventNameRef}
@@ -254,27 +295,52 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
           />
           <View>
             <CustomText style={[styles.label]}>{EVENT.START_DATE}</CustomText>
-            <DatePickerComponent type={'DateTime'} ref={startDateRef} onDateChange={(e) => setSelectedStartDate(e)} birthDate={item?.startDate} />
+            <DatePickerComponent
+              type={'DateTime'}
+              ref={startDateRef}
+              onDateChange={e => setSelectedStartDate(e)}
+              birthDate={item?.startDate}
+            />
             <CustomText style={[styles.label]}>{EVENT.END_DATE}</CustomText>
-            <DatePickerComponent type={'DateTime'} startDate={selectedStartDate} ref={endDateRef} birthDate={item?.endDate} />
+            <DatePickerComponent
+              type={'DateTime'}
+              startDate={selectedStartDate}
+              ref={endDateRef}
+              birthDate={item?.endDate}
+            />
           </View>
 
           <View>
             <CustomText style={[styles.label]}>{EVENT.LOCATION}</CustomText>
-            <BaseCityComponent ref={baseCityRef} location={eventAddress} onLocationSelect={(e) => { setEventAddress(e) }} />
+            <BaseCityComponent
+              ref={baseCityRef}
+              location={eventAddress}
+              onLocationSelect={e => {
+                setEventAddress(e);
+              }}
+            />
           </View>
 
-          <View style={{ flex: 1, flexDirection: 'row', marginTop: verticalMarginScale(24) }}>
-
-            <TouchableOpacity style={{ paddingEnd: 10 }} onPress={() => setshowAddress(!showAddress)}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              marginTop: verticalMarginScale(24),
+            }}>
+            <TouchableOpacity
+              style={{ paddingEnd: 10 }}
+              onPress={() => setshowAddress(!showAddress)}>
               <Image
                 source={
-                  showAddress ? IMAGES.checkbox_active : IMAGES.checkbox_inactive
+                  showAddress
+                    ? IMAGES.checkbox_active
+                    : IMAGES.checkbox_inactive
                 }
               />
             </TouchableOpacity>
-            <CustomText style={{ alignSelf: 'center' }}>{EVENT.HIDE_ADDRESS}</CustomText>
-
+            <CustomText style={{ alignSelf: 'center' }}>
+              {EVENT.HIDE_ADDRESS}
+            </CustomText>
           </View>
 
           <Input
@@ -294,10 +360,11 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
             multiline={true}
           />
 
-          <HostEventTalent talents={featureTalent} onTalentChange={(e) => setFeatureTalent(e)} />
-
+          <HostEventTalent
+            talents={featureTalent}
+            onTalentChange={e => setFeatureTalent(e)}
+          />
         </View>
-
       </ScrollView>
 
       <EditPictureBottomSheet
@@ -312,8 +379,6 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
         eventImage={image}
       />
 
-
-
       <Button
         disabled={false}
         style={styles.btnStyle}
@@ -322,7 +387,6 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
         onPress={onConfirmClick}
         loading={loading}
       />
-
     </View>
   );
 };
@@ -334,7 +398,7 @@ const styles = StyleSheet.create({
     // paddingBottom: 20
   },
   mapContainer: {
-    marginTop: verticalMarginScale(24)
+    marginTop: verticalMarginScale(24),
   },
   map: {
     ...StyleSheet.absoluteFillObject,
@@ -351,15 +415,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 20,
     elevation: 5,
-    alignSelf: 'center'
-
+    alignSelf: 'center',
   },
   btnStyle: {
     borderRadius: radiusScale(100),
     bottom: verticalMarginScale(20),
   },
   contentContainer: {
-    flex: 1
+    flex: 1,
   },
   scrollContainer: { paddingBottom: verticalMarginScale(40) },
   label: {

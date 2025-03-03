@@ -3,9 +3,11 @@ import {
   GuestListResponse,
 } from 'src/screens/EventScreen/types';
 import { createBaseApi } from '../../ApiManager/createBaseApi';
+import { addAnnouncementRequestInterface } from 'src/screens/EventScreen/Announcement/AddAnnouncement/AddAnnouncementInterface';
 
 export const eventApiAction = createBaseApi.injectEndpoints({
   endpoints: builder => ({
+
     fetchEvents: builder.query({
       query: ({
         userId,
@@ -115,6 +117,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       providesTags: ['GuestStatusCount'],
       keepUnusedDataFor: 0, // Adjust the tag if needed for cache invalidation
     }),
+
     fetchDashboardUpcomingEvents: builder.query({
       query: () => ({
         url: 'v1/events/dashboard/upcoming-events',
@@ -176,6 +179,84 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       },
       invalidatesTags: ['EventDetails', 'GuestStatusCount', 'EventGuestList'],
     }),
+
+    // create event announcement for host builder.mutation({
+
+    createEventAnnouncement: builder.mutation({
+      query: ({
+        eventId,
+        payload,
+      }: {
+        eventId: string;
+        payload: addAnnouncementRequestInterface;
+      }) => ({
+        url: `/events/v1/event/${eventId}/event-announcement`,
+        method: 'POST',
+        body: payload,
+      }),
+    }),
+
+    // fetch event announcement for host 
+    fetchHostEventsAnnouncement: builder.query({
+      query: ({ eventId }: { eventId: any; }) => ({
+        url: `/events/v1/event/${eventId}/event-announcements`,
+        method: 'GET',
+      }),
+      providesTags: ['HostEventsAnnouncment']
+    }),
+
+    // fetch event receipient for host 
+    fetchAnnouncementRecipients: builder.query({
+      query: ({ eventId, ticketType, addedBy }: { eventId: string; ticketType: string; addedBy: string }) => ({
+        url: `/events/v1/event/${eventId}/event-announcement-guest?ticketType=${ticketType}&addedBy=${addedBy}`,
+        method: 'GET',
+      }),
+      providesTags: ['AnnouncmentRecipient'],
+    }),
+
+    // fetch selected event receipient for edit announcement 
+    fetchSelectedRecipients: builder.query({
+      query: ({ eventId, announcementId }: { eventId: string; announcementId: string }) => ({
+        url: `/events/v1/event/${eventId}/event-announcement-guest/${announcementId}`,
+        method: 'GET',
+      }),
+      providesTags: ['SelectedRecipient'],
+    }),
+
+    // delete announcement 
+    deleteEventAnnouncement: builder.mutation({
+      query: ({ eventId, announcementId }: { eventId: string; announcementId: string }) => ({
+        url: `/events/v1/event/${eventId}/event-announcement/${announcementId}`,
+        method: 'DELETE',
+      }),
+    }),
+
+    //edit announcement
+    editEventAnnouncement: builder.mutation({
+      query: ({
+        eventId,
+        announcementId,
+        payload,
+      }: {
+        eventId: string;
+        announcementId: string;
+        payload: addAnnouncementRequestInterface;
+      }) => ({
+        url: `/events/v1/event/${eventId}/event-announcement/${announcementId}`,
+        method: 'PATCH',
+        body: payload,
+      }),
+    }),
+    // fetch announcement detail  for host 
+    fetchAnnouncementDetail: builder.query({
+      query: ({ eventId, announcementId }: { eventId: string; announcementId:string }) => ({
+        url: `/events/v1/event/${eventId}/event-announcement/${announcementId}`,
+        method: 'GET',
+      }),
+      providesTags: ['AnnouncmentDetail'],
+    }),
+
+
   }),
 });
 
@@ -193,4 +274,11 @@ export const {
   useLazyFetchEventDetailsQuery,
   useLazyFetchPublicEventDetailsQuery,
   useFetchGuestDetailsQuery,
+  useCreateEventAnnouncementMutation,
+  useDeleteEventAnnouncementMutation,
+  useFetchAnnouncementRecipientsQuery,
+  useFetchHostEventsAnnouncementQuery,
+  useFetchSelectedRecipientsQuery,
+  useEditEventAnnouncementMutation,
+  useFetchAnnouncementDetailQuery
 } = eventApiAction;
