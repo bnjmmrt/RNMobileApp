@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, Text, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
 import EnterEmailPhoneStyles from './EnterEmailPhoneStyles';
@@ -162,7 +162,10 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
         {isEmailVerified === 1 ? (
           <PhoneNumberInput ref={phoneNumberInputRef} />
         ) : (
-          <EmailInput ref={emailInputRef} />
+          <>
+            <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
+            <EmailInput ref={emailInputRef} />
+          </>
         )}
       </View>
 
