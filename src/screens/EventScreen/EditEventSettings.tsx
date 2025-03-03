@@ -8,7 +8,7 @@ import Button from 'src/component/Button';
 import { fontScale, radiusScale, verticalMarginScale } from 'src/utils/dimensions';
 import ShowInfoComponent from 'src/component/ShowInfoComponent';
 import { CustomText } from 'src/component/CustomText';
-import { fontFamily } from 'src/utils/functions';
+import { fontFamily, removeSignature } from 'src/utils/functions';
 import GradientSeprator from 'src/component/GradientSeprator';
 import { Collaborator, Event } from 'src/types';
 import FastImage from '@d11/react-native-fast-image';
@@ -52,8 +52,8 @@ const EditEventSettings: React.FC<EditEventSettingsProps> = ({ event }) => {
   const renderCollabratorItem = useCallback((item: Collaborator) => (
     <View style={styles.talentItem} key={item.id}>
       <FastImage
-        source={{ uri: item.companyLogo }}
-        resizeMode={FastImage.resizeMode.center}
+        source={{ uri: removeSignature(item.companyLogo) }}
+        resizeMode={FastImage.resizeMode.contain}
         defaultSource={IMAGES.revolve}
         style={styles.icon}
       />

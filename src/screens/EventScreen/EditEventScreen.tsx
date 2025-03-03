@@ -50,6 +50,7 @@ const EditEventScreen: React.FC<EditEventScreenProps> = ({ navigation }) => {
         onPress={handleBackPress}
         showProgressBar={false}
       />
+      <View style={{ marginTop: 12 }} />
       <DynamicTabBar
         onTabChange={handleTabChange}
         tabs={editEventsTab}

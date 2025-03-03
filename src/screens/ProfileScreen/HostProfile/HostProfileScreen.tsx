@@ -147,7 +147,7 @@ const HostProfileScreen: React.FC = () => {
   const getSnapPoints = (): string => {
     switch (activeView) {
       case 'options':
-        return '25%';
+        return '20%';
       case 'block':
         return '40%';
       case 'unblock':
@@ -159,8 +159,6 @@ const HostProfileScreen: React.FC = () => {
 
   const profile = data?.data;
   const socialMediaLinks = profile?.socialMedia || {};
-  console.log(profile?.pendingEvents)
-
 
   const handlEventPress = (item) => {
     navigate(ROUTES.EventStack, {
@@ -180,8 +178,7 @@ const HostProfileScreen: React.FC = () => {
       <Header
         showProgressBar={false}
         rightIcon={IMAGES.dots}
-        onPressRightIcon={() => handleOpenBottomSheet('options')}
-        // onPressRightIcon={() => handleOpenBottomSheet('unblock')}
+        onPressRightIcon={() => profile?.isMemberBlockedHost ? handleOpenBottomSheet('unblock') : handleOpenBottomSheet('options')}
         showBackButton={true}
       />
 
@@ -190,7 +187,7 @@ const HostProfileScreen: React.FC = () => {
           <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: verticalMarginScale(16), gap: verticalMarginScale(4) }}>
             <View style={{ marginBottom: verticalMarginScale(12) }}>
               <AvatarInitials imgUrl={removeSignature(profile?.companyLogo) || ''} size={radiusScale(96)} />
-              {false && <Blocked height={32} width={32} style={{ position: 'absolute', bottom: 0, right: -5 }} />}
+              {profile?.isMemberBlockedHost && <Blocked height={32} width={32} style={{ position: 'absolute', bottom: 0, right: -5 }} />}
             </View>
             <Title
               title={profile?.companyName || 'Company Name'}
@@ -227,7 +224,7 @@ const HostProfileScreen: React.FC = () => {
             showsHorizontalScrollIndicator={false}
             ListEmptyComponent={<Text style={styles.dateText}>No upcoming events.</Text>}
             contentContainerStyle={{ gap: 16, marginVertical: verticalMarginScale(12) }}
-            data={profile?.pendingEvents || []}
+            data={profile?.upcomingEvents || []}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => { handlEventPress(item) }}>
                 <FastImage
@@ -235,9 +232,11 @@ const HostProfileScreen: React.FC = () => {
                   style={{ width: Wp('42%'), height: verticalScale(245), borderRadius: 8 }}
                   source={{ uri: removeSignature(item?.imageFlyer) }}
                 />
-                <Text style={styles.eventNameText}>{item.name}</Text>
-                <Text style={styles.dateText}>{item.startDate}</Text>
-                <Text style={styles.dateText}>{item.location}</Text>
+                <View style={{ width: Wp('42%') }}>
+                  <Text style={styles.eventNameText} numberOfLines={1}>{item.name}</Text>
+                  <Text style={styles.dateText}>{item.startDate}</Text>
+                  <Text style={styles.dateText} numberOfLines={1}>{item?.eventLocation?.city}</Text>
+                </View>
               </TouchableOpacity>
             )}
           />
@@ -255,8 +254,11 @@ const HostProfileScreen: React.FC = () => {
                   style={{ width: Wp('42%'), height: verticalScale(245), borderRadius: 8 }}
                   source={{ uri: removeSignature(item.imageFlyer) }}
                 />
-                <Text style={styles.eventNameText}>{item.name}</Text>
-                <Text style={styles.dateText}>{item.startDate}</Text>
+                <View style={{ width: Wp('42%') }}>
+                  <Text style={styles.eventNameText} numberOfLines={1}>{item.name}</Text>
+                  <Text style={styles.dateText}>{item.startDate}</Text>
+                  <Text style={styles.dateText} numberOfLines={1}>{item?.eventLocation?.city}</Text>
+                </View>
               </TouchableOpacity>
             )}
           />

@@ -12,7 +12,7 @@ import { fontScale, Hp, Wp } from '../utils/dimensions';
 import IMAGES from '../assets/images';
 import { COLORS } from '../utils/constants';
 import AvatarInitials from './AvatarInitials';
-import { fontFamily } from 'src/utils/functions';
+import { fontFamily, removeSignature } from 'src/utils/functions';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import FastImage from '@d11/react-native-fast-image';
@@ -39,16 +39,19 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
   const profileData = useSelector(
     (state: RootState) => state.appFlowApiData?.profileData,
   );
+  const loginData = useSelector(
+    (state: RootState) => state.auth?.loginData,
+  );
   const profilePic =
     role.toLocaleLowerCase() === 'host'
-      ? profileData?.companyLogo
-      : profileData?.imageUrl;
+      ? loginData?.user?.additionalHostInformation.companyLogo
+      : loginData?.user?.profilePicture;
   const name = profileData?.firstName
     ? `${profileData?.firstName} ${profileData?.lastName}`
     : '';
   const navigation = useNavigation();
 
-  const handleNotificationPress=()=> navigation.navigate(ROUTES.NotificationsScreen)
+  const handleNotificationPress = () => navigation.navigate(ROUTES.NotificationsScreen)
   return (
     <View
       style={[
@@ -87,12 +90,12 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
       </View>
       <View style={[styles.iconsWrapper]}>
         <TouchableOpacity
-        onPress={handleNotificationPress}
+          onPress={handleNotificationPress}
           style={[
             styles.iconButton,
             { backgroundColor: backgroundColorNotification },
           ]}>
-            <Image
+          <Image
             style={styles.badge}
             source={IMAGES.notification_badge}
           />
@@ -108,7 +111,7 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
           {profilePic ? (
             <FastImage
               style={[styles.profilePhotoContainer]}
-              source={{ uri: profilePic }}
+              source={{ uri: removeSignature(profilePic) }}
               resizeMode="cover"
             />
           ) : (
@@ -176,7 +179,7 @@ const styles = StyleSheet.create({
   imgStyle: {
     resizeMode: 'contain',
   },
-  badge:{position:'absolute',top:-4,right:-3}
+  badge: { position: 'absolute', top: -4, right: -3 }
 });
 
 export default HeaderComponent;
