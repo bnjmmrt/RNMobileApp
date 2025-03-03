@@ -85,53 +85,56 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle="light-content"
-      />
-      <GradientOverlay />
-      <ScrollView>
-        <View style={styles.contentContainer}>
-          <HeaderComponent isDarkTheme={true} hasGradient={true} />
+    <>
+      <View style={styles.container}>
+        <StatusBar
+          translucent
+          backgroundColor="transparent"
+          barStyle="light-content"
+        />
+        <GradientOverlay />
+        <ScrollView>
+          <View style={styles.contentContainer}>
+            <HeaderComponent isDarkTheme={true} hasGradient={true} />
 
-          <View style={{ height: Hp(5) }} />
+            <View style={{ height: Hp(5) }} />
 
-          <TitleSubtitle
-            style={{ paddingHorizontal: 20, marginTop: 20 }}
-            title={LABLE.YOU_ARE_ON_WAITLIST}
-            subTitle={LABLE.FULL_ACCESS_UNLOCK}
-            centerTextAlign={true}
-            isDarkTheme={true}
-            titleFontSize={36}
-            subTitleTextstyle={{ color: COLORS.light_text }}
-          />
+            <TitleSubtitle
+              style={{ paddingHorizontal: 20, marginTop: 20 }}
+              title={LABLE.YOU_ARE_ON_WAITLIST}
+              subTitle={LABLE.FULL_ACCESS_UNLOCK}
+              centerTextAlign={true}
+              isDarkTheme={true}
+              titleFontSize={36}
+              subTitleTextstyle={{ color: COLORS.light_text }}
+            />
 
-          <MiddleStaticComponent style={{ marginTop: 20 }} />
+            <MiddleStaticComponent style={{ marginTop: 20 }} />
 
-          <View style={{ height: Hp(4) }} />
+            <View style={{ height: Hp(4) }} />
 
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={BUTTON_LABLE.ACCESS_MY_CONTACTS}
-            colorTheme={'light'}
-            onPress={() => onAccessContactClick()}
-          />
-          <View style={{ height: Hp(1) }} />
+            <Button
+              disabled={false}
+              style={styles.btnStyle}
+              title={BUTTON_LABLE.ACCESS_MY_CONTACTS}
+              colorTheme={'light'}
+              onPress={() => onAccessContactClick()}
+            />
+            <View style={{ height: Hp(1) }} />
 
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={BUTTON_LABLE.ENTER_REFERRAL_CODE}
-            colorTheme={'light'}
-            onPress={onEnterReferralClick}
-          />
-        </View>
-      </ScrollView>
+            <Button
+              disabled={false}
+              style={styles.btnStyle}
+              title={BUTTON_LABLE.ENTER_REFERRAL_CODE}
+              colorTheme={'light'}
+              onPress={onEnterReferralClick}
+            />
+          </View>
+        </ScrollView>
+      </View>
       <ReferralCodeBottomSheet ref={bottomSheetRef} />
-    </View>
+
+    </>
   );
 };
 

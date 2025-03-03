@@ -135,8 +135,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const [featureTalent, setFeatureTalent] = useState(item?.talents || []);
   const [image, setImage] = useState<string>(
     removeSignature(item?.imageCover) ||
-      removeSignature(item?.imageFlyer) ||
-      '',
+    removeSignature(item?.imageFlyer) ||
+    '',
   );
   const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
 
@@ -144,22 +144,12 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const onConfirmClick = async () => {
     // Validate inputs before proceeding
     const isEventNameValid = eventNameRef.current?.validateInputs();
-    const isDescriptionValid = eventDescriptionRef.current?.validateInputs();
     const isStartDateValid = startDateRef.current?.validateBirthDate();
     const isEndDateValid = endDateRef.current?.validateBirthDate();
     const isBaseCityValid = baseCityRef.current?.validateBaseCity();
 
-    if (
-      !isEventNameValid ||
-      !isDescriptionValid ||
-      !isStartDateValid ||
-      !isEndDateValid ||
-      !isBaseCityValid
-    ) {
-      FlashMessageComponent.show(
-        'error',
-        'Please fill in all required fields correctly.',
-      );
+    if (!isEventNameValid || !isStartDateValid || !isEndDateValid || !isBaseCityValid) {
+      FlashMessageComponent.show("error", "Please fill in all required fields correctly.");
       return;
     }
     const formattedStartDate = moment
@@ -200,6 +190,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       );
       console.log(response, 'RESPONSE');
       dispatch(setRsvpStatus('UPDATE' + Date.now()));
+
 
       if (response.status === 200) {
         FlashMessageComponent.show('success', 'Event Updated Successfully');
@@ -273,7 +264,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     });
   };
 
-  useEffect(() => {}, [eventAddress]);
+  useEffect(() => { }, [eventAddress]);
 
   return (
     <View style={styles.container}>
@@ -299,7 +290,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
           <Input
             ref={eventNameRef}
             label={EVENT.EVENT_NAME}
-            errorMessage={ERROR_MESSAGE.FIRST_NAME}
+            errorMessage={"Event name is required"}
             defaultValue={item?.name}
           />
           <View>
@@ -355,7 +346,6 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
           <Input
             ref={furtherInstructioneRef}
             label={EVENT.FURTHER_INSTRUCTION}
-            errorMessage={ERROR_MESSAGE.LAST_NAME}
             defaultValue={item?.furtherInstructions}
           />
 
@@ -366,7 +356,6 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
           <Input
             ref={eventDescriptionRef}
             label={EVENT.EVENT_DESCRIPTION}
-            errorMessage={ERROR_MESSAGE.LAST_NAME}
             defaultValue={item?.description}
             multiline={true}
           />
@@ -381,11 +370,13 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       <EditPictureBottomSheet
         ref={editPhotoBottomSheetRef}
         onPress={openCamera}
+        title='Image Flyer'
         submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
         cancelButtonText={BUTTON_LABLE.CANCEL}
-        snapPoints={[Platform.OS == 'android' ? '20%' : '20%']}
+        snapPoints={[Platform.OS == 'android' ? '80%' : '80%']}
         image={null}
         onPencilClick={openCamera}
+        eventImage={image}
       />
 
       <Button

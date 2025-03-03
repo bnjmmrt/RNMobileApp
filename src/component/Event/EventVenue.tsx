@@ -40,13 +40,13 @@ const EventVenue: React.FC<EventVenueProps> = ({ item, handleCalendarPress }) =>
 
   return (
     <View style={[styles.container]}>
-      <View style={{ flex: 1 }}>
-        <View style={{ marginVertical: verticalMarginScale(10), flexDirection: 'row', justifyContent: 'space-between' }}>
+      <View style={{ marginBottom: verticalMarginScale(8) }}>
+        <View style={{ marginVertical: verticalMarginScale(2), flexDirection: 'row', justifyContent: 'space-between' }}>
           <View>
             <Text style={styles.title}>{dates[0]}</Text>
             <Text style={styles.subtitle}>{dates[1]}</Text>
           </View>
-          {item?.currentGuestStatus === 'CONFIRMED' && <TouchableOpacity onPress={handleCalendarPress}>
+          {isShowLocation && <TouchableOpacity onPress={handleCalendarPress}>
             <Image source={IMAGES.calendarCircle} />
           </TouchableOpacity>}
         </View>
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   locationContainer: {
-    marginVertical: verticalMarginScale(10),
+    marginVertical: verticalMarginScale(12),
   },
   mapContainer: {
     borderRadius: 10,
