@@ -3,7 +3,7 @@ import { Text, StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import { COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '@images/index';
-import { fontScale } from 'src/utils/dimensions';
+import { fontScale, verticalMarginScale } from 'src/utils/dimensions';
 import { Event } from 'src/types';
 
 interface EventOverviewProps {
@@ -22,6 +22,7 @@ const EventOverview: React.FC<EventOverviewProps> = ({ item }) => {
 
   return (
     <View style={styles.container}>
+
       <Text style={styles.title}>{LABLE.ABOUT_THE_EVENT}</Text>
 
       <View style={styles.divider} />
@@ -33,7 +34,7 @@ const EventOverview: React.FC<EventOverviewProps> = ({ item }) => {
         {item?.description}
       </Text>
 
-      {!expanded || shouldShowReadMore && <View style={styles.divider} />}
+      {!expanded && <View style={styles.divider} />}
 
       {shouldShowReadMore && !expanded && (
         <TouchableOpacity onPress={handleToggle} style={styles.toggleContainer}>
@@ -56,8 +57,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.borderGray,
     borderRadius: 15,
-    paddingHorizontal: 15,
-    paddingTop: 20,
+    paddingTop: verticalMarginScale(16),
+    paddingBottom: verticalMarginScale(8),
     backgroundColor: COLORS.white,
   },
   title: {
@@ -65,12 +66,16 @@ const styles = StyleSheet.create({
     fontSize: fontScale(16),
     marginBottom: 5,
     fontFamily: fontFamily.ABCDiatype_Medium,
+    paddingHorizontal: verticalMarginScale(15),
+
   },
   subtitle: {
-    color: COLORS.light_gray,
+    color: COLORS.black,
     fontSize: fontScale(14),
-    fontFamily: fontFamily.ABCDiatype_Regular,
-    marginBottom: 10,
+    fontFamily: fontFamily.ABCDiatype_Medium,
+    paddingHorizontal: verticalMarginScale(15),
+    paddingVertical: verticalMarginScale(4)
+
   },
   divider: {
     height: 1,
@@ -81,7 +86,9 @@ const styles = StyleSheet.create({
   toggleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: verticalMarginScale(8),
+    paddingHorizontal: verticalMarginScale(15)
+
   },
   toggleText: {
     color: COLORS.black2,
@@ -90,9 +97,10 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   toggleIcon: {
-    width: 12,
-    height: 12,
+    width: 10,
+    height: 10,
     tintColor: COLORS.light_gray,
+    resizeMode: 'contain'
   },
 });
 

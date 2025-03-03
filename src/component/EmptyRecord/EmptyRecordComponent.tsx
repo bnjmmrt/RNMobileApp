@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   },
   logoutTextStyle: {
     color: COLORS.white,
-    fontSize: 14,
+    fontSize: fontScale(14),
     textAlign: 'center',
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginTop: 10,

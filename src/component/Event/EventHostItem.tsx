@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import { Text, StyleSheet, View, Image } from 'react-native';
-import { capitalizeFirstLetter, fontFamily } from '../../utils/functions';
+import { capitalizeFirstLetter, fontFamily, removeSignature } from '../../utils/functions';
 import {
   BUTTON_LABLE,
   COLORS,
@@ -25,6 +25,10 @@ import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComp
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import FastImage from '@d11/react-native-fast-image';
+import FollowButton from '../FollowButton/FollowButton';
+import AvatarInitials from '../AvatarInitials';
+import { ROUTES } from 'src/navigation/Route';
+import { useNavigation } from '@react-navigation/native';
 
 interface EventHostItemProps {
   item: any;
@@ -37,31 +41,29 @@ const handlEventPress = () => {
 
 const EventHostItem: React.FC<EventHostItemProps> = ({ item }) => {
   const role = useSelector((state: RootState) => state.auth.role);
-
+  const { navigate } = useNavigation();
   return (
-    <View
-      style={[styles.container, { width: role == ROLE.MEMBER ? 250 : 160 }]}>
-      <FastImage
-        style={[styles.image]}
-        source={{ uri: item?.companyLogo }}
-        defaultSource={IMAGES.backgroundLogin}
-        resizeMode="cover"
+    <View style={[styles.container]}>
+      <AvatarInitials
+        onPress={() => {
+          role == ROLE.MEMBER && navigate("ProfileStack", { screen: ROUTES.HostProfileScreen, params: { hostId: item.id } });
+        }
+        }
+        imgUrl={removeSignature(item?.companyLogo)}
+        size={40}
       />
-      <View
-        style={styles.infoContainer}>
-        <Text style={styles.title}>{capitalizeFirstLetter(item?.name)}</Text>
+      <View style={{ paddingHorizontal: 10, marginEnd: 20, maxWidth: verticalScale(100) }}>
+        <Text numberOfLines={1} style={styles.title}>{capitalizeFirstLetter(item?.name)}</Text>
         <Text style={styles.subtitle}>
           {capitalizeFirstLetter(item?.role?.name)}
         </Text>
       </View>
 
-      {role == ROLE.MEMBER && (
-        <ButtonSmall
-          disabled={false}
-          style={styles.btnStyle}
-          title={BUTTON_LABLE.FOLLOW}
-          colorTheme={'dark'}
-          onPress={handlEventPress}
+      {(role == ROLE.MEMBER && item.role.name == "host") && (
+        <FollowButton
+          id={item.id}
+          isFollowing={item.isFollowedByCurrentGuest}
+          handleRefresh={true}
         />
       )}
     </View>
@@ -76,7 +78,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderColor: COLORS.borderGray,
     flexDirection: 'row',
-    width: 250,
     alignSelf: 'flex-start',
     alignItems: 'center',
   },

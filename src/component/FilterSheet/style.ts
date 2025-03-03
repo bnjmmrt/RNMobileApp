@@ -1,5 +1,5 @@
-import {StyleSheet} from 'react-native';
-import {COLORS} from 'src/utils/constants';
+import { Platform, StyleSheet } from 'react-native';
+import { COLORS } from 'src/utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -8,7 +8,7 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import {fontFamily} from 'src/utils/functions';
+import { fontFamily } from 'src/utils/functions';
 
 export const styles = StyleSheet.create({
   container: {
@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
   },
 
   //arrordian
-  accordianContainer: {flex: 1},
+  accordianContainer: { flex: 1 },
   accordianTitleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -61,15 +61,17 @@ export const styles = StyleSheet.create({
     borderTopRightRadius: radiusScale(32),
     borderTopLeftRadius: radiusScale(32),
     backgroundColor: COLORS.white,
-
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 15,
-    },
-    shadowOpacity: 0.58,
-    shadowRadius: 16.0,
-    elevation: 24,
+    ...(Platform.OS === 'android'
+      ? { elevation: 100 }
+      : {
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 15,
+          },
+          shadowOpacity: 0.58,
+          shadowRadius: 16.0,
+        }),
   },
   clearAllCta: {
     // flex: 0.3

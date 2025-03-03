@@ -1,16 +1,15 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AppFlowApiDataState {
   creativeFocus: any[];
   interests: any[];
-  profileData:any;
-  
+  profileData: any;
 }
 
 const initialState: AppFlowApiDataState = {
   creativeFocus: [],
   interests: [],
-  profileData:{}
+  profileData: {},
 };
 
 const appFlowApiDataSlice = createSlice({
@@ -23,7 +22,7 @@ const appFlowApiDataSlice = createSlice({
     setInterests(state, action: PayloadAction<any[]>) {
       state.interests = action.payload;
     },
- 
+
     setProfileData(state, action: PayloadAction<any>) {
       state.profileData = action.payload;
     },
@@ -43,7 +42,7 @@ export const {
   setInterests,
   resetAppGlobalData,
   setProfileData,
-  resetProfileData
+  resetProfileData,
 } = appFlowApiDataSlice.actions;
 
 export default appFlowApiDataSlice.reducer;

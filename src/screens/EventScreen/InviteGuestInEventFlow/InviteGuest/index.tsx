@@ -132,7 +132,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
               : sendInvite
               ? 'INVITED'
               : 'DRAFT',
-            maxAdditionalGuests: selectedEvent?.limitOnePlus || 0,
+            maxAdditionalGuests: additionalGuests || 0,
             sendInvite: sendInvite,
             ticketTypeId: selectedTicketType?.id || '',
             users: selectedUsers.map((item, index) => item.id),
@@ -220,7 +220,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         phoneNumber?: string;
       } = {
         guestStatus: directlySendToConfirm ? 'CONFIRMED' : 'INVITED',
-        maxAdditionalGuests: selectedEvent?.limitOnePlus || 0,
+        maxAdditionalGuests: additionalGuests || 0,
         sendInvite: true,
         ticketTypeId: selectedTicketType?.id || '',
         inviteMessage: inviteMessage,

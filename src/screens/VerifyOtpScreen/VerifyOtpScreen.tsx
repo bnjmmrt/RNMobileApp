@@ -1,33 +1,34 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
+import {
+  CommonActions,
+  RouteProp,
+  useFocusEffect,
+  useRoute,
+} from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../utils/constants';
-import VerifyOtpStyles from './VerifyOtpStyles';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { useDispatch } from 'react-redux';
+import {
+  changeSafeAreaViewConfig,
+  fetchUserProfile,
+  getPriorityRole,
+  loginUser,
+} from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import BackButton from '../../component/BackButton/BackButton';
 import Button from '../../component/Button';
 import OTPComponent from '../../component/OTPComponent/OTPComponent';
-import {
-  useRoute,
-  RouteProp,
-  CommonActions,
-  useFocusEffect,
-} from '@react-navigation/native';
-import {
-  setAuthToken,
-  setLoginData,
-  setRole,
-  setUserId,
-} from '../../redux/slices/authSlice';
-import { useDispatch } from 'react-redux';
-import FullScreenLoader from '../../component/FullScreenLoader';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
 import { useSendOtp } from '../../redux//hooks/useSendOtp';
 import { useVerifyOtp } from '../../redux/hooks/useVerifyOtp';
-import { setEmail, setPhone } from '../../redux/slices/appFlowSlice';
-import { changeSafeAreaViewConfig } from 'src/utils/functions';
-import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
-import { verticalMarginScale } from 'src/utils/dimensions';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { BUTTON_LABLE, LABLE, ROLE } from '../../utils/constants';
+import VerifyOtpStyles from './VerifyOtpStyles';
+import {
+  setEmail,
+  setFirstName,
+  setLastName,
+  setPhone,
+} from 'src/redux/slices/appFlowSlice';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -59,7 +60,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   useEffect(() => {
-    otpInputRef.current.setApiError(error);
+    otpInputRef?.current?.setApiError(error);
   }, [error]);
 
   useEffect(() => {
@@ -93,32 +94,57 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const handleBackPress = () => navigation.goBack();
 
   const redirectToHome = (data: any) => {
-    dispatch(setLoginData(data));
-    dispatch(setUserId(data?.id));
-    dispatch(setRole(data?.roles[0]?.roleName));
-    dispatch(setAuthToken(data?.token || ''));
+    console.log('dataaa', JSON.stringify(data));
+
+    loginUser({
+      id: data?.id,
+      isGuest: data?.isGuest,
+      roles: data?.roles,
+      token: data?.token,
+      varifyStatus: data?.varifyStatus,
+      companyLogo: data?.user?.additionalHostInformation?.companyLogo,
+      profilePicture: data?.user?.profilePicture,
+    });
+
     dispatch(setEmail(route.params.email || ''));
     dispatch(setPhone(route.params.phone || ''));
-    const role = data.roles[0]?.roleName || 'non_member';
 
-    if (role == 'non_member') {
-      const screenName =
-        data?.token?.length > 0 || isGuest ? 'BottomTabBar' : 'BeforeAppStaticScreen';
+    if (data?.token) {
+      fetchUserProfile();
+    }
+
+    let role = getPriorityRole(data?.roles);
+    let screenName = '';
+
+    switch (role.roleName) {
+      case ROLE.NON_MEMBER:
+        screenName =
+          data?.token?.length > 0 || data?.isGuest
+            ? 'BottomTabBar'
+            : 'BeforeAppStaticScreen';
+        break;
+      case ROLE.MEMBER:
+        screenName = 'BottomTabBar';
+        break;
+      case ROLE.HOST:
+        screenName = 'BottomTabBar';
+        dispatch(setEmail(data?.user?.email));
+        dispatch(setPhone(data?.user?.phoneNumber));
+        dispatch(setFirstName(data?.user?.firstName));
+        dispatch(setLastName(data?.user?.lastName));
+        break;
+    }
+
+    if (screenName) {
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
           routes: [{ name: 'AppStack', params: { screen: screenName } }],
         }),
       );
-    } else {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'AppStack', params: { screen: 'BottomTabBar' } }],
-        }),
-      );
     }
   };
+
   useFocusEffect(
     useCallback(() => {
       changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
@@ -126,12 +152,12 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   );
 
   const callVerifyOTP = (code: string) => {
-    verifyOtp(code, redirectToHome)
+    verifyOtp(code, redirectToHome);
   };
 
   const clearOTPAndResend = () => {
-    otpInputRef.current.clearOTP();
-    setErrorMsg('')
+    otpInputRef?.current?.clearOTP();
+    setErrorMsg('');
     sendOtp(true);
   };
   return (

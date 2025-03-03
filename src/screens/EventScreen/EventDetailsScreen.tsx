@@ -9,7 +9,7 @@ import {
 } from '../../utils/constants';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
-import { fontFamily } from 'src/utils/functions';
+import { fontFamily, removeSignature } from 'src/utils/functions';
 import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import {
   fontScale,
@@ -56,10 +56,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
+import { setRefresh, setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import EventAnnouncements from 'src/component/Event/EventAnnouncements';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: any;
@@ -75,11 +75,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [isDeclinedByHost, setIsDeclinedByHost] = useState(false);
   const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
   const [isCurrentUserIsGuest, setIsCurrentGuestStatus] = useState(
     route?.params?.isCurrentUserIsGuest,
   );
   const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
+  const refresh = useSelector((state: RootState) => state.rspv.refresh);
   const [showError, setshowError] = useState(false)
   const eventId = route?.params?.id
   const { data: eventCount } = useFetchGuestStatusCountQuery({ eventId });
@@ -89,6 +89,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
   const role = useSelector((state: RootState) => state.auth.role);
   // const insets = useSafeAreaInsets();
+
+  console.log('role', role);
 
   const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 44 : 24;
 
@@ -123,22 +125,20 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const) // Type assertion to prevent union mismatch
       : ({
-        userId,
-        eventId: route?.params?.id,
-      } as const); // Type assertion
+          userId,
+          eventId: route?.params?.id,
+        } as const); // Type assertion
   const useFetchEventDetailsHook =
     role === ROLE.HOST
       ? useFetchHostEventDetailsQuery
-      : rspvStatus === 'NO_STATUS'
-        ? useFetchPublicEventDetailsQuery
-        : useFetchEventDetailsQuery;
-
+      : useFetchEventDetailsQuery;
   const { data, isLoading, refetch } = useFetchEventDetailsHook(queryArgs);
 
   useEffect(() => {
-    console.log('RSVP Status:', rspvStatus);
-    refetch(); // Manually refetch when RSVP status changes
-  }, [rspvStatus, refetch]);
+    refetch();
+    // Manually refetch when RSVP status changes
+    dispatch(setRefresh(false))
+  }, [rspvStatus, refetch, refresh]);
 
   // Ensure argument structure remains consistent
 
@@ -194,7 +194,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         role: {
           id: data?.data?.owner.id,
           name: 'host',
-        }
+        },
       };
 
       // Merge the owner as a collaborator with existing collaborators
@@ -413,7 +413,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     });
   };
 
-
   return (
     <>
       {/* <SafeAreaView style={{ backgroundColor: COLORS.white }} /> */}
@@ -422,7 +421,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           <View style={styles.blurredBackgroundContainer}>
             <FastImage
               source={{
-                uri: route?.params?.imageCover || route?.params?.imageFlyer,
+                uri: removeSignature(data?.data?.imageFlyer),
               }}
               resizeMode={FastImage.resizeMode.cover}
               defaultSource={IMAGES.eventCoverPlaceholders1}
@@ -447,7 +446,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             <View style={imageWrapperStyle.wrapper}>
               <FastImage
                 source={{
-                  uri: route?.params?.imageCover || route?.params?.imageFlyer,
+                  uri: removeSignature(data?.data?.imageCover) || removeSignature(data?.data?.imageFlyer),
                 }}
                 resizeMode={FastImage.resizeMode.cover}
                 defaultSource={IMAGES.eventCoverPlaceholders1}
@@ -455,7 +454,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               />
             </View>
 
-            <Text style={styles.titleStyle}>{route?.params?.name}</Text>
+            <Text style={styles.titleStyle}>{data?.data?.name}</Text>
 
             <EventStatus status={guestStatus} isDeclinedByMe={isDeclinedByMe} />
 
@@ -478,10 +477,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               />
             )}
 
-            <EventVenue
+            {!isLoading && <EventVenue
               item={data?.data}
               handleCalendarPress={addCalenderEvents}
-            />
+            />}
 
             <EventOverview item={data?.data} />
 
@@ -581,7 +580,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           <BackButtonOverlay
             customStyle={{ right: 55, top: 16 + STATUS_BAR_HEIGHT }}
             imageSource={IMAGES.share}
-            onPress={() => navigation.goBack()}
+            onPress={() => FlashMessageComponent.show("info", "In Progress")}
           />
         )}
       </View>

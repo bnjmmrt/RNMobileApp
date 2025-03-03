@@ -1,7 +1,7 @@
 import React, { forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
 import { Platform, View, StyleSheet, Text } from 'react-native';
 import BottomSheetComponent from './BottomSheet';
-import { fontScale, radiusScale, verticalMarginScale, Wp } from '../../utils/dimensions';
+import { fontScale, radiusScale, verticalMarginScale, verticalScale, Wp } from '../../utils/dimensions';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import Button from '../Button';
 import moment from 'moment';
@@ -32,7 +32,7 @@ const CustomDatepickerBottomSheet = forwardRef((props: Props, ref) => {
 
 
   const years = useMemo(
-    () => Array.from({ length: 2025 - 1970 }, (_, i) => `${1970 + i}`),
+    () => Array.from({ length: 2025 - 1900 }, (_, i) => `${1900 + i}`),
     []
   );
 
@@ -110,30 +110,28 @@ const CustomDatepickerBottomSheet = forwardRef((props: Props, ref) => {
   return (
     <BottomSheetComponent
       ref={ref}
-      snapPoints={[Platform.OS === 'ios' ? '48%' : '48%']}
+      snapPoints={["56%"]}
       onClose={() => console.log(ref)}>
       <View style={styles.container}>
         <Text style={styles.title}>{LABLE.BIRTHDAY}</Text>
         <Text style={styles.subTitle}>{LABLE.SELECT_YOUR_BIRTHDAY_BELOW}</Text>
         <View>
-          <View style={[styles.pickerRow, {
-            marginTop: verticalMarginScale(30),
-          }]}>
+          <View style={styles.pickerRow}>
             <WheelPicker
               wrapperHeight={140}
               highlightBorderWidth={2}
               highlightColor={COLORS.bgGreen}
-              itemHeight={50}
+              itemHeight={35}
               data={months}
               selectedValue={selectedMonth}
               onValueChange={handleMonthChange}
-              contentStyle={{ width: 110 }}
+              contentStyle={styles.month}
             />
             <WheelPicker
               wrapperHeight={140}
               highlightBorderWidth={2}
               highlightColor={COLORS.bgGreen}
-              itemHeight={50}
+              itemHeight={35}
               data={days}
               selectedValue={selectedDay}
               onValueChange={(value: string) => setSelectedDay(value)}
@@ -144,7 +142,7 @@ const CustomDatepickerBottomSheet = forwardRef((props: Props, ref) => {
               wrapperHeight={140}
               highlightBorderWidth={2}
               highlightColor={COLORS.bgGreen}
-              itemHeight={50}
+              itemHeight={35}
               data={years}
               selectedValue={selectedYear}
               onValueChange={handleYearChange}
@@ -174,17 +172,19 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   subTitle: {
+    fontFamily: fontFamily.ABCDiatype_Medium,
     marginVertical: verticalMarginScale(10),
     fontSize: fontScale(14),
     color: COLORS.light_gray,
+    marginTop: 15,
   },
   btnStyle: {
     width: Wp(85),
     borderRadius: radiusScale(100),
-    marginTop: verticalMarginScale(30),
+    marginTop: verticalMarginScale(50),
   },
   pickerRow: {
-    marginTop: 10,
+    marginTop: 60,
     flexDirection: 'row',
     backgroundColor: COLORS.white,
     height: verticalMarginScale(150),
@@ -198,6 +198,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 255, 0, 0.2)',
     transform: [{ translateY: -25 }],
   },
+  month: {
+    width: 120,
+    alignItems: 'flex-start',
+    paddingLeft: 20
+  }
 });
 
 export default CustomDatepickerBottomSheet;

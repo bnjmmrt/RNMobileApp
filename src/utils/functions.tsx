@@ -1,11 +1,26 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import { Platform, StatusBar, Text } from 'react-native';
-import settings from '../ApiManager/config';
-import { configStatusBar, SafeAreaViewConfig, } from 'src/redux/slices/safeAreaViewConfigSlice';
+import settings, { EndPoint } from '../ApiManager/config';
+import {
+  configStatusBar,
+  SafeAreaViewConfig,
+} from 'src/redux/slices/safeAreaViewConfigSlice';
 import store from 'src/redux/store';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import React from 'react';
+import {
+  role,
+  setAuthToken,
+  setIsGuest,
+  setLoginData,
+  setUserId,
+} from 'src/redux/slices/authSlice';
+import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import { ROLE } from './constants';
+import { AxiosRequestConfig } from 'axios';
+import { axiosController } from 'src/axios/axiosController';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 // import moment from 'moment-timezone';
 
 // ErrorText component with TypeScript props
@@ -18,8 +33,8 @@ export const getApiBaseUrl = () => {
 };
 
 export const LINKS = {
-  TERMS_AND_CONDITION: 'https://therumor.com/terms-of-services',
-  PRIVACY_POLICY: 'https://therumor.com/privacy-policy',
+  TERMS_AND_CONDITION: 'https://www.therumor.com/terms-of-service',
+  PRIVACY_POLICY: 'https://www.therumor.com/privacy-policy',
   APPLY_FOR_HOST: 'https://stagehost.therumor.com/auth/sign-up',
 };
 
@@ -95,9 +110,9 @@ export const capitalizeFirstLetter = (text: string): string => {
 };
 
 // Example Usage
-console.log(capitalizeFirstLetter("co_host")); // Output: "Co-Host"
-console.log(capitalizeFirstLetter("host"));    // Output: "Host"
-console.log(capitalizeFirstLetter("admin_user")); // Output: "Admin-User"
+console.log(capitalizeFirstLetter('co_host')); // Output: "Co-Host"
+console.log(capitalizeFirstLetter('host')); // Output: "Host"
+console.log(capitalizeFirstLetter('admin_user')); // Output: "Admin-User"
 
 export const objectToQueryString = (
   obj: Record<string, string | number | boolean>,
@@ -340,7 +355,7 @@ export const isIos = (): boolean => platform === 'ios';
 export const isAndroid = (): boolean => platform === 'android';
 
 export const convertDateFormat = (dateString: string): string => {
-  console.log("dateString", dateString)
+  console.log('dateString', dateString);
   const [month, day, year] = dateString.split('/');
   return `${year}-${month}-${day}`;
 };
@@ -352,6 +367,9 @@ export const convertDateToFormatMMDDYYYY = (dateString: string) => {
     console.log(error);
   }
 };
+export const removeSignature = (url: string) => {
+  return url ? url.split('?')[0] : url;
+}
 export const formatDate = (date: Date) => {
   return date
     .toLocaleDateString('en-US', {
@@ -401,7 +419,7 @@ export const changeSafeAreaViewConfig = (config: SafeAreaViewConfig) => {
   StatusBar.setBarStyle(config.statusBarStyle, true);
 };
 export const validateAge = (selectedDate: string) => {
-  const [month, day, year] = selectedDate.split('-').map(Number);
+  const [month, day, year] = selectedDate.split('/').map(Number);
   const selectedDateObj = new Date(year, month - 1, day);
   const today = new Date();
   const eighteenYearsAgo = new Date();
@@ -428,10 +446,10 @@ export const extractCountryCode = (phoneNumber: string) => {
 export const getCountryFlag = (countryCode: string) => {
   return countryCode
     ? countryCode
-      .toUpperCase()
-      .split('')
-      .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
-      .join('')
+        .toUpperCase()
+        .split('')
+        .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
+        .join('')
     : '';
 };
 export interface ApiErrorInterface {
@@ -451,21 +469,114 @@ export const getErrorMessage = (error: ApiErrorInterface) => {
   return message;
 };
 
-
 export const getRoleRole = (role: string) => {
   switch (role.toLowerCase()) {
     case 'member':
-      return 'Member'
+      return 'Member';
     case 'non_member':
-      return 'Non-Member'
+      return 'Non-Member';
     case 'host':
-      return 'Host'
+      return 'Host';
     default:
-      return 'Non-Member'
+      return 'Non-Member';
   }
 };
 
 export const dateFormat = (date: string, format: string) => {
+  return moment(date).format(format);
+};
 
-  return moment(date).format(format)
-}
+export const getPriorityRole = (roles: role[]) => {
+  let priorityRole = roles[0];
+  const hostRole = roles.find(role => role.roleName === 'host');
+  if (roles.length > 1 && hostRole) {
+    priorityRole = hostRole;
+  }
+  return priorityRole;
+};
+
+export const loginUser = ({
+  id,
+  roles,
+  token,
+  isGuest,
+  varifyStatus,
+  companyLogo,
+  profilePicture,
+}: {
+  token: string;
+  id: string;
+  isGuest: boolean;
+  varifyStatus: 0 | 1;
+  roles: role[];
+  profilePicture: string | undefined;
+  companyLogo: string | undefined;
+}) => {
+  console.log({ id, roles, token, isGuest, varifyStatus });
+  const dispatch = store.store.dispatch;
+  let priorityRole = getPriorityRole(roles);
+  dispatch(
+    setLoginData({
+      userId: id,
+      role: priorityRole.roleName,
+      roleId: priorityRole.roleId,
+      roles,
+      token,
+      isGuest,
+      varifyStatus,
+      companyLogo,
+      profilePicture,
+    }),
+  );
+};
+
+export const fetchUserProfile = async () => {
+  const dispatch = store.store.dispatch;
+  const authState = store.store.getState().auth;
+  const currentRole = authState.role;
+  const userId = authState.userId;
+
+  let apiUrl = '';
+  let apiMethod: 'get' | 'post' | 'put' | 'delete' = 'get';
+  let apiPayload = {};
+
+  if (currentRole) {
+    if (currentRole === ROLE.HOST) {
+      apiUrl = `v1/auth/host/${userId}/profile`;
+      apiMethod = 'get';
+      apiPayload = {};
+    } else {
+      if (authState.isGuest && currentRole === ROLE.NON_MEMBER) {
+        apiUrl = EndPoint.get_user_with_role_by_id;
+        apiMethod = 'post';
+        apiPayload = { id: userId };
+      } else {
+        apiUrl = EndPoint.user + userId;
+        apiMethod = 'get';
+        apiPayload = {};
+      }
+    }
+  }
+
+  try {
+    const response = await axiosController[apiMethod](apiUrl, apiPayload, {});
+    if (response.status === 200) {
+      dispatch(
+        setProfileData({
+          ...response.data,
+          profilePicture: response?.data?.imageUrl,
+        }),
+      );
+    }
+  } catch (err) {
+    const typedError = err as ApiErrorInterface;
+    FlashMessageComponent.show('error', getErrorMessage(typedError));
+  } finally {
+  }
+};
+
+export const switchProfile = () => {
+  // api call
+  // loginUser();
+  // fetchUserProfile;
+};

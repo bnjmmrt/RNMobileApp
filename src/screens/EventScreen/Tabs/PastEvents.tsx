@@ -87,7 +87,7 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
   }, [currentPage])
 
   const loadMore = () => {
-    if (currentPage < data?.data?.totalPages && !isLoading) {
+    if (events?.length < data?.data?.totalCount && !isLoading) {
       setCurrentPage(prev => prev + 1);
     }
   };

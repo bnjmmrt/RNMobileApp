@@ -1,6 +1,6 @@
 import { Platform, StyleSheet } from 'react-native';
 import { COLORS } from '../../../utils/constants';
-import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, Wp } from '../../../utils/dimensions';
+import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale, Wp } from '../../../utils/dimensions';
 
 const CreativeFocusScreenStyles = () =>
   StyleSheet.create({
@@ -15,7 +15,7 @@ const CreativeFocusScreenStyles = () =>
       paddingVertical: verticalMarginScale(10)
     },
     categoryContainer: {
-      marginTop: verticalMarginScale(20),
+      marginTop: verticalMarginScale(10),
       flexDirection: 'row',
       flexWrap: 'wrap',
     },
@@ -42,7 +42,7 @@ const CreativeFocusScreenStyles = () =>
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
-      bottom:Platform.OS==='android' ? 20 :0
+      bottom:Platform.OS==='android' ? 20 : 0
     },
   });
 

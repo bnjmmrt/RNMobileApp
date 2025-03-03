@@ -1,8 +1,8 @@
 import { TabItem } from 'src/component/ActiveTabBar/DynamicTabBar';
 
 export const BUTTON_LABLE = {
-  MAIL_SUBJECT:"Rumor Application Verification",
-  MAIL_BODY:"Hi Rumor Team, I'd like to verify my identity for my Rumor application.My verification code is: RUMORAPP",
+  MAIL_SUBJECT: "Rumor Application Verification",
+  MAIL_BODY: "Hi Rumor Team, I'd like to verify my identity for my Rumor application.My verification code is: RUMORAPP",
   ENTER: 'Enter',
   NEXT: 'Next',
   RSVP: 'RSVP',
@@ -62,7 +62,9 @@ export const BUTTON_LABLE = {
   INVITE_GUESTS: 'Invite Guests',
   INVITE_FROM_CONTACTS: 'Invite from Contacts',
   INVITE_MANUALLY: 'Invite Manually',
-  CLEAR: "Clear"
+  CLEAR: "Clear",
+  RELOAD:'Reload',
+  DELETE:'Delete'
 } as const;
 
 export const LABLE = {
@@ -75,7 +77,7 @@ export const LABLE = {
   RUMOR_WILL_SEND_YOU_A_TEXT_WITH_A_VERIFICATION_CODE:
     'Rumor will send you a text with a verification code.',
   EROOR_ENTER_PHONE_NUMBER: 'Please enter a phone number.',
-  EROOR_ENTER_VALID_PHONE_NUMBER:'Please enter a valid phone number.',
+  EROOR_ENTER_VALID_PHONE_NUMBER: 'Please enter a valid phone number.',
   EROOR_ENTER_EMAIL: 'Please enter a valid email address',
   ERROR_VERIFY_CODE:
     'The code you entered cannot be verified. Please try again.',
@@ -127,31 +129,31 @@ export const LABLE = {
   IDENTITY_VERIFICATION_SUBTITLE: 'This helps us verify your online identity.',
   CHOOSE_YOUR_INTERESTS: 'Choose your interests',
   CHOOSE_YOUR_INTERESTS_SUBTITLE:
-    "Select topics of interests so we can curate experiences you'll want to attend.",
+    "Select topics of interests so we can curate experiences\nyou'll want to attend.",
   ADD_A_PHOTO: 'Add a photo',
   ADD_A_PHOTO_SUBTITLE: 'Upload a profile photo to complete your profile.',
   CHAT_WITH_HOST: 'Chat\nwith hosts.',
   SEARCH_FOR_EVENT: 'Search for an event…',
-  ACCESS_THE_MOST_VALUABLE_CALENDAR: 'Access the most valuable calendar.',
+  ACCESS_THE_MOST_VALUABLE_CALENDAR: 'Access the most \n valuable calendar.',
   TWO_MINUTES_TO_COMPLETE: '~2 min to Complete',
-  STREAMLINE_YOUR_LIFESTYLE: 'Streamline your lifestyle.',
+  STREAMLINE_YOUR_LIFESTYLE: 'Streamline\nyour lifestyle.',
   MANAGE_YOUR_EVENTS:
     'Manage your events, chats, and passes—all in one\nplace.',
   CONNECT_WITH_WORLD:
-    "Connect with the world's top event organizers. Get discovered and invited to events that matter.",
+    "Connect with the world's top event organizers. Get\ndiscovered and invited to events that matter.",
   CONNECT_DIRECTLY_WITH_PEOPLE:
-    'Connect directly with the people behind the events. Request invites and confirm details seamlessly.',
-  UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS: 'Unlock access to exclusive events',
+    'Connect directly with the people behind the events.\nRequest invites and confirm details seamlessly.',
+  UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS: 'Unlock access\nto exclusive events.',
   GET_DISCOVERY_BY_THE_WORLD:
     "Get discovered by the world's top event organizers and receive invites to events that matter.",
   DISCOVER_EXPERIENCES_ACROSS_ART:
     'Discover experiences across art, fashion, music, and more — listed by renowned hosts.',
   DISCOVER_EXPERIENCES_IN_ART:
-    'Discover experiences in art, fashion, music, and more—curated by renowned hosts.',
+    'Discover experiences in art, fashion, music, and more \n—curated by renowned hosts.',
   COMPLETE_VERIFICATION: 'Complete Verification',
   SEND_DIRECT_MSG_CODE: 'Send direct message with the code:',
   WE_WILL_REVIEW_APP:
-    "We'll review your application after we receive your message.",
+    "We'll review your application after we receive\nyour message.",
   EMAIL_THE_CODE: 'Email the code to:',
   DONT_USE_INSTAGRAM: "Don't use Instagram?",
   REFERRAL_CODE: 'Referral Code',
@@ -164,9 +166,9 @@ export const LABLE = {
     'Request a referral from a Rumor member to boost your application.',
   CONTACTS: 'Contacts',
   INVITE_FRIENDS_TO: 'Invite friends to fast track your membership approval.',
-  YOU_ARE_ON_WAITLIST: "You're on the waitlist.",
+  YOU_ARE_ON_WAITLIST: "You're on\nthe waitlist.",
   FULL_ACCESS_UNLOCK:
-    'Full access will be unlocked once your application is approved.',
+    'Full access will be unlocked once your application is\napproved.',
   FASTRACK_YOUR_APPLICATION: 'Want to fast-track your application?',
   REQUEST_REFERRAL_FROM_RUMOR: 'Request referrals from Rumor members.',
   INVITE_YOUR_FRIEND: 'Invite your friends to join Rumor.',
@@ -249,7 +251,14 @@ export const LABLE = {
   ACCESS_CALENDAR: 'Calendar access is required to add events.',
   PERMISSION_DENIED: 'Permission Denied',
   VIP_TOOLTIP_CONTENT: 'Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.',
+  EVENT_SETTING_INFO: "Edit event settings on Rumor’s web platform.\nClick the button below to take you there.",
   MANAGE_INVITE: 'Manage Invite',
+  YOU_ARE_OFFLINE:'You’re Offline',
+  NOTIFICATIONS:'Notifications',
+  NO_NOTIFICATIONS_YET:'No notifications yet',
+  NOTIFICATIONS_SUB_TITLE:"We'll let you know when updates arrive!",
+  PROFILE_UPDATED_SUCCESSFULLY:'Profile Updated Successfully',
+  PLEASE_SELECT_ONE: 'Please select one'
 };
 export const EVENT = {
   EDIT_EVENT: 'Edit Event',
@@ -263,10 +272,20 @@ export const EVENT = {
   EVENT_DESCRIPTION: 'Event Description',
   HIDE_ADDRESS: 'Hide full address for confirmed guests',
   FEATURE_TALENT: 'Featured Talent',
-  TOTAL_CONFIRMED: "Total Confirmed:",
-  TOTAL_CHECKEDIN: "Total Checked-In:",
+  TOTAL_CONFIRMED: 'Total Confirmed:',
+  TOTAL_CHECKEDIN: 'Total Checked-In:',
+  VISIBILITY: 'Visibility',
+  EVENT_TYPE: 'Event Type',
+  PLUS_1_LIMIT: 'Plus 1 Limit',
+  AGE_LIMIT: 'Age Limit',
+  EVENT_PUBLISH_SETTINGS: 'Event Publish Settings',
+  TICKET_TYPES: 'Ticket Types',
+  UTILIZE_QR_CODES_FOR_EVENT_CHECK_IN: 'Utilize QR codes for event check-in?',
+  EVENT_COLLABORATORS: 'Event Collaborators',
+  QUESTIONNAIRE: 'Questionnaire',
+  UPDATE_SETTINGS_ON_WEB: 'Update Settings on Web'
+};
 
-}
 
 export const PROFILE = {
   EDIT_PROFILE: 'Edit Profile',
@@ -324,11 +343,13 @@ export const ERROR_MESSAGE = {
   WEBSITE_ERROR: 'Please enter your URL.',
   COMPANY_NAME_ERROR: 'Company Name is required',
   TICKET_TYPE_ERROR: 'Select at least one ticket type',
-  COLLABORATOR_ERROR:'Choose a collaborator',
-  ANNOUNCEMENT_DETAIL_ERROR:"Enter announcement details",
-  FILE_SIZE_EXCEED:"File size exceeds the 5MB limit. Please upload a smaller file.",
-  SOMETHING_WENT_WRONG:"Something went wrong, Please try again later",
+  COLLABORATOR_ERROR: 'Choose a collaborator',
+  ANNOUNCEMENT_DETAIL_ERROR: "Enter announcement details",
+  FILE_SIZE_EXCEED: "File size exceeds the 5MB limit. Please upload a smaller file.",
+  SOMETHING_WENT_WRONG: "Something went wrong, Please try again later",
   TCKET_ERROR_MESSAGE: 'Ticket is not associated with a guest for this event.',
+  NO_INTERNET:'You’re not connected to the internet.\nPlease check your connection and try again.',
+  EMPTY: '',
 };
 
 export const COLORS = {
@@ -678,11 +699,11 @@ export const ANNOUNCCEMENTS_DATA = [
     date: '10/05/2025',
     imageKeyUrl: 'https://picsum.photos/200/300',
     media: [],
-    time:'Today, 4:00PM',
-    profileImg:'',
-    addedBy:'Event Collaborator',
-    recipientsCount:'2000',
-    ticketType:['All Ticket Types','Revolve','Uncommon']
+    time: 'Today, 4:00PM',
+    profileImg: '',
+    addedBy: 'Event Collaborator',
+    recipientsCount: '2000',
+    ticketType: ['All Ticket Types', 'Revolve', 'Uncommon']
   },
   {
     id: '1',
@@ -690,11 +711,11 @@ export const ANNOUNCCEMENTS_DATA = [
     description: LABLE.DUMMY_TEXT,
     date: '10/05/2025',
     media: [],
-    time:'Today, 9:00PM',
-    profileImg:'',
-    addedBy:'Event Collaborator 2',
-    recipientsCount:'908',
-    ticketType:['All Ticket Types','Uncommon']
+    time: 'Today, 9:00PM',
+    profileImg: '',
+    addedBy: 'Event Collaborator 2',
+    recipientsCount: '908',
+    ticketType: ['All Ticket Types', 'Uncommon']
   },
   {
     id: '1',
@@ -711,11 +732,11 @@ export const ANNOUNCCEMENTS_DATA = [
         uri: 'https://www.aeee.in/wp-content/uploads/2020/08/Sample-pdf.pdf',
       },
     ],
-    time:'Today, 6:00PM',
-    profileImg:'',
-    addedBy:'Event Collaborator 3',
-    recipientsCount:'1852',
-    ticketType:['Revolve','Uncommon']
+    time: 'Today, 6:00PM',
+    profileImg: '',
+    addedBy: 'Event Collaborator 3',
+    recipientsCount: '1852',
+    ticketType: ['Revolve', 'Uncommon']
   },
   {
     id: '1',
@@ -727,11 +748,11 @@ export const ANNOUNCCEMENTS_DATA = [
       { type: 'pdf', name: 'Guests File Rumor', size: '9.83 MB' },
       { type: 'image', uri: 'https://picsum.photos/200/300' },
     ],
-    time:'4:00PM',
-    profileImg:'',
-    addedBy:'Event Collaborator 4',
-    recipientsCount:'1986',
-    ticketType:['All Ticket Types']
+    time: '4:00PM',
+    profileImg: '',
+    addedBy: 'Event Collaborator 4',
+    recipientsCount: '1986',
+    ticketType: ['All Ticket Types']
   },
   // Add more objects for additional list items
 ];

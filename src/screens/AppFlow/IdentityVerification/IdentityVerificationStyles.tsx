@@ -13,16 +13,17 @@ const ProfilePhotoScreenStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
-      bottom: Platform.OS === 'android' ? 20 : 0
+      bottom: Platform.OS === 'android' ? 20 : -10
     },
     btnSmallStyle: {
       width: 'auto',
+      fontFamily: fontFamily.RomieTrial,
       height: verticalScale(40),
       borderRadius: radiusScale(100),
       alignSelf: 'center',
       backgroundColor: COLORS.tabBorderColor,
-      marginTop: Hp(1),
-      paddingHorizontal: 10
+      marginTop: Hp(2),
+      paddingHorizontal: 5
     },
     contentContainer: {
       flex: 1,
@@ -59,7 +60,7 @@ const ProfilePhotoScreenStyles = () => {
       borderRadius: radiusScale(8),
       alignItems: 'center',
       padding: verticalMarginScale(15),
-      marginTop: verticalMarginScale(20),
+      marginTop: verticalMarginScale(25),
     },
     title: {
       color: COLORS.black,
@@ -70,7 +71,7 @@ const ProfilePhotoScreenStyles = () => {
       color: COLORS.light_gray,
       fontSize: fontScale(14),
       fontFamily: fontFamily.ABCDiatype_Regular,
-      marginVertical: Hp(0),
+      marginVertical: Hp(0.5),
       textAlign: 'center',
       paddingHorizontal: horizontalMarginScale(10)
     },
@@ -94,6 +95,7 @@ const ProfilePhotoScreenStyles = () => {
     btnRumor: {
       color: COLORS.black,
       fontSize: fontScale(11),
+      fontFamily: fontFamily.RomieTrial
     },
     iconStyle: {
       height: verticalMarginScale(20),
@@ -102,14 +104,25 @@ const ProfilePhotoScreenStyles = () => {
     },
     emailStyle: {
       color: COLORS.black,
-      fontWeight: 'bold',
-      left: -5
+      fontFamily: fontFamily.ABCDiatype_Bold
     },
     divider: {
       height: 0.5,
       backgroundColor: COLORS.tabBorderColor,
       width: horizontalScale(200),
       marginTop: verticalMarginScale(20)
+    },
+    btnRumorContainer: {
+      backgroundColor: COLORS.tabBorderColor,
+      borderRadius: 5,
+      padding: 3,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    rumorTextContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
     }
   });
 };

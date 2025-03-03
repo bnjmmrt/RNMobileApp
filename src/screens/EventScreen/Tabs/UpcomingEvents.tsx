@@ -82,7 +82,7 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
   }, [currentPage])
 
   const loadMore = () => {
-    if (currentPage < data?.data?.totalPages && !isLoading) {
+    if (events?.length < data?.data?.totalCount && !isLoading) {
       setCurrentPage(prev => prev + 1);
     }
   };
@@ -108,11 +108,15 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <EventEmptyRecord
+          {searchText == "" ? <EventEmptyRecord
             title={tab.title}
             subTitle={tab.subTitle}
             isLoading={isLoading}
-          />
+          /> : <EventEmptyRecord
+            title={tab.title}
+            subTitle={"Please refine your search"}
+            isLoading={isLoading}
+          />}
         </View>
       )}
     </View>

@@ -17,6 +17,7 @@ import DiscoverEventsFilters from './DiscoverEventsFilters';
 import { FilterOptionTypes } from './FilterOptions';
 import { styles } from './style';
 import { DateType } from 'react-native-ui-datepicker';
+import { Keyboard, Platform } from 'react-native';
 
 export type SelectedSingleFilter = {
   type: FilterOptionTypes;
@@ -78,6 +79,7 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
 
     const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
     const [disableApplyCta, setDisableApplyCta] = useState<boolean>(false);
+    const [isKeyboardOpen, setIsKeyboardOpen] = useState<boolean>(false);
 
     const onPressApplyFilter = async () => {
       const { queryString, filtersCount } = getFilterQuery(selectedFilters);
@@ -107,14 +109,36 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
 
     useEffect(() => {
       if (selectedFiltersInParent) {
+        console.log('innnnn');
+
         setSelectedFilters(selectedFiltersInParent);
       }
     }, [selectedFiltersInParent]);
 
+    useEffect(() => {
+      const showEvent =
+        Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+      const hideEvent =
+        Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+      const keyboardShowListener = Keyboard.addListener(showEvent, () => {
+        setIsKeyboardOpen(true);
+      });
+
+      const keyboardHideListener = Keyboard.addListener(hideEvent, () => {
+        setIsKeyboardOpen(false);
+      });
+
+      return () => {
+        keyboardShowListener.remove();
+        keyboardHideListener.remove();
+      };
+    }, []);
+
     return (
       <BottomSheetComponent
         ref={sheetRef}
-        snapPoints={[`${verticalScale(88)}%`]}
+        snapPoints={[`${verticalScale(isKeyboardOpen ? 100 : 88)}%`]}
         enableDynamicSizing={false}
         onClose={() => {}}>
         <BottomSheetView style={styles.container}>
@@ -135,20 +159,22 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
             />
           ) : null}
 
-          <BottomSheetView style={styles.actionsContainer}>
-            <Button
-              title="Clear All"
-              style={styles.clearAllCta}
-              onPress={onPressClearFilter}
-            />
-            <Button
-              title="Apply"
-              colorTheme="dark"
-              style={styles.applyCta}
-              onPress={onPressApplyFilter}
-              disabled={disableApplyCta}
-            />
-          </BottomSheetView>
+          {!isKeyboardOpen ? (
+            <BottomSheetView style={styles.actionsContainer}>
+              <Button
+                title="Clear All"
+                style={styles.clearAllCta}
+                onPress={onPressClearFilter}
+              />
+              <Button
+                title="Apply"
+                colorTheme="dark"
+                style={styles.applyCta}
+                onPress={onPressApplyFilter}
+                disabled={disableApplyCta}
+              />
+            </BottomSheetView>
+          ) : null}
         </BottomSheetView>
       </BottomSheetComponent>
     );

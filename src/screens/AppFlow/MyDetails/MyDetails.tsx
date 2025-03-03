@@ -30,13 +30,9 @@ import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
   const userDetails = useSelector((state: RootState) => state.appFlow);
-  const isEmailPhoneBothVerified = useSelector(
-    (state: RootState) => state.appFlow.isEmailPhoneBothVerified,
-  );
+  const role = useSelector((state: RootState) => state.auth.role);
 
   const styles = EmailPhoneStyles();
   const firstNameRef = useRef<any>(null);
@@ -54,7 +50,7 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
       dispatch(setFirstName(firstNameRef.current.inputText));
       dispatch(setLastName(lastNameRef.current.inputText));
       dispatch(setIsEmailVerified(false));
-      if (loginData?.roles[0]?.roleName === ROLE.HOST) {
+      if (role === ROLE.HOST) {
         dispatch(setPageProgress(3));
         navigation.navigate('GenderScreen');
       } else {
