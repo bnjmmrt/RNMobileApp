@@ -91,7 +91,8 @@ export const EndPoint = {
   get_user_with_role_by_email: 'v1/auth/get-user-with-roles-by-email',
   edit_event: 'v1/events/event/',
   check_phone: 'v1/auth/check-phone-number',
-  check_email: 'v1/auth/check-email'
+  check_email: 'v1/auth/check-email',
+  switch_profile: 'v1/auth/switch-profile',
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

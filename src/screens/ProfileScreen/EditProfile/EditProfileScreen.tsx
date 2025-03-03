@@ -14,7 +14,7 @@ import Button from '../../../component/Button';
 import Input from '../../../component/Input/Input';
 import Header from '../../../component/Header/Header';
 // import {useGetPostsQuery} from '../../../redux/slices/apiSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/slices';
 import useApi from '../../../axios/useApi';
 import { EndPoint } from '../../../ApiManager/config';
@@ -35,17 +35,23 @@ import { FlashMessageComponent } from 'src/component/FlashMessageComponent/Flash
 import { extractCountryCode } from 'src/utils/functions';
 import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
 
-interface EditProfileScreenProps extends NativeStackScreenProps<any, any> { }
+interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
-const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => {
+const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
+  navigation,
+}) => {
   const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const profileData = useSelector(
-    (state: RootState) => state.appFlowApiData?.profileData,
+
+  const { userId, isGuest, profileData, role } = useSelector(
+    (state: RootState) => ({
+      isGuest: state.auth.isGuest,
+      role: state.auth.role,
+      userId: state.auth.userId,
+      profileData: state.appFlowApiData.profileData,
+    }),
+    shallowEqual,
   );
-  const userId = useSelector((state: RootState) => state.auth.userId);
-  const isGuest = useSelector((state: RootState) => state.auth.isGuest);
 
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
@@ -58,9 +64,13 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
     return genderList.find(item => item.value === gender);
   };
 
-  const [gender, setGender] = useState<any>(!loginData?.isInvited && getGender(profileData.gender));
+  const [gender, setGender] = useState<any>(
+    !isGuest && getGender(profileData.gender),
+  );
   const [isToastShown, setIsToastShown] = useState(false);
-  const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>(!loginData?.isInvited && profileData?.focuses);
+  const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>(
+    !isGuest && profileData?.focuses,
+  );
 
   useEffect(() => {
     if (profileData?.email && profileData?.email !== '') {
@@ -78,7 +88,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
 
   const fetchUserById = async () => {
     try {
-      const response: any = await apiRequest('post',
+      const response: any = await apiRequest(
+        'post',
         EndPoint.get_user_with_role_by_id,
         { id: userId },
       );
@@ -91,10 +102,11 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
   };
 
   const onConfirmClick = async () => {
-    if (isGuest && loginData.roles[0]?.roleName === ROLE.NON_MEMBER) {
+    if (isGuest && role === ROLE.NON_MEMBER) {
       if (
         firstNameRef.current.validateInputs() &&
-        lastNameRef.current.validateInputs()) {
+        lastNameRef.current.validateInputs()
+      ) {
         const requestObject: any = {
           // email: profileData?.email,
           firstName: firstNameRef.current.inputText,
@@ -107,8 +119,11 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
           requestObject,
         );
         if (response.status === 200) {
-          fetchUserById()
-          FlashMessageComponent.show('success', LABLE.PROFILE_UPDATED_SUCCESSFULLY);
+          fetchUserById();
+          FlashMessageComponent.show(
+            'success',
+            LABLE.PROFILE_UPDATED_SUCCESSFULLY,
+          );
           handleBackPress();
         }
       }
@@ -118,7 +133,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
       lastNameRef.current.validateInputs() &&
       birthDayRef.current.validateBirthDate() &&
       baseCityRef.current.validateBaseCity() &&
-      selectedCreativeFocus && selectedCreativeFocus.length > 0 &&
+      selectedCreativeFocus &&
+      selectedCreativeFocus.length > 0 &&
       !isToastShown
     ) {
       const requestObject: any = {
@@ -130,7 +146,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
           placeId: baseCityRef.current.selectedCity.placeId,
           regionCode: '',
         },
-        birthDate: birthDayRef.current.selectedDate,//convertDateFormat(birthDayRef.current.selectedDate),
+        birthDate: birthDayRef.current.selectedDate, //convertDateFormat(birthDayRef.current.selectedDate),
         // email: profileData?.email,
         firstName: firstNameRef.current.inputText,
         gender: gender?.value,
@@ -152,18 +168,25 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
           EndPoint.user + userId,
         );
         if (responseUser.status === 200) {
-          dispatch(setProfileData({...responseUser?.data, profilePicture: responseUser?.data?.imageUrl}));
+          dispatch(
+            setProfileData({
+              ...responseUser?.data,
+              profilePicture: responseUser?.data?.imageUrl,
+            }),
+          );
         }
-        FlashMessageComponent.show('success', LABLE.PROFILE_UPDATED_SUCCESSFULLY);
+        FlashMessageComponent.show(
+          'success',
+          LABLE.PROFILE_UPDATED_SUCCESSFULLY,
+        );
         handleBackPress();
       }
     }
   };
 
   const handleBackPress = () => {
-    navigation.goBack()
+    navigation.goBack();
   };
-
 
   return (
     <View style={styles.container}>
@@ -232,7 +255,10 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
               />
 
               <Text style={[styles.label]}>{LABLE.BIRTHDAY}</Text>
-              <DatePickerComponent ref={birthDayRef} birthDate={profileData.dateOfBirth} />
+              <DatePickerComponent
+                ref={birthDayRef}
+                birthDate={profileData.dateOfBirth}
+              />
 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
               <BaseCityComponent location={{address: profileData?.city, placeId: profileData?.placeId}} ref={baseCityRef} />
@@ -254,11 +280,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
               />
             </View>
           )}
-
         </View>
         {isToastShown && (
           <View style={{ marginTop: 100 }}>
-
             <Toast
               message={'Please select at least one'}
               onClose={() => setIsToastShown(false)}
@@ -266,7 +290,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
           </View>
         )}
       </ScrollView>
-
 
       <Button
         disabled={false}

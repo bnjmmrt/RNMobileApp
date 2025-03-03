@@ -1,8 +1,18 @@
 import React, { useRef, forwardRef } from 'react';
 import { Platform, View, StyleSheet } from 'react-native';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
-import { horizontalMarginScale, Hp, verticalMarginScale, verticalScale } from '../../utils/dimensions';
-import { BUTTON_LABLE, COLORS, ERROR_MESSAGE, LABLE } from '../../utils/constants';
+import {
+  horizontalMarginScale,
+  Hp,
+  verticalMarginScale,
+  verticalScale,
+} from '../../utils/dimensions';
+import {
+  BUTTON_LABLE,
+  COLORS,
+  ERROR_MESSAGE,
+  LABLE,
+} from '../../utils/constants';
 import Title from '../Title/Title';
 import Input from '../Input/Input';
 import Button from '../Button';
@@ -14,9 +24,7 @@ import { useSelector } from 'react-redux';
 
 const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   const inputRef = useRef(null);
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
   const userId = useSelector((state: RootState) => state.auth.userId);
-
 
   const [submitReferralCode, { isLoading }] = useSubmitReferralCodeMutation();
   const handleSubmit = async () => {
@@ -42,7 +50,9 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
       ref={ref}
       snapPoints={[`${verticalScale(45)}%`]}
       onClose={() => console.log(ref)}
-    // footer={}
+      activeSafeAreaViewColor={'#121f22'}
+      inActiveSafeAreaViewColor={'#121f22'}
+      // footer={}
     >
       <BottomSheetScrollView style={styles.container}>
         <Title
@@ -66,7 +76,6 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
           onPress={handleSubmit}
         />
       </BottomSheetScrollView>
-
     </BottomSheetComponent>
   );
 });
@@ -78,7 +87,7 @@ const styles = StyleSheet.create({
   btnStyle: {
     borderRadius: 100,
     marginTop: verticalMarginScale(40),
-    height: 48
+    height: 48,
   },
 });
 
