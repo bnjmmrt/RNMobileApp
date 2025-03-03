@@ -34,6 +34,15 @@ const EnterEmailPhoneStyles = () => {
     spacer: {
       flex: 1,
     },
+    label: {
+      // paddingVertical: horizontalMarginScale(2),
+      fontSize: fontScale(14),
+      paddingTop: verticalMarginScale(8),
+      marginBottom: 3,
+      color: COLORS.black,
+      fontWeight: '500',
+      lineHeight: 16,
+    },
   });
 };
 
