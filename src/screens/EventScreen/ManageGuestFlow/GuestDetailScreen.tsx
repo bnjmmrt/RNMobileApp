@@ -32,6 +32,7 @@ import TicketTypeBottomSheet, {
   TicketType,
 } from '../InviteGuestInEventFlow/TicketTypeBottomSheet';
 import DeclineBottomSheet from '../Guest/DeclineBottomSheet';
+import GuestVouches from '../Guest/GuestVouches';
 import { EventGuest } from '../types';
 import {
   useManageGuestMutation,
@@ -456,6 +457,13 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                 avatar: guestProfile.addedByPicture || '',
               }}
               onPress={() => handleProfile(guestProfile.addedById)}
+            />
+          )}
+
+          {Boolean( guestDetails?.data.vouches.length > 0) && (
+            <GuestVouches
+              requestSource="In-App"
+              vouches={ guestDetails?.data.vouches}
             />
           )}
         </View>
