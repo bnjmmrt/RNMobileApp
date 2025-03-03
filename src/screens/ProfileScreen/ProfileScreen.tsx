@@ -31,7 +31,6 @@ import { environment } from '../../../environments/environment';
 import { EndPoint } from '../../ApiManager/config';
 import IMAGES from '../../assets/images/index';
 import useApi from '../../axios/useApi';
-import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 import EditPictureBottomSheet from '../../component/BottomSheet/EditPictureBottomSheet';
 import TermsAndPolicy from '../../component/TermsAndPlolicy/TermsAndPolicy';
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
@@ -42,7 +41,7 @@ import ProfileScreenStyle from './ProfileScreenStyle';
 import ProfileTopView from './ProfileTopView';
 
 // Define the type for navigation props
-interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
+interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
 interface ListItem {
   id: string;
@@ -391,90 +390,86 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         styles.container,
         { backgroundColor: !isGuest ? COLORS.black2 : COLORS.white },
       ]}>
-      {isGuest ? (
-        <BeforeAppStaticComponent isChatScreen={false} />
-      ) : (
-        <View style={{ backgroundColor: COLORS.white }}>
-          {/* <HeaderComponent isDarkTheme={false} /> */}
+      <View style={{ backgroundColor: COLORS.white }}>
+        {/* <HeaderComponent isDarkTheme={false} /> */}
 
-          <ScrollView>
-            <ProfileTopView
-              editPhotoClick={editPhotoClick}
-              profilePic={
-                role?.toLocaleLowerCase() === 'host'
-                  ? companyLogo
-                  : profilePicture
-              }
-              name={getUserName()}
-              loading={loading}
-              // role={loginData?.roles[0].roleName}
-              role={roleText(role)}
-            />
-            {listItems.map(item => {
-              return (
-                <ProfileListItem
-                  key={item.id}
-                  item={item}
-                  onPress={item.onPress}
-                />
-              );
-            })}
+        <ScrollView>
+          <ProfileTopView
+            editPhotoClick={editPhotoClick}
+            profilePic={
+              role?.toLocaleLowerCase() === 'host'
+                ? companyLogo
+                : profilePicture
+            }
+            name={getUserName()}
+            loading={loading}
+            // role={loginData?.roles[0].roleName}
+            role={roleText(role)}
+          />
+          {listItems.map(item => {
+            return (
+              <ProfileListItem
+                key={item.id}
+                item={item}
+                onPress={item.onPress}
+              />
+            );
+          })}
 
-            <TermsAndPolicy
-              setUrl={setWebUrl}
-              type="small"
-              showMessage={false}
-            />
-
-            <TouchableOpacity
-              onPress={() => handleLogoutPress()}
-              style={{ marginBottom: verticalScale(50) }}>
-              <Text style={styles.textBelowStyle}>{PROFILE.LOGOUT}</Text>
-            </TouchableOpacity>
-          </ScrollView>
-
-          <WebViewBottomSheet url={URL} ref={bottomSheetRef} />
-
-          {isShown && (
-            <ContactSupporrtBottomSheet
-              // setLocation={setSelectedCity}
-              setIsShown={setIsShown}
-            />
-          )}
-          {/* <ContactSupporrtBottomSheet ref={contactSupportBottomSheetRef}/> */}
-          <EditPictureBottomSheet
-            ref={editPhotoBottomSheetRef}
-            onPress={openCamera}
-            submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
-            cancelButtonText={BUTTON_LABLE.CANCEL}
-            snapPoints={[Platform.OS == 'android' ? '20%' : '20%']}
-            image={null}
+          <TermsAndPolicy
+            setUrl={setWebUrl}
+            type="small"
+            showMessage={false}
           />
 
-          <EditPictureBottomSheet
-            ref={savePhotoBottomSheetRef}
-            onPress={savePhoto}
-            submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
-            cancelButtonText={BUTTON_LABLE.CANCEL}
-            snapPoints={[Platform.OS == 'android' ? '50%' : '50%']}
-            image={image}
-          />
+          <TouchableOpacity
+            onPress={() => handleLogoutPress()}
+            style={{ marginBottom: verticalScale(50) }}>
+            <Text style={styles.textBelowStyle}>{PROFILE.LOGOUT}</Text>
+          </TouchableOpacity>
+        </ScrollView>
 
-          <EditPictureBottomSheet
-            ref={logoutBottomSheetRef}
-            title="Are you sure you want to log out?"
-            onPress={logOut}
-            submitButtonText={BUTTON_LABLE.CONFIRM}
-            cancelButtonText={BUTTON_LABLE.CANCEL}
-            snapPoints={[Platform.OS == 'android' ? '40%' : '30%']}
-            image={null}
+        <WebViewBottomSheet url={URL} ref={bottomSheetRef} />
+
+        {isShown && (
+          <ContactSupporrtBottomSheet
+            // setLocation={setSelectedCity}
+            setIsShown={setIsShown}
           />
-          <DeleteAccountBottomSheet
-            ref={deleteAccountBottomSheetRef}
-            onPress={deleteAccount}
-          />
-        </View>
-      )}
+        )}
+        {/* <ContactSupporrtBottomSheet ref={contactSupportBottomSheetRef}/> */}
+        <EditPictureBottomSheet
+          ref={editPhotoBottomSheetRef}
+          onPress={openCamera}
+          submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
+          cancelButtonText={BUTTON_LABLE.CANCEL}
+          snapPoints={[Platform.OS == 'android' ? '20%' : '20%']}
+          image={null}
+        />
+
+        <EditPictureBottomSheet
+          ref={savePhotoBottomSheetRef}
+          onPress={savePhoto}
+          submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
+          cancelButtonText={BUTTON_LABLE.CANCEL}
+          snapPoints={[Platform.OS == 'android' ? '50%' : '50%']}
+          image={image}
+        />
+
+        <EditPictureBottomSheet
+          ref={logoutBottomSheetRef}
+          title="Are you sure you want to log out?"
+          onPress={logOut}
+          submitButtonText={BUTTON_LABLE.CONFIRM}
+          cancelButtonText={BUTTON_LABLE.CANCEL}
+          snapPoints={[Platform.OS == 'android' ? '40%' : '30%']}
+          image={null}
+        />
+        <DeleteAccountBottomSheet
+          ref={deleteAccountBottomSheetRef}
+          onPress={deleteAccount}
+        />
+      </View>
     </View>
   );
 };
