@@ -158,6 +158,7 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
               : LABLE.WHATS_YOUR_EMAIL_SUBTITLE
           }
         />
+        <View style={{height: 10}}/>
         {isEmailVerified === 1 ? (
           <PhoneNumberInput ref={phoneNumberInputRef} />
         ) : (

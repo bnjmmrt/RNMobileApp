@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   },
   dontGetCodeText: {
     fontFamily: fontFamily.ABCDiatype_Regular,
-    marginEnd: 5,
+    marginEnd: 0,
     color: COLORS.black,
   },
   resendText: {

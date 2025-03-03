@@ -187,6 +187,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
           title={LABLE.ENTER_YOUR_VERIFICATION_CODE}
           subTitle={`${LABLE.SEND_TO}${sendToId}`}
         />
+         <View style={{height: 15}} />
         <OTPComponent
           ref={otpInputRef}
           performCodeVerification={verifyCode}

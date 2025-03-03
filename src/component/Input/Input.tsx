@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: horizontalMarginScale(12),
-    height: verticalScale(50),
+    height: verticalScale(56),
   },
   multilineInputContainer: {
     height: verticalScale(160),

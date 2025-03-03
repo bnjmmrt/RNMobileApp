@@ -208,6 +208,8 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
           subTitle={LABLE.IDENTITY_VERIFICATION_SUBTITLE}
         />
         <Input
+          otherStyle={{marginTop: 15}}
+          inputFieldContainerStyle={{height: 60}}
           ref={usernameRef}
           placeholder={'@Username'}
           leftImage={IMAGES.instagramLogo}
@@ -220,7 +222,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
             <Text style={styles.numberText}>1</Text>
           </View>
           <Text style={styles.subTitle}>{LABLE.SEND_DIRECT_MSG_CODE}</Text>
-          <View style={styles.rumorTextContainer}>
+          <View style={[styles.rumorTextContainer, {marginTop: -5}]}>
             <View style={styles.btnRumorContainer}>
               <Text style={styles.btnRumor}>{LABLE.RUMORAPP}</Text>
             </View>

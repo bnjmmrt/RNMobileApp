@@ -55,6 +55,7 @@ const EditPictureBottomSheet = forwardRef(
             </View>
 
           )}
+          <View style={{height: 5}}/>
           {props?.eventImage &&
             <FastImage
               source={{
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     height: 48
   },
   clearButton: {
-    borderWidth: horizontalScale(1),
+    borderWidth: 2,
     backgroundColor: COLORS.white,
     borderColor: COLORS.black,
   },

@@ -28,7 +28,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
     useCallback(() => {
       if (!hasFullAccess && role !== 'non_member') {
         changeSafeAreaViewConfig({
-          ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
+          ...SAFEWAREAVIEW_CONFIG.STATIC_GRADIENT_SCHEME,
           showBottomSafeAreaView: false,
         });
       }
