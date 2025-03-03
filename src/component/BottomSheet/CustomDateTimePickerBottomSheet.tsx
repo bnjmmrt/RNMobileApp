@@ -35,7 +35,7 @@ const CustomDateTimePickerBottomSheet = forwardRef((props: Props, ref) => {
     return (
         <BottomSheetComponent
             ref={ref}
-            snapPoints={[Platform.OS === 'ios' ? '80%' : '78%']}
+            snapPoints={[Platform.OS === 'ios' ? '82%' : '82%']}
             onClose={() => console.log(ref)}>
             <View style={styles.container}>
                 <Text style={styles.title}>{"Date & Time"}</Text>
@@ -47,7 +47,6 @@ const CustomDateTimePickerBottomSheet = forwardRef((props: Props, ref) => {
                             <DateTimePicker
                                 mode="single"
                                 timePicker
-                                is24hour={false}
                                 minDate={props?.minDate || new Date()}
                                 timePickerDecelerationRate={'fast'}
                                 date={selectedDate.toString()}

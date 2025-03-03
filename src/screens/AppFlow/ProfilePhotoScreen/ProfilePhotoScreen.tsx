@@ -145,6 +145,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
                 <AvatarInitials
                   name={userDetails?.firstName + ' ' + userDetails?.lastName}
                   size={48}
+                  listing={false}
                 />
               </View>
             )}
@@ -163,11 +164,10 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
             onPencilClick={openPicker}
             submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
             cancelButtonText={BUTTON_LABLE.CANCEL}
-            snapPoints={[Platform.OS == 'android' ? '50%' : '50%']}
+            snapPoints={[Platform.OS == 'android' ? '50%' : '48%']}
             image={image}
           />
         </View>
-        {/* {loading && <Text>Uploading ...</Text>} */}
         {/* Render profile photo */}
         {isToastShown && (
           <Toast

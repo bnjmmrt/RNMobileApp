@@ -30,7 +30,6 @@ const ReferralScreen: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'referrals' | 'vouches'>(
     'referrals',
   );
-  const loginData = useSelector((state: RootState) => state.auth?.loginData);
   const inviteFriendSheetRef = useRef<any>(null);
   const { goBack } = useNavigation();
   const { requestContactPermission, permissionGranted } = useContacts();
@@ -59,21 +58,28 @@ const ReferralScreen: React.FC = () => {
   const updateReferrel = async (id: string, status: boolean) => {
     const response: any = await apiRequest(
       'put',
-      EndPoint.referral_requests + '/' + id, { isApproved: status }
+      EndPoint.referral_requests + '/' + id,
+      { isApproved: status },
     );
     if (response?.status !== 200) {
-      FlashMessageComponent.show('error', "Something went wrong, please try later")
+      FlashMessageComponent.show(
+        'error',
+        'Something went wrong, please try later',
+      );
     }
-
   };
 
   const updateVouch = async (id: string, status: boolean) => {
     const response: any = await apiRequest(
       'put',
-      EndPoint.vouch_requests + '/' + id, { isApproved: status },
+      EndPoint.vouch_requests + '/' + id,
+      { isApproved: status },
     );
     if (response?.status !== 200) {
-      FlashMessageComponent.show('error', "Something went wrong, please try later")
+      FlashMessageComponent.show(
+        'error',
+        'Something went wrong, please try later',
+      );
     }
   };
 
@@ -87,7 +93,6 @@ const ReferralScreen: React.FC = () => {
   };
 
   const handleApproveDeclineClick = async (flag: boolean, id: string) => {
-
     if (activeTab === 'referrals') {
       await updateReferrel(id, flag);
     } else {
@@ -98,10 +103,10 @@ const ReferralScreen: React.FC = () => {
   const onInvite = async () => {
     await requestContactPermission();
     if (permissionGranted) {
-      setIsShown(true)
+      setIsShown(true);
       inviteFriendSheetRef?.current.open();
     }
-  }
+  };
 
   const renderContent = () => {
     const data = activeTab === 'referrals' ? referrelRequests : vouchRequests;
@@ -160,8 +165,8 @@ const ReferralScreen: React.FC = () => {
         onTabChange={handleTabChange}
         tabOneLabel="Referral Requests"
         tabTwoLabel="Vouch Requests"
-        countOne={referrelRequests?.length ? referrelRequests?.length : ""}
-        countTwo={vouchRequests?.length ? vouchRequests?.length : ""}
+        countOne={referrelRequests?.length ? referrelRequests?.length : ''}
+        countTwo={vouchRequests?.length ? vouchRequests?.length : ''}
         width={Wp(88)}
       />
       <View style={{ paddingHorizontal: horizontalMarginScale(20), flex: 1 }}>

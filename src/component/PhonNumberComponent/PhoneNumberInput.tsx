@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     height: 25,
   },
   arrowIcon: {
-    marginHorizontal: 10,
+    marginRight: 5,
   },
   callingCode: {
     fontSize: 16,

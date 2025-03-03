@@ -1,7 +1,7 @@
 import React, { forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
 import { Platform, View, StyleSheet, Text } from 'react-native';
 import BottomSheetComponent from './BottomSheet';
-import { fontScale, radiusScale, verticalMarginScale, Wp } from '../../utils/dimensions';
+import { fontScale, radiusScale, verticalMarginScale, verticalScale, Wp } from '../../utils/dimensions';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import Button from '../Button';
 import moment from 'moment';
@@ -110,15 +110,13 @@ const CustomDatepickerBottomSheet = forwardRef((props: Props, ref) => {
   return (
     <BottomSheetComponent
       ref={ref}
-      snapPoints={[Platform.OS === 'ios' ? '48%' : '48%']}
+      snapPoints={["56%"]}
       onClose={() => console.log(ref)}>
       <View style={styles.container}>
         <Text style={styles.title}>{LABLE.BIRTHDAY}</Text>
         <Text style={styles.subTitle}>{LABLE.SELECT_YOUR_BIRTHDAY_BELOW}</Text>
         <View>
-          <View style={[styles.pickerRow, {
-            marginTop: verticalMarginScale(30),
-          }]}>
+          <View style={styles.pickerRow}>
             <WheelPicker
               wrapperHeight={140}
               highlightBorderWidth={2}
@@ -174,17 +172,19 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   subTitle: {
+    fontFamily: fontFamily.ABCDiatype_Medium,
     marginVertical: verticalMarginScale(10),
     fontSize: fontScale(14),
     color: COLORS.light_gray,
+    marginTop: 15,
   },
   btnStyle: {
     width: Wp(85),
     borderRadius: radiusScale(100),
-    marginTop: verticalMarginScale(30),
+    marginTop: verticalMarginScale(50),
   },
   pickerRow: {
-    marginTop: 10,
+    marginTop: 60,
     flexDirection: 'row',
     backgroundColor: COLORS.white,
     height: verticalMarginScale(150),

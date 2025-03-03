@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { ProfileStack } from '../../navigation/ProfileStack';
 import { ROUTES } from '../../navigation/Route';
 import { RootState } from '../../redux/slices';
@@ -62,20 +62,27 @@ const hostTabs = [
 ];
 
 const BottomTabBar = () => {
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
   const { userStatusData } = useGetUserStatus();
+
+  const { role } = useSelector(
+    (state: RootState) => ({
+      role: state.auth.role,
+    }),
+    shallowEqual,
+  );
 
   useEffect(() => {
     if (userStatusData) {
       console.log('User Status Data:', userStatusData);
     }
   }, [userStatusData]);
-  const role =
-    (loginData?.roles &&
-      loginData?.roles.length > 0 &&
-      loginData?.roles[0]?.roleName) ||
-    'non_member';
+  // const role =
+  //   (loginData?.roles &&
+  //     loginData?.roles.length > 0 &&
+  //     loginData?.roles[0]?.roleName) ||
+  //   'non_member';
   const bottomTabsData = role === 'host' ? hostTabs : memberTabs;
+  const initialRouteName = role === 'host' ? 'EventScreen' : 'DiscoverScreen';
 
   return (
     <Tab.Navigator
@@ -83,7 +90,8 @@ const BottomTabBar = () => {
       screenOptions={{ headerShown: false }}
       backBehavior="history"
       initialRouteName={
-        role === 'host' ? 'EventScreen' : 'DiscoverScreen'
+        initialRouteName
+        // role === 'host' ? 'EventScreen' : 'DiscoverScreen'
         // loginData?.isInvited ? 'EventScreen' : 'DiscoverScreen'
         // ROUTES.UsersScreen
         // 'DiscoverScreen'

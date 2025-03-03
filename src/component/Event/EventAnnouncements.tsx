@@ -1,83 +1,127 @@
-import React, { useState } from 'react';
-import { Text, StyleSheet, View, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, StyleSheet, View, FlatList, TouchableOpacity, ScrollView, Image } from 'react-native';
 import FastImage from '@d11/react-native-fast-image';
 import AvatarInitials from '../AvatarInitials';
 import { ANNOUNCCEMENTS_DATA, COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '@images/index';
-import { fontFamily } from '../../utils/functions';
-import { fontScale, horizontalScale, verticalScale, verticalMarginScale, horizontalMarginScale } from 'src/utils/dimensions';
+import { dateFormat, fontFamily } from '../../utils/functions';
+import { fontScale, horizontalScale, verticalScale, verticalMarginScale, horizontalMarginScale, Wp, radiusScale } from 'src/utils/dimensions';
 import ImagePdfViewer from './ImagePdfViewer';
+import { useFetchHostEventsAnnouncementQuery } from 'src/redux/actions/eventApiAction';
 
-const EventAnnouncements = ({ talents }) => {
+interface EventAnnouncementProps {
+  announcementData?: any,
+  eventId: string;
+  handleAddPress: () => void,
+  handleViewAll: () => void
+}
+
+
+const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleAddPress, handleViewAll, announcementData }) => {
   const [viewerVisible, setViewerVisible] = useState(false);
   const [media, setMedia] = useState([]);
+  const [showAll, setShowAll] = useState(false);
+  const [announcementListData, setannouncementListData] = useState([]);
 
-  const MediaItem = ({ item, media }) => (
-    item.type === "image" ? (
+  console.log("announcementData", announcementData?.data)
+
+  useEffect(() => {
+    if (announcementData != undefined) {
+      setannouncementListData(announcementData?.data);
+      setShowAll(announcementData?.data?.length > 2)
+    }
+  }, [announcementData]);
+
+  const MediaItem = ({ item, media }: { item: any, media: any }) => (
+    item.mediaType === "image" ? (
       <TouchableOpacity onPress={() => {
         setMedia(media)
         setViewerVisible(true)
       }}>
-        <FastImage source={{ uri: item.uri }} style={styles.mediaImage} />
-
+        <FastImage source={{ uri: item?.media }} style={styles.mediaImage} />
       </TouchableOpacity>
     ) : (
-      <View style={styles.pdfContainer}>
-        <Text style={styles.title} numberOfLines={2}>{item.name}</Text>
-        <Text style={styles.pdfSize}>{item.size}</Text>
-      </View>
+      <TouchableOpacity onPress={() => {
+        setMedia(media)
+        setViewerVisible(true)
+      }} style={styles.pdfContainer}>
+        <Image source={IMAGES.pdf} style={styles.pdfIcon} resizeMode='contain' />
+        <Text style={styles.title} numberOfLines={2}>{item?.mediaName}</Text>
+        {/* <Text style={styles.pdfSize}>{item.size}</Text> */}
+      </TouchableOpacity>
     )
   );
 
-  const EventItem = ({ item }) => {
+  const EventItem = ({ item }: { item: any }) => {
     const [expanded, setExpanded] = useState(false);
-    const shouldShowReadMore = item?.description?.split(' ').length > 30;
-    const displayedText = expanded || !shouldShowReadMore ? item.description : `${item.description.substring(0, 100)}...`;
-
+    const shouldShowReadMore = item?.announcement?.split(' ').length > 25;
+    const displayedText = expanded || !shouldShowReadMore ? item?.announcement : `${item?.announcement.substring(0, 100)}...`;
+    const date = dateFormat(item?.createdAt, 'DD/MM/YYYY')
+    const imageKeyUrl = item?.user?.additionalHostInformation?.companyLogo
+    const name = item?.user?.additionalHostInformation?.firstName + ' ' + item?.user?.additionalHostInformation?.lastName
     return (
       <View style={styles.talentItem}>
-        {item.imageKeyUrl?.includes("http") ? (
-          <FastImage source={{ uri: item.imageKeyUrl }} style={styles.icon} />
+        {imageKeyUrl?.includes("http") ? (
+          <FastImage source={{ uri: imageKeyUrl }} style={styles.icon} />
         ) : (
-          <AvatarInitials name={item.name} size={48} />
+          <AvatarInitials name={name} size={48} />
         )}
         <View style={styles.textContainer}>
           <Text numberOfLines={expanded ? undefined : 3} style={styles.name}>{displayedText}</Text>
-          <Text style={styles.subtitle}>{item.date}</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {item.media.slice(0, 3).map((mediaItem, index) => (
-              <MediaItem key={index} item={mediaItem} media={item.media} />
+          <Text style={styles.subtitle}>{date}</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 5 }}>
+            {item?.attachments?.map((mediaItem: string, index: number) => (
+              <MediaItem key={index} item={mediaItem} media={item.attachments} />
             ))}
           </ScrollView>
           {!expanded && shouldShowReadMore && (
             <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.toggleContainer}>
               <Text style={styles.toggleText}>{LABLE.READ_MORE}</Text>
-              <FastImage source={IMAGES.downArrow} style={styles.toggleIcon} />
+              <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
             </TouchableOpacity>
           )}
         </View>
-
       </View>
     );
   };
-
+  const viewerClose = () => {
+    setViewerVisible(false)
+  }
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>{LABLE.EVENT_ANNOUNCEMENTS}</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Text style={styles.heading}>{LABLE.EVENT_ANNOUNCEMENTS}</Text>
+        <TouchableOpacity style={styles.iconWrapper} onPress={handleAddPress}>
+          <Image source={IMAGES.plus} tintColor={'black'} style={styles.addicon} />
+        </TouchableOpacity>
+      </View>
       <View style={styles.divider} />
       <FlatList
-        data={ANNOUNCCEMENTS_DATA}
-        keyExtractor={(item) => item.id}
+        data={announcementListData.slice(0, 3)}
+        keyExtractor={(item) => item?.id}
         renderItem={({ item }) => <EventItem item={item} />}
         ListEmptyComponent={
-          <Text style={styles.heading}>{LABLE.NO_EVENT_ANNOUNCEMENTS}</Text>
+          <View>
+            <Text style={styles.heading}>{LABLE.NO_EVENT_ANNOUNCEMENTS}</Text>
+          </View>
         }
       />
-      {viewerVisible && <ImagePdfViewer
-        visible={viewerVisible}
-        onClose={() => setViewerVisible(false)}
-        mediaItems={media}
-      />}
+
+      {announcementListData.length != 0 && (
+        <View style={{ paddingVertical: 5 }}>
+          <View style={styles.divider} />
+          <TouchableOpacity onPress={handleViewAll} style={[styles.toggleContainer, { marginTop: 5 }]}>
+            <Text style={styles.toggleText}>{LABLE.VIEW_ALL}</Text>
+            <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
+          </TouchableOpacity>
+        </View>
+      )}
+      {viewerVisible &&
+        <ImagePdfViewer
+          visible={viewerVisible}
+          onClose={viewerClose}
+          mediaItems={media}
+        />}
     </View>
   );
 };
@@ -103,15 +147,33 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     backgroundColor: COLORS.borderGray,
   },
+  addicon: {
+    width: verticalScale(16),
+    height: verticalScale(16),
+  },
+  iconWrapper: {
+    width: verticalScale(24),
+    height: verticalScale(24),
+    borderRadius: radiusScale(24),
+    backgroundColor: COLORS.tabBorderColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   textContainer: {
     flex: 1,
     marginStart: 10,
     gap: 5
   },
+  pdfIcon: {
+    width: 30,
+    height: 30,
+    marginBottom: 10,
+  },
   subtitle: {
     color: COLORS.light_gray,
     fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Regular,
+    marginVertical: 5
   },
   title: {
     color: COLORS.black2,
@@ -121,7 +183,8 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    width: '100%',
+    width: Wp(92),
+    alignSelf: 'center',
     backgroundColor: COLORS.borderGray,
     marginVertical: 10,
   },
@@ -146,9 +209,9 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   toggleIcon: {
-    width: 8,
-    height: 8,
-    tintColor: COLORS.borderGray,
+    width: 10,
+    height: 7,
+    tintColor: COLORS.tabBorderColor,
   },
   mediaImage: {
     width: horizontalScale(90),

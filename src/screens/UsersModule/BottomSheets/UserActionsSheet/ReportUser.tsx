@@ -42,22 +42,22 @@ const ReportUser = ({
     };
   }, shallowEqual);
 
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const hostRole = loginData?.roles?.find(
-    (role: { roleId: string; roleName: string }) => role.roleName === 'host',
+  const roleId = useSelector(
+    (state: RootState) => state.auth.roleId,
+    shallowEqual,
   );
 
   const onPressCta = async () => {
     Keyboard.dismiss();
     messageRef?.current?.validateInputs();
     if (messageRef?.current?.validateInputs()) {
-      if (userDetails) {
+      if (userDetails && roleId) {
         try {
           const response = await reportUser({
             reportMessage: message,
             user: user,
             reportedToroleId: userDetails?.roleId,
-            reportedByRoleId: hostRole.roleId,
+            reportedByRoleId: roleId,
           }).unwrap();
 
           if (response.status === 200) {

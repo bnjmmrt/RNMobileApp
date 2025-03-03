@@ -474,7 +474,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             onInviteMessageChange={setInviteMessage}
             guestNote={guestNote}
             onGuestNoteChange={setGuestNote}
-            maxAdditionalGuests={guestProfile.additionalGuests?.length || 0}
+            maxAdditionalGuests={guestDetail.maxAdditionalGuests || 0}
             eventName={selectedEvent?.name}
             eventStartDate={selectedEvent?.startDate}
             directlySendToConfirm={directlySendToConfirm}
@@ -564,6 +564,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: horizontalMarginScale(8),
     paddingTop: verticalMarginScale(8),
     backgroundColor: COLORS.white,

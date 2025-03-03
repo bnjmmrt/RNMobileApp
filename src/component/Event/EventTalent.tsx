@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     color: COLORS.black2,
     fontSize: fontScale(14),
     padding: 10,
-    fontFamily: fontFamily.ABCDiatype_Bold,
+    fontFamily: fontFamily.ABCDiatype_Medium,
   },
 });
 

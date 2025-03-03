@@ -22,6 +22,7 @@ import {
 import { CustomText } from '../CustomText';
 import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
+import { fontFamily } from 'src/utils/functions';
 
 const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
   state,
@@ -151,7 +152,8 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     color: COLORS.black,
-    fontSize: fontScale(12),
+    fontSize: fontScale(14),
+    fontFamily: fontFamily.ABCDiatype_Medium
   },
 });
 

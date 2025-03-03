@@ -36,7 +36,7 @@ export const RenderMemberList = (data: any) => {
 
     return (
         <View style={styles.listItem}>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 12, flex: 1 }}>
                 <AvatarInitials name={item?.firstName + ' ' + item?.lastName} size={48} />
                 <View style={{ width: horizontalScale(206) }}>
                     <Text numberOfLines={1} style={styles.name}>{item?.firstName} {item?.lastName}</Text>
@@ -47,7 +47,7 @@ export const RenderMemberList = (data: any) => {
             <ButtonSmall
                 disabled={isSent}
                 style={styles.smallBtnStyle}
-                title={isSent ? "Sent" : "Request"}
+                title={isSent ? "Request" : "Request"}
                 colorTheme={isSent ? "dark" : "dark"}
                 borderType={isSent ? "STRIPE" : "SOLID"}
                 leftIcon={isSent ? IMAGES.check : null}
