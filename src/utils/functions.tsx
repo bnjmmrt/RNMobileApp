@@ -580,3 +580,10 @@ export const switchProfile = () => {
   // loginUser();
   // fetchUserProfile;
 };
+
+export const removeSpaceFromStr = (text: string) => {
+  if (text) {
+    return text.split(" ").join("")
+  }
+  return ""
+};

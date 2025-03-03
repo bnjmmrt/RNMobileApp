@@ -52,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({
   };
   return (
     <View style={{}}>
-      <View style={styles.container}>
+      <View style={[styles.container, {paddingBottom: showProgressBar ? verticalMarginScale(7): verticalMarginScale(16)}]}>
         {/* Back Arrow */}
         {showBackButton ? (
           <TouchableOpacity
@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: horizontalMarginScale(20),
-    paddingVertical: verticalMarginScale(7),
+    paddingTop: verticalMarginScale(16),
+    paddingBottom: verticalMarginScale(16),
   },
   iconWrapper: {
     width: verticalScale(40),

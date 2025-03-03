@@ -16,7 +16,7 @@ import { RootState } from '../../../redux/slices';
 import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
 import EmailInput from '../../../component/EmailComponent/EmailInput';
 import { useFocusEffect } from '@react-navigation/native';
-import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { changeSafeAreaViewConfig, removeSpaceFromStr } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { EndPoint } from 'src/ApiManager/config';
@@ -66,21 +66,21 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
         endPoint = EndPoint.check_phone;
         params = {
           phoneNumber:
-            phoneNumberInputRef.current.callingCode +
-            phoneNumberInputRef.current.phoneNumber,
+            removeSpaceFromStr(phoneNumberInputRef.current.callingCode +
+            phoneNumberInputRef.current.phoneNumber),
         };
         try {
           const response: any = await apiRequest('post', endPoint, params);
           if (response?.data.isValid) {
             dispatch(
               setPhone(
-                phoneNumberInputRef.current.callingCode +
+                phoneNumberInputRef.current.callingCode + " " +
                   phoneNumberInputRef.current.phoneNumber,
               ),
             );
             navigation.navigate('VerifyEmail', {
               phone:
-                phoneNumberInputRef.current.callingCode +
+                phoneNumberInputRef.current.callingCode + " " +
                 phoneNumberInputRef.current.phoneNumber,
               isEmail: false,
             });

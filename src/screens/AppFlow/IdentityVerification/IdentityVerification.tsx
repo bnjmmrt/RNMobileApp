@@ -25,6 +25,7 @@ import {
   changeSafeAreaViewConfig,
   convertDateFormat,
   loginUser,
+  removeSpaceFromStr,
 } from '../../../utils/functions';
 import {
   role,
@@ -105,7 +106,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       interestsIds: userDetails.interest.map((item: any) => item.id),
       gender: userDetails.gender,
       lastName: userDetails.lastName,
-      phoneNumber: userDetails.phone ? userDetails.phone : loginData.phone,
+      phoneNumber: userDetails.phone ? removeSpaceFromStr(userDetails.phone) : removeSpaceFromStr(loginData.phone),
       instagramAccessToken: '',
       instagramUserName: usernameRef.current.inputText,
       linkedInAccessToken: '',
