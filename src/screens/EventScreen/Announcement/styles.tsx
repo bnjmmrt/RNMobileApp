@@ -195,7 +195,7 @@ const AnnouncementStyles = () => {
             tintColor: COLORS.black
         },
         headerTitle: {
-            width: verticalScale(140),
+            width: verticalScale(120),
             fontSize: fontScale(16),
             color: COLORS.black,
             fontFamily: fontFamily.ABCDiatype_Regular,

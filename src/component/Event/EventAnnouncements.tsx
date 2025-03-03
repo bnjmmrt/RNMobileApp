@@ -10,29 +10,28 @@ import ImagePdfViewer from './ImagePdfViewer';
 import { useFetchHostEventsAnnouncementQuery } from 'src/redux/actions/eventApiAction';
 
 interface EventAnnouncementProps {
+  announcementData?: any,
   eventId: string;
   handleAddPress: () => void,
   handleViewAll: () => void
 }
 
 
-const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleAddPress, handleViewAll }) => {
+const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleAddPress, handleViewAll, announcementData }) => {
   const [viewerVisible, setViewerVisible] = useState(false);
   const [media, setMedia] = useState([]);
   const [showAll, setShowAll] = useState(false);
-  const [announcementData, setannouncementData] = useState([]);
-  const queryArgs = ({ eventId: eventId })
-  console.log("queryArgs", queryArgs)
-  const { data, isLoading } = useFetchHostEventsAnnouncementQuery(queryArgs);
+  const [announcementListData, setannouncementListData] = useState([]);
 
-  console.log("announcementData", data?.data)
+  console.log("announcementData", announcementData?.data)
 
   useEffect(() => {
-    if (data != undefined) {
-      setannouncementData(data?.data);
-      setShowAll(data?.data?.length > 2)
+    if (announcementData != undefined) {
+      setannouncementListData(announcementData?.data);
+      setShowAll(announcementData?.data?.length > 2)
     }
-  }, [data]);
+  }, [announcementData]);
+
   const MediaItem = ({ item, media }: { item: any, media: any }) => (
     item.mediaType === "image" ? (
       <TouchableOpacity onPress={() => {
@@ -98,7 +97,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
       </View>
       <View style={styles.divider} />
       <FlatList
-        data={announcementData.slice(0, 3)}
+        data={announcementListData.slice(0, 3)}
         keyExtractor={(item) => item?.id}
         renderItem={({ item }) => <EventItem item={item} />}
         ListEmptyComponent={
@@ -108,7 +107,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
         }
       />
 
-      {announcementData.length != 0 && (
+      {announcementListData.length != 0 && (
         <View style={{ paddingVertical: 5 }}>
           <View style={styles.divider} />
           <TouchableOpacity onPress={handleViewAll} style={[styles.toggleContainer, { marginTop: 5 }]}>

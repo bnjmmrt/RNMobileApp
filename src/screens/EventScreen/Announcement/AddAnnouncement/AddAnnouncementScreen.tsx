@@ -30,6 +30,8 @@ import { useCreateEventAnnouncementMutation, useDeleteEventAnnouncementMutation,
 import { addAnnouncementRequestInterface, attachmentArrInterface, editAnnouncementRequestInterface, guestInterface } from "./AddAnnouncementInterface";
 import { CustomText } from "src/component/CustomText";
 import { ROUTES } from "src/navigation/Route";
+import { useDispatch } from "react-redux";
+import { setRsvpStatus } from "src/redux/slices/rspvSlice";
 
 interface AddAnnouncementScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -70,9 +72,12 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const [collaboratorArr, setCollaboratorArr] = useState<any[]>([]);
     const [announcementText, setAnnouncementText] = React.useState('');
 
-    const { eventData, announcementId } = route?.params || {};
+    const { eventData, announcementId: ID } = route?.params || {};
     console.log("siya eventData", eventData)
-    console.log("siya announcementId", announcementId)
+    console.log("siya announcementId", ID)
+    const [announcementId, setAnnouncementId] = React.useState(ID);
+    const dispatch = useDispatch();
+
     useEffect(() => {
         const backAction = () => {
             leaveAnnouncement()
@@ -129,9 +134,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
 
     const [editEventAnnouncement, { isLoading: editLoading, isError: editError, isSuccess: editSuccess }] = useEditEventAnnouncementMutation();
 
-
-
-
     const checkAnnouncement = async () => {
         if (
             announcementRef.current.validateInputs() && ticketTypeArr?.length != 0 && collaboratorArr?.length != 0
@@ -164,6 +166,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                     'success',
                     `Event announcement posted`,
                 );
+                dispatch(setRsvpStatus("UPDATE" + Date.now()));
                 navigation.goBack();
             } else {
                 const typedError = response as ApiErrorInterface;
@@ -420,7 +423,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                             <EventEmptyRecord
                                 title={searchText != '' ? ANNOUNCEMENT.No_results : ANNOUNCEMENT.No_Recipients}
                                 subTitle={searchText != '' ? ANNOUNCEMENT.Please_refine_your_search : ""}
-                                isLoading={isLoading}
+                            // isLoading={isLoading}
                             />
                         </View>
                     }
@@ -463,33 +466,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                     `Event announcement deleted`,
                 );
                 deleteBottomSheetRef.current?.close();
-                navigation.goBack()
-            } else {
-                const typedError = response as ApiErrorInterface;
-                FlashMessageComponent.show('error', getErrorMessage(typedError));
-            }
-        } catch (error) {
-            const typedError = error as ApiErrorInterface;
-            FlashMessageComponent.show('error', getErrorMessage(typedError));
-        }
-    };
-    const editAnnouncement = async() => {
-        try {
-            console.log("in try")
-            const editAnnouncementRequest: editAnnouncementRequestInterface = {
-                "announcement": announcementRef.current.inputText,
-                "attachments": atachmentArr,
-            }
-            const response = await editEventAnnouncement({
-                eventId: eventData?.id || '',
-                announcementId:announcementId || '',
-                payload: editAnnouncementRequest,
-            }).unwrap();
-            if (response.statusCode === 201) {
-                FlashMessageComponent.show(
-                    'success',
-                    `Event announcement updated`,
-                );
+                dispatch(setRsvpStatus("UPDATE" + Date.now()));
                 navigation.goBack();
             } else {
                 const typedError = response as ApiErrorInterface;
@@ -499,7 +476,35 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
             const typedError = error as ApiErrorInterface;
             FlashMessageComponent.show('error', getErrorMessage(typedError));
         }
-       
+    };
+    const editAnnouncement = async () => {
+        try {
+            console.log("in try")
+            const editAnnouncementRequest: editAnnouncementRequestInterface = {
+                "announcement": announcementRef.current.inputText,
+                "attachments": atachmentArr,
+            }
+            const response = await editEventAnnouncement({
+                eventId: eventData?.id || '',
+                announcementId: announcementId || '',
+                payload: editAnnouncementRequest,
+            }).unwrap();
+            if (response.statusCode === 204) {
+                FlashMessageComponent.show(
+                    'success',
+                    `Event announcement updated`,
+                );
+                dispatch(setRsvpStatus("UPDATE" + Date.now()));
+                navigation.goBack();
+            } else {
+                const typedError = response as ApiErrorInterface;
+                FlashMessageComponent.show('error', getErrorMessage(typedError));
+            }
+        } catch (error) {
+            const typedError = error as ApiErrorInterface;
+            FlashMessageComponent.show('error', getErrorMessage(typedError));
+        }
+
     };
     const leaveAnnouncement = () => {
         if (
@@ -573,6 +578,14 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
         setAttachmentArr(prev => prev.filter(item => item?.media !== uri));
     };
 
+    const removeAnnouncementId = () => {
+        setAnnouncementId(null)
+        setTicketTypeArr([])
+        setCollaboratorArr([])
+        setAnnouncementText('')
+        setAttachmentArr([])
+    }
+
     const renderAttchmentItem = ({ item }: { item: any }) => (
         <ImageBackground source={item.mediaType == 'file' ? IMAGES.pdf : { uri: item.media }} style={styles.attachImgWrapper} imageStyle={{ borderRadius: radiusScale(8) }}>
             <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center' }} onPress={() => onPressDelete(item.media)}>
@@ -605,12 +618,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                 onPress={handleBackPress}
                 showProgressBar={false}
                 rightIcon={IMAGES.plus}
-                onPressRightIcon={() =>
-                    navigation.navigate(ROUTES.EventStack, {
-                        screen: ROUTES.AddAnnouncementScreen,
-                        params: { eventData, announcementId: null }
-                    })
-                }
+                // onPressRightIcon={removeAnnouncementId}
                 rightIconWrapperStyle={{ backgroundColor: COLORS.black }}
             />
             <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -821,7 +829,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                         }]}
                         title={ANNOUNCEMENT.Update_Announcement}
                         colorTheme="dark"
-                        onPress={()=>editBottomSheetRef.current?.open()}
+                        onPress={() => editBottomSheetRef.current?.open()}
                     />
                 </> :
                 <Button
@@ -866,9 +874,9 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                 snapPoints={['35%']}
                 title={ANNOUNCEMENT.Update_Event_Announcement}
                 subTitle={ANNOUNCEMENT.update_text}
-                btnLabel={ANNOUNCEMENT.Update_Announcement} 
+                btnLabel={ANNOUNCEMENT.Update_Announcement}
                 back={editAnnouncement}
-                />
+            />
 
             <ConfirmationBottomSheet
                 ref={leaveBottomSheetRef}

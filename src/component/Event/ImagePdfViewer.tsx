@@ -132,7 +132,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
         <Modal visible={visible} transparent animationType="fade">
             <View style={styles.modalBackground}>
                 <View style={styles.headerContainer}>
-                    <TouchableOpacity activeOpacity={0.7} onPress={() => onClose} style={styles.closeButton} >
+                    <TouchableOpacity activeOpacity={0.7} onPress={onClose} style={styles.closeButton} >
                         <Image source={IMAGES.cross} />
                     </TouchableOpacity>
                     <Text style={styles.mediaInfo}>{currentIndex + 1} of {mediaItems.length}</Text>

@@ -223,7 +223,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         payload: addAnnouncementRequestInterface;
       }) => ({
         url: `/events/v1/event/${eventId}/event-announcement/${announcementId}`,
-        method: 'POST',
+        method: 'PATCH',
         body: payload,
       }),
     }),

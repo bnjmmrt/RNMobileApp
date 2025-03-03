@@ -8,7 +8,7 @@ import IMAGES from '@images/index';
 import { horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import FastImage from '@d11/react-native-fast-image';
 import AvatarInitials from 'src/component/AvatarInitials';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import { useFetchHostEventsAnnouncementQuery } from 'src/redux/actions/eventApiAction';
 import { dateFormat } from 'src/utils/functions';
 import { formatViewAnnouncementDate } from 'src/utils/dateFunctions';
@@ -28,7 +28,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
     const [viewerVisible, setViewerVisible] = useState(false);
     const [media, setMedia] = useState([]);
     const queryArgs = ({ eventId: eventData?.id })
-    const { data, isLoading } = useFetchHostEventsAnnouncementQuery(queryArgs);
+    const { data, isLoading, refetch } = useFetchHostEventsAnnouncementQuery(queryArgs);
 
     console.log("announcementData index", data?.data)
     const handleBackPress = () => {
@@ -39,10 +39,15 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
             setannouncementData(data?.data);
         }
     }, [data]);
-    // const onRefreshPage = () => {
-    //     setCurrentPage(1);
-    //     refetch();
-    // };
+    useFocusEffect(
+        React.useCallback(() => {
+            refetch()
+        }, [data])
+    );
+    const onRefreshPage = () => {
+        console.log("hiihihi")
+        refetch();
+    };
     // const loadMore = () => {
     //     if (announcementList.length < data?.data?.totalCount && !isLoading) {
     //         setCurrentPage(prev => prev + 1);
@@ -58,11 +63,14 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
                 <FastImage source={{ uri: item?.media }} style={styles.mediaImage} />
             </TouchableOpacity>
         ) : (
-            <View style={styles.pdfContainer}>
+            <TouchableOpacity onPress={() => {
+                setMedia(media)
+                setViewerVisible(true)
+            }} style={styles.pdfContainer}>
                 <Image source={IMAGES.pdf} style={styles.pdfIcon} resizeMode='contain' />
                 <Text style={styles.title} numberOfLines={2}>{item?.mediaName}</Text>
                 {/* <Text style={styles.pdfSize}>{item.size}</Text> */}
-            </View>
+            </TouchableOpacity>
         )
     );
     const AnnouncementItem = ({ item }: { item: any }) => {
@@ -148,17 +156,22 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
             </View>
         );
     };
+    const onClose=()=>{
+        console.log("c")
+        setViewerVisible(false)
+    }
     return (
         <View style={styles.container}>
             <Header
                 headerTitle={ANNOUNCEMENT.Announcement}
                 onPress={handleBackPress}
                 rightIcon={IMAGES.plus}
-                onPressRightIcon={() =>
+                onPressRightIcon={() => {
                     navigation.navigate(ROUTES.EventStack, {
                         screen: ROUTES.AddAnnouncementScreen,
                         params: { eventData, announcementId: null }
                     })
+                }
                 }
                 showProgressBar={false}
                 rightIconWrapperStyle={{ backgroundColor: COLORS.black }}
@@ -178,7 +191,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
                     // onEndReachedThreshold={0.4}
                     // showsVerticalScrollIndicator={false}
                     // refreshControl={
-                    //     announcementList.length > 0 ? (
+                    //     announcementData.length > 0 ? (
                     //         <RefreshControl refreshing={false} onRefresh={onRefreshPage} />
                     //     ) : undefined
                     // }
@@ -187,7 +200,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
             </ScrollView>
             {viewerVisible && <ImagePdfViewer
                 visible={viewerVisible}
-                onClose={() => setViewerVisible(false)}
+                onClose={onClose}
                 mediaItems={media}
             />}
         </View>
