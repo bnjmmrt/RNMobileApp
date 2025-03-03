@@ -11,7 +11,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { useFetchAllEventsQuery } from 'src/redux/actions/eventApiAction';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
@@ -208,9 +208,11 @@ const EventsFeed = () => {
   const [filterNumber, setFilterNumber] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
+  const isGuest = useSelector(
+    (state: RootState) => state.auth.isGuest,
+    shallowEqual,
+  );
   const userId = useSelector((state: RootState) => state.auth.userId);
-  const isInvited = loginData?.isInvited || false;
 
   const { data, isLoading, error, isError, refetch } = useFetchAllEventsQuery({
     statusName: 'UPCOMING_STATUS',
@@ -221,16 +223,6 @@ const EventsFeed = () => {
     skip: (currentPage - 1) * 6,
   });
 
-  const date1 = formatDetailedEventDate("2025-02-28 17:00:00+00", "2025-02-28 18:00:00+00")
-  const date2 = formatDetailedEventDate("2025-02-26 21:10:00+00", "2025-02-26 21:30:00+00")
-  const date3 = formatDetailedEventDate("2025-01-21 21:10:00+00", "2025-03-26 21:30:00+00")
-  const date4 = formatDetailedEventDate("2025-02-24 21:10:00+00", "2025-02-24 21:30:00+00")
-
-  console.log("Sayyed Date1:", date1)
-  console.log("Sayyed Date2:", date2)
-  console.log("Sayyed Date3:", date3)
-  console.log("Sayyed Date4:", date4)
-
   const debouncedSearch = useCallback(
     debounce((text: string) => setSearchTerm(text), 500),
     [],
@@ -239,17 +231,12 @@ const EventsFeed = () => {
     debouncedSearch(text);
   }, []);
 
-
   const handleNotify = useCallback(() => {
     setResponseSubmitted(true);
     setTimeout(() => {
       setResponseSubmitted(false);
     }, 3000);
   }, []);
-
-  useEffect(() => {
-    console.log('Sayyed currentPage:', currentPage);
-  }, [currentPage]);
 
   const handleLoadMore = useCallback(() => {
     const totalCount = data?.data?.totalCount;
@@ -303,7 +290,7 @@ const EventsFeed = () => {
 
   useFocusEffect(
     useCallback(() => {
-      if (isInvited) {
+      if (isGuest) {
         changeSafeAreaViewConfig({
           ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
           showBottomSafeAreaView: false,
@@ -381,7 +368,7 @@ const EventsFeed = () => {
     return <FeedItem item={item} />;
   }, []);
 
-  if (isInvited) {
+  if (isGuest) {
     return <BeforeAppStaticComponent isChatScreen={false} />;
   }
 

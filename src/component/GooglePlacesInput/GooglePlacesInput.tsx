@@ -96,8 +96,8 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
         styles={{
           textInputContainer: {
             borderRadius: radiusScale(8),
-            borderWidth: 2,
-            height: 60,
+            borderWidth: 1,
+            height: 56,
             borderColor: errorMessage ? COLORS.borderRed : COLORS.borderGray,
             paddingVertical: verticalMarginScale(18),
             paddingHorizontal: horizontalMarginScale(18),
@@ -107,11 +107,18 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
             fontSize: fontScale(14),
             fontFamily: fontFamily.ABCDiatype_Regular,
           },
+          listView: {
+            borderRadius: radiusScale(8),
+            borderWidth: 1,
+            borderColor: COLORS.borderGray,
+            marginTop: 5
+          },
+          separator:{ height: 0},
           container: { flex: 0 },
         }}
         minLength={3}
         enablePoweredByContainer={false}
-        placeholder="Search Location"
+        placeholder="Search for a Location..."
         onPress={(data: GooglePlaceData, detail: GooglePlaceDetail | null) => {
           // 'details' is provided when fetchDetails = true
           // console.log('data.placeId', detail);

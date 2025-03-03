@@ -1,7 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {LABLE, BUTTON_LABLE} from '../../../utils/constants';
 import GenderScreenStyles from './GenderScreenStyles';
 import Button from '../../../component/Button';

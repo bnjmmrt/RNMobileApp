@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     paddingVertical: verticalMarginScale(16),
   },
   wrapper: {
-    paddingVertical: verticalMarginScale(12),
+    paddingVertical: verticalMarginScale(16),
     paddingHorizontal: horizontalMarginScale(16),
   },
   title: {

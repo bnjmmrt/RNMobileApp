@@ -59,7 +59,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { setRefresh, setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import EventAnnouncements from 'src/component/Event/EventAnnouncements';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: any;
@@ -75,7 +75,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [isDeclinedByHost, setIsDeclinedByHost] = useState(false);
   const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
   const [isCurrentUserIsGuest, setIsCurrentGuestStatus] = useState(
     route?.params?.isCurrentUserIsGuest,
   );
@@ -90,6 +89,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
   const role = useSelector((state: RootState) => state.auth.role);
   // const insets = useSafeAreaInsets();
+
+  console.log('role', role);
 
   const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 44 : 24;
 
@@ -124,9 +125,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const) // Type assertion to prevent union mismatch
       : ({
-        userId,
-        eventId: route?.params?.id,
-      } as const); // Type assertion
+          userId,
+          eventId: route?.params?.id,
+        } as const); // Type assertion
   const useFetchEventDetailsHook =
     role === ROLE.HOST
       ? useFetchHostEventDetailsQuery
@@ -193,7 +194,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         role: {
           id: data?.data?.owner.id,
           name: 'host',
-        }
+        },
       };
 
       // Merge the owner as a collaborator with existing collaborators
@@ -412,7 +413,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     });
   };
 
-
   return (
     <>
       {/* <SafeAreaView style={{ backgroundColor: COLORS.white }} /> */}
@@ -580,7 +580,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           <BackButtonOverlay
             customStyle={{ right: 55, top: 16 + STATUS_BAR_HEIGHT }}
             imageSource={IMAGES.share}
-            onPress={() => navigation.goBack()}
+            onPress={() => FlashMessageComponent.show("info", "In Progress")}
           />
         )}
       </View>

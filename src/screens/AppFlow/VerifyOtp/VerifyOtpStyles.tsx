@@ -1,5 +1,5 @@
 import { Platform, StyleSheet } from 'react-native';
-import { Wp, Hp, radiusScale, verticalMarginScale, horizontalMarginScale, fontScale } from '../../../utils/dimensions';
+import { Wp, Hp, radiusScale, verticalMarginScale, horizontalMarginScale, fontScale, verticalScale } from '../../../utils/dimensions';
 import { fontFamily } from '../../../utils/functions';
 import { COLORS } from '../../../utils/constants';
 
@@ -13,12 +13,13 @@ const VerifyOtpStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
-      bottom:Platform.OS==='android' ? 20 :0
+      bottom: 20
     },
     contentContainer: {
       flex: 1,
       paddingVertical: verticalMarginScale(10),
       paddingHorizontal: horizontalMarginScale(20),
+      marginTop: 15
     },
     title: {
       color: COLORS.black,
