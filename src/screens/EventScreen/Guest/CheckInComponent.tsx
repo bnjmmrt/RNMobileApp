@@ -225,21 +225,23 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   };
 
   const manageGuests = async () => {
-
-    const response: any = await apiRequest(
-      'put',
-      EndPoint.event_manage_guests+'?eventId='+selectedEvent?.id,
-      {
-        action: 'UPDATE',
-        bulkUploadStatus: false,
-        exclusiveIds: [],
-        guestStatus: 'CONFIRMED',
-        inclusiveIds: additionalGuests.map(guest => guest.id),
-        isSelectedAll: false,
-        privateGuestNote: guestNote,
-      },
-    );
-    if (response.status === 200) {
+if(status === 'CONFIRMED')
+    {
+      const response: any = await apiRequest(
+        'put',
+        EndPoint.event_manage_guests+'?eventId='+selectedEvent?.id,
+        {
+          action: 'UPDATE',
+          bulkUploadStatus: false,
+          exclusiveIds: [],
+          guestStatus: 'CONFIRMED',
+          inclusiveIds: additionalGuests.map(guest => guest.id),
+          isSelectedAll: false,
+          privateGuestNote: guestNote,
+        },
+      );
+      if (response.status === 200) {
+      }
     }
   };
   return (
@@ -307,12 +309,12 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
               onChangeText={text => setGuestNote(text)}
               style={[
                 styles.input,
-                { backgroundColor: status === 'CONFIRMED' && COLORS.white },
+                { backgroundColor: status === 'CONFIRMED' ? COLORS.white : COLORS.bgGray },
               ]}
               placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
               defaultValue={privateGuestNote}
               multiline
-              editable={status === 'CONFIRMED'? true : true}
+              editable={status === 'CONFIRMED'? true : false}
               onBlur={manageGuests}
             />
           </View>
