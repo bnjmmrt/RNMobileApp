@@ -35,7 +35,7 @@ import { styles } from './RSVPScreenStyle';
 import RequestVouch from './RequestVouch';
 import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
-import { fontFamily } from 'src/utils/functions';
+import { fontFamily, removeSignature } from 'src/utils/functions';
 
 type Guest = {
     id: number;
@@ -394,7 +394,7 @@ const RSVPNoStatusApplied: React.FC = () => {
             />
             <ScrollView style={styles.scrollView}>
                 <View style={styles.contentContainer}>
-                    <EventCard name={name} location={location?.location} imageCover={imageFlyer} dates={formatToDeviceTimeZone(startDate, endDate)} />
+                    <EventCard name={name} location={location?.location} imageCover={removeSignature(imageFlyer)} dates={formatToDeviceTimeZone(startDate, endDate)} />
                     {currentGuestStatus === "APPLIED" && (
                         <View style={styles.yellowBoxRightButton}>
                             <View style={styles.waitingResponseContainer}>

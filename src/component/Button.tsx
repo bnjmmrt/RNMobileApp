@@ -12,11 +12,13 @@ import {
   ImageStyle,
   ActivityIndicator,
 } from 'react-native';
-import { fontScale, Hp,
+import {
+  fontScale, Hp,
   radiusScale,
   verticalMarginScale,
   verticalScale,
-  Wp} from '../utils/dimensions';
+  Wp
+} from '../utils/dimensions';
 import { fontFamily } from '../utils/functions';
 import { COLORS } from '../utils/constants';
 import { CustomText } from './CustomText';
@@ -107,7 +109,7 @@ const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    height: verticalScale(48),
+    height: verticalScale(56),
     borderRadius: radiusScale(99),
     alignItems: 'center',
     justifyContent: 'center',

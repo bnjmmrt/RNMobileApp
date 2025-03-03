@@ -16,6 +16,7 @@ import { validateAge } from 'src/utils/functions';
 import { useFocusEffect } from '@react-navigation/native';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { Hp } from 'src/utils/dimensions';
 
 interface BirthdayScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -79,9 +80,10 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
             LABLE.WE_WILL_USE_THIS_INFORMATION_TO_TAILOR_YOUR_EXPERIENCE
           }
         />
+        <View style={{height: Hp(3)}}/>
         <CustomSelectableText
           placeholder={LABLE.DATE_PLACEHOLDER}
-          leftImage={IMAGES.calender}
+          leftImage={errorMessage ? IMAGES.calendar_error : IMAGES.calender}
           rightImage={IMAGES.downArrow}
           errorMessage={errorMessage}
           defaultValue={selectedDate} // Display the selected date

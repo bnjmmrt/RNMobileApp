@@ -3,7 +3,7 @@ export const ROUTES = {
   EditProfileScreen: 'EditProfileScreen',
   ConnectedAccountsScreen: 'ConnectedAccountsScreen',
   SelectInterestScreen: 'SelectInterestScreen',
-  NotificationsScreen: 'NotificationsScreen',
+  NotificationSettingsScreen: 'NotificationSettingsScreen',
   FeedbackScreen: 'FeedbackScreen',
   FollowingScreen: 'FollowingScreen',
   ReferralScreen: 'ReferralScreen',
@@ -35,4 +35,5 @@ export const ROUTES = {
   InviteGuestScreen: 'InviteGuestScreen',
   InviteGuestsManuallyScreen: 'InviteGuestsManuallyScreen',
   SelectedGuestsToInviteScreen: 'SelectedGuestsToInviteScreen',
+  NotificationsScreen:'NotificationsScreen'
 } as const;

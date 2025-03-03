@@ -37,7 +37,7 @@ export const referralApiAction = createBaseApi.injectEndpoints({
     }),
     unfollowHost: builder.mutation({
       query: ({ hostId, userId }) => ({
-        url: `/auth/host/${hostId}/follow`,
+        url: `auth/host/${hostId}/follow`,
         method: 'DELETE',
         body: { userId },
       }),

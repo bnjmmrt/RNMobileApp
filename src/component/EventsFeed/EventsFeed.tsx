@@ -211,8 +211,6 @@ const EventsFeed = () => {
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const userId = useSelector((state: RootState) => state.auth.userId);
   const isInvited = loginData?.isInvited || false;
-  const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
-
 
   const { data, isLoading, error, isError, refetch } = useFetchAllEventsQuery({
     statusName: 'UPCOMING_STATUS',
@@ -241,10 +239,6 @@ const EventsFeed = () => {
     debouncedSearch(text);
   }, []);
 
-  useEffect(() => {
-    refetch();
-  }, [rspvStatus, refetch]);
-
 
   const handleNotify = useCallback(() => {
     setResponseSubmitted(true);
@@ -258,8 +252,10 @@ const EventsFeed = () => {
   }, [currentPage]);
 
   const handleLoadMore = useCallback(() => {
-    const totalPages = data?.totalPages || 10;
-    if (data?.currentPage < totalPages && !isLoading) {
+    const totalCount = data?.data?.totalCount;
+    console.log("totalCount", totalCount)
+    console.log("AllEvent", allEvents?.length)
+    if (allEvents?.length < totalCount && !isLoading) {
       setCurrentPage(prev => prev + 1);
     }
   }, [allEvents]);
@@ -298,9 +294,12 @@ const EventsFeed = () => {
         (item: any) => item.featuredEventSection,
       );
       setFeaturedEvents(featuredEventsRes);
-      setAllEvents(eventsRes);
+      setAllEvents(prev =>
+        currentPage === 1 ? eventsRes : [...prev, ...eventsRes],
+      );
     }
   }, [data]);
+
 
   useFocusEffect(
     useCallback(() => {

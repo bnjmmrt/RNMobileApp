@@ -15,6 +15,7 @@ import {
 import { CustomText } from '../CustomText';
 import type { EventItem } from './EventsFeed';
 import { formatEventDate } from 'src/utils/dateFunctions';
+import { removeSignature } from 'src/utils/functions';
 
 let screenWidth: number = Dimensions.get('window').width;
 
@@ -48,7 +49,7 @@ const FeedItem: React.FC<FeedItemProps> = ({ item, from = 'AllEvents' }) => {
       onPress={() => handlEventPress()}>
       <View style={[styles.imageContainer]}>
         <FastImage
-          source={{ uri: item.imageCover || item.imageFlyer }}
+          source={{ uri: removeSignature(item.imageCover) || removeSignature(item.imageFlyer) }}
           resizeMode={FastImage.resizeMode.cover}
           defaultSource={IMAGES.eventCoverPlaceholders1}
           style={styles.icon}

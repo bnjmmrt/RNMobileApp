@@ -16,7 +16,7 @@ import {
   verticalMarginScale,
   verticalScale,
 } from '../../utils/dimensions';
-import { fontFamily } from '../../utils/functions';
+import { fontFamily, removeSignature } from '../../utils/functions';
 import { formatDetailedEventDate } from 'src/utils/dateFunctions';
 import { Event } from 'src/types';
 import { useSelector } from 'react-redux';
@@ -61,13 +61,11 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
     return ""; // Default return if no match is found
   };
 
-  console.log('Sayyed event item :', item);
-  console.log('Sayyed  userId :', userId);
-  console.log('Sayyed  getUserRole :', getUserRole());
+
   return (
     <View style={styles.container}>
       <FastImage
-        source={{ uri: item?.imageCover || item?.imageFlyer }}
+        source={{ uri: removeSignature(item?.imageCover) || removeSignature(item?.imageFlyer) }}
         resizeMode={FastImage.resizeMode.cover}
         defaultSource={IMAGES.eventCoverPlaceholders1} // Your local placeholder image
         style={styles.icon}>

@@ -36,7 +36,7 @@ const EditEventScreen: React.FC<EditEventScreenProps> = ({ navigation }) => {
       case EVENT.DETAILS:
         return <EditEventDetails item={event} />;
       case EVENT.SETTINGS:
-        return <EditEventSettings item={event} />;
+        return <EditEventSettings event={event} />;
       default:
         return null;
     }

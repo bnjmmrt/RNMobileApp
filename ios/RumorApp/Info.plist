@@ -39,10 +39,6 @@
 	<string>Give Rumor app  access to your camera</string>
 	<key>NSContactsUsageDescription</key>
 	<string>This will be used to request referrals or invite friends from your contacts.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app needs location access in the background.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Give Rumor app  access to your photos</string>
 	<key>UIAppFonts</key>
@@ -87,5 +83,11 @@
 	<false/>
     <key>NSCameraUsageDescription</key>
     <string>$(PRODUCT_NAME) need access to your camera for scanning QR codes.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need access to your location to provide personalized services.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We need access to your location to provide personalized services, even when the app is in the background.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We need access to your location to provide personalized services.</string>
 </dict>
 </plist>

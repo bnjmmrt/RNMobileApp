@@ -100,10 +100,19 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   };
 
   const getMemberNonMemberProfile = async () => {
-    const response: any = await apiRequest('get', EndPoint.user + userId);
-    if (response.status === 200) {
-      dispatch(setProfileData(response?.data));
-      // setUser(response?.data);
+    if (isGuest && loginData.roles[0]?.roleName === ROLE.NON_MEMBER) {
+      const response: any = await apiRequest('post',
+        EndPoint.get_user_with_role_by_id,
+        { id: userId },
+      );
+      if (response.status === 200) {
+        dispatch(setProfileData(response?.data));
+      }
+    } else {
+      const response: any = await apiRequest('get', EndPoint.user + userId);
+      if (response.status === 200) {
+        dispatch(setProfileData({...response?.data, profilePicture: response?.data?.imageUrl}));
+      }
     }
   };
 
@@ -143,7 +152,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       case 'member':
         return 'Member'
       case 'non_member':
-        if(isGuest) {
+        if (isGuest && loginData.roles[0]?.roleName === ROLE.NON_MEMBER) {
           return 'Invited'
         } else {
           return 'Non-Member'
@@ -271,7 +280,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       dispatch(
         setProfileData({
           ...profileData,
-          imageUrl: fileUploadResponse?.data?.profilePicture,
+          profilePicture: fileUploadResponse?.data?.profilePicture,
         }),
       );
     }
@@ -340,6 +349,14 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     navigation.replace("AuthStack")
   };
 
+  const getUserName = () => {
+    // if (isGuest && loginData.roles[0]?.roleName === ROLE.NON_MEMBER) {
+    //   return profileData.name;
+    // } else {
+      return profileData?.firstName ? `${profileData?.firstName} ${profileData?.lastName}` : ''
+    // }
+  }
+
   return (
     <View
       style={[
@@ -358,12 +375,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           <ScrollView>
             <ProfileTopView
               editPhotoClick={editPhotoClick}
-              profilePic={role.toLocaleLowerCase() === 'host' ? profileData?.companyLogo : profileData?.imageUrl}
-              name={
-                profileData?.firstName
-                  ? `${profileData?.firstName} ${profileData?.lastName}`
-                  : ''
-              }
+              profilePic={role.toLocaleLowerCase() === 'host' ? profileData?.companyLogo : profileData?.profilePicture}
+              name={getUserName()}
               loading={loading}
               // role={loginData?.roles[0].roleName}
               role={roleText(role)}

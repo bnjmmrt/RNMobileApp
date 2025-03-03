@@ -9,7 +9,7 @@ import {
 } from '../../utils/constants';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
-import { fontFamily } from 'src/utils/functions';
+import { fontFamily, removeSignature } from 'src/utils/functions';
 import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import {
   fontScale,
@@ -56,7 +56,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
+import { setRefresh, setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import EventAnnouncements from 'src/component/Event/EventAnnouncements';
 
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
@@ -80,6 +80,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     route?.params?.isCurrentUserIsGuest,
   );
   const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
+  const refresh = useSelector((state: RootState) => state.rspv.refresh);
   const [showError, setshowError] = useState(false)
   const eventId = route?.params?.id
   const { data: eventCount } = useFetchGuestStatusCountQuery({ eventId });
@@ -129,16 +130,14 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const useFetchEventDetailsHook =
     role === ROLE.HOST
       ? useFetchHostEventDetailsQuery
-      : rspvStatus === 'NO_STATUS'
-        ? useFetchPublicEventDetailsQuery
-        : useFetchEventDetailsQuery;
-
+      : useFetchEventDetailsQuery;
   const { data, isLoading, refetch } = useFetchEventDetailsHook(queryArgs);
 
   useEffect(() => {
-    console.log('RSVP Status:', rspvStatus);
-    refetch(); // Manually refetch when RSVP status changes
-  }, [rspvStatus, refetch]);
+    refetch();
+    // Manually refetch when RSVP status changes
+    dispatch(setRefresh(false))
+  }, [rspvStatus, refetch, refresh]);
 
   // Ensure argument structure remains consistent
 
@@ -422,7 +421,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           <View style={styles.blurredBackgroundContainer}>
             <FastImage
               source={{
-                uri: route?.params?.imageCover || route?.params?.imageFlyer,
+                uri: removeSignature(data?.data?.imageFlyer),
               }}
               resizeMode={FastImage.resizeMode.cover}
               defaultSource={IMAGES.eventCoverPlaceholders1}
@@ -447,7 +446,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             <View style={imageWrapperStyle.wrapper}>
               <FastImage
                 source={{
-                  uri: route?.params?.imageCover || route?.params?.imageFlyer,
+                  uri: removeSignature(data?.data?.imageCover) || removeSignature(data?.data?.imageFlyer),
                 }}
                 resizeMode={FastImage.resizeMode.cover}
                 defaultSource={IMAGES.eventCoverPlaceholders1}
@@ -455,7 +454,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               />
             </View>
 
-            <Text style={styles.titleStyle}>{route?.params?.name}</Text>
+            <Text style={styles.titleStyle}>{data?.data?.name}</Text>
 
             <EventStatus status={guestStatus} isDeclinedByMe={isDeclinedByMe} />
 
@@ -478,10 +477,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               />
             )}
 
-            <EventVenue
+            {!isLoading && <EventVenue
               item={data?.data}
               handleCalendarPress={addCalenderEvents}
-            />
+            />}
 
             <EventOverview item={data?.data} />
 
