@@ -112,7 +112,12 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                 </View>
                 <View style={[styles.statItem, styles.rightStatItem]}>
                   <Image source={IMAGES.location} style={styles.statIcon} />
-                  <Text style={styles.statText}>{user?.location || 'N/A'}</Text>
+                  <Text
+                    style={styles.statText}
+                    numberOfLines={1}
+                    ellipsizeMode="tail">
+                    {user?.location || 'N/A'}
+                  </Text>
                 </View>
               </View>
             </>
