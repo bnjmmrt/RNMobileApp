@@ -88,6 +88,7 @@ export const styles = StyleSheet.create({
     },
     smallButton: {
         width: '48%',
+        height: verticalScale(40)
     },
     rsvpButtonsRow: {
         flexDirection: 'row',

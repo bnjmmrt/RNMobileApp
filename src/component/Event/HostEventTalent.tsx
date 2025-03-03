@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Text, StyleSheet, View, FlatList, Pressable, Alert } from 'react-native';
-import { fontFamily } from '../../utils/functions';
+import { fontFamily, removeSignature } from '../../utils/functions';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '@images/index';
 import FastImage from '@d11/react-native-fast-image';
@@ -84,7 +84,7 @@ const HostEventTalent: React.FC<HostEventTalentProps> = ({ talents: initialTalen
           <Pressable style={styles.talentItem} onPress={() => Alert.alert('In Progress')}>
             {item.imageKeyUrl && item.imageKeyUrl.includes('http') ? (
               <FastImage
-                source={{ uri: item.imageKeyUrl }}
+                source={{ uri: removeSignature(item.imageKeyUrl) }}
                 resizeMode={FastImage.resizeMode.cover}
                 defaultSource={IMAGES.rumorLogo}
                 style={styles.icon}
