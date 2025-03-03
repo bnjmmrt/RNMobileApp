@@ -32,7 +32,7 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
         ref.current?.close();
       } catch (error) {
         console.log(error?.data?.error);
-        inputRef.current.setErrorMessage(error?.data?.error?.message);
+        inputRef.current.setErrorMessage("Please enter a valid referral code");
       }
     }
   };
