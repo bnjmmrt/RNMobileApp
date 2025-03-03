@@ -17,12 +17,24 @@ import { setCreativeFocus } from './src/redux/slices/appGlobalDataSlice';
 import { setInterests } from './src/redux/slices/appGlobalDataSlice';
 import { persistor, store } from './src/redux/store';
 import MainNavigation from 'src/navigation';
+import RNPreventScreenshot from 'react-native-screenshot-prevent';
 
 const AppContent: React.FC = () => {
   // const { isInternetConnected } = useAuth();
   const { isConnected } = useNetInfo();
   const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Enable screenshot prevention
+    RNPreventScreenshot?.enableSecureView();
+
+    // Cleanup on unmount
+    return () => {
+      RNPreventScreenshot?.disableSecureView();
+    };
+  }, [RNPreventScreenshot]);
+
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
     if (focusResponse.data) {

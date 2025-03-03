@@ -343,7 +343,6 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     );
   };
 
-  console.log('filteredAndSortedGuests', filteredAndSortedGuests[0]);
 
   const onCheckInPress = async () => {
     dispatch(setEventId(eventId));
