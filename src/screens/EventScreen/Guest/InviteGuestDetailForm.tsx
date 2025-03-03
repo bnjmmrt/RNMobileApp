@@ -48,6 +48,7 @@ interface InviteDetailsProps {
   ticketTypeRef: React.RefObject<InputRefMethods>;
   maxAdditionalGuests?: number;
   ticketTypeError: string;
+  status?:string
 }
 
 if (Platform.OS === 'android') {
@@ -73,6 +74,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   ticketTypeRef,
   maxAdditionalGuests,
   ticketTypeError,
+  status
 }) => {
   const inviteMessageRef = useRef<InputRefMethods>(null);
   const guestNoteRef = useRef<InputRefMethods>(null);
@@ -123,7 +125,8 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
         </View>
       </View>
 
-      <View>
+      { status !=="CONFIRMED" && (<>
+        <View>
         <CustomText style={styles.label}>{'Invite Message'}</CustomText>
         <View style={styles.inviteMessageInputContainer}>
           <CustomText style={styles.inviteMessagePrototype}>
@@ -211,6 +214,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
           </TouchableOpacity>
         </View>
       )}
+      </>)}
     </View>
   );
 
