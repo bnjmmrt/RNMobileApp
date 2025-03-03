@@ -45,7 +45,6 @@ interface InviteDetailsProps {
   eventStartDate?: string;
   directlySendToConfirm: boolean;
   onDirectlySendToConfirmChange: (value: boolean) => void;
-  ticketTypeRef: React.RefObject<InputRefMethods>;
   maxAdditionalGuests?: number;
   ticketTypeError: string;
   status?:string
@@ -71,7 +70,6 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   eventStartDate,
   directlySendToConfirm,
   onDirectlySendToConfirmChange,
-  ticketTypeRef,
   maxAdditionalGuests,
   ticketTypeError,
   status
@@ -147,7 +145,11 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
             errorMessage=""
             placeholder="Add your optional message..."
             multiline
-            inputFieldContainerStyle={{ borderWidth: 0 }}
+            inputFieldContainerStyle={{
+              borderWidth: 0,
+              borderRadius: radiusScale(16),
+              marginBottom: 1,
+            }}
             otherStyle={{ marginTop: 0 }}
             onChangeText={onInviteMessageChange}
           />
@@ -231,9 +233,9 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
   inviteMessageInputContainer: {
-    borderWidth: verticalScale(1),
     borderColor: COLORS.borderGray,
     borderRadius: radiusScale(16),
+    borderWidth: verticalScale(1),
   },
   inviteMessagePrototype: {
     marginHorizontal: horizontalMarginScale(16),

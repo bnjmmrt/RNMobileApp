@@ -7255,7 +7255,7 @@ react-native-screens@^4.3.0, "react-native-screens@>= 4.0.0":
 
 react-native-screenshot-prevent@^1.2.1:
   version "1.2.1"
-  resolved "https://registry.yarnpkg.com/react-native-screenshot-prevent/-/react-native-screenshot-prevent-1.2.1.tgz#f784a3303139690b9e8c1ef00f69839810941016"
+  resolved "https://registry.npmjs.org/react-native-screenshot-prevent/-/react-native-screenshot-prevent-1.2.1.tgz"
   integrity sha512-zY6U3xNlFrquCJJVNoyR6DcAv2c6tOHQIcleBUQo4OrbSKz5a94Y3MkuzVwpE+IMlxCASymenDwfMtnWopSiVA==
 
 react-native-svg-transformer@^1.5.0:

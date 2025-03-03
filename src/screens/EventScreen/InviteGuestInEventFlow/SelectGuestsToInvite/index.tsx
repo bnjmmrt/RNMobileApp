@@ -51,7 +51,7 @@ const SelectGuestsToInviteScreen: React.FC<
   const styles = createStyles();
   const navigation = useNavigation<NavigationProp<EventStackParamList>>();
   const dispatch = useDispatch();
-  const { requestContactPermission, permissionGranted } = useContacts();
+  const { requestContactPermission } = useContacts();
 
   const searchInputRef = useRef<InputRefMethods>(null);
   const filtersSheetRef = useRef<BottomSheetMethods>(null);
@@ -145,6 +145,18 @@ const SelectGuestsToInviteScreen: React.FC<
       return 'Please refine your search.';
     } else {
       return 'This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest';
+    }
+  };
+
+  const getEmptyStateTitle = () => {
+    if (filterNumber > 0 && searchText) {
+      return 'No results';
+    } else if (filterNumber > 0) {
+      return 'No users';
+    } else if (searchText) {
+      return 'No results';
+    } else {
+      return 'No users found!';
     }
   };
 
@@ -243,7 +255,7 @@ const SelectGuestsToInviteScreen: React.FC<
               justifyContent: 'center',
             }}>
             <EventEmptyRecord
-              title="User not found"
+              title={getEmptyStateTitle()}
               subTitle={getEmptyStateMessage()}
               isLoading={isLoading}
               footerContent={
@@ -265,6 +277,7 @@ const SelectGuestsToInviteScreen: React.FC<
                       paddingHorizontal: horizontalMarginScale(12),
                       paddingVertical: verticalMarginScale(12),
                       gap: horizontalMarginScale(6),
+                      marginTop: verticalMarginScale(30),
                     }}
                   />
                 ) : null
