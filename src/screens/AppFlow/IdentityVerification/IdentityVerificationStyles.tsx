@@ -13,7 +13,7 @@ const ProfilePhotoScreenStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
-      bottom: Platform.OS === 'android' ? 20 : 0
+      bottom: Platform.OS === 'android' ? 20 : -10
     },
     btnSmallStyle: {
       width: 'auto',
@@ -60,7 +60,7 @@ const ProfilePhotoScreenStyles = () => {
       borderRadius: radiusScale(8),
       alignItems: 'center',
       padding: verticalMarginScale(15),
-      marginTop: verticalMarginScale(20),
+      marginTop: verticalMarginScale(25),
     },
     title: {
       color: COLORS.black,

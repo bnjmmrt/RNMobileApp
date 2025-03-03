@@ -4,7 +4,7 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import { fontScale, Hp, verticalMarginScale, Wp } from '../../utils/dimensions';
+import { fontScale, Hp, verticalMarginScale, verticalScale, Wp } from '../../utils/dimensions';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '../../assets/images/index';
 import Button from '../Button';
@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
   },
   btnStyle: {
     width: Wp(85),
+    height: verticalScale(56),
     borderRadius: 100,
   },
   logoContainer: {

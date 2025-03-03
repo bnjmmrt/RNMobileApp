@@ -52,7 +52,7 @@ const EditPictureBottomSheet = forwardRef(
             </View>
 
           )}
-
+          <View style={{height: 5}}/>
           <Button
             disabled={false}
             style={styles.btnStyle}
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     borderRadius: fontScale(100),
   },
   clearButton: {
-    borderWidth: horizontalScale(1),
+    borderWidth: 2,
     backgroundColor: COLORS.white,
     borderColor: COLORS.black,
   },

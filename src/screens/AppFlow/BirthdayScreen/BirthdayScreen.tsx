@@ -45,7 +45,7 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
   };
 
   const validateInputs = () => {
-    if (!selectedDate) {
+    if (!selectedDate || selectedDate === 'MM/DD/YYYY') {
       setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_YOUR_BIRTHDAY);
       return false;
     } else if (validateAge(selectedDate)) {
@@ -80,7 +80,7 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
             LABLE.WE_WILL_USE_THIS_INFORMATION_TO_TAILOR_YOUR_EXPERIENCE
           }
         />
-        <View style={{height: Hp(3)}}/>
+        <View style={{height: 15}}/>
         <CustomSelectableText
           placeholder={LABLE.DATE_PLACEHOLDER}
           leftImage={errorMessage ? IMAGES.calendar_error : IMAGES.calender}
