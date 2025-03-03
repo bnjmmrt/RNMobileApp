@@ -77,6 +77,7 @@ const IMAGES = {
   checkbox_active: require('./checkbox_active.png'),
   checkbox_inactive: require('./checkbox_inactive.png'),
   phone: require('./phone.png'),
+  phone01: require('./phone-01.png'),
   hourglass: require('./hourglass.png'),
   insta: require('./insta.png'),
   linkdn: require('./linkedn.png'),
