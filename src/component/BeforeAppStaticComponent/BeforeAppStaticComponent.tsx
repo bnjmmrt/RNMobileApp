@@ -1,19 +1,16 @@
-import React, { useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  Image,
-} from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { View, StyleSheet, Image } from 'react-native';
 import { fontScale, Hp, verticalMarginScale, verticalScale, Wp } from '../../utils/dimensions';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '../../assets/images/index';
 import Button from '../Button';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
 import { ScrollView } from 'react-native';
-import { fontFamily } from '../../utils/functions';
-import { useNavigation } from '@react-navigation/native';
+import { changeSafeAreaViewConfig, fontFamily } from '../../utils/functions';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { CustomText } from '../CustomText';
 import CustomCarousel from '../Carousel/CarouselComponent';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
 interface BeforeAppStaticComponentProps {
   isChatScreen: boolean;
@@ -55,8 +52,8 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
     isChatScreen ? listData[2] : listData[0],
   );
 
-  const handleImageClick = (index:number) => {
-    console.log("index",index)
+  const handleImageClick = (index: number) => {
+    console.log('index', index);
     if (isChatScreen) {
       setCurrent(listData[2]);
     } else {
@@ -98,7 +95,6 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
         ) : (
           <View style={styles.dotContainer} />
         )} */}
-
 
         <TitleSubtitle
           style={styles.titleSubtitle}

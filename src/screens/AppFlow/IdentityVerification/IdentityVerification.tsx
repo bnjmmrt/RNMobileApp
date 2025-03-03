@@ -1,12 +1,17 @@
 import React, { useCallback, useRef } from 'react';
 import { ScrollView, Text, View, Linking, Platform } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { LABLE, BUTTON_LABLE, genderList, COLORS } from '../../../utils/constants';
+import {
+  LABLE,
+  BUTTON_LABLE,
+  genderList,
+  COLORS,
+} from '../../../utils/constants';
 import IdentityVerificationStyles from './IdentityVerificationStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import {
   resetAppFlowDetails,
   setPageProgress,
@@ -16,19 +21,34 @@ import IMAGES from '../../../assets/images';
 import { useMemberSignUp } from '../../../redux/hooks/useMemberSignUp';
 import useApi from '../../../axios/useApi';
 import { EndPoint } from '../../../ApiManager/config';
-import { changeSafeAreaViewConfig, convertDateFormat, fontFamily } from '../../../utils/functions';
 import {
+  changeSafeAreaViewConfig,
+  convertDateFormat,
+  loginUser,
+} from '../../../utils/functions';
+import {
+  role,
   setAuthToken,
   setLoginData,
   setRole,
+  setRoleId,
   setUserId,
 } from '../../../redux/slices/authSlice';
 import { FlashMessageComponent } from '../../../component/FlashMessageComponent/FlashMessageComponent';
 import { useFocusEffect } from '@react-navigation/native';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import {
+  fontScale,
+  horizontalScale,
+  Hp,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+} from 'src/utils/dimensions';
+import { RootState } from 'src/redux/slices';
 
-interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
+interface IdentityVerificationProps extends NativeStackScreenProps<any, any> {}
 
 const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   navigation,
@@ -47,8 +67,32 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     subject,
   )}&body=${encodeURIComponent(body)}`;
 
-  const onNextClick = async () => {
+  const {
+    roles,
+    role,
+    profileData,
+    companyLogo,
+    profilePicture,
+    userId,
+    isGuest,
+    varifyStatus,
+  } = useSelector(
+    (state: RootState) => ({
+      profileData: state.appFlowApiData?.profileData,
+      role: state.auth.role,
+      roles: state.auth.roles,
+      companyLogo: state.auth.companyLogo,
+      profilePicture: state.auth.profilePicture,
+      userId: state.auth.userId,
+      isGuest: state.auth.isGuest,
+      varifyStatus: state.auth.varifyStatus,
+    }),
+    shallowEqual,
+  );
 
+  console.log('userDetails', userDetails);
+
+  const onNextClick = async () => {
     const requestParams: any = {
       address: {
         address: userDetails.baseCity.address,
@@ -75,15 +119,28 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       EndPoint.member_signUp,
       requestParams,
     );
-    console.log("response", response)
+    console.log('response', response);
     if (response.status === 200) {
-      const data = {
-        ...loginData,
+      loginUser({
+        id: response?.data?.id,
+        isGuest: isGuest,
         roles: response?.data.roles,
         token: response.data.token,
-        isSignUpCompleted: true,
-        userId: response?.data?.id,
-      };
+        varifyStatus: varifyStatus,
+        companyLogo: companyLogo,
+        profilePicture: userDetails.profilePic,
+      });
+
+      let newRole = response?.data.roles[0];
+      const nonMemberRole = response?.data.roles.find(
+        (role: role) => role.roleName === 'non_member',
+      );
+      if (roles.length > 1 && nonMemberRole) {
+        newRole = nonMemberRole;
+      }
+
+      dispatch(setRole(newRole.roleName));
+      dispatch(setRoleId(newRole.roleId));
 
       const userProfile = {
         dateOfBirth: userDetails.birthday,
@@ -101,13 +158,9 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         role: response?.data?.roles[0]?.roleName,
       };
       dispatch(setProfileData(userProfile));
-      dispatch(setLoginData(data));
-      dispatch(setUserId(data?.userId));
-      dispatch(setRole(data?.roles[0]?.roleName));
-      dispatch(setAuthToken(data?.token || ''));
       dispatch(resetAppFlowDetails());
       dispatch(setPageProgress(1));
-      dispatch(setAuthToken(response.data.token));
+
       navigation.navigate('BottomTabBar');
 
       // dispatch(resetAppFlowDetails());
@@ -174,7 +227,9 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
               <Text style={styles.btnRumor}>{LABLE.RUMORAPP}</Text>
             </View>
 
-            <Text style={[styles.subTitle, {paddingHorizontal: 0}]}>{' to '}</Text>
+            <Text style={[styles.subTitle, { paddingHorizontal: 0 }]}>
+              {' to '}
+            </Text>
             <Text style={styles.emailStyle}>@therumor</Text>
           </View>
 
@@ -200,8 +255,12 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
               <Text style={styles.btnRumor}>{LABLE.RUMORAPP}</Text>
             </View>
 
-            <Text style={[styles.subTitle, {paddingHorizontal: 0}]}>{' to '}</Text>
-            <Text style={styles.emailStyle}>{BUTTON_LABLE.SUPPORT_EMAIL_ID}</Text>
+            <Text style={[styles.subTitle, { paddingHorizontal: 0 }]}>
+              {' to '}
+            </Text>
+            <Text style={styles.emailStyle}>
+              {BUTTON_LABLE.SUPPORT_EMAIL_ID}
+            </Text>
           </View>
           <Button
             disabled={false}

@@ -48,8 +48,8 @@ const AllUsersFilters = ({
   setDisableApplyCta: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const filtersListRef = useRef<BottomSheetFlatListMethods>(null);
-  const loginData = useSelector(
-    (state: RootState) => state.auth.loginData,
+  const userId = useSelector(
+    (state: RootState) => state.auth.userId,
     shallowEqual,
   );
 
@@ -156,10 +156,10 @@ const AllUsersFilters = ({
   }, []);
 
   useEffect(() => {
-    if (loginData && loginData.id) {
-      fetchFilters({ id: loginData?.id });
+    if (userId) {
+      fetchFilters({ id: userId });
     }
-  }, [loginData]);
+  }, [userId]);
 
   return (
     <BottomSheetFlatList
