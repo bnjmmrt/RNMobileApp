@@ -12,7 +12,7 @@ import { fontScale, Hp, Wp } from '../utils/dimensions';
 import IMAGES from '../assets/images';
 import { COLORS } from '../utils/constants';
 import AvatarInitials from './AvatarInitials';
-import { fontFamily, removeSignature } from 'src/utils/functions';
+import { fontFamily } from 'src/utils/functions';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import FastImage from '@d11/react-native-fast-image';
@@ -39,13 +39,10 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
   const profileData = useSelector(
     (state: RootState) => state.appFlowApiData?.profileData,
   );
-  const loginData = useSelector(
-    (state: RootState) => state.auth?.loginData,
-  );
   const profilePic =
     role.toLocaleLowerCase() === 'host'
-      ? loginData?.user?.additionalHostInformation.companyLogo
-      : loginData?.user?.profilePicture;
+      ? profileData?.companyLogo
+      : profileData?.imageUrl;
   const name = profileData?.firstName
     ? `${profileData?.firstName} ${profileData?.lastName}`
     : '';
@@ -111,7 +108,7 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
           {profilePic ? (
             <FastImage
               style={[styles.profilePhotoContainer]}
-              source={{ uri: removeSignature(profilePic) }}
+              source={{ uri: profilePic }}
               resizeMode="cover"
             />
           ) : (

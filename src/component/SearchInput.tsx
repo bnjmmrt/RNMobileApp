@@ -48,6 +48,7 @@ const SearchInput = forwardRef(
     // Expose handleNextPress to the parent
     useImperativeHandle(ref, () => ({
       handleNextPress,
+      searchText
     }));
 
     // Handle the "Next" button press
