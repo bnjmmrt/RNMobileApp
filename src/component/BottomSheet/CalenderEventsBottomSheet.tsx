@@ -31,7 +31,7 @@ const CalenderEventsBottomSheet = forwardRef(
     return (
       <BottomSheetComponent
         ref={ref}
-        snapPoints={[Platform.OS == 'android' ? '35%' : '35%']}
+        snapPoints={[Platform.OS == 'android' ? '35%' : '30%']}
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
           <Text style={styles.title}>{LABLE.ADD_TO_CALENDAR}</Text>
