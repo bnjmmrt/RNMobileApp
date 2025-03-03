@@ -4,6 +4,8 @@
 <dict>
     <key>NSCalendarsUsageDescription</key>
     <string>We need access to your calendar to add events.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>We need access to save images to your gallery</string>
     <key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
