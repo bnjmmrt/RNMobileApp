@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
     Modal,
     View,
@@ -12,15 +12,18 @@ import {
     Pressable,
 } from "react-native";
 import IMAGES from "@images/index";
-import { BUTTON_LABLE, COLORS } from "src/utils/constants";
+import { ANNOUNCEMENT, BUTTON_LABLE, COLORS } from "src/utils/constants";
 import FastImage from "@d11/react-native-fast-image";
-import { verticalMarginScale, verticalScale } from "src/utils/dimensions";
+import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalMarginScale, verticalScale } from "src/utils/dimensions";
 import Button from "../Button";
-
+import { PermissionsAndroid, Platform } from 'react-native';
+import RNFS from 'react-native-fs';
+import CameraRoll from '@react-native-camera-roll/camera-roll';
+import { fontFamily } from "src/utils/functions";
 interface MediaItem {
-    type: "image" | "pdf";
-    uri?: string;
-    name?: string;
+    mediaType: "image" | "file";
+    media?: any;
+    mediaName?: any;
     size?: string;
 }
 
@@ -38,19 +41,21 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
     mediaItems,
 }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const bottomSheetRef = useRef(null);
 
+    const handleOpenWebView = () => {
+        bottomSheetRef?.current?.open();
+    };
     const handleNext = () => {
         if (currentIndex < mediaItems.length - 1) {
             setCurrentIndex(currentIndex + 1);
         }
     };
-
     const handlePrev = () => {
         if (currentIndex > 0) {
             setCurrentIndex(currentIndex - 1);
         }
     };
-
     const openPdfInBrowser = async (pdfUrl: string) => {
         try {
             const supported = await Linking.canOpenURL(pdfUrl);
@@ -64,26 +69,70 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
         }
     };
 
+    const saveImageToGallery = async (imageUrl: string) => {
+        try {
+            // Request permission for Android devices
+            if (Platform.OS === 'android') {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+                );
+
+                if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+                    Alert.alert('Permission Denied', 'Cannot save image without permission');
+                    return;
+                }
+            }
+
+            // Define the file path to save
+            const fileName = `image_${Date.now()}.jpg`;
+            const path = `${RNFS.CachesDirectoryPath}/${fileName}`;
+
+            // Download the image to a temporary location
+            const downloadResult = await RNFS.downloadFile({
+                fromUrl: imageUrl,
+                toFile: path,
+            }).promise;
+
+            if (downloadResult.statusCode === 200) {
+                // Save to gallery
+                // await CameraRoll.saveAsset(path, { type: 'photo' });
+                await CameraRoll.save(path, { type: 'photo' });
+                Alert.alert('Success', 'Image saved to gallery!');
+            } else {
+                Alert.alert('Error', 'Failed to download image');
+            }
+        } catch (error) {
+            console.error(error);
+            Alert.alert('Error', 'Something went wrong while saving the image');
+        }
+    };
+
     const renderMedia = () => {
         const currentItem = mediaItems[currentIndex];
-        if (currentItem.type === "image") {
-            return <FastImage source={{ uri: currentItem.uri }} style={styles.media} resizeMode='contain' />;
-        } else if (currentItem.type === "pdf") {
+        if (currentItem?.mediaType === "image") {
+            return <FastImage source={{ uri: currentItem?.media }} style={styles.media} />;
+        } else if (currentItem?.mediaType === "file") {
             return (
-                <Pressable style={styles.pdfContainer} onPress={() => openPdfInBrowser(currentItem.uri!)}>
-                    <Image source={IMAGES.arrowRight} style={styles.pdfIcon} resizeMode='contain' />
-                    <Text style={styles.pdfText}>{currentItem.name}</Text>
-                    <Text style={styles.pdfSize}>{currentItem.size}</Text>
-                </Pressable>
+                <>
+                    {/* <WebViewBottomSheet url={currentItem?.media} ref={bottomSheetRef} isFromLanding={true} /> */}
+
+                    <Pressable style={styles.pdfContainer} onPress={() => openPdfInBrowser(currentItem?.media)}>
+                        <Image source={IMAGES.pdf} style={styles.pdfIcon} resizeMode='contain' />
+                        <Text style={styles.pdfText}>{currentItem?.mediaName}</Text>
+                        {/* <Text style={styles.pdfSize}>{currentItem.size}</Text> */}
+                    </Pressable>
+                </>
+
             );
         }
     };
+
 
     return (
         <Modal visible={visible} transparent animationType="fade">
             <View style={styles.modalBackground}>
                 <View style={styles.headerContainer}>
-                    <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                    <TouchableOpacity activeOpacity={0.7} onPress={onClose} style={styles.closeButton} >
                         <Image source={IMAGES.cross} />
                     </TouchableOpacity>
                     <Text style={styles.mediaInfo}>{currentIndex + 1} of {mediaItems.length}</Text>
@@ -107,20 +156,34 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
                 )}
 
                 <View style={styles.footer}>
-                    <Button
+                    <View
+                        style={[styles.container]}>
+                        <FastImage
+                            style={[styles.image]}
+                            source={IMAGES.frame}
+                            defaultSource={IMAGES.backgroundLogin}
+                            resizeMode="cover"
+                        />
+                        <View
+                            style={styles.infoContainer}>
+                            <Text style={styles.subtitle}>{ANNOUNCEMENT.POSTED_BY}</Text>
+                            <Text style={styles.title}>Vaishali Pal</Text>
+                        </View>
+                    </View>
+                    {/* <Button
                         disabled={false}
                         style={styles.btnStyle}
                         title={BUTTON_LABLE.SAVE_TO_FILE}
                         colorTheme="light"
                         onPress={handleNext}
-                    />
+                    /> */}
 
                     <Button
                         disabled={false}
                         style={styles.btnStyle}
                         title={BUTTON_LABLE.SAVE_TO_FILE}
                         colorTheme="light"
-                        onPress={handleNext}
+                        onPress={() => saveImageToGallery(mediaItems[currentIndex]?.media)}
                     />
                 </View>
             </View>
@@ -172,16 +235,17 @@ const styles = StyleSheet.create({
     mediaContainer: {
         width: width * 0.9,
         height: height * 0.7,
-        justifyContent: "center",
+        // justifyContent: "center",
         alignItems: "center",
     },
     media: {
         width: "100%",
-        height: "100%",
+        height: "92%",
+        borderRadius: 10
     },
     pdfContainer: {
         width: width * 0.8,
-        height: height * 0.5,
+        height: height * 0.65,
         backgroundColor: "#222",
         justifyContent: "center",
         alignItems: "center",
@@ -230,5 +294,37 @@ const styles = StyleSheet.create({
     },
     btnStyle: {
         borderRadius: 100,
+    },
+    container: {
+        borderWidth: 2,
+        padding: verticalMarginScale(8),
+        borderRadius: 10,
+        borderColor: COLORS.borderGray,
+        backgroundColor: COLORS.white,
+        flexDirection: 'row',
+        alignSelf: 'flex-start',
+        alignItems: 'center',
+    },
+    image: {
+        resizeMode: 'center',
+        width: horizontalScale(40),
+        height: verticalScale(40),
+        borderRadius: radiusScale(20),
+    },
+    infoContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        paddingLeft: horizontalMarginScale(8),
+        // marginEnd: 20,
+    },
+    title: {
+        color: COLORS.black2,
+        fontSize: fontScale(14),
+        fontFamily: fontFamily.ABCDiatype_Regular,
+    },
+    subtitle: {
+        color: COLORS.light_gray,
+        fontSize: fontScale(12),
+        fontFamily: fontFamily.ABCDiatype_Regular,
     },
 });

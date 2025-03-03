@@ -20,7 +20,7 @@ export const formatEventDate = (startDate: string, endDate: string) => {
 };
 
 
-export const formatDetailedEventDate = (startDate: string, endDate: string) => {
+export const formatDetailedEventDate = (startDate: string, endDate: string = '') => {
   const start = moment.utc(startDate).local();
   const end = moment.utc(endDate).local();
   const today = moment().startOf('day');
@@ -39,5 +39,22 @@ export const formatDetailedEventDate = (startDate: string, endDate: string) => {
     return `${startFormat}, ${startTime} – ${endFormat}, ${endTime}`;
   } else {
     return `${startFormat}, ${startTime} – ${endTime}`;
+  }
+};
+
+export const formatViewAnnouncementDate = (startDate: string) => {
+  const start = moment.utc(startDate).local();
+  const today = moment().startOf('day');
+  const tomorrow = moment().add(1, 'day').startOf('day');
+
+  const startFormat = start.format('ddd, MMM D');
+  const startTime = start.format('h:mm A');
+
+  if (start.isSame(today, 'day')) {
+    return `Today, ${startTime}`;
+  } else if (start.isSame(tomorrow, 'day')) {
+    return `Tomorrow, ${startTime}`;
+  } else {
+    return `${startFormat}, ${startTime}`;
   }
 };

@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
 import EnterEmailPhoneStyles from './EnterEmailPhoneStyles';
 import Button from '../../../component/Button';
@@ -20,11 +19,14 @@ import { useFocusEffect } from '@react-navigation/native';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { verticalMarginScale } from 'src/utils/dimensions';
+import { EndPoint } from 'src/ApiManager/config';
+import useApi from '../../../axios/useApi';
 
 interface EnterEmailPhoneProps extends NativeStackScreenProps<any, any> { }
 
 const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
   const dispatch = useDispatch();
+  const { apiRequest, loading, error } = useApi();
   // const isEmailVerified = useSelector((state: RootState) => state.appFlow.isEmailVerified);
   const loginData = useSelector((state: RootState) => state.auth.loginData);
   const isEmailVerified = loginData?.varifyStatus;
@@ -47,29 +49,60 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
       keyboardDidHideListener.remove();
     };
   }, []);
-  const onNextClick = () => {
+
+  const onNextClick = async () => {
+    let endPoint;
+    let params
     if (loginData?.varifyStatus === 1) {
       if (phoneNumberInputRef.current.validatePhoneNumber()) {
-        dispatch(
-          setPhone(
-            phoneNumberInputRef.current.callingCode +
-            phoneNumberInputRef.current.phoneNumber,
-          ),
-        );
-        navigation.navigate('VerifyEmail', {
-          phone:
-            phoneNumberInputRef.current.callingCode +
-            phoneNumberInputRef.current.phoneNumber,
-          isEmail: false,
-        });
+        endPoint = EndPoint.check_phone;
+        params = {
+          phoneNumber: phoneNumberInputRef.current.callingCode + phoneNumberInputRef.current.phoneNumber
+        };
+        try {
+          const response: any = await apiRequest('post', endPoint, params);
+          if(response?.data.isValid) {
+            dispatch(
+              setPhone(
+                phoneNumberInputRef.current.callingCode +
+                phoneNumberInputRef.current.phoneNumber,
+              ),
+            );
+            navigation.navigate('VerifyEmail', {
+              phone:
+                phoneNumberInputRef.current.callingCode +
+                phoneNumberInputRef.current.phoneNumber,
+              isEmail: false,
+            });
+          } else {
+            phoneNumberInputRef.current?.setErrorMessage("Phone Number already exist.")
+          }
+        } catch (error) {
+          phoneNumberInputRef.current?.setErrorMessage("Phone Number already exist.")
+         console.log('ererror', error)
+        }
       }
     } else {
       if (emailInputRef.current.validateEmailAddress()) {
-        dispatch(setEmail(emailInputRef.current.emailAddress));
-        navigation.navigate('VerifyEmail', {
-          email: emailInputRef.current.emailAddress,
-          isEmail: true,
-        });
+        endPoint = EndPoint.check_email;
+        params = {
+          email: emailInputRef.current.emailAddress
+        };
+        try {
+          const response: any = await apiRequest('post', endPoint, params);
+          if(response?.data.isValid) {
+            dispatch(setEmail(emailInputRef.current.emailAddress));
+            navigation.navigate('VerifyEmail', {
+              email: emailInputRef.current.emailAddress,
+              isEmail: true,
+            });
+          } else {
+            emailInputRef.current?.setErrorMessage("Email address already exist.")
+          }
+        } catch (error) {
+          emailInputRef.current?.setErrorMessage("Email address already exist.")
+         console.log('ererror', error)
+        }
       }
     }
   };

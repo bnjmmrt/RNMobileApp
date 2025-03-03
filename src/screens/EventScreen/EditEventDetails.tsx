@@ -31,6 +31,7 @@ import moment from 'moment';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import { useNavigation } from '@react-navigation/native';
 import { current } from '@reduxjs/toolkit';
+import { removeSignature } from 'src/utils/functions';
 
 
 interface Location {
@@ -109,7 +110,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({
   const [furtherInstructions, setFurtherInstructions] = useState(item?.furtherInstructions || '');
   const [eventDescription, setEventDescription] = useState(item?.description || '');
   const [featureTalent, setFeatureTalent] = useState(item?.talents || []);
-  const [image, setImage] = useState<string>(item?.imageCover || item?.imageFlyer || '');
+  const [image, setImage] = useState<string>(removeSignature(item?.imageCover) || removeSignature(item?.imageFlyer) || '');
   const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
 
   // console.log("Sayyed item:", item)

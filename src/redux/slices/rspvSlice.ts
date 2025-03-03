@@ -13,6 +13,7 @@ interface RSVPState {
     guests: Guest[];
     selectedGuest: Guest | null;
     rspvStatus: string;
+    refresh: boolean;
 }
 
 const initialState: RSVPState = {
@@ -20,6 +21,7 @@ const initialState: RSVPState = {
     guests: [],
     selectedGuest: null,
     rspvStatus: '',
+    refresh: false
 };
 
 const rsvpSlice = createSlice({
@@ -68,9 +70,12 @@ const rsvpSlice = createSlice({
         setRsvpStatus(state, action: PayloadAction<any>) {
             state.rspvStatus = action.payload;
         },
+        setRefresh(state, action: PayloadAction<any>) {
+            state.refresh = action.payload;
+        },
     },
 });
 
-export const { setResponse, addGuest, deleteGuest, setSelectedGuest, resetRSVP, resetGuest, setRsvpStatus } = rsvpSlice.actions;
+export const { setResponse, addGuest, deleteGuest, setSelectedGuest, resetRSVP, resetGuest, setRsvpStatus, setRefresh } = rsvpSlice.actions;
 
 export default rsvpSlice.reducer;

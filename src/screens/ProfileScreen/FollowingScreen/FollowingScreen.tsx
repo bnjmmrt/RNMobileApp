@@ -1,6 +1,6 @@
 import IMAGES from '@images/index';
-import {useNavigation} from '@react-navigation/native';
-import React, {useState, useEffect} from 'react';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   FlatList,
   SafeAreaView,
@@ -10,95 +10,81 @@ import {
   TextInput,
   ActivityIndicator,
 } from 'react-native';
-import {useSelector} from 'react-redux';
-import {EndPoint} from 'src/ApiManager/config';
+import { useDispatch, useSelector } from 'react-redux';
+import { EndPoint } from 'src/ApiManager/config';
 import useApi from 'src/axios/useApi';
 import AvatarInitials from 'src/component/AvatarInitials';
 import ButtonSmall from 'src/component/ButtonSmall';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import FollowButton from 'src/component/FollowButton/FollowButton';
 import Header from 'src/component/Header/Header';
 import SearchInput from 'src/component/SearchInput';
-import {ROUTES} from 'src/navigation/Route';
-import {RootState} from 'src/redux/slices';
-import {COLORS, PROFILE} from 'src/utils/constants';
-import {Hp} from 'src/utils/dimensions';
-import {fontFamily} from 'src/utils/functions';
+import { ROUTES } from 'src/navigation/Route';
+import { RootState } from 'src/redux/slices';
+import { setRefresh } from 'src/redux/slices/rspvSlice';
+import { COLORS, PROFILE } from 'src/utils/constants';
+import { Hp } from 'src/utils/dimensions';
+import { fontFamily, removeSignature } from 'src/utils/functions';
 
 const FollowingScreen: React.FC = () => {
-  const {apiRequest, loading} = useApi();
+  const { apiRequest, loading } = useApi();
   const [searchQuery, setSearchQuery] = useState('');
-  const {navigate, goBack} = useNavigation();
-  const [pagination, setPagination] = useState({take: 12, skip: 0});
+  const { setParams, navigate, goBack } = useNavigation<any>();
+  const [pagination, setPagination] = useState({ take: 12, skip: 0 });
   const [hostList, setHostList] = useState<any[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const userId = useSelector((state: RootState) => state.auth.userId);
+  const refresh = useSelector((state: RootState) => state.rspv.refresh);
+  const routes = useRoute();
+  const dispatch = useDispatch()
 
-  const getFollowings = async () => {
-    const response: any = await apiRequest(
-      'get',
-      `${EndPoint.hosts_followed}${userId}?take=${pagination.take}&skip=${pagination.skip}`,
-    );
-    if (response.status === 200) {
-      const hostsData = response?.data.hosts;
-      if (hostsData?.length) {
-        const newHosts = hostsData.map((host: any) => ({
+  const getFollowings = useCallback(async () => {
+    dispatch(setRefresh(false));
+    setIsRefreshing(true);
+    try {
+      const response = await apiRequest(
+        'get',
+        `${EndPoint.hosts_followed}${userId}?take=${pagination.take}&skip=${pagination.skip}`
+      );
+
+      if (response?.data?.hosts?.length || refresh) {
+        const newHosts = response?.data.hosts.map(host => ({
           ...host,
           isFollowing: true,
         }));
-        if (newHosts.length < pagination.take) {
-          setHasMore(false); // No more data to load
-        }
-        setHostList(prev => [...prev, ...newHosts]);
+        setHostList(prev => (pagination.skip === 0 ? newHosts : [...prev, ...newHosts]));
+        setHasMore(newHosts.length >= pagination.take);
       } else {
         setHasMore(false);
       }
+    } catch (error) {
+      console.error("Error fetching followings:", error);
+    } finally {
+      setIsRefreshing(false);
     }
-  };
+  }, [pagination, userId, refresh]);
 
-  const followUnfollow = async (hostId: string) => {
-    const response: any = await apiRequest(
-      'post',
-      `v1/auth/host/${hostId}/follow`, { userId: userId },
-    );
-    return response?.status;
-  };
-  
   useEffect(() => {
     getFollowings();
-  }, []);
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-  };
+  }, [pagination, refresh]);
 
   const handleRefresh = () => {
     setIsRefreshing(true);
-    setPagination({take: 12, skip: 0});
+    setPagination({ take: 12, skip: 0 });
     setHostList([]);
     setHasMore(true);
-    getFollowings().finally(() => setIsRefreshing(false));
   };
 
   const loadMoreHosts = () => {
     if (!loading && hasMore) {
-      setPagination(prev => ({
-        ...prev,
-        skip: prev.skip + prev.take,
-      }));
+      setPagination(prev => ({ ...prev, skip: prev.skip + prev.take }));
     }
   };
-
-  const handleFollow = async (hostId: string, isFollowing: boolean) => {
-        const status = await followUnfollow(hostId);
-        if (status === 200) {
-          setHostList(prev =>
-            prev.map(host =>
-              host.id === hostId ? {...host, isFollowing: !isFollowing} : host,
-            ),
-          );
-        }
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
   };
+
 
   const filteredHosts = hostList.filter(host =>
     host.companyName.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -112,8 +98,12 @@ const FollowingScreen: React.FC = () => {
     );
   }
 
+  if (isRefreshing) {
+    return null
+  }
+  console.log(filteredHosts[0])
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <Header
         headerTitle={PROFILE.FOLLOWING}
         showProgressBar={false}
@@ -122,7 +112,7 @@ const FollowingScreen: React.FC = () => {
       <FlatList
         data={filteredHosts}
         ListEmptyComponent={
-          !loading && (
+          !loading ? searchQuery == "" ? (
             <View
               style={{
                 alignItems: 'center',
@@ -135,42 +125,49 @@ const FollowingScreen: React.FC = () => {
                 subTitle="You are not following any hosts."
               />
             </View>
-          )
+          ) : <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: Hp(60),
+              flexDirection: 'row',
+            }}>
+            <EventEmptyRecord
+              title="No Results"
+              subTitle="Please refine your search."
+            />
+          </View> : null
         }
         ListHeaderComponent={
-          <View style={{marginBottom: 16}}>
+          <View style={{ marginBottom: 16 }}>
             <SearchInput
               onSearchTextChange={handleSearch}
               placeholder="Search Hosts.."
               value={searchQuery}
-              mainContainerStyle={{ marginHorizontal: 0}}
+              mainContainerStyle={{ marginHorizontal: 0 }}
             />
           </View>
         }
         keyExtractor={(item: any) => item.id}
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
           <View style={styles.itemContainer}>
             <AvatarInitials
               onPress={() =>
-                navigate(ROUTES.HostProfileScreen, {hostId: 'dsk'})
+                navigate(ROUTES.HostProfileScreen, { hostId: item.id })
               }
-              imgUrl={item?.companyLogo}
+              imgUrl={removeSignature(item?.companyLogo)}
               size={48}
             />
             <Text style={styles.itemName}>{item?.companyName}</Text>
-            <ButtonSmall
-              style={styles.smallBtnStyle}
-              title={item?.isFollowing ? 'Following' : 'Follow'}
-              colorTheme={item?.isFollowing ? 'dark' : 'dark'}
-              leftIcon={item?.isFollowing ? IMAGES.check : null}
-              borderType={item?.isFollowing ? 'STRIPE' : 'SOLID'}
-              onPress={() => handleFollow(item?.id, item?.isFollowing)}
+            <FollowButton
+              isFollowing={item?.isFollowing}
+              id={item?.id}
             />
           </View>
         )}
         refreshing={isRefreshing}
         onRefresh={handleRefresh}
-        contentContainerStyle={{paddingHorizontal: 20}}
+        contentContainerStyle={{ paddingHorizontal: 20 }}
         // onEndReached={hasMore ? loadMoreHosts : null}
         onEndReachedThreshold={0.5}
         ListFooterComponent={

@@ -1,14 +1,15 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, ScrollView, StyleSheet, Text, Platform } from 'react-native';
+import { View, ScrollView, StyleSheet, Text, Platform, Image } from 'react-native';
 import {
   BUTTON_LABLE,
   COLORS,
   EVENT_STATUS,
+  LABLE,
   ROLE,
 } from '../../utils/constants';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
-import { fontFamily } from 'src/utils/functions';
+import { fontFamily, removeSignature } from 'src/utils/functions';
 import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import {
   fontScale,
@@ -16,6 +17,7 @@ import {
   verticalScale,
   Wp,
   Hp,
+  horizontalScale,
 } from 'src/utils/dimensions';
 import BackButtonOverlay from 'src/component/BackButton/BackButtonOverlay';
 import EventStatus from 'src/component/Event/EventStatus';
@@ -30,7 +32,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import {
   useFetchEventDetailsQuery,
+  useFetchGuestStatusCountQuery,
   useFetchHostEventDetailsQuery,
+  useFetchHostEventsAnnouncementQuery,
   useFetchPublicEventDetailsQuery,
   useLazyFetchEventDetailsQuery,
   useLazyFetchPublicEventDetailsQuery,
@@ -52,7 +56,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
+import { setRefresh, setRsvpStatus } from 'src/redux/slices/rspvSlice';
+import EventAnnouncements from 'src/component/Event/EventAnnouncements';
 
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -75,6 +80,13 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     route?.params?.isCurrentUserIsGuest,
   );
   const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
+  const refresh = useSelector((state: RootState) => state.rspv.refresh);
+  const [showError, setshowError] = useState(false)
+  const eventId = route?.params?.id
+  const { data: eventCount } = useFetchGuestStatusCountQuery({ eventId });
+  const annqueryArgs = ({ eventId: eventId })
+  const [eventLocalId, setEventLocalID] = useState(eventId)
+  const { data: announcementData,refetch:refetchAnnouncement } = useFetchHostEventsAnnouncementQuery(annqueryArgs);
 
   const role = useSelector((state: RootState) => state.auth.role);
   // const insets = useSafeAreaInsets();
@@ -99,7 +111,15 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     useAcceptInvitationMutation();
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
-
+  useFocusEffect(
+    React.useCallback(() => {
+      refetchAnnouncement()
+      setEventLocalID(eventId)
+    }, [announcementData])
+  );
+  useEffect(() => {
+    dispatch(setRsvpStatus(isCurrentUserIsGuest ? 'TRUE' : 'NO_STATUS'));
+  }, [isCurrentUserIsGuest]);
   const queryArgs =
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const) // Type assertion to prevent union mismatch
@@ -111,13 +131,13 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? useFetchHostEventDetailsQuery
       : useFetchEventDetailsQuery;
-
   const { data, isLoading, refetch } = useFetchEventDetailsHook(queryArgs);
 
   useEffect(() => {
-    console.log(rspvStatus)
-    refetch(); // Manually refetch when RSVP status changes
-  }, [rspvStatus, refetch]);
+    refetch();
+    // Manually refetch when RSVP status changes
+    dispatch(setRefresh(false))
+  }, [rspvStatus, refetch, refresh]);
 
   // Ensure argument structure remains consistent
 
@@ -135,7 +155,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [calendarDetails, setCalendarDetails] = useState<any>({});
 
   const [useQr, setUseQr] = useState<boolean>(false);
-
   useEffect(() => {
     if (guestStatus === 'DECLINED') {
       setIsDeclinedByMe(data?.data?.invitationDeclinedBy == userId);
@@ -239,6 +258,24 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     calenderEventsBottomSheetRef.current?.open();
   };
 
+  const addAnouncement = () => {
+    const date1 = moment.utc(data?.data?.endDate);
+    const date2 = moment();
+    let eventData = data?.data
+    // if (date1.isBefore(date2)) {
+    //   FlashMessageComponent.show('error', LABLE.PAST_EVENT_ANNOUNCEMENTS_ERROR);
+    // } else {
+    if (eventCount?.data?.confirmedCount == 0) {
+      setshowError(true)
+    }
+    else {
+      navigation.navigate(ROUTES.EventStack, {
+        screen: ROUTES.AddAnnouncementScreen,
+        params: { eventData, announcementId: null }
+      });
+      // }
+    }
+  }
   const acceptInvitation = async () => {
     try {
       const accept_response = await acceptInvite({
@@ -303,18 +340,20 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         /> */}
         <Button
           disabled={false}
-          style={styles.btnStyleLight}
-          title={BUTTON_LABLE.INVITE_GUESTS}
-          colorTheme="light"
-          onPress={onPressInviteGuests}
-        />
-        <Button
-          disabled={false}
           style={styles.btnStyle}
           title={BUTTON_LABLE.CHECK_IN}
           colorTheme="dark"
           onPress={onCheckInClick}
         />
+
+        <Button
+          disabled={false}
+          style={styles.btnStyleLight}
+          title={BUTTON_LABLE.INVITE_GUESTS}
+          colorTheme="light"
+          onPress={onPressInviteGuests}
+        />
+
       </>
     );
   };
@@ -382,7 +421,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           <View style={styles.blurredBackgroundContainer}>
             <FastImage
               source={{
-                uri: data?.data?.imageCover || data?.data?.imageFlyer,
+                uri: removeSignature(data?.data?.imageFlyer),
               }}
               resizeMode={FastImage.resizeMode.cover}
               defaultSource={IMAGES.eventCoverPlaceholders1}
@@ -407,7 +446,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             <View style={imageWrapperStyle.wrapper}>
               <FastImage
                 source={{
-                  uri: data?.data?.imageCover || data?.data?.imageFlyer,
+                  uri: removeSignature(data?.data?.imageCover) || removeSignature(data?.data?.imageFlyer),
                 }}
                 resizeMode={FastImage.resizeMode.cover}
                 defaultSource={IMAGES.eventCoverPlaceholders1}
@@ -438,16 +477,34 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               />
             )}
 
-            <EventVenue
+            {!isLoading && <EventVenue
               item={data?.data}
               handleCalendarPress={addCalenderEvents}
-            />
+            />}
 
             <EventOverview item={data?.data} />
 
             {talents.length > 0 && <EventTalent talents={talents} />}
 
-            {/* {<EventAnouncements talents={talents} />} */}
+            <EventAnnouncements handleAddPress={addAnouncement} announcementData={announcementData} eventId={eventId} handleViewAll={() =>
+              navigation.navigate(ROUTES.EventStack, {
+                screen: ROUTES.Announcement,
+                params: data?.data,
+              })} />
+            {showError &&
+              <View style={{
+                borderRadius: 10,
+                borderColor: COLORS.borderRed,
+                backgroundColor: COLORS.bgRed,
+                paddingVertical: verticalScale(10),
+                paddingHorizontal: horizontalScale(10),
+                flexDirection: 'row',
+                justifyContent: 'space-between'
+              }}>
+                <Image style={{ width: 18, height: 18, right: 5 }} source={IMAGES.x_circle} />
+                <Text style={styles.name}>{LABLE.ADD_EVENT_ANNOUNCEMENTS_ERROR}</Text>
+              </View>
+            }
           </View>
           {/* {role === ROLE.HOST && <Button
             disabled={false}
@@ -541,7 +598,7 @@ const styles = StyleSheet.create({
 
   btnStyleLight: {
     borderRadius: 100,
-    marginVertical: 10,
+    marginVertical: 0,
     borderWidth: verticalScale(2),
     borderColor: COLORS.black,
     height: undefined,
@@ -557,6 +614,12 @@ const styles = StyleSheet.create({
     height: verticalScale(528),
     borderRadius: 20,
     overflow: 'hidden',
+  },
+  name: {
+    color: COLORS.black2,
+    fontSize: fontScale(14),
+    flex: 1,
+    fontFamily: fontFamily.ABCDiatype_Medium,
   },
   mainImage: {
     height: '100%',

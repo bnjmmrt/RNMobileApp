@@ -18,6 +18,7 @@ const IMAGES = {
   qr: require('./qr-code.png'),
   sort: require('./sort.png'),
   iconRumor: require('./icon_rumor.png'),
+  pdf: require('./pdf.jpeg'),
   introVideo: require('./intro_video.mp4'),
   pencil: require('./pencil-01.png'),
   rumorLogo: require('./Wordmark.png'),
@@ -111,6 +112,7 @@ const IMAGES = {
   info_filled: require('./info-filled.png'),
   ticket: require('./ticket.png'),
   calendarCircle: require('./calendar-circle.png'),
+  x_circle:require('./x-circle.png'),
   confirmed_badge: require('./confirmed-badge.png'),
   nested_badge: require('./nested.png'),
   arrowDownCircle: require('./arrow-down-circle.png'),
@@ -144,7 +146,8 @@ const IMAGES = {
   deleteGray: require('./delete-gray.png'),
   notification_badge: require('./notification-badge.png'),
   calendar_error: require('./calendar_error.png'),
-  search_error: require('./search-md-error.png')
+  search_error: require('./search-md-error.png'),
+  email_error: require('./email-error.png'),
 };
 
 export default IMAGES;
