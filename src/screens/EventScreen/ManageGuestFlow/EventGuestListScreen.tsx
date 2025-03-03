@@ -239,11 +239,16 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
           });
         }}>
         <View style={styles.leftContainer}>
-          <AvatarInitials
-            name={item.name}
-            imgUrl={item.profilePicture}
-            size={40}
-          />
+          <View>
+            {selectedFilter === 'applied' && Boolean(item.vouches?.length) && (
+              <View style={styles.vouchIndicator} />
+            )}
+            <AvatarInitials
+              name={item.name}
+              imgUrl={item.profilePicture}
+              size={40}
+            />
+          </View>
           <View style={styles.guestInfo}>
             <View style={styles.nameContainer}>
               <Text style={styles.guestName}>{item.name}</Text>
@@ -256,7 +261,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
               )}
             </View>
 
-            <StatusLabel status={item.status} />
+            {selectedFilter === 'all' && <StatusLabel status={item.status} />}
           </View>
         </View>
         <View style={styles.rightContainer}>
@@ -342,7 +347,6 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
       />
     );
   };
-
 
   const onCheckInPress = async () => {
     dispatch(setEventId(eventId));
@@ -518,12 +522,12 @@ const styles = StyleSheet.create({
   guestName: {
     fontSize: fontScale(14),
     lineHeight: fontScale(16),
-    fontWeight: '500',
+    fontFamily: fontFamily.ABCDiatype_Medium,
   },
   inviteCount: {
     fontSize: fontScale(14),
     lineHeight: fontScale(16),
-    fontWeight: '700',
+    fontFamily: fontFamily.ABCDiatype_Medium,
   },
 
   ticketTypeContainer: {
@@ -536,7 +540,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(12),
     lineHeight: fontScale(14),
     color: COLORS.blueDark,
-    fontWeight: '500',
+    fontFamily: fontFamily.ABCDiatype_Medium,
   },
   expandButton: {
     width: verticalScale(32),
@@ -604,6 +608,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  vouchIndicator: {
+    width: horizontalScale(12),
+    height: verticalScale(12),
+    borderRadius: radiusScale(12),
+    backgroundColor: COLORS.blueDark,
+    position: 'absolute',
+    right: -10,
+    top: 0,
+    zIndex: 1,
   },
 });
 
