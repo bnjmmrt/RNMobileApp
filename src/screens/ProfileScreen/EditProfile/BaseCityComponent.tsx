@@ -24,7 +24,7 @@ interface BaseCityComponentProps {
 }
 
 const BaseCityComponent = forwardRef(
-  ({ location }: BaseCityComponentProps, ref) => {
+  ({ location, onLocationSelect }: BaseCityComponentProps, ref) => {
     console.log('Sayyed my location:', location);
     const defaultAddress: Address = {
       placeId: 'ChIJkbeSa_BfYzARphNChaFPjNc',
@@ -44,6 +44,9 @@ const BaseCityComponent = forwardRef(
         setSelectedCity(location);
       }
     }, [location]);
+    useEffect(() => {
+      onLocationSelect && onLocationSelect(selectedCity)
+    }, [selectedCity]);
 
     useImperativeHandle(ref, () => ({
       validateBaseCity,

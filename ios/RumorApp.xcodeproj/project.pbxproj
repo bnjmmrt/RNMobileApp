@@ -556,7 +556,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 8;
-				DEVELOPMENT_TEAM = CXG9GJ5APL;
+				DEVELOPMENT_TEAM = L6F26XSDBC;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = RumorApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Rumor;
@@ -598,7 +598,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 8;
-				DEVELOPMENT_TEAM = CXG9GJ5APL;
+				DEVELOPMENT_TEAM = L6F26XSDBC;
 				INFOPLIST_FILE = RumorApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Rumor;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";

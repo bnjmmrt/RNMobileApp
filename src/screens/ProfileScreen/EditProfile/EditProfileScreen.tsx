@@ -8,6 +8,7 @@ import {
   COLORS,
   PROFILE,
   genderList,
+  ROLE,
 } from '../../../utils/constants';
 import Button from '../../../component/Button';
 import Input from '../../../component/Input/Input';
@@ -73,36 +74,45 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
       phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
       phoneNumberInputRef?.current.setCallingCode(null);
     }
-    // if (loginData?.isSignUpCompleted) {
-    //   phoneNumberInputRef?.current.setDisabled(true);
-    //   phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
-    //   // phoneNumberInputRef?.current.setCallingCode(
-    //   //   phoneNumberDetails?.countryCallingCode,
-    //   // );
-    //   phoneNumberInputRef?.current.setCallingCode(null);
-    //   phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
-    //   emailInputRef?.current.setDisabled(true);
-    //   emailInputRef?.current.setEmailAddress(profileData?.email);
-    // }
-
-    // if (loginData?.varifyStatus === 2) {
-    //   emailInputRef?.current.setDisabled(true);
-    //   emailInputRef?.current.setEmailAddress(profileData?.email);
-    //   phoneNumberInputRef?.current.setDisabled(true);
-    //   phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
-    //   phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
-    //   phoneNumberInputRef?.current.setCallingCode(null);
-    // }
-
-    // if (loginData?.varifyStatus === 1) {
-    //   emailInputRef?.current.setDisabled(true);
-    //   emailInputRef?.current.setEmailAddress(profileData?.email);
-    // }
-
-    // getUserSettingAndDetails();
   }, []);
 
+  const fetchUserById = async () => {
+    try {
+      const response: any = await apiRequest('post',
+        EndPoint.get_user_with_role_by_id,
+        { id: userId },
+      );
+      if (response.status === 200) {
+        dispatch(setProfileData(response?.data));
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
+  };
+
   const onConfirmClick = async () => {
+    if (isGuest && loginData.roles[0]?.roleName === ROLE.NON_MEMBER) {
+      if (
+        firstNameRef.current.validateInputs() &&
+        lastNameRef.current.validateInputs()) {
+        const requestObject: any = {
+          // email: profileData?.email,
+          firstName: firstNameRef.current.inputText,
+          lastName: lastNameRef.current.inputText,
+        };
+
+        const response: any = await apiRequest(
+          'put',
+          EndPoint.user_profile + userId,
+          requestObject,
+        );
+        if (response.status === 200) {
+          fetchUserById()
+          FlashMessageComponent.show('success', LABLE.PROFILE_UPDATED_SUCCESSFULLY);
+          handleBackPress();
+        }
+      }
+    }
     if (
       firstNameRef.current.validateInputs() &&
       lastNameRef.current.validateInputs() &&
@@ -130,7 +140,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
           ? selectedCreativeFocus.map((item: any) => item.id)
           : profileData?.creativeFocus.map((item: any) => item.id),
       };
-      console.log('requestObject', requestObject);
 
       const response: any = await apiRequest(
         'put',
@@ -143,9 +152,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
           EndPoint.user + userId,
         );
         if (responseUser.status === 200) {
-          dispatch(setProfileData(responseUser?.data));
+          dispatch(setProfileData({...responseUser?.data, profilePicture: responseUser?.data?.imageUrl}));
         }
-        FlashMessageComponent.show('success', 'Profile Updated Successfully');
+        FlashMessageComponent.show('success', LABLE.PROFILE_UPDATED_SUCCESSFULLY);
         handleBackPress();
       }
     }
@@ -226,7 +235,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
               <DatePickerComponent ref={birthDayRef} birthDate={profileData.dateOfBirth} />
 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
-              <BaseCityComponent ref={baseCityRef} />
+              <BaseCityComponent location={{address: profileData?.city, placeId: profileData?.placeId}} ref={baseCityRef} />
 
               <Text
                 style={[

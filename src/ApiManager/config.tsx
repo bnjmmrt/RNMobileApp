@@ -89,6 +89,9 @@ export const EndPoint = {
   events: 'v1/events',
   generate_ticket: 'v1/events/guest/ticket/',
   get_user_with_role_by_email: 'v1/auth/get-user-with-roles-by-email',
+  edit_event: 'v1/events/event/',
+  check_phone: 'v1/auth/check-phone-number',
+  check_email: 'v1/auth/check-email'
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

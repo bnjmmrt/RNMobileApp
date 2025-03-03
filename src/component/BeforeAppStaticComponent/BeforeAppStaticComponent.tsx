@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image, Text, Pressable, FlatList } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+} from 'react-native';
 import { fontScale, Hp, verticalMarginScale, Wp } from '../../utils/dimensions';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '../../assets/images/index';
@@ -9,10 +13,7 @@ import { ScrollView } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import { useNavigation } from '@react-navigation/native';
 import { CustomText } from '../CustomText';
-import SliderImg1 from '../../assets/svgs/images/SliderImg1.svg'
-import SliderImg2 from '../../assets/svgs/images/SliderImg2.svg'
-import SliderImg3 from '../../assets/svgs/images/SliderImg3.svg'
-import SliderImg4 from '../../assets/svgs/images/SliderImg4.svg'
+import CustomCarousel from '../Carousel/CarouselComponent';
 
 interface BeforeAppStaticComponentProps {
   isChatScreen: boolean;
@@ -26,26 +27,25 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
   const listData = [
     {
       id: 0,
-      uri: <SliderImg1 height={320} width={320}/>,
+      uri: IMAGES.frame1,
       title: LABLE.ACCESS_THE_MOST_VALUABLE_CALENDAR,
       subTitle: LABLE.DISCOVER_EXPERIENCES_IN_ART,
     },
     {
       id: 1,
-      // uri: IMAGES.frame2,
-      uri: <SliderImg2 height={320} width={320}/>,
+      uri: IMAGES.frame2,
       title: LABLE.UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS,
       subTitle: LABLE.CONNECT_WITH_WORLD,
     },
     {
       id: 2,
-      uri: <SliderImg3 height={320} width={320}/>,
+      uri: IMAGES.frame3,
       title: LABLE.CHAT_WITH_HOST,
       subTitle: LABLE.CONNECT_DIRECTLY_WITH_PEOPLE,
     },
     {
       id: 3,
-      uri: <SliderImg4 height={320} width={320}/>,
+      uri: IMAGES.frame4,
       title: LABLE.STREAMLINE_YOUR_LIFESTYLE,
       subTitle: LABLE.MANAGE_YOUR_EVENTS,
     },
@@ -55,26 +55,19 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
     isChatScreen ? listData[2] : listData[0],
   );
 
-  const handleImageClick = () => {
+  const handleImageClick = (index:number) => {
+    console.log("index",index)
     if (isChatScreen) {
       setCurrent(listData[2]);
     } else {
-      const nextIndex = (current.id + 1) % listData.length;
-      setCurrent(listData[nextIndex]);
+      // const nextIndex = (current.id + 1) % listData.length;
+      setCurrent(listData[index]);
     }
   };
 
   const onButtonClick = () => {
     navigation.navigate('AppFlowStack');
   };
-
-  // const renderImageItem = ({item}:{item:any}) => {
-  //   return (
-  //     <Pressable onPress={handleImageClick}>
-  //       <Image source={item.uri} style={styles.image} />
-  //     </Pressable>
-  //   )
-  // }
 
   return (
     <View style={styles.container}>
@@ -83,25 +76,9 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           <Image source={IMAGES.rumorLogo} style={styles.logoImgStyle} />
         </View>
 
-        {/* <FlatList
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          data={listData}
-          renderItem={renderImageItem}
-          onScroll={handleImageClick}
-        /> */}
+        <CustomCarousel list={listData} onScroll={handleImageClick} />
 
-
-        {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} onScroll={handleImageClick}> */}
-        <Pressable style={{alignItems: 'center'}} onPress={handleImageClick}>
-          {/* <Image source={current.uri} style={styles.image} /> */}
-          {current.uri}
-        </Pressable>
-        {/* </ScrollView> */}
-
-
-
-        {!isChatScreen ? (
+        {/* {!isChatScreen ? (
           <View style={styles.dotContainer}>
             {[4, 6, 8, 6, 4].map((size, index) => (
               <View
@@ -120,7 +97,8 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           </View>
         ) : (
           <View style={styles.dotContainer} />
-        )}
+        )} */}
+
 
         <TitleSubtitle
           style={styles.titleSubtitle}
@@ -132,7 +110,7 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           isDarkTheme={true}
         />
 
-        <View style={{ height: Hp(2) }} />
+        <View style={{ height: Hp(5) }} />
 
         {!isChatScreen && (
           <Button
@@ -174,8 +152,8 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: verticalMarginScale(60),
-    marginBottom: verticalMarginScale(40),
+    marginTop: verticalMarginScale(40),
+    marginBottom: verticalMarginScale(25),
   },
   logoImgStyle: {
     resizeMode: 'contain',

@@ -82,7 +82,7 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
   }, [currentPage])
 
   const loadMore = () => {
-    if (currentPage < data?.data?.totalPages && !isLoading) {
+    if (events?.length < data?.data?.totalCount && !isLoading) {
       setCurrentPage(prev => prev + 1);
     }
   };

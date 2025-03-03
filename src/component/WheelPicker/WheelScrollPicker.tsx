@@ -19,6 +19,7 @@ import {
     ViewProps,
     ViewStyle,
 } from "react-native";
+import { COLORS } from "src/utils/constants";
 
 function isNumeric(str: string | unknown): boolean {
     if (typeof str === "number") return true;
@@ -247,6 +248,7 @@ const ScrollPicker: { <ItemT extends string | number>(props: ScrollPickerProps<I
         borderBottomColor: highlightColor,
         borderTopWidth: highlightBorderWidth,
         borderBottomWidth: highlightBorderWidth,
+        backgroundColor: COLORS.bgGray,
     };
 
     const CustomScrollViewComponent = scrollViewComponent || ScrollView;

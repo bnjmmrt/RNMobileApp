@@ -25,7 +25,7 @@ import useApi from "src/axios/useApi"
 import SelectReason from "./BottomSheetView/SelectReason"
 import MessageBox from "./BottomSheetView/MessageBox"
 import formatToDeviceTimeZone from "src/utils/formatToDeviceTimeZone"
-import { fontFamily } from "src/utils/functions"
+import { fontFamily, removeSignature } from "src/utils/functions"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 
 const reasons = [
@@ -432,7 +432,7 @@ const RSVPInvitedUpcoming = () => {
             <>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={{ flex: 1, paddingBottom: 24 }}>
-                        <EventCard name={name} location={location?.location} imageCover={imageFlyer} dates={formatToDeviceTimeZone(startDate, endDate)} />
+                        <EventCard name={name} location={location?.location} imageCover={removeSignature(imageFlyer)} dates={formatToDeviceTimeZone(startDate, endDate)} />
                         <StatusBanner />
                         <View style={[styles.card, { flexDirection: 'column' }]}>
                             <View>
@@ -580,7 +580,7 @@ const RSVPInvitedUpcoming = () => {
             <>
                 <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
                     <View style={{ flex: 1, paddingBottom: 24 }}>
-                        <EventCard name={name} location={location?.location} imageCover={imageFlyer} dates={formatToDeviceTimeZone(startDate, endDate)} />
+                        <EventCard name={name} location={location?.location} imageCover={removeSignature(imageFlyer)} dates={formatToDeviceTimeZone(startDate, endDate)} />
                         <StatusBanner isGoing={true} onPress={() => {
                             setActiveTab('options')
                             bottomSheetRef?.current.open()

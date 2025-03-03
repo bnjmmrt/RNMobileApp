@@ -8,6 +8,7 @@ import {
   ScrollView,
   SafeAreaView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { COLORS, BUTTON_LABLE, LABLE } from 'src/utils/constants';
 import { fontFamily } from 'src/utils/functions';
@@ -32,13 +33,15 @@ import TicketTypeBottomSheet, {
 } from '../InviteGuestInEventFlow/TicketTypeBottomSheet';
 import DeclineBottomSheet from '../Guest/DeclineBottomSheet';
 import { EventGuest } from '../types';
-import { useManageGuestMutation } from 'src/redux/actions/eventApiAction';
+import {
+  useManageGuestMutation,
+  useFetchGuestDetailsQuery,
+} from 'src/redux/actions/eventApiAction';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import {
   useMarkUserFavMutation,
   useUnmarkUserFavMutation,
-  useFetchUserDetailsQuery,
 } from 'src/redux/actions/usersApiAction';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { ROUTES } from 'src/navigation/Route';
@@ -53,19 +56,27 @@ enum GuestStatus {
 }
 
 interface GuestDetailScreenProps extends NativeStackScreenProps<any, any> {
-  guest?: EventGuest;
+  guestProfile?: EventGuest;
 }
 
 const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   navigation,
   route,
 }): JSX.Element => {
-  const guest = route.params?.guest as EventGuest;
-  const status = guest?.status?.toLowerCase() || 'draft';
-  const userId = useSelector((state: RootState) => state.auth.userId);
+  const guestId = route.params?.guestId as string;
+  const loggedInUserId = useSelector((state: RootState) => state.auth.userId);
   const selectedEvent = useSelector(
     (state: RootState) => state.inviteGuestsFlow.selectedEvent,
   );
+
+  const { data: guestDetails, isLoading: isLoadingGuestDetails } =
+    useFetchGuestDetailsQuery(guestId || '', {
+      skip: !guestId,
+    });
+
+  const guestProfile = guestDetails?.data?.guestProfile;
+  const guestDetail = guestDetails?.data?.guestDetail;
+  const status = guestProfile?.status?.toLowerCase() || 'draft';
 
   const actionSheetRef = useRef<BottomSheetMethods>(null);
   const ticketTypeRef = useRef<any>(null);
@@ -75,19 +86,12 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const [markUserFav] = useMarkUserFavMutation();
   const [unmarkUserFav] = useUnmarkUserFavMutation();
 
-  const { data: userDetails } = useFetchUserDetailsQuery(
-    { user: guest?.userId || '' },
-    { skip: !guest?.userId },
-  );
-
   const [isFavorite, setIsFavorite] = useState(false);
 
   const [selectedTicketType, setSelectedTicketType] = useState<TicketType>();
-  const [additionalGuests, setAdditionalGuests] = useState(
-    guest?.maxAdditionalGuests,
-  );
+  const [additionalGuests, setAdditionalGuests] = useState<number>(0);
   const [inviteMessage, setInviteMessage] = useState('');
-  const [guestNote, setGuestNote] = useState(guest?.privateGuestNote || '');
+  const [guestNote, setGuestNote] = useState('');
   const [directlySendToConfirm, setDirectlySendToConfirm] = useState(false);
 
   const [isLoadingFavorite, setIsLoadingFavorite] = useState(false);
@@ -95,21 +99,29 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const [isLoadingDecline, setIsLoadingDecline] = useState(false);
 
   useEffect(() => {
-    if (guest?.ticketType && selectedEvent?.ticketTypes) {
+    if (guestDetail) {
+      setInviteMessage(guestDetail.inviteMessage || '');
+      setAdditionalGuests(guestDetail.maxAdditionalGuests || 0);
+      setGuestNote(guestDetail.privateGuestNote || '');
+    }
+  }, [guestDetail]);
+
+  useEffect(() => {
+    if (guestDetail?.ticketType && selectedEvent?.ticketTypes) {
       const matchingTicket = selectedEvent.ticketTypes.find(
-        (ticket: TicketType) => ticket.name === guest.ticketType,
+        (ticket: TicketType) => ticket.name === guestDetail.ticketType,
       );
       if (matchingTicket) {
         setSelectedTicketType(matchingTicket);
       }
     }
-  }, [guest?.ticketType, selectedEvent?.ticketTypes]);
+  }, [guestDetail?.ticketType, selectedEvent?.ticketTypes]);
 
   useEffect(() => {
-    if (userDetails?.data?.isFavourite !== undefined) {
-      setIsFavorite(userDetails.data.isFavourite);
+    if (guestProfile?.favorite !== undefined) {
+      setIsFavorite(guestProfile.favorite);
     }
-  }, [userDetails?.data?.isFavourite]);
+  }, [guestProfile?.favorite]);
 
   const handleGuestAction = async (
     action: 'CREATE' | 'UPDATE' | 'DELETE',
@@ -128,20 +140,20 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       };
 
       await manageGuest({
-        guestId: guest?.id,
+        guestId: guestProfile?.guestId,
         action,
         payload,
       }).unwrap();
 
       FlashMessageComponent.show(
         'success',
-        `${guest.name}'s invite has been updated`,
+        `${guestProfile?.name}'s invite has been updated`,
       );
 
       navigation.goBack();
     } catch (error) {
       console.log('error', error);
-      Alert.alert('Error', 'Failed to update guest status');
+      Alert.alert('Error', 'Failed to update guestProfile status');
     } finally {
       setIsLoadingAction(false);
     }
@@ -150,21 +162,21 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const handleFavorite = async () => {
     try {
       setIsLoadingFavorite(true);
-      if (!userId || !guest?.userId) {
+      if (!loggedInUserId || !guestProfile?.userId) {
         FlashMessageComponent.show('error', 'Unable to update favorite status');
         return;
       }
 
       if (isFavorite) {
         await unmarkUserFav({
-          user: userId,
-          targetUserId: guest.userId,
+          user: loggedInUserId,
+          targetUserId: guestProfile.userId,
         }).unwrap();
         FlashMessageComponent.show('success', 'Removed from favorites');
       } else {
         await markUserFav({
-          user: userId,
-          targetUserId: guest.userId,
+          user: loggedInUserId,
+          targetUserId: guestProfile.userId,
         }).unwrap();
         FlashMessageComponent.show('success', 'Added to favorites');
       }
@@ -185,9 +197,9 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     }
   };
 
-  const handleProfile = () => {
+  const handleProfile = (id?: string) => {
     navigation.navigate(ROUTES.UserDetail, {
-      user: guest?.userId,
+      user: id,
     });
   };
 
@@ -211,7 +223,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         return {
           title: 'Cancel Invite',
           description:
-            'Are you sure you want to cancel selected guest invites? \nThey will be notified.',
+            'Are you sure you want to cancel selected guestProfile invites? \nThey will be notified.',
           buttonText: 'Cancel Invite',
         };
       case 'declined':
@@ -264,7 +276,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                 colorTheme="dark"
                 onPress={() =>
                   handleGuestAction(
-                    guest?.id ? 'UPDATE' : 'CREATE',
+                    guestProfile?.id ? 'UPDATE' : 'CREATE',
                     GuestStatus.INVITED,
                   )
                 }
@@ -336,7 +348,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               title={BUTTON_LABLE.UPDATE_INVITE}
               colorTheme="dark"
               onPress={() =>
-                handleGuestAction('UPDATE', guest?.status as GuestStatus)
+                handleGuestAction('UPDATE', guestProfile?.status as GuestStatus)
               }
               loading={isLoadingAction}
             />
@@ -346,6 +358,44 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         return null;
     }
   };
+
+  const mapQuestionsWithAnswers = () => {
+    if (
+      !selectedEvent?.quizQuestions ||
+      !guestDetails?.data?.quizDataList?.questions
+    ) {
+      return [];
+    }
+
+    return selectedEvent.quizQuestions.map((question, index) => {
+      const answer = guestDetails.data.quizDataList.questions[index];
+
+      return {
+        ...question,
+        answer: answer?.answer || '',
+      };
+    });
+  };
+
+  if (isLoadingGuestDetails || !guestProfile) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.headerTop}>
+          <TouchableOpacity
+            style={styles.iconButton}
+            onPress={() => navigation.goBack()}>
+            <View style={styles.iconButton}>
+              <Image source={IMAGES.leftArrow} style={styles.icon} />
+            </View>
+          </TouchableOpacity>
+          <Text style={styles.title}>{LABLE.MANAGE_INVITE}</Text>
+        </View>
+        <View style={[styles.scrollContent, styles.loaderContainer]}>
+          <ActivityIndicator color={COLORS.black} />
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -364,30 +414,24 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         <View>
           <ProfileCard
             user={{
-              name: guest.name,
-              avatar: userDetails?.data?.imageUrl || guest.profilePicture,
+              name: guestProfile.name,
+              avatar: guestProfile.profilePicture,
               roles:
-                userDetails?.data?.focuses ||
-                guest.category?.map(cat => ({ name: cat, id: cat })) ||
-                [],
-              age: userDetails?.data?.age || guest.age,
-              followers:
-                userDetails?.data?.socialStats?.instagramFollowersCount?.toString() ||
-                guest.numFollowers?.toString() ||
-                '0',
-              location: userDetails?.data?.city || '.',
-              isMember:
-                userDetails?.data?.role === 'member' ||
-                Boolean(guest.age && guest.baseCity),
-              status: userDetails?.data?.status || guest.status,
-              interests:
-                userDetails?.data?.interest?.split(', ') ||
-                guest.interest ||
-                [],
-              isFollowing: userDetails?.data?.isFollow || false,
+                guestProfile.category?.map((cat: string) => ({
+                  name: cat,
+                  id: cat,
+                })) || [],
+              age: guestProfile.age,
+              followers: guestProfile.numFollowers?.toString() || '0',
+              location: guestProfile.address?.address || '.',
+              isMember: guestProfile.roles?.some(
+                (role: any) => role.roleName === 'member',
+              ),
+              status: guestProfile.status,
+              isFollowing: guestProfile.followsYou,
             }}
             showGuestStatus={true}
-            status={guest?.status}
+            status={guestProfile.status}
             actionButtons={[
               {
                 title: 'Favorite',
@@ -398,17 +442,22 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               {
                 title: 'Profile',
                 icon: IMAGES.arrow_up_right,
-                onPress: handleProfile,
+                onPress: () => handleProfile(guestProfile?.userId),
                 loading: false,
               },
             ]}
           />
-          <AddedBySection
-            user={{
-              name: guest.addedBy || '',
-              id: guest.addedBy || '',
-            }}
-          />
+
+          {guestProfile.addedBy && (
+            <AddedBySection
+              user={{
+                name: guestProfile.addedBy || '',
+                id: guestProfile.addedById || '',
+                avatar: guestProfile.addedByPicture || '',
+              }}
+              onPress={() => handleProfile(guestProfile.addedById)}
+            />
+          )}
         </View>
 
         <View style={styles.inviteSection}>
@@ -416,32 +465,24 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             isCollapsible
             ticketTypeError={''}
             ticketTypeRef={ticketTypeRef}
-            selectedTicketType={
-              selectedTicketType ||
-              (guest?.ticketType
-                ? {
-                    id: guest.ticketType, // We don't have the ID yet
-                    name: guest.ticketType, // But we have the name
-                  }
-                : undefined)
-            }
+            selectedTicketType={selectedTicketType}
             onTicketTypePress={() => actionSheetRef?.current?.open()}
-            additionalGuests={additionalGuests || 0}
+            additionalGuests={additionalGuests}
             onAdditionalGuestsChange={setAdditionalGuests}
             inviteMessage={inviteMessage}
             onInviteMessageChange={setInviteMessage}
             guestNote={guestNote}
             onGuestNoteChange={setGuestNote}
-            maxAdditionalGuests={guest?.partySize}
+            maxAdditionalGuests={guestProfile.additionalGuests?.length || 0}
             eventName={selectedEvent?.name}
             eventStartDate={selectedEvent?.startDate}
             directlySendToConfirm={directlySendToConfirm}
             onDirectlySendToConfirmChange={setDirectlySendToConfirm}
           />
 
-          {Boolean(guest?.questions?.length) && (
+          {Boolean(selectedEvent?.quizQuestions?.length) && (
             <View style={{ marginTop: verticalMarginScale(16) }}>
-              <Questionnaire isCollapsible data={guest?.questions || []} />
+              <Questionnaire isCollapsible data={mapQuestionsWithAnswers()} />
             </View>
           )}
         </View>
@@ -576,6 +617,12 @@ const styles = StyleSheet.create({
   },
   disabledIcon: {
     opacity: 0.7,
+  },
+  loaderContainer: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

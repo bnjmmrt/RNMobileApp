@@ -352,6 +352,9 @@ export const convertDateToFormatMMDDYYYY = (dateString: string) => {
     console.log(error);
   }
 };
+export const removeSignature = (url: string) => {
+  return url ? url.split('?')[0] : url;
+}
 export const formatDate = (date: Date) => {
   return date
     .toLocaleDateString('en-US', {
@@ -401,7 +404,7 @@ export const changeSafeAreaViewConfig = (config: SafeAreaViewConfig) => {
   StatusBar.setBarStyle(config.statusBarStyle, true);
 };
 export const validateAge = (selectedDate: string) => {
-  const [month, day, year] = selectedDate.split('-').map(Number);
+  const [month, day, year] = selectedDate.split('/').map(Number);
   const selectedDateObj = new Date(year, month - 1, day);
   const today = new Date();
   const eighteenYearsAgo = new Date();

@@ -29,7 +29,7 @@ const logMiddleware = async (
   if (result.error) {
     console.error(`[API Error] ${method} ${url}`, result.error);
   } else {
-    console.log(`[API Response] ${method} ${url}`, result.data);
+    console.log(`[API Response] ${method} ${url}`, JSON.stringify(result.data));
   }
 
   return result;
@@ -79,6 +79,7 @@ export const createBaseApi = createApi({
     'GuestStatusCount',
     'DashboardUpcomingEvents',
     'EventGuestList',
+    'GuestDetails',
   ], // Accept tagTypes as a parameter
   endpoints: () => ({}),
   keepUnusedDataFor: 0, // Optional: Adjust cache duration

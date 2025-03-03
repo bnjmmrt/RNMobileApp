@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: horizontalMarginScale(20),
-    paddingVertical: verticalMarginScale(16),
+    paddingVertical: verticalMarginScale(7),
   },
   iconWrapper: {
     width: verticalScale(40),
