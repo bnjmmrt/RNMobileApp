@@ -22,6 +22,7 @@ import {
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import createStyles from './styles';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 interface SelectedGuestsToInviteScreenProps
   extends NativeStackScreenProps<
@@ -56,7 +57,15 @@ const SelectedGuestsToInviteScreen: React.FC<
     index: number,
   ) => {
     let tempArray = [...tempSelectedUsers];
+    console.log(user.isSelected, tempArray.length);
 
+    if (user.isSelected && selectedUsers.length === 1) {
+      FlashMessageComponent.show(
+        'error',
+        "You can't remove all users from list!",
+      );
+      return;
+    }
     tempArray[index] = {
       ...tempArray[index],
       isSelected: !user.isSelected,
@@ -101,6 +110,7 @@ const SelectedGuestsToInviteScreen: React.FC<
 
   useFocusEffect(
     useCallback(() => {
+      dispatch(removeSelectedUsersToInvite([]));
       changeSafeAreaViewConfig({
         ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
       });

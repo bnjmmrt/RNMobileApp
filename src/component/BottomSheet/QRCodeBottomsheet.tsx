@@ -47,7 +47,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
   return (
     <BottomSheetComponent
       ref={ref}
-      snapPoints={[props.isQRShown ? '80%' : '75%']}
+      snapPoints={[props.isQRShown ? '75%' : '60%']}
       onClose={() => console.log(ref)}>
       <ScrollView>
         <View style={styles.container}>
@@ -98,7 +98,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                   <Image source={IMAGES.info_filled} style={styles.icon} />
                 </TouchableOpacity>
               </View>
-              <Text style={styles.infoText}>{LABLE.SHOW_QR_CHECKIN_MESSAGE}</Text>
+              <Text style={styles.infoText}>{props.isQRShown ? LABLE.SHOW_QR_CHECKIN_MESSAGE: 'Show this ticket at event check-in'}</Text>
 
             </View>
 

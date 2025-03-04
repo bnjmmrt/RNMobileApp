@@ -1,5 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, ScrollView, StyleSheet, Text, Platform, Image } from 'react-native';
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  Platform,
+  Image,
+} from 'react-native';
 import {
   BUTTON_LABLE,
   COLORS,
@@ -80,12 +87,14 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   );
   const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
   const refresh = useSelector((state: RootState) => state.rspv.refresh);
-  const [showError, setshowError] = useState(false)
-  const eventId = route?.params?.id
-  const { data: eventCount } = useFetchGuestStatusCountQuery({ eventId });
-  const annqueryArgs = ({ eventId: eventId })
-  const [eventLocalId, setEventLocalID] = useState(eventId)
-  const { data: announcementData,refetch:refetchAnnouncement } = useFetchHostEventsAnnouncementQuery(annqueryArgs);
+  const [showError, setshowError] = useState(false);
+  const eventId = route?.params?.id;
+  const { data: eventCount, refetch: refetchGuestStatusCount } =
+    useFetchGuestStatusCountQuery({ eventId });
+  const annqueryArgs = { eventId: eventId };
+  const [eventLocalId, setEventLocalID] = useState(eventId);
+  const { data: announcementData, refetch: refetchAnnouncement } =
+    useFetchHostEventsAnnouncementQuery(annqueryArgs);
 
   const role = useSelector((state: RootState) => state.auth.role);
   // const insets = useSafeAreaInsets();
@@ -112,12 +121,22 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     useAcceptInvitationMutation();
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
+
   useFocusEffect(
     React.useCallback(() => {
-      refetchAnnouncement()
-      setEventLocalID(eventId)
-    }, [announcementData])
+      refetchAnnouncement();
+      setEventLocalID(eventId);
+    }, [announcementData]),
   );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (eventId) {
+        refetchGuestStatusCount();
+      }
+    }, [eventId]),
+  );
+
   useEffect(() => {
     dispatch(setRsvpStatus(isCurrentUserIsGuest ? 'TRUE' : 'NO_STATUS'));
   }, [isCurrentUserIsGuest]);
@@ -137,7 +156,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   useEffect(() => {
     refetch();
     // Manually refetch when RSVP status changes
-    dispatch(setRefresh(false))
+    dispatch(setRefresh(false));
   }, [rspvStatus, refetch, refresh]);
 
   // Ensure argument structure remains consistent
@@ -262,21 +281,20 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const addAnouncement = () => {
     const date1 = moment.utc(data?.data?.endDate);
     const date2 = moment();
-    let eventData = data?.data
+    let eventData = data?.data;
     // if (date1.isBefore(date2)) {
     //   FlashMessageComponent.show('error', LABLE.PAST_EVENT_ANNOUNCEMENTS_ERROR);
     // } else {
     if (eventCount?.data?.confirmedCount == 0) {
-      setshowError(true)
-    }
-    else {
+      setshowError(true);
+    } else {
       navigation.navigate(ROUTES.EventStack, {
         screen: ROUTES.AddAnnouncementScreen,
-        params: { eventData, announcementId: null }
+        params: { eventData, announcementId: null },
       });
-      // }
     }
-  }
+    // }
+  };
   const acceptInvitation = async () => {
     try {
       const accept_response = await acceptInvite({
@@ -349,12 +367,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
         <Button
           disabled={false}
-          style={styles.btnStyleLight}
+          style={[styles.btnStyle, { marginVertical: 0 }]}
           title={BUTTON_LABLE.INVITE_GUESTS}
           colorTheme="light"
+          buttonType="stripe"
           onPress={onPressInviteGuests}
         />
-
       </>
     );
   };
@@ -446,7 +464,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             <View style={imageWrapperStyle.wrapper}>
               <FastImage
                 source={{
-                  uri: removeSignature(data?.data?.imageCover) || removeSignature(data?.data?.imageFlyer),
+                  uri:
+                    removeSignature(data?.data?.imageCover) ||
+                    removeSignature(data?.data?.imageFlyer),
                 }}
                 resizeMode={FastImage.resizeMode.cover}
                 defaultSource={IMAGES.eventCoverPlaceholders1}
@@ -477,34 +497,48 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               />
             )}
 
-            {!isLoading && <EventVenue
-              item={data?.data}
-              handleCalendarPress={addCalenderEvents}
-            />}
+            {!isLoading && (
+              <EventVenue
+                item={data?.data}
+                handleCalendarPress={addCalenderEvents}
+              />
+            )}
 
             <EventOverview item={data?.data} />
 
             {talents.length > 0 && <EventTalent talents={talents} />}
 
-            <EventAnnouncements handleAddPress={addAnouncement} announcementData={announcementData} eventId={eventId} handleViewAll={() =>
-              navigation.navigate(ROUTES.EventStack, {
-                screen: ROUTES.Announcement,
-                params: data?.data,
-              })} />
-            {showError &&
-              <View style={{
-                borderRadius: 10,
-                borderColor: COLORS.borderRed,
-                backgroundColor: COLORS.bgRed,
-                paddingVertical: verticalScale(10),
-                paddingHorizontal: horizontalScale(10),
-                flexDirection: 'row',
-                justifyContent: 'space-between'
-              }}>
-                <Image style={{ width: 18, height: 18, right: 5 }} source={IMAGES.x_circle} />
-                <Text style={styles.name}>{LABLE.ADD_EVENT_ANNOUNCEMENTS_ERROR}</Text>
+            <EventAnnouncements
+              handleAddPress={addAnouncement}
+              announcementData={announcementData}
+              eventId={eventId}
+              handleViewAll={() =>
+                navigation.navigate(ROUTES.EventStack, {
+                  screen: ROUTES.Announcement,
+                  params: data?.data,
+                })
+              }
+            />
+            {showError && (
+              <View
+                style={{
+                  borderRadius: 10,
+                  borderColor: COLORS.borderRed,
+                  backgroundColor: COLORS.bgRed,
+                  paddingVertical: verticalScale(10),
+                  paddingHorizontal: horizontalScale(10),
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <Image
+                  style={{ width: 18, height: 18, right: 5 }}
+                  source={IMAGES.x_circle}
+                />
+                <Text style={styles.name}>
+                  {LABLE.ADD_EVENT_ANNOUNCEMENTS_ERROR}
+                </Text>
               </View>
-            }
+            )}
           </View>
           {/* {role === ROLE.HOST && <Button
             disabled={false}
@@ -569,7 +603,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
         {role === ROLE.HOST && (
           <BackButtonOverlay
-            customStyle={{ right: 4, top: 16 + STATUS_BAR_HEIGHT }}
+            customStyle={{ right: 0, top: 16 + STATUS_BAR_HEIGHT }}
             imageSource={IMAGES.edits}
             onPress={() =>
               navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })
@@ -580,7 +614,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           <BackButtonOverlay
             customStyle={{ right: 55, top: 16 + STATUS_BAR_HEIGHT }}
             imageSource={IMAGES.share}
-            onPress={() => FlashMessageComponent.show("info", "In Progress")}
+            onPress={() => FlashMessageComponent.show('info', 'In Progress')}
           />
         )}
       </View>

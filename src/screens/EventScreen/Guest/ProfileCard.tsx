@@ -13,6 +13,7 @@ import { fontFamily } from 'src/utils/functions';
 import IMAGES from 'src/assets/images';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
 import AvatarInitials from 'src/component/AvatarInitials';
+import { CustomText } from 'src/component/CustomText';
 
 interface User {
   name: string;
@@ -101,23 +102,34 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 
               <View style={styles.statsContainer}>
                 <View style={[styles.statItem, styles.leftStatItem]}>
-                  <Image source={IMAGES.hourglass} style={styles.statIcon} />
-                  <Text style={styles.statText}>
+                  <Image
+                    source={IMAGES.hourglass}
+                    style={styles.statIcon}
+                    resizeMode="contain"
+                  />
+                  <CustomText style={styles.statText}>
                     {user?.age || 'N/A'} Years Old
-                  </Text>
+                  </CustomText>
                 </View>
                 <View style={[styles.statItem, styles.centerStatItem]}>
-                  <Image source={IMAGES.user_check} style={styles.statIcon} />
-                  <Text style={styles.statText}>{user?.followers || '0'}</Text>
+                  <Image
+                    source={IMAGES.usersTab}
+                    style={styles.statIcon}
+                    resizeMode="contain"
+                  />
+                  <CustomText style={styles.statText}>
+                    {user?.followers || '0'}
+                  </CustomText>
                 </View>
                 <View style={[styles.statItem, styles.rightStatItem]}>
-                  <Image source={IMAGES.location} style={styles.statIcon} />
-                  <Text
-                    style={styles.statText}
-                    numberOfLines={1}
-                    ellipsizeMode="tail">
+                  <Image
+                    source={IMAGES.location}
+                    style={styles.statIcon}
+                    resizeMode="contain"
+                  />
+                  <CustomText style={styles.statText}>
                     {user?.location || 'N/A'}
-                  </Text>
+                  </CustomText>
                 </View>
               </View>
             </>
@@ -169,13 +181,12 @@ const styles = StyleSheet.create({
   },
   guestCard: {
     backgroundColor: COLORS.white,
+    borderColor: COLORS.neutralBorder,
     borderWidth: verticalScale(1),
     borderTopLeftRadius: radiusScale(16),
     borderTopRightRadius: radiusScale(16),
     borderBottomLeftRadius: radiusScale(8),
     borderBottomRightRadius: radiusScale(8),
-    overflow: 'hidden',
-    borderColor: COLORS.neutralBorder,
   },
   guestCardContent: {
     alignItems: 'center',
@@ -283,13 +294,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   statIcon: {
-    width: horizontalScale(16),
+    width: verticalScale(16),
     height: verticalScale(16),
     tintColor: COLORS.surfaceSecondary,
   },
   statText: {
     fontSize: fontScale(12),
-    fontWeight: '500',
+    fontFamily: fontFamily.ABCDiatype_Medium,
   },
   actionButtons: {
     flexDirection: 'row',

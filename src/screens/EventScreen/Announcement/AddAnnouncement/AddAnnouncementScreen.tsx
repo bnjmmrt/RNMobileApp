@@ -71,12 +71,13 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const [ticketTypeArr, setTicketTypeArr] = useState<any[]>([]);
     const [collaboratorArr, setCollaboratorArr] = useState<any[]>([]);
     const [announcementText, setAnnouncementText] = React.useState('');
-
+    const [totalCount, setTotalCount] = useState<any>(0)
     const { eventData, announcementId: ID } = route?.params || {};
     console.log("siya eventData", eventData)
     console.log("siya announcementId", ID)
     const [announcementId, setAnnouncementId] = React.useState(ID);
     const dispatch = useDispatch();
+    const [refreshing, setRefreshing] = useState<boolean>(false);
 
     useEffect(() => {
         const backAction = () => {
@@ -96,35 +97,61 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     };
 
 
-    if (announcementId != null) {
-        const detailQuery = ({ eventId: eventData?.id, announcementId: announcementId } as const)
-        const { data: announcementDetailsData, isdetailLoading } = useFetchAnnouncementDetailQuery(detailQuery);
-        useEffect(() => {
-            if (announcementDetailsData != undefined) {
-                setTicketTypeArr(announcementDetailsData?.data?.ticketType)
-                setCollaboratorArr(announcementDetailsData?.data?.addedBy)
-                setAnnouncementText(announcementDetailsData.data?.announcement);
-                setAttachmentArr(announcementDetailsData?.data?.attachments)
-            }
-        }, [announcementDetailsData]);
+    const detailQuery = ({ eventId: eventData?.id, announcementId: announcementId } as const)
+    const { data: announcementDetailsData, isdetailLoading } = useFetchAnnouncementDetailQuery(detailQuery);
+    useEffect(() => {
+        if (announcementDetailsData != undefined) {
+            setTicketTypeArr(announcementDetailsData?.data?.ticketType)
+            setCollaboratorArr(announcementDetailsData?.data?.addedBy)
+            setAnnouncementText(announcementDetailsData.data?.announcement);
+            setAttachmentArr(announcementDetailsData?.data?.attachments)
+        }
+    }, [announcementDetailsData]);
 
-        const recipientQuery = ({ eventId: eventData?.id, announcementId: announcementId } as const)
-        const { data: selectedRecipientData } = useFetchSelectedRecipientsQuery(recipientQuery);
-        useEffect(() => {
-            if (selectedRecipientData != undefined) {
-                setSelectedUsers(selectedRecipientData?.data)
-            }
-        }, [selectedRecipientData]);
-    } else {
-        const queryArgs = ({ eventId: eventData?.id, ticketType: selectedTicketType.map((item: any) => item.id), addedBy: selectedCollaborator.map((item: any) => item.id), } as const)
-        const { data: announcementRecipientsData, isLoading } = useFetchAnnouncementRecipientsQuery(queryArgs);
-        useEffect(() => {
-            if (announcementRecipientsData != undefined) {
-                setallRecipients(announcementRecipientsData?.data);
-            }
-        }, [announcementRecipientsData]);
+    const recipientQuery = ({
+        eventId: eventData?.id,
+        announcementId: announcementId,
+        searchText: '',
+        take: 10,
+        skip: 0
+    } as const)
+    const { data: selectedRecipientData } = useFetchSelectedRecipientsQuery(recipientQuery);
+    useEffect(() => {
+        if (selectedRecipientData != undefined) {
+            setSelectedUsers(selectedRecipientData?.data?.result)
+        }
+    }, [selectedRecipientData]);
 
-    }
+    const queryArgs = ({
+        eventId: eventData?.id,
+        ticketType: selectedTicketType.map((item: any) => item.id),
+        addedBy: selectedCollaborator.map((item: any) => item.id),
+        searchText: searchText,
+        take: 10,
+        skip: (currentPage - 1) * 10,
+    } as const)
+    const { data: announcementRecipientsData, isLoading } = useFetchAnnouncementRecipientsQuery(queryArgs);
+    useEffect(() => {
+        if (announcementRecipientsData) {
+            setTotalCount(announcementRecipientsData?.data?.totalCount)
+            setallRecipients((prev) => (currentPage === 1 ? announcementRecipientsData?.data?.result : [...prev, ...announcementRecipientsData?.data?.result]));
+        }
+    }, [announcementRecipientsData]);
+
+    useEffect(() => {
+        setRefreshing(isLoading)
+    }, [isLoading])
+
+    const handleRefresh = () => {
+        setCurrentPage(1)
+    };
+
+    const loadMore = () => {
+        if (announcementRecipientsData?.currentPage < announcementRecipientsData?.totalPages && !isLoading) {
+            setCurrentPage((prev) => prev + 1);
+        }
+    };
+
 
 
     const [createEventAnnouncement, { error: addAnnouncementError, isLoading: addAnnouncementLoading },
@@ -390,7 +417,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                 <View style={styles.recipientHeader}>
                     <Text style={styles.title}>{ANNOUNCEMENT.Recipients}</Text>
                     <View style={styles.countWrapper}>
-                        <Text style={[styles.label, { paddingTop: 0 }]}>{allRecipients?.length}</Text>
+                        <Text style={[styles.label, { paddingTop: 0 }]}>{totalCount}</Text>
                     </View>
                 </View>
                 <SearchInput
@@ -427,14 +454,14 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                             />
                         </View>
                     }
-                // onEndReached={loadMore}
-                // onEndReachedThreshold={0.4}
-                // showsVerticalScrollIndicator={false}
-                // refreshControl={
-                //     allRecipients?.users?.length > 0 ? (
-                //         <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
-                //     ) : undefined
-                // }
+                    onEndReached={loadMore}
+                    onEndReachedThreshold={0.4}
+                    showsVerticalScrollIndicator={false}
+                    refreshControl={
+                        allRecipients?.length > 0 ? (
+                            <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
+                        ) : undefined
+                    }
                 />
                 {selectedUsers.length != 0 ? (
                     <Button
@@ -737,13 +764,14 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                             showsHorizontalScrollIndicator={false}
                                             data={selectedUsers}
                                             renderItem={({ item, index }) => {
-                                                const name = item?.user?.firstName + ' ' + item?.user?.lastName
+                                                const name = announcementId == null ? item?.user?.firstName + ' ' + item?.user?.lastName : item?.firstName + ' ' + item?.lastName
+                                                const profilePicture = announcementId == null ? item?.user?.profilePicture : item?.profilePicture
                                                 return (
                                                     <View>
                                                         {index < 3 ? <View style={[styles.receipientImg, { left: index * -15 }]}>
                                                             <AvatarInitials
                                                                 name={name}
-                                                                imgUrl={item?.user?.profilePicture}
+                                                                imgUrl={profilePicture}
                                                                 size={30}
                                                                 textColor="white"
                                                             />
@@ -755,7 +783,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                             }
                                         />
                                     }
-                                    <View style={{ alignItems: 'center', justifyContent: 'center', left: selectedUsers.length > 0 ? horizontalScale(-110) : horizontalScale(10) }}>
+                                    <View style={{ alignItems: 'center', justifyContent: 'center', left: selectedUsers.length > 0 ? horizontalScale(-125) : horizontalScale(10) }}>
                                         <Text style={[styles.label, { paddingTop: 0 }]}>{ANNOUNCEMENT.Recipients}</Text>
                                         <Text style={styles.attachDes}>{selectedUsers.length} Users</Text>
                                     </View>

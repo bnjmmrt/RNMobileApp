@@ -56,7 +56,7 @@ const GuestForm: React.FC<GuestFormProps> = ({ hasPhone, data, onSubmit }) => {
 
         const emailValid = !hasPhone && /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(emailInputRef.current.inputText);
 
-        if (firstNameValid && lastNameValid && phoneOrEmailValid && (hasPhone || emailValid)) {
+        if (firstNameValid && lastNameValid && phoneOrEmailValid ) {
             const filledValues = {
                 firstName: firstNameRef.current.inputText,
                 lastName: lastNameRef.current.inputText,

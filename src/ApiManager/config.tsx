@@ -92,6 +92,7 @@ export const EndPoint = {
   edit_event: 'v1/events/event/',
   check_phone: 'v1/auth/check-phone-number',
   check_email: 'v1/auth/check-email',
+  event_manage_guests:'v1/events/manage-guests',
   switch_profile: 'v1/auth/switch-profile',
 } as const;
 

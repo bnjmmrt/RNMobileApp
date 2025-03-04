@@ -46,6 +46,7 @@ import {
 } from 'src/redux/actions/usersApiAction';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { ROUTES } from 'src/navigation/Route';
+import CheckInComponent from '../Guest/CheckInComponent';
 
 enum GuestStatus {
   DRAFT = 'DRAFT',
@@ -486,6 +487,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             eventStartDate={selectedEvent?.startDate}
             directlySendToConfirm={directlySendToConfirm}
             onDirectlySendToConfirmChange={setDirectlySendToConfirm}
+            status={guestProfile.status}
           />
 
           {Boolean(selectedEvent?.quizQuestions?.length) && (
@@ -494,6 +496,16 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             </View>
           )}
         </View>
+        { guestProfile?.status===GuestStatus.CONFIRMED && (
+           <CheckInComponent
+           status={guestProfile?.status}
+           guestProfile={guestProfile}
+           ticketType={guestProfile?.guestDetail?.ticketType}
+           privateGuestNote={guestDetail?.privateGuestNote}
+           additionalGuests={guestProfile?.additionalGuests}
+           maxAdditionalGuests={guestDetail?.maxAdditionalGuests}
+         />
+        )}
       </ScrollView>
 
       <View style={styles.footer}>{renderFooterButtons()}</View>

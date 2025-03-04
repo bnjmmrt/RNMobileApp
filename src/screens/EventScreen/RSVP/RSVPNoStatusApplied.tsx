@@ -434,6 +434,7 @@ const RSVPNoStatusApplied: React.FC = () => {
                             }}
                             isRequired={true}
                             ref={guestInputRef}
+                            editable={true}
                             rightImage={IMAGES.downArrow}
                             defaultValue={selectedGuests?.label}
                             label="Request access for additional guests?"
