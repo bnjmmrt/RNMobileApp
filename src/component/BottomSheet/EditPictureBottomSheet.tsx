@@ -33,7 +33,6 @@ const EditPictureBottomSheet = forwardRef(
     return (
       <BottomSheetComponent
         ref={ref}
-        enablePanDownToClose={true}
         snapPoints={props.snapPoints}
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
