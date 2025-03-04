@@ -47,9 +47,47 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
     const [currentIndex, setCurrentIndex] = useState(0);
     const bottomSheetRef = useRef(null);
 
-    const handleOpenWebView = () => {
-        bottomSheetRef?.current?.open();
+    const requestStoragePermission = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    {
+                        title: 'Storage Permission',
+                        message: 'App needs access to your storage to save files.',
+                        buttonPositive: 'OK',
+                    }
+                );
+                return granted === PermissionsAndroid.RESULTS.GRANTED;
+            } catch (err) {
+                console.warn(err);
+                return false;
+            }
+        }
+        return true;
     };
+
+    const saveFile = async () => {
+        const fileName = 'deepa';
+        const filePath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
+        console.log('File saved at:', filePath);
+
+        const fileContent = mediaItems[currentIndex]?.media;
+        const hasPermission = await requestStoragePermission();
+        if (!hasPermission) {
+            Alert.alert('Permission Denied', 'Storage permission is required to save files.');
+            return;
+        }
+
+        try {
+            await RNFS.writeFile(filePath, fileContent, 'utf8');
+            Alert.alert('File Saved', `File saved at: ${filePath}`);
+        } catch (error) {
+            console.error(error);
+            Alert.alert('Error', 'Failed to save the file.');
+        }
+    };
+
     const handleNext = () => {
         if (currentIndex < mediaItems.length - 1) {
             setCurrentIndex(currentIndex + 1);
@@ -72,46 +110,6 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
             Alert.alert("Error", "Something went wrong while opening the PDF.");
         }
     };
-
-    const saveImageToGallery = async (imageUrl: string) => {
-        Alert.alert('File Download', 'In Progress');
-        // try {
-        //     // Request permission for Android devices
-        //     if (Platform.OS === 'android') {
-        //         const granted = await PermissionsAndroid.request(
-        //             PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-        //         );
-
-        //         if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        //             Alert.alert('Permission Denied', 'Cannot save image without permission');
-        //             return;
-        //         }
-        //     }
-
-        //     // Define the file path to save
-        //     const fileName = `image_${Date.now()}.jpg`;
-        //     const path = `${RNFS.CachesDirectoryPath}/${fileName}`;
-
-        //     // Download the image to a temporary location
-        //     const downloadResult = await RNFS.downloadFile({
-        //         fromUrl: imageUrl,
-        //         toFile: path,
-        //     }).promise;
-
-        //     if (downloadResult.statusCode === 200) {
-        //         // Save to gallery
-        //         // await CameraRoll.saveAsset(path, { type: 'photo' });
-        //         await CameraRoll.save(path, { type: 'photo' });
-        //         Alert.alert('Success', 'Image saved to gallery!');
-        //     } else {
-        //         Alert.alert('Error', 'Failed to download image');
-        //     }
-        // } catch (error) {
-        //     console.error(error);
-        //     Alert.alert('Error', 'Something went wrong while saving the image');
-        // }
-    };
-
     const renderMedia = () => {
         const currentItem = mediaItems[currentIndex];
         if (currentItem?.mediaType === "image") {
@@ -188,7 +186,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
                         style={styles.btnStyle}
                         title={BUTTON_LABLE.SAVE_TO_FILE}
                         colorTheme="light"
-                        onPress={() => saveImageToGallery(mediaItems[currentIndex]?.media)}
+                        onPress={() => saveFile()}
                     />
                 </View>
             </View>
