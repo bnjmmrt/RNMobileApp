@@ -182,7 +182,7 @@ const BottomSheetComponent = forwardRef<
               <BlurView
                 style={StyleSheet.absoluteFill}
                 blurType="dark"
-                blurAmount={2}
+                blurAmount={5}
               />
             }
           />

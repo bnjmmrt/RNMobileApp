@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexDirection: 'column',
-    paddingVertical: verticalMarginScale(18),
+    paddingTop: verticalMarginScale(18),
     flex: 1,
     backgroundColor: COLORS.white,
   },
@@ -144,6 +144,8 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: COLORS.light_gray,
+    fontFamily: fontFamily.ABCDiatype_Medium,
+    fontSize: fontScale(12)
   },
   roleContainer: {
     backgroundColor: COLORS.white, // Ensure background is applied

@@ -29,7 +29,7 @@ import useApi from 'src/axios/useApi';
 interface ContactItem {
   name: string;
   phoneNumber: string;
-  countryCode:string
+  countryCode: string
 }
 
 const PAGE_SIZE = 30;
@@ -38,6 +38,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   const [contacts, setContacts] = useState<ContactItem[]>([]);
   const [members, setMembers] = useState<ContactItem[]>([]);
   const { apiRequest, loading: apiLoading, error: apiError } = useApi();
+  const searchRef = useRef(null);
 
   const [getConfirmedMembers, { data, error, isLoading }] = useGetConfirmedMembersMutation();
 
@@ -179,11 +180,13 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
     isSent: boolean
   ) => (
     <View style={styles.listItem}>
-        <AvatarInitials name={item.name} size={40} listing={true} />
-        <View style={{ width:horizontalScale(206)}}>
-          <Text numberOfLines={1} style={styles.name}>{item.name}</Text>
-          <Text style={styles.phone}>{numberSpacing(item.phoneNumber,item.countryCode)}</Text>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 12, flex: 1 }}>
+        <AvatarInitials name={item?.name} size={48} />
+        <View style={{ width: horizontalScale(206) }}>
+          <Text numberOfLines={1} style={styles.name}>{item?.name}</Text>
+          <Text style={styles.phone}>{numberSpacing(item.phoneNumber, item.countryCode)}</Text>
         </View>
+      </View>
       <ButtonSmall
         disabled={isSent}
         style={styles.smallBtnStyle}
@@ -210,7 +213,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <Header headerTitle="Referrals & Invites" showProgressBar={false} />
-      <View style={{ paddingHorizontal: 20, flex: 1 }}>
+      <View style={{ paddingHorizontal: 20, flex: 1, marginTop: verticalMarginScale(12) }}>
         <TabBar
           onTabChange={(tab) => {
             setSelectedTab(tab)
@@ -224,12 +227,13 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
         {selectedTab === '01' && (
           <View style={{ flex: 1, gap: 8, marginTop: verticalMarginScale(12) }}>
             {permissionGranted && <SearchInput
+              ref={searchRef}
               placeholder={LABLE.SEARCH_FRIENDS}
               onSearchTextChange={(query) => {
                 handleSearch(query);
               }}
             />}
-            {permissionGranted && <View>
+            {permissionGranted && <View style={{ gap: verticalMarginScale(4), marginVertical: verticalMarginScale(4) }}>
               <Text style={styles.sectionTitle}>{LABLE.FRIENDS_WHO_ARE_MEMBERS}</Text>
               <Text style={styles.sectionSubtitle}>{LABLE.REQUEST_A_REFERRAL}</Text>
             </View>}
@@ -241,7 +245,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
               ListEmptyComponent={
                 permissionGranted ?
                   <View style={{ height: Hp(50), justifyContent: 'center', alignItems: 'center' }}>
-                    <EventEmptyRecord title='No Results' subTitle='No Contacts are members at this time' />
+                    <EventEmptyRecord title='No Results' subTitle={searchRef?.current?.searchText == "" ? 'No Contacts are members at this time' : "Please refine your search."} />
                   </View> :
                   <View style={{ height: Hp(65), justifyContent: 'center', alignItems: 'center' }}>
                     <EventEmptyRecord title='Access your contacts' subTitle='Easily sync your phone contacts to request referrals from members and invite friends to join you on Rumor' />
@@ -267,11 +271,12 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
           <View style={{ flex: 1, gap: 8, marginTop: verticalMarginScale(12) }}>
             {permissionGranted && <SearchInput
               placeholder={LABLE.SEARCH_FRIENDS}
+              ref={searchRef}
               onSearchTextChange={(query) => {
                 handleSearch(query);
               }}
             />}
-            {permissionGranted && <View>
+            {permissionGranted && <View style={{ gap: verticalMarginScale(4), marginVertical: verticalMarginScale(4) }}>
               <Text style={styles.sectionTitle}>{LABLE.CONTACTS}</Text>
               <Text style={styles.sectionSubtitle}>{LABLE.INVITE_FRIENDS_TO}</Text>
             </View>}
@@ -279,16 +284,19 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
               data={filteredContacts}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={
-                <View style={{ height: Hp(65), justifyContent: 'center', alignItems: 'center' }}>
-                  <EventEmptyRecord title='Access your contacts' subTitle='Easily sync your phone contacts to request referrals from members and invite friends to join you on Rumor' />
-                  <ButtonSmall
-                    colorTheme="dark"
-                    leftIcon={IMAGES.settings}
-                    style={styles.settingsButton}
-                    title="Sync Contacts in Settings"
-                    onPress={() => Linking.openURL('app-settings:')}
-                  />
-                </View>
+                !permissionGranted ?
+                  <View style={{ height: Hp(65), justifyContent: 'center', alignItems: 'center' }}>
+                    <EventEmptyRecord title='Access your contacts' subTitle='Easily sync your phone contacts to request referrals from members and invite friends to join you on Rumor' />
+                    <ButtonSmall
+                      colorTheme="dark"
+                      leftIcon={IMAGES.settings}
+                      style={styles.settingsButton}
+                      title="Sync Contacts in Settings"
+                      onPress={() => Linking.openURL('app-settings:')}
+                    />
+                  </View> : <View style={{ height: Hp(50), justifyContent: 'center', alignItems: 'center' }}>
+                    <EventEmptyRecord title='No Results' subTitle={searchRef?.current?.searchText == "" ? 'No Contacts are members at this time' : "Please refine your search."} />
+                  </View>
               }
               keyExtractor={(item, index) => '' + item.phoneNumber + index}
               contentContainerStyle={{ gap: 4, flexGrow: 1, paddingBottom: verticalMarginScale(100), marginTop: verticalMarginScale(12) }}
@@ -306,8 +314,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
           </View>
         )}
 
-
-        {permissionGranted && footerComponent()}
+        {selectedTab == '02' && footerComponent()}
       </View>
 
 
@@ -326,7 +333,8 @@ const styles = StyleSheet.create({
   btnStyle: {
     borderRadius: 100,
     marginBottom: verticalMarginScale(20),
-    marginTop: verticalMarginScale(20)
+    marginTop: verticalMarginScale(20),
+    height: 48
   },
   sectionTitle: {
     fontSize: fontScale(18),
@@ -349,7 +357,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 16,
-    gap:8
+    gap: 8,
   },
   name: {
     fontSize: fontScale(14),

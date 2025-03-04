@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { MainStack } from './MainStack';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from '../redux/slices';
 import { apiPost } from '../ApiManager/MainApi';
 import { View, ActivityIndicator } from 'react-native'; // Import ActivityIndicator for loading state
-import { ROLE } from 'src/utils/constants';
+import { COLORS, ROLE } from 'src/utils/constants';
 import { ROUTES } from './Route';
 
 const MainNavigation: React.FC = () => {
-  const isGuest = useSelector((state: RootState) => state.auth.isGuest);
   // const loginData = useSelector((state: RootState) => state.auth.loginData);
   // const isVerified = loginData?.varifyStatus || 0;
 
@@ -42,7 +41,7 @@ const MainNavigation: React.FC = () => {
 
   //       if (
   //         userInfo.roles[0].name === 'non_member' &&
-  //         loginData?.token?.length === 0 && 
+  //         loginData?.token?.length === 0 &&
   //         !loginData?.token?.id
   //       ) {
   //         setInitialAppStackScreen('BeforeAppStaticScreen');
@@ -65,18 +64,43 @@ const MainNavigation: React.FC = () => {
   //   );
   // }
 
+  const { isGuest, varifyStatus, role, token } = useSelector(
+    (state: RootState) => ({
+      isGuest: state.auth.isGuest,
+      role: state.auth.role,
+      varifyStatus: state.auth.varifyStatus,
+      token: state.auth.token,
+    }),
+    shallowEqual,
+  );
 
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const role = useSelector((state: RootState) => state.auth.role);
-
-  const isVerified = loginData?.varifyStatus || 0;
+  const isVerified = varifyStatus || 0;
   const initialRouteName = isVerified === 0 ? 'AuthStack' : 'AppStack';
 
-  const initialAppStackScreen =
-    role === ROLE.NON_MEMBER
-      ? loginData?.token?.length > 0 || isGuest ? ROUTES.BottomTabBar : ROUTES.BeforeAppStaticScreen
-      : ROUTES.BottomTabBar;
+  let initialAppStackScreen = '';
 
+  if (role === ROLE.NON_MEMBER) {
+    console.log('initialAppStackScreen', 'non');
+    if (token?.length > 0 || isGuest) {
+      console.log('initialAppStackScreen', 'isguest', token, isGuest);
+      initialAppStackScreen = ROUTES.BottomTabBar;
+    } else {
+      console.log('initialAppStackScreen', 'else');
+      initialAppStackScreen = ROUTES.BeforeAppStaticScreen;
+    }
+  } else {
+    console.log('initialAppStackScreen', 'bada else');
+    initialAppStackScreen = ROUTES.BottomTabBar;
+  }
+  console.log('initialAppStackScreen');
+
+  if (!initialAppStackScreen) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator color={COLORS.black} size={'large'} />
+      </View>
+    );
+  }
   return (
     <MainStack
       initialRouteName={initialRouteName}

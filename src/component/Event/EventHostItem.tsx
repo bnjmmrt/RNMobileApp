@@ -46,7 +46,7 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item }) => {
     <View style={[styles.container]}>
       <AvatarInitials
         onPress={() => {
-          navigate("ProfileStack", { screen: ROUTES.HostProfileScreen, params: { hostId: item.id } });
+          role == ROLE.MEMBER && navigate("ProfileStack", { screen: ROUTES.HostProfileScreen, params: { hostId: item.id } });
         }
         }
         imgUrl={removeSignature(item?.companyLogo)}

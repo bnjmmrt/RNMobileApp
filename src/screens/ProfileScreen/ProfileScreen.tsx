@@ -1,41 +1,45 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, TouchableOpacity, ScrollView, Platform } from 'react-native';
+import { CommonActions, useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Platform, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Text } from 'react-native-animatable';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
+import ContactSupporrtBottomSheet from 'src/component/BottomSheet/ContactSupporrtBottomSheet';
+import DeleteAccountBottomSheet from 'src/component/BottomSheet/DeleteAccountBottomSheet';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
 import {
-  BUTTON_LABLE,
-  COLORS,
-  LABLE,
-  PROFILE,
-  ROLE,
-} from '../../utils/constants';
+  resetProfileData,
+  setProfileData,
+} from 'src/redux/slices/appGlobalDataSlice';
+import { setNotificationSettings } from 'src/redux/slices/appSettingsSlice';
+import {
+  resetLoginData,
+  setAuthToken,
+  setCompanyLogo,
+  setProfilePicture,
+} from 'src/redux/slices/authSlice';
+import { verticalScale } from 'src/utils/dimensions';
+import {
+  changeSafeAreaViewConfig,
+  fetchUserProfile,
+} from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { environment } from '../../../environments/environment';
+import { EndPoint } from '../../ApiManager/config';
 import IMAGES from '../../assets/images/index';
-import ProfileScreenStyle from './ProfileScreenStyle';
-import HeaderComponent from '../../component/HeaderComponent';
-import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
-import ProfileTopView from './ProfileTopView';
-import ProfileListItem from './ProfileListItem';
+import useApi from '../../axios/useApi';
+import EditPictureBottomSheet from '../../component/BottomSheet/EditPictureBottomSheet';
 import TermsAndPolicy from '../../component/TermsAndPlolicy/TermsAndPolicy';
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
-import { Text } from 'react-native-animatable';
-import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/slices';
-import EditPictureBottomSheet from '../../component/BottomSheet/EditPictureBottomSheet';
-import DeleteAccountBottomSheet from 'src/component/BottomSheet/DeleteAccountBottomSheet';
-import useApi from '../../axios/useApi';
-import { EndPoint } from '../../ApiManager/config';
-import { environment } from '../../../environments/environment';
-import ContactSupporrtBottomSheet from 'src/component/BottomSheet/ContactSupporrtBottomSheet';
-import { setAuthToken } from 'src/redux/slices/authSlice';
-import { CommonActions, useFocusEffect } from '@react-navigation/native';
-import { resetLoginData } from 'src/redux/slices/authSlice';
-import { changeSafeAreaViewConfig } from 'src/utils/functions';
-import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
-import { verticalScale } from 'src/utils/dimensions';
-import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
-import { resetProfileData, setProfileData } from 'src/redux/slices/appGlobalDataSlice';
-import { setNotificationSettings } from 'src/redux/slices/appSettingsSlice';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { BUTTON_LABLE, COLORS, PROFILE, ROLE } from '../../utils/constants';
+import ProfileListItem from './ProfileListItem';
+import ProfileScreenStyle from './ProfileScreenStyle';
+import ProfileTopView from './ProfileTopView';
+
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -46,33 +50,41 @@ interface ListItem {
   onPress?: any;
 }
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
-  const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
   const styles = ProfileScreenStyle();
-  const [URL, setURL] = useState('');
-  const [listItems, setListItems] = useState<ListItem[]>([]);
-  const [image, setImage] = useState<string>('');
+
   const editPhotoBottomSheetRef = useRef<any>(null);
   const savePhotoBottomSheetRef = useRef<any>(null);
   const logoutBottomSheetRef = useRef<any>(null);
   const deleteAccountBottomSheetRef = useRef<any>(null);
-  const bottomSheetRef = useRef(null);
+  const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
-  const userId = useSelector((state: RootState) => state.auth.userId);
-  const isGuest = useSelector((state: RootState) => state.auth.isGuest);
-  const role = useSelector((state: RootState) => state.auth.role);
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const profileData = useSelector((state: RootState) => state.appFlowApiData?.profileData);
+  const { apiRequest, loading, error } = useApi();
+
+  const [URL, setURL] = useState('');
+  const [listItems, setListItems] = useState<ListItem[]>([]);
+  const [image, setImage] = useState<string>('');
   const [isShown, setIsShown] = useState(false);
 
-  useFocusEffect(
-    useCallback(() => {
-      // Do something when the screen is focused
-      changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-        showBottomSafeAreaView: false,
-      });
-    }, []),
+  const {
+    userId,
+    isGuest,
+    role,
+    roles,
+    profileData,
+    companyLogo,
+    profilePicture,
+  } = useSelector(
+    (state: RootState) => ({
+      isGuest: state.auth.isGuest,
+      role: state.auth.role,
+      roles: state.auth.roles,
+      userId: state.auth.userId,
+      profileData: state.appFlowApiData.profileData,
+      companyLogo: state.auth.companyLogo,
+      profilePicture: state.auth.profilePicture,
+    }),
+    shallowEqual,
   );
 
   const getUserSettings = async () => {
@@ -87,58 +99,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     }
   };
 
-  const getHostProfile = async () => {
-    const response: any = await apiRequest(
-      'get',
-      `v1/auth/host/${userId}/profile`,
-    );
-    // console.log('getHostDetails', response);
-    if (response.status === 200) {
-      dispatch(setProfileData(response.data));
-      // setUser(response?.data);
-    }
-  };
-
-  const getMemberNonMemberProfile = async () => {
-    if (isGuest && loginData.roles[0]?.roleName === ROLE.NON_MEMBER) {
-      const response: any = await apiRequest('post',
-        EndPoint.get_user_with_role_by_id,
-        { id: userId },
-      );
-      if (response.status === 200) {
-        dispatch(setProfileData(response?.data));
-      }
-    } else {
-      const response: any = await apiRequest('get', EndPoint.user + userId);
-      if (response.status === 200) {
-        dispatch(setProfileData({...response?.data, profilePicture: response?.data?.imageUrl}));
-      }
-    }
-  };
-
-  useEffect(() => {
-    switch (role) {
-      // case ROLE.MEMBER:
-      //   break;
-      case ROLE.HOST:
-        getHostProfile();
-        break;
-      default:
-        getMemberNonMemberProfile();
-        break;
-    }
-    getUserSettings();
-  }, []);
-
   const setWebUrl = (url: string) => {
     console.log('setUrl', url);
     setURL(url);
     URL.length && bottomSheetRef?.current?.open();
   };
 
-  const [isInvited, setInvited] = useState<boolean>(
-    loginData?.isInvited || false,
-  );
   const deleteAccount = () => {
     deleteAccountBottomSheetRef.current?.open();
   };
@@ -148,19 +114,19 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   };
 
   const roleText = (role: string) => {
-    switch (role.toLowerCase()) {
+    switch (role?.toLowerCase()) {
       case 'member':
-        return 'Member'
+        return 'Member';
       case 'non_member':
-        if (isGuest && loginData.roles[0]?.roleName === ROLE.NON_MEMBER) {
-          return 'Invited'
+        if (isGuest && role === ROLE.NON_MEMBER) {
+          return 'Invited';
         } else {
-          return 'Non-Member'
+          return 'Non-Member';
         }
       case 'host':
-        return 'Host'
+        return 'Host';
       default:
-        return 'Non-Member'
+        return 'Non-Member';
     }
   };
 
@@ -174,7 +140,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       image: IMAGES.contact,
       onPress: contactSupportModal,
     },
-    { id: '5', title: PROFILE.DELETE_ACCOUNT, image: '', onPress: deleteAccount },
+    {
+      id: '5',
+      title: PROFILE.DELETE_ACCOUNT,
+      image: '',
+      onPress: deleteAccount,
+    },
   ];
 
   const itemsExtras: ListItem[] = [
@@ -223,26 +194,36 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       title: PROFILE.APPLY_FOR_MEMBERSHIP,
       image: IMAGES.membership,
     },
-    { id: '7', title: PROFILE.DELETE_ACCOUNT, image: '', onPress: deleteAccount },
+    {
+      id: '7',
+      title: PROFILE.DELETE_ACCOUNT,
+      image: '',
+      onPress: deleteAccount,
+    },
   ];
 
-  useEffect(() => {
-    let listItems = itemsExtras;
-    if (role.toLocaleLowerCase() === 'non_member' && isGuest) {
-      listItems = items;
-    } else if (role.toLocaleLowerCase() === 'host') {
-      listItems = hostItems
-    } else {
-      listItems = itemsExtras
-    }
-    // const listItems =
-    //   loginData?.roles[0].roleName === ROLE.MEMBER || loginData?.roles[0].roleName === ROLE.NON_MEMBER
-    //     ? itemsExtras
-    //     : loginData?.roles[0]?.roleName === ROLE.HOST
-    //     ? hostItems
-    //     : items;
-    setListItems(listItems);
-  }, [loginData]);
+  const hostMemberItems: ListItem[] = [
+    { id: '1', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit },
+    {
+      id: '2',
+      title: PROFILE.CONNECTED_ACCOUNTS,
+      image: IMAGES.connectedAccount,
+    },
+    { id: '3', title: PROFILE.NOTIFICATION, image: IMAGES.notification },
+    { id: '4', title: PROFILE.FEEDBACK, image: IMAGES.feedback },
+    {
+      id: '5',
+      title: PROFILE.CONTACT_SUPPORT,
+      image: IMAGES.contact,
+      onPress: contactSupportModal,
+    },
+    {
+      id: '7',
+      title: PROFILE.DELETE_ACCOUNT,
+      image: '',
+      onPress: deleteAccount,
+    },
+  ];
 
   const handleLogoutPress = () => {
     logoutBottomSheetRef.current?.open();
@@ -277,6 +258,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
     if (fileUploadResponse.status === 200) {
       FlashMessageComponent.show('success', 'Photo updated successfully');
+      dispatch(setProfilePicture(fileUploadResponse?.data?.profilePicture));
       dispatch(
         setProfileData({
           ...profileData,
@@ -293,11 +275,17 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     const response: any = await apiRequest(
       'put',
       `v1/auth/host/${userId}/profile`,
-      requestObject
+      requestObject,
     );
     if (response.status === 200) {
-      dispatch(setProfileData({ ...profileData, companyLogo: response?.data?.companyLogo }))
-      FlashMessageComponent.show('success', "Photo updated successfully")
+      dispatch(setCompanyLogo(response?.data?.companyLogo));
+      dispatch(
+        setProfileData({
+          ...profileData,
+          companyLogo: response?.data?.companyLogo,
+        }),
+      );
+      FlashMessageComponent.show('success', 'Photo updated successfully');
     }
   };
 
@@ -311,10 +299,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         // setIsToastShown(false);
         const imageUrl =
           environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
-        if (role.toLocaleLowerCase() === 'host') {
-          await updateHostProfilePhoto(imageUrl)
+        if (role?.toLocaleLowerCase() === 'host') {
+          await updateHostProfilePhoto(imageUrl);
         } else {
-          await updateProfilePhoto(imageUrl)
+          await updateProfilePhoto(imageUrl);
         }
       } else {
         //display error
@@ -346,106 +334,143 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     dispatch(resetAppFlowDetails());
     logoutBottomSheetRef.current?.close();
     // navigation.dispatch(resetAction);
-    navigation.replace("AuthStack")
+    navigation.replace('AuthStack');
   };
 
   const getUserName = () => {
     // if (isGuest && loginData.roles[0]?.roleName === ROLE.NON_MEMBER) {
     //   return profileData.name;
     // } else {
-      return profileData?.firstName ? `${profileData?.firstName} ${profileData?.lastName}` : ''
+    return profileData?.firstName
+      ? `${profileData?.firstName} ${profileData?.lastName}`
+      : '';
     // }
-  }
+  };
+
+  useEffect(() => {
+    fetchUserProfile();
+    getUserSettings();
+  }, []);
+
+  useEffect(() => {
+    let listItems = itemsExtras;
+    if (role?.toLocaleLowerCase() === 'non_member' && isGuest) {
+      listItems = items;
+    } else if (role?.toLocaleLowerCase() === 'host') {
+      if (roles && roles.length > 1) {
+        listItems = hostMemberItems;
+      } else {
+        listItems = hostItems;
+      }
+    } else {
+      listItems = itemsExtras;
+    }
+    // const listItems =
+    //   loginData?.roles[0].roleName === ROLE.MEMBER || loginData?.roles[0].roleName === ROLE.NON_MEMBER
+    //     ? itemsExtras
+    //     : loginData?.roles[0]?.roleName === ROLE.HOST
+    //     ? hostItems
+    //     : items;
+    setListItems(listItems);
+  }, [roles, role]);
+
+  useFocusEffect(
+    useCallback(() => {
+      // Do something when the screen is focused
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+        showBottomSafeAreaView: false,
+      });
+    }, []),
+  );
 
   return (
     <View
       style={[
         styles.container,
-        { backgroundColor: !isInvited ? COLORS.black2 : COLORS.white },
+        { backgroundColor: !isGuest ? COLORS.black2 : COLORS.white },
       ]}>
-      {isInvited ? (
-        <BeforeAppStaticComponent
-          title={LABLE.STREAMLINE_YOUR_LIFESTYLE}
-          subTitle={LABLE.MANAGE_YOUR_EVENTS}
+      <View style={{ backgroundColor: COLORS.white }}>
+        {/* <HeaderComponent isDarkTheme={false} /> */}
+
+        <ScrollView>
+          <ProfileTopView
+            editPhotoClick={editPhotoClick}
+            profilePic={
+              role?.toLocaleLowerCase() === 'host'
+                ? companyLogo
+                : profilePicture
+            }
+            name={getUserName()}
+            loading={loading}
+            // role={loginData?.roles[0].roleName}
+            role={roleText(role)}
+          />
+          {listItems.map(item => {
+            return (
+              <ProfileListItem
+                key={item.id}
+                item={item}
+                onPress={item.onPress}
+              />
+            );
+          })}
+
+          <TermsAndPolicy
+            setUrl={setWebUrl}
+            type="small"
+            showMessage={false}
+          />
+
+          <TouchableOpacity
+            onPress={() => handleLogoutPress()}
+            style={{ marginBottom: verticalScale(50) }}>
+            <Text style={styles.textBelowStyle}>{PROFILE.LOGOUT}</Text>
+          </TouchableOpacity>
+        </ScrollView>
+
+        <WebViewBottomSheet url={URL} ref={bottomSheetRef} />
+
+        {isShown && (
+          <ContactSupporrtBottomSheet
+            // setLocation={setSelectedCity}
+            setIsShown={setIsShown}
+          />
+        )}
+        {/* <ContactSupporrtBottomSheet ref={contactSupportBottomSheetRef}/> */}
+        <EditPictureBottomSheet
+          ref={editPhotoBottomSheetRef}
+          onPress={openCamera}
+          submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
+          cancelButtonText={BUTTON_LABLE.CANCEL}
+          snapPoints={[Platform.OS == 'android' ? '20%' : '20%']}
+          image={null}
         />
-      ) : (
-        <View style={{ backgroundColor: COLORS.white }}>
-          {/* <HeaderComponent isDarkTheme={false} /> */}
 
-          <ScrollView>
-            <ProfileTopView
-              editPhotoClick={editPhotoClick}
-              profilePic={role.toLocaleLowerCase() === 'host' ? profileData?.companyLogo : profileData?.profilePicture}
-              name={getUserName()}
-              loading={loading}
-              // role={loginData?.roles[0].roleName}
-              role={roleText(role)}
-            />
-            {listItems.map(item => {
-              return (
-                <ProfileListItem
-                  key={item.id}
-                  item={item}
-                  onPress={item.onPress}
-                />
-              );
-            })}
+        <EditPictureBottomSheet
+          ref={savePhotoBottomSheetRef}
+          onPress={savePhoto}
+          onPencilClick={openCamera}
+          submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
+          cancelButtonText={BUTTON_LABLE.CANCEL}
+          snapPoints={[Platform.OS == 'android' ? '50%' : '50%']}
+          image={image}
+        />
 
-            <TermsAndPolicy
-              setUrl={setWebUrl}
-              type="small"
-              showMessage={false}
-            />
-
-            <TouchableOpacity
-              onPress={() => handleLogoutPress()}
-              style={{ marginBottom: verticalScale(50) }}>
-              <Text style={styles.textBelowStyle}>{PROFILE.LOGOUT}</Text>
-            </TouchableOpacity>
-          </ScrollView>
-
-          <WebViewBottomSheet url={URL} ref={bottomSheetRef} />
-
-          {isShown && (
-            <ContactSupporrtBottomSheet
-              // setLocation={setSelectedCity}
-              setIsShown={setIsShown}
-            />
-          )}
-          {/* <ContactSupporrtBottomSheet ref={contactSupportBottomSheetRef}/> */}
-          <EditPictureBottomSheet
-            ref={editPhotoBottomSheetRef}
-            onPress={openCamera}
-            submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
-            cancelButtonText={BUTTON_LABLE.CANCEL}
-            snapPoints={[Platform.OS == 'android' ? '20%' : '20%']}
-            image={null}
-          />
-
-          <EditPictureBottomSheet
-            ref={savePhotoBottomSheetRef}
-            onPress={savePhoto}
-            submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
-            cancelButtonText={BUTTON_LABLE.CANCEL}
-            snapPoints={[Platform.OS == 'android' ? '50%' : '50%']}
-            image={image}
-          />
-
-          <EditPictureBottomSheet
-            ref={logoutBottomSheetRef}
-            title="Are you sure you want to log out?"
-            onPress={logOut}
-            submitButtonText={BUTTON_LABLE.CONFIRM}
-            cancelButtonText={BUTTON_LABLE.CANCEL}
-            snapPoints={[Platform.OS == 'android' ? '40%' : '30%']}
-            image={null}
-          />
-          <DeleteAccountBottomSheet
-            ref={deleteAccountBottomSheetRef}
-            onPress={deleteAccount}
-          />
-        </View>
-      )}
+        <EditPictureBottomSheet
+          ref={logoutBottomSheetRef}
+          title="Are you sure you want to log out?"
+          onPress={logOut}
+          submitButtonText={BUTTON_LABLE.CONFIRM}
+          cancelButtonText={BUTTON_LABLE.CANCEL}
+          snapPoints={[Platform.OS == 'android' ? '40%' : '30%']}
+          image={null}
+        />
+        <DeleteAccountBottomSheet
+          ref={deleteAccountBottomSheetRef}
+          onPress={deleteAccount}
+        />
+      </View>
     </View>
   );
 };

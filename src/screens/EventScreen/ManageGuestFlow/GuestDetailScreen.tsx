@@ -32,6 +32,7 @@ import TicketTypeBottomSheet, {
   TicketType,
 } from '../InviteGuestInEventFlow/TicketTypeBottomSheet';
 import DeclineBottomSheet from '../Guest/DeclineBottomSheet';
+import GuestVouches from '../Guest/GuestVouches';
 import { EventGuest } from '../types';
 import {
   useManageGuestMutation,
@@ -45,6 +46,7 @@ import {
 } from 'src/redux/actions/usersApiAction';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { ROUTES } from 'src/navigation/Route';
+import CheckInComponent from '../Guest/CheckInComponent';
 
 enum GuestStatus {
   DRAFT = 'DRAFT',
@@ -458,6 +460,13 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               onPress={() => handleProfile(guestProfile.addedById)}
             />
           )}
+
+          {Boolean( guestDetails?.data.vouches.length > 0) && (
+            <GuestVouches
+              requestSource="In-App"
+              vouches={ guestDetails?.data.vouches}
+            />
+          )}
         </View>
 
         <View style={styles.inviteSection}>
@@ -473,11 +482,12 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             onInviteMessageChange={setInviteMessage}
             guestNote={guestNote}
             onGuestNoteChange={setGuestNote}
-            maxAdditionalGuests={guestProfile.additionalGuests?.length || 0}
+            maxAdditionalGuests={guestDetail.maxAdditionalGuests || 0}
             eventName={selectedEvent?.name}
             eventStartDate={selectedEvent?.startDate}
             directlySendToConfirm={directlySendToConfirm}
             onDirectlySendToConfirmChange={setDirectlySendToConfirm}
+            status={guestProfile.status}
           />
 
           {Boolean(selectedEvent?.quizQuestions?.length) && (
@@ -486,6 +496,16 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             </View>
           )}
         </View>
+        { guestProfile?.status===GuestStatus.CONFIRMED && (
+           <CheckInComponent
+           status={guestProfile?.status}
+           guestProfile={guestProfile}
+           ticketType={guestProfile?.guestDetail?.ticketType}
+           privateGuestNote={guestDetail?.privateGuestNote}
+           additionalGuests={guestProfile?.additionalGuests}
+           maxAdditionalGuests={guestDetail?.maxAdditionalGuests}
+         />
+        )}
       </ScrollView>
 
       <View style={styles.footer}>{renderFooterButtons()}</View>
@@ -552,6 +572,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: horizontalMarginScale(8),
     paddingTop: verticalMarginScale(8),
     backgroundColor: COLORS.white,

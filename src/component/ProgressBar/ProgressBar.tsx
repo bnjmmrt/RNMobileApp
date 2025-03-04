@@ -6,7 +6,7 @@ import { RootState } from '../../redux/slices';
 
 const ProgressBar = () => {
   const progress = useSelector((state: RootState) => state.appFlow.pageProgress);
-  const steps = 10; // Total number of steps
+  const steps = 9; // Total number of steps
   const progressPercentage = (progress / steps) * 100;
 
   return (

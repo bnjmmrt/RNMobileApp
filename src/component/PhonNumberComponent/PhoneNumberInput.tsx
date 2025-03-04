@@ -145,7 +145,7 @@ const PhoneNumberInput = forwardRef<
     const handleNextPress = () => {
       if (validatePhoneNumber()) {
         navigation.navigate('VerifyOtpScreen', {
-          phone: `${callingCode}${phoneNumber}`,
+          phone: `${callingCode} ${phoneNumber}`,
           isEmail: false,
         });
         // Alert.alert("Success!!", `Phone Number: ${callingCode} ${phoneNumber}`);
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     height: 25,
   },
   arrowIcon: {
-    marginHorizontal: 10,
+    marginRight: 5,
   },
   callingCode: {
     fontSize: 16,

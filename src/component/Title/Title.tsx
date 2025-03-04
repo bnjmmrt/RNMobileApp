@@ -25,13 +25,13 @@ const styles = StyleSheet.create({
   },
   title: {
     color: COLORS.black,
-    fontSize:fontScale(32),
+    fontSize:32,
     fontFamily: fontFamily.RomieTrial_Bold,
   },
   subTitle: {
     color: COLORS.light_gray,
-    fontSize: fontScale(14),
-    fontFamily: fontFamily.ABCDiatype_Regular,
+    fontSize: 14,
+    fontFamily: fontFamily.ABCDiatype_Medium,
     marginVertical: Hp(1),
     textAlign: 'center', // Default alignment
   },
