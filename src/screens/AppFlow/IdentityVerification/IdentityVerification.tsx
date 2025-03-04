@@ -213,6 +213,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
           inputFieldContainerStyle={{height: 60}}
           ref={usernameRef}
           placeholder={'@Username'}
+          placeholderTextColor={COLORS.placeHodler}
           leftImage={IMAGES.instagramLogo}
           errorMessage={'Please enter username'}
           defaultValue={''}

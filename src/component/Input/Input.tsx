@@ -49,6 +49,7 @@ interface InputProps {
   customLeftImageStyle?: ImageStyle;
   extraInputProps?: TextInputProps;
   labelStyle?: any;
+  placeholderTextColor?:string
 }
 
 export type InputRefMethods = {
@@ -79,7 +80,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     customLeftImageStyle,
     customRightImageStyle,
     extraInputProps,
-    labelStyle
+    labelStyle,
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
