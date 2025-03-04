@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   toast: {
     height: 48,
     position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 10: 30,
+    bottom: Platform.OS === 'ios' ? 10: 35,
     left: horizontalMarginScale(20),
     right: horizontalMarginScale(20),
     backgroundColor: COLORS.bgRed,

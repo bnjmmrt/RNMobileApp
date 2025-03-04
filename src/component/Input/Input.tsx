@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontSize: fontScale(14),
     lineHeight: 16,
-    marginBottom: 2,
+    marginBottom: 5,
   },
   inputContainer: {
     borderWidth: 1,
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: horizontalMarginScale(12),
+    paddingHorizontal: horizontalMarginScale(10),
     height: verticalScale(56),
   },
   multilineInputContainer: {

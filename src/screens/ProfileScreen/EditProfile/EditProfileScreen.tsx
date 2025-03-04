@@ -282,8 +282,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
           )}
         </View>
         {isToastShown && (
-          <View style={{ marginTop: 100 }}>
+          <View style={{ marginTop: 20 }}>
             <Toast
+              toastStyle={{position: 'relative', width: '90%'}}
               message={'Please select at least one'}
               onClose={() => setIsToastShown(false)}
             />
@@ -326,6 +327,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontWeight: '500',
     lineHeight: 16,
+    marginBottom: 5
   },
 });
 
