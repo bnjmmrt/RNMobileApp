@@ -3,9 +3,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, FlatList, RefreshControl, TouchableOpacity, Image } from 'react-native';
 import AnnouncementStyles from './styles';
 import Header from 'src/component/Header/Header';
-import { ANNOUNCCEMENTS_DATA, ANNOUNCEMENT, COLORS } from 'src/utils/constants';
+import { ANNOUNCCEMENTS_DATA, ANNOUNCEMENT, COLORS, LABLE, ROLE } from 'src/utils/constants';
 import IMAGES from '@images/index';
-import { horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
+import { horizontalMarginScale, Hp, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import FastImage from '@d11/react-native-fast-image';
 import AvatarInitials from 'src/component/AvatarInitials';
 import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
@@ -14,6 +14,9 @@ import { dateFormat } from 'src/utils/functions';
 import { formatViewAnnouncementDate } from 'src/utils/dateFunctions';
 import ImagePdfViewer from 'src/component/Event/ImagePdfViewer';
 import { ROUTES } from 'src/navigation/Route';
+import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
 
 interface AnnouncementProps extends NativeStackScreenProps<any, any> { }
 type RouteParams = {
@@ -31,6 +34,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
     const [media, setMedia] = useState([]);
     const [companyName, setCompanyName] = useState('');
     const [companyLogo, setCompanyLogo] = useState('');
+    const role = useSelector((state: RootState) => state.auth.role);
 
     const queryArgs = ({
         eventId: eventData?.id,
@@ -40,7 +44,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
     const { data, isLoading, refetch } = useFetchHostEventsAnnouncementQuery(queryArgs);
     useEffect(() => {
         if (data) {
-            setannouncementData((prev) => (currentPage === 1 ? data?.data?.result : [...prev, ...announcementRecipientsData?.data?.result]));
+            setannouncementData((prev) => (currentPage === 1 ? data?.data?.result : [...prev, ...data?.data?.result]));
         }
     }, [data]);
 
@@ -112,14 +116,16 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text style={styles.subtitle}>{date}</Text>
-                        <TouchableOpacity onPress={() => {
-                            navigation.navigate('EventStack', {
-                                screen: 'AddAnnouncementScreen',
-                                params: { eventData, announcementId: item?.id } // Wrap in params
-                            });
-                        }} style={styles.iconWrapper}>
-                            <Image source={IMAGES.pencil} style={styles.icon} />
-                        </TouchableOpacity>
+                        {role === ROLE.HOST &&
+                            <TouchableOpacity onPress={() => {
+                                navigation.navigate('EventStack', {
+                                    screen: 'AddAnnouncementScreen',
+                                    params: { eventData, announcementId: item?.id } // Wrap in params
+                                });
+                            }} style={styles.iconWrapper}>
+                                <Image source={IMAGES.pencil} style={styles.icon} />
+                            </TouchableOpacity>
+                        }
                     </View>
                 </View>
                 <View style={styles.lineView} />
@@ -127,7 +133,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
                     <Text numberOfLines={expanded ? undefined : 3} style={styles.name}>{displayedText}</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                         {item?.attachments?.map((mediaItem: string, index: number) => (
-                            <MediaItem key={index} item={mediaItem} media={item.attachments} name={name} image={imageKeyUrl}/>
+                            <MediaItem key={index} item={mediaItem} media={item.attachments} name={name} image={imageKeyUrl} />
                         ))}
                     </ScrollView>
                     {!expanded && shouldShowReadMore ? (
@@ -182,7 +188,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
             <Header
                 headerTitle={ANNOUNCEMENT.Announcement}
                 onPress={handleBackPress}
-                rightIcon={IMAGES.plus}
+                rightIcon={role === ROLE.HOST ? IMAGES.plus : null}
                 onPressRightIcon={() => {
                     navigation.navigate(ROUTES.EventStack, {
                         screen: ROUTES.AddAnnouncementScreen,
@@ -204,14 +210,18 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
                         renderItem={({ item }) => <AnnouncementItem item={item} />}
                         keyExtractor={(item, index) => index.toString()}
                         contentContainerStyle={{ gap: verticalMarginScale(16) }}
+                        ListEmptyComponent={<View style={{ height: Hp(40), justifyContent: 'center', alignItems: 'center' }}>
+                            <EventEmptyRecord title={LABLE.NO_EVENT_ANNOUNCEMENTS} subTitle="" isLoading={isLoading} />
+                        </View>}
                         onEndReached={loadMore}
-                        onEndReachedThreshold={0.4}
+                        onEndReachedThreshold={0.5}
                         showsVerticalScrollIndicator={false}
                         refreshControl={
                             announcementData.length > 0 ? (
-                                <RefreshControl refreshing={false} onRefresh={handleRefresh} />
+                                <RefreshControl refreshing={isLoading} onRefresh={handleRefresh} />
                             ) : undefined
                         }
+
                     />
                 </View>
             </ScrollView>
