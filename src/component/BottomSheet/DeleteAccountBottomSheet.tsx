@@ -90,8 +90,10 @@ const styles = StyleSheet.create({
     borderRadius:radiusScale(100),
   },
   title: {
-    fontSize: fontScale(24),
-    fontFamily: fontFamily.RomieTrial_Bold,
+      fontSize: fontScale(24),
+      fontWeight:'700',
+      color:COLORS.black,
+      fontFamily: fontFamily.RomieTrial_Bold
   },
   description: {
     fontSize: fontScale(14),
