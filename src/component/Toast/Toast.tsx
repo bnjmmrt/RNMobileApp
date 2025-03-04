@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, StyleSheet, TouchableOpacity, Animated, Image } from 'react-native';
+import { Text, StyleSheet, TouchableOpacity, Animated, Image, Platform } from 'react-native';
 import { COLORS } from '../../utils/constants';
 import IMAGES from '../../assets/images';
 import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
@@ -48,8 +48,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   toast: {
+    height: 48,
     position: 'absolute',
-    bottom: verticalMarginScale(10),
+    bottom: Platform.OS === 'ios' ? 10: 35,
     left: horizontalMarginScale(20),
     right: horizontalMarginScale(20),
     backgroundColor: COLORS.bgRed,

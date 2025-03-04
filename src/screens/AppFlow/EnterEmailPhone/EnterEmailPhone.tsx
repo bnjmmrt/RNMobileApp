@@ -174,7 +174,7 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
         style={[
           styles.btnStyle,
           {
-            marginBottom: keyboardVisible ? verticalMarginScale(60) : 0,
+            marginBottom: keyboardVisible ? Platform.OS === 'ios' ? verticalMarginScale(60): verticalMarginScale(10) : 0,
           },
         ]}
         title={BUTTON_LABLE.NEXT}
