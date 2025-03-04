@@ -188,6 +188,30 @@ const PhoneNumberInput = forwardRef<
 
     const InputComponent = forBottomSheet ? BottomSheetTextInput : TextInput;
 
+    // Function to format the phone number with spaces for display
+  const formatPhoneNumber = (number: string) => {
+    return number.replace(/(\d{3})(?=\d)/g, '$1 ').trim(); // Format input (add space after every 3 digits)
+  };
+
+  const handlePhoneNumberChange = (text: string) => {
+    // Remove spaces for validation purposes
+    const cleanedText = text.replace(/\s/g, '');
+
+    // Dynamically calculate max length to include spaces
+    const newMaxLength = maxLength + Math.floor(cleanedText.length / 3); // Add space after every 3 digits
+    
+    if (cleanedText.length <= newMaxLength) {
+      setPhoneNumber(cleanedText); // Update raw phone number state without spaces
+      handleChange(cleanedText); // Update state or validation
+
+      // Reset error message when editing
+      setErrorMessage('');
+      if (onChangeText) {
+        onChangeText(cleanedText); // Pass cleaned input to onChangeText
+      }
+    }
+  };
+
     return (
       <View style={[styles.container, otherStyle]}>
         {/* Dynamic Label */}
@@ -220,16 +244,19 @@ const PhoneNumberInput = forwardRef<
             // placeholder="Enter phone number"
             keyboardType="phone-pad"
             returnKeyType="done"
-            value={phoneNumber}
-            maxLength={maxLength}
+            // value={phoneNumber}
+            // maxLength={maxLength}
             // onChangeText={handleChange}
-            onChangeText={(text: string) => {
-              handleChange(text);
-              setErrorMessage('');
-              if (onChangeText) {
-                onChangeText(text);
-              }
-            }}
+            // onChangeText={(text: string) => {
+            //   handleChange(text);
+            //   setErrorMessage('');
+            //   if (onChangeText) {
+            //     onChangeText(text);
+            //   }
+            // }}
+            value={formatPhoneNumber(phoneNumber)}
+            maxLength={maxLength + Math.floor(phoneNumber.length / 3)} 
+            onChangeText={handlePhoneNumberChange} 
             onBlur={validatePhoneNumber}
             editable={!disabled}
           />

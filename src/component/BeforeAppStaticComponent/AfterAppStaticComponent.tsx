@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, StatusBar, SafeAreaView } from 'react-native';
+import { View, StyleSheet, StatusBar, SafeAreaView, Platform } from 'react-native';
 import { Hp, Wp } from '../../utils/dimensions';
 import {
   BUTTON_LABLE,
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    // paddingTop: 30
+    paddingTop: Platform.OS === 'ios' ? 0 : 30
   },
   btnStyle: {
     width: Wp(85),
