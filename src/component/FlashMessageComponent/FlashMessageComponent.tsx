@@ -75,7 +75,7 @@ export const FlashMessageComponent = {
             styles.container,
             position === 'top'
               ? { marginTop: 20, marginBottom: 0 }
-              : { marginBottom: 0, marginTop: 0 },
+              : { marginBottom: 60, marginTop: 0 },
           ]}>
           <View style={styles.toastContainer}>
             <Image source={getIconForType(type)} style={styles.icon} />

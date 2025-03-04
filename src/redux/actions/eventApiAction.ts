@@ -127,12 +127,32 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       keepUnusedDataFor: 0, // Adjust the tag if needed for cache invalidation
     }),
 
-    getGuests: builder.query<GuestListResponse, string>({
-      query: (eventId: string) => ({
-        url: `v1/events/${eventId}/guests/`,
+    getGuests: builder.query({
+      query: ({
+        eventId,
+        queryString,
+      }: {
+        eventId?: string;
+        queryString?: string;
+      }) => {
+        let url = `v1/events/${eventId}/guests/`;
+        if (queryString) {
+          url = `${url}?${queryString}`;
+        }
+        return {
+          url,
+          method: 'GET',
+        };
+      },
+      providesTags: ['EventGuestList'],
+    }),
+
+    fetchGuestDetails: builder.query({
+      query: (guestId: string) => ({
+        url: `v1/events/guest-details/${guestId}`,
         method: 'GET',
       }),
-      providesTags: ['EventGuestList'],
+      providesTags: ['GuestDetails'],
     }),
 
     manageGuest: builder.mutation({
@@ -287,6 +307,7 @@ export const {
   useFetchPublicEventDetailsQuery,
   useLazyFetchEventDetailsQuery,
   useLazyFetchPublicEventDetailsQuery,
+  useFetchGuestDetailsQuery,
   useCreateEventAnnouncementMutation,
   useDeleteEventAnnouncementMutation,
   useFetchAnnouncementRecipientsQuery,

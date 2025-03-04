@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
-import FiltersSheet from 'src/component/FilterSheet';
+import FiltersSheet, { SelectedFilters } from 'src/component/FilterSheet';
 import { InputRefMethods } from 'src/component/Input/Input';
 import SearchInput from 'src/component/SearchInput';
 import { useFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
@@ -38,6 +38,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   const [filterQuery, setFilterQuery] = useState<string>('');
   const [filterNumber, setFilterNumber] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
 
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
     useState<UserActionCurrentPageType>('');
@@ -85,16 +86,23 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   const onApplyFilter = (
     queryString: string,
     numberOfFiltersApplied: number,
+    selectedFilters?: SelectedFilters,
   ) => {
     setCurrentPage(1);
     setFilterQuery(queryString);
     setFilterNumber(numberOfFiltersApplied);
+
+    if (selectedFilters) {
+      console.log('selectedFilters', selectedFilters);
+      setSelectedFilters(selectedFilters);
+    }
   };
 
   const onClearFilter = () => {
     setCurrentPage(1);
     setFilterQuery('');
     setFilterNumber(0);
+    setSelectedFilters({});
   };
 
   const getEmptyStateMessage = () => {
@@ -106,6 +114,17 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
       return 'Please refine your search.';
     } else {
       return 'This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest';
+    }
+  };
+  const getEmptyStateTitle = () => {
+    if (filterNumber > 0 && searchText) {
+      return 'No results';
+    } else if (filterNumber > 0) {
+      return 'No users';
+    } else if (searchText) {
+      return 'No results';
+    } else {
+      return 'No users found!';
     }
   };
 
@@ -184,7 +203,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
               justifyContent: 'center',
             }}>
             <EventEmptyRecord
-              title="User not found"
+              title={getEmptyStateTitle()}
               subTitle={getEmptyStateMessage()}
               isLoading={isLoading}
               footerContent={
@@ -206,6 +225,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
                       paddingHorizontal: horizontalMarginScale(12),
                       paddingVertical: verticalMarginScale(12),
                       gap: horizontalMarginScale(6),
+                      marginTop: verticalMarginScale(30),
                     }}
                   />
                 ) : null
@@ -246,6 +266,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
         from="allUsersList"
         onApplyFilter={onApplyFilter}
         onClearFilter={onClearFilter}
+        selectedFiltersInParent={selectedFilters}
       />
     </View>
   );

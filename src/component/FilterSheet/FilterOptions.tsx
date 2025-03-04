@@ -1,23 +1,23 @@
-import {BottomSheetScrollView, BottomSheetView} from '@gorhom/bottom-sheet';
-import React, {useEffect, useRef, useState} from 'react';
+import { BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
+import IMAGES from '@images/index';
+import dayjs from 'dayjs';
+import React, { useEffect, useRef, useState } from 'react';
+import { Image, TouchableOpacity } from 'react-native';
+import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
 import Chip from 'src/component/Chip';
 import GooglePlacesInput from 'src/component/GooglePlacesInput/GooglePlacesInput';
-import Input, {InputRefMethods} from 'src/component/Input/Input';
+import Input, { InputRefMethods } from 'src/component/Input/Input';
+import { COLORS } from 'src/utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import {SelectedFilters} from '.';
-import {styles} from './style';
-import DateTimePicker, {DateType} from 'react-native-ui-datepicker';
-import {Image, TouchableOpacity} from 'react-native';
-import IMAGES from '@images/index';
-import {CustomText} from '../CustomText';
-import dayjs from 'dayjs';
-import {COLORS} from 'src/utils/constants';
-import {fontFamily} from 'src/utils/functions';
+import { fontFamily } from 'src/utils/functions';
+import { SelectedFilters } from '.';
+import { CustomText } from '../CustomText';
+import { styles } from './style';
 
 export type FilterOptionTypes =
   | 'checkbox'
@@ -186,7 +186,7 @@ const FilterOptions = ({
                     : undefined
                 }
                 headerButtonStyle={styles.headerButtonStyle}
-                headerContainerStyle={{marginTop: 16}}
+                headerContainerStyle={{ marginTop: 16 }}
                 headerTextStyle={{
                   fontFamily: fontFamily.ABCDiatype_Regular,
                   fontSize: fontScale(14),
@@ -206,10 +206,10 @@ const FilterOptions = ({
                 buttonPrevIcon={
                   <Image
                     source={IMAGES.arrowRight}
-                    style={{transform: [{rotate: '180deg'}]}}
+                    style={{ transform: [{ rotate: '180deg' }] }}
                   />
                 }
-                onChange={({startDate, endDate}) => {
+                onChange={({ startDate, endDate }) => {
                   onChangeOptionValue(id, optionType, {
                     id: id,
                     date: [startDate, endDate],
@@ -231,11 +231,11 @@ const FilterOptions = ({
             label="From"
             errorMessage=""
             forBottomSheet={true}
-            otherStyle={{flex: 1, marginTop: 0}}
-            inputFieldContainerStyle={{height: verticalScale(40)}}
+            otherStyle={{ flex: 1, marginTop: 0 }}
+            inputFieldContainerStyle={{ height: verticalScale(40) }}
             onChangeText={text => {
               setMinAge(text);
-              onChangeOptionValue(id, optionType, {id: text, name: text});
+              onChangeOptionValue(id, optionType, { id: text, name: text });
             }}
             keyboardType="number-pad"
           />
@@ -246,11 +246,11 @@ const FilterOptions = ({
             label="To"
             errorMessage="Minimum age must be greater than or equal to 'From' age"
             forBottomSheet={true}
-            otherStyle={{flex: 1, marginTop: 0}}
-            inputFieldContainerStyle={{height: verticalScale(40)}}
+            otherStyle={{ flex: 1, marginTop: 0 }}
+            inputFieldContainerStyle={{ height: verticalScale(40) }}
             onChangeText={text => {
               setMaxAge(text);
-              onChangeOptionValue(id, optionType, {id: text, name: text});
+              onChangeOptionValue(id, optionType, { id: text, name: text });
             }}
             keyboardType="number-pad"
           />
@@ -261,6 +261,15 @@ const FilterOptions = ({
         <BottomSheetView>
           <GooglePlacesInput
             submit={() => {}}
+            autoFetchCurrentLocation={optionType === 'location'}
+            allowFullAddres={false}
+            defaultValue={
+              optionType === 'baseCityFilter'
+                ? selectedFilters &&
+                  selectedFilters[id] &&
+                  selectedFilters[id].value[0]?.name
+                : selectedFilters['longitude']?.value[0]?.name || ''
+            }
             setLocation={location => {
               onChangeOptionValue(id, optionType, {
                 id: location.placeId,
@@ -280,7 +289,7 @@ const FilterOptions = ({
                 flexDirection: 'row',
                 flexWrap: 'wrap',
               }}
-              style={{marginTop: verticalMarginScale(16)}}
+              style={{ marginTop: verticalMarginScale(16) }}
               scrollEnabled={false}>
               {selectedFilters[id].value.map(
                 (

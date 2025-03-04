@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { COLORS } from 'src/utils/constants';
 import {
   fontScale,
@@ -18,15 +18,16 @@ interface AddedBySectionProps {
     avatar?: string;
     id: string;
   };
+  onPress?: () => void;
 }
 
-const AddedBySection: React.FC<AddedBySectionProps> = ({ user }) => {
+const AddedBySection: React.FC<AddedBySectionProps> = ({ user, onPress }) => {
   if (!user) {
     return null;
   }
 
   return (
-    <View style={styles.addedByContainer}>
+    <TouchableOpacity style={styles.addedByContainer} onPress={onPress}>
       {user.avatar ? (
         <FastImage source={{ uri: user.avatar }} style={styles.addedByAvatar} />
       ) : (
@@ -38,7 +39,7 @@ const AddedBySection: React.FC<AddedBySectionProps> = ({ user }) => {
         <Text style={styles.addedByText}>Added by</Text>
         <Text style={styles.addedByName}>{user.name}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

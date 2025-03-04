@@ -23,9 +23,8 @@ import {
 import useApi from 'src/axios/useApi';
 import {EndPoint} from 'src/ApiManager/config';
 import {setNotificationSettings} from 'src/redux/slices/appSettingsSlice';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
-interface NotificationsScreenProps {}
+interface NotificationSettingsScreenProps {}
 
 interface ConfigData {
   logo: string;
@@ -35,7 +34,7 @@ interface ConfigData {
   snapPoints?: any;
 }
 
-const NotificationsScreen: React.FC<NotificationsScreenProps> = () => {
+const NotificationSettingsScreen: React.FC<NotificationSettingsScreenProps> = () => {
   const dispatch = useDispatch();
   const {apiRequest, loading, error} = useApi();
   const navigation = useNavigation();
@@ -186,4 +185,4 @@ const styles = StyleSheet.create({
     transform: [{scaleX: 0.7}, {scaleY: 0.7}],
   },
 });
-export default NotificationsScreen;
+export default NotificationSettingsScreen;

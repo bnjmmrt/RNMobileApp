@@ -77,6 +77,7 @@ const IMAGES = {
   checkbox_active: require('./checkbox_active.png'),
   checkbox_inactive: require('./checkbox_inactive.png'),
   phone: require('./phone.png'),
+  phone01: require('./phone-01.png'),
   hourglass: require('./hourglass.png'),
   insta: require('./insta.png'),
   linkdn: require('./linkedn.png'),
@@ -136,7 +137,18 @@ const IMAGES = {
   ticketBgSm: require('./ticketBgSm.png'),
   arrowDowngray: require('./arrow-down-gray.png'),
   refresh: require('./refresh.png'),
-  upload:require('./upload.png'),
+  wifi_off: require('./wifi-off.png'),
+  add: require('./add.png'),
+  help: require('./help-circle.png'),
+  upload: require('./upload.png'),
+  logo: require('./logo.png'),
+  revolve: require('./revolve.png'),
+  arrow_go: require('./arrow-go.png'),
+  deleteGray: require('./delete-gray.png'),
+  notification_badge: require('./notification-badge.png'),
+  calendar_error: require('./calendar_error.png'),
+  search_error: require('./search-md-error.png'),
+  email_error: require('./email-error.png'),
 };
 
 export default IMAGES;

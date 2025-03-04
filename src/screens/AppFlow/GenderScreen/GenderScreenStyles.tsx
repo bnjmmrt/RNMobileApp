@@ -1,5 +1,5 @@
 import { Platform, StyleSheet } from 'react-native';
-import { Wp, Hp, radiusScale, verticalMarginScale, horizontalMarginScale, fontScale } from '../../../utils/dimensions';
+import { Wp, Hp, radiusScale, verticalMarginScale, horizontalMarginScale, fontScale, verticalScale } from '../../../utils/dimensions';
 import { COLORS } from '../../../utils/constants';
 
 const GenderScreenStyles = () => {
@@ -12,7 +12,7 @@ const GenderScreenStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
-      bottom:Platform.OS==='android' ? 20 :0
+      bottom: Platform.OS === 'ios' ? 0 :20
     },
     contentContainer: {
       flex: 1,
@@ -25,14 +25,14 @@ const GenderScreenStyles = () => {
       flexWrap: 'wrap',
     },
     genderButton: {
-      paddingVertical: Hp(1.5),
+      paddingVertical: Hp(1.25),
       paddingHorizontal: Wp(5),
       borderRadius: radiusScale(30),
       backgroundColor: COLORS.lighter_gray,
       borderColor:COLORS.borderGray,
       borderWidth:1.5,
-      marginVertical: Hp(0.5),
-      marginHorizontal: Wp(1),
+      marginVertical: Hp(0.25),
+      marginHorizontal: Wp(0.5),
       alignItems: 'center',
     },
     selectedGenderButton: {
@@ -40,7 +40,7 @@ const GenderScreenStyles = () => {
       borderColor:COLORS.black,
     },
     genderText: {
-      fontSize: fontScale(16),
+      fontSize: fontScale(14),
       color: COLORS.black,
     },
     selectedGenderText: {

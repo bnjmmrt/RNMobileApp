@@ -18,7 +18,7 @@ import {
 import { RootState } from '../../../redux/slices';
 import useApi from '../../../axios/useApi';
 import { EndPoint } from '../../../ApiManager/config';
-import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { changeSafeAreaViewConfig, removeSpaceFromStr } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { verticalMarginScale } from 'src/utils/dimensions';
 
@@ -81,7 +81,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     } else {
       endPoint = EndPoint.phone_send_verification_code;
       params = {
-        phoneNumber: route.params.phone,
+        phoneNumber: removeSpaceFromStr(sendToId)
       };
     }
     await apiRequest('post', endPoint, params);
@@ -111,7 +111,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     } else {
       endPoint = EndPoint.phone_verify_code;
       params = {
-        phoneNumber: route.params.phone,
+        phoneNumber: removeSpaceFromStr(sendToId),
         verificationCode: otpInputRef.current && otpInputRef.current.code,
       };
     }
@@ -187,6 +187,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
           title={LABLE.ENTER_YOUR_VERIFICATION_CODE}
           subTitle={`${LABLE.SEND_TO}${sendToId}`}
         />
+         <View style={{height: 15}} />
         <OTPComponent
           ref={otpInputRef}
           performCodeVerification={verifyCode}

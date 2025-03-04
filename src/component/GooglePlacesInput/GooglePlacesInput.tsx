@@ -1,15 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import {
-  Dimensions,
-  Image,
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import type {
   GooglePlaceData,
   GooglePlaceDetail,
+  GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import {
@@ -20,11 +14,11 @@ import {
   verticalScale,
 } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
+import useLocation from 'src/utils/hooks/useLocation';
 import { environment } from '../../../environments/environment';
 import IMAGES from '../../assets/images';
 import { Address } from '../../redux/slices/appFlowSlice';
 import { COLORS } from '../../utils/constants';
-const { height } = Dimensions.get('window');
 
 interface GooglePlacesInputProps {
   setLocation: (location: Address) => void;
@@ -32,8 +26,9 @@ interface GooglePlacesInputProps {
   errorMessage?: string | null;
   setError?: (error: string | null) => void;
   defaultValue?: string;
-  toggleLocationPicker?:()=>void
-  allowFullAddres?: boolean
+  toggleLocationPicker?: () => void;
+  allowFullAddres?: boolean;
+  autoFetchCurrentLocation?: boolean;
 }
 const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
   setLocation,
@@ -42,27 +37,67 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
   errorMessage,
   setError,
   toggleLocationPicker,
-  allowFullAddres
+  allowFullAddres,
+  autoFetchCurrentLocation,
 }) => {
-  const googlePlacesRef = useRef(null);
+  const googlePlacesRef = useRef<GooglePlacesAutocompleteRef>(null);
+  const {
+    currentAddress,
+    currentPlaceId,
+    hasLocationPermission,
+    currentLocation,
+    initiateLocationFetch,
+  } = useLocation(false);
+
+  // useEffect(() => {
+  //   if (defaultValue) {
+  //     googlePlacesRef?.current &&
+  //       googlePlacesRef?.current?.setAddressText(defaultValue);
+  //   }
+  // }, [defaultValue]);
 
   useEffect(() => {
+    if (
+      hasLocationPermission &&
+      currentAddress &&
+      currentLocation &&
+      currentPlaceId
+    ) {
+      const address: Address = {
+        address: currentAddress,
+        placeId: currentPlaceId,
+        latitude: String(currentLocation) || '',
+        longitude: String(currentLocation) || '',
+      };
+      setLocation(address);
+      setError && setError(null);
+      toggleLocationPicker && toggleLocationPicker();
+      submit();
+      googlePlacesRef?.current &&
+        googlePlacesRef?.current?.setAddressText(currentAddress);
+    }
+  }, [hasLocationPermission, currentAddress, currentLocation, currentPlaceId]);
 
-    if (defaultValue) {
+  useEffect(() => {
+    if (!defaultValue) {
+      if (autoFetchCurrentLocation) {
+        initiateLocationFetch();
+      }
+    } else {
       googlePlacesRef?.current &&
         googlePlacesRef?.current?.setAddressText(defaultValue);
     }
-  }, []);
+  }, [autoFetchCurrentLocation, defaultValue]);
+
   return (
     <>
       <GooglePlacesAutocomplete
         ref={googlePlacesRef}
         styles={{
           textInputContainer: {
-            
             borderRadius: radiusScale(8),
-            borderWidth: 2,
-            height: 60,
+            borderWidth: 1,
+            height: 56,
             borderColor: errorMessage ? COLORS.borderRed : COLORS.borderGray,
             paddingVertical: verticalMarginScale(18),
             paddingHorizontal: horizontalMarginScale(18),
@@ -72,11 +107,18 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
             fontSize: fontScale(14),
             fontFamily: fontFamily.ABCDiatype_Regular,
           },
-          container: { flex: 0 }
+          listView: {
+            borderRadius: radiusScale(8),
+            borderWidth: 1,
+            borderColor: COLORS.borderGray,
+            marginTop: 5
+          },
+          separator:{ height: 0},
+          container: { flex: 0 },
         }}
         minLength={3}
         enablePoweredByContainer={false}
-        placeholder="Search Location"
+        placeholder="Search for a Location..."
         onPress={(data: GooglePlaceData, detail: GooglePlaceDetail | null) => {
           // 'details' is provided when fetchDetails = true
           // console.log('data.placeId', detail);
@@ -88,10 +130,9 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
           };
           setLocation(address);
           setError && setError(null);
-          toggleLocationPicker && toggleLocationPicker()
+          toggleLocationPicker && toggleLocationPicker();
           submit();
         }}
-
         fetchDetails={true}
         query={{
           key: environment.PLACES_API_KEY,
@@ -100,7 +141,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
         }}
         renderLeftButton={() => (
           <View style={styles.iconContainer}>
-            <Image source={IMAGES.location} style={styles.leftImage} />
+            <Image source={defaultValue ? IMAGES.location : errorMessage ? IMAGES.search_error : IMAGES.search} style={styles.leftImage} />
           </View>
         )}
         disableScroll={false}

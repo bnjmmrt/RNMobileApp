@@ -52,6 +52,12 @@ const MapComponent: React.FC<MapComponentProps> = ({ item }) => {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
+        region={{
+          latitude,
+          longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
         scrollEnabled={false}
         zoomEnabled={false}
         rotateEnabled={false}

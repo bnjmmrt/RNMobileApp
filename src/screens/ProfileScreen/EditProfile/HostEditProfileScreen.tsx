@@ -107,7 +107,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
         if (responseUser.status === 200) {
           dispatch(setProfileData(responseUser.data));
         }
-        FlashMessageComponent.show('success', "Profile updated successfully")
+        FlashMessageComponent.show('success', LABLE.PROFILE_UPDATED_SUCCESSFULLY)
         handleBackPress()
       }
     }

@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { Text, StyleSheet, TouchableOpacity, Animated, Image } from 'react-native';
 import { COLORS } from '../../utils/constants';
 import IMAGES from '../../assets/images';
-import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale } from 'src/utils/dimensions';
+import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
+import { fontFamily } from 'src/utils/functions';
 
 interface ToastProps {
   message: String;
   onClose: () => void;
+  toastStyle?: any
 }
-const Toast: React.FC<ToastProps> = ({ message, onClose }) => {
+const Toast: React.FC<ToastProps> = ({ message, onClose, toastStyle }) => {
   const [fadeAnim] = useState(new Animated.Value(0)); // For fade-in/out animation
 
   React.useEffect(() => {
@@ -20,7 +22,7 @@ const Toast: React.FC<ToastProps> = ({ message, onClose }) => {
   }, []);
 
   return (
-    <Animated.View style={[styles.toast, { opacity: fadeAnim }]}>
+    <Animated.View style={[styles.toast, { opacity: fadeAnim }, toastStyle]}>
 
       <TouchableOpacity onPress={onClose}>
         <Image source={IMAGES.close} style={styles.closeButton} />
@@ -41,19 +43,17 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.bgBackArrow,
 
   },
-
   buttonText: {
     color: '#fff',
-    fontSize: fontScale(16),
+    fontSize: 14,
   },
   toast: {
     position: 'absolute',
-    bottom: verticalMarginScale(20),
+    bottom: verticalMarginScale(10),
     left: horizontalMarginScale(20),
     right: horizontalMarginScale(20),
     backgroundColor: COLORS.bgRed,
-    borderRadius: radiusScale(5),
-    padding: verticalMarginScale(10),
+    borderRadius: radiusScale(10),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -67,10 +67,11 @@ const styles = StyleSheet.create({
   message: {
     fontSize: fontScale(14),
     flex: 1,
-    color: COLORS.black
+    color: COLORS.black,
+    fontFamily: fontFamily.ABCDiatype_Regular,
   },
   closeButton: {
-    fontSize: fontScale(20),
+    fontSize: fontScale(14),
     fontWeight: 'bold',
     margin: verticalMarginScale(10),
   },

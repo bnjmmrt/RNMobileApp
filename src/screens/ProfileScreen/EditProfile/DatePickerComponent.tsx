@@ -6,9 +6,10 @@ import { LABLE, ERROR_MESSAGE } from '../../../utils/constants';
 import DatepickerBottomSheet from '../../../component/BottomSheet/CustomDatepickerBottomSheet';
 import { validateAge } from '../../../utils/functions';
 import { horizontalMarginScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
+import CustomDateTimePickerBottomSheet from 'src/component/BottomSheet/CustomDateTimePickerBottomSheet';
 
 interface DatePickerComponentProps {
-  birthDate: string
+  birthDate: string,
 }
 
 const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) => {
@@ -26,6 +27,7 @@ const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) =>
   const handleDateChange = (date: string) => {
     setErrorMessage(null);
     setSelectedDate(date);
+    props?.onDateChange && props?.onDateChange(date);
   };
 
   const validateBirthDate = () => {
@@ -51,11 +53,16 @@ const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) =>
         onPress={openDatePicker}
         style={styles.container}
       />
-      <DatepickerBottomSheet
+      {props?.type == "DateTime" ? <CustomDateTimePickerBottomSheet
+        ref={bottomSheetRef}
+        minDate={props?.startDate}
+        setSelectedDate={handleDateChange}
+        date={selectedDate}
+      /> : <DatepickerBottomSheet
         ref={bottomSheetRef}
         setSelectedDate={handleDateChange}
         date={selectedDate}
-      />
+      />}
     </>
   );
 });

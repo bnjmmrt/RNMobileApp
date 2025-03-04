@@ -75,6 +75,7 @@ console.log(selectedCity)
           title={LABLE.WHERE_DO_YOU_CALL_HOME}
           subTitle={LABLE.WE_WILL_RECOMMEND_EVENTS_AND_EXPERIENCES_NEAR_YOU}
         />
+        <View style={{height: 15}}/>
         {/* <TouchableOpacity onPress={openLocationPicker}>
           <CustomSelectableText
             placeholder={LABLE.SEARCH_FOR_A_LOCATION}

@@ -8,30 +8,43 @@ import FlashMessage from 'react-native-flash-message';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Provider, useDispatch } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import MainNavigation from 'src/navigation';
 import { EndPoint } from './src/ApiManager/config';
 import useApi from './src/axios/useApi';
-import EventsFeed from './src/component/EventsFeed/EventsFeed';
 import NoInternetScreen from './src/component/NoInternetScreen';
 import { SafeAreaViewWrapper } from './src/component/Wrappers/SafeAreaViewWrapper';
-import { setCreativeFocus } from './src/redux/slices/appGlobalDataSlice';
-import { setInterests } from './src/redux/slices/appGlobalDataSlice';
+import {
+  setCreativeFocus,
+  setInterests,
+} from './src/redux/slices/appGlobalDataSlice';
 import { persistor, store } from './src/redux/store';
-import MainNavigation from 'src/navigation';
+// import MainNavigation from 'src/navigation';
+import RNPreventScreenshot from 'react-native-screenshot-prevent';
 
 const AppContent: React.FC = () => {
-  // const { isInternetConnected } = useAuth();
   const { isConnected } = useNetInfo();
   const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Enable screenshot prevention
+    RNPreventScreenshot?.enableSecureView();
+
+    // Cleanup on unmount
+    return () => {
+      RNPreventScreenshot?.disableSecureView();
+    };
+  }, [RNPreventScreenshot]);
+
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
     if (focusResponse.data) {
-      focusResponse.data.sort((a, b) => a.name.localeCompare(b.name))
+      focusResponse.data.sort((a, b) => a.name.localeCompare(b.name));
       dispatch(setCreativeFocus(focusResponse.data));
     }
     const interestResponse: any = await apiRequest('get', EndPoint.interests);
     if (interestResponse.data) {
-      interestResponse.data.sort((a, b) => a.name.localeCompare(b.name))
+      interestResponse.data.sort((a, b) => a.name.localeCompare(b.name));
       dispatch(setInterests(interestResponse.data));
     }
   };
@@ -41,9 +54,6 @@ const AppContent: React.FC = () => {
   }, []);
 
   LogBox.ignoreAllLogs();
-  useEffect(() => {
-    console.log('Internet status:', isConnected);
-  }, [isConnected]);
 
   if (!isConnected && isConnected !== null) {
     return <NoInternetScreen />;
@@ -68,11 +78,7 @@ const App: React.FC = () => {
           <GestureHandlerRootView style={{ flex: 1 }}>
             <NavigationContainer theme={MyTheme}>
               <BottomSheetModalProvider>
-                {/* <AppContext.Provider value={appContext}> */}
-                {/* <SafeAreaProvider style={styles.container}> */}
                 <AppContent />
-                {/* </SafeAreaProvider> */}
-                {/* </AppContext.Provider> */}
               </BottomSheetModalProvider>
             </NavigationContainer>
           </GestureHandlerRootView>

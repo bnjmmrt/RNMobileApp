@@ -11,10 +11,10 @@ import {
   ImageStyle,
   ActivityIndicator,
 } from 'react-native';
-import {horizontalScale, Hp, radiusScale, Wp} from '../utils/dimensions';
-import {fontFamily} from '../utils/functions';
-import {COLORS} from '../utils/constants';
-import {CustomText} from './CustomText';
+import { horizontalScale, Hp, radiusScale, Wp } from '../utils/dimensions';
+import { fontFamily } from '../utils/functions';
+import { COLORS } from '../utils/constants';
+import { CustomText } from './CustomText';
 
 interface ButtonSmallProps {
   title: string;
@@ -52,11 +52,11 @@ const ButtonSmall: React.FC<ButtonSmallProps> = ({
   // Determine the styles for the background and border
   const buttonBackground =
     borderType === 'SOLID'
-      ? {backgroundColor: disabled ? COLORS.disable : colorbackground}
+      ? { backgroundColor: disabled ? COLORS.disable : colorbackground }
       : {};
   const borderStyle =
     borderType === 'STRIPE'
-      ? {borderWidth: 2, borderColor: colorbackground}
+      ? { borderWidth: 2, borderColor: colorbackground }
       : {};
 
   return (
@@ -74,7 +74,7 @@ const ButtonSmall: React.FC<ButtonSmallProps> = ({
           <CustomText
             style={[
               styles.text,
-              {color: borderType === 'STRIPE' ? colorbackground : textColor},
+              { color: borderType === 'STRIPE' ? colorbackground : textColor },
               textStyle,
             ]}>
             {title}
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     flexDirection: 'row',
-    minWidth: horizontalScale(70),
+    minWidth: horizontalScale(65),
   },
   text: {
     fontFamily: fontFamily.ABCDiatype_Medium,

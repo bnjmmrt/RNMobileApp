@@ -38,7 +38,6 @@ interface TabItem {
 
 const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const styles = EventScreenStyle();
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
   const userId = useSelector((state: RootState) => state.auth.userId);
   const role = useSelector((state: RootState) => state.auth.role);
   const isGuest = useSelector((state: RootState) => state.auth.isGuest);

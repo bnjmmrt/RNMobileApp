@@ -30,6 +30,7 @@ import { fontFamily } from '../../utils/functions';
 import IMAGES from '../../assets/images';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { COLORS } from 'src/utils/constants';
+import EventEmptyRecord from '../EmptyRecord/EventEmptyRecord';
 
 export { countryCodes } from '../../../node_modules/react-native-country-codes-picker/constants/countryCodes';
 export { CountryButton } from '../../../node_modules/react-native-country-codes-picker/components/CountryButton';
@@ -365,16 +366,16 @@ export const CountryPicker = ({
           {resultCountries.length === 0 ? (
             <View
               style={[styles.countryMessage, style?.countryMessageContainer]}>
-              <Text
-                style={[
-                  {
-                    color: '#8c8c8c',
-                    fontSize: 16,
-                  },
-                  style?.searchMessageText,
-                ]}>
-                {searchMessage || 'Sorry we cant find your country :('}
-              </Text>
+             <View style={{
+                marginTop: verticalMarginScale(180)
+              }}>
+                <EventEmptyRecord
+                  title={"No Results"}
+                  subTitle={"Please refine your search."}
+                  isLoading={false}
+                />
+              </View>
+
             </View>
           ) : (
             <View style={{ marginTop: 15 }}>

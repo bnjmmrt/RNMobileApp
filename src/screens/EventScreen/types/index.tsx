@@ -14,7 +14,11 @@ export interface AdditionalGuest {
 }
 
 export interface Vouch {
+  email: string;
+  idUserVouch: string;
+  isApproved: boolean;
   name: string;
+  picture: string;
 }
 
 export interface EventGuest {

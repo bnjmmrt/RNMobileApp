@@ -1,4 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import {
   Image,
@@ -10,9 +10,9 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import {fontFamily} from '../..//utils/functions';
+import { fontFamily } from '../..//utils/functions';
 import IMAGES from '../../assets/images';
-import {COLORS} from '../../utils/constants';
+import { COLORS } from '../../utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -52,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({
   };
   return (
     <View style={{}}>
-      <View style={styles.container}>
+      <View style={[styles.container, {paddingBottom: showProgressBar ? verticalMarginScale(7): verticalMarginScale(16)}]}>
         {/* Back Arrow */}
         {showBackButton ? (
           <TouchableOpacity
@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: horizontalMarginScale(20),
-    paddingVertical: verticalMarginScale(16),
+    paddingTop: verticalMarginScale(16),
+    paddingBottom: verticalMarginScale(16),
   },
   iconWrapper: {
     width: verticalScale(40),

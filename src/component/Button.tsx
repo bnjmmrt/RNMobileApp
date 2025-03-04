@@ -12,11 +12,14 @@ import {
   ImageStyle,
   ActivityIndicator,
 } from 'react-native';
-import { fontScale, Hp,
+import {
+  fontScale,
+  Hp,
   radiusScale,
   verticalMarginScale,
   verticalScale,
-  Wp} from '../utils/dimensions';
+  Wp,
+} from '../utils/dimensions';
 import { fontFamily } from '../utils/functions';
 import { COLORS } from '../utils/constants';
 import { CustomText } from './CustomText';
@@ -52,15 +55,21 @@ const Button: React.FC<ButtonProps> = ({
   clearButtonStyle,
   buttonType = 'solid',
 }) => {
-  const colorbackground = colorTheme === 'red' ? COLORS.errorText : colorTheme === 'dark' ? COLORS.black : COLORS.white;
-  const textColor =
-    buttonType === 'stripe'
+  const colorbackground =
+    colorTheme === 'red'
+      ? COLORS.errorText
+      : colorTheme === 'dark'
       ? COLORS.black
-      : colorTheme === 'red' ?
-        COLORS.white
-        : colorTheme === 'dark'
-          ? COLORS.white
-          : COLORS.black;
+      : COLORS.white;
+  const textColor = disabled
+    ? COLORS.neutral_disabled
+    : buttonType === 'stripe'
+    ? COLORS.black
+    : colorTheme === 'red'
+    ? COLORS.white
+    : colorTheme === 'dark'
+    ? COLORS.white
+    : COLORS.black;
 
   return (
     <TouchableOpacity
@@ -69,10 +78,10 @@ const Button: React.FC<ButtonProps> = ({
         styles.button,
         {
           backgroundColor: disabled
-            ? COLORS.disable
+            ? COLORS.bgGray
             : buttonType === 'stripe'
-              ? COLORS.white
-              : colorbackground,
+            ? COLORS.white
+            : colorbackground,
           borderWidth: buttonType === 'stripe' ? 2 : 0,
           borderColor: buttonType === 'stripe' ? COLORS.black : 'transparent',
         },

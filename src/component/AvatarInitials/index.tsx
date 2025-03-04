@@ -25,7 +25,7 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
   imgUrl,
   onPress,
   containerStyle,
-  listing = true
+  listing = true,
 }) => {
   const getInitials = (name: string): string => {
     if (!name) return '';

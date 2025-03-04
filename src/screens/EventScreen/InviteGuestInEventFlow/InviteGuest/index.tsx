@@ -4,6 +4,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { CountryCode } from 'libphonenumber-js';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -15,10 +16,11 @@ import { InputRefMethods } from 'src/component/Input/Input';
 import {
   countryType,
   PhoneNumberInputRefMethods,
+  TranslatedNames,
 } from 'src/component/PhonNumberComponent/PhoneNumberInput';
 import { EventStackParamList } from 'src/navigation/EventStack';
 import {
-  useInviteGuestsMutation,
+  useInviteGuestMutation,
   useInviteNewGuestsMutation,
 } from 'src/redux/actions/inviteGuestsApiAction';
 import { RootState } from 'src/redux/slices';
@@ -100,9 +102,9 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
     );
 
   const [
-    inviteGuests,
+    inviteGuest,
     { error: inviteGuestsError, isLoading: inviteGuestsLoading },
-  ] = useInviteGuestsMutation();
+  ] = useInviteGuestMutation();
   const [
     inviteNewGuests,
     { error: inviteNewGuestsError, isLoading: inviteNewGuestsLoading },
@@ -124,7 +126,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
     const formValidated = validateForm();
     if (formValidated) {
       try {
-        const response = await inviteGuests({
+        const response = await inviteGuest({
           eventId: selectedEvent?.id || '',
           payload: {
             guestStatus: directlySendToConfirm
@@ -132,7 +134,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
               : sendInvite
               ? 'INVITED'
               : 'DRAFT',
-            maxAdditionalGuests: selectedEvent?.limitOnePlus || 0,
+            maxAdditionalGuests: additionalGuests || 0,
             sendInvite: sendInvite,
             ticketTypeId: selectedTicketType?.id || '',
             users: selectedUsers.map((item, index) => item.id),
@@ -220,7 +222,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         phoneNumber?: string;
       } = {
         guestStatus: directlySendToConfirm ? 'CONFIRMED' : 'INVITED',
-        maxAdditionalGuests: selectedEvent?.limitOnePlus || 0,
+        maxAdditionalGuests: additionalGuests || 0,
         sendInvite: true,
         ticketTypeId: selectedTicketType?.id || '',
         inviteMessage: inviteMessage,
@@ -261,7 +263,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
 
   useEffect(() => {
     if (selectedTicketType) {
-      ticketTypeRef?.current?.setErrorMessage('');
+      setTicketTypeError('');
     }
   }, [selectedTicketType]);
 
@@ -275,7 +277,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         phoneRef?.current?.setPhoneNumber(phoneData.phoneNumber);
         phoneRef?.current?.setFlag(phoneData.flag);
         phoneRef?.current?.setCallingCode(phoneData.countryCode);
-        phoneRef?.current?.setCode(phoneData.currentCountry);
+        phoneRef?.current?.setCode(phoneData.currentCountry as CountryCode);
         setPhone(selectedManualUser?.phoneNumber || '');
         setSelectedCountry({
           code: phoneData.currentCountry || '',
@@ -313,6 +315,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         contentContainerStyle={{
           gap: verticalMarginScale(16),
           paddingBottom: verticalMarginScale(50),
+          paddingTop: verticalMarginScale(16),
         }}>
         {isManual ? (
           <NewUserView
@@ -340,7 +343,6 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
 
         <View style={{ marginHorizontal: horizontalMarginScale(16) }}>
           <InviteDetails
-            ticketTypeRef={ticketTypeRef}
             isCollapsible
             selectedTicketType={selectedTicketType}
             ticketTypeError={ticketTypeError}
