@@ -183,6 +183,12 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
           onChangeText: text => {
             if (inputTextRef.current === text) return;
             inputTextRef.current = text;
+            if(!text){
+              setLocation({ address: '', placeId: '', latitude: '', longitude: '' });
+              dispatch(setBaseCity({ address: '', placeId: '' }));
+              googlePlacesRef?.current?.setAddressText('');
+              setError && setError(null);
+            }
           },
         }}
       />
