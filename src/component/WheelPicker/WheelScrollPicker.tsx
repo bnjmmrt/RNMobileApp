@@ -237,6 +237,7 @@ const ScrollPicker: { <ItemT extends string | number>(props: ScrollPickerProps<I
         flex: 1,
         backgroundColor: props.wrapperBackground || "#fafafa",
         overflow: "hidden",
+        paddingBottom: Platform.OS === 'ios' ? 25 : 35
     };
 
     const highlightStyle: ViewStyle = {

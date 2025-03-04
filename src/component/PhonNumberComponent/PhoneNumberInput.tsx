@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   flag: {
-    fontSize: 22,
+    fontSize: 18,
     width: 25,
     textAlign: 'center',
     height: 25,
