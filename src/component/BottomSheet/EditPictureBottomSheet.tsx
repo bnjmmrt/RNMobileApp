@@ -1,6 +1,6 @@
 import React, { useRef, forwardRef, useState } from 'react';
 import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
-import BottomSheetComponent from '../BottomSheet/BottomSheet';
+import BottomSheetComponent from '../BottomSheet/AppBottomSheet';
 import { COLORS } from '../../utils/constants';
 import Button from '../Button';
 import { fontFamily, removeSignature } from '../../utils/functions';
@@ -92,16 +92,17 @@ const EditPictureBottomSheet = forwardRef(
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: horizontalMarginScale(20),
-    gap: 8,
+    // gap: 8,
   },
   btnStyle: {
     borderRadius: fontScale(100),
-    height: 48
+    height: 48,
   },
   clearButton: {
     borderWidth: 2,
     backgroundColor: COLORS.white,
     borderColor: COLORS.black,
+    marginTop:verticalMarginScale(8)
   },
   title: {
     fontSize: fontScale(24),

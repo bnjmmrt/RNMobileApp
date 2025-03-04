@@ -1,6 +1,6 @@
 import React, {useRef, forwardRef} from 'react';
 import {View, StyleSheet, Text, Platform} from 'react-native';
-import BottomSheetComponent from './BottomSheet';
+import BottomSheetComponent from './AppBottomSheet';
 import {BUTTON_LABLE, COLORS, PROFILE} from '../../utils/constants';
 import Button from '../Button';
 import {fontFamily} from '../../utils/functions';
@@ -27,7 +27,7 @@ const DeleteAccountBottomSheet = forwardRef(
     return (
       <BottomSheetComponent
         ref={ref}
-        snapPoints={[ '60%']}
+        snapPoints={[ '0.58']}
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
           <Text style={styles.title}>{PROFILE.DELETE_ACCOUNT}</Text>
