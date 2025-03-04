@@ -192,6 +192,7 @@ export const LABLE = {
   ADD_EVENT_ANNOUNCEMENTS_ERROR:"You can’t post event announcements until you have confirmed guests on the guest list.",
   READ_MORE: 'Read More',
   VIEW_ALL: 'View All',
+  VIEW_LESS:'View Less',
   FEATURED_TALENT: 'Featured Talent',
   DUMMY_TEXT:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent bland',
@@ -324,6 +325,7 @@ export const ERROR_MESSAGE = {
   WEBSITE_ERROR: 'Please enter your URL.',
   COMPANY_NAME_ERROR: 'Company Name is required',
   TICKET_TYPE_ERROR: 'Select at least one ticket type',
+  RECIPIENTS_ERROR: 'Select at least one recipient',
   COLLABORATOR_ERROR:'Choose a collaborator',
   ANNOUNCEMENT_DETAIL_ERROR:"Enter announcement details",
   FILE_SIZE_EXCEED:"File size exceeds the 5MB limit. Please upload a smaller file.",

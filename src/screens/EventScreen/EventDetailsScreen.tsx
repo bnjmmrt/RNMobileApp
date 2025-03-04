@@ -83,7 +83,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [showError, setshowError] = useState(false)
   const eventId = route?.params?.id
   const { data: eventCount } = useFetchGuestStatusCountQuery({ eventId });
-  const annqueryArgs = ({ eventId: eventId })
+  const annqueryArgs = ({
+    eventId: eventId,
+    take: 50,
+    skip: 0
+  })
   const [eventLocalId, setEventLocalID] = useState(eventId)
   const { data: announcementData, refetch: refetchAnnouncement } = useFetchHostEventsAnnouncementQuery(annqueryArgs);
 
@@ -263,9 +267,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     const date1 = moment.utc(data?.data?.endDate);
     const date2 = moment();
     let eventData = data?.data
-    // if (date1.isBefore(date2)) {
-    //   FlashMessageComponent.show('error', LABLE.PAST_EVENT_ANNOUNCEMENTS_ERROR);
-    // } else {
+    if (date1.isBefore(date2)) {
+      FlashMessageComponent.show('error', LABLE.PAST_EVENT_ANNOUNCEMENTS_ERROR);
+    } else {
       if (eventCount?.data?.confirmedCount == 0) {
         setshowError(true)
       }
@@ -275,7 +279,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           params: { eventData, announcementId: null }
         });
       }
-    // }
+    }
   }
   const acceptInvitation = async () => {
     try {
@@ -487,11 +491,17 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
             {talents.length > 0 && <EventTalent talents={talents} />}
 
-            <EventAnnouncements handleAddPress={addAnouncement} announcementData={announcementData} eventId={eventId} handleViewAll={() =>
-              navigation.navigate(ROUTES.EventStack, {
-                screen: ROUTES.Announcement,
-                params: data?.data,
-              })} />
+            <EventAnnouncements
+              role={role}
+              handleAddPress={addAnouncement}
+              announcementData={announcementData}
+              eventId={eventId}
+              handleViewAll={() =>
+                navigation.navigate(ROUTES.EventStack, {
+                  screen: ROUTES.Announcement,
+                  params: data?.data,
+                })}
+            />
             {showError &&
               <View style={{
                 borderRadius: 10,
