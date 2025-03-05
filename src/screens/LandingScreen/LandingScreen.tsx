@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, Linking, Image, SafeAreaView } from 'react-native';
+import { View, StyleSheet, Linking, Image, SafeAreaView, StatusBar } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Hp } from '../../utils/dimensions';
 import { BUTTON_LABLE } from '../../utils/constants';
@@ -20,6 +20,7 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
+      console.log("useCallbackuseCallbackuseCallback",useCallback)
       changeSafeAreaViewConfig({
         ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
         showTopSafeAreaView: false,
@@ -28,7 +29,8 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
         showBottomSafeAreaView: false,
         bottomSafeAreaViewColor: 'transparent',
       });
-    }, []),
+
+    }, [navigation]),
   );
 
   const onEnterClick = () => {
@@ -41,6 +43,8 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* <StatusBar backgroundColor="black" barStyle="light-content" /> */}
+      <StatusBar hidden={true} />
       <Video
         source={IMAGES.introVideo}
         style={StyleSheet.absoluteFillObject} // Full-screen background

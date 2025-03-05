@@ -91,8 +91,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const eventId = route?.params?.id;
   const { data: eventCount, refetch: refetchGuestStatusCount } =
     useFetchGuestStatusCountQuery({ eventId });
-  const annqueryArgs = { eventId: eventId };
-  const [eventLocalId, setEventLocalID] = useState(eventId);
+  const annqueryArgs = ({
+    eventId: eventId,
+    take: 50,
+    skip: 0
+  })  
+    const [eventLocalId, setEventLocalID] = useState(eventId);
   const { data: announcementData, refetch: refetchAnnouncement } =
     useFetchHostEventsAnnouncementQuery(annqueryArgs);
 
@@ -281,20 +285,21 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const addAnouncement = () => {
     const date1 = moment.utc(data?.data?.endDate);
     const date2 = moment();
-    let eventData = data?.data;
-    // if (date1.isBefore(date2)) {
-    //   FlashMessageComponent.show('error', LABLE.PAST_EVENT_ANNOUNCEMENTS_ERROR);
-    // } else {
-    if (eventCount?.data?.confirmedCount == 0) {
-      setshowError(true);
+    let eventData = data?.data
+    if (date1.isBefore(date2)) {
+      FlashMessageComponent.show('error', LABLE.PAST_EVENT_ANNOUNCEMENTS_ERROR);
     } else {
-      navigation.navigate(ROUTES.EventStack, {
-        screen: ROUTES.AddAnnouncementScreen,
-        params: { eventData, announcementId: null },
-      });
+      if (eventCount?.data?.confirmedCount == 0) {
+        setshowError(true)
+      }
+      else {
+        navigation.navigate(ROUTES.EventStack, {
+          screen: ROUTES.AddAnnouncementScreen,
+          params: { eventData, announcementId: null }
+        });
+      }
     }
-    // }
-  };
+  }
   const acceptInvitation = async () => {
     try {
       const accept_response = await acceptInvite({
@@ -509,6 +514,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             {talents.length > 0 && <EventTalent talents={talents} />}
 
             <EventAnnouncements
+              role={role}
               handleAddPress={addAnouncement}
               announcementData={announcementData}
               eventId={eventId}
@@ -516,8 +522,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                 navigation.navigate(ROUTES.EventStack, {
                   screen: ROUTES.Announcement,
                   params: data?.data,
-                })
-              }
+                })}
             />
             {showError && (
               <View

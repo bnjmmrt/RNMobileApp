@@ -443,7 +443,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           onPress={openCamera}
           submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
           cancelButtonText={BUTTON_LABLE.CANCEL}
-          snapPoints={[Platform.OS == 'android' ? '20%' : '20%']}
+          snapPoints={[Platform.OS == 'android' ? 0.2 : 0.2]}
           image={null}
         />
 
@@ -453,7 +453,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           onPencilClick={openCamera}
           submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
           cancelButtonText={BUTTON_LABLE.CANCEL}
-          snapPoints={[Platform.OS == 'android' ? '50%' : '50%']}
+          snapPoints={[Platform.OS == 'android' ? 0.4 : 0.5]}
           image={image}
         />
 
@@ -463,7 +463,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           onPress={logOut}
           submitButtonText={BUTTON_LABLE.CONFIRM}
           cancelButtonText={BUTTON_LABLE.CANCEL}
-          snapPoints={[Platform.OS == 'android' ? '40%' : '30%']}
+          snapPoints={['0.27']}
           image={null}
         />
         <DeleteAccountBottomSheet

@@ -95,7 +95,8 @@ const ProfilePhotoScreenStyles = () => {
     btnRumor: {
       color: COLORS.black,
       fontSize: fontScale(11),
-      fontFamily: fontFamily.RomieTrial
+      fontWeight:'500',
+      // fontFamily: fontFamily.RomieTrial
     },
     iconStyle: {
       height: verticalMarginScale(20),
@@ -113,7 +114,7 @@ const ProfilePhotoScreenStyles = () => {
       marginTop: verticalMarginScale(20)
     },
     btnRumorContainer: {
-      backgroundColor: COLORS.tabBorderColor,
+      backgroundColor: COLORS.lighter_gray,
       borderRadius: 5,
       padding: 3,
       alignItems: 'center',

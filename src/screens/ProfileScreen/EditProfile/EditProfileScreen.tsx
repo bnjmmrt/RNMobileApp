@@ -32,7 +32,7 @@ import CreativeFocusComponent from './CreativeFocusComponent';
 import GenderComponent from './GenderComponent';
 import Toast from 'src/component/Toast/Toast';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import { extractCountryCode } from 'src/utils/functions';
+import { extractCountryCode, fontFamily } from 'src/utils/functions';
 import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
@@ -274,6 +274,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                 ]}>
                 {LABLE.CREATIVE_FOCUS}
               </Text>
+              <Text style={styles.subTitle}>{LABLE.SELECT_UPTO_3}</Text>
               <CreativeFocusComponent
                 setIsToastShown={setIsToastShown}
                 getSelectedData={getSelectedCreativeFocus}
@@ -282,9 +283,10 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
           )}
         </View>
         {isToastShown && (
-          <View style={{ marginTop: 100 }}>
+          <View style={{ marginTop: 20 }}>
             <Toast
-              message={'Please select at least one'}
+              toastStyle={{position: 'relative', width: '90%'}}
+              message={LABLE.PLEASE_SELECT_AT_LEAST_ONE}
               onClose={() => setIsToastShown(false)}
             />
           </View>
@@ -326,6 +328,12 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontWeight: '500',
     lineHeight: 16,
+    marginBottom: 5
+  },
+  subTitle: {
+    color: COLORS.light_text,
+    fontSize: 14,
+    fontFamily: fontFamily.ABCDiatype_Medium,
   },
 });
 
