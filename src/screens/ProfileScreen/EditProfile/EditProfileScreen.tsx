@@ -246,12 +246,14 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
             label={LABLE.FIRST_NAME}
             errorMessage={ERROR_MESSAGE.FIRST_NAME}
             defaultValue={profileData?.firstName}
+            maxLength={30}
           />
           <Input
             ref={lastNameRef}
             label={LABLE.LAST_NAME}
             errorMessage={ERROR_MESSAGE.LAST_NAME}
             defaultValue={profileData?.lastName}
+            maxLength={30}
           />
           {profileData?.email && profileData?.email !== '' && (
             <>

@@ -126,12 +126,14 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
           label={LABLE.FIRST_NAME}
           errorMessage={ERROR_MESSAGE.FIRST_NAME}
           defaultValue={userDetails.firstName}
+          maxLength={30}
         />
         <Input
           ref={lastNameRef}
           label={LABLE.LAST_NAME}
           errorMessage={ERROR_MESSAGE.LAST_NAME}
           defaultValue={userDetails.lastName}
+          maxLength={30}
         />
       </View>
 
