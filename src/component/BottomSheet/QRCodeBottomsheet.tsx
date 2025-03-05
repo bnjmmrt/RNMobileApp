@@ -38,12 +38,9 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
     ref.current?.close();
   };
 
-  const [vipTooltipShown, setVipTooltipShown] = useState(false);
+  const [showProfileToolitip, setShowProfileToolitip] = useState(false);
+  const [showVIPToolitip, setShowVIPToolitip] = useState(false);
 
-  const showTooltip = () => {
-    console.log('showTooltipshowTooltipshowTooltip');
-    setVipTooltipShown(true)
-  };
   return (
     <BottomSheetComponent
       ref={ref}
@@ -55,22 +52,41 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
             {props.title}
           </Text>
 
-          <Text style={[styles.subTitle]}>{dateFormat(props?.subTitle, 'dddd, MMMM Do, hh:mm:A')}</Text>
+          <Text style={[styles.subTitle]}>
+            {dateFormat(props?.subTitle, 'dddd, MMMM Do, hh:mm:A')}
+          </Text>
           <View style={styles.pic_Container}>
             <AvatarInitials name={props.name} size={32} />
             <Text style={styles.name}>{props.name}</Text>
-            <Image source={IMAGES.info_filled} />
+            <TouchableOpacity
+              onPress={() => setShowProfileToolitip(!showProfileToolitip)}>
+              <Image source={IMAGES.info_filled} />
+            </TouchableOpacity>
           </View>
 
+          <TooltipComponent
+            style={{ top: Platform.OS === 'android' ? '26%' : '30%' }}
+            position="Top"
+            visible={showProfileToolitip}
+            message={`This QR code is valid for ${props.name} only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`}
+          />
+
           <ImageBackground
-            resizeMode='contain'
+            resizeMode="contain"
             source={props.isQRShown ? IMAGES.ticketBg : IMAGES.ticketBgSm}
             style={{
               width: props.isQRShown ? Dimensions.get('window').width : 350,
-              height: props.isQRShown ? Dimensions.get('window').height / 2 : 350,
-              marginTop: props.isQRShown ? 0: -25
-            }}
-          ><View style={{ alignItems: 'center', paddingTop: props.isQRShown ? 25 : 40, height: '100%' }}>
+              height: props.isQRShown
+                ? Dimensions.get('window').height / 2
+                : 350,
+              marginTop: props.isQRShown ? 0 : -25,
+            }}>
+            <View
+              style={{
+                alignItems: 'center',
+                paddingTop: props.isQRShown ? 25 : 40,
+                height: '100%',
+              }}>
               {props.isQRShown ? (
                 <Image
                   source={{ uri: props.imageURL }}
@@ -81,7 +97,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                 />
               ) : (
                 <Image
-                  resizeMode='contain'
+                  resizeMode="contain"
                   source={IMAGES.ticket}
                   style={{
                     marginTop: verticalMarginScale(12),
@@ -91,18 +107,34 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                 />
               )}
 
-              <View style={styles.vipContainer}>
-                {/* <TooltipComponent/> */}
-                <Text style={styles.vipText}>VIP</Text>
-                <TouchableOpacity onPress={showTooltip}>
-                  <Image source={IMAGES.info_filled} style={styles.icon} />
-                </TouchableOpacity>
+              <View
+                style={{
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                  marginTop: Platform.OS == 'android' ? 50 : 40,
+                }}>
+                <TooltipComponent
+                  style={{ bottom: 35 }}
+                  visible={showVIPToolitip}
+                  message={
+                    'Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.'
+                  }
+                />
+                <View style={styles.vipContainer}>
+                  <Text style={styles.vipText}>VIP</Text>
+                  <TouchableOpacity
+                    onPress={() => setShowVIPToolitip(!showVIPToolitip)}>
+                    <Image source={IMAGES.info_filled} style={styles.icon} />
+                  </TouchableOpacity>
+                </View>
               </View>
-              <Text style={styles.infoText}>{props.isQRShown ? LABLE.SHOW_QR_CHECKIN_MESSAGE: 'Show this ticket at event check-in'}</Text>
 
+              <Text style={styles.infoText}>
+                {props.isQRShown
+                  ? LABLE.SHOW_QR_CHECKIN_MESSAGE
+                  : 'Show this ticket at event check-in'}
+              </Text>
             </View>
-
-
           </ImageBackground>
 
           {/* <View style={styles.card}>
@@ -226,15 +258,13 @@ const styles = StyleSheet.create({
   vipContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'center',
-    marginTop: 40
   },
   vipText: {
     fontSize: fontScale(20),
     fontWeight: 'bold',
     marginRight: verticalMarginScale(10),
     fontFamily: fontFamily.RomieTrial_Bold,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   icon: {
     width: 16,
@@ -244,7 +274,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(14),
     color: 'gray',
     marginTop: verticalMarginScale(50),
-    zIndex: 10
+    zIndex: 10,
   },
 });
 
