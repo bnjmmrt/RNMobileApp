@@ -50,8 +50,7 @@ const DeleteAccountBottomSheet = forwardRef(
           </Text>
           <Text style={styles.description}>
             If you choose to return after deletion, you’ll need to reapply for
-            membership, and reapproval is not guaranteed.Are you sure you want
-            to proceed?
+            membership, and reapproval is not guaranteed.
           </Text>
           <Text style={styles.description}>
             Are you sure you want to proceed?
