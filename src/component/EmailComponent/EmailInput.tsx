@@ -55,16 +55,16 @@ const EmailInput = forwardRef((_, ref) => {
           errorMessage && styles.errorInputWrapper,
           disabled && styles.disabledInput,
         ]}>
-        <Image
+       { !errorMessage &&  <Image
           source={errorMessage ? IMAGES.email_error : IMAGES.email}
           style={[
             styles.icon,
             { tintColor: errorMessage ? COLORS.errorText : COLORS.light_gray },
           ]}
-        />
+        /> }
         <TextInput
           style={[styles.input, disabled && { color: COLORS.light_gray }]}
-          placeholder="example@gmail.com"
+          placeholder={errorMessage ? '': "example@gmail.com"}
           keyboardType="email-address"
           focusable={true} // Enable input focus
           autoCapitalize="none" // Disable automatic capitalization
