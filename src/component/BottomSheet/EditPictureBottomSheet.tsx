@@ -66,7 +66,7 @@ const EditPictureBottomSheet = forwardRef(
               style={styles.coverImageStyle}
             />
           }
-
+          <View style={{height: 5}}/>
           <Button
             disabled={false}
             style={styles.btnStyle}

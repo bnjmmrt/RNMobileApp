@@ -373,7 +373,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
         title='Image Flyer'
         submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
         cancelButtonText={BUTTON_LABLE.CANCEL}
-        snapPoints={[Platform.OS == 'android' ? '80%' : '80%']}
+        // snapPoints={[Platform.OS == 'android' ? '80%' : '80%']}
+        snapPoints={[Platform.OS == 'android' ? 0.7 : 0.7]}
         image={null}
         onPencilClick={openCamera}
         eventImage={image}
