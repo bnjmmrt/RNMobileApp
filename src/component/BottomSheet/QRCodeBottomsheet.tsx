@@ -16,7 +16,6 @@ import QRGenerator from 'react-native-qr-code-styling';
 import BottomSheetComponent from './BottomSheet';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import { dateFormat, fontFamily } from '../../utils/functions';
-import QRCode from 'react-native-qrcode-svg';
 import {
   fontScale,
   horizontalMarginScale,
