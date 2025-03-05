@@ -101,11 +101,37 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
     }
   };
 
+  const validateName = (name: string) => {
+    if (
+      name === 'FirstName' &&
+      firstNameRef?.current?.inputText.trim().length > 30
+    ) {
+      firstNameRef?.current?.setErrorMessage(
+        ERROR_MESSAGE.FIRST_NAME_SIZE_EXCEED,
+      );
+      return false;
+    }
+
+    if (
+      name === 'LastName' &&
+      lastNameRef?.current?.inputText.trim().length > 30
+    ) {
+      lastNameRef?.current?.setErrorMessage(
+        ERROR_MESSAGE.LAST_NAME_SIZE_EXCEED,
+      );
+      return false;
+    }
+
+    return true;
+  };
+
   const onConfirmClick = async () => {
     if (isGuest && role === ROLE.NON_MEMBER) {
       if (
         firstNameRef.current.validateInputs() &&
-        lastNameRef.current.validateInputs()
+        validateName('FirstName') &&
+        lastNameRef.current.validateInputs() &&
+        validateName('LastName')
       ) {
         const requestObject: any = {
           // email: profileData?.email,
@@ -130,7 +156,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
     }
     if (
       firstNameRef.current.validateInputs() &&
+      validateName('FirstName') &&
       lastNameRef.current.validateInputs() &&
+      validateName('LastName') &&
       birthDayRef.current.validateBirthDate() &&
       baseCityRef.current.validateBaseCity() &&
       selectedCreativeFocus &&
@@ -261,7 +289,13 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
               />
 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
-              <BaseCityComponent location={{address: profileData?.city, placeId: profileData?.placeId}} ref={baseCityRef} />
+              <BaseCityComponent
+                location={{
+                  address: profileData?.city,
+                  placeId: profileData?.placeId,
+                }}
+                ref={baseCityRef}
+              />
 
               <Text
                 style={[
@@ -285,7 +319,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         {isToastShown && (
           <View style={{ marginTop: 20 }}>
             <Toast
-              toastStyle={{position: 'relative', width: '90%'}}
+              toastStyle={{ position: 'relative', width: '90%' }}
               message={LABLE.PLEASE_SELECT_AT_LEAST_ONE}
               onClose={() => setIsToastShown(false)}
             />
@@ -328,7 +362,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontWeight: '500',
     lineHeight: 16,
-    marginBottom: 5
+    marginBottom: 5,
   },
   subTitle: {
     color: COLORS.light_text,

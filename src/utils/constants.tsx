@@ -354,6 +354,8 @@ export const ERROR_MESSAGE = {
   TCKET_ERROR_MESSAGE: 'Ticket is not associated with a guest for this event.',
   NO_INTERNET:'You’re not connected to the internet.\nPlease check your connection and try again.',
   EMPTY: '',
+  FIRST_NAME_SIZE_EXCEED:'First Name cannot exceed 30 characters',
+   LAST_NAME_SIZE_EXCEED:'Last Name cannot exceed 30 characters'
 };
 
 export const COLORS = {
