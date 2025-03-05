@@ -155,7 +155,7 @@ const PhoneNumberInput = forwardRef<
     const getMaxPhoneNumberLength = (countryCode: any) => {
       try {
         const exampleNumber = getExampleNumber(countryCode);
-        return exampleNumber ? exampleNumber.nationalNumber.length : 10; // Default to 10 if no example found
+        return exampleNumber ? exampleNumber.nationalNumber.length : 11; // Default to 10 if no example found
       } catch (error) {
         return 10; // Fallback max length
       }
