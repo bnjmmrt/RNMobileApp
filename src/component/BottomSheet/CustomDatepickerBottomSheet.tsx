@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -25 }],
   },
   month: {
-    width: 120,
+    width: Platform.OS === 'ios' ? 130: 150,
     alignItems: 'flex-start',
     paddingLeft: 20
   }

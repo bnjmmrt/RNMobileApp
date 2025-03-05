@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, View, FlatList, TouchableOpacity, ScrollView, Image } from 'react-native';
 import FastImage from '@d11/react-native-fast-image';
 import AvatarInitials from '../AvatarInitials';
-import { ANNOUNCCEMENTS_DATA, COLORS, LABLE } from '../../utils/constants';
+import { ANNOUNCCEMENTS_DATA, ANNOUNCEMENT, COLORS, LABLE, ROLE } from '../../utils/constants';
 import IMAGES from '@images/index';
 import { dateFormat, fontFamily } from '../../utils/functions';
 import { fontScale, horizontalScale, verticalScale, verticalMarginScale, horizontalMarginScale, Wp, radiusScale } from 'src/utils/dimensions';
@@ -10,6 +10,7 @@ import ImagePdfViewer from './ImagePdfViewer';
 import { useFetchHostEventsAnnouncementQuery } from 'src/redux/actions/eventApiAction';
 
 interface EventAnnouncementProps {
+  role?: string,
   announcementData?: any,
   eventId: string;
   handleAddPress: () => void,
@@ -17,27 +18,31 @@ interface EventAnnouncementProps {
 }
 
 
-const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleAddPress, handleViewAll,announcementData }) => {
+const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleAddPress, handleViewAll, announcementData, role }) => {
   const [viewerVisible, setViewerVisible] = useState(false);
   const [media, setMedia] = useState([]);
   const [showAll, setShowAll] = useState(false);
   const [announcementListData, setannouncementListData] = useState([]);
-  const queryArgs = ({ eventId: eventId,take:3,skip:0 })
-  console.log("queryArgs", queryArgs)
-  const { data, isLoading } = useFetchHostEventsAnnouncementQuery(queryArgs);
+  const [companyName, setCompanyName] = useState('');
+  const [companyLogo, setCompanyLogo] = useState('');
+  // const queryArgs = ({ eventId: eventId, take: 50, skip: 0 })
+  // console.log("queryArgs", queryArgs)
+  // const { data, isLoading } = useFetchHostEventsAnnouncementQuery(queryArgs);
 
   useEffect(() => {
     if (announcementData != undefined) {
       setannouncementListData(announcementData?.data?.result);
-      setShowAll(announcementData?.data?.length > 2)
+      setShowAll(announcementData?.data?.length > 3)
     }
   }, [announcementData]);
 
-  const MediaItem = ({ item, media }: { item: any, media: any }) => (
+  const MediaItem = ({ item, media, name, image }: { item: any, media: any, name: any, image: any }) => (
     item.mediaType === "image" ? (
       <TouchableOpacity onPress={() => {
         setMedia(media)
         setViewerVisible(true)
+        setCompanyName(name)
+        setCompanyLogo(image)
       }}>
         <FastImage source={{ uri: item?.media }} style={styles.mediaImage} />
       </TouchableOpacity>
@@ -45,6 +50,8 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
       <TouchableOpacity onPress={() => {
         setMedia(media)
         setViewerVisible(true)
+        setCompanyName(name)
+        setCompanyLogo(image)
       }} style={styles.pdfContainer}>
         <Image source={IMAGES.pdf} style={styles.pdfIcon} resizeMode='contain' />
         <Text style={styles.title} numberOfLines={2}>{item?.mediaName}</Text>
@@ -60,6 +67,8 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
     const date = dateFormat(item?.createdAt, 'DD/MM/YYYY')
     const imageKeyUrl = item?.user?.additionalHostInformation?.companyLogo
     const name = item?.user?.additionalHostInformation?.firstName + ' ' + item?.user?.additionalHostInformation?.lastName
+    const companyName = item?.user?.additionalHostInformation?.companyName
+
     return (
       <View style={styles.talentItem}>
         {imageKeyUrl?.includes("http") ? (
@@ -72,7 +81,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
           <Text style={styles.subtitle}>{date}</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 5 }}>
             {item?.attachments?.map((mediaItem: string, index: number) => (
-              <MediaItem key={index} item={mediaItem} media={item.attachments} />
+              <MediaItem key={index} item={mediaItem} media={item.attachments} name={companyName} image={imageKeyUrl} />
             ))}
           </ScrollView>
           {!expanded && shouldShowReadMore && (
@@ -88,17 +97,27 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
   const viewerClose = () => {
     setViewerVisible(false)
   }
+
+  const onClickViewAll = () => {
+    role == ROLE.HOST ?
+      handleViewAll
+      :
+      setShowAll(!showAll)
+  }
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Text style={styles.heading}>{LABLE.EVENT_ANNOUNCEMENTS}</Text>
+        {role === ROLE.HOST &&
         <TouchableOpacity style={styles.iconWrapper} onPress={handleAddPress}>
           <Image source={IMAGES.plus} tintColor={'black'} style={styles.addicon} />
         </TouchableOpacity>
+       }
+
       </View>
       <View style={styles.divider} />
       <FlatList
-        data={announcementListData?.slice(0, 3)}
+        data={showAll ? announcementListData?.slice(0, 3) : announcementListData}
         keyExtractor={(item) => item?.id}
         renderItem={({ item }) => <EventItem item={item} />}
         ListEmptyComponent={
@@ -108,11 +127,11 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
         }
       />
 
-      {announcementListData?.length != 0 && (
+      {announcementListData?.length > 3 && (
         <View style={{ paddingVertical: 5 }}>
           <View style={styles.divider} />
-          <TouchableOpacity onPress={handleViewAll} style={[styles.toggleContainer, { marginTop: 5 }]}>
-            <Text style={styles.toggleText}>{LABLE.VIEW_ALL}</Text>
+          <TouchableOpacity onPress={onClickViewAll} style={[styles.toggleContainer, { marginTop: 5 }]}>
+            <Text style={styles.toggleText}>{showAll ? LABLE.VIEW_ALL : LABLE.VIEW_LESS}</Text>
             <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
           </TouchableOpacity>
         </View>
@@ -122,7 +141,8 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
           visible={viewerVisible}
           onClose={viewerClose}
           mediaItems={media}
-        />}
+          name={companyName}
+          logo={companyLogo} />}
     </View>
   );
 };

@@ -67,6 +67,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const [filterQuery, setFilterQuery] = useState<string>('');
     const [atachmentArr, setAttachmentArr] = useState<attachmentArrInterface[]>([]);
     const [ticketerrorMessage, setticketerrorMessage] = useState(false);
+    const [recipienterrorMessage, setrecipienterrorMessage] = useState(false);
     const [addedByerrorMessage, setaddedByerrorMessage] = useState(false);
     const [ticketTypeArr, setTicketTypeArr] = useState<any[]>([]);
     const [collaboratorArr, setCollaboratorArr] = useState<any[]>([]);
@@ -118,7 +119,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const { data: selectedRecipientData } = useFetchSelectedRecipientsQuery(recipientQuery);
     useEffect(() => {
         if (selectedRecipientData != undefined) {
-            setSelectedUsers(selectedRecipientData?.data?.result)
+            setSelectedRecipients(selectedRecipientData?.data?.result)
         }
     }, [selectedRecipientData]);
 
@@ -163,13 +164,13 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
 
     const checkAnnouncement = async () => {
         if (
-            announcementRef.current.validateInputs() && ticketTypeArr?.length != 0 && collaboratorArr?.length != 0
-        ) {
+            announcementRef.current.validateInputs() && ticketTypeArr?.length != 0 && collaboratorArr?.length != 0 && selectedUsers?.length != 0) {
             postBottomSheetRef.current?.open();
         }
         else {
             ticketTypeArr?.length == 0 && setticketerrorMessage(true)
             collaboratorArr?.length == 0 && setaddedByerrorMessage(true)
+            selectedUsers?.length == 0 && setrecipienterrorMessage(true)
             announcementRef.current.validateInputs()
         }
     };
@@ -468,6 +469,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                         title="Add to List"
                         onPress={() => {
                             setSelectedRecipients(selectedUsers);
+                            setrecipienterrorMessage(false)
                             cancelClick()
                         }}
                         colorTheme="dark"
@@ -754,15 +756,15 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
 
                         <View>
                             <Text style={styles.label}>{ANNOUNCEMENT.Send_to}</Text>
-                            <View style={[styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
+                            <View style={recipienterrorMessage ? styles.errorContainer : [styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
                                 <View style={styles.userInfoContainer}>
-                                    {selectedUsers.length == 0 ?
+                                    {selectedRecipients.length == 0 ?
                                         <View style={styles.recipintWrapper} />
                                         :
                                         <FlatList
                                             horizontal={true}
                                             showsHorizontalScrollIndicator={false}
-                                            data={selectedUsers}
+                                            data={selectedRecipients}
                                             renderItem={({ item, index }) => {
                                                 const name = announcementId == null ? item?.user?.firstName + ' ' + item?.user?.lastName : item?.firstName + ' ' + item?.lastName
                                                 const profilePicture = announcementId == null ? item?.user?.profilePicture : item?.profilePicture
@@ -783,9 +785,9 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                             }
                                         />
                                     }
-                                    <View style={{ alignItems: 'center', justifyContent: 'center', left: selectedUsers.length > 0 ? horizontalScale(-125) : horizontalScale(10) }}>
+                                    <View style={{ alignItems: 'center', justifyContent: 'center', left: selectedRecipients.length > 0 ? horizontalScale(-125) : horizontalScale(10) }}>
                                         <Text style={[styles.label, { paddingTop: 0 }]}>{ANNOUNCEMENT.Recipients}</Text>
-                                        <Text style={styles.attachDes}>{selectedUsers.length} Users</Text>
+                                        <Text style={styles.attachDes}>{selectedRecipients.length} Users</Text>
                                     </View>
                                 </View>
                                 <TouchableOpacity onPress={() => {
@@ -799,6 +801,9 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                     />
                                 </TouchableOpacity>
                             </View>
+                            {recipienterrorMessage ? (
+                                <Text style={[styles.errorText]}>{ERROR_MESSAGE.RECIPIENTS_ERROR}</Text>
+                            ) : null}
                         </View>
 
                     </View>

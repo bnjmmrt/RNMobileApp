@@ -62,7 +62,7 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
             <Text
               style={{
                 fontSize: fontScale(20),
-                fontFamily: fontFamily.RomieTrial,
+                fontFamily: fontFamily.ABCDiatype_Regular,
                 color: selectedValue === item ? COLORS.black : COLORS.text,
                 textAlign: 'center',
               }}
