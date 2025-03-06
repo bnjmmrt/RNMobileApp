@@ -114,8 +114,8 @@ const FilterOptions = ({
                 isSelected={
                   selectedFilters
                     ? selectedFilters[id]?.value?.some(
-                        innerItem => innerItem.id === item.id,
-                      )
+                      innerItem => innerItem.id === item.id,
+                    )
                     : false || false
                 }
                 onPress={optionId => {
@@ -177,7 +177,7 @@ const FilterOptions = ({
                 startDate={
                   selectedFilters['minStartDate']?.value[0]
                     ? selectedFilters['minStartDate']?.value[0]?.date ||
-                      undefined
+                    undefined
                     : undefined
                 }
                 endDate={
@@ -191,6 +191,7 @@ const FilterOptions = ({
                   fontFamily: fontFamily.ABCDiatype_Regular,
                   fontSize: fontScale(14),
                 }}
+                minDate={new Date()}
                 weekDaysTextStyle={{
                   fontFamily: fontFamily.ABCDiatype_Bold,
                   fontSize: fontScale(14),
@@ -260,14 +261,14 @@ const FilterOptions = ({
       {optionType === 'baseCityFilter' || optionType === 'location' ? (
         <BottomSheetView>
           <GooglePlacesInput
-            submit={() => {}}
+            submit={() => { }}
             autoFetchCurrentLocation={optionType === 'location'}
             allowFullAddres={false}
             defaultValue={
               optionType === 'baseCityFilter'
                 ? selectedFilters &&
-                  selectedFilters[id] &&
-                  selectedFilters[id].value[0]?.name
+                selectedFilters[id] &&
+                selectedFilters[id].value[0]?.name
                 : selectedFilters['longitude']?.value[0]?.name || ''
             }
             setLocation={location => {
@@ -280,9 +281,9 @@ const FilterOptions = ({
             }}
           />
           {showSelectedLocationChip &&
-          selectedFilters &&
-          selectedFilters[id] &&
-          selectedFilters[id].value ? (
+            selectedFilters &&
+            selectedFilters[id] &&
+            selectedFilters[id].value ? (
             <BottomSheetScrollView
               contentContainerStyle={{
                 gap: horizontalMarginScale(4),
