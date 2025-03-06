@@ -62,6 +62,9 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         skip?: number;
       }) => {
         let url = `v1/events/users/${userId}/events`;
+        if (!take) {
+          url = `${url}?feed=true`;
+        }
         if (take) {
           url = `${url}?take=${take}&skip=${skip}`;
         }
@@ -198,18 +201,18 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     // fetch event announcement for host 
     fetchHostEventsAnnouncement: builder.query({
-      query: ({ 
-        eventId, 
+      query: ({
+        eventId,
         take,
-        skip, 
+        skip,
       }: {
-          eventId: any; 
-          take: number;
-          skip: number;
-        }) => ({
-          url: `/events/v1/event/${eventId}/event-announcements?take=${take}&skip=${skip}`,
-          method: 'GET',
-        }),
+        eventId: any;
+        take: number;
+        skip: number;
+      }) => ({
+        url: `/events/v1/event/${eventId}/event-announcements?take=${take}&skip=${skip}`,
+        method: 'GET',
+      }),
       providesTags: ['HostEventsAnnouncment']
     }),
 

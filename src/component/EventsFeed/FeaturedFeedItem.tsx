@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { COLORS } from '../../utils/constants';
-import { fontFamily } from '../../utils/functions';
+import { fontFamily, removeSignature } from '../../utils/functions';
 import IMAGES from '../../assets/images';
 import type { EventItem } from './EventsFeed';
 import FastImage from '@d11/react-native-fast-image';
@@ -37,7 +37,7 @@ const FeedItem: React.FC<FeedItemProps> = ({ item }) => {
     <TouchableOpacity style={styles.container} onPress={() => handlEventPress()}>
       <View style={[styles.imageContainer]}>
         <FastImage
-          source={{ uri: item?.imageCover || item?.imageFlyer }}
+          source={{ uri: removeSignature(item?.imageCover) || removeSignature(item?.imageFlyer) }}
           resizeMode={FastImage.resizeMode.cover}
           defaultSource={IMAGES.eventCoverPlaceholders1}
           style={styles.icon}
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     paddingVertical: verticalMarginScale(10),
-    paddingHorizontal: horizontalMarginScale(11),
+    // paddingHorizontal: horizontalMarginScale(11),
     width: horizontalScale(237),
   },
   imageContainer: {
