@@ -77,7 +77,7 @@ const UserActionsSheet = forwardRef<
       selectedAction === 'report'
         ? [`${verticalScale(50)}%`]
         : selectedAction === 'markSpam'
-        ? [`${verticalScale(30)}%`]
+        ? [`${verticalScale(35)}%`]
         : selectedAction === 'delete'
         ? [`${verticalScale(30)}%`]
         : selectedAction === 'addToList'
