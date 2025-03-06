@@ -1,4 +1,5 @@
 #import "AppDelegate.h"
+#import <Firebase.h>
 #import <React/RCTBundleURLProvider.h>
 #import <AVFoundation/AVFoundation.h>
 
@@ -6,6 +7,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [FIRApp configure];
   // Prevent screenshots and recordings
   [self preventScreenCapture];
 

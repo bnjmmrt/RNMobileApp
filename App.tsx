@@ -2,7 +2,7 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
-import React, { useEffect } from 'react';
+import React, { useEffect,useCallback } from 'react';
 import { LogBox, StyleSheet } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -20,11 +20,95 @@ import {
 import { persistor, store } from './src/redux/store';
 // import MainNavigation from 'src/navigation';
 import RNPreventScreenshot from 'react-native-screenshot-prevent';
-
+import messaging, { firebase } from '@react-native-firebase/messaging';
+import FirebaseApp, { initializeApp } from '@react-native-firebase/app';
+import { getFCMToken, NotificationsListener, requestUserPermission } from 'src/component/PushNotification';
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
   const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
+  // Your Firebase configuration
+
+
+  useEffect(() => {
+    if (!firebase.apps.length) {
+
+    firebase.initializeApp({
+      appId: '1:911470503708:ios:1dabd0fac35dbd0f5abcd9',
+      projectId: 'therumor-development',
+      apiKey: 'AIzaSyAGFfFYB9OFSO1TVvWyJpp2QHRcbhANpqw',
+      databaseURL: '',
+      messagingSenderId: '911470503708',
+      androidClientId: '',
+      clientId: '',
+      deepLinkURLScheme: '',
+      gaTrackingId: '',
+      storageBucket: '',
+    })
+    .then((result)=>{
+      console.log("firebase intilatize successfully ####### ",result)
+    })
+    .catch((err) => console.log('Error initializing firebase', err));
+  }else {
+    console.log("print firbase details $$$$$$$  ",firebase.app())
+    firebase.app(); // if already initialized, use that one
+ }
+
+ setupFirebase()
+   
+  }, []);
+
+
+  const setupFirebase = async() => {
+   setTimeout(async() => {
+    await getFcmToken()
+   }, 2000);
+  }
+
+
+
+  const getFcmToken = useCallback(async () => {
+    try {
+      const hasPermission = await messaging().hasPermission();
+      console.log('FCM hasPermission:', hasPermission.toString());
+      if (hasPermission < 1) {
+       
+          // Some logic is probably missing here
+          await messaging().requestPermission();
+      }
+
+      const isRegistered = messaging().isDeviceRegisteredForRemoteMessages;
+      if (!isRegistered) await messaging().registerDeviceForRemoteMessages();
+      console.log("print isRegister $$$$$$$   ",isRegistered)
+      const token = await messaging().getToken({
+        senderId:'911470503708'
+      });
+      console.log('Registered for push notifications (notifications-ms):==============',token);
+
+      // return token;
+    } catch (err) {
+      // const token = await messaging().getToken({
+      //   senderId:'911470503708'
+      // });
+      // console.log('Registered for push notifications (notifications-ms):--------------',token);
+
+      console.log("firbase getToken error ####### ",err);
+    }
+  }, []);
+
+
+
+  // const getFCMToken = async () => {
+  //   try {
+  //     const token = await messaging().getToken({
+  //       senderId: '911470503708'
+  //     });
+  //     console.log(" siya FCM Token:", token);
+  //     return token;
+  //   } catch (error) {
+  //     console.log(" siya Error getting FCM token:", error);
+  //   }
+  // }
 
   useEffect(() => {
     // Enable screenshot prevention

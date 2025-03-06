@@ -10,7 +10,8 @@
     "test": "jest",
     "env-dev": "node set-environment.js environment.dev",
     "env-stage": "node set-environment.js environment.stage",
-    "env-prod": "node set-environment.js environment.prod"
+    "env-prod": "node set-environment.js environment.prod",
+    "ios-bundle": "react-native bundle --entry-file ./index.js --platform ios --bundle-output ios/main.jsbundle --assets-dest ios --dev false"
   },
   "dependencies": {
     "@d11/react-native-fast-image": "^8.9.1",
@@ -20,6 +21,9 @@
     "@react-native-clipboard/clipboard": "^1.15.0",
     "@react-native-community/blur": "^4.4.1",
     "@react-native-community/netinfo": "^11.4.1",
+    "@react-native-firebase/analytics": "^21.12.0",
+    "@react-native-firebase/app": "^21.12.0",
+    "@react-native-firebase/messaging": "^21.12.0",
     "@react-native/gradle-plugin": "^0.77.0",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/drawer": "^7.1.1",
