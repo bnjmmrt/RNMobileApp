@@ -57,6 +57,7 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
     useCallback(() => {
       changeSafeAreaViewConfig({
         ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
+        showBottomSafeAreaView: false,
       });
     }, []),
   );
