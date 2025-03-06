@@ -6,6 +6,12 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import BottomSheetComponent, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
@@ -17,7 +23,6 @@ import DiscoverEventsFilters from './DiscoverEventsFilters';
 import { FilterOptionTypes } from './FilterOptions';
 import { styles } from './style';
 import { DateType } from 'react-native-ui-datepicker';
-import { Keyboard, Platform } from 'react-native';
 
 export type SelectedSingleFilter = {
   type: FilterOptionTypes;
@@ -83,12 +88,7 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
 
     const onPressApplyFilter = async () => {
       const { queryString, filtersCount } = getFilterQuery(selectedFilters);
-
-      onApplyFilter(
-        queryString,
-        filtersCount,
-        selectedFilters ? selectedFilters : {},
-      );
+      onApplyFilter(queryString, filtersCount, selectedFilters || {});
       sheetRef?.current?.close();
     };
 
@@ -109,8 +109,6 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
 
     useEffect(() => {
       if (selectedFiltersInParent) {
-        console.log('innnnn');
-
         setSelectedFilters(selectedFiltersInParent);
       }
     }, [selectedFiltersInParent]);
@@ -140,42 +138,50 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
         ref={sheetRef}
         snapPoints={[`${verticalScale(isKeyboardOpen ? 100 : 88)}%`]}
         enableDynamicSizing={false}
-        onClose={() => {}}>
-        <BottomSheetView style={styles.container}>
-          <CustomText style={styles.title}>{getHeading()}</CustomText>
+        onClose={() => {}}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={{ flex: 1 }}
+          >
+            <BottomSheetView style={styles.container}>
+              <CustomText style={styles.title}>{getHeading()}</CustomText>
 
-          {from === 'allUsersList' ? (
-            <AllUsersFilters
-              selectedFilters={selectedFilters}
-              setSelectedFilters={setSelectedFilters}
-              setDisableApplyCta={setDisableApplyCta}
-            />
-          ) : null}
-          {from === 'discoverEvents' ? (
-            <DiscoverEventsFilters
-              selectedFilters={selectedFilters}
-              setSelectedFilters={setSelectedFilters}
-              setDisableApplyCta={setDisableApplyCta}
-            />
-          ) : null}
+              {from === 'allUsersList' ? (
+                <AllUsersFilters
+                  selectedFilters={selectedFilters}
+                  setSelectedFilters={setSelectedFilters}
+                  setDisableApplyCta={setDisableApplyCta}
+                />
+              ) : null}
+              {from === 'discoverEvents' ? (
+                <DiscoverEventsFilters
+                  selectedFilters={selectedFilters}
+                  setSelectedFilters={setSelectedFilters}
+                  setDisableApplyCta={setDisableApplyCta}
+                />
+              ) : null}
 
-          {!isKeyboardOpen ? (
-            <BottomSheetView style={styles.actionsContainer}>
-              <Button
-                title="Clear All"
-                style={styles.clearAllCta}
-                onPress={onPressClearFilter}
-              />
-              <Button
-                title="Apply"
-                colorTheme="dark"
-                style={styles.applyCta}
-                onPress={onPressApplyFilter}
-                disabled={disableApplyCta}
-              />
+              {!isKeyboardOpen ? (
+                <BottomSheetView style={styles.actionsContainer}>
+                  <Button
+                    title="Clear All"
+                    style={styles.clearAllCta}
+                    onPress={onPressClearFilter}
+                  />
+                  <Button
+                    title="Apply"
+                    colorTheme="dark"
+                    style={styles.applyCta}
+                    onPress={onPressApplyFilter}
+                    disabled={disableApplyCta}
+                  />
+                </BottomSheetView>
+              ) : null}
             </BottomSheetView>
-          ) : null}
-        </BottomSheetView>
+          </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
       </BottomSheetComponent>
     );
   },
