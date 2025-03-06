@@ -54,7 +54,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
   const [clearBtnShown, setClearBtnShown] = useState(false);
   useEffect(() => {
     if (
-      hasLocationPermission &&
+      // hasLocationPermission &&
       currentAddress &&
       currentLocation &&
       currentPlaceId
@@ -163,6 +163,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
         )}
         renderRightButton={() => (
           <TouchableOpacity
+           hitSlop={{top:5,bottom:5,left:5,right:5}}
             style={styles.iconContainer}
             onPress={handleClearText}>
             {clearBtnShown && inputTextRef.current && (

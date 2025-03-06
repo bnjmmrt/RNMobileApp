@@ -14,6 +14,7 @@ import { RootState } from 'src/redux/slices';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { styles } from './style';
+import { EVENT } from 'src/utils/constants';
 
 const ReportUser = ({
   onPressBack,
@@ -61,7 +62,7 @@ const ReportUser = ({
           }).unwrap();
 
           if (response.status === 200) {
-            showSuccess(`${userDetails.firstName} reported successfully!`);
+            showSuccess(EVENT.REPORT_SUBMITTED_SUCCESSFULLY);
           } else {
             const typedError = response as ApiErrorInterface;
             showError(getErrorMessage(typedError));

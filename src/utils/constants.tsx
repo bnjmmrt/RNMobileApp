@@ -286,7 +286,9 @@ export const EVENT = {
   UTILIZE_QR_CODES_FOR_EVENT_CHECK_IN: 'Utilize QR codes for event check-in?',
   EVENT_COLLABORATORS: 'Event Collaborators',
   QUESTIONNAIRE: 'Questionnaire',
-  UPDATE_SETTINGS_ON_WEB: 'Update Settings on Web'
+  UPDATE_SETTINGS_ON_WEB: 'Update Settings on Web',
+  USER_HAS_NO_EVENTS:'User has no events in this status',
+  REPORT_SUBMITTED_SUCCESSFULLY:'Report Submitted Successfully'
 };
 
 

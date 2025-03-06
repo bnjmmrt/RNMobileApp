@@ -65,6 +65,7 @@ import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { setRefresh, setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import EventAnnouncements from 'src/component/Event/EventAnnouncements';
+import FullScreenLoader from 'src/component/FullScreenLoader';
 
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -467,6 +468,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
           <View style={styles.contentContainer}>
             <View style={imageWrapperStyle.wrapper}>
+            <FullScreenLoader loading={isLoading} customStyle={styles.mainImage}>
               <FastImage
                 source={{
                   uri:
@@ -474,9 +476,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                     removeSignature(data?.data?.imageFlyer),
                 }}
                 resizeMode={FastImage.resizeMode.cover}
-                defaultSource={IMAGES.eventCoverPlaceholders1}
+                // defaultSource={IMAGES.eventCoverPlaceholders1}
                 style={styles.mainImage}
               />
+              </FullScreenLoader>
             </View>
 
             <Text style={styles.titleStyle}>{data?.data?.name}</Text>

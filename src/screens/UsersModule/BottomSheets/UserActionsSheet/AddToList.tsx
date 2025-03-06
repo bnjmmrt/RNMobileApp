@@ -12,6 +12,7 @@ import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
 import {ListInterface, ListItemInterface} from '../../Lists';
 import {styles} from './style';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import FullScreenLoader from 'src/component/FullScreenLoader';
 
 const AddToList = ({
   showError,
@@ -107,7 +108,7 @@ const AddToList = ({
   }, [data]);
 
   return (
-    <BottomSheetView style={{flex: 1}}>
+    <BottomSheetView style={{flex: 1}} >
       <BottomSheetFlatList
         data={allCustomLists?.list?.slice(2) || []}
         renderItem={renderListRow}
@@ -121,18 +122,14 @@ const AddToList = ({
         }
         ListHeaderComponent={<></>}
         ListEmptyComponent={
-          <View
-            style={{
+          <FullScreenLoader loading={isLoading}
+          customStyle={{
               height: Hp(40),
               alignItems: 'center',
               justifyContent: 'center',
-            }}>
-            <EventEmptyRecord
-              title="No Lists"
-              subTitle="There are no lists to show!"
-              isLoading={isLoading}
-            />
-          </View>
+            }} >
+            {''}
+          </FullScreenLoader>
         }
       />
       <BottomSheetView style={{marginBottom: verticalMarginScale(10)}}>
