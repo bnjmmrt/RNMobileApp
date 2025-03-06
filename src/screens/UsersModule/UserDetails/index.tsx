@@ -1,7 +1,13 @@
 import IMAGES from '@images/index';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useRef, useState } from 'react';
-import { ActivityIndicator, ScrollView, View } from 'react-native';
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  View,
+} from 'react-native';
 import DynamicTabBar, {
   TabItem,
 } from 'src/component/ActiveTabBar/DynamicTabBar';
@@ -75,37 +81,44 @@ const UserDetails: React.FC<UserDetailsProps> = ({ route }) => {
         </View>
       ) : null}
       {userData ? (
-        <ScrollView
-          style={{ marginTop: verticalMarginScale(16) }}
-          contentContainerStyle={{ gap: verticalMarginScale(16) }}>
-          <UserProfile user={user} />
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={50}>
+          <ScrollView
+            style={{ marginTop: verticalMarginScale(16) }}
+            contentContainerStyle={{ gap: verticalMarginScale(16) }}
+            stickyHeaderIndices={currentTab.id === '2' ? [2] : []}
+            nestedScrollEnabled={true}>
+            <UserProfile user={user} />
 
-          <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
+            <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
 
-          {currentTab.id === '1' && userData ? (
-            <View
-              style={{
-                gap: verticalMarginScale(16),
-                marginBottom: verticalMarginScale(10),
-              }}>
-              <UserOverview user={user} />
-              <UserInterests user={user} />
-              <UserLists
-                user={user}
-                onPressAddToList={() => {
-                  setSelectedActionSheetAction('addToList');
-                  actionSheetRef?.current?.open();
-                }}
-              />
-              <UserInformation user={user} />
-            </View>
-          ) : null}
-          {currentTab.id === '2' ? (
-            <View>
-              <UserEvents user={user} />
-            </View>
-          ) : null}
-        </ScrollView>
+            {currentTab.id === '1' && userData ? (
+              <View
+                style={{
+                  gap: verticalMarginScale(16),
+                  marginBottom: verticalMarginScale(10),
+                }}>
+                <UserOverview user={user} />
+                <UserInterests user={user} />
+                <UserLists
+                  user={user}
+                  onPressAddToList={() => {
+                    setSelectedActionSheetAction('addToList');
+                    actionSheetRef?.current?.open();
+                  }}
+                />
+                <UserInformation user={user} />
+              </View>
+            ) : null}
+            {currentTab.id === '2' ? (
+              <View>
+                <UserEvents user={user} />
+              </View>
+            ) : null}
+          </ScrollView>
+        </KeyboardAvoidingView>
       ) : null}
       <UserActionsSheet
         ref={actionSheetRef}

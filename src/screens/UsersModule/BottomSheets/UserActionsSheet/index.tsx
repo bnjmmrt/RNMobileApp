@@ -75,9 +75,9 @@ const UserActionsSheet = forwardRef<
 
     const snapPoints =
       selectedAction === 'report'
-        ? [`${verticalScale(50)}%`]
+        ? [`${verticalScale(60)}%`]
         : selectedAction === 'markSpam'
-        ? [`${verticalScale(30)}%`]
+        ? [`${verticalScale(35)}%`]
         : selectedAction === 'delete'
         ? [`${verticalScale(30)}%`]
         : selectedAction === 'addToList'

@@ -33,6 +33,11 @@ export type SelectedFilters = {
   [id: string]: SelectedSingleFilter;
 };
 
+export type FilterSheetFromType =
+  | 'allUsersList'
+  | 'discoverEvents'
+  | 'listDetail';
+
 type FiltersSheetProps = {
   onApplyFilter: (
     query: string,
@@ -40,7 +45,7 @@ type FiltersSheetProps = {
     selectedFilters?: SelectedFilters,
   ) => void;
   onClearFilter: () => void;
-  from: 'allUsersList' | 'discoverEvents';
+  from: FilterSheetFromType;
   selectedFiltersInParent?: SelectedFilters;
 };
 
@@ -101,6 +106,7 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
     const getHeading = () => {
       switch (from) {
         case 'allUsersList':
+        case 'listDetail':
           return 'Filters';
         case 'discoverEvents':
           return 'Filter Your Feed';
@@ -144,11 +150,12 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
         <BottomSheetView style={styles.container}>
           <CustomText style={styles.title}>{getHeading()}</CustomText>
 
-          {from === 'allUsersList' ? (
+          {from === 'allUsersList' || from === 'listDetail' ? (
             <AllUsersFilters
               selectedFilters={selectedFilters}
               setSelectedFilters={setSelectedFilters}
               setDisableApplyCta={setDisableApplyCta}
+              from={from}
             />
           ) : null}
           {from === 'discoverEvents' ? (

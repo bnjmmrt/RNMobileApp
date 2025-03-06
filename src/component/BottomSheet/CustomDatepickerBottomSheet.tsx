@@ -31,10 +31,13 @@ const CustomDatepickerBottomSheet = forwardRef((props: Props, ref) => {
   );
 
 
-  const years = useMemo(
-    () => Array.from({ length: 2025 - 1900 }, (_, i) => `${1900 + i}`),
-    []
-  );
+  const years = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    const startYear = currentYear - 55; // Max age 55
+    const endYear = currentYear - 18;   // Min age 18
+  
+    return Array.from({ length: endYear - startYear + 1 }, (_, i) => `${startYear + i}`);
+  }, []);
 
   // Function to calculate days based on month and year
   const calculateDays = useCallback(() => {

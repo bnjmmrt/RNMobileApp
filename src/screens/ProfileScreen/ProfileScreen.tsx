@@ -39,6 +39,7 @@ import { BUTTON_LABLE, COLORS, PROFILE, ROLE } from '../../utils/constants';
 import ProfileListItem from './ProfileListItem';
 import ProfileScreenStyle from './ProfileScreenStyle';
 import ProfileTopView from './ProfileTopView';
+import HeaderComponent from 'src/component/HeaderComponent';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
@@ -391,7 +392,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         { backgroundColor: !isGuest ? COLORS.black2 : COLORS.white },
       ]}>
       <View style={{ backgroundColor: COLORS.white }}>
-        {/* <HeaderComponent isDarkTheme={false} /> */}
+        <HeaderComponent isDarkTheme={false} />
 
         <ScrollView>
           <ProfileTopView

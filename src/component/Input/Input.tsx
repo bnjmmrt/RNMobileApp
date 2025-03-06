@@ -50,6 +50,7 @@ interface InputProps {
   extraInputProps?: TextInputProps;
   labelStyle?: any;
   placeholderTextColor?:string
+  maxLength?: number
 }
 
 export type InputRefMethods = {
@@ -81,6 +82,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     customRightImageStyle,
     extraInputProps,
     labelStyle,
+    maxLength
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -171,6 +173,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
           multiline={multiline}
           keyboardType={keyboardType}
           {...extraInputProps}
+          maxLength={maxLength}
         />
         {rightImage && (
           <TouchableOpacity onPress={onPressImage}>
