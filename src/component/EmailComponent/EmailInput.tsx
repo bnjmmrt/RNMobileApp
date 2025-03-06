@@ -26,8 +26,8 @@ const EmailInput = forwardRef((_, ref) => {
   const validateEmailAddress = () => {
     // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const emailRegex =
-      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
+      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,3})$/i;
+   
     console.log(emailRegex.test(emailAddress));
     if (!emailRegex.test(emailAddress)) {
       setErrorMessage(LABLE.EROOR_ENTER_EMAIL);

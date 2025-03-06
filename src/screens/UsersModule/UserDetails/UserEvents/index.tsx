@@ -13,6 +13,7 @@ import {
 } from 'src/utils/dimensions';
 import EventFilterSheet, { Filter } from '../../BottomSheets/EventFilterSheet';
 import FilterBar from './FilterBar';
+import { EVENT } from 'src/utils/constants';
 
 interface UserEventsProps {
   user: string;
@@ -111,7 +112,7 @@ const UserEvents: React.FC<UserEventsProps> = ({ user }) => {
               justifyContent: 'center',
             }}>
             <EventEmptyRecord
-              title="User has no events"
+              title={EVENT.USER_HAS_NO_EVENTS}
               isLoading={isLoading}
             />
           </View>

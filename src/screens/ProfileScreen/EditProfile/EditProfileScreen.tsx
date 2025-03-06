@@ -102,7 +102,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   };
 
   const validateName = (name: string) => {
-    const regex = /^[A-Za-z]+$/; 
+    const regex = /^[A-Za-z]+$/;
     if (
       name === 'FirstName' &&
       firstNameRef?.current?.inputText.trim().length > 30
@@ -111,13 +111,13 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         ERROR_MESSAGE.FIRST_NAME_SIZE_EXCEED,
       );
       return false;
-    }else{
-       if(!regex.test(firstNameRef?.current?.inputText)){
+    } else {
+      if (!regex.test(firstNameRef?.current?.inputText)) {
         firstNameRef?.current?.setErrorMessage(
           ERROR_MESSAGE.FIRST_NAME_INVALID_CHARACTERS,
         );
         return false;
-       }
+      }
     }
 
     if (
@@ -128,14 +128,14 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         ERROR_MESSAGE.LAST_NAME_SIZE_EXCEED,
       );
       return false;
-    }else{
-      if(!regex.test(lastNameRef?.current?.inputText)){
-       lastNameRef?.current?.setErrorMessage(
-         ERROR_MESSAGE.LAST_NAME_INVALID_CHARACTERS,
-       );
-       return false;
+    } else {
+      if (!regex.test(lastNameRef?.current?.inputText)) {
+        lastNameRef?.current?.setErrorMessage(
+          ERROR_MESSAGE.LAST_NAME_INVALID_CHARACTERS,
+        );
+        return false;
       }
-   }
+    }
 
     return true;
   };
@@ -168,61 +168,62 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
           handleBackPress();
         }
       }
-    }
-    if (
+    } else if (
       firstNameRef.current.validateInputs() &&
       validateName('FirstName') &&
       lastNameRef.current.validateInputs() &&
       validateName('LastName') &&
       birthDayRef.current.validateBirthDate() &&
-      baseCityRef.current.validateBaseCity() &&
-      selectedCreativeFocus &&
-      selectedCreativeFocus.length > 0 &&
-      !isToastShown
+      baseCityRef.current.validateBaseCity()
     ) {
-      const requestObject: any = {
-        address: {
-          address: baseCityRef.current.selectedCity.address,
-          city: '',
-          latitude: '',
-          longitude: '',
-          placeId: baseCityRef.current.selectedCity.placeId,
-          regionCode: '',
-        },
-        birthDate: birthDayRef.current.selectedDate, //convertDateFormat(birthDayRef.current.selectedDate),
-        // email: profileData?.email,
-        firstName: firstNameRef.current.inputText,
-        gender: gender?.value,
-        lastName: lastNameRef.current.inputText,
-        // mobilePhone: profileData?.phoneNumber,
-        focusIds: selectedCreativeFocus.length
-          ? selectedCreativeFocus.map((item: any) => item.id)
-          : profileData?.creativeFocus.map((item: any) => item.id),
-      };
+      if (selectedCreativeFocus && selectedCreativeFocus.length) {
+        setIsToastShown(false);
+        const requestObject: any = {
+          address: {
+            address: baseCityRef.current.selectedCity.address,
+            city: '',
+            latitude: '',
+            longitude: '',
+            placeId: baseCityRef.current.selectedCity.placeId,
+            regionCode: '',
+          },
+          birthDate: birthDayRef.current.selectedDate, //convertDateFormat(birthDayRef.current.selectedDate),
+          // email: profileData?.email,
+          firstName: firstNameRef.current.inputText,
+          gender: gender?.value,
+          lastName: lastNameRef.current.inputText,
+          // mobilePhone: profileData?.phoneNumber,
+          focusIds: selectedCreativeFocus.length
+            ? selectedCreativeFocus.map((item: any) => item.id)
+            : profileData?.creativeFocus.map((item: any) => item.id),
+        };
 
-      const response: any = await apiRequest(
-        'put',
-        EndPoint.user_profile + userId,
-        requestObject,
-      );
-      if (response.status === 200) {
-        const responseUser: any = await apiRequest(
-          'get',
-          EndPoint.user + userId,
+        const response: any = await apiRequest(
+          'put',
+          EndPoint.user_profile + userId,
+          requestObject,
         );
-        if (responseUser.status === 200) {
-          dispatch(
-            setProfileData({
-              ...responseUser?.data,
-              profilePicture: responseUser?.data?.imageUrl,
-            }),
+        if (response.status === 200) {
+          const responseUser: any = await apiRequest(
+            'get',
+            EndPoint.user + userId,
           );
+          if (responseUser.status === 200) {
+            dispatch(
+              setProfileData({
+                ...responseUser?.data,
+                profilePicture: responseUser?.data?.imageUrl,
+              }),
+            );
+          }
+          FlashMessageComponent.show(
+            'success',
+            LABLE.PROFILE_UPDATED_SUCCESSFULLY,
+          );
+          handleBackPress();
         }
-        FlashMessageComponent.show(
-          'success',
-          LABLE.PROFILE_UPDATED_SUCCESSFULLY,
-        );
-        handleBackPress();
+      } else {
+        setIsToastShown(true);
       }
     }
   };
