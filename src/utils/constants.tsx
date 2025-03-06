@@ -151,10 +151,10 @@ export const LABLE = {
   DISCOVER_EXPERIENCES_IN_ART:
     'Discover experiences in art, fashion, music, and more \n—curated by renowned hosts.',
   COMPLETE_VERIFICATION: 'Complete Verification',
-  SEND_DIRECT_MSG_CODE: 'Send direct message with the code:',
+  SEND_DIRECT_MSG_CODE: 'Send a direct message with the code:',
   WE_WILL_REVIEW_APP:
     "We'll review your application after we receive\nyour message.",
-  EMAIL_THE_CODE: 'Email the code to:',
+  EMAIL_THE_CODE: 'Email the code:',
   DONT_USE_INSTAGRAM: "Don't use Instagram?",
   REFERRAL_CODE: 'Referral Code',
   IF_YOU_HAVE_ANY_REFERRAL_CODE: 'If you have a referral code, enter it below.',
