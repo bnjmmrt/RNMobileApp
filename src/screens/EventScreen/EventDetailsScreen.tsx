@@ -66,6 +66,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { setRefresh, setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import EventAnnouncements from 'src/component/Event/EventAnnouncements';
 import FullScreenLoader from 'src/component/FullScreenLoader';
+import ImageComponent from 'src/component/Image/ImageComponent';
 
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -92,12 +93,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const eventId = route?.params?.id;
   const { data: eventCount, refetch: refetchGuestStatusCount } =
     useFetchGuestStatusCountQuery({ eventId });
-  const annqueryArgs = ({
+  const annqueryArgs = {
     eventId: eventId,
     take: 50,
-    skip: 0
-  })  
-    const [eventLocalId, setEventLocalID] = useState(eventId);
+    skip: 0,
+  };
+  const [eventLocalId, setEventLocalID] = useState(eventId);
   const { data: announcementData, refetch: refetchAnnouncement } =
     useFetchHostEventsAnnouncementQuery(annqueryArgs);
 
@@ -286,21 +287,20 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const addAnouncement = () => {
     const date1 = moment.utc(data?.data?.endDate);
     const date2 = moment();
-    let eventData = data?.data
+    let eventData = data?.data;
     if (date1.isBefore(date2)) {
       FlashMessageComponent.show('error', LABLE.PAST_EVENT_ANNOUNCEMENTS_ERROR);
     } else {
       if (eventCount?.data?.confirmedCount == 0) {
-        setshowError(true)
-      }
-      else {
+        setshowError(true);
+      } else {
         navigation.navigate(ROUTES.EventStack, {
           screen: ROUTES.AddAnnouncementScreen,
-          params: { eventData, announcementId: null }
+          params: { eventData, announcementId: null },
         });
       }
     }
-  }
+  };
   const acceptInvitation = async () => {
     try {
       const accept_response = await acceptInvite({
@@ -468,18 +468,13 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
           <View style={styles.contentContainer}>
             <View style={imageWrapperStyle.wrapper}>
-            <FullScreenLoader loading={isLoading} customStyle={styles.mainImage}>
-              <FastImage
-                source={{
-                  uri:
-                    removeSignature(data?.data?.imageCover) ||
-                    removeSignature(data?.data?.imageFlyer),
-                }}
-                resizeMode={FastImage.resizeMode.cover}
-                // defaultSource={IMAGES.eventCoverPlaceholders1}
-                style={styles.mainImage}
+              <ImageComponent
+                loading={isLoading}
+                imageURL={
+                  removeSignature(data?.data?.imageCover) ||
+                  removeSignature(data?.data?.imageFlyer)
+                }
               />
-              </FullScreenLoader>
             </View>
 
             <Text style={styles.titleStyle}>{data?.data?.name}</Text>
@@ -525,7 +520,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                 navigation.navigate(ROUTES.EventStack, {
                   screen: ROUTES.Announcement,
                   params: data?.data,
-                })}
+                })
+              }
             />
             {showError && (
               <View
