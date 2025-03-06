@@ -67,9 +67,6 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         if (searchText) {
           url = `${url}&findInNameAndDescription=${searchText}`;
         }
-        if (!take) {
-          url = `${url}?feed=true`;
-        }
         // if (statusName) {
         //   url = `${url}&status=${statusName}`;
         // }
