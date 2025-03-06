@@ -390,7 +390,7 @@ const EventsFeed = () => {
         defaultValue={searchTerm}
       />
       {renderFilters()}
-      {renderFeaturedEvents()}
+      {/* {renderFeaturedEvents()} */}
 
       <FlatList
         data={allEvents || []}

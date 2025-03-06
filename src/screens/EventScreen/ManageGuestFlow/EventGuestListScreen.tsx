@@ -101,10 +101,16 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   }, [guestsError]);
 
   // Calculate total confirmed guests from entire list
-  const totalConfirmedGuests = guests.filter(
-    guest => guest.status === 'CONFIRMED',
-  ).length;
-  const totalGuestCount = guests.length;
+  const totalConfirmedGuests = guests.filter(guest => guest.checkIn).length;
+  const totalGuestCount = guests.reduce((total, guest) => {
+    // Add 1 for the main guest
+    let count = 1;
+    // Add the number of additional guests if any
+    if (guest.additionalGuests?.length) {
+      count += guest.additionalGuests.length;
+    }
+    return total + count;
+  }, 0);
 
   const filteredAndSortedGuests = useMemo(() => {
     let result = [...guests];
