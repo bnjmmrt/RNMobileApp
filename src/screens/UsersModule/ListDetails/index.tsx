@@ -10,6 +10,7 @@ import { FlatList, View } from 'react-native';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import FiltersSheet, { SelectedFilters } from 'src/component/FilterSheet';
 import Header from 'src/component/Header/Header';
 import SearchInput from 'src/component/SearchInput';
 import { AppStackParamList } from 'src/navigation/AppStack';
@@ -18,6 +19,7 @@ import {
   horizontalMarginScale,
   Hp,
   verticalMarginScale,
+  verticalScale,
 } from 'src/utils/dimensions';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
@@ -37,6 +39,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
   const searchInputRef = useRef<any>(null);
   const deleteListUsersSheetRef = useRef<BottomSheetMethods>(null);
   const listActionSheetRef = useRef<BottomSheetMethods>(null);
+  const filtersSheetRef = useRef<BottomSheetMethods>(null);
 
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
     useState<listActionCurrentPageType>('');
@@ -49,6 +52,9 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
     id: string;
   }>({ count: 0, users: [], id: '', name: '' });
   const [currentPage, setCurrentPage] = useState(1);
+  const [filterQuery, setFilterQuery] = useState<string>('');
+  const [filterNumber, setFilterNumber] = useState<number>(0);
+  const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
 
   const { data, isLoading, refetch } = useFetchCustomListUsersQuery({
     take: 10,
@@ -56,6 +62,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
     listId: route.params.list,
     searchValue: searchText,
     listType: route.params.listType || 'custom',
+    queryString: filterQuery,
   });
 
   useEffect(() => {
@@ -95,6 +102,27 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
     setSearchText(text);
   };
 
+  const onApplyFilter = (
+    queryString: string,
+    numberOfFiltersApplied: number,
+    selectedFilters?: SelectedFilters,
+  ) => {
+    setCurrentPage(1);
+    setFilterQuery(queryString);
+    setFilterNumber(numberOfFiltersApplied);
+
+    if (selectedFilters) {
+      setSelectedFilters(selectedFilters);
+    }
+  };
+
+  const onClearFilter = () => {
+    setCurrentPage(1);
+    setFilterQuery('');
+    setFilterNumber(0);
+    setSelectedFilters({});
+  };
+
   const onListActionSheetSuccess = () => {
     if (selectedActionSheetAction === 'deleteList') {
       navigation.goBack();
@@ -105,6 +133,37 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
       refetch();
     }
     // setSelectedActionSheetAction('');
+  };
+
+  const getEmptyStateMessage = () => {
+    if (filterNumber > 0 && searchText) {
+      return 'Please refine your search.';
+    } else if (filterNumber > 0) {
+      return 'Remove filters to expand your search';
+    } else if (searchText) {
+      return 'Please refine your search.';
+    } else {
+      if (route.params.listType === 'custom') {
+        return 'Start building your list by adding users.\nClick the button below to begin.';
+      } else if (route.params.listType === 'favorite') {
+        return 'Users you’ve favorited will appear here.';
+      } else if (route.params.listType === 'follower') {
+        return 'Users who follow you will appear here.';
+      } else {
+        return '';
+      }
+    }
+  };
+  const getEmptyStateTitle = () => {
+    if (filterNumber > 0 && searchText) {
+      return 'No results';
+    } else if (filterNumber > 0) {
+      return 'No users';
+    } else if (searchText) {
+      return 'No results';
+    } else {
+      return 'Your List is Empty';
+    }
   };
 
   const renderItem = useCallback(
@@ -153,7 +212,10 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
           ref={searchInputRef}
           onSearchTextChange={handleSearchTextChange}
           placeholder="Search..."
-          // rightIcon={IMAGES.filter_lines}
+          rightIcon={IMAGES.filter_lines}
+          onPressRightIcon={() => {
+            filtersSheetRef?.current?.open();
+          }}
           mainContainerStyle={{ marginHorizontal: 0 }}
         />
 
@@ -175,13 +237,61 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
                 justifyContent: 'center',
               }}>
               <EventEmptyRecord
-                title="Your List is Empty"
-                subTitle={
-                  route.params.listType === 'custom'
-                    ? `Start building your list by adding users.\nClick the button below to begin.`
-                    : ''
-                }
+                title={getEmptyStateTitle()}
+                subTitle={getEmptyStateMessage()}
                 isLoading={isLoading}
+                footerContent={
+                  !isLoading && (
+                    <>
+                      {filterNumber > 0 ? (
+                        <Button
+                          title={'Reset Filters'}
+                          imageSource={IMAGES.refresh}
+                          leftImageStyle={{
+                            height: verticalScale(16),
+                            width: verticalScale(16),
+                          }}
+                          onPress={onClearFilter}
+                          colorTheme="dark"
+                          textStyle={{ marginHorizontal: 0 }}
+                          style={{
+                            alignSelf: 'center',
+                            width: undefined,
+                            height: undefined,
+                            paddingHorizontal: horizontalMarginScale(12),
+                            paddingVertical: verticalMarginScale(12),
+                            gap: horizontalMarginScale(6),
+                            marginTop: verticalMarginScale(30),
+                          }}
+                        />
+                      ) : (
+                        <Button
+                          title={'Add Users'}
+                          imageSource={IMAGES.plus}
+                          leftImageStyle={{
+                            height: verticalScale(16),
+                            width: verticalScale(16),
+                          }}
+                          onPress={() => {
+                            setSelectedActionSheetAction('addUsers');
+                            listActionSheetRef?.current?.open();
+                          }}
+                          colorTheme="dark"
+                          textStyle={{ marginHorizontal: 0 }}
+                          style={{
+                            alignSelf: 'center',
+                            width: undefined,
+                            height: undefined,
+                            paddingHorizontal: horizontalMarginScale(12),
+                            paddingVertical: verticalMarginScale(12),
+                            gap: horizontalMarginScale(6),
+                            marginTop: verticalMarginScale(30),
+                          }}
+                        />
+                      )}
+                    </>
+                  )
+                }
               />
             </View>
           }
@@ -205,6 +315,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
         listName={allUsers.name}
         onSuccess={() => {
           setCurrentPage(1);
+          setSelectedUsers([]);
           refetch();
         }}
       />
@@ -219,6 +330,14 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
         listType={route.params.listType}
         listUserCount={allUsers.users.length}
         selectedUsers={allUsers.users.map(item => item.id) || []}
+      />
+
+      <FiltersSheet
+        ref={filtersSheetRef}
+        from="listDetail"
+        onApplyFilter={onApplyFilter}
+        onClearFilter={onClearFilter}
+        selectedFiltersInParent={selectedFilters}
       />
     </View>
   );
