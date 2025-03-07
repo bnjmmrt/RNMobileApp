@@ -2,9 +2,10 @@ import React, { useMemo } from 'react';
 import { FlatList, View, Text, RefreshControl, StyleSheet } from 'react-native';
 import FeaturedFeedItem from './FeaturedFeedItem';
 import FeedItem from './FeedItem';
-import { fontScale, horizontalMarginScale, verticalMarginScale, Wp } from 'src/utils/dimensions';
+import { fontScale, horizontalMarginScale, Hp, verticalMarginScale, Wp } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
 import { COLORS } from 'src/utils/constants';
+import EventEmptyRecord from '../EmptyRecord/EventEmptyRecord';
 
 
 const EVENTS_PER_SECTION = 6;
@@ -53,6 +54,7 @@ const EventList = ({ allEvents, featuredEvents, isLoading, onRefreshPage, handle
                 <FlatList
                     data={item.data}
                     numColumns={2}
+
                     keyExtractor={(event, index) => event.id || index.toString()}
                     renderItem={({ item }) => <FeedItem item={item} />}
                     columnWrapperStyle={{
@@ -82,6 +84,20 @@ const EventList = ({ allEvents, featuredEvents, isLoading, onRefreshPage, handle
             renderItem={renderItem}
             onEndReached={handleLoadMore}
             onEndReachedThreshold={0.5}
+            ListEmptyComponent={
+                <View
+                    style={{
+                        height: Hp(55),
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}>
+                    <EventEmptyRecord
+                        title="No Events"
+                        subTitle="There are no events available"
+                        isLoading={isLoading}
+                    />
+                </View>
+            }
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 100 }}
             refreshControl={
