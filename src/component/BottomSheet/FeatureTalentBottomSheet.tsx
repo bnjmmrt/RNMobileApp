@@ -1,5 +1,5 @@
 import React, { useRef, forwardRef, useState, useEffect } from 'react';
-import { View, StyleSheet, Text, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Text, Image, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
 import { COLORS } from '../../utils/constants';
 import Button from '../Button';
@@ -14,6 +14,7 @@ import { BottomSheetMethods } from '@gorhom/bottom-sheet';
 import { EndPoint } from 'src/ApiManager/config';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import useApi from 'src/axios/useApi';
+import { openSettings } from 'react-native-permissions';
 
 interface FeatureTalentBottomSheetProps {
     onPress: (data: { id: string; name: string; imageKeyUrl: string; action: string }) => void;
@@ -45,6 +46,24 @@ const FeatureTalentBottomSheet = forwardRef<BottomSheetMethods, FeatureTalentBot
         }).then((image: ImageOrVideo) => {
             setImageError(false); // Clear error on selection
             savePhoto(image.path);
+        }).catch((error) => {
+            Alert.alert(
+                'Permission Required',
+                'We need access to your photo library to allow you to add picture. Please enable photo library permissions in your device settings.',
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel',
+                    },
+                    {
+                        text: 'Open Settings',
+                        onPress: async () => {
+                            openSettings();
+                        },
+                    },
+                ],
+            );
+            console.log('ImagePicker Error: ', error);
         });
     };
 

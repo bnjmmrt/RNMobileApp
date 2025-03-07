@@ -1,7 +1,7 @@
 import { CommonActions, useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Platform, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Alert, Platform, ScrollView, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-animatable';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -40,6 +40,7 @@ import ProfileListItem from './ProfileListItem';
 import ProfileScreenStyle from './ProfileScreenStyle';
 import ProfileTopView from './ProfileTopView';
 import HeaderComponent from 'src/component/HeaderComponent';
+import { openSettings } from 'react-native-permissions';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
@@ -321,6 +322,24 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       setImage(image.path);
       // editPhotoBottomSheetRef.current?.close();
       savePhotoBottomSheetRef.current?.open();
+    }).catch((error) => {
+      Alert.alert(
+        'Permission Required',
+        'We need access to your photo library to allow you to add profile picture. Please enable photo library permissions in your device settings.',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Open Settings',
+            onPress: async () => {
+              openSettings();
+            },
+          },
+        ],
+      );
+      console.log('ImagePicker Error: ', error);
     });
   };
 

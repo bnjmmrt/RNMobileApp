@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {
   Camera,
@@ -29,6 +30,7 @@ import { ROUTES } from 'src/navigation/Route';
 import { Image } from 'react-native-animatable';
 import FullScreenLoader from 'src/component/FullScreenLoader';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { openSettings } from 'react-native-permissions';
 
 const { width } = Dimensions.get('window');
 const SCANNER_SIZE = width * 0.6;
@@ -43,6 +45,24 @@ const QRCodeScanner = () => {
   const requestPermission = async () => {
     const status = await Camera.requestCameraPermission();
     setHasPermission(status === 'granted');
+    if (status !== 'granted') {
+      Alert.alert(
+        'Permission Required',
+        'We need access to your camera to allow you to scan. Please enable camera permissions in your device settings.',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Open Settings',
+            onPress: async () => {
+              openSettings();
+            },
+          },
+        ],
+      );
+    }
   };
   useEffect(() => {
     requestPermission();
@@ -83,7 +103,7 @@ const QRCodeScanner = () => {
 
   const onClose = () => navigation.goBack();
 
-  const onMenuClick = () => {};
+  const onMenuClick = () => { };
   if (!hasPermission) {
     return (
       <View style={styles.btnContainer}>
@@ -102,7 +122,7 @@ const QRCodeScanner = () => {
   if (!device) return <Text>Loading Camera...</Text>;
   if (loading)
     return (
-      <FullScreenLoader loading={loading} customStyle={{ backgroundColor: COLORS.transperantBackground,}}>
+      <FullScreenLoader loading={loading} customStyle={{ backgroundColor: COLORS.transperantBackground, }}>
         {null}
       </FullScreenLoader>
     );
@@ -216,5 +236,5 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderTopWidth: 0,
   },
-  validationText:{ flex: 1, justifyContent: 'center', alignItems: 'center' }
+  validationText: { flex: 1, justifyContent: 'center', alignItems: 'center' }
 });

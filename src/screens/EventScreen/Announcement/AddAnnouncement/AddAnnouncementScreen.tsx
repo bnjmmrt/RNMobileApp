@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FlatList, Image, ImageBackground, BackHandler, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, ImageBackground, BackHandler, RefreshControl, ScrollView, Text, TouchableOpacity, View, Alert } from "react-native";
 import Header from "src/component/Header/Header";
 import { ANNOUNCEMENT, collaboratorList, COLORS, ERROR_MESSAGE, ticketTypeList } from "src/utils/constants";
 import Input, { InputRefMethods } from "src/component/Input/Input";
@@ -32,6 +32,7 @@ import { CustomText } from "src/component/CustomText";
 import { ROUTES } from "src/navigation/Route";
 import { useDispatch } from "react-redux";
 import { setRsvpStatus } from "src/redux/slices/rspvSlice";
+import { openSettings } from "react-native-permissions";
 
 interface AddAnnouncementScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -555,6 +556,24 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
         }).then((image: ImageOrVideo) => {
             editPhotoBottomSheetRef.current?.close();
             savePhoto(image?.path, 'image', image?.filename)
+        }).catch((error) => {
+            Alert.alert(
+                'Permission Required',
+                'We need access to your photo library to allow you to add picture. Please enable photo library permissions in your device settings.',
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel',
+                    },
+                    {
+                        text: 'Open Settings',
+                        onPress: async () => {
+                            openSettings();
+                        },
+                    },
+                ],
+            );
+            console.log('ImagePicker Error: ', error);
         });
     };
     const pickPdf = async () => {

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Alert,
   Linking,
   Platform,
   ScrollView,
@@ -54,6 +55,7 @@ import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import { useNavigation } from '@react-navigation/native';
 import { current } from '@reduxjs/toolkit';
 import { removeSignature } from 'src/utils/functions';
+import { openSettings } from 'react-native-permissions';
 
 interface Location {
   location?: string;
@@ -261,7 +263,25 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       cropperCircleOverlay: false,
     }).then((image: ImageOrVideo) => {
       savePhoto(image.path);
-    });
+    }).catch((error) => {
+      Alert.alert(
+        'Permission Required',
+        'We need access to your photo library to allow you to add picture. Please enable photo library permissions in your device settings.',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Open Settings',
+            onPress: async () => {
+              openSettings();
+            },
+          },
+        ],
+      );
+      console.log('ImagePicker Error: ', error);
+    });;
   };
 
   useEffect(() => { }, [eventAddress]);
