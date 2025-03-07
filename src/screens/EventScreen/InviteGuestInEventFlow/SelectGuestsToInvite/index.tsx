@@ -65,9 +65,10 @@ const SelectGuestsToInviteScreen: React.FC<
   const [filterNumber, setFilterNumber] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { selectedUsers } = useSelector(
+  const { selectedUsers, selectedEvent } = useSelector(
     (state: RootState) => ({
       selectedUsers: state.inviteGuestsFlow.selectedUsers,
+      selectedEvent: state.inviteGuestsFlow.selectedEvent,
     }),
     shallowEqual,
   );
@@ -77,6 +78,7 @@ const SelectGuestsToInviteScreen: React.FC<
     skip: (currentPage - 1) * 10,
     searchValue: searchText,
     queryString: filterQuery,
+    eventId: selectedEvent?.id,
   });
 
   const onRefreshPage = () => {

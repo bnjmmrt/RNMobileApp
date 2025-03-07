@@ -142,33 +142,31 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
     return (
       <BottomSheetComponent
         ref={sheetRef}
-        snapPoints={[`${verticalScale(isKeyboardOpen ? 100 : 88)}%`]}
+        snapPoints={[`${isKeyboardOpen ? 100 : 88}%`]}
         enableDynamicSizing={false}
-        onClose={() => {}}
-      >
+        onClose={() => {}}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            style={{ flex: 1 }}
-          >
+            style={{ flex: 1 }}>
             <BottomSheetView style={styles.container}>
               <CustomText style={styles.title}>{getHeading()}</CustomText>
 
-          {from === 'allUsersList' || from === 'listDetail' ? (
-            <AllUsersFilters
-              selectedFilters={selectedFilters}
-              setSelectedFilters={setSelectedFilters}
-              setDisableApplyCta={setDisableApplyCta}
-              from={from}
-            />
-          ) : null}
-          {from === 'discoverEvents' ? (
-            <DiscoverEventsFilters
-              selectedFilters={selectedFilters}
-              setSelectedFilters={setSelectedFilters}
-              setDisableApplyCta={setDisableApplyCta}
-            />
-          ) : null}
+              {from === 'allUsersList' || from === 'listDetail' ? (
+                <AllUsersFilters
+                  selectedFilters={selectedFilters}
+                  setSelectedFilters={setSelectedFilters}
+                  setDisableApplyCta={setDisableApplyCta}
+                  from={from}
+                />
+              ) : null}
+              {from === 'discoverEvents' ? (
+                <DiscoverEventsFilters
+                  selectedFilters={selectedFilters}
+                  setSelectedFilters={setSelectedFilters}
+                  setDisableApplyCta={setDisableApplyCta}
+                />
+              ) : null}
 
               {!isKeyboardOpen ? (
                 <BottomSheetView style={styles.actionsContainer}>

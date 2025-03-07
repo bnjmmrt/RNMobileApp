@@ -5,6 +5,7 @@ import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import { EventItem } from 'src/component/EventsFeed/EventsFeed';
 import FeedItem from 'src/component/EventsFeed/FeedItem';
 import { useFetchAllEventsQuery } from 'src/redux/actions/eventApiAction';
+import { EVENT } from 'src/utils/constants';
 import {
   horizontalMarginScale,
   Hp,
@@ -13,7 +14,6 @@ import {
 } from 'src/utils/dimensions';
 import EventFilterSheet, { Filter } from '../../BottomSheets/EventFilterSheet';
 import FilterBar from './FilterBar';
-import { EVENT } from 'src/utils/constants';
 
 interface UserEventsProps {
   user: string;
@@ -21,10 +21,11 @@ interface UserEventsProps {
 
 const filterData: Filter[] = [
   { label: 'All', value: '' },
-  { label: 'Upcoming', value: 'UPCOMING' },
-  { label: 'Invited', value: 'INVITED' },
-  { label: 'Applied', value: 'APPLIED' },
+  { label: 'Upcoming', value: 'CONFIRMED' },
   { label: 'Past', value: 'PAST' },
+  { label: 'Invited', value: 'INVITED' },
+  { label: 'Requested', value: 'APPLIED' },
+  { label: 'Declined', value: 'DECLINED' },
 ];
 
 const UserEvents: React.FC<UserEventsProps> = ({ user }) => {

@@ -15,7 +15,13 @@ import { COLORS } from 'src/utils/constants';
 import { verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import { styles } from './style';
 
-export type FilterTypes = 'UPCOMING' | 'INVITED' | 'APPLIED' | 'PAST' | '';
+export type FilterTypes =
+  | 'CONFIRMED'
+  | 'INVITED'
+  | 'APPLIED'
+  | 'PAST'
+  | 'DECLINED'
+  | '';
 export type Filter = {
   label: string;
   value: FilterTypes;
@@ -73,11 +79,24 @@ const EventFilterSheet = forwardRef<
   return (
     <BottomSheetComponent
       ref={sheetRef}
-      snapPoints={[`${verticalScale(45)}%`]}
+      snapPoints={['60%', '70%']}
       enableDynamicSizing={false}
       onClose={() => {
         closeSheet();
-      }}>
+      }}
+      footer={
+        <Button
+          title="Save"
+          colorTheme="dark"
+          style={styles.actionCta}
+          onPress={() => {
+            if (tempSelectedFilter) {
+              onPressSave(tempSelectedFilter);
+            }
+          }}
+          disabled={!tempSelectedFilter}
+        />
+      }>
       <BottomSheetView style={{ flex: 1 }}>
         <BottomSheetFlatList
           data={filterData}
@@ -88,19 +107,6 @@ const EventFilterSheet = forwardRef<
           ListHeaderComponent={<></>}
           windowSize={4}
         />
-        <BottomSheetView style={{ marginBottom: verticalMarginScale(40) }}>
-          <Button
-            title="Save"
-            colorTheme="dark"
-            style={styles.actionCta}
-            onPress={() => {
-              if (tempSelectedFilter) {
-                onPressSave(tempSelectedFilter);
-              }
-            }}
-            disabled={!tempSelectedFilter}
-          />
-        </BottomSheetView>
       </BottomSheetView>
     </BottomSheetComponent>
   );

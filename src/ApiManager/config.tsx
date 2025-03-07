@@ -89,10 +89,11 @@ export const EndPoint = {
   events: 'v1/events',
   generate_ticket: 'v1/events/guest/ticket/',
   get_user_with_role_by_email: 'v1/auth/get-user-with-roles-by-email',
+  get_user_with_role_by_phone: 'v1/auth/get-user-with-roles-by-phone',
   edit_event: 'v1/events/event/',
   check_phone: 'v1/auth/check-phone-number',
   check_email: 'v1/auth/check-email',
-  event_manage_guests:'v1/events/manage-guests',
+  event_manage_guests: 'v1/events/manage-guests',
   switch_profile: 'v1/auth/switch-profile',
 } as const;
 

@@ -330,8 +330,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const onPressInviteGuests = () => {
-    dispatch(setSelectedEventForInvite(data.data));
-    navigation.navigate(ROUTES.SelectGuestsToInviteScreen);
+    if (data && data.data) {
+      dispatch(setSelectedEventForInvite(data.data));
+      navigation.navigate(ROUTES.SelectGuestsToInviteScreen);
+    }
   };
 
   const navigateToViewList = () => {

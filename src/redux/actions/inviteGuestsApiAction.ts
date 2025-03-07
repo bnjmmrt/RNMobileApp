@@ -55,6 +55,13 @@ export const inviteGuestsApiAction = createBaseApi.injectEndpoints({
         body: requestParam,
       }),
     }),
+    getUserWithRolesByPhone: builder.mutation({
+      query: (requestParam: { phoneNumber: string }) => ({
+        url: EndPoint.get_user_with_role_by_phone,
+        method: 'POST',
+        body: requestParam,
+      }),
+    }),
     getUserWithRolesById: builder.mutation({
       query: (requestParam: { id: string }) => ({
         url: EndPoint.get_user_with_role_by_id,
@@ -69,5 +76,6 @@ export const {
   useInviteGuestMutation,
   useInviteNewGuestsMutation,
   useGetUserWithRolesByEmailMutation,
+  useGetUserWithRolesByPhoneMutation,
   useGetUserWithRolesByIdMutation,
 } = inviteGuestsApiAction;

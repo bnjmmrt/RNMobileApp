@@ -2,7 +2,7 @@ import IMAGES from '@images/index';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import AvatarInitials from 'src/component/AvatarInitials';
 import { CustomText } from 'src/component/CustomText';
 import Input, { InputRefMethods } from 'src/component/Input/Input';
@@ -13,18 +13,13 @@ import PhoneNumberInput, {
 import { EventStackParamList } from 'src/navigation/EventStack';
 import { ROUTES } from 'src/navigation/Route';
 import {
-  useMarkUserFavMutation,
-  useUnmarkUserFavMutation,
-} from 'src/redux/actions/usersApiAction';
-import { RootState } from 'src/redux/slices';
+  useGetUserWithRolesByEmailMutation,
+  useGetUserWithRolesByPhoneMutation,
+} from 'src/redux/actions/inviteGuestsApiAction';
 import { setSelectedUsersToInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
 import { verticalMarginScale } from 'src/utils/dimensions';
-import createStyles from './styles';
-import {
-  useGetUserWithRolesByEmailMutation,
-  useGetUserWithRolesByIdMutation,
-} from 'src/redux/actions/inviteGuestsApiAction';
 import { existingUserType } from '.';
+import createStyles from './styles';
 
 interface NewUserViewProps {
   firstNameRef: React.RefObject<InputRefMethods>;
@@ -75,16 +70,50 @@ const NewUserView: React.FC<NewUserViewProps> = ({
     getUserWithEmail,
     { error: getUserWithEmailError, isLoading: getUserWithEmailLoading },
   ] = useGetUserWithRolesByEmailMutation();
+  const [
+    getUserWithPhone,
+    { error: getUserWithPhoneError, isLoading: getUserWithPhoneLoading },
+  ] = useGetUserWithRolesByPhoneMutation();
+
+  const checkIfExistingUser = (roles: { id: string; name: string }[]) => {
+    const isMemberOrNonMember = roles.find(
+      role => role.name === 'non_member' || role.name === 'member',
+    );
+    if (isMemberOrNonMember) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   const fetchUserByEmail = async () => {
     try {
       const emailResponse = await getUserWithEmail({ email: email }).unwrap();
       if (emailResponse.status === 200) {
-        if (
-          emailResponse?.data?.roles.length === 1 &&
-          emailResponse?.data?.roles[0].name === 'member'
-        ) {
+        const isExisitingUser = checkIfExistingUser(emailResponse?.data?.roles);
+        if (isExisitingUser) {
           setExistingUserData(emailResponse?.data);
+        } else {
+          setExistingUserData(null);
+        }
+      } else {
+        setExistingUserData(null);
+      }
+    } catch (error) {
+      setExistingUserData(null);
+      console.error('Error fetching user:', error);
+    }
+  };
+
+  const fetchUserByPhone = async () => {
+    try {
+      const phoneResponse = await getUserWithPhone({
+        phoneNumber: `${selectedCountry?.dial_code}${phone}`,
+      }).unwrap();
+      if (phoneResponse.status === 200) {
+        const isExisitingUser = checkIfExistingUser(phoneResponse?.data?.roles);
+        if (isExisitingUser) {
+          setExistingUserData(phoneResponse?.data);
         } else {
           setExistingUserData(null);
         }
@@ -107,7 +136,16 @@ const NewUserView: React.FC<NewUserViewProps> = ({
         setExistingUserData(null);
       }
     }
-  }, [type, email]);
+    if (type === 'contact') {
+      if (phone) {
+        setTimeout(() => {
+          fetchUserByPhone();
+        }, 1000);
+      } else {
+        setExistingUserData(null);
+      }
+    }
+  }, [type, email, phone]);
 
   return (
     <View
