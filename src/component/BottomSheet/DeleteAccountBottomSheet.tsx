@@ -27,7 +27,7 @@ const DeleteAccountBottomSheet = forwardRef(
     return (
       <BottomSheetComponent
         ref={ref}
-        snapPoints={[ '0.58']}
+        snapPoints={[ '0.56']}
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
           <Text style={styles.title}>{PROFILE.DELETE_ACCOUNT}</Text>
@@ -78,19 +78,19 @@ const DeleteAccountBottomSheet = forwardRef(
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal:horizontalMarginScale(20),
-    gap: 12,
+    gap: 8,
   },
   deleteAccountBtnStyle: {
     borderRadius:radiusScale(100),
     backgroundColor: COLORS.errorText,
-    marginTop:verticalMarginScale(8),
+    marginTop:verticalMarginScale(16),
   },
   btnStyle: {
     borderRadius:radiusScale(100),
   },
   title: {
       fontSize: fontScale(24),
-      fontWeight:'700',
+      // fontWeight:'700',
       color:COLORS.black,
       fontFamily: fontFamily.RomieTrial_Bold
   },

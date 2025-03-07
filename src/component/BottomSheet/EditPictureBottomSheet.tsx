@@ -107,8 +107,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: fontScale(24),
     textAlign: 'center',
-    fontWeight:'700',
+    // fontWeight:'700',
     color:COLORS.black,
+    paddingBottom:verticalMarginScale(16),
     fontFamily: fontFamily.RomieTrial_Bold,
   },
   profilePhotoContainer: {

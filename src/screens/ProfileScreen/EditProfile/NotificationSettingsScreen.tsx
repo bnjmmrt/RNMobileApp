@@ -53,48 +53,57 @@ const NotificationSettingsScreen: React.FC<NotificationSettingsScreenProps> = ()
   const [isEmailNotificationEnabled, setEmailNotificationEnabled] = useState(
     notificationsSettings?.allowEmailNotifications,
   );
-
+  
   const toggleSMSNotification = () => {
-    setSMSNotificationEnabled(previousState => !previousState);
-    updateSettings({
-      ...notificationsSettings,
-      allowSMSNotifications: !isSMSNotificationEnabled,
-    });
+    const newValue = !isSMSNotificationEnabled;
+    setSMSNotificationEnabled(newValue);
+    updateSettings(
+      { ...notificationsSettings, allowSMSNotifications: newValue },
+      newValue
+    );
   };
-
+  
   const togglePushNotification = () => {
-    setPushNotificationEnabled(previousState => !previousState);
-    updateSettings({
-      ...notificationsSettings,
-      allowPushNotifications: !isPushNotificationEnabled,
-    });
+    const newValue = !isPushNotificationEnabled;
+    setPushNotificationEnabled(newValue);
+    updateSettings(
+      { ...notificationsSettings, allowPushNotifications: newValue },
+      newValue
+    );
   };
-
+  
   const toggleEmailNotification = () => {
-    setEmailNotificationEnabled(previousState => !previousState);
-    updateSettings({
-      ...notificationsSettings,
-      allowEmailNotifications: !isEmailNotificationEnabled,
-    });
+    const newValue = !isEmailNotificationEnabled;
+    setEmailNotificationEnabled(newValue);
+    updateSettings(
+      { ...notificationsSettings, allowEmailNotifications: newValue },
+      newValue
+    );
   };
+  
 
-  const handleBackPress = () => {
-    dispatch(setPageProgress(3));
-    navigation.goBack();
-  };
-
-  const updateSettings = async (requestData: any) => {
+  const updateSettings = async (requestData: any, newValue: boolean) => {
     const response: any = await apiRequest(
       'put',
       EndPoint.profile_notification_settings + userId,
-      {...requestData,muteDuration:'24h'},
+      {...requestData, muteDuration: '24h'},
     );
-
+  
     if (response.status === 200) {
       dispatch(setNotificationSettings(response.data.notificationsSettings));
-       FlashMessageComponent.show('success','Settings updated successfully')
+  
+      // Determine the success message dynamically
+      const status = newValue ? 'ON' : 'OFF';
+      FlashMessageComponent.show(
+        'success',
+        `Notifications turned ${status} successfully`
+      );
     }
   };
+  const handleBackPress=()=>{
+    dispatch(setPageProgress(3))
+    navigation.goBack()
+  }
 
   return (
     <SafeAreaView style={styles.container}>

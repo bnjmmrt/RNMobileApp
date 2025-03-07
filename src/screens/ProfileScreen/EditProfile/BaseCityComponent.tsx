@@ -44,8 +44,10 @@ const BaseCityComponent = forwardRef(
         setSelectedCity(location);
       }
     }, [location]);
+
     useEffect(() => {
       onLocationSelect && onLocationSelect(selectedCity)
+      setErrorMessage(null);
     }, [selectedCity]);
 
     useImperativeHandle(ref, () => ({

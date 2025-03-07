@@ -490,7 +490,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           onPress={logOut}
           submitButtonText={BUTTON_LABLE.CONFIRM}
           cancelButtonText={BUTTON_LABLE.CANCEL}
-          snapPoints={['0.27']}
+          snapPoints={[Platform.OS == 'android' ? '0.29':'0.30']}
           image={null}
         />
         <DeleteAccountBottomSheet
