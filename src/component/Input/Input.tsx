@@ -100,6 +100,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
 
   // Validate inputs
   const validateInputs = () => {
+    console.log('Updated Text:', inputText);
     if (!inputText) {
       setErrorMessage(initialErrorMessage);
       return false;
@@ -164,10 +165,12 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
           value={inputText}
           placeholder={placeholder}
           onChangeText={text => {
+            console.log('Updated Text:', text);
+           
             setInputText(text);
-            setErrorMessage(''); // Clear error on text change
+            setErrorMessage(''); 
             if (onChangeText) {
-              onChangeText(text); // Call the parent-provided onChangeText if it exists
+              onChangeText(text); 
             }
           }}
           multiline={multiline}
