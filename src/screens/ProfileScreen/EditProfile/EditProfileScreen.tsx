@@ -59,6 +59,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   const emailInputRef = useRef<any>(null);
   const baseCityRef = useRef<any>(null);
   const birthDayRef = useRef<any>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const getGender = (gender: string) => {
     return genderList.find(item => item.value === gender);
@@ -170,6 +171,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         }
       }
     } else {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
       firstNameRef.current.validateInputs()
       validateName('FirstName')
       lastNameRef.current.validateInputs()
@@ -253,7 +255,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         showProgressBar={false}
       />
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView ref={scrollViewRef} contentContainerStyle={styles.scrollContainer}>
         <View style={styles.contentContainer}>
           <Input
             ref={firstNameRef}
