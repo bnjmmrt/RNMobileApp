@@ -7,7 +7,7 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   changeSafeAreaViewConfig,
   fetchUserProfile,
@@ -29,6 +29,7 @@ import {
   setLastName,
   setPhone,
 } from 'src/redux/slices/appFlowSlice';
+import { RootState } from 'src/redux/slices';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -57,6 +58,8 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   );
 
   const dispatch = useDispatch();
+  const fcmToken = useSelector((state: RootState) => state.auth.fcmToken);
+  console.log("fcmToken on otp screen", fcmToken)
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   useEffect(() => {
@@ -170,9 +173,8 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         <View style={styles.contentContainer}>
           <TitleSubtitle
             title={LABLE.ENTER_YOUR_VERIFICATION_CODE}
-            subTitle={`${LABLE.SEND_TO}${
-              route.params.isEmail ? route.params.email : route.params.phone
-            }`}
+            subTitle={`${LABLE.SEND_TO}${route.params.isEmail ? route.params.email : route.params.phone
+              }`}
           />
           <OTPComponent
             error={errorMsg}

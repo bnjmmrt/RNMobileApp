@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -23,6 +23,8 @@ import {
 import AvatarInitials from 'src/component/AvatarInitials';
 import SwapToDeleteComponent from 'src/component/SwappableItem/SwapToDeleteComponent';
 import EmptyRecordComponent from 'src/component/EmptyRecord/EmptyRecordComponent';
+import { useFetchNotificationDetailQuery, useFetchNotificationQuery } from 'src/redux/actions/usersApiAction';
+import { navigateToScreen } from 'src/component/PushNotification';
 
 const initialNotifications = [
   {
@@ -108,27 +110,47 @@ const initialNotifications = [
   },
 ];
 
-interface NotificationsScreenProps extends NativeStackScreenProps<any, any> {}
+interface NotificationsScreenProps extends NativeStackScreenProps<any, any> { }
 
 const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
   navigation,
 }) => {
   const [notifications, setNotifications] = useState(initialNotifications);
-  const [page, setPage] = useState(1);
-  const pageSize = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const queryArgs = ({
+    take: 10,
+    skip: (currentPage - 1) * 10
+  })
+  const { data, isLoading, refetch } = useFetchNotificationQuery(queryArgs);
 
-  const markAsRead = id => {
-    setNotifications(prev =>
-      prev.map(item => (item.id === id ? { ...item, read: true } : item)),
-    );
+  useEffect(() => {
+    if (data) {
+      setNotifications((prev) => (currentPage === 1 ? data?.data?.result : [...prev, ...data?.data?.result]));
+    }
+  }, [data]);
+
+  useEffect(() => {
+    setRefreshing(isLoading)
+  }, [isLoading])
+
+  const handleRefresh = () => {
+    setCurrentPage(1)
+  };
+
+  const markAsRead = (id: string) => {
+    const queryArgs = ({
+      notificationId: id
+    })
+    const { data: notiDetail, isLoading, refetch } = useFetchNotificationDetailQuery(queryArgs);
+    navigateToScreen(notiDetail)
   };
 
   const loadMore = () => {
-    setPage(prev => prev + 1);
-    setNotifications([...notifications, ...notifications]);
+    setCurrentPage(prev => prev + 1);
+    // setNotifications([...notifications, ...notifications]);
   };
 
-  const displayedNotifications = notifications.slice(0, page * pageSize);
 
   useFocusEffect(
     useCallback(() => {
@@ -145,14 +167,14 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
     return (
       <TouchableOpacity
         style={[styles.notification, !item.read && styles.unread]}
-        onPress={() => markAsRead(item.id)}>
+        onPress={() => markAsRead(item?.id)}>
         <AvatarInitials size={48} />
-        <Text numberOfLines={2} style={styles.textContainer}>
+        {/* <Text numberOfLines={2} style={styles.textContainer}>
           <Text style={[styles.title, styles.bold]}>{item.name}</Text>
           <Text style={styles.title}>{` ${item.message} `}</Text>
           <Text style={[styles.title, styles.bold]}>{item.address}</Text>
         </Text>
-        <Text style={styles.time}>{item.time}</Text>
+        <Text style={styles.time}>{item.time}</Text> */}
       </TouchableOpacity>
     );
   };
@@ -167,7 +189,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
       {notifications?.length ? (
         <View style={styles.contentContainer}>
           <FlatList
-            data={displayedNotifications}
+            data={notifications}
             keyExtractor={item => item.id}
             renderItem={({ item }) => (
               <SwapToDeleteComponent

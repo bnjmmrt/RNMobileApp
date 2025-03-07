@@ -8,13 +8,20 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   [FIRApp configure];
+  [application registerForRemoteNotifications];
   // Prevent screenshots and recordings
   [self preventScreenCapture];
 
   self.moduleName = @"RumorApp";
   self.initialProps = @{};
+  bool didFinish = [super application:application didFinishLaunchingWithOptions:launchOptions];
   
-  return [super application:application didFinishLaunchingWithOptions:launchOptions];
+  return didFinish;
+}
+
+- (void)application:(UIApplication *)application
+ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+ [FIRMessaging messaging].APNSToken = deviceToken;
 }
 
 - (void)preventScreenCapture {

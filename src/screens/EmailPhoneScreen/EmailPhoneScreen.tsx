@@ -14,9 +14,10 @@ import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle'
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
 import { BUTTON_LABLE, LABLE } from '../../utils/constants';
 import EmailPhoneStyles from './EmailPhoneStyles';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
 import { verticalMarginScale } from 'src/utils/dimensions';
+import { RootState } from 'src/redux/slices';
 
 interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -29,7 +30,8 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
   const [URL, setURL] = useState('');
   const bottomSheetRef = useRef(null);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-
+  const fcmToken = useSelector((state: RootState) => state.auth.fcmToken);
+  console.log("fcmToken on otp screen", fcmToken)
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
       setKeyboardVisible(true);
