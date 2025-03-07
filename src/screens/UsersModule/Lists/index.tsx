@@ -1,10 +1,10 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, RefreshControl, View} from 'react-native';
-import {BottomSheetMethods} from 'src/component/BottomSheet/BottomSheet';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { FlatList, RefreshControl, View } from 'react-native';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import GradientSeprator from 'src/component/GradientSeprator';
-import {useFetchAllCustomListsQuery} from 'src/redux/actions/listsApiAction';
-import {Hp, verticalScale} from 'src/utils/dimensions';
+import { useFetchAllCustomListsQuery } from 'src/redux/actions/listsApiAction';
+import { Hp, verticalScale } from 'src/utils/dimensions';
 import ListActionsSheet, {
   listActionCurrentPageType,
 } from '../BottomSheets/ListActionsSheet';
@@ -51,7 +51,7 @@ const Lists: React.FC<ListsProps> = ({}) => {
     useState<listActionCurrentPageType>('');
   const [selectedList, setSelectedList] = useState<string | null>(null);
 
-  const {data, isLoading, refetch} = useFetchAllCustomListsQuery({
+  const { data, isLoading, refetch } = useFetchAllCustomListsQuery({
     take: 10,
     skip: (currentPage - 1) * 10,
   });
@@ -87,7 +87,7 @@ const Lists: React.FC<ListsProps> = ({}) => {
   };
 
   const renderItem = useCallback(
-    ({item, index}: {item: ListItemInterface; index: number}) => {
+    ({ item, index }: { item: ListItemInterface; index: number }) => {
       return (
         <>
           <ListItem
@@ -105,11 +105,13 @@ const Lists: React.FC<ListsProps> = ({}) => {
               index === 0 ? 'follower' : index === 1 ? 'favorite' : 'custom'
             }
           />
-          {index === 1 ? <GradientSeprator style={styles.seprator} /> : null}
+          {allCustomLists?.list?.length > 2 && index === 1 ? (
+            <GradientSeprator style={styles.seprator} />
+          ) : null}
         </>
       );
     },
-    [],
+    [allCustomLists?.list],
   );
 
   return (
@@ -118,10 +120,10 @@ const Lists: React.FC<ListsProps> = ({}) => {
         data={allCustomLists?.list || []}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        style={{gap: 10}}
-        contentContainerStyle={{gap: 16}}
+        style={{ gap: 10 }}
+        contentContainerStyle={{ gap: 16 }}
         ListFooterComponent={
-          <View style={{marginBottom: verticalScale(150)}} />
+          <View style={{ marginBottom: verticalScale(150) }} />
         }
         onEndReached={loadMore}
         onEndReachedThreshold={0.4}

@@ -75,16 +75,16 @@ const UserActionsSheet = forwardRef<
 
     const snapPoints =
       selectedAction === 'report'
-        ? [`${verticalScale(60)}%`]
+        ? ['60%']
         : selectedAction === 'markSpam'
-        ? [`${verticalScale(35)}%`]
+        ? ['35%']
         : selectedAction === 'delete'
-        ? [`${verticalScale(30)}%`]
+        ? ['30%']
         : selectedAction === 'addToList'
-        ? [`${verticalScale(60)}%`]
+        ? ['60%']
         : selectedAction === 'createList'
-        ? [`${verticalScale(38)}%`]
-        : ['25%'];
+        ? ['38%']
+        : ['30%'];
 
     const onCreateListSuccess = () => {
       closeSheet();

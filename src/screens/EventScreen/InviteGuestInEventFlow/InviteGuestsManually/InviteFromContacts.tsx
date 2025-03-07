@@ -1,7 +1,7 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import AvatarInitials from 'src/component/AvatarInitials';
 import ButtonSmall from 'src/component/ButtonSmall';
 import { CustomText } from 'src/component/CustomText';
@@ -9,6 +9,8 @@ import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import SearchInput from 'src/component/SearchInput';
 import { EventStackParamList } from 'src/navigation/EventStack';
 import { ROUTES } from 'src/navigation/Route';
+import { useGetGuestsQuery } from 'src/redux/actions/eventApiAction';
+import { RootState } from 'src/redux/slices';
 import { setSelectedManualUser } from 'src/redux/slices/inviteGuestsFlowSlice';
 import {
   horizontalMarginScale,
@@ -31,6 +33,21 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
 
   const [contacts, setContacts] = useState<ContactItem[]>([]);
   const [filteredContacts, setFilteredContacts] = useState<ContactItem[]>([]);
+
+  // const { selectedEvent } = useSelector(
+  //   (state: RootState) => ({
+  //     selectedEvent: state.inviteGuestsFlow.selectedEvent,
+  //   }),
+  //   shallowEqual,
+  // );
+
+  // const {
+  //   data: guestsData,
+  //   error: guestsError,
+  //   isLoading: isLoadingGuests,
+  //   isFetching: isFetchingGuests,
+  //   refetch: refetchGuests,
+  // } = useGetGuestsQuery({ eventId: selectedEvent?.id });
 
   const fetchContacts = async () => {
     await requestContactPermission();
