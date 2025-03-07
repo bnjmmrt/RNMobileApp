@@ -1,7 +1,7 @@
 import { CommonActions, useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Platform, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Alert, Platform, ScrollView, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-animatable';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -40,6 +40,7 @@ import ProfileListItem from './ProfileListItem';
 import ProfileScreenStyle from './ProfileScreenStyle';
 import ProfileTopView from './ProfileTopView';
 import HeaderComponent from 'src/component/HeaderComponent';
+import { check, openSettings, PERMISSIONS } from 'react-native-permissions';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
@@ -317,12 +318,37 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       height: 400,
       cropping: true,
       cropperCircleOverlay: true,
-    }).then((image: ImageOrVideo) => {
-      setImage(image.path);
-      // editPhotoBottomSheetRef.current?.close();
-      savePhotoBottomSheetRef.current?.open();
-    });
+    })
+      .then((image: ImageOrVideo) => {
+        setImage(image.path);
+        // editPhotoBottomSheetRef.current?.close();
+        savePhotoBottomSheetRef.current?.open();
+      })
+      .catch(async (error) => {
+        console.log('ImagePicker Error: ', error);
+
+        if (error?.message?.includes('did not grant library permission')) {
+          Alert.alert(
+            'Permission Required',
+            'We need access to your photo library to allow you to add a profile picture. Please enable photo library permissions in your device settings.',
+            [
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+              {
+                text: 'Open Settings',
+                onPress: async () => {
+                  openSettings();
+                },
+              },
+            ]
+          );
+        }
+      });
   };
+
+
 
   const logOut = () => {
     const resetAction = CommonActions.reset({
