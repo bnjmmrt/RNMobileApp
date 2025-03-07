@@ -163,11 +163,10 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     color: COLORS.light_gray,
-    fontSize: fontScale(13),
+    fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Regular,
-    marginVertical: Hp(0),
     textAlign: 'center',
-    marginBottom: verticalMarginScale(16),
+    marginBottom: 12,
   },
 
   textareaContainer: {
