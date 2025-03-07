@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Image, Platform, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, Platform, Text, TouchableOpacity, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
@@ -25,6 +25,7 @@ import FullScreenLoader from 'src/component/FullScreenLoader';
 import { useFocusEffect } from '@react-navigation/native';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { openSettings } from 'react-native-permissions';
 
 interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -111,6 +112,27 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
       setIsToastShown(false);
       setIsUploadProfile(true);
       savePhotoBottomSheetRef.current?.open();
+    }).catch(async (error) => {
+      console.log('ImagePicker Error: ', error);
+
+      if (error?.message?.includes('did not grant library permission')) {
+        Alert.alert(
+          'Permission Required',
+          'We need access to your photo library to allow you to add a profile picture. Please enable photo library permissions in your device settings.',
+          [
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+            {
+              text: 'Open Settings',
+              onPress: async () => {
+                openSettings();
+              },
+            },
+          ]
+        );
+      }
     });
   };
 

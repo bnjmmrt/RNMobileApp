@@ -67,6 +67,9 @@ const FeedItem: React.FC<FeedItemProps> = ({ item, from = 'AllEvents' }) => {
               {formatEventDate(item.startDate, item.endDate)}
             </CustomText>
           ) : null}
+          <CustomText textProps={{ numberOfLines: 1 }} style={styles.subtitle}>
+            {item?.location?.city}
+          </CustomText>
         </View>
       ) : null}
     </TouchableOpacity>
