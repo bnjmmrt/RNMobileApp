@@ -101,11 +101,52 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
     }
   };
 
+  const validateName = (name: string) => {
+    const regex = /^[A-Za-z]+$/;
+    if (
+      name === 'FirstName' &&
+      firstNameRef?.current?.inputText.trim().length > 30
+    ) {
+      firstNameRef?.current?.setErrorMessage(
+        ERROR_MESSAGE.FIRST_NAME_SIZE_EXCEED,
+      );
+      return false;
+    } else {
+      if (!regex.test(firstNameRef?.current?.inputText)) {
+        firstNameRef?.current?.setErrorMessage(
+          ERROR_MESSAGE.FIRST_NAME_INVALID_CHARACTERS,
+        );
+        return false;
+      }
+    }
+
+    if (
+      name === 'LastName' &&
+      lastNameRef?.current?.inputText.trim().length > 30
+    ) {
+      lastNameRef?.current?.setErrorMessage(
+        ERROR_MESSAGE.LAST_NAME_SIZE_EXCEED,
+      );
+      return false;
+    } else {
+      if (!regex.test(lastNameRef?.current?.inputText)) {
+        lastNameRef?.current?.setErrorMessage(
+          ERROR_MESSAGE.LAST_NAME_INVALID_CHARACTERS,
+        );
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const onConfirmClick = async () => {
     if (isGuest && role === ROLE.NON_MEMBER) {
       if (
         firstNameRef.current.validateInputs() &&
-        lastNameRef.current.validateInputs()
+        validateName('FirstName') &&
+        lastNameRef.current.validateInputs() &&
+        validateName('LastName')
       ) {
         const requestObject: any = {
           // email: profileData?.email,
@@ -127,59 +168,62 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
           handleBackPress();
         }
       }
-    }
-    if (
+    } else if (
       firstNameRef.current.validateInputs() &&
+      validateName('FirstName') &&
       lastNameRef.current.validateInputs() &&
+      validateName('LastName') &&
       birthDayRef.current.validateBirthDate() &&
-      baseCityRef.current.validateBaseCity() &&
-      selectedCreativeFocus &&
-      selectedCreativeFocus.length > 0 &&
-      !isToastShown
+      baseCityRef.current.validateBaseCity()
     ) {
-      const requestObject: any = {
-        address: {
-          address: baseCityRef.current.selectedCity.address,
-          city: '',
-          latitude: '',
-          longitude: '',
-          placeId: baseCityRef.current.selectedCity.placeId,
-          regionCode: '',
-        },
-        birthDate: birthDayRef.current.selectedDate, //convertDateFormat(birthDayRef.current.selectedDate),
-        // email: profileData?.email,
-        firstName: firstNameRef.current.inputText,
-        gender: gender?.value,
-        lastName: lastNameRef.current.inputText,
-        // mobilePhone: profileData?.phoneNumber,
-        focusIds: selectedCreativeFocus.length
-          ? selectedCreativeFocus.map((item: any) => item.id)
-          : profileData?.creativeFocus.map((item: any) => item.id),
-      };
+      if (selectedCreativeFocus && selectedCreativeFocus.length) {
+        setIsToastShown(false);
+        const requestObject: any = {
+          address: {
+            address: baseCityRef.current.selectedCity.address,
+            city: '',
+            latitude: '',
+            longitude: '',
+            placeId: baseCityRef.current.selectedCity.placeId,
+            regionCode: '',
+          },
+          birthDate: birthDayRef.current.selectedDate, //convertDateFormat(birthDayRef.current.selectedDate),
+          // email: profileData?.email,
+          firstName: firstNameRef.current.inputText,
+          gender: gender?.value,
+          lastName: lastNameRef.current.inputText,
+          // mobilePhone: profileData?.phoneNumber,
+          focusIds: selectedCreativeFocus.length
+            ? selectedCreativeFocus.map((item: any) => item.id)
+            : profileData?.creativeFocus.map((item: any) => item.id),
+        };
 
-      const response: any = await apiRequest(
-        'put',
-        EndPoint.user_profile + userId,
-        requestObject,
-      );
-      if (response.status === 200) {
-        const responseUser: any = await apiRequest(
-          'get',
-          EndPoint.user + userId,
+        const response: any = await apiRequest(
+          'put',
+          EndPoint.user_profile + userId,
+          requestObject,
         );
-        if (responseUser.status === 200) {
-          dispatch(
-            setProfileData({
-              ...responseUser?.data,
-              profilePicture: responseUser?.data?.imageUrl,
-            }),
+        if (response.status === 200) {
+          const responseUser: any = await apiRequest(
+            'get',
+            EndPoint.user + userId,
           );
+          if (responseUser.status === 200) {
+            dispatch(
+              setProfileData({
+                ...responseUser?.data,
+                profilePicture: responseUser?.data?.imageUrl,
+              }),
+            );
+          }
+          FlashMessageComponent.show(
+            'success',
+            LABLE.PROFILE_UPDATED_SUCCESSFULLY,
+          );
+          handleBackPress();
         }
-        FlashMessageComponent.show(
-          'success',
-          LABLE.PROFILE_UPDATED_SUCCESSFULLY,
-        );
-        handleBackPress();
+      } else {
+        setIsToastShown(true);
       }
     }
   };
@@ -203,12 +247,14 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
             label={LABLE.FIRST_NAME}
             errorMessage={ERROR_MESSAGE.FIRST_NAME}
             defaultValue={profileData?.firstName}
+            maxLength={30}
           />
           <Input
             ref={lastNameRef}
             label={LABLE.LAST_NAME}
             errorMessage={ERROR_MESSAGE.LAST_NAME}
             defaultValue={profileData?.lastName}
+            maxLength={30}
           />
           {profileData?.email && profileData?.email !== '' && (
             <>
@@ -261,7 +307,13 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
               />
 
               <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
-              <BaseCityComponent location={{address: profileData?.city, placeId: profileData?.placeId}} ref={baseCityRef} />
+              <BaseCityComponent
+                location={{
+                  address: profileData?.city,
+                  placeId: profileData?.placeId,
+                }}
+                ref={baseCityRef}
+              />
 
               <Text
                 style={[
@@ -285,7 +337,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         {isToastShown && (
           <View style={{ marginTop: 20 }}>
             <Toast
-              toastStyle={{position: 'relative', width: '90%'}}
+              toastStyle={{ position: 'relative', width: '90%' }}
               message={LABLE.PLEASE_SELECT_AT_LEAST_ONE}
               onClose={() => setIsToastShown(false)}
             />
@@ -328,7 +380,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontWeight: '500',
     lineHeight: 16,
-    marginBottom: 5
+    marginBottom: 5,
   },
   subTitle: {
     color: COLORS.light_text,

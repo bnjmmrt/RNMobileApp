@@ -103,26 +103,29 @@ const BottomSheetComponent = forwardRef<
       });
     };
 
+    const handleSheetAnimationChange = useCallback((index: number) => {
+      if (index === -1) {
+        dispatch(changeTopSafeAreaViewColor(activeSafeAreaViewColor));
+        if (Platform.OS === 'android') {
+          StatusBar.setBackgroundColor(activeSafeAreaViewColor, true);
+        }
+        StatusBar.setBarStyle('light-content', true);
+      } else {
+        dispatch(changeTopSafeAreaViewColor(inActiveSafeAreaViewColor));
+        if (Platform.OS === 'android') {
+          StatusBar.setBackgroundColor(inActiveSafeAreaViewColor, true);
+        }
+        StatusBar.setBarStyle(
+          SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME.statusBarStyle,
+          true,
+        );
+      }
+
+      setIsSheetOpen(index === -1);
+    }, []);
+
     const handleSheetChange = useCallback(
       (index: number) => {
-        if (index !== -1) {
-          dispatch(changeTopSafeAreaViewColor(activeSafeAreaViewColor));
-          if (Platform.OS === 'android') {
-            StatusBar.setBackgroundColor(activeSafeAreaViewColor, true);
-          }
-          StatusBar.setBarStyle('light-content', true);
-        } else {
-          dispatch(changeTopSafeAreaViewColor(inActiveSafeAreaViewColor));
-          if (Platform.OS === 'android') {
-            StatusBar.setBackgroundColor(inActiveSafeAreaViewColor, true);
-          }
-          StatusBar.setBarStyle(
-            SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME.statusBarStyle,
-            true,
-          );
-        }
-
-        setIsSheetOpen(index !== -1);
         onChange?.(index);
       },
       [onChange],
@@ -203,7 +206,8 @@ const BottomSheetComponent = forwardRef<
         keyboardBehavior={Platform.OS === 'ios' ? 'interactive' : 'fillParent'}
         android_keyboardInputMode="adjustResize"
         keyboardBlurBehavior="restore"
-        enableDismissOnClose={true}>
+        enableDismissOnClose={true}
+        onAnimate={handleSheetAnimationChange}>
         {children}
         <FlashMessage ref={flashMessageRef} position={'top'} />
       </BottomSheetModal>

@@ -41,6 +41,7 @@ import FeedItem from './FeedItem';
 import FeedSeriesDetail from './FeedSeriesDetail';
 import EventEmptyRecord from '../EmptyRecord/EventEmptyRecord';
 import { formatDetailedEventDate } from 'src/utils/dateFunctions';
+import EventList from './EventList';
 
 export interface EventItem {
   admissionType: {
@@ -219,8 +220,8 @@ const EventsFeed = () => {
     searchText: searchTerm,
     queryString: filterQuery,
     userId: userId,
-    take: 6,
-    skip: (currentPage - 1) * 6,
+    // take: 30,
+    // skip: (currentPage - 1) * 30,
   });
 
   const debouncedSearch = useCallback(
@@ -239,12 +240,12 @@ const EventsFeed = () => {
   }, []);
 
   const handleLoadMore = useCallback(() => {
-    const totalCount = data?.data?.totalCount;
-    console.log("totalCount", totalCount)
-    console.log("AllEvent", allEvents?.length)
-    if (allEvents?.length < totalCount && !isLoading) {
-      setCurrentPage(prev => prev + 1);
-    }
+    // const totalCount = data?.data?.totalCount;
+    // console.log("totalCount", totalCount)
+    // console.log("AllEvent", allEvents?.length)
+    // if (allEvents?.length < totalCount && !isLoading) {
+    //   setCurrentPage(prev => prev + 1);
+    // }
   }, [allEvents]);
 
   const onRefreshPage = () => {
@@ -277,15 +278,48 @@ const EventsFeed = () => {
   useEffect(() => {
     if (data?.data?.data) {
       const eventsRes = data?.data?.data;
-      const featuredEventsRes = data?.data?.data?.filter(
-        (item: any) => item.featuredEventSection,
-      );
-      setFeaturedEvents(featuredEventsRes);
-      setAllEvents(prev =>
-        currentPage === 1 ? eventsRes : [...prev, ...eventsRes],
-      );
+      // const featuredEventsRes = data?.data?.data?.filter(
+      //   (item: any) => item.featuredEventSection,
+      // );
+      const { result, allArray } = groupEventsByFeaturedSection(data);
+      // console.log("Grouped Events:", result);
+
+
+
+      setFeaturedEvents(result);
+      setAllEvents(allArray);
+      // setAllEvents(prev =>
+      //   currentPage === 1 ? eventsRes : [...prev, ...eventsRes],
+      // );
     }
   }, [data]);
+
+  function groupEventsByFeaturedSection(mainResponse) {
+    let groupedEvents = {};
+    let allArray = []; // Single array to store all non-featured events
+
+    mainResponse.data.data.forEach(event => {
+      if (event.featuredEventSection) {
+        const sectionId = event.featuredEventSection.id;
+        if (!groupedEvents[sectionId]) {
+          groupedEvents[sectionId] = {
+            id: sectionId,
+            index: event.featuredEventSection.index,
+            name: event.featuredEventSection.name,
+            events: []
+          };
+        }
+        groupedEvents[sectionId].events.push(event);
+      } else {
+        allArray.push(event); // Push non-featured events into a single array
+      }
+    });
+
+    // Convert groupedEvents object into an array
+    let result = Object.values(groupedEvents);
+
+    return { result, allArray }; // Return both grouped featured events and all other events in a single array
+  }
 
 
   useFocusEffect(
@@ -390,9 +424,17 @@ const EventsFeed = () => {
         defaultValue={searchTerm}
       />
       {renderFilters()}
-      {renderFeaturedEvents()}
+      {/* {renderFeaturedEvents()} */}
+      <EventList
+        allEvents={allEvents || []}
+        featuredEvents={featuredEvents}
+        isLoading={isLoading}
+        onRefreshPage={onRefreshPage}
+        handleLoadMore={handleLoadMore}
+      />
 
-      <FlatList
+
+      {/* <FlatList
         data={allEvents || []}
         keyExtractor={(_item, index) => index.toString()}
         renderItem={renderItem}
@@ -428,7 +470,7 @@ const EventsFeed = () => {
             <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
           ) : undefined
         }
-      />
+      /> */}
 
       {responseSubmitted && (
         <View style={styles.responseSubmitted}>
@@ -455,6 +497,7 @@ const EventsFeed = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   featuredContainer: {
