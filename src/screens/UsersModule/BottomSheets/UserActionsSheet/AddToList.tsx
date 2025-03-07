@@ -77,7 +77,7 @@ const AddToList = ({
   };
 
   const loadMore = () => {
-    if (allCustomLists.list?.length < data?.data?.list?.count) {
+    if (allCustomLists.list?.length < data?.data?.count) {
       setCurrentPage(prev => prev + 1);
     }
   };
@@ -102,13 +102,18 @@ const AddToList = ({
   useEffect(() => {
     if (data) {
       setAllCustomLists(prev =>
-        currentPage === 1 ? data.data : [...prev.list, ...data.data.list],
+        currentPage === 1
+          ? data.data
+          : {
+              count: data?.data?.count,
+              list: [...prev.list, ...data.data.list],
+            },
       );
     }
   }, [data]);
 
   return (
-    <BottomSheetView style={{ flex: 1 }} >
+    <BottomSheetView style={{ flex: 1 }}>
       <BottomSheetFlatList
         data={allCustomLists?.list?.slice(2) || []}
         renderItem={renderListRow}
@@ -122,18 +127,20 @@ const AddToList = ({
         }
         ListHeaderComponent={<></>}
         ListEmptyComponent={
-          isLoading ? (<FullScreenLoader loading={isLoading}
-            customStyle={{
-              height: Hp(40),
-              alignItems: 'center',
-              justifyContent: 'center',
-            }} >
-            {''}
-          </FullScreenLoader>
+          isLoading ? (
+            <FullScreenLoader
+              loading={isLoading}
+              customStyle={{
+                height: Hp(40),
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              {''}
+            </FullScreenLoader>
           ) : (
             <View
               style={{
-                height: Hp(55),
+                height: Hp(40),
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
@@ -146,7 +153,7 @@ const AddToList = ({
           )
         }
       />
-      <BottomSheetView style={{ marginBottom: verticalMarginScale(10) }}>
+      <BottomSheetView style={{ marginBottom: verticalMarginScale(20) }}>
         <Button
           title="Add to List"
           colorTheme="dark"

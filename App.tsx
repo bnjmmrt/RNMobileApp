@@ -27,15 +27,15 @@ const AppContent: React.FC = () => {
   const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    // Enable screenshot prevention
-    RNPreventScreenshot?.enableSecureView();
+  // useEffect(() => {
+  //   // Enable screenshot prevention
+  //   RNPreventScreenshot?.enableSecureView();
 
-    // Cleanup on unmount
-    return () => {
-      RNPreventScreenshot?.disableSecureView();
-    };
-  }, [RNPreventScreenshot]);
+  //   // Cleanup on unmount
+  //   return () => {
+  //     RNPreventScreenshot?.disableSecureView();
+  //   };
+  // }, [RNPreventScreenshot]);
 
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
