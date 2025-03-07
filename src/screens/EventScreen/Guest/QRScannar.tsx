@@ -31,6 +31,7 @@ import { Image } from 'react-native-animatable';
 import FullScreenLoader from 'src/component/FullScreenLoader';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { openSettings } from 'react-native-permissions';
+import BackButton from 'src/component/BackButton/BackButton';
 
 const { width } = Dimensions.get('window');
 const SCANNER_SIZE = width * 0.6;
@@ -106,16 +107,20 @@ const QRCodeScanner = () => {
   const onMenuClick = () => { };
   if (!hasPermission) {
     return (
-      <View style={styles.btnContainer}>
-        <Text>Camera permission is required</Text>
-        <Button
-          imageSource={IMAGES.settings}
-          style={styles.btn}
-          colorTheme="dark"
-          title="Give Access"
-          onPress={() => requestPermission()}
-        />
-      </View>
+      <>
+        <BackButton />
+        <View style={styles.btnContainer}>
+          <Text>Camera permission is required</Text>
+          <Button
+            imageSource={IMAGES.settings}
+            style={styles.btn}
+            colorTheme="dark"
+            title="Give Access"
+            onPress={() => requestPermission()}
+          />
+        </View>
+      </>
+
     );
   }
 

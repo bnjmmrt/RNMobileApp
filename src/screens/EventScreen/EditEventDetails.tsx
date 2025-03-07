@@ -263,25 +263,28 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       cropperCircleOverlay: false,
     }).then((image: ImageOrVideo) => {
       savePhoto(image.path);
-    }).catch((error) => {
-      Alert.alert(
-        'Permission Required',
-        'We need access to your photo library to allow you to add picture. Please enable photo library permissions in your device settings.',
-        [
-          {
-            text: 'Cancel',
-            style: 'cancel',
-          },
-          {
-            text: 'Open Settings',
-            onPress: async () => {
-              openSettings();
-            },
-          },
-        ],
-      );
+    }).catch(async (error) => {
       console.log('ImagePicker Error: ', error);
-    });;
+
+      if (error?.message?.includes('did not grant library permission')) {
+        Alert.alert(
+          'Permission Required',
+          'We need access to your photo library to allow you to add a picture. Please enable photo library permissions in your device settings.',
+          [
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+            {
+              text: 'Open Settings',
+              onPress: async () => {
+                openSettings();
+              },
+            },
+          ]
+        );
+      }
+    });
   };
 
   useEffect(() => { }, [eventAddress]);

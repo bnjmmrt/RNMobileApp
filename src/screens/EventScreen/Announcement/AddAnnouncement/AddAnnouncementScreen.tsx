@@ -556,24 +556,27 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
         }).then((image: ImageOrVideo) => {
             editPhotoBottomSheetRef.current?.close();
             savePhoto(image?.path, 'image', image?.filename)
-        }).catch((error) => {
-            Alert.alert(
-                'Permission Required',
-                'We need access to your photo library to allow you to add picture. Please enable photo library permissions in your device settings.',
-                [
-                    {
-                        text: 'Cancel',
-                        style: 'cancel',
-                    },
-                    {
-                        text: 'Open Settings',
-                        onPress: async () => {
-                            openSettings();
-                        },
-                    },
-                ],
-            );
+        }).catch(async (error) => {
             console.log('ImagePicker Error: ', error);
+
+            if (error?.message?.includes('did not grant library permission')) {
+                Alert.alert(
+                    'Permission Required',
+                    'We need access to your photo library to allow you to add a picture. Please enable photo library permissions in your device settings.',
+                    [
+                        {
+                            text: 'Cancel',
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'Open Settings',
+                            onPress: async () => {
+                                openSettings();
+                            },
+                        },
+                    ]
+                );
+            }
         });
     };
     const pickPdf = async () => {
