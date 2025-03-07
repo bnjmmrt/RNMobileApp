@@ -209,7 +209,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         url: `/events/v1/event/${eventId}/event-announcements?take=${take}&skip=${skip}`,
         method: 'GET',
       }),
-      providesTags: ['HostEventsAnnouncment'],
+      providesTags: ['HostEventsAnnouncment']
     }),
 
     // fetch event receipient for host
