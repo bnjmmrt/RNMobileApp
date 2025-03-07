@@ -94,7 +94,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
     <SafeAreaView style={styles.container}>
     <ScrollView >
     <KeyboardAvoidingView 
-  behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
+    behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
   
 >
       <Header
@@ -110,6 +110,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
           placeholder={LABLE.ENTER_FEEDBACK}
           errorMessage={ERROR_MESSAGE.FEEDBACK_ERROR}
           multiline={true}
+          maxLength={500}
         />
         <Text style={styles.tagText}>Tag</Text>
         <CreativeFocusComponent
