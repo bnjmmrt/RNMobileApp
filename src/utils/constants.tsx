@@ -325,7 +325,7 @@ export const PROFILE = {
   SMS_NOTIFICATIONS: 'SMS Notifications',
   PUSH_NOTIFICATIONS: 'Push Notifications',
   EMAIL_NOTIFICATIONS: 'Email Notifications',
-  FEEDBACK_MESSAGE: 'Thank you for your feedback!',
+  FEEDBACK_MESSAGE: 'Thank you for\nyour feedback!',
   FEEDBACK_CONFIRMATION_MESSAGE:
     'We truly appreciate your input and will use it to enhance our service.',
   REVIEW_REFERRAL_REQUESTS:

@@ -1,6 +1,5 @@
-import React, {useRef, useState} from 'react';
-import {Platform, StyleSheet, Text,View} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, {useEffect, useRef, useState} from 'react';
+import {Platform, StyleSheet,SafeAreaView,KeyboardAvoidingView,Keyboard, Text,View, ScrollView} from 'react-native';
 import { useSelector} from 'react-redux';
 import Header from '../../../component/Header/Header';
 import {
@@ -43,7 +42,7 @@ const list: Tag[] = [
   {id: 1, name: 'General', value: 'general'},
   {id: 2, name: 'Bug', value: 'bug'},
   {id: 3, name: 'New Feature Suggestions', value: 'new_feature_suggestion'},
-  // {id: 4, name: 'New Event Suggestions', value: 'new_event_suggestion'},
+  {id: 4, name: 'New Event Suggestions', value: 'new_feature_suggestion'},
 ];
 const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   const navigation = useNavigation();
@@ -55,6 +54,9 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   const userId = useSelector((state: RootState) => state.auth.userId);
   const feedbackRef = useRef<any>(null);
 
+  useEffect(()=>{
+    // Keyboard.dismiss()
+  },[selectedData])
   const handleBackPress = () => {
     navigation.goBack();
   };
@@ -87,7 +89,14 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   };
 
   return (
+    
+  
     <SafeAreaView style={styles.container}>
+    <ScrollView >
+    <KeyboardAvoidingView 
+  behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
+  
+>
       <Header
         headerTitle={PROFILE.FEEDBACK}
         onPress={handleBackPress}
@@ -108,33 +117,34 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
           setIsToastShown={setIsToastShown}
           getSelectedData={getSelectedData}
         />
-
-        {isToastShown && (
-          <Toast
-            message={'Please select at least one'}
-            onClose={() => setIsToastShown(false)}
-          />
+{isToastShown && (
+          <Text style={styles.error}>Please select tag</Text>
         )}
+       
       </View>
 
       <ConfirmationBottomSheet
         ref={confirmationRef}
-        logo={IMAGES.check}
+        logo={IMAGES.check_gray}
         title={PROFILE.FEEDBACK_MESSAGE}
         subTitle={PROFILE.FEEDBACK_CONFIRMATION_MESSAGE}
         btnLabel={BUTTON_LABLE.CLOSE}
         back={handleBackPress}
       />
-
+      </KeyboardAvoidingView>
+      
+      </ScrollView>
+      
       <Button
         disabled={false}
         style={styles.btnStyle}
-        title={BUTTON_LABLE.CONFIRM}
+        title={BUTTON_LABLE.SUBMIT}
         colorTheme="dark"
         onPress={onSubmit}
         loading={loading}
       />
     </SafeAreaView>
+    
   );
 };
 
@@ -142,12 +152,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    
   },
   contentContainer: {
     flex: 1,
     paddingVertical: verticalMarginScale(0),
     paddingHorizontal: horizontalMarginScale(20),
     height: '100%',
+    paddingBottom:100
   },
   subTitle: {
     color: COLORS.light_gray,
@@ -192,5 +204,10 @@ const styles = StyleSheet.create({
     marginTop: verticalMarginScale(5),
     color: COLORS.errorText,
   },
+  error:{
+    color:COLORS.errorText,
+    fontSize:fontScale(12),
+    fontWeight:'500'
+  }
 });
 export default FeedbackScreen;
