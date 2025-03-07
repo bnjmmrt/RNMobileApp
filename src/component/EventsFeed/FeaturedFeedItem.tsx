@@ -50,6 +50,9 @@ const FeedItem: React.FC<FeedItemProps> = ({ item }) => {
         <CustomText style={styles.subtitle}>
           {formatEventDate(item.startDate, item.endDate)}
         </CustomText>
+        <CustomText style={styles.subtitle}>
+          {item.location.city}
+        </CustomText>
       </View>
     </TouchableOpacity>
   );
