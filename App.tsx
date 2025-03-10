@@ -24,18 +24,17 @@ import ScreenshotDetectedDialog from 'src/component/ScreenshotDetectedDialog';
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
-  const { apiRequest, loading, error } = useApi();
+  const { apiRequest } = useApi();
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   // Enable screenshot prevention
-  //   RNPreventScreenshot?.enableSecureView();
+  useEffect(() => {
+    RNPreventScreenshot?.enableSecureView();
 
-  //   // Cleanup on unmount
-  //   return () => {
-  //     RNPreventScreenshot?.disableSecureView();
-  //   };
-  // }, [RNPreventScreenshot]);
+    return () => {
+      RNPreventScreenshot?.disableSecureView();
+    };
+  }, [RNPreventScreenshot]);
+
 
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
