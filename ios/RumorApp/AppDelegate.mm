@@ -10,7 +10,7 @@
   [FIRApp configure];
   [application registerForRemoteNotifications];
   // Prevent screenshots and recordings
-  [self preventScreenCapture];
+  // [self preventScreenCapture];
 
   self.moduleName = @"RumorApp";
   self.initialProps = @{};

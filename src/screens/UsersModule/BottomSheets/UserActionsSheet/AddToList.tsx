@@ -1,17 +1,18 @@
-import {BottomSheetFlatList, BottomSheetView} from '@gorhom/bottom-sheet';
-import React, {useCallback, useEffect, useState} from 'react';
-import {View} from 'react-native';
+import { BottomSheetFlatList, BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View } from 'react-native';
 import Button from 'src/component/Button';
 import {
   useAddUsersToCustomListMutation,
   useFetchAllCustomListsQuery,
 } from 'src/redux/actions/listsApiAction';
-import {COLORS} from 'src/utils/constants';
-import {Hp, verticalMarginScale, verticalScale} from 'src/utils/dimensions';
-import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
-import {ListInterface, ListItemInterface} from '../../Lists';
-import {styles} from './style';
+import { COLORS } from 'src/utils/constants';
+import { Hp, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
+import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
+import { ListInterface, ListItemInterface } from '../../Lists';
+import { styles } from './style';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import FullScreenLoader from 'src/component/FullScreenLoader';
 
 const AddToList = ({
   showError,
@@ -33,14 +34,14 @@ const AddToList = ({
     null,
   );
 
-  const {data, isLoading} = useFetchAllCustomListsQuery({
+  const { data, isLoading } = useFetchAllCustomListsQuery({
     take: 10,
     skip: (currentPage - 1) * 10,
   });
 
   const [
     addUsersToList,
-    {error: addUsersToListError, isLoading: addUsersToListLoading},
+    { error: addUsersToListError, isLoading: addUsersToListLoading },
   ] = useAddUsersToCustomListMutation();
 
   const onPressAddToList = async () => {
@@ -76,20 +77,20 @@ const AddToList = ({
   };
 
   const loadMore = () => {
-    if (allCustomLists.list?.length < data?.data?.list?.count) {
+    if (allCustomLists.list?.length < data?.data?.count) {
       setCurrentPage(prev => prev + 1);
     }
   };
 
   const renderListRow = useCallback(
-    ({item, index}: {item: ListItemInterface; index: number}) => {
+    ({ item, index }: { item: ListItemInterface; index: number }) => {
       const isSelected = item.id === selectedList?.id;
       return (
         <Button
           title={item.name}
           style={[
             styles.actionButton,
-            isSelected && {borderColor: COLORS.black},
+            isSelected && { borderColor: COLORS.black },
           ]}
           onPress={() => setSelectedList(isSelected ? null : item)}
         />
@@ -101,41 +102,58 @@ const AddToList = ({
   useEffect(() => {
     if (data) {
       setAllCustomLists(prev =>
-        currentPage === 1 ? data.data : [...prev.list, ...data.data.list],
+        currentPage === 1
+          ? data.data
+          : {
+              count: data?.data?.count,
+              list: [...prev.list, ...data.data.list],
+            },
       );
     }
   }, [data]);
 
   return (
-    <BottomSheetView style={{flex: 1}}>
+    <BottomSheetView style={{ flex: 1 }}>
       <BottomSheetFlatList
         data={allCustomLists?.list?.slice(2) || []}
         renderItem={renderListRow}
         keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{gap: verticalScale(8)}}
+        contentContainerStyle={{ gap: verticalScale(8) }}
         // style={{flex: 1}}
         scrollEnabled
         onEndReached={loadMore}
         ListFooterComponent={
-          <View style={{marginBottom: verticalMarginScale(20)}} />
+          <View style={{ marginBottom: verticalMarginScale(20) }} />
         }
         ListHeaderComponent={<></>}
         ListEmptyComponent={
-          <View
-            style={{
-              height: Hp(40),
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <EventEmptyRecord
-              title="No Lists"
-              subTitle="There are no lists to show!"
-              isLoading={isLoading}
-            />
-          </View>
+          isLoading ? (
+            <FullScreenLoader
+              loading={isLoading}
+              customStyle={{
+                height: Hp(40),
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              {''}
+            </FullScreenLoader>
+          ) : (
+            <View
+              style={{
+                height: Hp(40),
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <EventEmptyRecord
+                title="No Events"
+                subTitle="There are no events available"
+                isLoading={isLoading}
+              />
+            </View>
+          )
         }
       />
-      <BottomSheetView style={{marginBottom: verticalMarginScale(10)}}>
+      <BottomSheetView style={{ marginBottom: verticalMarginScale(20) }}>
         <Button
           title="Add to List"
           colorTheme="dark"

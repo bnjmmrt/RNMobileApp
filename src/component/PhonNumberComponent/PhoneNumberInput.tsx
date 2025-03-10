@@ -86,7 +86,9 @@ const PhoneNumberInput = forwardRef<
     const [disabled, setDisabled] = useState(false);
     const navigation = useNavigation();
     const dispatch = useDispatch();
-    const [selectedCountry, setSelectedCountry] = useState('');
+    const [selectedCountry, setSelectedCountry] = useState(
+      {"code": "US", "dial_code": "+1", "flag": "🇺🇸", "name": {"ar": "الولايات المتحدة الأمريكية", "bg": "Съединени щати", "by": "Злучаныя Штаты", "cn": "美国", "cz": "Spojené státy", "da": "USA", "de": "Vereinigte Staaten", "ee": "Ühendriigid", "el": "Ηνωμένες Πολιτείες Αμερικής", "en": "United States", "es": "Estados Unidos", "fr": "États-Unis", "he": "ארצות הברית", "it": "stati Uniti", "jp": "アメリカ", "nl": "Verenigde Staten", "pl": "Stany Zjednoczone", "pt": "Estados Unidos", "ro": "Statele Unite", "ru": "Соединенные Штаты", "tr": "Amerika Birleşik Devletleri", "ua": "Сполучені Штати", "zh": "美國"}}
+    );
     const [maxLength, setMaxLength] = useState(12);
 
     const handleCountrySelect = (selectedCountry: any) => {
@@ -155,7 +157,7 @@ const PhoneNumberInput = forwardRef<
     const getMaxPhoneNumberLength = (countryCode: any) => {
       try {
         const exampleNumber = getExampleNumber(countryCode);
-        return exampleNumber ? exampleNumber.nationalNumber.length : 11; // Default to 10 if no example found
+        return exampleNumber ? exampleNumber.nationalNumber.length : 10; // Default to 10 if no example found
       } catch (error) {
         return 10; // Fallback max length
       }

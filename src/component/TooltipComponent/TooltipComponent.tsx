@@ -3,20 +3,31 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-nati
 import { COLORS } from 'src/utils/constants';
 
 const { width } = Dimensions.get('window');
-const TooltipComponent = () => {
-  // const [visible, setVisible] = useState(false);
+type Position= 'Top' | 'Bottom';
+
+interface TooltipComponentProps{
+message:string;
+visible:boolean;
+position?:Position,
+style?:any
+}
+const TooltipComponent:React.FC<TooltipComponentProps> = ({message,visible,position="Bottom",style}) => {
+  // const [visible, setVisible] = useState(visible);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.tooltipContainer}>
-        <View style={styles.tooltip}>
-          <Text style={styles.tooltipText}>
-          This QR code is valid for [User Full Name] only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.
-          </Text>
-          <View style={styles.tooltipArrow} />
-        </View>
+    <>
+    {visible && ( <View style={[styles.container,style]}>
+    {/* <View style={styles.tooltipContainer}> */}
+      <View style={styles.tooltip}>
+        <Text style={styles.tooltipText}>
+        {message}
+        </Text>
+        <View style={[styles.tooltipArrow,position=="Top" && styles.topArrow]} />
       </View>
-    </View>
+    {/* </View> */}
+  </View>)}
+    </>
+   
   );
 };
 
@@ -25,12 +36,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    width:"100%"
+    width:"100%",
+    zIndex: 100
   },
   tooltipContainer: {
-    position: 'absolute',
-    bottom: 20, 
-    
+    // position: 'absolute',
+    // bottom: 10, 
   },
   tooltip: {
     backgroundColor: COLORS.black,
@@ -43,6 +54,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 14,
     textAlign: 'center',
+    fontWeight:'500',
+    lineHeight:16
   },
   tooltipArrow: {
     position: 'absolute',
@@ -58,6 +71,15 @@ const styles = StyleSheet.create({
     borderRightColor: 'transparent',
     borderBottomColor: 'black',
   },
+  topArrow:{
+    position: 'absolute',
+    top: -6,
+    left: '52%',
+    borderLeftWidth: 6,
+    borderRightWidth: 6,
+    borderBottomWidth: 6,
+    borderTopWidth:0
+  }
 });
 
 export default TooltipComponent;

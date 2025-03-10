@@ -11,14 +11,21 @@ import {
 } from 'react-native';
 import { COLORS } from '../../utils/constants';
 import LinearGradient from 'react-native-linear-gradient';
-import { fontScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
+import {
+  fontScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+} from 'src/utils/dimensions';
 import IMAGES from '@images/index';
 
 interface ContactSupportBottomSheetProps {
   setIsShown: (ishown: boolean) => void;
 }
 
-const ContactSupportBottomSheet: React.FC<ContactSupportBottomSheetProps> = ({ setIsShown }) => {
+const ContactSupportBottomSheet: React.FC<ContactSupportBottomSheetProps> = ({
+  setIsShown,
+}) => {
   const [modalVisible, setModalVisible] = useState(true);
 
   const submit = () => {
@@ -40,13 +47,34 @@ const ContactSupportBottomSheet: React.FC<ContactSupportBottomSheetProps> = ({ s
 
       <View style={styles.container}>
         <LinearGradient
-          colors={Platform.OS === 'android' ? ['#000', '#000', '#fff', '#fff', '#fff'] : ['#000', '#000', '#303030', '#fff', '#fff', '#fff', '#fff', '#fff']}
-          style={styles.modalContent}
-        >
+          colors={
+            Platform.OS === 'android'
+              ? ['#000', '#000', '#fff', '#fff', '#fff']
+              : [
+                  '#000',
+                  '#000',
+                  '#303030',
+                  '#fff',
+                  '#fff',
+                  '#fff',
+                  '#fff',
+                  '#fff',
+                ]
+          }
+          style={styles.modalContent}>
           <View style={styles.header}>
-            <Text style={styles.logo}>rumor</Text>
+            {/* <Text style={styles.logo}>rumor</Text> */}
+            <Image source={IMAGES.rumor} />
             <TouchableOpacity onPress={submit}>
-              <Image source={IMAGES.close} tintColor={COLORS.white} />
+              <Text
+                style={{
+                  color: COLORS.white,
+                  fontSize: 20,
+                  fontWeight: '700',
+                }}>
+                X
+              </Text>
+              {/* <Image source={IMAGES.close} tintColor={COLORS.white} /> */}
             </TouchableOpacity>
           </View>
 
@@ -62,7 +90,14 @@ const ContactSupportBottomSheet: React.FC<ContactSupportBottomSheetProps> = ({ s
           <View style={{ padding: 10, bottom: 30 }}>
             <TouchableOpacity style={styles.button}>
               <Text style={styles.buttonText}>Messages</Text>
-              <Text style={styles.icon}>💬</Text>
+              <Image
+                style={{
+                  width: 16,
+                  height: 16,
+                }}
+                source={IMAGES.message}
+              />
+              {/* <Text style={styles.icon}>💬</Text> */}
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button}>
@@ -102,9 +137,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   greeting: {
-    color: COLORS.white,
-    fontSize: fontScale(24),
-    fontWeight: 'bold',
+    color: '#D6CBB8',
+    fontSize: fontScale(32),
+    fontWeight: '600',
     marginTop: verticalMarginScale(20),
   },
   wave: {
@@ -112,8 +147,8 @@ const styles = StyleSheet.create({
   },
   helpText: {
     color: COLORS.white,
-    fontSize: fontScale(22),
-    fontWeight: 'bold',
+    fontSize: fontScale(32),
+    fontWeight: '600',
     marginBottom: verticalMarginScale(20),
   },
   button: {
@@ -128,6 +163,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: fontScale(18),
     color: COLORS.black,
+    fontWeight: '600',
   },
   icon: {
     fontSize: fontScale(18),

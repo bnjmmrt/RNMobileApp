@@ -7,7 +7,6 @@ import { addAnnouncementRequestInterface } from 'src/screens/EventScreen/Announc
 
 export const eventApiAction = createBaseApi.injectEndpoints({
   endpoints: builder => ({
-
     fetchEvents: builder.query({
       query: ({
         userId,
@@ -61,9 +60,9 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take?: number;
         skip?: number;
       }) => {
-        let url = `v1/events/users/${userId}/events`;
+        let url = `v1/events/users/${userId}/events/?`;
         if (take) {
-          url = `${url}?take=${take}&skip=${skip}`;
+          url = `${url}&take=${take}&skip=${skip}`;
         }
         if (searchText) {
           url = `${url}&findInNameAndDescription=${searchText}`;
@@ -196,24 +195,24 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       }),
     }),
 
-    // fetch event announcement for host 
+    // fetch event announcement for host
     fetchHostEventsAnnouncement: builder.query({
-      query: ({ 
-        eventId, 
+      query: ({
+        eventId,
         take,
-        skip, 
+        skip,
       }: {
-          eventId: any; 
-          take: number;
-          skip: number;
-        }) => ({
-          url: `/events/v1/event/${eventId}/event-announcements?take=${take}&skip=${skip}`,
-          method: 'GET',
-        }),
+        eventId: any;
+        take: number;
+        skip: number;
+      }) => ({
+        url: `/events/v1/event/${eventId}/event-announcements?take=${take}&skip=${skip}`,
+        method: 'GET',
+      }),
       providesTags: ['HostEventsAnnouncment']
     }),
 
-    // fetch event receipient for host 
+    // fetch event receipient for host
     fetchAnnouncementRecipients: builder.query({
       query: ({
         eventId,
@@ -236,7 +235,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       providesTags: ['AnnouncmentRecipient'],
     }),
 
-    // fetch selected event receipient for edit announcement 
+    // fetch selected event receipient for edit announcement
     fetchSelectedRecipients: builder.query({
       query: ({
         eventId,
@@ -257,9 +256,15 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       providesTags: ['SelectedRecipient'],
     }),
 
-    // delete announcement 
+    // delete announcement
     deleteEventAnnouncement: builder.mutation({
-      query: ({ eventId, announcementId }: { eventId: string; announcementId: string }) => ({
+      query: ({
+        eventId,
+        announcementId,
+      }: {
+        eventId: string;
+        announcementId: string;
+      }) => ({
         url: `/events/v1/event/${eventId}/event-announcement/${announcementId}`,
         method: 'DELETE',
       }),
@@ -281,16 +286,20 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         body: payload,
       }),
     }),
-    // fetch announcement detail  for host 
+    // fetch announcement detail  for host
     fetchAnnouncementDetail: builder.query({
-      query: ({ eventId, announcementId }: { eventId: string; announcementId: string }) => ({
+      query: ({
+        eventId,
+        announcementId,
+      }: {
+        eventId: string;
+        announcementId: string;
+      }) => ({
         url: `/events/v1/event/${eventId}/event-announcement/${announcementId}`,
         method: 'GET',
       }),
       providesTags: ['AnnouncmentDetail'],
     }),
-
-
   }),
 });
 
@@ -314,5 +323,5 @@ export const {
   useFetchHostEventsAnnouncementQuery,
   useFetchSelectedRecipientsQuery,
   useEditEventAnnouncementMutation,
-  useFetchAnnouncementDetailQuery
+  useFetchAnnouncementDetailQuery,
 } = eventApiAction;

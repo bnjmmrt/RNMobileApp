@@ -7,6 +7,7 @@ import {
   Share,
   Linking,
   SafeAreaView,
+  Platform,
 } from 'react-native';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import AvatarInitials from '../AvatarInitials';
@@ -25,6 +26,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import useContacts from 'src/utils/hooks/useContactPermission';
 import useApi from 'src/axios/useApi';
+import { environment } from 'environments/environment';
 
 interface ContactItem {
   name: string;
@@ -147,10 +149,11 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   };
 
   const handleInviteLink = async () => {
+    const rumorAppLink=Platform.OS==='android' ? environment.playstoreLink : environment.appStoreLink
     try {
       await Share.share({
         message:
-          'Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: [Rumor App Link]',
+          `Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: ${rumorAppLink}`,
       });
     } catch (error) {
       console.error('Error sharing invite link:', error);

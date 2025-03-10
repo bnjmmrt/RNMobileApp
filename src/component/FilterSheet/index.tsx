@@ -6,6 +6,12 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import BottomSheetComponent, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
@@ -17,7 +23,6 @@ import DiscoverEventsFilters from './DiscoverEventsFilters';
 import { FilterOptionTypes } from './FilterOptions';
 import { styles } from './style';
 import { DateType } from 'react-native-ui-datepicker';
-import { Keyboard, Platform } from 'react-native';
 
 export type SelectedSingleFilter = {
   type: FilterOptionTypes;
@@ -33,6 +38,11 @@ export type SelectedFilters = {
   [id: string]: SelectedSingleFilter;
 };
 
+export type FilterSheetFromType =
+  | 'allUsersList'
+  | 'discoverEvents'
+  | 'listDetail';
+
 type FiltersSheetProps = {
   onApplyFilter: (
     query: string,
@@ -40,7 +50,7 @@ type FiltersSheetProps = {
     selectedFilters?: SelectedFilters,
   ) => void;
   onClearFilter: () => void;
-  from: 'allUsersList' | 'discoverEvents';
+  from: FilterSheetFromType;
   selectedFiltersInParent?: SelectedFilters;
 };
 
@@ -83,12 +93,7 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
 
     const onPressApplyFilter = async () => {
       const { queryString, filtersCount } = getFilterQuery(selectedFilters);
-
-      onApplyFilter(
-        queryString,
-        filtersCount,
-        selectedFilters ? selectedFilters : {},
-      );
+      onApplyFilter(queryString, filtersCount, selectedFilters || {});
       sheetRef?.current?.close();
     };
 
@@ -101,6 +106,7 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
     const getHeading = () => {
       switch (from) {
         case 'allUsersList':
+        case 'listDetail':
           return 'Filters';
         case 'discoverEvents':
           return 'Filter Your Feed';
@@ -109,8 +115,6 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
 
     useEffect(() => {
       if (selectedFiltersInParent) {
-        console.log('innnnn');
-
         setSelectedFilters(selectedFiltersInParent);
       }
     }, [selectedFiltersInParent]);
@@ -138,44 +142,51 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
     return (
       <BottomSheetComponent
         ref={sheetRef}
-        snapPoints={[`${verticalScale(isKeyboardOpen ? 100 : 88)}%`]}
+        snapPoints={[`${isKeyboardOpen ? 100 : 88}%`]}
         enableDynamicSizing={false}
         onClose={() => {}}>
-        <BottomSheetView style={styles.container}>
-          <CustomText style={styles.title}>{getHeading()}</CustomText>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={{ flex: 1 }}>
+            <BottomSheetView style={styles.container}>
+              <CustomText style={styles.title}>{getHeading()}</CustomText>
 
-          {from === 'allUsersList' ? (
-            <AllUsersFilters
-              selectedFilters={selectedFilters}
-              setSelectedFilters={setSelectedFilters}
-              setDisableApplyCta={setDisableApplyCta}
-            />
-          ) : null}
-          {from === 'discoverEvents' ? (
-            <DiscoverEventsFilters
-              selectedFilters={selectedFilters}
-              setSelectedFilters={setSelectedFilters}
-              setDisableApplyCta={setDisableApplyCta}
-            />
-          ) : null}
+              {from === 'allUsersList' || from === 'listDetail' ? (
+                <AllUsersFilters
+                  selectedFilters={selectedFilters}
+                  setSelectedFilters={setSelectedFilters}
+                  setDisableApplyCta={setDisableApplyCta}
+                  from={from}
+                />
+              ) : null}
+              {from === 'discoverEvents' ? (
+                <DiscoverEventsFilters
+                  selectedFilters={selectedFilters}
+                  setSelectedFilters={setSelectedFilters}
+                  setDisableApplyCta={setDisableApplyCta}
+                />
+              ) : null}
 
-          {!isKeyboardOpen ? (
-            <BottomSheetView style={styles.actionsContainer}>
-              <Button
-                title="Clear All"
-                style={styles.clearAllCta}
-                onPress={onPressClearFilter}
-              />
-              <Button
-                title="Apply"
-                colorTheme="dark"
-                style={styles.applyCta}
-                onPress={onPressApplyFilter}
-                disabled={disableApplyCta}
-              />
+              {!isKeyboardOpen ? (
+                <BottomSheetView style={styles.actionsContainer}>
+                  <Button
+                    title="Clear All"
+                    style={styles.clearAllCta}
+                    onPress={onPressClearFilter}
+                  />
+                  <Button
+                    title="Apply"
+                    colorTheme="dark"
+                    style={styles.applyCta}
+                    onPress={onPressApplyFilter}
+                    disabled={disableApplyCta}
+                  />
+                </BottomSheetView>
+              ) : null}
             </BottomSheetView>
-          ) : null}
-        </BottomSheetView>
+          </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
       </BottomSheetComponent>
     );
   },

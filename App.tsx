@@ -21,6 +21,7 @@ import { persistor, store } from './src/redux/store';
 import RNPreventScreenshot from 'react-native-screenshot-prevent';
 import { NotificationsListener, requestUserPermission } from 'src/component/PushNotification';
 import { navigationRef } from 'src/component/NavigationService';
+import ScreenshotDetectedDialog from 'src/component/ScreenshotDetectedDialog';
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
@@ -32,16 +33,15 @@ const AppContent: React.FC = () => {
     NotificationsListener()
   }, []);
 
+  // useEffect(() => {
+  //   // Enable screenshot prevention
+  //   RNPreventScreenshot?.enableSecureView();
 
-  useEffect(() => {
-    // Enable screenshot prevention
-    RNPreventScreenshot?.enableSecureView();
-
-    // Cleanup on unmount
-    return () => {
-      RNPreventScreenshot?.disableSecureView();
-    };
-  }, [RNPreventScreenshot]);
+  //   // Cleanup on unmount
+  //   return () => {
+  //     RNPreventScreenshot?.disableSecureView();
+  //   };
+  // }, [RNPreventScreenshot]);
 
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
@@ -83,6 +83,7 @@ const App: React.FC = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <SafeAreaViewWrapper>
+          <ScreenshotDetectedDialog />
           <GestureHandlerRootView style={{ flex: 1 }}>
             <NavigationContainer theme={MyTheme} ref={navigationRef}>
               <BottomSheetModalProvider>

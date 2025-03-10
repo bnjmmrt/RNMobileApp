@@ -49,7 +49,9 @@ interface InputProps {
   customLeftImageStyle?: ImageStyle;
   extraInputProps?: TextInputProps;
   labelStyle?: any;
-  placeholderTextColor?:string
+  placeholderTextColor?: string
+  maxLength?: number;
+  hasDropdown?: boolean;
 }
 
 export type InputRefMethods = {
@@ -81,6 +83,8 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     customRightImageStyle,
     extraInputProps,
     labelStyle,
+    maxLength,
+    hasDropdown = false
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -98,6 +102,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
 
   // Validate inputs
   const validateInputs = () => {
+    console.log('Updated Text:', inputText);
     if (!inputText) {
       setErrorMessage(initialErrorMessage);
       return false;
@@ -146,7 +151,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
               : styles.errorInputWrapper
             : null,
           inputFieldContainerStyle,
-          { backgroundColor: !editable ? COLORS.borderGray : errorMessage ? COLORS.bgRed : COLORS.white }
+          !hasDropdown && { backgroundColor: !editable ? COLORS.borderGray : errorMessage ? COLORS.bgRed : COLORS.white }
         ]}>
         {leftImage && (
           <Image
@@ -162,15 +167,17 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
           value={inputText}
           placeholder={placeholder}
           onChangeText={text => {
+            console.log('Updated Text:', text);
             setInputText(text);
-            setErrorMessage(''); // Clear error on text change
+            setErrorMessage('');
             if (onChangeText) {
-              onChangeText(text); // Call the parent-provided onChangeText if it exists
+              onChangeText(text);
             }
           }}
           multiline={multiline}
           keyboardType={keyboardType}
           {...extraInputProps}
+          maxLength={maxLength}
         />
         {rightImage && (
           <TouchableOpacity onPress={onPressImage}>

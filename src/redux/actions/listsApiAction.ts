@@ -1,17 +1,17 @@
-import {EndPoint} from 'src/ApiManager/config';
-import {createBaseApi} from '../../ApiManager/createBaseApi';
+import { EndPoint } from 'src/ApiManager/config';
+import { createBaseApi } from '../../ApiManager/createBaseApi';
 
 export const listsApiAction = createBaseApi.injectEndpoints({
   endpoints: builder => ({
     fetchAllCustomLists: builder.query({
-      query: ({take, skip}: {take: number; skip: number}) => ({
+      query: ({ take, skip }: { take: number; skip: number }) => ({
         url: `${EndPoint.hosts_custom_lists}?take=${take}&skip=${skip}`,
         method: 'GET',
       }),
       providesTags: ['CustomLists'], // Adjust the tag if needed for cache invalidation
     }),
     addNewCustomList: builder.mutation({
-      query: (requestParam: {customName: string; userIds: string[]}) => ({
+      query: (requestParam: { customName: string; userIds: string[] }) => ({
         url: EndPoint.host_custom_lists,
         method: 'POST',
         body: requestParam,
@@ -19,7 +19,13 @@ export const listsApiAction = createBaseApi.injectEndpoints({
       invalidatesTags: ['CustomLists'],
     }),
     editCustomList: builder.mutation({
-      query: ({listId, customName}: {customName: string; listId: string}) => ({
+      query: ({
+        listId,
+        customName,
+      }: {
+        customName: string;
+        listId: string;
+      }) => ({
         url: `${EndPoint.host_custom_lists}/${listId}/users`,
         method: 'PUT',
         body: {
@@ -31,7 +37,7 @@ export const listsApiAction = createBaseApi.injectEndpoints({
       invalidatesTags: ['CustomListDetail'],
     }),
     deleteCustomList: builder.mutation({
-      query: ({listId}: {listId: string}) => ({
+      query: ({ listId }: { listId: string }) => ({
         url: `${EndPoint.host_custom_lists}/${listId}`,
         method: 'DELETE',
         body: {},
@@ -66,22 +72,31 @@ export const listsApiAction = createBaseApi.injectEndpoints({
         listId,
         searchValue = '',
         listType = 'custom',
+        queryString,
       }: {
         take: number;
         skip: number;
         listId: string;
         searchValue: string;
         listType: 'follower' | 'favorite' | 'custom';
+        queryString?: string;
       }) => {
-        let url = `${EndPoint.host_custom_lists}/${listId}/users`;
+        let url = `${EndPoint.host_custom_lists}/${listId}/users?take=${take}&skip=${skip}`;
         if (listType === 'favorite') {
-          url = `${EndPoint.hosts_favorites_lists}/`;
+          url = `${EndPoint.hosts_favorites_lists}/?take=${take}&skip=${skip}`;
         }
         if (listType === 'follower') {
-          url = `${EndPoint.hosts_followers_lists}/`;
+          url = `${EndPoint.hosts_followers_lists}/?take=${take}&skip=${skip}`;
+        }
+
+        if (searchValue) {
+          url = `${url}&searchValue=${searchValue}`;
+        }
+        if (queryString) {
+          url = `${url}&${queryString}`;
         }
         return {
-          url: `${url}?take=${take}&skip=${skip}&searchValue=${searchValue}`,
+          url: url,
           method: 'GET',
         };
       },

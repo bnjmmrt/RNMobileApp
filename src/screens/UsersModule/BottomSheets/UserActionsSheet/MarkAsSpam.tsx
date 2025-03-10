@@ -1,16 +1,16 @@
-import {BottomSheetView} from '@gorhom/bottom-sheet';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React from 'react';
-import {shallowEqual, useSelector} from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import Button from 'src/component/Button';
-import {CustomText} from 'src/component/CustomText';
+import { CustomText } from 'src/component/CustomText';
 import {
   UserDetailResponse,
   useUserSpamToggleMutation,
 } from 'src/redux/actions/usersApiAction';
-import {RootState} from 'src/redux/slices';
-import {verticalMarginScale} from 'src/utils/dimensions';
-import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
-import {styles} from './style';
+import { RootState } from 'src/redux/slices';
+import { verticalMarginScale } from 'src/utils/dimensions';
+import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
+import { styles } from './style';
 
 const MarkAsSpam = ({
   showError,
@@ -21,12 +21,12 @@ const MarkAsSpam = ({
   showSuccess: (message: string) => void;
   user: string;
 }) => {
-  const [userSpamToggle, {error, isLoading}] = useUserSpamToggleMutation();
+  const [userSpamToggle, { error, isLoading }] = useUserSpamToggleMutation();
 
-  const {userDetails} = useSelector((state: RootState) => {
+  const { userDetails } = useSelector((state: RootState) => {
     const queryResult = state.api.queries[
-      `fetchUserDetails(${JSON.stringify({user})})`
-    ] as {data: UserDetailResponse} | undefined;
+      `fetchUserDetails(${JSON.stringify({ user })})`
+    ] as { data: UserDetailResponse } | undefined;
 
     return {
       userDetails: queryResult?.data?.data ?? undefined,
@@ -43,7 +43,7 @@ const MarkAsSpam = ({
 
         if (response.status === 200) {
           showSuccess(
-            `${userDetails.firstName} ${
+            `${userDetails.firstName} ${userDetails.lastName} ${
               userDetails?.isSpam ? 'unmarked' : 'marked'
             } as spam`,
           );
@@ -74,7 +74,7 @@ const MarkAsSpam = ({
         style={[
           styles.actionCta,
           !userDetails?.isSpam && styles.markSpamCta,
-          {marginBottom: verticalMarginScale(20)},
+          { marginBottom: verticalMarginScale(20) },
         ]}
         onPress={onPressCta}
         loading={isLoading}

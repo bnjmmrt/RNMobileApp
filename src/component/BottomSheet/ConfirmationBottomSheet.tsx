@@ -1,6 +1,6 @@
 import React, { useRef, forwardRef } from 'react';
 import { View, StyleSheet, Text, Image, Platform, ViewStyle } from 'react-native';
-import BottomSheetComponent from './BottomSheet';
+import BottomSheetComponent from './AppBottomSheet';
 import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
 import Button from '../Button';
 import { fontFamily } from '../../utils/functions';
@@ -42,14 +42,14 @@ const ConfirmationBottomSheet = forwardRef(
         snapPoints={
           props.snapPoints
             ? props.snapPoints
-            : [Platform.OS === 'android' ? '50%' : '45%']
+            : [Platform.OS === 'android' ? '0.47' : '0.47']
         }
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
           {props.logo && (
-            <View style={styles.logoContainer}>
-              <Image source={props.logo} style={styles.logo} />
-            </View>
+            
+              <Image source={props.logo} />
+            
           )}
           {props.title && <Text style={styles.title}>{props.title}</Text>}
           {props.btnLabel == BUTTON_LABLE.CLOSE ? null : props.isSuccess ? (
@@ -97,8 +97,9 @@ const ConfirmationBottomSheet = forwardRef(
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: verticalMarginScale(20),
-    gap: 12,
+    paddingHorizontal: horizontalMarginScale(32),
+    paddingVertical:verticalMarginScale(8),
+    // gap: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -110,10 +111,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  logo: {
-    width: horizontalScale(30),
-    height: verticalScale(30),
-  },
+ 
   btnStyle: {
     borderRadius: radiusScale(100),
   },
@@ -121,6 +119,8 @@ const styles = StyleSheet.create({
     fontSize: fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
     textAlign: 'center',
+    color:COLORS.black,
+    paddingTop:24
   },
   subTitle: {
     color: COLORS.light_gray,
@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginVertical: Hp(1),
     textAlign: 'center',
+    paddingBottom:verticalMarginScale(16)
   },
   statusBanner: {
     flexDirection: 'row',

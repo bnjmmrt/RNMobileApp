@@ -151,10 +151,10 @@ export const LABLE = {
   DISCOVER_EXPERIENCES_IN_ART:
     'Discover experiences in art, fashion, music, and more \n—curated by renowned hosts.',
   COMPLETE_VERIFICATION: 'Complete Verification',
-  SEND_DIRECT_MSG_CODE: 'Send direct message with the code:',
+  SEND_DIRECT_MSG_CODE: 'Send a direct message with the code:',
   WE_WILL_REVIEW_APP:
     "We'll review your application after we receive\nyour message.",
-  EMAIL_THE_CODE: 'Email the code to:',
+  EMAIL_THE_CODE: 'Email the code:',
   DONT_USE_INSTAGRAM: "Don't use Instagram?",
   REFERRAL_CODE: 'Referral Code',
   IF_YOU_HAVE_ANY_REFERRAL_CODE: 'If you have a referral code, enter it below.',
@@ -286,7 +286,9 @@ export const EVENT = {
   UTILIZE_QR_CODES_FOR_EVENT_CHECK_IN: 'Utilize QR codes for event check-in?',
   EVENT_COLLABORATORS: 'Event Collaborators',
   QUESTIONNAIRE: 'Questionnaire',
-  UPDATE_SETTINGS_ON_WEB: 'Update Settings on Web'
+  UPDATE_SETTINGS_ON_WEB: 'Update Settings on Web',
+  USER_HAS_NO_EVENTS:'User has no events in this status',
+  REPORT_SUBMITTED_SUCCESSFULLY:'Report Submitted Successfully'
 };
 
 
@@ -323,7 +325,7 @@ export const PROFILE = {
   SMS_NOTIFICATIONS: 'SMS Notifications',
   PUSH_NOTIFICATIONS: 'Push Notifications',
   EMAIL_NOTIFICATIONS: 'Email Notifications',
-  FEEDBACK_MESSAGE: 'Thank you for your feedback!',
+  FEEDBACK_MESSAGE: 'Thank you for\nyour feedback!',
   FEEDBACK_CONFIRMATION_MESSAGE:
     'We truly appreciate your input and will use it to enhance our service.',
   REVIEW_REFERRAL_REQUESTS:
@@ -354,6 +356,10 @@ export const ERROR_MESSAGE = {
   TCKET_ERROR_MESSAGE: 'Ticket is not associated with a guest for this event.',
   NO_INTERNET:'You’re not connected to the internet.\nPlease check your connection and try again.',
   EMPTY: '',
+  FIRST_NAME_SIZE_EXCEED:'First Name cannot exceed 30 characters',
+  LAST_NAME_SIZE_EXCEED:'Last Name cannot exceed 30 characters',
+  FIRST_NAME_INVALID_CHARACTERS:'First Name should not contain special characters or numbers',
+  LAST_NAME_INVALID_CHARACTERS:'Last Name should not contain special characters or numbers'
 };
 
 export const COLORS = {

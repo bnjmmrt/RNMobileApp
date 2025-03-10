@@ -53,28 +53,18 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
   const [isSecondRoleShown, setIsSecondRoleShown] = useState<boolean>(false);
   const [switchingRole, setSwitchingRole] = useState<'first' | 'second' | ''>();
 
-  const {
-    roles,
-    token,
-    role,
-    profileData,
-    companyLogo,
-    profilePicture,
-    userId,
-  } = useSelector(
-    (state: RootState) => ({
-      profileData: state.appFlowApiData?.profileData,
-      role: state.auth.role,
-      roles: state.auth.roles,
-      companyLogo: state.auth.companyLogo,
-      profilePicture: state.auth.profilePicture,
-      userId: state.auth.userId,
-      token: state.auth.token,
-    }),
-    shallowEqual,
-  );
-
-  console.log('token', token);
+  const { roles, role, profileData, companyLogo, profilePicture, userId } =
+    useSelector(
+      (state: RootState) => ({
+        profileData: state.appFlowApiData?.profileData,
+        role: state.auth.role,
+        roles: state.auth.roles,
+        companyLogo: state.auth.companyLogo,
+        profilePicture: state.auth.profilePicture,
+        userId: state.auth.userId,
+      }),
+      shallowEqual,
+    );
 
   const name = profileData?.firstName
     ? `${profileData?.firstName} ${profileData?.lastName}`
@@ -96,9 +86,12 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
             `${EndPoint.switch_profile}/${userId}`,
             { targetRole: role.roleName },
           );
-          console.log(JSON.stringify(response));
 
           if (response.status === 200) {
+            FlashMessageComponent.show(
+              `success`,
+              `Switched to ${role.roleName} Account`,
+            );
             setIsRolesExpanded(false);
             dispatch(setRole(role.roleName));
             dispatch(setRoleId(role.roleId));
@@ -137,7 +130,9 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
             toggleRole(roles[index]);
           }}
         />
-        {switching ? <ActivityIndicator style={styles.loading} /> : null}
+        {switching ? (
+          <ActivityIndicator style={styles.loading} color={COLORS.white} />
+        ) : null}
       </View>
     );
   };

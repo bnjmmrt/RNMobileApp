@@ -9,11 +9,15 @@ export const usersApiAction = createBaseApi.injectEndpoints({
         skip,
         searchValue = '',
         queryString = '',
+        eventId,
+        type,
       }: {
         take: number;
         skip: number;
         searchValue?: string;
         queryString?: string;
+        eventId?: string;
+        type?: string;
       }) => {
         let url = `${EndPoint.users_list}?take=${take}&skip=${skip}&sortBy=name`;
         if (searchValue) {
@@ -21,6 +25,12 @@ export const usersApiAction = createBaseApi.injectEndpoints({
         }
         if (queryString) {
           url = `${url}&${queryString}`;
+        }
+        if (eventId) {
+          url = `${url}&eventId=${eventId}`;
+        }
+        if (type) {
+          url = `${url}&type=${type}`;
         }
         return {
           url: url,

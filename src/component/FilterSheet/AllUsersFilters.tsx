@@ -12,7 +12,7 @@ import GradientSeprator from 'src/component/GradientSeprator';
 import { useLazyFetchUserFiltersQuery } from 'src/redux/actions/usersApiAction';
 import { RootState } from 'src/redux/slices';
 import { horizontalMarginScale, Hp } from 'src/utils/dimensions';
-import { SelectedFilters } from '.';
+import { FilterSheetFromType, SelectedFilters } from '.';
 import FilterAccordian from './FilterAccordian';
 import FilterOptions, {
   FilterOption,
@@ -27,8 +27,7 @@ type FilterType = {
   type: FilterOptionTypes;
 };
 
-const allowedFilters = [
-  'list',
+const basicUserAllowedFilters = [
   'pastEvents',
   'category',
   'basecity',
@@ -36,16 +35,20 @@ const allowedFilters = [
   'age',
   'interest',
 ];
+const allUsersAllowedFilters = ['list', ...basicUserAllowedFilters];
+const listDetailsAllowedFilters = basicUserAllowedFilters;
 //followers is out of scope for now
 
 const AllUsersFilters = ({
   selectedFilters,
   setSelectedFilters,
   setDisableApplyCta,
+  from,
 }: {
   selectedFilters: SelectedFilters;
   setSelectedFilters: React.Dispatch<React.SetStateAction<SelectedFilters>>;
   setDisableApplyCta: React.Dispatch<React.SetStateAction<boolean>>;
+  from: FilterSheetFromType;
 }) => {
   const filtersListRef = useRef<BottomSheetFlatListMethods>(null);
   const userId = useSelector(
@@ -55,6 +58,11 @@ const AllUsersFilters = ({
 
   const [fetchFilters, { data, isLoading, error }] =
     useLazyFetchUserFiltersQuery();
+
+  const allowedFilters =
+    from === 'allUsersList'
+      ? allUsersAllowedFilters
+      : listDetailsAllowedFilters;
 
   const filterData: FilterType[] =
     data?.data?.filter(

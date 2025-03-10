@@ -36,6 +36,7 @@ import RequestVouch from './RequestVouch';
 import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import { fontFamily, removeSignature } from 'src/utils/functions';
+import CustomSelectableText from 'src/component/CustomSelectableText/CustomSelectableText';
 
 type Guest = {
     id: number;
@@ -432,9 +433,9 @@ const RSVPNoStatusApplied: React.FC = () => {
                             labelStyle={{
                                 fontFamily: fontFamily.ABCDiatype_Medium
                             }}
+                            hasDropdown={true}
                             isRequired={true}
                             ref={guestInputRef}
-                            editable={true}
                             rightImage={IMAGES.downArrow}
                             defaultValue={selectedGuests?.label}
                             label="Request access for additional guests?"
