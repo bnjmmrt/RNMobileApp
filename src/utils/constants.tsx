@@ -364,6 +364,9 @@ export const ERROR_MESSAGE = {
   LAST_NAME_INVALID_CHARACTERS:'Last Name should not contain special characters or numbers',
   FEEDBACK_SIZE_EXCEED:'Feedback cannot exceed 500 words',
   DESCRIPTION_SIZE_EXCEED:'Bio cannot exceed 200 words',
+  FIRST_NAME_REQUIRED: 'First name is required',
+  LAST_NAME_REQUIRED: 'Last name is required',
+  PLEASE_PROVIDE_EMAIL_OR_PHONE:'Please provide at least one contact method: email or phone number.'
 };
 
 export const COLORS = {

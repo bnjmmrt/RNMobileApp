@@ -26,6 +26,7 @@ import { useAddNewUserMutation } from 'src/redux/actions/usersApiAction';
 import { verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { styles } from './style';
+import { ERROR_MESSAGE } from 'src/utils/constants';
 
 type existingUserType = {
   hasEmail: boolean;
@@ -61,8 +62,9 @@ const AddNewUserSheet = forwardRef<
 
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
+  const [email, setEmail] = useState<string>(''); 
   const [phone, setPhone] = useState<string>('');
+  const [errorMessage, setError] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<countryType | null>(
     null,
   );
@@ -100,13 +102,22 @@ const AddNewUserSheet = forwardRef<
 
     firstNameRef?.current?.validateInputs();
     lastNameRef?.current?.validateInputs();
-    phoneNumberRef?.current?.validatePhoneNumber();
-    emailRef?.current?.validateInputs();
+
+    if(phoneNumberRef?.current?.validatePhoneNumber() || emailRef?.current?.validateInputs()){
+      // phoneNumberRef?.current?.setErrorMessage('');
+      setError('');
+      // emailRef?.current?.setIsBackgroundRed(false)
+    }else{
+      emailRef.current?.setErrorMessage('')
+      // emailRef?.current?.setIsBackgroundRed(true)
+      setError(ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE);
+    }
+    
     if (
       firstNameRef?.current?.validateInputs() &&
       lastNameRef?.current?.validateInputs() &&
-      phoneNumberRef?.current?.validatePhoneNumber() &&
-      emailRef?.current?.validateInputs()
+      (phoneNumberRef?.current?.validatePhoneNumber() ||
+      emailRef?.current?.validateInputs())
     ) {
       try {
         // const requestParam = { email, phoneNumber: phone };
@@ -148,7 +159,7 @@ const AddNewUserSheet = forwardRef<
   return (
     <BottomSheetComponent
       ref={sheetRef}
-      snapPoints={['85%']}
+      snapPoints={['88%']}
       enableDynamicSizing={true}
       onClose={() => resetForm()}>
       <BottomSheetScrollView style={styles.container}>
@@ -157,7 +168,7 @@ const AddNewUserSheet = forwardRef<
 
         <Input
           ref={firstNameRef}
-          errorMessage={'Please enter first name'}
+          errorMessage={ERROR_MESSAGE.FIRST_NAME_REQUIRED}
           label="First Name *"
           defaultValue={firstName}
           onChangeText={text => setFirstName(text)}
@@ -165,7 +176,7 @@ const AddNewUserSheet = forwardRef<
         />
         <Input
           ref={lastNameRef}
-          errorMessage={'Please enter last name'}
+          errorMessage={ERROR_MESSAGE.LAST_NAME_REQUIRED}
           label="Last Name *"
           defaultValue={lastName}
           onChangeText={text => setLastName(text)}
@@ -173,12 +184,13 @@ const AddNewUserSheet = forwardRef<
         />
         <Input
           ref={emailRef}
-          errorMessage={'Please enter email'}
+          errorMessage={''}
           label="Email *"
           placeholder="example@gmail.com"
           defaultValue={email}
           onChangeText={text => setEmail(text)}
           forBottomSheet={true}
+          isBackgroundRed={errorMessage==null ? false :true}
         />
         <PhoneNumberInput
           ref={phoneNumberRef}
@@ -187,6 +199,7 @@ const AddNewUserSheet = forwardRef<
           onChangeText={text => setPhone(text)}
           onSelectCountry={setSelectedCountry}
           forBottomSheet={true}
+          errorMsg={errorMessage}
         />
 
         {existingUser ? (
