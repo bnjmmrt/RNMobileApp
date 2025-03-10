@@ -150,6 +150,7 @@ const IMAGES = {
   search_error: require('./search-md-error.png'),
   email_error: require('./email-error.png'),
   camera_off: require('./camera-off.png'),
+  screenshotblocked: require('./screenshotblocked.png'),
   rumor: require('./rumor.png'),
   message: require('./message.png'),
   check_gray: require('./check-gray.png'),

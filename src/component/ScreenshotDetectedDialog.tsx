@@ -11,6 +11,7 @@ import { fontFamily } from 'src/utils/functions';
 import IMAGES from '@images/index';
 import { addListener } from 'react-native-screenshot-prevent';
 import FastImage from '@d11/react-native-fast-image';
+import { BlurView } from '@react-native-community/blur';
 // import RNPreventScreenshot from 'react-native-screenshot-prevent';
 
 const ScreenshotDetectedDialog: React.FC = () => {
@@ -31,6 +32,11 @@ const ScreenshotDetectedDialog: React.FC = () => {
       style={styles.container}
       activeOpacity={1}
       onPress={() => setVisible(false)}>
+      <BlurView
+        style={StyleSheet.absoluteFill}
+        blurType="light"
+        blurAmount={10}
+      />
       <View style={styles.content}>
         <FastImage
           source={IMAGES.rumorLogo}
@@ -39,15 +45,15 @@ const ScreenshotDetectedDialog: React.FC = () => {
         />
         <View style={styles.logoContainer}>
           <FastImage
-            source={IMAGES.camera_off}
-            style={styles.logo}
+            source={IMAGES.screenshotblocked}
+            style={styles.screenshotblocked}
             resizeMode="contain"
           />
         </View>
         <Text style={styles.title}>Screen Capture Detected</Text>
         <Text style={styles.description}>
           Screenshots and screen recordings are not permitted. As a reminder,
-          Rumor is a private community and unauthorized screen captures may
+          Rumor is a private community and and unauthorized screen captures may
           result in suspension or termination of your membership.
         </Text>
       </View>
@@ -62,7 +68,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: COLORS.transperantBackground,
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 9999,
@@ -104,9 +110,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: verticalScale(24),
   },
-  logo: {
-    width: verticalScale(32),
-    height: verticalScale(32),
+  screenshotblocked: {
+    width: verticalScale(52),
+    height: verticalScale(52),
   },
   title: {
     fontFamily: fontFamily.RomieTrial_Bold,
@@ -120,8 +126,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(14),
     color: COLORS.light_gray,
     textAlign: 'center',
-    lineHeight: verticalScale(24),
-    maxWidth: '90%',
+    lineHeight: verticalScale(16),
   },
 });
 

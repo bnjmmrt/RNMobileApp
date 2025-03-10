@@ -53,6 +53,7 @@ export const BUTTON_LABLE = {
   DISCOVER_MORE_EVENTS: 'Discover More Events',
   CHECK_IN: 'Check In',
   SHOW_TICKET_BREAKDOWN: 'Show Ticket Breakdown',
+  MANAGE_GUEST_LIST: 'Manage Guest List',
   SAVE_DRAFT: 'Save Draft',
   SEND_INVITE: 'Send Invite',
   APPROVE_REQUEST: 'Approve Request',
