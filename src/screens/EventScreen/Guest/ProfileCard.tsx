@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { COLORS } from 'src/utils/constants';
 import {
   fontScale,
@@ -143,7 +143,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             style={[styles.actionButton, button.otherStyle]}
             onPress={button.onPress}
             disabled={button.loading}>
-            <Image source={button.icon} style={styles.actionButtonIcon} />
+            <Image source={button.icon}  />
             <Text style={styles.actionButtonText}>{button.title}</Text>
           </TouchableOpacity>
         ))}

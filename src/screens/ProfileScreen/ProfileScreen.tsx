@@ -104,7 +104,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const setWebUrl = (url: string) => {
     console.log('setUrl', url);
     setURL(url);
-    URL.length && bottomSheetRef?.current?.open();
+    bottomSheetRef?.current?.open();
   };
 
   const deleteAccount = () => {
@@ -470,7 +470,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           onPress={openCamera}
           submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
           cancelButtonText={BUTTON_LABLE.CANCEL}
-          snapPoints={[Platform.OS == 'android' ? 0.2 : 0.2]}
+          snapPoints={[Platform.OS == 'android' ? 0.23 : 0.2]}
           image={null}
         />
 

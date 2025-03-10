@@ -6,6 +6,8 @@ import {
   ScrollView,
   StyleSheet,
   Image,
+  Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
@@ -82,6 +84,8 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
       />
       {/* {true ? ( */}
       <ScrollView style={styles.container}>
+        <KeyboardAvoidingView
+                          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ProfileCard
           showGuestStatus={false}
           user={{
@@ -134,6 +138,7 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
           additionalGuests={eventDetails?.guestProfile?.additionalGuests}
           maxAdditionalGuests={eventDetails?.guestDetail?.maxAdditionalGuests}
         />
+        </KeyboardAvoidingView>
       </ScrollView>
       {/* ) : (
         <EmptyRecordComponent

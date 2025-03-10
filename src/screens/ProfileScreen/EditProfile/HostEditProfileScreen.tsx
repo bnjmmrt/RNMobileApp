@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
@@ -137,6 +138,8 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
       />
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+         <KeyboardAvoidingView
+                  behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={styles.contentContainer}>
           <Input
             ref={companyNameRef}
@@ -165,6 +168,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
             defaultValue={profileData?.website}
           />
         </View>
+        </KeyboardAvoidingView>
       </ScrollView>
       <Button
         disabled={false}

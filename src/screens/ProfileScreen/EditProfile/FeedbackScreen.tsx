@@ -82,12 +82,17 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
      return true;
   };
   const onSubmit = async () => {
-   
+    console.log("selectedData",selectedData)
+    if(selectedData?.length){
+      setIsToastShown(false);
+    }else{
+      setIsToastShown(true);
+    }
     if (
       feedbackRef?.current.validateInputs() &&
       validateLength() &&
       !isToastShown &&
-      selectedData
+      selectedData?.length
     ) {
       const requestData = {
         description: feedbackRef?.current.inputText,
