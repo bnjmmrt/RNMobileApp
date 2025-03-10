@@ -33,7 +33,7 @@ const CustomDatepickerBottomSheet = forwardRef((props: Props, ref) => {
 
   const years = useMemo(() => {
     const currentYear = new Date().getFullYear();
-    const startYear = 1940;
+    const startYear = 1900;
     const endYear = currentYear; 
   
     return Array.from({ length: endYear - startYear + 1 }, (_, i) => `${startYear + i}`);
