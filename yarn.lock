@@ -1778,6 +1778,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-11.4.1.tgz#a3c247aceab35f75dd0aa4bfa85d2be5a4508688"
   integrity sha512-B0BYAkghz3Q2V09BF88RA601XursIEA111tnc2JOaN7axJWmNefmfjZqw/KdSxKZp7CZUuPpjBmz/WCR9uaHYg==
 
+"@react-native-masked-view/masked-view@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@react-native-masked-view/masked-view/-/masked-view-0.3.2.tgz#7064533a573e3539ec912f59c1f457371bf49dd9"
+  integrity sha512-XwuQoW7/GEgWRMovOQtX3A4PrXhyaZm0lVUiY8qJDvdngjLms9Cpdck6SmGAUNqQwcj2EadHC1HwL0bEyoa/SQ==
+
 "@react-native/assets-registry@0.75.2":
   version "0.75.2"
   resolved "https://registry.yarnpkg.com/@react-native/assets-registry/-/assets-registry-0.75.2.tgz#2c522c537fa86298987b8c877c167ac9b485d3da"
@@ -1963,14 +1968,6 @@
   version "0.75.2"
   resolved "https://registry.yarnpkg.com/@react-native/typescript-config/-/typescript-config-0.75.2.tgz#ab76a041eb6a019fb10d00f4c266343069757027"
   integrity sha512-guqu6REcuDmfjlM/B6YNqTfv4kK35gn6ungzZQdU8zznyWiXlyxR7uSSyNcy1QgEztsvO7B3HU073PBHV8RxXQ==
-
-"@react-native/virtualized-lists@^0.72.4":
-  version "0.72.8"
-  resolved "https://registry.npmjs.org/@react-native/virtualized-lists/-/virtualized-lists-0.72.8.tgz"
-  integrity sha512-J3Q4Bkuo99k7mu+jPS9gSUSgq+lLRSI/+ahXNwV92XgJ/8UgOTxu2LPwhJnBk/sQKxq7E8WkZBnBiozukQMqrw==
-  dependencies:
-    invariant "^2.2.4"
-    nullthrows "^1.1.1"
 
 "@react-native/virtualized-lists@0.75.2":
   version "0.75.2"
@@ -7044,6 +7041,11 @@ react-native-screenshot-prevent@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-native-screenshot-prevent/-/react-native-screenshot-prevent-1.2.1.tgz#f784a3303139690b9e8c1ef00f69839810941016"
   integrity sha512-zY6U3xNlFrquCJJVNoyR6DcAv2c6tOHQIcleBUQo4OrbSKz5a94Y3MkuzVwpE+IMlxCASymenDwfMtnWopSiVA==
+
+react-native-skeleton-placeholder@^5.2.4:
+  version "5.2.4"
+  resolved "https://registry.yarnpkg.com/react-native-skeleton-placeholder/-/react-native-skeleton-placeholder-5.2.4.tgz#a654fa083ff274a39c763e086f8a850c556d4c95"
+  integrity sha512-OZntVq1hU1UX33FltxK2ezT2v9vHIhV8YnEbnMWUCvxT0N9OsgD1qxiHm6qb9YRJVgq2o5z3S7dNPsPnDF/jNg==
 
 react-native-svg-transformer@^1.5.0:
   version "1.5.0"
