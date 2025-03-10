@@ -122,6 +122,8 @@ const UserActionsSheet = forwardRef<
         return false;
       } else if (selectedAction === 'createList') {
         return false;
+      } else if (selectedAction === 'report') {
+        return false;
       } else {
         return true;
       }

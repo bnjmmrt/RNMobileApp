@@ -1,13 +1,14 @@
 import React from 'react';
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import IMAGES from '../../assets/images';
-import {COLORS} from '../../utils/constants';
+import { COLORS } from '../../utils/constants';
 import {
   horizontalMarginScale,
   radiusScale,
   verticalMarginScale,
+  verticalScale,
 } from '../../utils/dimensions';
-import {CustomText} from '../CustomText';
+import { CustomText } from '../CustomText';
 
 interface FeedFilterItemProps {
   content: string;
@@ -22,8 +23,8 @@ const FeedFilterItem: React.FC<FeedFilterItemProps> = ({
 
   return (
     <View style={styles.container}>
-      <CustomText style={styles.content}>{content}</CustomText>
-      <TouchableOpacity onPress={handleClear} style={styles.closeContainer}>
+      <Text numberOfLines={1} style={styles.content}>{content}</Text>
+      <TouchableOpacity hitSlop={2} onPress={handleClear} style={styles.closeContainer}>
         <Image
           source={IMAGES.filterClose}
           alt="close"
@@ -46,10 +47,14 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.lighter_gray,
     paddingVertical: verticalMarginScale(12),
     paddingHorizontal: horizontalMarginScale(16),
+    maxWidth: verticalScale(270)
   },
   content: {},
   closeContainer: {},
-  icon: {},
+  icon: {
+    width: 9,
+    height: 9
+  },
 });
 
 export default FeedFilterItem;

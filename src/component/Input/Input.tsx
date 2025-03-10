@@ -49,8 +49,9 @@ interface InputProps {
   customLeftImageStyle?: ImageStyle;
   extraInputProps?: TextInputProps;
   labelStyle?: any;
-  placeholderTextColor?:string
-  maxLength?: number
+  placeholderTextColor?: string
+  maxLength?: number;
+  hasDropdown?: boolean;
 }
 
 export type InputRefMethods = {
@@ -82,7 +83,8 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     customRightImageStyle,
     extraInputProps,
     labelStyle,
-    maxLength
+    maxLength,
+    hasDropdown = false
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -149,7 +151,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
               : styles.errorInputWrapper
             : null,
           inputFieldContainerStyle,
-          { backgroundColor: !editable ? COLORS.borderGray : errorMessage ? COLORS.bgRed : COLORS.white }
+          !hasDropdown && { backgroundColor: !editable ? COLORS.borderGray : errorMessage ? COLORS.bgRed : COLORS.white }
         ]}>
         {leftImage && (
           <Image
@@ -166,11 +168,10 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
           placeholder={placeholder}
           onChangeText={text => {
             console.log('Updated Text:', text);
-           
             setInputText(text);
-            setErrorMessage(''); 
+            setErrorMessage('');
             if (onChangeText) {
-              onChangeText(text); 
+              onChangeText(text);
             }
           }}
           multiline={multiline}
