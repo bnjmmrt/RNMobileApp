@@ -33,8 +33,8 @@ const CustomDatepickerBottomSheet = forwardRef((props: Props, ref) => {
 
   const years = useMemo(() => {
     const currentYear = new Date().getFullYear();
-    const startYear = currentYear - 55; // Max age 55
-    const endYear = currentYear - 18;   // Min age 18
+    const startYear = 1940;
+    const endYear = currentYear; 
   
     return Array.from({ length: endYear - startYear + 1 }, (_, i) => `${startYear + i}`);
   }, []);
