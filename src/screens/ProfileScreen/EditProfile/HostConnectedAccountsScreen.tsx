@@ -73,9 +73,9 @@ const HostConnectedAccountsScreen: React.FC<
         facebook: facebookRef?.current.inputText,
         instagram: instagramRef?.current.inputText,
         linkedin: linkedinRef?.current.inputText,
-        tiktok: '@'+tiktokRef?.current.inputText,
+        tiktok: tiktokRef?.current.inputText ? '@'+tiktokRef?.current.inputText : '',
         x: xRef?.current.inputText,
-        youtube: '@'+youtubeRef?.current.inputText,
+        youtube: youtubeRef?.current.inputText ? '@'+youtubeRef?.current.inputText :'',
       },
     };
 
@@ -114,7 +114,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.INSTAGRAM}
             prefix="instagram.com/"
             isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia.instagram}
+            defaultValue={hostProfileData?.socialMedia.instagram ? hostProfileData?.socialMedia.instagram: '' }
           />
           <SocialMediaInput
             image={IMAGES.host_tiktok}
@@ -122,7 +122,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.TIKTOK}
             prefix="tiktok.com/@"
             isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia.tiktok}
+            defaultValue={hostProfileData?.socialMedia.tiktok ? hostProfileData?.socialMedia.tiktok : ''}
           />
           <SocialMediaInput
             image={IMAGES.fb}
@@ -130,7 +130,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.FACEBOOK}
             prefix="facebook.com/"
             isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia.facebook}
+            defaultValue={hostProfileData?.socialMedia.facebook ? hostProfileData?.socialMedia.facebook : ''}
           />
           <SocialMediaInput
             image={IMAGES.linkdn}
@@ -138,7 +138,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.LINKEDIN}
             prefix="linkedin.com/in/"
             isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia.linkedin}
+            defaultValue={hostProfileData?.socialMedia.linkedin ? hostProfileData?.socialMedia.linkedin : ''}
           />
           <SocialMediaInput
             image={IMAGES.host_x}
@@ -146,7 +146,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.X}
             prefix="x.com/"
             isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia.x}
+            defaultValue={hostProfileData?.socialMedia.x ? hostProfileData?.socialMedia.x :''}
           />
           <SocialMediaInput
             image={IMAGES.yt}
@@ -154,7 +154,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.YOUTUBE}
             prefix="youtube.com/@"
             isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia.youtube}
+            defaultValue={hostProfileData?.socialMedia.youtube ? hostProfileData?.socialMedia.youtube :''}
           />
         </View>
         {isToastShown && (

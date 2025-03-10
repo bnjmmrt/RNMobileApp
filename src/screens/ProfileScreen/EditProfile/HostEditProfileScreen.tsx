@@ -68,10 +68,21 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
     // getHostDetails();
   }, []);
 
+  const validateLength = () => {
+      const regex = /^\s*(\S+\s*){0,200}$/;
+       if(!regex.test(bioRef?.current.inputText)){
+        bioRef?.current?.setErrorMessage(
+                  ERROR_MESSAGE.DESCRIPTION_SIZE_EXCEED,
+                );
+                return false;
+       }
+       bioRef?.current?.setErrorMessage('');
+       return true;
+    };
   const onConfirmClick = async () => {
 
     if (
-      companyNameRef.current.validateInputs() &&
+      companyNameRef.current.validateInputs() && validateLength() &&
       websiteRef.current.validateInputs()
     ) {
       console.log("inside")
@@ -132,6 +143,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
             label={LABLE.COMPANY_NAME}
             errorMessage={ERROR_MESSAGE.COMPANY_NAME_ERROR}
             defaultValue={profileData?.companyName}
+            maxLength={100}
           />
           <Input
             blurOnSubmit={true}
