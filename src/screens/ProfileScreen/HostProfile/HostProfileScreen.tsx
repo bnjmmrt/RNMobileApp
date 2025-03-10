@@ -18,7 +18,7 @@ import Button from 'src/component/Button';
 import ButtonSmall from 'src/component/ButtonSmall';
 import Header from 'src/component/Header/Header';
 import Title from 'src/component/Title/Title';
-import { COLORS } from 'src/utils/constants';
+import { COLORS, LABLE } from 'src/utils/constants';
 import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale, Wp } from 'src/utils/dimensions';
 import { fontFamily, removeSignature } from 'src/utils/functions';
 import ReportHostView from './ReportHostView';
@@ -352,7 +352,7 @@ const UnBlockHostView: React.FC<UnBlockHostViewProps> = ({ onClose, onPress, use
       <Title
         align="center"
         title="Unblock Host"
-        subTitle="Are you sure you want to unblock this host?\nUnblocking this host will allow them to send you new event invites and chat messages."
+        subTitle={LABLE.HOST_UNBLOCK_MESSAGE}
       />
 
       <Button
