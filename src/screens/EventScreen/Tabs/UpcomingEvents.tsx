@@ -35,18 +35,18 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
   const queryArgs =
     role === ROLE.HOST
       ? ({
-        status: 'UPCOMING_STATUS',
-        searchText,
-        take: 10,
-        skip: (currentPage - 1) * 10,
-      } as const) // Type assertion to prevent union mismatch
+          status: 'UPCOMING_STATUS',
+          searchText,
+          take: 10,
+          skip: (currentPage - 1) * 10,
+        } as const) // Type assertion to prevent union mismatch
       : ({
-        userId,
-        guestEventStatus: 'UPCOMING',
-        searchText,
-        take: 10,
-        skip: (currentPage - 1) * 10,
-      } as const); // Type assertion
+          userId,
+          guestEventStatus: 'UPCOMING',
+          searchText,
+          take: 10,
+          skip: (currentPage - 1) * 10,
+        } as const); // Type assertion
 
   const { data, isLoading, refetch } = useFetchEvents(queryArgs);
 
@@ -55,9 +55,9 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
       if (role === ROLE.HOST) {
         setEvents(prev =>
           currentPage === 1
-            ? data.data.eventsResponse
+            ? data.data.result
             : // ? data.data
-            [...prev, ...data.data.eventsResponse],
+              [...prev, ...data.data.result],
         );
       } else {
         setEvents(prev =>
@@ -74,12 +74,12 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
 
   const handleRefresh = () => {
     setCurrentPage(1);
-    refetch()
+    refetch();
   };
 
   useEffect(() => {
-    refetch()
-  }, [currentPage])
+    refetch();
+  }, [currentPage]);
 
   const loadMore = () => {
     if (events?.length < data?.data?.totalCount && !isLoading) {
@@ -108,15 +108,19 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          {searchText == "" ? <EventEmptyRecord
-            title={tab.title}
-            subTitle={tab.subTitle}
-            isLoading={isLoading}
-          /> : <EventEmptyRecord
-            title={tab.title}
-            subTitle={"Please refine your search"}
-            isLoading={isLoading}
-          />}
+          {searchText == '' ? (
+            <EventEmptyRecord
+              title={tab.title}
+              subTitle={tab.subTitle}
+              isLoading={isLoading}
+            />
+          ) : (
+            <EventEmptyRecord
+              title={tab.title}
+              subTitle={'Please refine your search'}
+              isLoading={isLoading}
+            />
+          )}
         </View>
       )}
     </View>
