@@ -63,7 +63,8 @@ export const EndPoint = {
   user_profile_picture: 'users/v1/auth/user-profile-picture/',
   user_profile: 'users/v1/auth/user-profile/',
   user_settings: 'users/v1/auth/user-settings/',
-  user_interests: 'users/v1/platform/user-interests/',
+  // user_interests: 'users/v1/platform/user-interests/',
+  user_interests: 'users/v1/auth/user-interests/',
   get_user_status: 'users/v1/auth/get-user-with-roles-by-id',
 
   users_list: 'v1/auth/users-list',
@@ -94,7 +95,7 @@ export const EndPoint = {
   check_phone: 'users/v1/auth/check-phone-number',
   check_email: 'users/v1/auth/check-email',
   event_manage_guests: 'v1/events/manage-guests',
-  switch_profile: 'v1/auth/switch-profile',
+  switch_profile: 'users/v1/auth/switch-profile',
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;
