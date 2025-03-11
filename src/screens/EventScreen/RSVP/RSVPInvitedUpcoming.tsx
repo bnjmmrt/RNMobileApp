@@ -134,7 +134,7 @@ const RSVPInvitedUpcoming = () => {
     }, [deleteGuestError, deleteGuestSuccess]);
 
     const getInvitees = async () => {
-        const response: any = await apiRequest('get', `v1/users/${userId}/events/${id}/invited-guests`);
+        const response: any = await apiRequest('get', `events/v1/users/${userId}/events/${id}/invited-guests`);
         if (response.data) {
             setInvites(response.data[0].invitees);
             setMaxAdditionalGuests(response.data[0].maxAdditionalGuests)
@@ -221,7 +221,6 @@ const RSVPInvitedUpcoming = () => {
             case 'reasons':
                 return <SelectReason list={reasons}
                     handleSelect={(item) => {
-                        dispatch(setRsvpStatus("DECLINED"));
                         setSelectedReason(item);
                         setErrorMessage('')
                         bottomSheetRef?.current?.close();
@@ -411,6 +410,7 @@ const RSVPInvitedUpcoming = () => {
                 reason: selectedReason.name,
                 guestId: ""
             });
+            dispatch(setRsvpStatus("DECLINED"));
 
             if (response?.data) {
                 setActiveTab('failed');

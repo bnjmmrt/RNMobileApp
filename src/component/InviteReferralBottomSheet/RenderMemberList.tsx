@@ -9,9 +9,13 @@ import { fontFamily, numberSpacing } from "../../utils/functions";
 import { useRequestMemberMutation } from "../../redux/actions/referralApiAction";
 import { fontScale, horizontalMarginScale, horizontalScale, verticalMarginScale } from "src/utils/dimensions";
 import { useVouchRequestMutation } from "src/redux/actions/rspvApiAction";
+import { useSelector } from "react-redux";
+import { RootState } from "src/redux/slices";
 
 export const RenderMemberList = (data: any) => {
     const { item, eventId } = data;
+    const userId = useSelector((state: RootState) => state.auth.userId);
+
 
     const [isSent, setIsSent] = useState(item?.isSent);
     const [vouchRequest, { isLoading, isSuccess: VouchSuccess, isError: VouchError }] = useVouchRequestMutation();
@@ -26,7 +30,7 @@ export const RenderMemberList = (data: any) => {
 
     const handleRequestSent = async () => {
         try {
-            const response = eventId ? await vouchRequest({ eventId, userId: item.userId }).unwrap() : await requestMember({ userId: item.userId }).unwrap();
+            const response = eventId ? await vouchRequest({ eventId, userId: item.userId, requesterId: userId }).unwrap() : await requestMember({ userId: item.userId }).unwrap();
             console.log("API Response:", response);
         } catch (error) {
             console.error("API Error:", error);
