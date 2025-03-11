@@ -26,7 +26,7 @@ export const useVerifyOtp = (
       };
       const response = await memberLogin(requestParam).unwrap();
 
-      if (response.statusCode === 201) {
+      if (response.success) {
         const data = { ...response.data, varifyStatus: isEmail ? 1 : 2 };
         onSuccess(data);
       }
