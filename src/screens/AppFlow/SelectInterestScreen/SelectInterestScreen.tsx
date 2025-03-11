@@ -106,8 +106,8 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
         setIsToastShown(false);
         dispatch(setInterest(selectedCategories));
         dispatch(setPageProgress(8));
-        navigation.navigate('IdentityVerification');
-      } else {
+          navigation.navigate('ProfileScreen')
+        } else {
         setIsToastShown(true);
       }
     } else {
