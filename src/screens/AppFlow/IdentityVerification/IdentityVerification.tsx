@@ -94,7 +94,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       requestParams,
     );
     console.log('response', response);
-    if (response.status === 200) {
+    if (response.success) {
       loginUser({
         id: response?.data?.id,
         isGuest: isGuest,
