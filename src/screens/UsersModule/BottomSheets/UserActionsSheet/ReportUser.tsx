@@ -61,7 +61,7 @@ const ReportUser = ({
             reportedByRoleId: roleId,
           }).unwrap();
 
-          if (response.status === 200) {
+          if (response.success) {
             showSuccess(EVENT.REPORT_SUBMITTED_SUCCESSFULLY);
           } else {
             const typedError = response as ApiErrorInterface;

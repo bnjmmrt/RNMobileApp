@@ -26,8 +26,8 @@ const AddToList = ({
   selectedUsers?: string[];
 }) => {
   const [allCustomLists, setAllCustomLists] = useState<ListInterface>({
-    count: 0,
-    list: [],
+    totalCount: 0,
+    result: [],
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedList, setSelectedList] = useState<ListItemInterface | null>(
@@ -64,7 +64,7 @@ const AddToList = ({
     };
     try {
       const response = await addUsersToList(payload).unwrap();
-      if (response.status === 200) {
+      if (response.success) {
         onSuccess();
       } else {
         const typedError = response as ApiErrorInterface;
@@ -77,7 +77,7 @@ const AddToList = ({
   };
 
   const loadMore = () => {
-    if (allCustomLists.list?.length < data?.data?.count) {
+    if (allCustomLists.result?.length < data?.data?.count) {
       setCurrentPage(prev => prev + 1);
     }
   };
@@ -106,7 +106,7 @@ const AddToList = ({
           ? data.data
           : {
               count: data?.data?.count,
-              list: [...prev.list, ...data.data.list],
+              list: [...prev.result, ...data.data.result],
             },
       );
     }
@@ -115,7 +115,7 @@ const AddToList = ({
   return (
     <BottomSheetView style={{ flex: 1 }}>
       <BottomSheetFlatList
-        data={allCustomLists?.list?.slice(2) || []}
+        data={allCustomLists?.result?.slice(2) || []}
         renderItem={renderListRow}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{ gap: verticalScale(8) }}
@@ -145,8 +145,8 @@ const AddToList = ({
                 justifyContent: 'center',
               }}>
               <EventEmptyRecord
-                title="No Events"
-                subTitle="There are no events available"
+                title="No Lists"
+                subTitle="There are no lists available"
                 isLoading={isLoading}
               />
             </View>

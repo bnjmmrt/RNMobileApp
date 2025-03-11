@@ -1,66 +1,31 @@
-import React, {useCallback} from 'react';
-import {FlatList, View} from 'react-native';
-import {shallowEqual, useSelector} from 'react-redux';
-import {CustomText} from 'src/component/CustomText';
-import {UserDetailResponse} from 'src/redux/actions/usersApiAction';
-import {RootState} from 'src/redux/slices';
-import {horizontalMarginScale} from 'src/utils/dimensions';
+import React, { useCallback } from 'react';
+import { FlatList, View } from 'react-native';
+import { shallowEqual, useSelector } from 'react-redux';
+import { CustomText } from 'src/component/CustomText';
+import { UserDetailResponse } from 'src/redux/actions/usersApiAction';
+import { RootState } from 'src/redux/slices';
+import { horizontalMarginScale } from 'src/utils/dimensions';
 import UserDetailCard from '../UserDetailCard';
 import createStyle from './style';
-
-const dummyListData = [
-  {
-    name: 'Interest 1',
-    users: '1233432',
-  },
-  {
-    name: 'Interest 2',
-    users: '1233432',
-  },
-  {
-    name: 'Interest 3',
-    users: '1233432',
-  },
-  {
-    name: 'Interest 4',
-    users: '1233432',
-  },
-  {
-    name: 'Interest 5',
-    users: '1233432',
-  },
-  {
-    name: 'Interest 6',
-    users: '1233432',
-  },
-  {
-    name: 'Interest 7',
-    users: '1233432',
-  },
-  {
-    name: 'Interest 8',
-    users: '1233432',
-  },
-];
 
 interface UserInterestsProps {
   user: string;
 }
 
-const UserInterests: React.FC<UserInterestsProps> = ({user}) => {
+const UserInterests: React.FC<UserInterestsProps> = ({ user }) => {
   const styles = createStyle();
 
-  const {userDetails} = useSelector((state: RootState) => {
+  const { userDetails } = useSelector((state: RootState) => {
     const queryResult = state.api.queries[
-      `fetchUserDetails(${JSON.stringify({user})})`
-    ] as {data: UserDetailResponse} | undefined;
+      `fetchUserDetails(${JSON.stringify({ user })})`
+    ] as { data: UserDetailResponse } | undefined;
 
     return {
       userDetails: queryResult?.data?.data ?? undefined,
     };
   }, shallowEqual);
 
-  const renderInterestsListRow = useCallback(({item}: {item: string}) => {
+  const renderInterestsListRow = useCallback(({ item }: { item: string }) => {
     return (
       <View style={styles.userIneterstsRowContainer}>
         <CustomText style={styles.userIneterstsName}>{item}</CustomText>

@@ -50,7 +50,7 @@ const DeleteListUsersSheet = forwardRef<
     };
     try {
       const response = await removeUsersFromList(payload).unwrap();
-      if (response.status === 200) {
+      if (response.success) {
         onSuccess();
         sheetRef.current?.close();
       } else {
