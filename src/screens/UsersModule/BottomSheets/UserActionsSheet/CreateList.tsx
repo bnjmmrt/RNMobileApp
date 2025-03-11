@@ -1,15 +1,15 @@
-import {BottomSheetView} from '@gorhom/bottom-sheet';
-import React, {useRef, useState} from 'react';
-import {Keyboard} from 'react-native';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { useRef, useState } from 'react';
+import { Keyboard } from 'react-native';
 import Button from 'src/component/Button';
-import {CustomText} from 'src/component/CustomText';
+import { CustomText } from 'src/component/CustomText';
 import Header from 'src/component/Header/Header';
-import Input, {InputRefMethods} from 'src/component/Input/Input';
-import {useAddNewCustomListMutation} from 'src/redux/actions/listsApiAction';
-import {verticalMarginScale} from 'src/utils/dimensions';
-import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
-import {actionSheetFromType} from '.';
-import {styles} from './style';
+import Input, { InputRefMethods } from 'src/component/Input/Input';
+import { useAddNewCustomListMutation } from 'src/redux/actions/listsApiAction';
+import { verticalMarginScale } from 'src/utils/dimensions';
+import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
+import { actionSheetFromType } from '.';
+import { styles } from './style';
 
 const CreateList = ({
   onPressBack,
@@ -30,7 +30,7 @@ const CreateList = ({
 
   const [
     createNewList,
-    {error: createNewListError, isLoading: createNewListLoading},
+    { error: createNewListError, isLoading: createNewListLoading },
   ] = useAddNewCustomListMutation();
 
   const onPressCreateList = async () => {
@@ -43,7 +43,7 @@ const CreateList = ({
       };
       try {
         const response = await createNewList(payload).unwrap();
-        if (response.status === 200) {
+        if (response.success) {
           onSuccess();
         } else {
           const typedError = response as ApiErrorInterface;
@@ -57,14 +57,14 @@ const CreateList = ({
   };
 
   return (
-    <BottomSheetView style={{flex: 1}}>
+    <BottomSheetView style={{ flex: 1 }}>
       <Header
         headerTitle="List Name"
         showBackButton={from === 'customLists' ? false : true}
         showProgressBar={false}
         onPress={() => onPressBack()}
       />
-      <BottomSheetView style={[styles.actionContentWrapper, {flex: 1}]}>
+      <BottomSheetView style={[styles.actionContentWrapper, { flex: 1 }]}>
         <CustomText style={styles.createListMessage}>
           {'Create a name for your list'}
         </CustomText>
@@ -82,7 +82,7 @@ const CreateList = ({
         <Button
           title={from === 'customLists' ? 'Create a List' : 'Add to List'}
           colorTheme="dark"
-          style={[styles.actionCta, {marginTop: verticalMarginScale(24)}]}
+          style={[styles.actionCta, { marginTop: verticalMarginScale(24) }]}
           onPress={onPressCreateList}
           loading={createNewListLoading}
         />

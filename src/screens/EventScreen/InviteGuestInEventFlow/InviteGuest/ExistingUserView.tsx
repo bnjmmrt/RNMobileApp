@@ -63,7 +63,7 @@ const ExistingUserView: React.FC<ExistingUserViewProps> = ({}) => {
       } else {
         response = await markUserFav(payload).unwrap();
       }
-      if (response.status === 200) {
+      if (response.success) {
         if (isFavorite) {
           FlashMessageComponent.show('success', 'User removed from favorites');
         } else {

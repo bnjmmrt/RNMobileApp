@@ -64,7 +64,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
         response = await markUserFav(payload).unwrap();
       }
 
-      if (response.status === 200) {
+      if (response.success) {
         if (userDetails?.isFavourite) {
           FlashMessageComponent.show('success', 'User removed from favorites');
         } else {

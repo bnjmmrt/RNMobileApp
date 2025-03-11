@@ -32,9 +32,9 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   const filtersSheetRef = useRef<BottomSheetMethods>(null);
 
   const [allUsers, setAllUsers] = useState<{
-    users: UserItemInterface[];
+    result: UserItemInterface[];
     totalCount: number;
-  }>({ totalCount: 0, users: [] });
+  }>({ totalCount: 0, result: [] });
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>('');
   const [filterQuery, setFilterQuery] = useState<string>('');
@@ -58,7 +58,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   };
 
   const loadMore = () => {
-    if (allUsers?.users?.length < data?.data?.totalCount && !isLoading) {
+    if (allUsers?.result?.length < data?.data?.totalCount && !isLoading) {
       setCurrentPage(prev => prev + 1);
     }
   };
@@ -205,7 +205,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
       } else {
         setAllUsers(prev => ({
           totalCount: data.data.totalCount,
-          users: [...prev.users, ...data.data.users],
+          result: [...prev.result, ...data.data.result],
         }));
       }
     }
@@ -213,7 +213,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
 
   useEffect(() => {
     if (isError) {
-      setAllUsers({ totalCount: 0, users: [] });
+      setAllUsers({ totalCount: 0, result: [] });
     }
   }, [isError]);
 
@@ -236,7 +236,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
         renderUserSkeletonList()
       ) : (
         <FlatList
-          data={allUsers?.users || []}
+          data={allUsers?.result || []}
           style={{
             marginHorizontal: horizontalMarginScale(20),
             marginTop: verticalMarginScale(16),
@@ -289,7 +289,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
           onEndReachedThreshold={0.4}
           showsVerticalScrollIndicator={false}
           refreshControl={
-            allUsers?.users?.length > 0 ? (
+            allUsers?.result?.length > 0 ? (
               <RefreshControl
                 refreshing={isLoading}
                 onRefresh={onRefreshPage}

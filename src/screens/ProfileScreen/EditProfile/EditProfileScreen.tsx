@@ -101,7 +101,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         EndPoint.get_user_with_role_by_id,
         { id: userId },
       );
-      if (response.status === 200) {
+      if (response.success) {
         dispatch(setProfileData(response?.data));
       }
     } catch (error) {
@@ -173,7 +173,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
           EndPoint.user_profile + userId,
           requestObject,
         );
-        if (response.status === 200) {
+        if (response.success) {
           fetchUserById();
           FlashMessageComponent.show(
             'success',
@@ -227,12 +227,12 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
             EndPoint.user_profile + userId,
             requestObject,
           );
-          if (response.status === 200) {
+          if (response.success) {
             const responseUser: any = await apiRequest(
               'get',
-              EndPoint.user + userId,
+              `${EndPoint.user}/${userId}`,
             );
-            if (responseUser.status === 200) {
+            if (responseUser.success) {
               dispatch(
                 setProfileData({
                   ...responseUser?.data,
@@ -378,7 +378,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
           />
         </View>
       )}
-
       <Button
         disabled={false}
         style={styles.btnStyle}

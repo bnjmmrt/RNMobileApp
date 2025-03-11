@@ -99,7 +99,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       'get',
       EndPoint.user_settings + userId,
     );
-    if (response.status === 200) {
+    if (response.success) {
       //dependiing on API response parse data and set
       // setUserDetails(response.data.userData);
       dispatch(setNotificationSettings(response.data.notificationsSettings));
@@ -107,7 +107,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   };
 
   const setWebUrl = (url: string) => {
-    console.log('setUrl', url);
     setURL(url);
     bottomSheetRef?.current?.open();
   };
@@ -275,7 +274,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       { profilePicture: url },
     );
 
-    if (fileUploadResponse.status === 200) {
+    if (fileUploadResponse.success) {
       FlashMessageComponent.show('success', 'Photo updated successfully');
       dispatch(setProfilePicture(fileUploadResponse?.data?.profilePicture));
       dispatch(
@@ -293,10 +292,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     };
     const response: any = await apiRequest(
       'put',
-      `v1/auth/host/${userId}/profile`,
+      `${EndPoint.host}/${userId}/profile`,
       requestObject,
     );
-    if (response.status === 200) {
+    if (response.success) {
       dispatch(setCompanyLogo(response?.data?.companyLogo));
       dispatch(
         setProfileData({
@@ -313,8 +312,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       // setIsToastShown(false);
       savePhotoBottomSheetRef.current?.close();
       const response: any = await uploadFile();
-      console.log('savePhoto', response);
-      if (response.status === 200) {
+      if (response.success) {
         // setIsToastShown(false);
         const imageUrl =
           environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;

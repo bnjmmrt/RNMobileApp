@@ -1,10 +1,11 @@
+import { EndPoint } from "src/ApiManager/config";
 import { createBaseApi } from "src/ApiManager/createBaseApi";
 
 export const ProfileListApiAction = createBaseApi.injectEndpoints({
   endpoints: (builder) => ({
     fetchProfileDetails: builder.query({
       query: (id) => ({
-        url: `users/v1/auth/host/${id}`,
+        url: `${EndPoint.host}/${id}`,
         method: 'GET',
       }),
     }),
