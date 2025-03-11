@@ -39,7 +39,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take: number;
         skip: number;
       }) => ({
-        url: `events/v1/events/hosts/events?take=${take}&skip=${skip}&status=${status}&eventName=${searchText}`,
+        url: `events/v1/hosts/events?take=${take}&skip=${skip}&status=${status}&eventName=${searchText}`,
         method: 'GET',
       }),
       providesTags: ['HostEvents'], // Adjust the tag if needed for cache invalidation
@@ -209,7 +209,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         url: `/events/v1/event/${eventId}/event-announcements?take=${take}&skip=${skip}`,
         method: 'GET',
       }),
-      providesTags: ['HostEventsAnnouncment']
+      providesTags: ['HostEventsAnnouncment'],
     }),
 
     // fetch event receipient for host
