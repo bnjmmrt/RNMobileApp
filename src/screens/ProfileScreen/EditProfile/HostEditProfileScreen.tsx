@@ -108,15 +108,15 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
       console.log("requestobj", requestObject)
       const response: any = await apiRequest(
         'put',
-        `v1/auth/host/${userId}/profile`,
+        `${EndPoint.host}/${userId}/profile`,
         requestObject,
       );
       if (response.success) {
         const responseUser: any = await apiRequest(
           'get',
-          `v1/auth/host/${userId}/profile`,
+          `${EndPoint.host}/${userId}/profile`,
         );
-        if (responseUser.status === 200) {
+        if (responseUser.success) {
           dispatch(setProfileData(responseUser.data));
         }
         FlashMessageComponent.show('success', LABLE.PROFILE_UPDATED_SUCCESSFULLY)

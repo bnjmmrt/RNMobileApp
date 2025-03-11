@@ -293,7 +293,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     };
     const response: any = await apiRequest(
       'put',
-      `v1/auth/host/${userId}/profile`,
+      `${EndPoint.host}/${userId}/profile`,
       requestObject,
     );
     if (response.success) {

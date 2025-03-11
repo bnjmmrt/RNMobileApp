@@ -63,7 +63,8 @@ export const EndPoint = {
   user_profile_picture: 'users/v1/auth/user-profile-picture/',
   user_profile: 'users/v1/auth/user-profile/',
   user_settings: 'users/v1/auth/user-settings/',
-  user_interests: 'users/v1/platform/user-interests/',
+  // user_interests: 'users/v1/platform/user-interests/',
+  user_interests: 'users/v1/auth/user-interests/',
   get_user_status: 'users/v1/auth/get-user-with-roles-by-id',
 
   users_list: 'v1/auth/users-list',
@@ -74,13 +75,13 @@ export const EndPoint = {
   profile_notification_settings: 'users/v1/auth/profile-notification-settings/',
   view_image: 'v1/files/view/',
 
-  hosts: 'v1/auth/hosts',
-  host: 'v1/auth/host',
-  hosts_custom_lists: 'v1/auth/hosts/custom-lists',
-  hosts_favorites_lists: 'v1/auth/hosts/favorites',
-  hosts_followers_lists: 'v1/auth/hosts/followers',
-  custom_lists_duplicate: 'v1/auth/hosts/custom-lists/duplicate',
-  host_custom_lists: 'v1/auth/host/custom-lists',
+  hosts: 'users/v1/auth/hosts',
+  host: 'users/v1/auth/host',
+  hosts_custom_lists: 'users/v1/auth/hosts/custom-lists',
+  hosts_favorites_lists: 'users/v1/auth/hosts/favorites',
+  hosts_followers_lists: 'users/v1/auth/hosts/followers',
+  custom_lists_duplicate: 'users/v1/auth/hosts/custom-lists/duplicate',
+  host_custom_lists: 'users/v1/auth/host/custom-lists',
   hosts_followed: 'users/v1/auth/hosts-followed/',
   referral_requests: 'users/v1/platform/referral-requests',
   vouch_requests: 'users/v1/platform/vouch-requests',
@@ -94,7 +95,7 @@ export const EndPoint = {
   check_phone: 'users/v1/auth/check-phone-number',
   check_email: 'users/v1/auth/check-email',
   event_manage_guests: 'v1/events/manage-guests',
-  switch_profile: 'v1/auth/switch-profile',
+  switch_profile: 'users/v1/auth/switch-profile',
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;
