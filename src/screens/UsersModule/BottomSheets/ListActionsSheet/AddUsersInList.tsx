@@ -42,9 +42,9 @@ const AddUsersInList = ({
   const [searchText, setSearchText] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
   const [allUsers, setAllUsers] = useState<{
-    users: UserItemInterface[];
+    result: UserItemInterface[];
     totalCount: number;
-  }>({ totalCount: 0, users: [] });
+  }>({ totalCount: 0, result: [] });
 
   const { data, isLoading } = useFetchAllUsersQuery({
     take: 10,
@@ -58,7 +58,7 @@ const AddUsersInList = ({
   ] = useAddUsersToCustomListMutation();
 
   const loadMore = () => {
-    if (allUsers?.users?.length < data?.data?.totalCount && !isLoading) {
+    if (allUsers?.result?.length < data?.data?.totalCount && !isLoading) {
       setCurrentPage(prev => prev + 1);
     }
   };
@@ -98,7 +98,7 @@ const AddUsersInList = ({
     };
     try {
       const response = await addUsersToList(payload).unwrap();
-      if (response.status === 200) {
+      if (response.success) {
         onSuccess();
       } else {
         showError('Something went wrong!');
@@ -151,7 +151,7 @@ const AddUsersInList = ({
       } else {
         setAllUsers(prev => ({
           totalCount: data.data.totalCount,
-          users: [...prev.users, ...data.data.users],
+          result: [...prev.result, ...data.data.result],
         }));
       }
     }
@@ -165,10 +165,10 @@ const AddUsersInList = ({
       <BottomSheetFlatList
         data={
           users
-            ? allUsers.users.filter(
+            ? allUsers.result.filter(
                 item1 => !users.some(item2 => item2 === item1.id),
               )
-            : allUsers?.users || []
+            : allUsers?.result || []
         }
         renderItem={renderListRow}
         keyExtractor={(item, index) => index.toString()}

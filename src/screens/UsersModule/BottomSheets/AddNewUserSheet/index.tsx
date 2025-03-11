@@ -127,7 +127,7 @@ const AddNewUserSheet = forwardRef<
           phoneNumber: `${selectedCountry?.dial_code}${phone}`,
         }).unwrap();
 
-        if (response.status === 200) {
+        if (response.success) {
           if (response.data.hasEmail || response.data.hasPhone) {
             setExistingUser(response.data);
             if (response.data?.hasEmail) {
