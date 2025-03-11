@@ -262,7 +262,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       'get',
       EndPoint.generate_ticket + data?.data?.guestId,
     );
-    if (response.status === 200) {
+    if (response.success) {
       if (response.data.eventQr) {
         setEventDetails({ ...eventDetails, qrUrl: response.data.b64QRCode });
         qrCodeBottomSheetRef?.current.open();
