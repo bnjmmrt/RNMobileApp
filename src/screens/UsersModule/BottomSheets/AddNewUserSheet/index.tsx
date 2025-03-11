@@ -84,6 +84,7 @@ const AddNewUserSheet = forwardRef<
     lastNameRef?.current?.setErrorMessage('');
     phoneNumberRef?.current?.setErrorMessage('');
     emailRef?.current?.setErrorMessage('');
+    setError(null)
   };
 
   const onPressExsitingUser = () => {
@@ -103,20 +104,18 @@ const AddNewUserSheet = forwardRef<
     firstNameRef?.current?.validateInputs();
     lastNameRef?.current?.validateInputs();
 
-    if(phoneNumberRef?.current?.validatePhoneNumber() || emailRef?.current?.validateInputs()){
+    if(phoneNumberRef?.current?.validatePhoneNumber(ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE) || emailRef?.current?.validateInputs()){
       // phoneNumberRef?.current?.setErrorMessage('');
       setError('');
-      // emailRef?.current?.setIsBackgroundRed(false)
     }else{
       emailRef.current?.setErrorMessage('')
-      // emailRef?.current?.setIsBackgroundRed(true)
       setError(ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE);
     }
     
     if (
       firstNameRef?.current?.validateInputs() &&
       lastNameRef?.current?.validateInputs() &&
-      (phoneNumberRef?.current?.validatePhoneNumber() ||
+      (phoneNumberRef?.current?.validatePhoneNumber(ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE) ||
       emailRef?.current?.validateInputs())
     ) {
       try {
@@ -199,7 +198,7 @@ const AddNewUserSheet = forwardRef<
           onChangeText={text => setPhone(text)}
           onSelectCountry={setSelectedCountry}
           forBottomSheet={true}
-          errorMsg={errorMessage}
+          // errorMsg={errorMessage}
         />
 
         {existingUser ? (

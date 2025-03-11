@@ -44,7 +44,7 @@ export type countryType = {
 
 export type PhoneNumberInputRefMethods = {
   handleNextPress: () => void;
-  validatePhoneNumber: () => boolean;
+  validatePhoneNumber: (errorMsg?:string) => boolean;
   setPhoneNumber: React.Dispatch<React.SetStateAction<string>>;
   setCallingCode: React.Dispatch<React.SetStateAction<string>>;
   setFlag: React.Dispatch<React.SetStateAction<string>>;
@@ -65,7 +65,7 @@ const PhoneNumberInput = forwardRef<
     onChangeText?: (text: string) => void;
     onSelectCountry?: (selectedCountry: any) => void;
     forBottomSheet?: boolean;
-    errorMsg?:string | null
+    // errorMsg?:string | null
   }
 >(
   (
@@ -76,7 +76,7 @@ const PhoneNumberInput = forwardRef<
       onChangeText,
       onSelectCountry,
       forBottomSheet = false,
-      errorMsg=null
+      // errorMsg=null
     },
     ref,
   ) => {
@@ -131,12 +131,12 @@ const PhoneNumberInput = forwardRef<
       setCode,
     }));
 
-    const validatePhoneNumber = () => {
+    const validatePhoneNumber = (errorMsg?:string) => {
       if (phoneNumber != '') {
         const mobileNumber = `${callingCode}${phoneNumber}`;
         const isValid = isValidPhoneNumber(mobileNumber, code);
         if (!isValid) {
-          setErrorMessage(  LABLE.EROOR_ENTER_VALID_PHONE_NUMBER);
+          setErrorMessage(LABLE.EROOR_ENTER_VALID_PHONE_NUMBER);
           return false;
         }
       } else {
@@ -146,6 +146,7 @@ const PhoneNumberInput = forwardRef<
       setErrorMessage('');
       return true;
     };
+    
 
     const handleNextPress = () => {
       if (validatePhoneNumber()) {
