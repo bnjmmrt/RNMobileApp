@@ -45,20 +45,20 @@ const NotificationSettingsScreen: React.FC<NotificationSettingsScreenProps> = ()
   const userId = useSelector((state: RootState) => state.auth.userId);
 
   const [isSMSNotificationEnabled, setSMSNotificationEnabled] = useState(
-    notificationsSettings?.allowSMSNotifications,
+    notificationsSettings?.enableSmsNotifications,
   );
   const [isPushNotificationEnabled, setPushNotificationEnabled] = useState(
-    notificationsSettings?.allowPushNotifications,
+    notificationsSettings?.enableAppNotifications,
   );
   const [isEmailNotificationEnabled, setEmailNotificationEnabled] = useState(
-    notificationsSettings?.allowEmailNotifications,
+    notificationsSettings?.enableEmailNotifications,
   );
   
   const toggleSMSNotification = () => {
     const newValue = !isSMSNotificationEnabled;
     setSMSNotificationEnabled(newValue);
     updateSettings(
-      { ...notificationsSettings, allowSMSNotifications: newValue },
+      { ...notificationsSettings, enableSmsNotifications: newValue },
       newValue
     );
   };
@@ -67,7 +67,7 @@ const NotificationSettingsScreen: React.FC<NotificationSettingsScreenProps> = ()
     const newValue = !isPushNotificationEnabled;
     setPushNotificationEnabled(newValue);
     updateSettings(
-      { ...notificationsSettings, allowPushNotifications: newValue },
+      { ...notificationsSettings, enableAppNotifications: newValue },
       newValue
     );
   };
@@ -76,7 +76,7 @@ const NotificationSettingsScreen: React.FC<NotificationSettingsScreenProps> = ()
     const newValue = !isEmailNotificationEnabled;
     setEmailNotificationEnabled(newValue);
     updateSettings(
-      { ...notificationsSettings, allowEmailNotifications: newValue },
+      { ...notificationsSettings, enableEmailNotifications: newValue },
       newValue
     );
   };
@@ -85,7 +85,7 @@ const NotificationSettingsScreen: React.FC<NotificationSettingsScreenProps> = ()
   const updateSettings = async (requestData: any, newValue: boolean) => {
     const response: any = await apiRequest(
       'put',
-      EndPoint.profile_notification_settings + userId,
+      EndPoint.user_notification_preferences,
       {...requestData, muteDuration: '24h'},
     );
   
