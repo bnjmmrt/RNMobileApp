@@ -560,7 +560,7 @@ export const fetchUserProfile = async () => {
 
   try {
     const response = await axiosController[apiMethod](apiUrl, apiPayload, {});
-    if (response.status === 200) {
+    if (response.success) {
       dispatch(
         setProfileData({
           ...response.data,

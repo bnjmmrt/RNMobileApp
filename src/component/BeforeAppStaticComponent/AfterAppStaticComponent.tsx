@@ -53,7 +53,7 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
             EndPoint.get_user_with_role_by_id,
             { id: userId },
           );
-          if (response.status === 200) {
+          if (response.success) {
             if (
               response.data.roles[0].roleName == ROLE.MEMBER ||
               response.data.roles[0].name == ROLE.MEMBER
