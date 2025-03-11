@@ -57,7 +57,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
       'get',
       EndPoint.user_interests + userId,
     );
-    if (response.status === 200) {
+    if (response.success) {
       //dependiing on API response parse data and set
       setSelectedCategories(response.data)
     }
@@ -106,7 +106,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
         setIsToastShown(false);
         dispatch(setInterest(selectedCategories));
         dispatch(setPageProgress(8));
-        navigation.navigate('ProfilePhotoScreen');
+        navigation.navigate('IdentityVerification');
       } else {
         setIsToastShown(true);
       }

@@ -52,7 +52,7 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
       'get',
       EndPoint.event_guest_details + route?.params?.guestId,
     );
-    if (response.status === 200) {
+    if (response.success) {
       setEventDetails(response.data);
     }
   };

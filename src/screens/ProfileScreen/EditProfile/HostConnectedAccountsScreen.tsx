@@ -86,7 +86,7 @@ const HostConnectedAccountsScreen: React.FC<
       `v1/auth/host/${userId}/profile`,
       requestObject,
     );
-    if (response.status === 200) {
+    if (response.success) {
       FlashMessageComponent.show('success', 'Connected Accounts updated successfully');
       //navigate if required
       dispatch(setProfileData({...hostProfileData,...response?.data}))

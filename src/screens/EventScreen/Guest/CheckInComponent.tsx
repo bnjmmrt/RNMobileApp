@@ -215,7 +215,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
         checkIn: !checkedIn,
       },
     );
-    if (response.status === 200) {
+    if (response.success) {
       setCheckedIn(response.data.checkInStatus)
     }
   };
@@ -240,7 +240,7 @@ if(status === 'CONFIRMED')
           privateGuestNote: guestNote,
         },
       );
-      if (response.status === 200) {
+      if (response.success) {
       }
     }
   };
