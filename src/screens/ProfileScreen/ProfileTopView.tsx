@@ -116,7 +116,8 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.tabBorderColor,
         alignSelf: 'center',
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        zIndex:-1
     },
     iconContainer: {
         justifyContent: 'center',

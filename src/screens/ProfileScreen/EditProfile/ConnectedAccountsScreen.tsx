@@ -24,12 +24,12 @@ interface ConnectedAccountsScreenProps { }
 
 const items: any = [
   { id: '1', title: PROFILE.INSTAGRAM, image: IMAGES.profileInsta },
-  { id: '2', title: PROFILE.TIKTOK, image: IMAGES.profileTiktok },
-  { id: '3', title: PROFILE.FACEBOOK, image: IMAGES.profileFacebook },
-  { id: '4', title: PROFILE.LINKEDIN, image: IMAGES.profileLinkedIn },
-  { id: '5', title: PROFILE.X, image: IMAGES.profileX },
-  { id: '6', title: PROFILE.YOUTUBE, image: IMAGES.profileYoutube },
-  { id: '7', title: PROFILE.SNAPCHAT, image: IMAGES.profileSnapchat },
+  // { id: '2', title: PROFILE.TIKTOK, image: IMAGES.profileTiktok },
+  // { id: '3', title: PROFILE.FACEBOOK, image: IMAGES.profileFacebook },
+  // { id: '4', title: PROFILE.LINKEDIN, image: IMAGES.profileLinkedIn },
+  // { id: '5', title: PROFILE.X, image: IMAGES.profileX },
+  // { id: '6', title: PROFILE.YOUTUBE, image: IMAGES.profileYoutube },
+  // { id: '7', title: PROFILE.SNAPCHAT, image: IMAGES.profileSnapchat },
 ];
 
 interface ConfigData {

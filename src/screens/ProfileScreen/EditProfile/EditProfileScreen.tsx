@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   LABLE,
@@ -113,7 +120,10 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
       );
       return false;
     } else {
-      if (firstNameRef?.current?.inputText.trim()!=='' && !regex.test(firstNameRef?.current?.inputText)) {
+      if (
+        firstNameRef?.current?.inputText.trim() !== '' &&
+        !regex.test(firstNameRef?.current?.inputText)
+      ) {
         firstNameRef?.current?.setErrorMessage(
           ERROR_MESSAGE.FIRST_NAME_INVALID_CHARACTERS,
         );
@@ -130,7 +140,10 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
       );
       return false;
     } else {
-      if (lastNameRef?.current?.inputText.trim()!=='' && !regex.test(lastNameRef?.current?.inputText)) {
+      if (
+        lastNameRef?.current?.inputText.trim() !== '' &&
+        !regex.test(lastNameRef?.current?.inputText)
+      ) {
         lastNameRef?.current?.setErrorMessage(
           ERROR_MESSAGE.LAST_NAME_INVALID_CHARACTERS,
         );
@@ -142,7 +155,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   };
 
   const onConfirmClick = async () => {
-  
     if (isGuest && role === ROLE.NON_MEMBER) {
       if (
         firstNameRef.current.validateInputs() &&
@@ -172,12 +184,12 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
       }
     } else {
       scrollViewRef.current?.scrollToEnd({ animated: true });
-      firstNameRef.current.validateInputs()
-      validateName('FirstName')
-      lastNameRef.current.validateInputs()
-      validateName('LastName')
-      baseCityRef.current.validateBaseCity()
-      if (selectedCreativeFocus?.length===0) {
+      firstNameRef.current.validateInputs();
+      validateName('FirstName');
+      lastNameRef.current.validateInputs();
+      validateName('LastName');
+      baseCityRef.current.validateBaseCity();
+      if (selectedCreativeFocus?.length === 0) {
         setIsToastShown(true);
       }
       if (
@@ -209,7 +221,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
               ? selectedCreativeFocus.map((item: any) => item.id)
               : profileData?.creativeFocus.map((item: any) => item.id),
           };
-  
+
           const response: any = await apiRequest(
             'put',
             EndPoint.user_profile + userId,
@@ -239,8 +251,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         }
       }
     }
-    
-   
   };
 
   const handleBackPress = () => {
@@ -255,35 +265,39 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         showProgressBar={false}
       />
 
-      <ScrollView ref={scrollViewRef} contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.contentContainer}>
-          <Input
-            ref={firstNameRef}
-            label={LABLE.FIRST_NAME}
-            errorMessage={ERROR_MESSAGE.FIRST_NAME}
-            defaultValue={profileData?.firstName}
-            maxLength={30}
-          />
-          <Input
-            ref={lastNameRef}
-            label={LABLE.LAST_NAME}
-            errorMessage={ERROR_MESSAGE.LAST_NAME}
-            defaultValue={profileData?.lastName}
-            maxLength={30}
-          />
-          {profileData?.email && profileData?.email !== '' && (
-            <>
-              <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
-              <EmailInput ref={emailInputRef} />
-            </>
-          )}
-          {profileData?.phoneNumber && profileData?.phoneNumber !== '' && (
-            <>
-              <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
-              <PhoneNumberInput ref={phoneNumberInputRef} />
-            </>
-          )}
-          {/* {loginData?.isSignUpCompleted ? (
+      <ScrollView
+        ref={scrollViewRef}
+        contentContainerStyle={styles.scrollContainer}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <View style={styles.contentContainer}>
+            <Input
+              ref={firstNameRef}
+              label={LABLE.FIRST_NAME}
+              errorMessage={ERROR_MESSAGE.FIRST_NAME}
+              defaultValue={profileData?.firstName}
+              maxLength={30}
+            />
+            <Input
+              ref={lastNameRef}
+              label={LABLE.LAST_NAME}
+              errorMessage={ERROR_MESSAGE.LAST_NAME}
+              defaultValue={profileData?.lastName}
+              maxLength={30}
+            />
+            {profileData?.email && profileData?.email !== '' && (
+              <>
+                <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
+                <EmailInput ref={emailInputRef} />
+              </>
+            )}
+            {profileData?.phoneNumber && profileData?.phoneNumber !== '' && (
+              <>
+                <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
+                <PhoneNumberInput ref={phoneNumberInputRef} />
+              </>
+            )}
+            {/* {loginData?.isSignUpCompleted ? (
             <>
               <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
               <EmailInput ref={emailInputRef} />
@@ -306,60 +320,65 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
             </>
           )} */}
 
-          {!isGuest && (
-            <View>
-              <Text style={[styles.label]}>{LABLE.GENDER}</Text>
-              <GenderComponent
-                setGender={setGender}
-                selectedGender={gender?.id}
-                list={genderList}
-              />
+            {!isGuest && (
+              <View>
+                <Text style={[styles.label]}>{LABLE.GENDER}</Text>
+                <GenderComponent
+                  setGender={setGender}
+                  selectedGender={gender?.id}
+                  list={genderList}
+                />
 
-              <Text style={[styles.label]}>{LABLE.BIRTHDAY}</Text>
-              <DatePickerComponent
-                ref={birthDayRef}
-                birthDate={profileData.dateOfBirth}
-              />
+                <Text style={[styles.label]}>{LABLE.BIRTHDAY}</Text>
+                <DatePickerComponent
+                  ref={birthDayRef}
+                  birthDate={profileData.dateOfBirth}
+                />
 
-              <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
-              <BaseCityComponent
-                location={{
-                  address: profileData?.city,
-                  placeId: profileData?.placeId,
-                }}
-                ref={baseCityRef}
-              />
+                <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
+                <BaseCityComponent
+                  location={{
+                    address: profileData?.city,
+                    placeId: profileData?.placeId,
+                  }}
+                  ref={baseCityRef}
+                />
 
-              <Text
-                style={[
-                  styles.label,
-                  {
-                    marginTop: !baseCityRef.current?.validateBaseCity()
-                      ? verticalMarginScale(24)
-                      : 0,
-                  },
-                ]}>
-                {LABLE.CREATIVE_FOCUS}
-              </Text>
-              <Text style={styles.subTitle}>{LABLE.SELECT_UPTO_3}</Text>
-              <CreativeFocusComponent
-                setIsToastShown={setIsToastShown}
-                getSelectedData={getSelectedCreativeFocus}
-              />
-              
-            </View>
-            
-          )}
-        </View>
-       
+                <Text
+                  style={[
+                    styles.label,
+                    {
+                      marginTop: !baseCityRef.current?.validateBaseCity()
+                        ? verticalMarginScale(24)
+                        : 0,
+                    },
+                  ]}>
+                  {LABLE.CREATIVE_FOCUS}
+                </Text>
+                <Text style={styles.subTitle}>{LABLE.SELECT_UPTO_3}</Text>
+                <CreativeFocusComponent
+                  setIsToastShown={setIsToastShown}
+                  getSelectedData={getSelectedCreativeFocus}
+                />
+              </View>
+            )}
+          </View>
+        </KeyboardAvoidingView>
       </ScrollView>
-      {isToastShown && ( <View style={{bottom:Platform.OS==='ios' ? 20:0,position:"relative" }}>
-            <Toast
-              toastStyle={{ position: 'relative', width: '90%' }}
-              message={LABLE.PLEASE_SELECT_AT_LEAST_ONE}
-              onClose={() => setIsToastShown(false)}
-            />
-          </View>) }
+      {isToastShown && (
+        <View
+          style={{
+            bottom: Platform.OS === 'ios' ? 20 : 0,
+            position: 'relative',
+          }}>
+          <Toast
+            toastStyle={{ position: 'relative', width: '90%' }}
+            message={LABLE.PLEASE_SELECT_AT_LEAST_ONE}
+            onClose={() => setIsToastShown(false)}
+          />
+        </View>
+      )}
+
       <Button
         disabled={false}
         style={styles.btnStyle}
@@ -386,7 +405,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // paddingVertical: verticalMarginScale(10),
     paddingHorizontal: horizontalMarginScale(20),
-    paddingBottom: verticalMarginScale(40)
+    paddingBottom: verticalMarginScale(40),
   },
   scrollContainer: { paddingBottom: verticalMarginScale(40) },
   label: {

@@ -52,6 +52,7 @@ interface InputProps {
   placeholderTextColor?: string
   maxLength?: number;
   hasDropdown?: boolean;
+  isBackgroundRed?:boolean
 }
 
 export type InputRefMethods = {
@@ -84,7 +85,8 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     extraInputProps,
     labelStyle,
     maxLength,
-    hasDropdown = false
+    hasDropdown = false,
+    isBackgroundRed=false
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -150,8 +152,10 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
               ? [styles.errorInputWrapper, styles.multilineInputContainer]
               : styles.errorInputWrapper
             : null,
+            
           inputFieldContainerStyle,
-          !hasDropdown && { backgroundColor: !editable ? COLORS.borderGray : errorMessage ? COLORS.bgRed : COLORS.white }
+          !hasDropdown && { backgroundColor: !editable ? COLORS.borderGray : errorMessage ? COLORS.bgRed : COLORS.white },
+          isBackgroundRed && [styles.errorInputWrapper],
         ]}>
         {leftImage && (
           <Image

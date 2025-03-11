@@ -23,14 +23,14 @@
 		4A13B46A3311481E98153572 /* RomieTrial-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 793D2D537A0B453F925D3EA6 /* RomieTrial-Black.otf */; };
 		68F7BC29703CB74670C61AF8 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E1DEDC0E8AE8A1B0EBF6C621 /* PrivacyInfo.xcprivacy */; };
 		6D2B093B9A71459A830F560E /* ABCDiatype-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 999129012E3E4B74A3F7EE50 /* ABCDiatype-LightItalic.ttf */; };
-		7699B88040F8A987B510C191 /* libPods-RumorApp-RumorAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-RumorApp-RumorAppTests.a */; };
 		7E5F9116A9BB48578533A203 /* RomieTrial-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = A9859D5623E140B1BD9AAF28 /* RomieTrial-Light.otf */; };
 		7F3341260CEA4F64B0D2D257 /* ABCDiatype-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0CFFD819FD8749E482C8308F /* ABCDiatype-Bold.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		99086003C7B14AA0804168BC /* RomieTrial-Regular-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = C7388A0F4CCA49FC94EF7685 /* RomieTrial-Regular-Italic.otf */; };
 		BAE530E2907F4B3B8E3D1811 /* RomieTrial-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 186FD540EB524E67B7BD07BD /* RomieTrial-Heavy.otf */; };
+		C8709C14FA00BCE9AEA44B78 /* libPods-RumorApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27EC4DF140DE97B7B6E8443C /* libPods-RumorApp.a */; };
 		C969512D9B1B48C698243ABD /* RomieTrial-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF49A30032ED4A579F18027C /* RomieTrial-Medium.otf */; };
-		CF1C7BDA7DC215968F7D3082 /* libPods-RumorApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-RumorApp.a */; };
+		DCBEEAD32B5CEB0FB9FAEC7F /* libPods-RumorApp-RumorAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 880C74026E489252B6776DBB /* libPods-RumorApp-RumorAppTests.a */; };
 		F524A88F3F47466AA95F245A /* RomieTrial-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1D10291175C146BEB79D3415 /* RomieTrial-Bold.otf */; };
 		FDBF2577B57D42299DDB4CF0 /* ABCDiatype-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2225DA7E12CA44CB9987A28A /* ABCDiatype-ThinItalic.ttf */; };
 /* End PBXBuildFile section */
@@ -59,19 +59,16 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = RumorApp/main.m; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = RumorApp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		186FD540EB524E67B7BD07BD /* RomieTrial-Heavy.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Heavy.otf"; path = "../src/assets/fonts/RomieTrial-Heavy.otf"; sourceTree = "<group>"; };
-		19F6CBCC0A4E27FBF8BF4A61 /* libPods-RumorApp-RumorAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RumorApp-RumorAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D10291175C146BEB79D3415 /* RomieTrial-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Bold.otf"; path = "../src/assets/fonts/RomieTrial-Bold.otf"; sourceTree = "<group>"; };
 		2225DA7E12CA44CB9987A28A /* ABCDiatype-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-ThinItalic.ttf"; path = "../src/assets/fonts/ABCDiatype-ThinItalic.ttf"; sourceTree = "<group>"; };
-		3B4392A12AC88292D35C810B /* Pods-RumorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RumorApp.debug.xcconfig"; path = "Target Support Files/Pods-RumorApp/Pods-RumorApp.debug.xcconfig"; sourceTree = "<group>"; };
+		27EC4DF140DE97B7B6E8443C /* libPods-RumorApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RumorApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		48342414648D45939C7833EB /* ABCDiatype-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-Medium.ttf"; path = "../src/assets/fonts/ABCDiatype-Medium.ttf"; sourceTree = "<group>"; };
-		5709B34CF0A7D63546082F79 /* Pods-RumorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RumorApp.release.xcconfig"; path = "Target Support Files/Pods-RumorApp/Pods-RumorApp.release.xcconfig"; sourceTree = "<group>"; };
-		5B7EB9410499542E8C5724F5 /* Pods-RumorApp-RumorAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RumorApp-RumorAppTests.debug.xcconfig"; path = "Target Support Files/Pods-RumorApp-RumorAppTests/Pods-RumorApp-RumorAppTests.debug.xcconfig"; sourceTree = "<group>"; };
-		5DCACB8F33CDC322A6C60F78 /* libPods-RumorApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RumorApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		793D2D537A0B453F925D3EA6 /* RomieTrial-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Black.otf"; path = "../src/assets/fonts/RomieTrial-Black.otf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = RumorApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		89C6BE57DB24E9ADA2F236DE /* Pods-RumorApp-RumorAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RumorApp-RumorAppTests.release.xcconfig"; path = "Target Support Files/Pods-RumorApp-RumorAppTests/Pods-RumorApp-RumorAppTests.release.xcconfig"; sourceTree = "<group>"; };
+		880C74026E489252B6776DBB /* libPods-RumorApp-RumorAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RumorApp-RumorAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BC50AD5F9C4455B8314CEDE /* ABCDiatype-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-Regular.ttf"; path = "../src/assets/fonts/ABCDiatype-Regular.ttf"; sourceTree = "<group>"; };
 		999129012E3E4B74A3F7EE50 /* ABCDiatype-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-LightItalic.ttf"; path = "../src/assets/fonts/ABCDiatype-LightItalic.ttf"; sourceTree = "<group>"; };
+		A227FDD1681E83205B4EBE89 /* Pods-RumorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RumorApp.debug.xcconfig"; path = "Target Support Files/Pods-RumorApp/Pods-RumorApp.debug.xcconfig"; sourceTree = "<group>"; };
 		A69C22DE75D74736B2A3AE4A /* ABCDiatype-RegularItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-RegularItalic.ttf"; path = "../src/assets/fonts/ABCDiatype-RegularItalic.ttf"; sourceTree = "<group>"; };
 		A9859D5623E140B1BD9AAF28 /* RomieTrial-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Light.otf"; path = "../src/assets/fonts/RomieTrial-Light.otf"; sourceTree = "<group>"; };
 		BA26B92868CB4D78ACDD52D9 /* RomieTrial-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "RomieTrial-Regular.otf"; path = "../src/assets/fonts/RomieTrial-Regular.otf"; sourceTree = "<group>"; };
@@ -83,7 +80,10 @@
 		EFCE934A610F48D9ADA08397 /* RomieTrial.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = RomieTrial.otf; path = ../src/assets/fonts/RomieTrial.otf; sourceTree = "<group>"; };
 		F05CB2613ADB4894AFE4C073 /* ABCDiatype-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-MediumItalic.ttf"; path = "../src/assets/fonts/ABCDiatype-MediumItalic.ttf"; sourceTree = "<group>"; };
 		F0DA1002D45F49149BA805FC /* ABCDiatype-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-Light.ttf"; path = "../src/assets/fonts/ABCDiatype-Light.ttf"; sourceTree = "<group>"; };
+		F4E674230C18F829FEC9AD48 /* Pods-RumorApp-RumorAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RumorApp-RumorAppTests.debug.xcconfig"; path = "Target Support Files/Pods-RumorApp-RumorAppTests/Pods-RumorApp-RumorAppTests.debug.xcconfig"; sourceTree = "<group>"; };
+		F5D8E6578806C0E86224747D /* Pods-RumorApp-RumorAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RumorApp-RumorAppTests.release.xcconfig"; path = "Target Support Files/Pods-RumorApp-RumorAppTests/Pods-RumorApp-RumorAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		F94602C75C57417586F59987 /* ABCDiatype-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ABCDiatype-Thin.ttf"; path = "../src/assets/fonts/ABCDiatype-Thin.ttf"; sourceTree = "<group>"; };
+		FED5E0176CA8082AEC19AF3B /* Pods-RumorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RumorApp.release.xcconfig"; path = "Target Support Files/Pods-RumorApp/Pods-RumorApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,7 +91,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7699B88040F8A987B510C191 /* libPods-RumorApp-RumorAppTests.a in Frameworks */,
+				DCBEEAD32B5CEB0FB9FAEC7F /* libPods-RumorApp-RumorAppTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,7 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CF1C7BDA7DC215968F7D3082 /* libPods-RumorApp.a in Frameworks */,
+				C8709C14FA00BCE9AEA44B78 /* libPods-RumorApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,8 +142,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				5DCACB8F33CDC322A6C60F78 /* libPods-RumorApp.a */,
-				19F6CBCC0A4E27FBF8BF4A61 /* libPods-RumorApp-RumorAppTests.a */,
+				27EC4DF140DE97B7B6E8443C /* libPods-RumorApp.a */,
+				880C74026E489252B6776DBB /* libPods-RumorApp-RumorAppTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -209,10 +209,10 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				3B4392A12AC88292D35C810B /* Pods-RumorApp.debug.xcconfig */,
-				5709B34CF0A7D63546082F79 /* Pods-RumorApp.release.xcconfig */,
-				5B7EB9410499542E8C5724F5 /* Pods-RumorApp-RumorAppTests.debug.xcconfig */,
-				89C6BE57DB24E9ADA2F236DE /* Pods-RumorApp-RumorAppTests.release.xcconfig */,
+				A227FDD1681E83205B4EBE89 /* Pods-RumorApp.debug.xcconfig */,
+				FED5E0176CA8082AEC19AF3B /* Pods-RumorApp.release.xcconfig */,
+				F4E674230C18F829FEC9AD48 /* Pods-RumorApp-RumorAppTests.debug.xcconfig */,
+				F5D8E6578806C0E86224747D /* Pods-RumorApp-RumorAppTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -224,12 +224,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "RumorAppTests" */;
 			buildPhases = (
-				A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */,
+				8B01217895EB86303EB52D04 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */,
-				F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */,
+				6FE285B62FBC8B5BCD6F7F50 /* [CP] Embed Pods Frameworks */,
+				9A7DEB824DB8D31F4750F623 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -245,13 +245,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "RumorApp" */;
 			buildPhases = (
-				C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */,
+				584378E5159E08E097A522E6 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
-				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
+				F888BBF4153CAC1A6DEB083D /* [CP] Embed Pods Frameworks */,
+				37E6A54E0B02410877E00002 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -353,46 +353,24 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"$REACT_NATIVE_PATH/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"$REACT_NATIVE_PATH/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
+		37E6A54E0B02410877E00002 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RumorApp/Pods-RumorApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-RumorApp/Pods-RumorApp-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RumorApp/Pods-RumorApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-RumorApp/Pods-RumorApp-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RumorApp/Pods-RumorApp-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RumorApp/Pods-RumorApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-RumorApp-RumorAppTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */ = {
+		584378E5159E08E097A522E6 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -414,7 +392,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */ = {
+		6FE285B62FBC8B5BCD6F7F50 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -431,24 +409,29 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RumorApp-RumorAppTests/Pods-RumorApp-RumorAppTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
+		8B01217895EB86303EB52D04 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RumorApp/Pods-RumorApp-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Copy Pods Resources";
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RumorApp/Pods-RumorApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-RumorApp-RumorAppTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RumorApp/Pods-RumorApp-resources.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */ = {
+		9A7DEB824DB8D31F4750F623 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -463,6 +446,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RumorApp-RumorAppTests/Pods-RumorApp-RumorAppTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F888BBF4153CAC1A6DEB083D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RumorApp/Pods-RumorApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RumorApp/Pods-RumorApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RumorApp/Pods-RumorApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -498,7 +498,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-RumorApp-RumorAppTests.debug.xcconfig */;
+			baseConfigurationReference = F4E674230C18F829FEC9AD48 /* Pods-RumorApp-RumorAppTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -525,7 +525,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-RumorApp-RumorAppTests.release.xcconfig */;
+			baseConfigurationReference = F5D8E6578806C0E86224747D /* Pods-RumorApp-RumorAppTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -549,7 +549,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-RumorApp.debug.xcconfig */;
+			baseConfigurationReference = A227FDD1681E83205B4EBE89 /* Pods-RumorApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -591,7 +591,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-RumorApp.release.xcconfig */;
+			baseConfigurationReference = FED5E0176CA8082AEC19AF3B /* Pods-RumorApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

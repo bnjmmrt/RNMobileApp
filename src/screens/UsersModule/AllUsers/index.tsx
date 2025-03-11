@@ -10,11 +10,13 @@ import { InputRefMethods } from 'src/component/Input/Input';
 import SearchInput from 'src/component/SearchInput';
 import { useFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
 import { changeBottomTabsVisibility } from 'src/redux/slices/bottomTabsConfigSlice';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {
   horizontalMarginScale,
   Hp,
   verticalMarginScale,
   verticalScale,
+  Wp,
 } from 'src/utils/dimensions';
 import UserActionsSheet, {
   UserActionCurrentPageType,
@@ -113,7 +115,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
     } else if (searchText) {
       return 'Please refine your search.';
     } else {
-      return 'This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest';
+      return 'This users is not in our system or already has a status on the guest list. Tap "+" to add a new guest';
     }
   };
   const getEmptyStateTitle = () => {
@@ -141,6 +143,52 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
     },
     [selectedUsers],
   );
+
+  const renderUserSkeletonItem = () => {
+    return (
+      <SkeletonPlaceholder>
+        <SkeletonPlaceholder.Item
+          flexDirection="row"
+          alignItems="center"
+          justifyContent="space-between"
+          paddingVertical={verticalMarginScale(8)}>
+          <SkeletonPlaceholder.Item flexDirection="row" alignItems="center">
+            <SkeletonPlaceholder.Item
+              width={40}
+              height={40}
+              borderRadius={20}
+            />
+            <SkeletonPlaceholder.Item
+              marginLeft={horizontalMarginScale(12)}
+              width={Wp(50)}
+              height={18}
+              borderRadius={4}
+            />
+          </SkeletonPlaceholder.Item>
+          <SkeletonPlaceholder.Item width={24} height={24} borderRadius={4} />
+        </SkeletonPlaceholder.Item>
+      </SkeletonPlaceholder>
+    );
+  };
+
+  const renderUserSkeletonList = () => {
+    return (
+      <View
+        style={{
+          marginTop: verticalMarginScale(16),
+          marginHorizontal: horizontalMarginScale(20),
+          flex: 1,
+        }}>
+        {Array(10)
+          .fill(0)
+          .map((_, index) => (
+            <View key={index} style={{ marginBottom: verticalMarginScale(16) }}>
+              {renderUserSkeletonItem()}
+            </View>
+          ))}
+      </View>
+    );
+  };
 
   useEffect(() => {
     if (selectedUsers.length > 0) {
@@ -183,65 +231,74 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
         mainContainerStyle={{ marginHorizontal: horizontalMarginScale(20) }}
         defaultValue={searchText}
       />
-      <FlatList
-        data={allUsers?.users || []}
-        style={{
-          marginHorizontal: horizontalMarginScale(20),
-          marginTop: verticalMarginScale(16),
-        }}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{ gap: verticalMarginScale(16) }}
-        ListFooterComponent={
-          <View style={{ marginBottom: verticalMarginScale(150) }} />
-        }
-        ListEmptyComponent={
-          <View
-            style={{
-              height: Hp(55),
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <EventEmptyRecord
-              title={getEmptyStateTitle()}
-              subTitle={getEmptyStateMessage()}
-              isLoading={isLoading}
-              footerContent={
-                !isLoading && filterNumber > 0 ? (
-                  <Button
-                    title={'Reset Filters'}
-                    imageSource={IMAGES.refresh}
-                    leftImageStyle={{
-                      height: verticalScale(16),
-                      width: verticalScale(16),
-                    }}
-                    onPress={onClearFilter}
-                    colorTheme="dark"
-                    textStyle={{ marginHorizontal: 0 }}
-                    style={{
-                      alignSelf: 'center',
-                      width: undefined,
-                      height: undefined,
-                      paddingHorizontal: horizontalMarginScale(12),
-                      paddingVertical: verticalMarginScale(12),
-                      gap: horizontalMarginScale(6),
-                      marginTop: verticalMarginScale(30),
-                    }}
-                  />
-                ) : null
-              }
-            />
-          </View>
-        }
-        onEndReached={loadMore}
-        onEndReachedThreshold={0.4}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          allUsers?.users?.length > 0 ? (
-            <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
-          ) : undefined
-        }
-      />
+
+      {isLoading && currentPage === 1 ? (
+        renderUserSkeletonList()
+      ) : (
+        <FlatList
+          data={allUsers?.users || []}
+          style={{
+            marginHorizontal: horizontalMarginScale(20),
+            marginTop: verticalMarginScale(16),
+          }}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={{ gap: verticalMarginScale(16) }}
+          ListFooterComponent={
+            <View style={{ marginBottom: verticalMarginScale(150) }} />
+          }
+          ListEmptyComponent={
+            <View
+              style={{
+                height: Hp(55),
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <EventEmptyRecord
+                title={getEmptyStateTitle()}
+                subTitle={getEmptyStateMessage()}
+                isLoading={isLoading}
+                footerContent={
+                  !isLoading && filterNumber > 0 ? (
+                    <Button
+                      title={'Reset Filters'}
+                      imageSource={IMAGES.refresh}
+                      leftImageStyle={{
+                        height: verticalScale(16),
+                        width: verticalScale(16),
+                      }}
+                      onPress={onClearFilter}
+                      colorTheme="dark"
+                      textStyle={{ marginHorizontal: 0 }}
+                      style={{
+                        alignSelf: 'center',
+                        width: undefined,
+                        height: undefined,
+                        paddingHorizontal: horizontalMarginScale(12),
+                        paddingVertical: verticalMarginScale(12),
+                        gap: horizontalMarginScale(6),
+                        marginTop: verticalMarginScale(30),
+                      }}
+                    />
+                  ) : null
+                }
+              />
+            </View>
+          }
+          onEndReached={loadMore}
+          onEndReachedThreshold={0.4}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            allUsers?.users?.length > 0 ? (
+              <RefreshControl
+                refreshing={isLoading}
+                onRefresh={onRefreshPage}
+              />
+            ) : undefined
+          }
+        />
+      )}
+
       {selectedUsers.length > 0 ? (
         <Button
           title="Add to List"

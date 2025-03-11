@@ -67,6 +67,7 @@ import { setRefresh, setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import EventAnnouncements from 'src/component/Event/EventAnnouncements';
 import FullScreenLoader from 'src/component/FullScreenLoader';
 import ImageComponent from 'src/component/Image/ImageComponent';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -101,7 +102,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [eventLocalId, setEventLocalID] = useState(eventId);
   const { data: announcementData, refetch: refetchAnnouncement } =
     useFetchHostEventsAnnouncementQuery(annqueryArgs);
-
+    const [loading1, setLoading] = useState(false);
   const role = useSelector((state: RootState) => state.auth.role);
   // const insets = useSafeAreaInsets();
 
@@ -321,12 +322,17 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const onCheckInClick = async () => {
-    if (useQr) {
+    setLoading(true)
+    setTimeout(()=>{if (useQr) {
       dispatch(setEventId(route?.params?.id));
       navigation.navigate(ROUTES.QRCodeScanner);
     } else {
       navigateToViewList();
+      
     }
+    setLoading(false)
+  },500);
+    
   };
 
   const onPressInviteGuests = () => {
@@ -370,6 +376,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           style={styles.btnStyle}
           title={BUTTON_LABLE.CHECK_IN}
           colorTheme="dark"
+          loading={loading1}
           onPress={onCheckInClick}
         />
 
@@ -439,203 +446,292 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     });
   };
 
+  const renderSkeleton = () => {
+    return (
+      <ScrollView
+        style={{
+          ...styles.container,
+          marginTop: verticalScale(20) + STATUS_BAR_HEIGHT,
+        }}>
+        <View style={styles.contentContainer}>
+          <SkeletonPlaceholder>
+            <SkeletonPlaceholder.Item>
+              {/* Cover Image Skeleton */}
+              <SkeletonPlaceholder.Item
+                width="100%"
+                height={verticalScale(528)}
+                borderRadius={20}
+              />
+
+              {/* Title Skeleton */}
+              <SkeletonPlaceholder.Item
+                width="80%"
+                height={40}
+                marginTop={20}
+                marginLeft={10}
+              />
+
+              {/* Event Status Skeleton */}
+              <SkeletonPlaceholder.Item
+                width={120}
+                height={30}
+                marginTop={20}
+                marginLeft={10}
+                borderRadius={15}
+              />
+
+              {/* Host Items Skeleton */}
+              <SkeletonPlaceholder.Item
+                flexDirection="row"
+                alignItems="center"
+                marginTop={20}>
+                {[1, 2].map((_, index) => (
+                  <SkeletonPlaceholder.Item
+                    key={index}
+                    width={60}
+                    height={60}
+                    borderRadius={30}
+                    marginLeft={index === 0 ? 10 : 5}
+                  />
+                ))}
+              </SkeletonPlaceholder.Item>
+
+              {/* Venue Section Skeleton */}
+              <SkeletonPlaceholder.Item
+                width="100%"
+                height={120}
+                marginTop={20}
+                borderRadius={10}
+              />
+
+              {/* Overview Section Skeleton */}
+              <SkeletonPlaceholder.Item
+                width="100%"
+                height={150}
+                marginTop={20}
+                borderRadius={10}
+              />
+            </SkeletonPlaceholder.Item>
+          </SkeletonPlaceholder>
+        </View>
+      </ScrollView>
+    );
+  };
+
   return (
     <>
-      {/* <SafeAreaView style={{ backgroundColor: COLORS.white }} /> */}
-      <View style={styles.container}>
-        <ScrollView>
-          <View style={styles.blurredBackgroundContainer}>
-            <FastImage
-              source={{
-                uri: removeSignature(data?.data?.imageFlyer),
-              }}
-              resizeMode={FastImage.resizeMode.cover}
-              defaultSource={IMAGES.eventCoverPlaceholders1}
-              style={styles.blurredBackground}
+      {isLoading ? (
+        renderSkeleton()
+      ) : (
+        <>
+          {/* <SafeAreaView style={{ backgroundColor: COLORS.white }} /> */}
+          <View style={styles.container}>
+            <ScrollView>
+              <View style={styles.blurredBackgroundContainer}>
+                <FastImage
+                  source={{
+                    uri: removeSignature(data?.data?.imageFlyer),
+                  }}
+                  resizeMode={FastImage.resizeMode.cover}
+                  defaultSource={IMAGES.eventCoverPlaceholders1}
+                  style={styles.blurredBackground}
+                />
+                <BlurView
+                  style={StyleSheet.absoluteFill}
+                  blurType="light"
+                  blurAmount={128}
+                  reducedTransparencyFallbackColor="white"
+                />
+                <LinearGradient
+                  style={StyleSheet.absoluteFill}
+                  colors={['rgba(255, 255, 255, 0)', '#FFFFFF']}
+                  locations={[0, 0.9]}
+                />
+              </View>
+
+              {/* <SafeAreaView /> */}
+
+              <View style={styles.contentContainer}>
+                <View style={imageWrapperStyle.wrapper}>
+                  <ImageComponent
+                    loading={isLoading}
+                    imageURL={
+                      removeSignature(data?.data?.imageCover) ||
+                      removeSignature(data?.data?.imageFlyer)
+                    }
+                  />
+                </View>
+
+                <Text style={styles.titleStyle}>{data?.data?.name}</Text>
+
+                <EventStatus
+                  status={guestStatus}
+                  isDeclinedByMe={isDeclinedByMe}
+                />
+
+                {role !== ROLE.NON_MEMBER && (
+                  <FlatList
+                    data={collaborators}
+                    horizontal
+                    pagingEnabled={false}
+                    // style={{ marginVertical: 20 }}
+                    showsHorizontalScrollIndicator={false}
+                    keyExtractor={(item: any, index) => `${item.id}-${index}`}
+                    renderItem={({ item }) => <EventHostItem item={item} />}
+                  />
+                )}
+
+                {role === ROLE.HOST && (
+                  <EventRequests
+                    eventId={data?.data?.id}
+                    onTicketBreakdownPress={onPressManageInvite}
+                  />
+                )}
+
+                {!isLoading && (
+                  <EventVenue
+                    item={data?.data}
+                    handleCalendarPress={addCalenderEvents}
+                  />
+                )}
+
+                <EventOverview item={data?.data} />
+
+                {talents.length > 0 && <EventTalent talents={talents} />}
+
+                <EventAnnouncements
+                  role={role}
+                  handleAddPress={addAnouncement}
+                  announcementData={announcementData}
+                  eventId={eventId}
+                  handleViewAll={() =>
+                    navigation.navigate(ROUTES.EventStack, {
+                      screen: ROUTES.Announcement,
+                      params: data?.data,
+                    })
+                  }
+                />
+                {showError && (
+                  <View style={styles.errorTextContainer}>
+                    <Image
+                      style={{ width: 18, height: 18, right: 5 }}
+                      source={IMAGES.x_circle}
+                    />
+                    <Text style={styles.name}>
+                      {LABLE.ADD_EVENT_ANNOUNCEMENTS_ERROR}
+                    </Text>
+                  </View>
+                )}
+              </View>
+              {/* {role === ROLE.HOST && <Button
+                disabled={false}
+                style={styles.btnStyleLight}
+                title="View Guest List"
+                colorTheme="light"
+                onPress={navigateToViewList}
+              />}
+
+              {role === ROLE.HOST && <Button
+                disabled={false}
+                style={styles.btnStyleLight}
+                title={BUTTON_LABLE.INVITE_GUESTS}
+                colorTheme="light"
+                onPress={onPressInviteGuests}
+              />}
+
+              {role === ROLE.HOST && (
+                <Button
+                  disabled={false}
+                  style={styles.btnStyle}
+                  title={BUTTON_LABLE.CHECK_IN}
+                  colorTheme="dark"
+                  onPress={onCheckInClick}
+                />
+              )} */}
+            </ScrollView>
+            {renderHostButtons()}
+            {renderRSVPButton()}
+            {renderConfirmedButtons()}
+
+            <CalenderEventsBottomSheet
+              ref={calenderEventsBottomSheetRef}
+              eventDetails={calendarDetails}
             />
-            <BlurView
-              style={StyleSheet.absoluteFill}
-              blurType="light"
-              blurAmount={128}
-              reducedTransparencyFallbackColor="white"
+            <QRCodeBottomsheet
+              ref={qrCodeBottomSheetRef}
+              title={eventDetails?.title}
+              subTitle={eventDetails?.subTitle}
+              imageURL={eventDetails?.qrUrl}
+              isQRShown={isQRShown}
+              name={eventDetails?.name}
             />
-            <LinearGradient
-              style={StyleSheet.absoluteFill}
-              colors={['rgba(255, 255, 255, 0)', '#FFFFFF']}
-              locations={[0, 0.9]}
+
+            <CalenderEventsBottomSheet
+              ref={calenderEventsBottomSheetRef}
+              eventDetails={calendarDetails}
             />
-          </View>
+            <QRCodeBottomsheet
+              ref={qrCodeBottomSheetRef}
+              title={eventDetails?.title}
+              subTitle={eventDetails?.subTitle}
+              imageURL={
+                eventDetails?.qrUrl ? eventDetails?.qrUrl : IMAGES.ticket
+              }
+              isQRShown={isQRShown}
+              name={eventDetails?.name}
+            />
 
-          {/* <SafeAreaView /> */}
-
-          <View style={styles.contentContainer}>
-            <View style={imageWrapperStyle.wrapper}>
-              <ImageComponent
-                loading={isLoading}
-                imageURL={
-                  removeSignature(data?.data?.imageCover) ||
-                  removeSignature(data?.data?.imageFlyer)
-                }
-              />
-            </View>
-
-            <Text style={styles.titleStyle}>{data?.data?.name}</Text>
-
-            <EventStatus status={guestStatus} isDeclinedByMe={isDeclinedByMe} />
-
-            {role !== ROLE.NON_MEMBER && (
-              <FlatList
-                data={collaborators}
-                horizontal
-                pagingEnabled={false}
-                // style={{ marginVertical: 20 }}
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={(item: any, index) => `${item.id}-${index}`}
-                renderItem={({ item }) => <EventHostItem item={item} />}
-              />
-            )}
+            <BackButtonOverlay
+              customStyle={{ top: 16 + STATUS_BAR_HEIGHT }}
+              onPress={() => navigation.goBack()}
+            />
 
             {role === ROLE.HOST && (
-              <EventRequests
-                eventId={data?.data?.id}
-                onTicketBreakdownPress={onPressManageInvite}
+              <BackButtonOverlay
+                customStyle={{ right: 0, top: 16 + STATUS_BAR_HEIGHT }}
+                imageSource={IMAGES.edits}
+                onPress={() =>
+                  navigation.navigate(ROUTES.EditEventScreen, {
+                    event: data?.data,
+                  })
+                }
               />
             )}
-
-            {!isLoading && (
-              <EventVenue
-                item={data?.data}
-                handleCalendarPress={addCalenderEvents}
+            {role === ROLE.HOST && (
+              <BackButtonOverlay
+                customStyle={{ right: 55, top: 16 + STATUS_BAR_HEIGHT }}
+                imageSource={IMAGES.share}
+                onPress={() =>
+                  FlashMessageComponent.show('info', 'In Progress')
+                }
               />
-            )}
-
-            <EventOverview item={data?.data} />
-
-            {talents.length > 0 && <EventTalent talents={talents} />}
-
-            <EventAnnouncements
-              role={role}
-              handleAddPress={addAnouncement}
-              announcementData={announcementData}
-              eventId={eventId}
-              handleViewAll={() =>
-                navigation.navigate(ROUTES.EventStack, {
-                  screen: ROUTES.Announcement,
-                  params: data?.data,
-                })
-              }
-            />
-            {showError && (
-              <View
-                style={{
-                  borderRadius: 10,
-                  borderColor: COLORS.borderRed,
-                  backgroundColor: COLORS.bgRed,
-                  paddingVertical: verticalScale(10),
-                  paddingHorizontal: horizontalScale(10),
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Image
-                  style={{ width: 18, height: 18, right: 5 }}
-                  source={IMAGES.x_circle}
-                />
-                <Text style={styles.name}>
-                  {LABLE.ADD_EVENT_ANNOUNCEMENTS_ERROR}
-                </Text>
-              </View>
             )}
           </View>
-          {/* {role === ROLE.HOST && <Button
-            disabled={false}
-            style={styles.btnStyleLight}
-            title="View Guest List"
-            colorTheme="light"
-            onPress={navigateToViewList}
-          />}
-
-          {role === ROLE.HOST && <Button
-            disabled={false}
-            style={styles.btnStyleLight}
-            title={BUTTON_LABLE.INVITE_GUESTS}
-            colorTheme="light"
-            onPress={onPressInviteGuests}
-          />}
-
-          {role === ROLE.HOST && (
-            <Button
-              disabled={false}
-              style={styles.btnStyle}
-              title={BUTTON_LABLE.CHECK_IN}
-              colorTheme="dark"
-              onPress={onCheckInClick}
-            />
-          )} */}
-        </ScrollView>
-        {renderHostButtons()}
-        {renderRSVPButton()}
-        {renderConfirmedButtons()}
-
-        <CalenderEventsBottomSheet
-          ref={calenderEventsBottomSheetRef}
-          eventDetails={calendarDetails}
-        />
-        <QRCodeBottomsheet
-          ref={qrCodeBottomSheetRef}
-          title={eventDetails?.title}
-          subTitle={eventDetails?.subTitle}
-          imageURL={eventDetails?.qrUrl}
-          isQRShown={isQRShown}
-          name={eventDetails?.name}
-        />
-
-        <CalenderEventsBottomSheet
-          ref={calenderEventsBottomSheetRef}
-          eventDetails={calendarDetails}
-        />
-        <QRCodeBottomsheet
-          ref={qrCodeBottomSheetRef}
-          title={eventDetails?.title}
-          subTitle={eventDetails?.subTitle}
-          imageURL={eventDetails?.qrUrl ? eventDetails?.qrUrl : IMAGES.ticket}
-          isQRShown={isQRShown}
-          name={eventDetails?.name}
-        />
-
-        <BackButtonOverlay
-          customStyle={{ top: 16 + STATUS_BAR_HEIGHT }}
-          onPress={() => navigation.goBack()}
-        />
-
-        {role === ROLE.HOST && (
-          <BackButtonOverlay
-            customStyle={{ right: 0, top: 16 + STATUS_BAR_HEIGHT }}
-            imageSource={IMAGES.edits}
-            onPress={() =>
-              navigation.navigate(ROUTES.EditEventScreen, { event: data?.data })
-            }
-          />
-        )}
-        {role === ROLE.HOST && (
-          <BackButtonOverlay
-            customStyle={{ right: 55, top: 16 + STATUS_BAR_HEIGHT }}
-            imageSource={IMAGES.share}
-            onPress={() => FlashMessageComponent.show('info', 'In Progress')}
-          />
-        )}
-      </View>
+        </>
+      )}
     </>
   );
 };
 
-export default EventDetailsScreen;
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'column',
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+
+  contentContainer: {
+    flexDirection: 'column',
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    gap: verticalScale(20),
+    flex: 1,
+  },
   btnStyle: {
     borderRadius: 100,
     marginVertical: 10,
     height: 50,
   },
-
   btnStyleLight: {
     borderRadius: 100,
     marginVertical: 0,
@@ -643,12 +739,6 @@ const styles = StyleSheet.create({
     borderColor: COLORS.black,
     height: undefined,
     paddingVertical: verticalMarginScale(16),
-  },
-  container: {
-    flexDirection: 'column',
-    flex: 1,
-
-    backgroundColor: 'transparent',
   },
   imageWrapper: {
     height: verticalScale(528),
@@ -665,13 +755,6 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     borderRadius: 20,
-  },
-  contentContainer: {
-    flexDirection: 'column',
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    gap: verticalScale(20),
-    flex: 1,
   },
   errorInputWrapper: {
     borderColor: COLORS.borderRed,
@@ -714,4 +797,15 @@ const styles = StyleSheet.create({
     objectFit: 'contain',
     transform: [{ scale: 1.5 }],
   },
+  errorTextContainer: {
+    borderRadius: 10,
+    borderColor: COLORS.borderRed,
+    backgroundColor: COLORS.bgRed,
+    paddingVertical: verticalScale(10),
+    paddingHorizontal: horizontalScale(10),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
 });
+
+export default EventDetailsScreen;

@@ -1,12 +1,17 @@
 import { CommonActions, useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, Platform, ScrollView, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  Platform,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Text } from 'react-native-animatable';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
-import ContactSupporrtBottomSheet from 'src/component/BottomSheet/ContactSupporrtBottomSheet';
 import DeleteAccountBottomSheet from 'src/component/BottomSheet/DeleteAccountBottomSheet';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
@@ -40,10 +45,11 @@ import ProfileListItem from './ProfileListItem';
 import ProfileScreenStyle from './ProfileScreenStyle';
 import ProfileTopView from './ProfileTopView';
 import HeaderComponent from 'src/component/HeaderComponent';
-import { check, openSettings, PERMISSIONS } from 'react-native-permissions';
+import { openSettings } from 'react-native-permissions';
+import Intercom, { Visibility } from '@intercom/intercom-react-native';
 
 // Define the type for navigation props
-interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
+interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
 interface ListItem {
   id: string;
@@ -61,12 +67,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const deleteAccountBottomSheetRef = useRef<any>(null);
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
-  const { apiRequest, loading, error } = useApi();
+  const { apiRequest, loading } = useApi();
 
   const [URL, setURL] = useState('');
   const [listItems, setListItems] = useState<ListItem[]>([]);
   const [image, setImage] = useState<string>('');
-  const [isShown, setIsShown] = useState(false);
 
   const {
     userId,
@@ -104,15 +109,27 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const setWebUrl = (url: string) => {
     console.log('setUrl', url);
     setURL(url);
-    URL.length && bottomSheetRef?.current?.open();
+    bottomSheetRef?.current?.open();
   };
 
   const deleteAccount = () => {
     deleteAccountBottomSheetRef.current?.open();
   };
 
+  useEffect(() => {
+    if (profileData?.email) {
+      Intercom.loginUserWithUserAttributes({
+        email: profileData?.email,
+        userId,
+        name: `${profileData?.firstName} ${profileData?.lastName}`,
+      });
+    }
+    Intercom.setLauncherVisibility(Visibility.GONE);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileData?.email, profileData?.firstName, profileData?.lastName]);
+
   const contactSupportModal = () => {
-    setIsShown(true);
+    Intercom.present();
   };
 
   const roleText = (role: string) => {
@@ -154,11 +171,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     { id: '1', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit },
     { id: '2', title: PROFILE.FOLLOWING, image: IMAGES.following },
     { id: '3', title: PROFILE.REFERRALS, image: IMAGES.thumbsUp },
-    // {
-    //   id: '14',
-    //   title: PROFILE.CONNECTED_ACCOUNTS,
-    //   image: IMAGES.connectedAccount,
-    // },
+    {
+      id: '14',
+      title: PROFILE.CONNECTED_ACCOUNTS,
+      image: IMAGES.connectedAccount,
+    },
     { id: '5', title: PROFILE.MY_INTERESTS, image: IMAGES.heart },
     { id: '6', title: PROFILE.NOTIFICATION, image: IMAGES.notification },
     { id: '7', title: PROFILE.FEEDBACK, image: IMAGES.feedback },
@@ -324,7 +341,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         // editPhotoBottomSheetRef.current?.close();
         savePhotoBottomSheetRef.current?.open();
       })
-      .catch(async (error) => {
+      .catch(async error => {
         console.log('ImagePicker Error: ', error);
 
         if (error?.message?.includes('did not grant library permission')) {
@@ -342,13 +359,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                   openSettings();
                 },
               },
-            ]
+            ],
           );
         }
       });
   };
-
-
 
   const logOut = () => {
     const resetAction = CommonActions.reset({
@@ -443,11 +458,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             );
           })}
 
-          <TermsAndPolicy
-            setUrl={setWebUrl}
-            type="small"
-            showMessage={false}
-          />
+          <TermsAndPolicy setUrl={setWebUrl} type="small" showMessage={false} />
 
           <TouchableOpacity
             onPress={() => handleLogoutPress()}
@@ -458,19 +469,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
         <WebViewBottomSheet url={URL} ref={bottomSheetRef} />
 
-        {isShown && (
-          <ContactSupporrtBottomSheet
-            // setLocation={setSelectedCity}
-            setIsShown={setIsShown}
-          />
-        )}
-        {/* <ContactSupporrtBottomSheet ref={contactSupportBottomSheetRef}/> */}
         <EditPictureBottomSheet
           ref={editPhotoBottomSheetRef}
           onPress={openCamera}
           submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
           cancelButtonText={BUTTON_LABLE.CANCEL}
-          snapPoints={[Platform.OS == 'android' ? 0.2 : 0.2]}
+          snapPoints={[Platform.OS == 'android' ? 0.23 : 0.2]}
           image={null}
         />
 
@@ -480,7 +484,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           onPencilClick={openCamera}
           submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
           cancelButtonText={BUTTON_LABLE.CANCEL}
-          snapPoints={[Platform.OS == 'android' ? 0.4 : 0.5]}
+          snapPoints={[Platform.OS === 'android' ? 0.4 : 0.5]}
           image={image}
         />
 
@@ -490,7 +494,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           onPress={logOut}
           submitButtonText={BUTTON_LABLE.CONFIRM}
           cancelButtonText={BUTTON_LABLE.CANCEL}
-          snapPoints={[Platform.OS == 'android' ? '0.29':'0.30']}
+          snapPoints={[Platform.OS === 'android' ? '0.29' : '0.30']}
           image={null}
         />
         <DeleteAccountBottomSheet

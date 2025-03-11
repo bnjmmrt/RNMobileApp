@@ -7,7 +7,7 @@ export const loginApiAction = createBaseApi.injectEndpoints({
 
     checkMemberLogin: builder.mutation({
       query: (requestParam) => ({
-        url: 'v1/auth/check-member-login',
+        url: 'users/v1/auth/check-member-login',
         method: 'POST',
         body: requestParam,
       }),
@@ -16,7 +16,7 @@ export const loginApiAction = createBaseApi.injectEndpoints({
 
     memberLogin: builder.mutation({
       query: (requestParam) => ({
-        url: 'v1/auth/member-login',
+        url: 'users/v1/auth/member-login',
         method: 'POST',
         body: requestParam,
       }),
