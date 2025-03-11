@@ -4,14 +4,14 @@ export const referralApiAction = createBaseApi.injectEndpoints({
   endpoints: (builder) => ({
     submitReferralCode: builder.mutation({
       query: (requestParam) => ({
-        url: 'v1/platform/referred-users',
+        url: 'users/v1/auth/referred-users',
         method: 'POST',
         body: requestParam,
       }),
     }),
     requestMember: builder.mutation({
       query: (requestParam) => ({
-        url: 'v1/platform/referral-requests',
+        url: 'users/v1/auth/referral-requests',
         method: 'POST',
         body: requestParam,
       }),
@@ -44,14 +44,14 @@ export const referralApiAction = createBaseApi.injectEndpoints({
     }),
     getConfirmedMembers: builder.mutation({
       query: (requestParam) => ({
-        url: 'v1/auth/get-confirmed-members',
+        url: 'users/v1/auth/get-confirmed-members',
         method: 'POST',
         body: requestParam,
       }),
     }),
     getReferralRequest: builder.query({
       query: () => ({
-        url: 'v1/platform/referral-requests',
+        url: 'users/v1/platform/referral-requests',
         method: 'GET',
       }),
     }),

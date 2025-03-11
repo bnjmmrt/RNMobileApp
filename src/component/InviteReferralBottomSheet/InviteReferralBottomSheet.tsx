@@ -67,13 +67,15 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
 
   const fetchContacts = async () => {
     try {
-      const refferalRequest = await apiRequest('get', 'v1/platform/list-referral-requests/');
       const formattedContacts = await getContacts();
       const contacts = await getContactNumbersOnly();
       const response = await getConfirmedMembers({ contacts });
+      const refferalRequest = await apiRequest('get', 'users/v1/auth/list-referral-requests/');
+
+      console.log("DKDKDKD", refferalRequest)
 
       if (response?.data?.data) {
-        const referralUserIds = refferalRequest.data.map(request => request.userId);
+        const referralUserIds = refferalRequest?.data && refferalRequest?.data.data?.map(request => request.userId);
 
         const membersWithSentFlag = response.data.data.map(member => ({
           ...member,
@@ -149,7 +151,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   };
 
   const handleInviteLink = async () => {
-    const rumorAppLink=Platform.OS==='android' ? environment.playstoreLink : environment.appStoreLink
+    const rumorAppLink = Platform.OS === 'android' ? environment.playstoreLink : environment.appStoreLink
     try {
       await Share.share({
         message:

@@ -47,7 +47,7 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({ userId, searchText, tab }
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
-      {events.length > 0 ? (
+      {events?.length > 0 ? (
         <FlatList
           data={events}
           style={{ paddingBottom: 10, paddingHorizontal: 15 }}

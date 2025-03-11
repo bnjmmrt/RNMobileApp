@@ -35,12 +35,12 @@ const FollowButton: React.FC<FollowButtonProps> = ({ id, isFollowing, handleRefr
     };
 
     const unFollowApi = async (hostId: string) => {
-        const response: any = await apiRequest('delete', `v1/auth/host/${hostId}/follow`, { userId });
+        const response: any = await apiRequest('delete', `users/v1/auth/host/${hostId}/follow`, { userId });
         return response?.status;
     };
 
     const followApi = async (hostId: string) => {
-        const response: any = await apiRequest('post', `v1/auth/host/${hostId}/follow`, { userId });
+        const response: any = await apiRequest('post', `users/v1/auth/host/${hostId}/follow`, { userId });
         return response?.status;
     };
 

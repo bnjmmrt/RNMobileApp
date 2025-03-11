@@ -21,7 +21,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take: number;
         skip: number;
       }) => ({
-        url: `v1/events/users/${userId}/events?guestEventStatus=${guestEventStatus}&take=${take}&skip=${skip}&findInNameAndDescription=${searchText}`,
+        url: `events/v1/events/users/${userId}/events?guestEventStatus=${guestEventStatus}&take=${take}&skip=${skip}&findInNameAndDescription=${searchText}`,
         method: 'GET',
       }),
       providesTags: ['Event'], // Adjust the tag if needed for cache invalidation
@@ -39,7 +39,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take: number;
         skip: number;
       }) => ({
-        url: `v1/events/hosts/events?take=${take}&skip=${skip}&status=${status}&eventName=${searchText}`,
+        url: `events/v1/events/hosts/events?take=${take}&skip=${skip}&status=${status}&eventName=${searchText}`,
         method: 'GET',
       }),
       providesTags: ['HostEvents'], // Adjust the tag if needed for cache invalidation
@@ -60,7 +60,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take?: number;
         skip?: number;
       }) => {
-        let url = `v1/events/users/${userId}/events/?`;
+        let url = `events/v1/events/users/${userId}/events/?`;
         if (take) {
           url = `${url}&take=${take}&skip=${skip}`;
         }
@@ -74,7 +74,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
           url = `${url}&${queryString}`;
         }
         return {
-          url: `${url}&feed=true`,
+          url: `${url}`,
           method: 'GET',
         };
       },
@@ -83,7 +83,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     fetchEventDetails: builder.query({
       query: ({ eventId, userId }: { eventId: string; userId: string }) => ({
-        url: `v1/events/users/${userId}/events/${eventId}`,
+        url: `events/v1/users/${userId}/events/${eventId}`,
         method: 'GET',
       }),
       providesTags: ['EventDetails'],
@@ -92,7 +92,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     fetchPublicEventDetails: builder.query({
       query: ({ eventId }: { eventId: string }) => ({
-        url: `v1/events/event/${eventId}`,
+        url: `events/v1/events/event/${eventId}`,
         method: 'GET',
       }),
       providesTags: ['EventDetails'],
@@ -101,7 +101,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     fetchHostEventDetails: builder.query({
       query: ({ eventId }: { eventId: string }) => ({
-        url: `v1/events/event/${eventId}`,
+        url: `events/v1/events/event/${eventId}`,
         method: 'GET',
       }),
       providesTags: ['EventDetails'],
@@ -110,7 +110,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     fetchGuestStatusCount: builder.query({
       query: ({ eventId }: { eventId: string }) => ({
-        url: `v1/events/${eventId}/guest-status-counts`,
+        url: `events/v1/events/${eventId}/guest-status-counts`,
         method: 'GET',
       }),
       providesTags: ['GuestStatusCount'],
@@ -119,7 +119,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     fetchDashboardUpcomingEvents: builder.query({
       query: () => ({
-        url: 'v1/events/dashboard/upcoming-events',
+        url: 'events/v1/events/dashboard/upcoming-events',
         method: 'GET',
       }),
       providesTags: ['DashboardUpcomingEvents'],
@@ -134,7 +134,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         eventId?: string;
         queryString?: string;
       }) => {
-        let url = `v1/events/${eventId}/guests/`;
+        let url = `events/v1/events/${eventId}/guests/`;
         if (queryString) {
           url = `${url}?${queryString}`;
         }
@@ -148,7 +148,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     fetchGuestDetails: builder.query({
       query: (guestId: string) => ({
-        url: `v1/events/guest-details/${guestId}`,
+        url: `events/v1/events/guest-details/${guestId}`,
         method: 'GET',
       }),
       providesTags: ['GuestDetails'],
@@ -164,7 +164,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         action: 'CREATE' | 'UPDATE' | 'DELETE';
         payload?: ManageGuestPayload;
       }) => {
-        const baseUrl = 'v1/events/manage-guests';
+        const baseUrl = 'users/v1/events/manage-guests';
 
         return {
           url: baseUrl,

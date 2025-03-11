@@ -22,7 +22,7 @@ const ReportAndBlockHostView = ({ onClose, userId, hostId, roleId, hostRoleId }:
 
         if (validateInputs()) {
             try {
-                const response = await apiRequest('post', `v1/auth/users/${userId}/hosts/${hostId}/report-and-block`, {
+                const response = await apiRequest('post', `users/v1/auth/users/${userId}/hosts/${hostId}/report-and-block`, {
                     reportMessage: inputText,
                     reportedByRoleId: roleId,
                     reportedToroleId: hostRoleId,

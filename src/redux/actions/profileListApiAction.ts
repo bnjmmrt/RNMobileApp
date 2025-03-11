@@ -4,7 +4,7 @@ export const ProfileListApiAction = createBaseApi.injectEndpoints({
   endpoints: (builder) => ({
     fetchProfileDetails: builder.query({
       query: (id) => ({
-        url: `v1/auth/host/${id}`,
+        url: `users/v1/auth/host/${id}`,
         method: 'GET',
       }),
     }),
