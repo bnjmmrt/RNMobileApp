@@ -107,7 +107,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   };
 
   const setWebUrl = (url: string) => {
-    console.log('setUrl', url);
     setURL(url);
     bottomSheetRef?.current?.open();
   };
@@ -313,7 +312,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       // setIsToastShown(false);
       savePhotoBottomSheetRef.current?.close();
       const response: any = await uploadFile();
-      console.log('savePhoto', response);
       if (response.success) {
         // setIsToastShown(false);
         const imageUrl =

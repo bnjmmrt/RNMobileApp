@@ -81,7 +81,7 @@ export const EndPoint = {
   current_user: `v1/auth/current-user`,
   get_user_with_role_by_id: `${API_USERS_V1_AUTH}/get-user-with-roles-by-id`,
   profile_notification_settings: `${API_USERS_V1_AUTH}/profile-notification-settings/`,
-  view_image: `v1/files/view/`,
+  view_image: `users/v1/files/view/`,
 
   hosts: `${API_USERS_V1_AUTH_HOSTS}`,
   host: `${API_USERS_V1_AUTH_HOST}`,
