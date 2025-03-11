@@ -106,7 +106,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
         requestData,
       );
       console.log('feedback response', response);
-      if (response.status === 200) {
+      if (response.success) {
         confirmationRef.current.open();
         //  clearData()
       }

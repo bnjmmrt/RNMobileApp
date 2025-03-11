@@ -50,7 +50,7 @@ const ReferralScreen: React.FC = () => {
   const getVouchRequest = async () => {
     const response: any = await apiRequest('get', EndPoint.vouch_requests);
 
-    if (response.status === 200) {
+    if (response.success) {
       setVouchRequests(response?.data);
     }
   };

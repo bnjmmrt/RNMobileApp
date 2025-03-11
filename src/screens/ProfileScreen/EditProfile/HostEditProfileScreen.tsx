@@ -111,7 +111,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
         `v1/auth/host/${userId}/profile`,
         requestObject,
       );
-      if (response.status === 200) {
+      if (response.success) {
         const responseUser: any = await apiRequest(
           'get',
           `v1/auth/host/${userId}/profile`,

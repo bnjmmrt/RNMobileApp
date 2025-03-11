@@ -118,7 +118,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     }
     const response: any = await apiRequest('post', endPoint, params);
 
-    if (response.data.verified) {
+    if (response.success) {
       // FlashMessageComponent.show('success', LABLE.OTP_VERIFIED_SUCCESSFULLY);
       dispatch(setPageProgress(3));
       dispatch(setIsEmailPhoneBothVerified(true));

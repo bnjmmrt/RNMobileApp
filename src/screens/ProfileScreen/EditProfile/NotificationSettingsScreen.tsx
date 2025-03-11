@@ -89,7 +89,7 @@ const NotificationSettingsScreen: React.FC<NotificationSettingsScreenProps> = ()
       {...requestData, muteDuration: '24h'},
     );
   
-    if (response.status === 200) {
+    if (response.success) {
       dispatch(setNotificationSettings(response.data.notificationsSettings));
   
       // Determine the success message dynamically
