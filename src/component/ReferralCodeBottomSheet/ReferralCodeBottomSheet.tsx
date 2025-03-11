@@ -55,7 +55,7 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
       onClose={() => console.log(ref)}
       activeSafeAreaViewColor={'#121f22'}
       inActiveSafeAreaViewColor={'#121f22'}
-      // footer={}
+    // footer={}
     >
 
       <BottomSheetScrollView style={styles.container}>

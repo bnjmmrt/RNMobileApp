@@ -4,7 +4,7 @@ export const referralApiAction = createBaseApi.injectEndpoints({
   endpoints: (builder) => ({
     submitReferralCode: builder.mutation({
       query: (requestParam) => ({
-        url: 'users/v1/auth/referred-users',
+        url: 'users/v1/auth/save-referred-users',
         method: 'POST',
         body: requestParam,
       }),
