@@ -93,6 +93,7 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
         <View style={styles.categoryContainer}>
           {creativeFocus?.map(item => (
             <TouchableOpacity
+            activeOpacity={0.7}
               key={item.id}
               style={[
                 styles.categoryButton,

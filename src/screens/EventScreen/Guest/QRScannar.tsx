@@ -76,7 +76,7 @@ const QRCodeScanner = () => {
       EndPoint.validate_qr,
       requestObject,
     );
-    if (response.status === 200) {
+    if (response.success) {
       if (response.data.eventQr) {
         navigation.replace(ROUTES.GuestCheckInScreen, {
           guestId: response.data.guestId,

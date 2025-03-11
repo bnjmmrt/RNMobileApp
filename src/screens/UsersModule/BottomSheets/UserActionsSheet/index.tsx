@@ -83,7 +83,7 @@ const UserActionsSheet = forwardRef<
         : selectedAction === 'addToList'
         ? ['60%']
         : selectedAction === 'createList'
-        ? ['38%']
+        ? ['45%']
         : ['30%'];
 
     const onCreateListSuccess = () => {

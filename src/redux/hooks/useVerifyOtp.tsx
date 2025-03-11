@@ -15,7 +15,7 @@ export const useVerifyOtp = (
   const [error, setError] = useState('');
   const verifyOtp = async (code: string, onSuccess: (data: any) => void) => {
     try {
-      setError('')
+      setError('');
       setIsLoading(true);
       const requestParam = {
         email,
@@ -26,12 +26,12 @@ export const useVerifyOtp = (
       };
       const response = await memberLogin(requestParam).unwrap();
 
-      if (response.statusCode === 201) {
+      if (response.success) {
         const data = { ...response.data, varifyStatus: isEmail ? 1 : 2 };
         onSuccess(data);
       }
     } catch (error) {
-      setError(LABLE.ERROR_VERIFY_CODE)
+      setError(LABLE.ERROR_VERIFY_CODE);
       // FlashMessageComponent.show('error', error?.data?.error?.message);
       console.error('Error verifying OTP:', error);
     } finally {

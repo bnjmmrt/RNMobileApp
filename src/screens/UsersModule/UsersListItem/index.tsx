@@ -17,6 +17,7 @@ export interface UserItemInterface {
   id: string;
   interests: string[];
   isFavourite: boolean;
+  isInCustomList: boolean;
   name: string;
   profilePicture: string;
   type: string;

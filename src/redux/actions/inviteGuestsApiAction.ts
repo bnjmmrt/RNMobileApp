@@ -19,7 +19,7 @@ export const inviteGuestsApiAction = createBaseApi.injectEndpoints({
           users: string[];
         };
       }) => ({
-        url: `${EndPoint.events}/${eventId}/guests`,
+        url: `${EndPoint.events}/${eventId}/invite-guest`,
         method: 'POST',
         body: payload,
       }),

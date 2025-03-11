@@ -87,7 +87,7 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
             { targetRole: role.roleName },
           );
 
-          if (response.status === 200) {
+          if (response.success) {
             FlashMessageComponent.show(
               `success`,
               `Switched to ${role.roleName} Account`,
