@@ -46,11 +46,11 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>('');
   const [allUsers, setAllUsers] = useState<{
-    users: UserItemInterface[];
-    count: number;
+    result: UserItemInterface[];
+    totalCount: number;
     name: string;
     id: string;
-  }>({ count: 0, users: [], id: '', name: '' });
+  }>({ totalCount: 0, result: [], id: '', name: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [filterQuery, setFilterQuery] = useState<string>('');
   const [filterNumber, setFilterNumber] = useState<number>(0);
@@ -72,15 +72,15 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
       } else {
         setAllUsers(prev => ({
           ...prev,
-          count: data.data.count,
-          users: [...prev?.users, ...data?.data?.users],
+          totalCount: data.data.totalCount,
+          users: [...prev?.result, ...data?.data?.result],
         }));
       }
     }
   }, [data]);
 
   const loadMore = () => {
-    if (allUsers?.users?.length < data?.data?.count) {
+    if (allUsers?.result?.length < data?.data?.totalCount) {
       setCurrentPage(prev => prev + 1);
     }
   };
@@ -220,7 +220,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
         />
 
         <FlatList
-          data={allUsers.users || []}
+          data={allUsers.result || []}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={{ gap: verticalMarginScale(16) }}
@@ -328,8 +328,8 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
         selectedListName={allUsers.name || ''}
         onSuccess={onListActionSheetSuccess}
         listType={route.params.listType}
-        listUserCount={allUsers.users.length}
-        selectedUsers={allUsers.users.map(item => item.id) || []}
+        listUserCount={allUsers.result.length}
+        selectedUsers={allUsers.result.map(item => item.id) || []}
       />
 
       <FiltersSheet

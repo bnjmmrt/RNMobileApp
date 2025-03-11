@@ -1,11 +1,11 @@
-import {BottomSheetView} from '@gorhom/bottom-sheet';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React from 'react';
 import Button from 'src/component/Button';
-import {CustomText} from 'src/component/CustomText';
-import {useDeleteCustomListMutation} from 'src/redux/actions/listsApiAction';
-import {verticalMarginScale} from 'src/utils/dimensions';
-import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
-import {styles} from './style';
+import { CustomText } from 'src/component/CustomText';
+import { useDeleteCustomListMutation } from 'src/redux/actions/listsApiAction';
+import { verticalMarginScale } from 'src/utils/dimensions';
+import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
+import { styles } from './style';
 
 const DeleteList = ({
   onSuccess,
@@ -18,7 +18,7 @@ const DeleteList = ({
 }) => {
   const [
     deleteCustomList,
-    {error: deleteCustomListError, isLoading: deleteCustomListLoading},
+    { error: deleteCustomListError, isLoading: deleteCustomListLoading },
   ] = useDeleteCustomListMutation();
 
   const onPressDeleteList = async () => {
@@ -31,7 +31,7 @@ const DeleteList = ({
     };
     try {
       const response = await deleteCustomList(payload).unwrap();
-      if (response.status === 200) {
+      if (response.success) {
         onSuccess();
       } else {
         showError('Something went wrong!');
@@ -59,7 +59,7 @@ const DeleteList = ({
         style={[
           styles.actionCta,
           styles.deleteCta,
-          {marginBottom: verticalMarginScale(40)},
+          { marginBottom: verticalMarginScale(40) },
         ]}
         onPress={onPressDeleteList}
         loading={deleteCustomListLoading}

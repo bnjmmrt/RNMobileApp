@@ -369,7 +369,7 @@ export const convertDateToFormatMMDDYYYY = (dateString: string) => {
 };
 export const removeSignature = (url: string) => {
   return url ? url.split('?')[0] : url;
-}
+};
 export const formatDate = (date: Date) => {
   return date
     .toLocaleDateString('en-US', {
@@ -551,7 +551,7 @@ export const fetchUserProfile = async () => {
         apiMethod = 'post';
         apiPayload = { id: userId };
       } else {
-        apiUrl = EndPoint.user + userId;
+        apiUrl = `${EndPoint.user}/${userId}`;
         apiMethod = 'get';
         apiPayload = {};
       }
@@ -583,7 +583,7 @@ export const switchProfile = () => {
 
 export const removeSpaceFromStr = (text: string) => {
   if (text) {
-    return text.split(" ").join("")
+    return text.split(' ').join('');
   }
-  return ""
+  return '';
 };

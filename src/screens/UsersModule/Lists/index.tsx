@@ -42,8 +42,8 @@ export interface ListItemInterface {
   users: ListUserItemInterface[];
 }
 export interface ListInterface {
-  count: number;
-  list: ListItemInterface[];
+  totalCount: number;
+  result: ListItemInterface[];
 }
 interface ListsProps {}
 
@@ -52,8 +52,8 @@ const Lists: React.FC<ListsProps> = ({}) => {
   const actionSheetRef = useRef<BottomSheetMethods>(null);
 
   const [allCustomLists, setAllCustomLists] = useState<ListInterface>({
-    list: [],
-    count: 0,
+    result: [],
+    totalCount: 0,
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
@@ -71,15 +71,15 @@ const Lists: React.FC<ListsProps> = ({}) => {
         setAllCustomLists(data.data);
       } else {
         setAllCustomLists(prev => ({
-          count: data.data.count,
-          list: [...prev.list, ...data.data.list],
+          totalCount: data.data.totalCount,
+          result: [...prev.result, ...data.data.result],
         }));
       }
     }
   }, [data]);
 
   const loadMore = () => {
-    if (allCustomLists?.list?.length < data?.data?.count) {
+    if (allCustomLists?.result?.length < data?.data?.totalCount) {
       setCurrentPage(prev => prev + 1);
     }
   };
@@ -103,7 +103,7 @@ const Lists: React.FC<ListsProps> = ({}) => {
             id={item.id}
             index={index}
             title={item.name}
-            userCount={item.count}
+            userCount={item.totalCount || 0}
             showDelete={index > 1}
             onPressDelete={() => {
               setSelectedList(item.id);
@@ -114,13 +114,13 @@ const Lists: React.FC<ListsProps> = ({}) => {
               index === 0 ? 'follower' : index === 1 ? 'favorite' : 'custom'
             }
           />
-          {allCustomLists?.list?.length > 2 && index === 1 ? (
+          {allCustomLists?.result?.length > 2 && index === 1 ? (
             <GradientSeprator style={styles.seprator} />
           ) : null}
         </>
       );
     },
-    [allCustomLists?.list],
+    [allCustomLists?.result],
   );
 
   const renderListSkeletonItem = (index: number) => {
@@ -189,7 +189,7 @@ const Lists: React.FC<ListsProps> = ({}) => {
         renderListSkeletonList()
       ) : (
         <FlatList
-          data={allCustomLists?.list || []}
+          data={allCustomLists?.result || []}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           style={{ gap: 10 }}
@@ -201,7 +201,7 @@ const Lists: React.FC<ListsProps> = ({}) => {
           onEndReachedThreshold={0.4}
           showsVerticalScrollIndicator={false}
           refreshControl={
-            allCustomLists?.list?.length > 0 ? (
+            allCustomLists?.result?.length > 0 ? (
               <RefreshControl
                 refreshing={isLoading}
                 onRefresh={onRefreshPage}
