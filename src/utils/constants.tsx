@@ -262,7 +262,9 @@ export const LABLE = {
   PROFILE_UPDATED_SUCCESSFULLY:'Profile Updated Successfully',
   PLEASE_SELECT_ONE: 'Please select one',
   PLEASE_SELECT_AT_LEAST_ONE: 'Please select at least one',
-  SELECT_UPTO_3: 'Select up to 3'
+  SELECT_UPTO_3: 'Select up to 3',
+  HOST_UNBLOCK_MESSAGE:'Are you sure you want to unblock this host? \nUnblocking this host will allow them to send you new event invites and chat messages.'
+
 };
 export const EVENT = {
   EDIT_EVENT: 'Edit Event',
@@ -360,7 +362,12 @@ export const ERROR_MESSAGE = {
   FIRST_NAME_SIZE_EXCEED:'First Name cannot exceed 30 characters',
   LAST_NAME_SIZE_EXCEED:'Last Name cannot exceed 30 characters',
   FIRST_NAME_INVALID_CHARACTERS:'First Name should not contain special characters or numbers',
-  LAST_NAME_INVALID_CHARACTERS:'Last Name should not contain special characters or numbers'
+  LAST_NAME_INVALID_CHARACTERS:'Last Name should not contain special characters or numbers',
+  FEEDBACK_SIZE_EXCEED:'Feedback cannot exceed 500 words',
+  DESCRIPTION_SIZE_EXCEED:'Bio cannot exceed 200 words',
+  FIRST_NAME_REQUIRED: 'First name is required',
+  LAST_NAME_REQUIRED: 'Last name is required',
+  PLEASE_PROVIDE_EMAIL_OR_PHONE:'Please provide at least one contact method: email or phone number.'
 };
 
 export const COLORS = {

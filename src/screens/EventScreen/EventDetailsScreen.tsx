@@ -102,7 +102,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [eventLocalId, setEventLocalID] = useState(eventId);
   const { data: announcementData, refetch: refetchAnnouncement } =
     useFetchHostEventsAnnouncementQuery(annqueryArgs);
-
+    const [loading1, setLoading] = useState(false);
   const role = useSelector((state: RootState) => state.auth.role);
   // const insets = useSafeAreaInsets();
 
@@ -322,12 +322,17 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const onCheckInClick = async () => {
-    if (useQr) {
+    setLoading(true)
+    setTimeout(()=>{if (useQr) {
       dispatch(setEventId(route?.params?.id));
       navigation.navigate(ROUTES.QRCodeScanner);
     } else {
       navigateToViewList();
+      
     }
+    setLoading(false)
+  },500);
+    
   };
 
   const onPressInviteGuests = () => {
@@ -371,6 +376,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           style={styles.btnStyle}
           title={BUTTON_LABLE.CHECK_IN}
           colorTheme="dark"
+          loading={loading1}
           onPress={onCheckInClick}
         />
 

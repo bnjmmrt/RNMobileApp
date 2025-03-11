@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
@@ -68,10 +69,21 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
     // getHostDetails();
   }, []);
 
+  const validateLength = () => {
+      const regex = /^\s*(\S+\s*){0,200}$/;
+       if(!regex.test(bioRef?.current.inputText)){
+        bioRef?.current?.setErrorMessage(
+                  ERROR_MESSAGE.DESCRIPTION_SIZE_EXCEED,
+                );
+                return false;
+       }
+       bioRef?.current?.setErrorMessage('');
+       return true;
+    };
   const onConfirmClick = async () => {
 
     if (
-      companyNameRef.current.validateInputs() &&
+      companyNameRef.current.validateInputs() && validateLength() &&
       websiteRef.current.validateInputs()
     ) {
       console.log("inside")
@@ -126,12 +138,15 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
       />
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+         <KeyboardAvoidingView
+                  behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={styles.contentContainer}>
           <Input
             ref={companyNameRef}
             label={LABLE.COMPANY_NAME}
             errorMessage={ERROR_MESSAGE.COMPANY_NAME_ERROR}
             defaultValue={profileData?.companyName}
+            maxLength={100}
           />
           <Input
             blurOnSubmit={true}
@@ -153,6 +168,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
             defaultValue={profileData?.website}
           />
         </View>
+        </KeyboardAvoidingView>
       </ScrollView>
       <Button
         disabled={false}

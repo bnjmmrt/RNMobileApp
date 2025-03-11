@@ -292,7 +292,7 @@ if(status === 'CONFIRMED')
                   source={
                     checkedIn ? IMAGES.checkedinCurved : IMAGES.checkinCurved
                   }
-                  style={styles.actionButtonIcon}
+                  // style={styles.actionButtonIcon}
                 />
                 <Text style={styles.actionButtonText}>
                   {checkedIn ? LABLE.CHECKED_IN : LABLE.CHECK_IN}

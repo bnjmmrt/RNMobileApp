@@ -109,7 +109,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const setWebUrl = (url: string) => {
     console.log('setUrl', url);
     setURL(url);
-    URL.length && bottomSheetRef?.current?.open();
+    bottomSheetRef?.current?.open();
   };
 
   const deleteAccount = () => {
@@ -171,11 +171,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     { id: '1', title: PROFILE.EDIT_PROFILE, image: IMAGES.edit },
     { id: '2', title: PROFILE.FOLLOWING, image: IMAGES.following },
     { id: '3', title: PROFILE.REFERRALS, image: IMAGES.thumbsUp },
-    // {
-    //   id: '14',
-    //   title: PROFILE.CONNECTED_ACCOUNTS,
-    //   image: IMAGES.connectedAccount,
-    // },
+    {
+      id: '14',
+      title: PROFILE.CONNECTED_ACCOUNTS,
+      image: IMAGES.connectedAccount,
+    },
     { id: '5', title: PROFILE.MY_INTERESTS, image: IMAGES.heart },
     { id: '6', title: PROFILE.NOTIFICATION, image: IMAGES.notification },
     { id: '7', title: PROFILE.FEEDBACK, image: IMAGES.feedback },
@@ -474,7 +474,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           onPress={openCamera}
           submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
           cancelButtonText={BUTTON_LABLE.CANCEL}
-          snapPoints={[Platform.OS == 'android' ? 0.2 : 0.2]}
+          snapPoints={[Platform.OS == 'android' ? 0.23 : 0.2]}
           image={null}
         />
 
