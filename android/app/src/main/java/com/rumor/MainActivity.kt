@@ -1,4 +1,4 @@
-package com.rumor
+package com.therumor
 
 import android.os.Bundle
 import android.os.Handler

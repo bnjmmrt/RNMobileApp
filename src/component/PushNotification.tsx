@@ -5,6 +5,8 @@ import { useDispatch } from 'react-redux';
 import { setFcmToken } from 'src/redux/slices/authSlice';
 import { navigate, navigateToNestedStack } from './NavigationService';
 import { ROUTES } from 'src/navigation/Route';
+import store from 'src/redux/store';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 
 // Request Notification Permission
 export async function requestUserPermission() {
@@ -12,7 +14,6 @@ export async function requestUserPermission() {
     const enabled =
         authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
         authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
     if (enabled) {
         getFCMToken()
     }
@@ -20,7 +21,7 @@ export async function requestUserPermission() {
 
 // Get FCM Token
 export async function getFCMToken() {
-    const dispatch = useDispatch();
+    const dispatch = store.store.dispatch;
     try {
         const token = await messaging().getToken();
         console.log(" siya FCM Token:", token);
@@ -32,30 +33,92 @@ export async function getFCMToken() {
 }
 
 export const NotificationsListener = async () => {
-    // Handle Background Notifications
+    // Background/killed state handler
     messaging().setBackgroundMessageHandler(async remoteMessage => {
         console.log("Message handled in the background!", remoteMessage);
     });
+
+    // Foreground listener
+    messaging().onMessage(async remoteMessage => {
+        console.log('Received foreground message:', remoteMessage);
+        await onDisplayNotification(remoteMessage);
+    });
+
     // Handle when app is in background and user taps notification
     messaging().onNotificationOpenedApp(remoteMessage => {
         console.log('Notification caused app to open from background:', remoteMessage);
-        if (remoteMessage?.data?.screen) {
-            navigateToScreen(remoteMessage.data.screen);
-        }
+        // if (remoteMessage?.data?.screen) {
+        //     navigateToScreen(remoteMessage.data.screen);
+        // }
     });
 
     // Handle when app was killed and user taps notification
     messaging().getInitialNotification().then(remoteMessage => {
         if (remoteMessage) {
             console.log('Notification caused app to open from quit state:', remoteMessage);
-            if (remoteMessage?.data?.screen) {
-                navigateToScreen(remoteMessage?.data);
-            }
+            // if (remoteMessage?.data?.screen) {
+            //     navigateToScreen(remoteMessage?.data);
+            // }
         }
     });
-
-    messaging().onMessage(async remoteMessage => { });
 };
+
+async function onDisplayNotification(remoteMessage: any) {
+    console.log('Received message: Foreground', remoteMessage);
+
+    // Request permissions (required for iOS)
+    await notifee.requestPermission();
+
+    // Create a channel (required for Android)
+    const channelId = await notifee.createChannel({
+        id: 'default',
+        name: 'Default Channel',
+    });
+
+    // Display a notification
+    await notifee.displayNotification({
+        title: remoteMessage.data.title || 'Default Title',
+        body: remoteMessage.data.body || 'Default Body',
+        android: {
+            channelId,
+            smallIcon: 'ic_launcher', // Ensure you have a valid small icon in Android
+            pressAction: { id: 'default' },
+        },
+    });
+}
+
+// async function onDisplayNotification(remoteMessage:any) {
+//     console.log('Received message: Foreground',remoteMessage);
+//     let noti = {
+//         "to": "DEVICE_FCM_TOKEN",
+//         "data": {
+//           "title": "Notification Title",
+//           "body": "Main body content of the notification"
+//         }
+//       }
+//     // Request permissions (required for iOS)
+//     await notifee.requestPermission()
+
+//     // Create a channel (required for Android)
+//     const channelId = await notifee.createChannel({
+//       id: 'default',
+//       name: 'Default Channel',
+//     });
+
+//     // Display a notification
+//     await notifee.displayNotification({
+//       title: 'Notification Title',
+//       body: 'Main body content of the notification',
+//       android: {
+//         channelId,
+//         smallIcon: 'name-of-a-small-icon', // optional, defaults to 'ic_launcher'.
+//         // pressAction is needed if you want the notification to open the app when pressed
+//         pressAction: {
+//           id: 'default',
+//         },
+//       },
+//     });
+//   }
 
 
 export const navigateToScreen = (data: any) => {

@@ -19,9 +19,10 @@ import {
 } from './src/redux/slices/appGlobalDataSlice';
 import { persistor, store } from './src/redux/store';
 import RNPreventScreenshot from 'react-native-screenshot-prevent';
-import { NotificationsListener, requestUserPermission } from 'src/component/PushNotification';
+import { getFCMToken, NotificationsListener, requestUserPermission } from 'src/component/PushNotification';
 import { navigationRef } from 'src/component/NavigationService';
 import ScreenshotDetectedDialog from 'src/component/ScreenshotDetectedDialog';
+import { setFcmToken } from 'src/redux/slices/authSlice';
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
@@ -29,9 +30,14 @@ const AppContent: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    NotificationSetup()
+  }, []);
+
+  const NotificationSetup = async () => {
     requestUserPermission()
     NotificationsListener()
-  }, []);
+  }
+
 
   // useEffect(() => {
   //   // Enable screenshot prevention

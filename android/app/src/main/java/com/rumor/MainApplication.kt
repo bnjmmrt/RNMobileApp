@@ -1,4 +1,4 @@
-package com.rumor
+package com.therumor
 
 import android.app.Application
 import com.facebook.react.PackageList
