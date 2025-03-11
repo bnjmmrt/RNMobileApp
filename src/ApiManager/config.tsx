@@ -53,7 +53,7 @@ export const EndPoint = {
   get_focuses: 'users/v1/auth/get-focuses',
   interests: 'users/v1/auth/interests',
   member_signUp: 'users/v1/auth/member-sign-up',
-  file_upload: 'files/upload',
+  file_upload: 'users/v1/files/upload',
   check_member_logiin: 'users/v1/auth/check-member-login',
   email_send_verification_code: 'users/v1/auth/send-verification-code-by-email',
   email_verify_code: 'users/v1/auth/verify-code-by-email',
