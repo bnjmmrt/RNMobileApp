@@ -27,14 +27,12 @@ const AddUsersInList = ({
   showError,
   listId,
   listName,
-  selectedUsers: users,
 }: {
   onSuccess: () => void;
   closeSheet: () => void;
   showError: (message: string) => void;
   listId: string;
   listName: string;
-  selectedUsers?: string[];
 }) => {
   const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
@@ -50,6 +48,7 @@ const AddUsersInList = ({
     take: 10,
     skip: (currentPage - 1) * 10,
     searchValue: searchText,
+    customListId: listId,
   });
 
   const [
@@ -111,11 +110,16 @@ const AddUsersInList = ({
 
   const renderListRow = useCallback(
     ({ item, index }: { item: UserItemInterface; index: number }) => {
-      const isSelected = selectedUsers.some(user => user === item.id);
+      const isSelected =
+        selectedUsers.some(user => user === item.id) || item.isInCustomList;
       return (
         <TouchableOpacity
-          style={styles.userContainer}
-          onPress={() => onSelectUser(item)}>
+          style={[
+            styles.userContainer,
+            item.isInCustomList && { opacity: 0.5 },
+          ]}
+          onPress={() => onSelectUser(item)}
+          disabled={item.isInCustomList}>
           <View style={styles.userInfoContainer}>
             <Image
               source={
@@ -163,13 +167,7 @@ const AddUsersInList = ({
         {'Select Users to Add to List'}
       </CustomText>
       <BottomSheetFlatList
-        data={
-          users
-            ? allUsers.result.filter(
-                item1 => !users.some(item2 => item2 === item1.id),
-              )
-            : allUsers?.result || []
-        }
+        data={allUsers?.result || []}
         renderItem={renderListRow}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{ gap: verticalMarginScale(8) }}

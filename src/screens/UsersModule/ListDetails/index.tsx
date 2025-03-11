@@ -265,29 +265,33 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
                           }}
                         />
                       ) : (
-                        <Button
-                          title={'Add Users'}
-                          imageSource={IMAGES.plus}
-                          leftImageStyle={{
-                            height: verticalScale(16),
-                            width: verticalScale(16),
-                          }}
-                          onPress={() => {
-                            setSelectedActionSheetAction('addUsers');
-                            listActionSheetRef?.current?.open();
-                          }}
-                          colorTheme="dark"
-                          textStyle={{ marginHorizontal: 0 }}
-                          style={{
-                            alignSelf: 'center',
-                            width: undefined,
-                            height: undefined,
-                            paddingHorizontal: horizontalMarginScale(12),
-                            paddingVertical: verticalMarginScale(12),
-                            gap: horizontalMarginScale(6),
-                            marginTop: verticalMarginScale(30),
-                          }}
-                        />
+                        <>
+                          {route.params.listType === 'custom' ? (
+                            <Button
+                              title={'Add Users'}
+                              imageSource={IMAGES.plus}
+                              leftImageStyle={{
+                                height: verticalScale(16),
+                                width: verticalScale(16),
+                              }}
+                              onPress={() => {
+                                setSelectedActionSheetAction('addUsers');
+                                listActionSheetRef?.current?.open();
+                              }}
+                              colorTheme="dark"
+                              textStyle={{ marginHorizontal: 0 }}
+                              style={{
+                                alignSelf: 'center',
+                                width: undefined,
+                                height: undefined,
+                                paddingHorizontal: horizontalMarginScale(12),
+                                paddingVertical: verticalMarginScale(12),
+                                gap: horizontalMarginScale(6),
+                                marginTop: verticalMarginScale(30),
+                              }}
+                            />
+                          ) : null}
+                        </>
                       )}
                     </>
                   )

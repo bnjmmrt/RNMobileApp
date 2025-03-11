@@ -77,7 +77,7 @@ const ListActionsSheet = forwardRef<
     const getDyanamicSnapPoints = useCallback(() => {
       switch (selectedAction) {
         case 'addUsers':
-          return [`70%`];
+          return [`85%`];
         case 'createList':
           return [`45%`];
         case 'deleteList':
@@ -229,7 +229,6 @@ const ListActionsSheet = forwardRef<
               listId={selectedListData?.id || selectedListId || ''}
               listName={selectedListData?.name || selectedListName || ''}
               showError={showError}
-              selectedUsers={selectedUsers}
             />
           ) : null}
         </BottomSheetView>

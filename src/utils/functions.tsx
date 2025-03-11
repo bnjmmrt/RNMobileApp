@@ -453,18 +453,14 @@ export const getCountryFlag = (countryCode: string) => {
     : '';
 };
 export interface ApiErrorInterface {
-  data: { error: { message: string; type: string } | string } | string;
+  data: { message: string; statusCode: number; success: boolean } | string;
 }
 export const getErrorMessage = (error: ApiErrorInterface) => {
   let message = 'Something went wrong!';
   if (typeof error.data === 'string') {
     message = error.data;
-  } else if (typeof error.data.error === 'object') {
-    if (error.data.error.message) {
-      message = error.data.error.message;
-    }
-  } else if (typeof error.data.error === 'string') {
-    message = error.data.error;
+  } else if (typeof error?.data === 'object' && error?.data?.message) {
+    message = error.data.message;
   }
   return message;
 };
