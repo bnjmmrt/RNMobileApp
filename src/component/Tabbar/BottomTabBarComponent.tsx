@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import React, { ReactNode, useEffect, useRef } from 'react';
 import {
@@ -49,12 +50,16 @@ const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
     });
   }, [state.index]);
 
+  // Check if current screen is DiscoverScreen
+  const isDiscoverScreen = state.routes[state.index]?.name === 'DiscoverScreen';
+
   return (
     <View
       style={[
         styles.container,
         {
           display: showBottomTabs ? 'flex' : 'none',
+          bottom: verticalScale(isDiscoverScreen ? 0 : 34),
         },
       ]}>
       <View style={styles.tabStyle}>
@@ -118,9 +123,9 @@ const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    position: 'static',
     zIndex: 999,
-    bottom: verticalScale(30),
+    bottom: verticalScale(0),
     alignSelf: 'center',
   },
   tabStyle: {
@@ -153,7 +158,7 @@ const styles = StyleSheet.create({
   tabLabel: {
     color: COLORS.black,
     fontSize: fontScale(14),
-    fontFamily: fontFamily.ABCDiatype_Medium
+    fontFamily: fontFamily.ABCDiatype_Medium,
   },
 });
 
