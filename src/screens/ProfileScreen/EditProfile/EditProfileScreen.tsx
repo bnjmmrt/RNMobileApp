@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -79,7 +80,31 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>(
     !isGuest && profileData?.focuses,
   );
-  const [selectedCity, setSelectedCity] = useState({address:profileData?.city,placeId:profileData?.placeId});
+  const [selectedCity, setSelectedCity] = useState({
+    address: profileData?.city,
+    placeId: profileData?.placeId,
+  });
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+    useEffect(() => {
+      const keyboardDidShowListener = Keyboard.addListener(
+        'keyboardDidShow',
+        () => {
+          setKeyboardVisible(true);
+        },
+      );
+  
+      const keyboardDidHideListener = Keyboard.addListener(
+        'keyboardDidHide',
+        () => {
+          setKeyboardVisible(false);
+        },
+      );
+  
+      return () => {
+        keyboardDidShowListener.remove();
+        keyboardDidHideListener.remove();
+      };
+    }, []);
   useEffect(() => {
     if (profileData?.email && profileData?.email !== '') {
       emailInputRef?.current.setDisabled(true);
@@ -174,7 +199,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
           requestObject,
         );
         if (response.success) {
-       await fetchUserById();
+          await fetchUserById();
           FlashMessageComponent.show(
             'success',
             LABLE.PROFILE_UPDATED_SUCCESSFULLY,
@@ -258,17 +283,20 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   };
 
   return (
-    <View style={styles.container}>
-      <Header
-        headerTitle={PROFILE.EDIT_PROFILE}
-        onPress={handleBackPress}
-        showProgressBar={false}
-      />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}>
+      <View  style={[styles.container,{paddingBottom:keyboardVisible ? Platform.OS === 'ios' ? verticalMarginScale(50): verticalMarginScale(10) : 0}]}>
+        <Header
+          headerTitle={PROFILE.EDIT_PROFILE}
+          onPress={handleBackPress}
+          showProgressBar={false}
+        />
 
-      <ScrollView
-        ref={scrollViewRef}
-        contentContainerStyle={styles.scrollContainer}>
-        {/* <KeyboardAvoidingView
+        <ScrollView
+          ref={scrollViewRef}
+          contentContainerStyle={styles.scrollContainer}>
+          {/* <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}> */}
           <View style={styles.contentContainer}>
             <Input
@@ -342,8 +370,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                     placeId: selectedCity?.placeId,
                   }}
                   ref={baseCityRef}
-                  onLocationSelect={(city) => {
-                    console.log("selected city",city)
+                  onLocationSelect={city => {
+                    console.log('selected city', city);
                     if (city.address !== selectedCity.address) {
                       setSelectedCity(city);
                     }
@@ -369,30 +397,31 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
               </View>
             )}
           </View>
-        {/* </KeyboardAvoidingView> */}
-      </ScrollView>
-      {isToastShown && (
-        <View
-          style={{
-            bottom: Platform.OS === 'ios' ? 20 : 0,
-            position: 'relative',
-          }}>
-          <Toast
-            toastStyle={{ position: 'relative', width: '90%' }}
-            message={LABLE.PLEASE_SELECT_AT_LEAST_ONE}
-            onClose={() => setIsToastShown(false)}
-          />
-        </View>
-      )}
-      <Button
-        disabled={false}
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.CONFIRM}
-        colorTheme="dark"
-        onPress={onConfirmClick}
-        loading={loading}
-      />
-    </View>
+          {/* </KeyboardAvoidingView> */}
+        </ScrollView>
+        {isToastShown && (
+          <View
+            style={{
+              bottom: Platform.OS === 'ios' ? 20 : 0,
+              position: 'relative',
+            }}>
+            <Toast
+              toastStyle={{ position: 'relative', width: '90%' }}
+              message={LABLE.PLEASE_SELECT_AT_LEAST_ONE}
+              onClose={() => setIsToastShown(false)}
+            />
+          </View>
+        )}
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.CONFIRM}
+          colorTheme="dark"
+          onPress={onConfirmClick}
+          loading={loading}
+        />
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
