@@ -96,7 +96,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
     );
     const AnnouncementItem = ({ item }: { item: any }) => {
         const [expanded, setExpanded] = useState(false);
-        const shouldShowReadMore = item?.announcement?.split(' ').length > 25;
+        const shouldShowReadMore = item?.announcement?.split(' ')?.length > 25;
         const displayedText = expanded || !shouldShowReadMore ? item?.announcement : `${item?.announcement.substring(0, 100)}...`;
         const date = formatViewAnnouncementDate(item?.createdAt)
         const imageKeyUrl = item?.user?.additionalHostInformation?.companyLogo
@@ -217,7 +217,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
                         onEndReachedThreshold={0.5}
                         showsVerticalScrollIndicator={false}
                         refreshControl={
-                            announcementData.length > 0 ? (
+                            announcementData?.length > 0 ? (
                                 <RefreshControl refreshing={isLoading} onRefresh={handleRefresh} />
                             ) : undefined
                         }
