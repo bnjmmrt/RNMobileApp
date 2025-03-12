@@ -88,10 +88,10 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   } = useGetGuestsQuery({ eventId, queryString: filterQuery });
 
   const guests: EventGuest[] = useMemo(() => {
-    const apiGuests = guestsData?.data?.users || [];
+    const apiGuests = guestsData?.data?.result || [];
 
     return apiGuests;
-  }, [guestsData?.data?.users]);
+  }, [guestsData?.data?.result]);
 
   useEffect(() => {
     if (guestsError) {
