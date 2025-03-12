@@ -60,7 +60,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take?: number;
         skip?: number;
       }) => {
-        let url = `events/v1/events/users/${userId}/events/?`;
+        let url = `events/v1/events/users/${userId}/events?feed=true`;
         if (take) {
           url = `${url}&take=${take}&skip=${skip}`;
         }

@@ -30,7 +30,7 @@ const FollowingScreen: React.FC = () => {
   const { apiRequest, loading } = useApi();
   const [searchQuery, setSearchQuery] = useState('');
   const { setParams, navigate, goBack } = useNavigation<any>();
-  const [pagination, setPagination] = useState({ take: 12, skip: 0 });
+  const [pagination, setPagination] = useState({ take: 100, skip: 0 });
   const [hostList, setHostList] = useState<any[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -71,7 +71,7 @@ const FollowingScreen: React.FC = () => {
 
   const handleRefresh = () => {
     setIsRefreshing(true);
-    setPagination({ take: 12, skip: 0 });
+    setPagination({ take: 100, skip: 0 });
     setHostList([]);
     setHasMore(true);
   };
