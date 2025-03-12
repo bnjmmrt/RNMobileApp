@@ -1,52 +1,55 @@
+import IMAGES from '@images/index';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
-  Alert,
   ActivityIndicator,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { COLORS, BUTTON_LABLE, LABLE } from 'src/utils/constants';
-import { fontFamily } from 'src/utils/functions';
-import {
-  fontScale,
-  radiusScale,
-  verticalMarginScale,
-  horizontalMarginScale,
-  verticalScale,
-  horizontalScale,
-} from 'src/utils/dimensions';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import IMAGES from '@images/index';
-import Button from 'src/component/Button';
-import ProfileCard from '../Guest/ProfileCard';
-import AddedBySection from '../Guest/AddedBySection';
-import InviteDetails from '../Guest/InviteGuestDetailForm';
-import Questionnaire from '../Guest/Questionnaire';
-import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
-import TicketTypeBottomSheet, {
-  TicketType,
-} from '../InviteGuestInEventFlow/TicketTypeBottomSheet';
-import DeclineBottomSheet from '../Guest/DeclineBottomSheet';
-import GuestVouches from '../Guest/GuestVouches';
-import { EventGuest } from '../types';
-import {
-  useManageGuestMutation,
-  useFetchGuestDetailsQuery,
-} from 'src/redux/actions/eventApiAction';
 import { useSelector } from 'react-redux';
-import { RootState } from 'src/redux/slices';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
+import Button from 'src/component/Button';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { ROUTES } from 'src/navigation/Route';
+import {
+  useFetchGuestDetailsQuery,
+  useManageGuestMutation,
+} from 'src/redux/actions/eventApiAction';
 import {
   useMarkUserFavMutation,
   useUnmarkUserFavMutation,
 } from 'src/redux/actions/usersApiAction';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import { ROUTES } from 'src/navigation/Route';
+import { RootState } from 'src/redux/slices';
+import { BUTTON_LABLE, COLORS, LABLE } from 'src/utils/constants';
+import {
+  fontScale,
+  horizontalMarginScale,
+  horizontalScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+} from 'src/utils/dimensions';
+import {
+  ApiErrorInterface,
+  fontFamily,
+  getErrorMessage,
+} from 'src/utils/functions';
+import AddedBySection from '../Guest/AddedBySection';
 import CheckInComponent from '../Guest/CheckInComponent';
+import DeclineBottomSheet from '../Guest/DeclineBottomSheet';
+import GuestVouches from '../Guest/GuestVouches';
+import InviteDetails from '../Guest/InviteGuestDetailForm';
+import ProfileCard from '../Guest/ProfileCard';
+import Questionnaire from '../Guest/Questionnaire';
+import TicketTypeBottomSheet, {
+  TicketType,
+} from '../InviteGuestInEventFlow/TicketTypeBottomSheet';
+import { EventGuest, ManageGuestPayload } from '../types';
 
 enum GuestStatus {
   DRAFT = 'DRAFT',
@@ -131,20 +134,25 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   ) => {
     try {
       setIsLoadingAction(true);
-      const payload = {
-        status: newStatus,
-        guestStatus: newStatus as GuestStatus,
+      const payload: ManageGuestPayload = {
+        currentStatus: status as GuestStatus,
+        guestStatus: directlySendToConfirm
+          ? 'CONFIRMED'
+          : (newStatus as GuestStatus),
         ticketTypeId: selectedTicketType?.id,
         maxAdditionalGuests: additionalGuests,
         inviteMessage,
         privateGuestNote: guestNote,
-        directlySendToConfirm,
+        action,
+        exclusiveIds: [],
+        inclusiveIds: [guestProfile?.guestId],
+        isSelectedAll: false,
+        sendNotification: true,
       };
 
       await manageGuest({
-        guestId: guestProfile?.guestId,
-        action,
         payload,
+        eventId: route?.params?.eventId,
       }).unwrap();
 
       FlashMessageComponent.show(
@@ -154,8 +162,8 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 
       navigation.goBack();
     } catch (error) {
-      console.log('error', error);
-      Alert.alert('Error', 'Failed to update guestProfile status');
+      const typedError = error as ApiErrorInterface;
+      FlashMessageComponent.show('error', getErrorMessage(typedError));
     } finally {
       setIsLoadingAction(false);
     }
@@ -461,10 +469,10 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             />
           )}
 
-          {Boolean( guestDetails?.data.vouches.length > 0) && (
+          {Boolean(guestDetails?.data.vouches.length > 0) && (
             <GuestVouches
               requestSource="In-App"
-              vouches={ guestDetails?.data.vouches}
+              vouches={guestDetails?.data.vouches}
             />
           )}
         </View>
@@ -496,15 +504,15 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             </View>
           )}
         </View>
-        { guestProfile?.status===GuestStatus.CONFIRMED && (
-           <CheckInComponent
-           status={guestProfile?.status}
-           guestProfile={guestProfile}
-           ticketType={guestProfile?.guestDetail?.ticketType}
-           privateGuestNote={guestDetail?.privateGuestNote}
-           additionalGuests={guestProfile?.additionalGuests}
-           maxAdditionalGuests={guestDetail?.maxAdditionalGuests}
-         />
+        {guestProfile?.status === GuestStatus.CONFIRMED && (
+          <CheckInComponent
+            status={guestProfile?.status}
+            guestProfile={guestProfile}
+            ticketType={guestProfile?.guestDetail?.ticketType}
+            privateGuestNote={guestDetail?.privateGuestNote}
+            additionalGuests={guestProfile?.additionalGuests}
+            maxAdditionalGuests={guestDetail?.maxAdditionalGuests}
+          />
         )}
       </ScrollView>
 

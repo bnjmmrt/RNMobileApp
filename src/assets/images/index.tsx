@@ -111,7 +111,7 @@ const IMAGES = {
   qr_code: require('./QR_Code.png'),
   half_circle: require('./half_circle.png'),
   info_filled: require('./info-filled.png'),
-  ticket: require('./ticket.png'),
+  ticket: require('./cardTicketBg.png'),
   calendarCircle: require('./calendar-circle.png'),
   x_circle:require('./x-circle.png'),
   confirmed_badge: require('./confirmed-badge.png'),

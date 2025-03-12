@@ -44,13 +44,17 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
 
   const [showProfileToolitip, setShowProfileToolitip] = useState(false);
   const [showVIPToolitip, setShowVIPToolitip] = useState(false);
-  const showTooltip = ()=>{
-    
-  }
+  const [vipTooltipShown, setVipTooltipShown] = useState(false);
+
+  const showTooltip = () => {
+    console.log('showTooltipshowTooltipshowTooltip');
+    setShowProfileToolitip(true)
+  };
+
   return (
     <BottomSheetComponent
       ref={ref}
-      snapPoints={[props.isQRShown ? '75%' : '60%']}
+      snapPoints={[props.isQRShown ? '75%' : '65%']}
       onClose={() => console.log(ref)}>
       <ScrollView>
         <View style={styles.container}>
@@ -79,9 +83,9 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
           <ImageBackground
             source={props.isQRShown ? IMAGES.ticketBg : IMAGES.ticketBgSm}
             style={{
-              width: props.isQRShown ? Wp(85) : 350,
-              height: props.isQRShown ? Hp(55) : 350,
-              marginTop: props.isQRShown ? 10 : -25,
+              width: props.isQRShown ? Wp(85) : 340,
+              height: props.isQRShown ? Hp(55) : 340,
+              marginTop: props.isQRShown ? 10 : 0,
               alignItems: 'center'
             }}
           >
@@ -92,10 +96,10 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                   width={horizontalScale(232)}
                   height={verticalScale(232)}
                   type={'svg'}
-                  value="https://qr-code-styling.com"
+                  value={props.imageURL}
                   margin={0}
                   qrOptions={{
-                    typeNumber: '5',
+                    typeNumber: '20',
                     mode: "Byte",
                     errorCorrectionLevel: 'Q',
                   }}
@@ -125,23 +129,21 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                 />
               </View>
             ) : (
-              <Image
+              <ImageBackground
                 resizeMode='contain'
                 source={IMAGES.ticket}
-                style={{
-                  marginTop: verticalMarginScale(12),
-                  width: 232,
-                  height: 148,
-                }}
-              />
+                style={styles.cardTicketBg}
+              >
+                <Text style={styles.cardName}>{props.name}</Text>
+              </ImageBackground>
             )}
-            <View style={styles.vipContainer}>
+            <View style={[styles.vipContainer, {marginTop: props.isQRShown ? 25: 50}]}>
               <Text style={styles.vipText}>VIP</Text>
               <TouchableOpacity onPress={showTooltip}>
                 <Image source={IMAGES.info_filled} style={styles.icon} />
               </TouchableOpacity>
             </View>
-            <Text style={styles.infoText}>{props.isQRShown ? LABLE.SHOW_QR_CHECKIN_MESSAGE : 'Show this ticket at event check-in'}</Text>
+            <Text style={styles.infoText}>{props.isQRShown ? LABLE.SHOW_QR_CHECKIN_MESSAGE : 'Show this Ticket Confirmation at event check-in'}</Text>
 
           </ImageBackground>
 
@@ -226,7 +228,21 @@ const styles = StyleSheet.create({
     fontSize: fontScale(14),
     fontWeight: '500',
     color: COLORS.black,
+    fontFamily: fontFamily.ABCDiatype_Regular,
     paddingHorizontal: verticalMarginScale(6),
+  },
+  cardTicketBg: {
+    marginTop: 40,
+    width: 232,
+    height: 148,
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    padding: 20
+  },
+  cardName: {
+    fontSize: 14,
+    color: COLORS.white,
+    fontFamily: fontFamily.ABCDiatype_Bold,
   },
   card: {
     width: horizontalScale(272),
