@@ -194,7 +194,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       dispatch(setRsvpStatus('UPDATE' + Date.now()));
 
 
-      if (response.status === 200) {
+      if (response?.success) {
         FlashMessageComponent.show('success', 'Event Updated Successfully');
         goBack();
         handleBackPress();

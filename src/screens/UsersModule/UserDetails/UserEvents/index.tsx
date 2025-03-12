@@ -32,21 +32,20 @@ const UserEvents: React.FC<UserEventsProps> = ({ user }) => {
   const actionSheetRef = useRef<BottomSheetMethods>(null);
 
   const [allEvents, setAllEvents] = useState<{
-    data: EventItem[];
+    result: EventItem[];
     totalCount: number;
   }>({
-    data: [],
+    result: [],
     totalCount: 0,
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState<Filter>(filterData[0]);
 
   const { data, isLoading, error, isError, refetch } = useFetchAllEventsQuery({
-    queryString: `${
-      selectedFilter.value !== ''
-        ? `guestEventStatus=${selectedFilter.value}`
-        : ''
-    }`,
+    queryString: `${selectedFilter.value !== ''
+      ? `guestEventStatus=${selectedFilter.value}`
+      : ''
+      }`,
     userId: user,
     take: 10,
     skip: (currentPage - 1) * 10,
@@ -64,17 +63,22 @@ const UserEvents: React.FC<UserEventsProps> = ({ user }) => {
   };
 
   useEffect(() => {
-    if (data && data.data) {
+    if (data?.data?.result) {
       if (currentPage === 1) {
         setAllEvents(data.data);
       } else {
         setAllEvents(prev => ({
           totalCount: data.data.totalCount,
-          data: [...prev.data, ...data?.data?.data],
+          result: [...prev.result, ...data?.data.result],
         }));
       }
     }
   }, [data, currentPage]);
+
+  useEffect(() => {
+    console.log("Sayyed allEvents:", allEvents)
+
+  }, [allEvents])
 
   const renderItem = useCallback(({ item }: { item: EventItem }) => {
     return <FeedItem item={item} from="UserDetail" />;
@@ -88,7 +92,7 @@ const UserEvents: React.FC<UserEventsProps> = ({ user }) => {
       />
 
       <FlatList
-        data={allEvents?.data || []}
+        data={allEvents?.result || []}
         keyExtractor={(_item, index) => index.toString()}
         renderItem={renderItem}
         onEndReached={handleLoadMore}
