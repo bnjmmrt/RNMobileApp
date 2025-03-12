@@ -44,7 +44,9 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
 
   const [showProfileToolitip, setShowProfileToolitip] = useState(false);
   const [showVIPToolitip, setShowVIPToolitip] = useState(false);
-
+  const showTooltip = ()=>{
+    
+  }
   return (
     <BottomSheetComponent
       ref={ref}

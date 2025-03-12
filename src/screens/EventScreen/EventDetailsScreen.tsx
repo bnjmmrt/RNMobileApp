@@ -69,7 +69,7 @@ import FullScreenLoader from 'src/component/FullScreenLoader';
 import ImageComponent from 'src/component/Image/ImageComponent';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: any;
@@ -102,10 +102,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [eventLocalId, setEventLocalID] = useState(eventId);
   const { data: announcementData, refetch: refetchAnnouncement } =
     useFetchHostEventsAnnouncementQuery(annqueryArgs);
-    const [loading1, setLoading] = useState(false);
+  const [loading1, setLoading] = useState(false);
   const role = useSelector((state: RootState) => state.auth.role);
   // const insets = useSafeAreaInsets();
-
+  console.log("role", role)
 
   const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 44 : 24;
 
@@ -150,9 +150,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const) // Type assertion to prevent union mismatch
       : ({
-          userId,
-          eventId: route?.params?.id,
-        } as const); // Type assertion
+        userId,
+        eventId: route?.params?.id,
+      } as const); // Type assertion
   const useFetchEventDetailsHook =
     role === ROLE.HOST
       ? useFetchHostEventDetailsQuery
@@ -294,10 +294,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       // if (eventCount?.data?.confirmedCount == 0) {
       //   setshowError(true);
       // } else {
-        navigation.navigate(ROUTES.EventStack, {
-          screen: ROUTES.AddAnnouncementScreen,
-          params: { eventData, announcementId: null },
-        });
+      navigation.navigate(ROUTES.EventStack, {
+        screen: ROUTES.AddAnnouncementScreen,
+        params: { eventData, announcementId: null },
+      });
       // }
     }
   };
@@ -322,16 +322,17 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
   const onCheckInClick = async () => {
     setLoading(true)
-    setTimeout(()=>{if (useQr) {
-      dispatch(setEventId(route?.params?.id));
-      navigation.navigate(ROUTES.QRCodeScanner);
-    } else {
-      navigateToViewList();
-      
-    }
-    setLoading(false)
-  },500);
-    
+    setTimeout(() => {
+      if (useQr) {
+        dispatch(setEventId(route?.params?.id));
+        navigation.navigate(ROUTES.QRCodeScanner);
+      } else {
+        navigateToViewList();
+
+      }
+      setLoading(false)
+    }, 500);
+
   };
 
   const onPressInviteGuests = () => {
