@@ -90,7 +90,7 @@ const NotificationSettingsScreen: React.FC<NotificationSettingsScreenProps> = ()
     );
   
     if (response.success) {
-      dispatch(setNotificationSettings(response.data.notificationsSettings));
+      dispatch(setNotificationSettings(response.data));
   
       // Determine the success message dynamically
       const status = newValue ? 'ON' : 'OFF';
