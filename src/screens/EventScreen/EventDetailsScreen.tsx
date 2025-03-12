@@ -106,7 +106,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const role = useSelector((state: RootState) => state.auth.role);
   // const insets = useSafeAreaInsets();
 
-  console.log('role', role);
 
   const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 44 : 24;
 
