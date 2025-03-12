@@ -61,15 +61,6 @@ const HostConnectedAccountsScreen: React.FC<
 
   const onConfirmClick = async () => {
     const requestObject: any = {
-      bio: hostProfileData?.bio,
-      companyLogo: hostProfileData?.companyLogo,
-      companyName: hostProfileData?.companyName,
-      email: hostProfileData?.email,
-      eventsPerYear: hostProfileData?.eventsPerYear,
-      firstName: hostProfileData?.firstName,
-      lastName: hostProfileData?.lastName,
-      phoneNumber: hostProfileData?.phoneNumber,
-      referredBy: hostProfileData?.referredBy,
       socialMedia: {
         facebook: facebookRef?.current.inputText,
         instagram: instagramRef?.current.inputText,
@@ -84,7 +75,7 @@ const HostConnectedAccountsScreen: React.FC<
 
     const response: any = await apiRequest(
       'put',
-      `${EndPoint.host}/${userId}/profile`,
+      `${EndPoint.host_ep}`,
       requestObject,
     );
     if (response.success) {

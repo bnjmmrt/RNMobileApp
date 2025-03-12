@@ -85,6 +85,7 @@ export const EndPoint = {
   view_image: `users/v1/files/view/`,
 
   hosts: 'v1/auth/hosts',
+  host_ep: 'users/v1/host/profile',
   host: 'users/v1/auth/host',
   hosts_custom_lists: 'v1/auth/hosts/custom-lists',
   hosts_favorites_lists: 'v1/auth/hosts/favorites',
