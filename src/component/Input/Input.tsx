@@ -27,6 +27,7 @@ import {
 } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import IMAGES from '@images/index';
 
 interface InputProps {
   label?: string;
@@ -52,7 +53,8 @@ interface InputProps {
   placeholderTextColor?: string
   maxLength?: number;
   hasDropdown?: boolean;
-  isBackgroundRed?:boolean
+  isBackgroundRed?: boolean;
+  hasHandler?: boolean;
 }
 
 export type InputRefMethods = {
@@ -86,7 +88,8 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     labelStyle,
     maxLength,
     hasDropdown = false,
-    isBackgroundRed=false
+    isBackgroundRed = false,
+    hasHandler = false
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -152,7 +155,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
               ? [styles.errorInputWrapper, styles.multilineInputContainer]
               : styles.errorInputWrapper
             : null,
-            
+
           inputFieldContainerStyle,
           !hasDropdown && { backgroundColor: !editable ? COLORS.borderGray : errorMessage ? COLORS.bgRed : COLORS.white },
           isBackgroundRed && [styles.errorInputWrapper],
@@ -183,6 +186,14 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
           {...extraInputProps}
           maxLength={maxLength}
         />
+        {
+          hasHandler && (
+            <View style={styles.resizeHandle}>
+              <Image style={{ width: 10, height: 10 }} resizeMode='contain' source={IMAGES.Handler} />
+            </View>
+          )
+        }
+
         {rightImage && (
           <TouchableOpacity onPress={onPressImage}>
             <Image
@@ -253,6 +264,13 @@ const styles = StyleSheet.create({
     fontSize: fontScale(12),
     marginTop: verticalMarginScale(5),
     color: COLORS.errorText,
+  },
+  resizeHandle: {
+    position: "absolute",
+    bottom: 5,
+    right: 5,
+    backgroundColor: "white",
+    padding: 2,
   },
 });
 

@@ -16,6 +16,7 @@ import { EndPoint } from 'src/ApiManager/config';
 import useApi from 'src/axios/useApi';
 import AvatarInitials from 'src/component/AvatarInitials';
 import { ROUTES } from 'src/navigation/Route';
+import { useManageGuestMutation } from 'src/redux/actions/eventApiAction';
 import { RootState } from 'src/redux/slices';
 import { BUTTON_LABLE, COLORS, LABLE } from 'src/utils/constants';
 import {
@@ -26,6 +27,9 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
+import { GuestStatus, ManageGuestPayload } from '../types';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 
 interface AdditionalGuest {
   addedBy: string;
@@ -171,6 +175,8 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   const pendingGuestCount = maxAdditionalGuests - additionalGuests.length;
   const guestString = pendingGuestCount > 1 ? ' Guests' : ' Guest';
 
+  // const [manageGuest] = useManageGuestMutation();
+
   useEffect(() => {
     let expandIndex = additionalGuests.map((guest, index) => ({
       id: index,
@@ -216,7 +222,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
       },
     );
     if (response.success) {
-      setCheckedIn(response.data.checkInStatus)
+      setCheckedIn(response.data.checkInStatus);
     }
   };
 
@@ -225,7 +231,28 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   };
 
   const manageGuests = async () => {
-    if (status === 'CONFIRMED') {
+    if (status === 'CONFIRMED' && selectedEvent?.id) {
+      // try {
+      //   const payload: ManageGuestPayload = {
+      //     action: 'UPDATE',
+      //     currentStatus: status as GuestStatus,
+      //     guestStatus: 'CONFIRMED',
+      //     exclusiveIds: [],
+      //     inclusiveIds: additionalGuests.map(guest => guest.id),
+      //     privateGuestNote: guestNote,
+      //     sendNotification: false,
+      //     isSelectedAll: false,
+      //   };
+
+      //   await manageGuest({
+      //     payload,
+      //     eventId: selectedEvent?.id,
+      //   }).unwrap();
+      // } catch (error) {
+      //   const typedError = error as ApiErrorInterface;
+      //   FlashMessageComponent.show('error', getErrorMessage(typedError));
+      // }
+
       const response: any = await apiRequest(
         'put',
         EndPoint.event_manage_guests + '?eventId=' + selectedEvent?.id,
@@ -291,7 +318,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
                   source={
                     checkedIn ? IMAGES.checkedinCurved : IMAGES.checkinCurved
                   }
-                // style={styles.actionButtonIcon}
+                  // style={styles.actionButtonIcon}
                 />
                 <Text style={styles.actionButtonText}>
                   {checkedIn ? LABLE.CHECKED_IN : LABLE.CHECK_IN}
@@ -308,7 +335,10 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
               onChangeText={text => setGuestNote(text)}
               style={[
                 styles.input,
-                { backgroundColor: status === 'CONFIRMED' ? COLORS.white : COLORS.bgGray },
+                {
+                  backgroundColor:
+                    status === 'CONFIRMED' ? COLORS.white : COLORS.bgGray,
+                },
               ]}
               placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
               defaultValue={privateGuestNote}
@@ -331,7 +361,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
                 navigation,
               )
             }
-          //   contentContainerStyle={styles.container}
+            //   contentContainerStyle={styles.container}
           />
         </>
       )}

@@ -73,7 +73,7 @@ const ReferralScreen: React.FC = () => {
     const response: any = await apiRequest(
       'put',
       EndPoint.vouch_requests + '/' + id,
-      { userId: userId, isApproved: status },
+      { isApproved: status },
     );
     if (!response?.success) {
       FlashMessageComponent.show(

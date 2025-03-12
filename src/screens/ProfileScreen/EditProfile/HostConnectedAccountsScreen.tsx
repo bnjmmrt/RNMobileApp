@@ -114,7 +114,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.TIKTOK}
             prefix="tiktok.com/@"
             isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia?.tiktok ? hostProfileData?.socialMedia?.tiktok : ''}
+            defaultValue={hostProfileData?.socialMedia?.tiktok ? hostProfileData?.socialMedia?.tiktok?.replace('@', '') : ''}
           />
           <SocialMediaInput
             image={IMAGES.fb}
@@ -146,7 +146,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.YOUTUBE}
             prefix="youtube.com/@"
             isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia?.youtube ? hostProfileData?.socialMedia?.youtube :''}
+            defaultValue={hostProfileData?.socialMedia?.youtube ? hostProfileData?.socialMedia?.youtube?.replace('@', '') :''}
           />
         </View>
         {isToastShown && (

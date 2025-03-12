@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FlatList, Image, ImageBackground, BackHandler, RefreshControl, ScrollView, Text, TouchableOpacity, View, Alert } from "react-native";
+import { FlatList, Image, ImageBackground, BackHandler, RefreshControl, ScrollView, Text, TouchableOpacity, View, Alert, Platform } from "react-native";
 import Header from "src/component/Header/Header";
 import { ANNOUNCEMENT, collaboratorList, COLORS, ERROR_MESSAGE, ticketTypeList } from "src/utils/constants";
 import Input, { InputRefMethods } from "src/component/Input/Input";
@@ -80,6 +80,24 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const [announcementId, setAnnouncementId] = React.useState(ID);
     const dispatch = useDispatch();
     const [refreshing, setRefreshing] = useState<boolean>(false);
+    const [collaborators, setCollaborators] = useState([]);
+
+    useEffect(() => {
+        if (eventData?.collaborators) {
+            let collaborator = {
+                ...eventData?.owner,
+                name: eventData?.owner?.companyName,
+                role: {
+                    id: eventData?.owner?.id,
+                    name: 'host',
+                },
+            };
+
+            // Merge the owner as a collaborator with existing collaborators
+            setCollaborators([collaborator, ...eventData?.collaborators]);
+        }
+
+    }, [eventData])
 
     useEffect(() => {
         const backAction = () => {
@@ -120,7 +138,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const { data: selectedRecipientData } = useFetchSelectedRecipientsQuery(recipientQuery);
     useEffect(() => {
         if (selectedRecipientData != undefined) {
-            setSelectedRecipients(selectedRecipientData?.data?.result)
+            setallRecipients(selectedRecipientData?.data?.result)
         }
     }, [selectedRecipientData]);
 
@@ -165,13 +183,14 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
 
     const checkAnnouncement = async () => {
         if (
-            announcementRef.current.validateInputs() && ticketTypeArr?.length != 0 && collaboratorArr?.length != 0 && selectedUsers?.length != 0) {
+            announcementRef.current.validateInputs() && ticketTypeArr?.length != 0 && collaboratorArr?.length != 0 && allRecipients?.length != 0) {
             postBottomSheetRef.current?.open();
+            // postAnnouncement()
         }
         else {
             ticketTypeArr?.length == 0 && setticketerrorMessage(true)
             collaboratorArr?.length == 0 && setaddedByerrorMessage(true)
-            selectedUsers?.length == 0 && setrecipienterrorMessage(true)
+            allRecipients?.length == 0 && setrecipienterrorMessage(true)
             announcementRef.current.validateInputs()
         }
     };
@@ -184,13 +203,13 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                 "addedBy": selectedCollaborator.map((item: any) => item.id),
                 "announcement": announcementRef.current.inputText,
                 "attachments": atachmentArr,
-                "recipients": selectedUsers.map((item: any) => item.id),
+                "recipients": allRecipients.map((item: any) => item.id),
             }
             const response = await createEventAnnouncement({
                 eventId: eventData?.id || '',
                 payload: addAnnouncementRequest,
             }).unwrap();
-            if (response.statusCode === 201) {
+            if (response.success == true) {
                 FlashMessageComponent.show(
                     'success',
                     `Event announcement posted`,
@@ -346,7 +365,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const renderCollaborator = () => {
         return (
             <View>
-                {eventData?.collaborators.map((item: any, index: number) => {
+                {collaborators.map((item: any, index: number) => {
                     let isSelected = selectedCollaborator.includes(item)
                     return (
                         <TouchableOpacity
@@ -383,16 +402,16 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
         setSearchText(text);
     };
     const onSelectRecipient = (user: guestInterface) => {
-        const isSelected = selectedUsers.some(
-            selectedUser => selectedUser?.id === user.id,
-        );
-        if (isSelected) {
-            const newArray = selectedUsers.filter(u => u.id !== user.id);
-            setSelectedUsers(newArray);
-        } else {
-            const newArray = [...selectedUsers, user];
-            setSelectedUsers(newArray);
-        }
+        // const isSelected = selectedUsers.some(
+        //     selectedUser => selectedUser?.id === user.id,
+        // );
+        // if (isSelected) {
+        //     const newArray = selectedUsers.filter(u => u.id !== user.id);
+        //     setSelectedUsers(newArray);
+        // } else {
+        //     const newArray = [...selectedUsers, user];
+        //     setSelectedUsers(newArray);
+        // }
     };
     const onRefreshPage = () => {
         setCurrentPage(1);
@@ -465,7 +484,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                         ) : undefined
                     }
                 />
-                {selectedUsers.length != 0 ? (
+                {/* {selectedUsers.length != 0 ? (
                     <Button
                         title="Add to List"
                         onPress={() => {
@@ -476,7 +495,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                         colorTheme="dark"
                         style={{ position: 'absolute', bottom: verticalScale(0) }}
                     />
-                ) : null}
+                ) : null} */}
 
             </View>
         )
@@ -490,7 +509,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                 eventId: eventData?.id || '',
                 announcementId: announcementId || '',
             }).unwrap();
-            if (response.statusCode === 204) {
+            if (response.success == true) {
                 FlashMessageComponent.show(
                     'success',
                     `Event announcement deleted`,
@@ -519,7 +538,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                 announcementId: announcementId || '',
                 payload: editAnnouncementRequest,
             }).unwrap();
-            if (response.statusCode === 204) {
+            if (response.success == true) {
                 FlashMessageComponent.show(
                     'success',
                     `Event announcement updated`,
@@ -609,6 +628,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
             }
         }
     };
+
     const uploadFile = async (image: string) => {
         const mimeType = `images/${image.split('.').pop()}`;
         const fileName = image.split('/').pop();
@@ -624,7 +644,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
             'Content-Type': 'multipart/form-data',
         });
     };
-
     const onPressDelete = (uri: string) => {
         setAttachmentArr(prev => prev.filter(item => item?.media !== uri));
     };
@@ -638,26 +657,34 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     }
 
     const renderAttchmentItem = ({ item }: { item: any }) => (
-        <ImageBackground source={item.mediaType == 'file' ? IMAGES.pdf : { uri: item.media }} style={styles.attachImgWrapper} imageStyle={{ borderRadius: radiusScale(8) }}>
-            <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center' }} onPress={() => onPressDelete(item.media)}>
-                <Image source={IMAGES.delete} resizeMode="contain" />
-            </TouchableOpacity>
-        </ImageBackground>
+        <>
+            {item.mediaType == 'file' ?
+                <TouchableOpacity onPress={() => onPressDelete(item.media)} style={styles.pdfContainer}>
+                    <Image source={IMAGES.pdf} style={styles.pdfIcon} resizeMode='contain' />
+                    <Text style={styles.title} numberOfLines={2}>{item?.mediaName}</Text>
+                    {/* <Text style={styles.pdfSize}>{item.size}</Text> */}
+                </TouchableOpacity> :
+                <ImageBackground source={{ uri: item.media }} style={styles.attachImgWrapper} imageStyle={{ borderRadius: radiusScale(8) }}>
+                    <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center' }} onPress={() => onPressDelete(item.media)}>
+                        <Image source={IMAGES.delete} resizeMode="contain" />
+                    </TouchableOpacity>
+                </ImageBackground>}
+        </>
+
     );
 
     const savePhoto = async (image: any, type: string, name: string) => {
         const response: any = await uploadFile(image);
         console.log('savePhoto', response);
-        if (response.status === 200) {
-            const imageUrl =
-                environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
+        if (response.success == true) {
+            const imageUrl = response?.data?.pathFileUrl
             let data = {
                 mediaType: type,
                 media: imageUrl,
                 mediaName: name,
             }
             setAttachmentArr((prev: any) => [...prev, data])
-
+            console.log(atachmentArr, 'atachmentArr');
         } else {
             console.log('savePhoto else', response);
         }
@@ -780,13 +807,13 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                             <Text style={styles.label}>{ANNOUNCEMENT.Send_to}</Text>
                             <View style={recipienterrorMessage ? styles.errorContainer : [styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
                                 <View style={styles.userInfoContainer}>
-                                    {selectedRecipients.length == 0 ?
+                                    {allRecipients.length == 0 ?
                                         <View style={styles.recipintWrapper} />
                                         :
                                         <FlatList
                                             horizontal={true}
                                             showsHorizontalScrollIndicator={false}
-                                            data={selectedRecipients}
+                                            data={allRecipients}
                                             renderItem={({ item, index }) => {
                                                 const name = announcementId == null ? item?.user?.firstName + ' ' + item?.user?.lastName : item?.firstName + ' ' + item?.lastName
                                                 const profilePicture = announcementId == null ? item?.user?.profilePicture : item?.profilePicture
@@ -807,9 +834,9 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                             }
                                         />
                                     }
-                                    <View style={{ alignItems: 'center', justifyContent: 'center', left: selectedRecipients.length > 0 ? horizontalScale(-125) : horizontalScale(10) }}>
+                                    <View style={{ alignItems: 'center', justifyContent: 'center', left: allRecipients.length == 1 ? horizontalScale(-160) : allRecipients.length == 2 ? horizontalScale(-140) : allRecipients.length == 3 ? horizontalScale(-120) : horizontalScale(10) }}>
                                         <Text style={[styles.label, { paddingTop: 0 }]}>{ANNOUNCEMENT.Recipients}</Text>
-                                        <Text style={styles.attachDes}>{selectedRecipients.length} Users</Text>
+                                        <Text style={styles.attachDes}>{allRecipients.length} Users</Text>
                                     </View>
                                 </View>
                                 <TouchableOpacity onPress={() => {
@@ -918,7 +945,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                 title={ANNOUNCEMENT.Delete_Event_Announcement}
                 subTitle={ANNOUNCEMENT.delete_text}
                 isAnnouncement={true}
-                snapPoints={['35%']}
+                snapPoints={['0.35']}
                 colorTheme={'red'}
                 btnLabel={ANNOUNCEMENT.Delete}
                 back={deleteAnnouncement} />
@@ -926,7 +953,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
             <ConfirmationBottomSheet
                 ref={editBottomSheetRef}
                 isAnnouncement={true}
-                snapPoints={['35%']}
+                snapPoints={['0.35']}
                 title={ANNOUNCEMENT.Update_Event_Announcement}
                 subTitle={ANNOUNCEMENT.update_text}
                 btnLabel={ANNOUNCEMENT.Update_Announcement}
@@ -936,7 +963,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
             <ConfirmationBottomSheet
                 ref={leaveBottomSheetRef}
                 isAnnouncement={true}
-                snapPoints={['35%']}
+                snapPoints={['0.35']}
                 title={ANNOUNCEMENT.leave_title}
                 subTitle={ANNOUNCEMENT.leave_text}
                 btnLabel={ANNOUNCEMENT.Leave_Without_Saving}
@@ -946,7 +973,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
             <ConfirmationBottomSheet
                 ref={postBottomSheetRef}
                 isAnnouncement={true}
-                snapPoints={['30%']}
+                snapPoints={['0.30']}
                 title={ANNOUNCEMENT.Post_Announcement}
                 subTitle={ANNOUNCEMENT.announcement_des}
                 btnLabel={ANNOUNCEMENT.Post_Announcement}

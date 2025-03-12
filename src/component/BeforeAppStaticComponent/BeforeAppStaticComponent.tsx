@@ -76,6 +76,14 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
     navigation.navigate('AppFlowStack');
   };
 
+  // const renderImageItem = ({item}:{item:any}) => {
+  //   return (
+  //     <Pressable onPress={handleImageClick}>
+  //       <Image source={item.uri} style={styles.image} />
+  //     </Pressable>
+  //   )
+  // }
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.contentContainer}>

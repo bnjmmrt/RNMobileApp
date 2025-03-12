@@ -1,9 +1,10 @@
-import { StyleSheet } from "react-native"
+import { Dimensions, StyleSheet } from "react-native"
 import { COLORS } from "src/utils/constants"
 import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalMarginScale, verticalScale } from "src/utils/dimensions"
 import { fontFamily } from "src/utils/functions"
 
 const AddAnnouncementStyles = () => {
+  const { width, height } = Dimensions.get('window');
   return StyleSheet.create({
     container: {
       flex: 1,
@@ -137,6 +138,19 @@ const AddAnnouncementStyles = () => {
     arrowicon: {
       width: verticalScale(10),
       height: verticalScale(7),
+    },
+    pdfContainer: {
+      width: width * 0.8,
+      height: height * 0.65,
+      backgroundColor: '#222',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 10,
+    },
+    pdfIcon: {
+      width: 30,
+      height: 30,
+      marginBottom: 10,
     },
     headerTitle: {
       fontSize: fontScale(18),
