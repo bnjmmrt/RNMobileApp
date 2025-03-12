@@ -36,6 +36,7 @@ import RequestVouch from './RequestVouch';
 import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import { fontFamily, removeSignature } from 'src/utils/functions';
+import CustomSelectableText from 'src/component/CustomSelectableText/CustomSelectableText';
 
 type Guest = {
     id: number;
@@ -92,7 +93,7 @@ const RSVPNoStatusApplied: React.FC = () => {
     };
     const getQuestions = async () => {
         if (currentGuestStatus === "APPLIED") {
-            const response: any = await apiRequest('get', `v1/users/${userId}/events/${id}/request`);
+            const response: any = await apiRequest('get', `events/v1/users/${userId}/events/${id}/request`);
             setEventQuestions(response?.data?.questions)
             setSelectedGuests(getGuestFromId(response?.data?.additionalRequestedGuests));
             setVouchData(response?.data?.vouches)
@@ -105,6 +106,7 @@ const RSVPNoStatusApplied: React.FC = () => {
     const onSumbitCall = async () => {
         try {
             const response = await submitApplication({
+                id: userId,
                 eventId: id,
                 answers: eventQuestions.map(q => ({
                     questionId: q.id,
@@ -125,6 +127,7 @@ const RSVPNoStatusApplied: React.FC = () => {
         if (!validateInputs()) return;
         try {
             const response = await submitApplication({
+                id: userId,
                 eventId: id,
                 answers: eventQuestions.map(q => ({
                     questionId: q.questionId,
@@ -145,6 +148,7 @@ const RSVPNoStatusApplied: React.FC = () => {
         if (!validateInputs()) return;
         try {
             const response = await updateApplication({
+                id: userId,
                 eventId: id,
                 answers: eventQuestions.map(q => ({
                     questionId: q.questionId,
@@ -432,9 +436,9 @@ const RSVPNoStatusApplied: React.FC = () => {
                             labelStyle={{
                                 fontFamily: fontFamily.ABCDiatype_Medium
                             }}
+                            hasDropdown={true}
                             isRequired={true}
                             ref={guestInputRef}
-                            editable={true}
                             rightImage={IMAGES.downArrow}
                             defaultValue={selectedGuests?.label}
                             label="Request access for additional guests?"

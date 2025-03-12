@@ -20,21 +20,21 @@ import {
 import { persistor, store } from './src/redux/store';
 // import MainNavigation from 'src/navigation';
 import RNPreventScreenshot from 'react-native-screenshot-prevent';
+import ScreenshotDetectedDialog from 'src/component/ScreenshotDetectedDialog';
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
-  const { apiRequest, loading, error } = useApi();
+  const { apiRequest } = useApi();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Enable screenshot prevention
     RNPreventScreenshot?.enableSecureView();
 
-    // Cleanup on unmount
     return () => {
       RNPreventScreenshot?.disableSecureView();
     };
   }, [RNPreventScreenshot]);
+
 
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
@@ -75,6 +75,7 @@ const App: React.FC = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <SafeAreaViewWrapper>
+          <ScreenshotDetectedDialog />
           <GestureHandlerRootView style={{ flex: 1 }}>
             <NavigationContainer theme={MyTheme}>
               <BottomSheetModalProvider>

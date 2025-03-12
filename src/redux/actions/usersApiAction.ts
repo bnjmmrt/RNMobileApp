@@ -9,11 +9,17 @@ export const usersApiAction = createBaseApi.injectEndpoints({
         skip,
         searchValue = '',
         queryString = '',
+        eventId,
+        customListId,
+        type,
       }: {
         take: number;
         skip: number;
         searchValue?: string;
         queryString?: string;
+        eventId?: string;
+        customListId?: string;
+        type?: string;
       }) => {
         let url = `${EndPoint.users_list}?take=${take}&skip=${skip}&sortBy=name`;
         if (searchValue) {
@@ -21,6 +27,15 @@ export const usersApiAction = createBaseApi.injectEndpoints({
         }
         if (queryString) {
           url = `${url}&${queryString}`;
+        }
+        if (eventId) {
+          url = `${url}&eventId=${eventId}`;
+        }
+        if (type) {
+          url = `${url}&type=${type}`;
+        }
+        if (customListId) {
+          url = `${url}&customListId=${customListId}`;
         }
         return {
           url: url,
@@ -40,7 +55,7 @@ export const usersApiAction = createBaseApi.injectEndpoints({
 
     fetchUserDetails: builder.query<UserDetailResponse, { user: string }>({
       query: ({ user }) => ({
-        url: `${EndPoint.user}${user}`,
+        url: `${EndPoint.user}/${user}`,
         method: 'GET',
       }),
       providesTags: ['UserDetail'],
@@ -60,7 +75,7 @@ export const usersApiAction = createBaseApi.injectEndpoints({
     }),
     addUserNote: builder.mutation({
       query: (requestParam: { note: string; user: string }) => ({
-        url: `${EndPoint.user}${requestParam.user}/note`,
+        url: `${EndPoint.user}/${requestParam.user}/note`,
         method: 'POST',
         body: {
           note: requestParam.note,
@@ -70,7 +85,7 @@ export const usersApiAction = createBaseApi.injectEndpoints({
     }),
     userSpamToggle: builder.mutation({
       query: (requestParam: { isSpam: boolean; user: string }) => ({
-        url: `${EndPoint.user}${requestParam.user}/spam`,
+        url: `${EndPoint.user}/${requestParam.user}/spam`,
         method: 'POST',
         body: {
           isSpam: requestParam.isSpam,
@@ -85,7 +100,7 @@ export const usersApiAction = createBaseApi.injectEndpoints({
         reportedByRoleId: string;
         reportedToroleId: string;
       }) => ({
-        url: `${EndPoint.user}${requestParam.user}/report`,
+        url: `${EndPoint.user}/${requestParam.user}/report`,
         method: 'POST',
         body: {
           reportMessage: requestParam.reportMessage,
@@ -97,7 +112,7 @@ export const usersApiAction = createBaseApi.injectEndpoints({
     }),
     markUserFav: builder.mutation({
       query: (requestParam: { targetUserId: string; user: string }) => ({
-        url: `${EndPoint.user}${requestParam.user}/favorite`,
+        url: `${EndPoint.user}/${requestParam.user}/favorite`,
         method: 'POST',
         body: {
           targetUserId: requestParam.targetUserId,
@@ -107,7 +122,7 @@ export const usersApiAction = createBaseApi.injectEndpoints({
     }),
     unmarkUserFav: builder.mutation({
       query: (requestParam: { targetUserId: string; user: string }) => ({
-        url: `${EndPoint.user}${requestParam.user}/favorite`,
+        url: `${EndPoint.user}/${requestParam.user}/favorite`,
         method: 'DELETE',
         body: {
           targetUserId: requestParam.targetUserId,
@@ -117,7 +132,7 @@ export const usersApiAction = createBaseApi.injectEndpoints({
     }),
     deleteUser: builder.mutation({
       query: (requestParam: { user: string }) => ({
-        url: `${EndPoint.user}${requestParam.user}`,
+        url: `${EndPoint.user}/${requestParam.user}`,
         method: 'DELETE',
         body: {},
       }),

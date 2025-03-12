@@ -42,12 +42,9 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
     ref.current?.close();
   };
 
-  const [vipTooltipShown, setVipTooltipShown] = useState(false);
+  const [showProfileToolitip, setShowProfileToolitip] = useState(false);
+  const [showVIPToolitip, setShowVIPToolitip] = useState(false);
 
-  const showTooltip = () => {
-    console.log('showTooltipshowTooltipshowTooltip');
-    setVipTooltipShown(true)
-  };
   return (
     <BottomSheetComponent
       ref={ref}
@@ -59,11 +56,16 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
             {props.title}
           </Text>
 
-          <Text style={[styles.subTitle]}>{dateFormat(props?.subTitle, 'dddd, MMMM Do, hh:mm:A')}</Text>
+          <Text style={[styles.subTitle]}>
+            {dateFormat(props?.subTitle, 'dddd, MMMM Do, hh:mm:A')}
+          </Text>
           <View style={styles.pic_Container}>
             <AvatarInitials name={props.name} size={32} />
             <Text style={styles.name}>{props.name}</Text>
-            <Image source={IMAGES.info_filled} />
+            <TouchableOpacity
+              onPress={() => setShowProfileToolitip(!showProfileToolitip)}>
+              <Image source={IMAGES.info_filled} />
+            </TouchableOpacity>
           </View>
           {/* <Image
             source={{ uri: props.imageURL }}
@@ -269,7 +271,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(20),
     marginRight: verticalMarginScale(10),
     fontFamily: fontFamily.RomieTrial_Bold,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   icon: {
     width: 16,
@@ -279,7 +281,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(14),
     color: 'gray',
     marginTop: verticalMarginScale(50),
-    zIndex: 10
+    zIndex: 10,
   },
 });
 

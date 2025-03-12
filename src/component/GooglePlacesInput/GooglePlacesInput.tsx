@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type {
   GooglePlaceData,
   GooglePlaceDetail,
@@ -17,8 +17,9 @@ import { fontFamily } from 'src/utils/functions';
 import useLocation from 'src/utils/hooks/useLocation';
 import { environment } from '../../../environments/environment';
 import IMAGES from '../../assets/images';
-import { Address } from '../../redux/slices/appFlowSlice';
+import { Address, setBaseCity } from '../../redux/slices/appFlowSlice';
 import { COLORS } from '../../utils/constants';
+import { useDispatch } from 'react-redux';
 
 interface GooglePlacesInputProps {
   setLocation: (location: Address) => void;
@@ -48,17 +49,12 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
     currentLocation,
     initiateLocationFetch,
   } = useLocation(false);
-
-  // useEffect(() => {
-  //   if (defaultValue) {
-  //     googlePlacesRef?.current &&
-  //       googlePlacesRef?.current?.setAddressText(defaultValue);
-  //   }
-  // }, [defaultValue]);
-
+  const dispatch = useDispatch();
+  const inputTextRef = useRef<string>('');
+  const [clearBtnShown, setClearBtnShown] = useState(false);
   useEffect(() => {
     if (
-      hasLocationPermission &&
+      // hasLocationPermission &&
       currentAddress &&
       currentLocation &&
       currentPlaceId
@@ -89,6 +85,13 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
     }
   }, [autoFetchCurrentLocation, defaultValue]);
 
+  const handleClearText = () => {
+    setLocation({ address: '', placeId: '', latitude: '', longitude: '' });
+    dispatch(setBaseCity({ address: '', placeId: '' }));
+    googlePlacesRef?.current?.setAddressText('');
+    setError && setError(null);
+  };
+
   return (
     <>
       <GooglePlacesAutocomplete
@@ -99,6 +102,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
             borderWidth: 1,
             height: 56,
             borderColor: errorMessage ? COLORS.borderRed : COLORS.borderGray,
+            backgroundColor: errorMessage ? COLORS.bgRed : COLORS.white,
             paddingVertical: verticalMarginScale(18),
             paddingHorizontal: horizontalMarginScale(18),
           },
@@ -106,14 +110,16 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
             bottom: verticalMarginScale(13),
             fontSize: fontScale(14),
             fontFamily: fontFamily.ABCDiatype_Regular,
+            paddingLeft:4,
+            backgroundColor: errorMessage ? COLORS.bgRed : COLORS.white,
           },
           listView: {
             borderRadius: radiusScale(8),
             borderWidth: 1,
             borderColor: COLORS.borderGray,
-            marginTop: 5
+            marginTop: 5,
           },
-          separator:{ height: 0},
+          separator: { height: 0 },
           container: { flex: 0 },
         }}
         minLength={3}
@@ -132,6 +138,8 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
           setError && setError(null);
           toggleLocationPicker && toggleLocationPicker();
           submit();
+          inputTextRef.current = data.description;
+          // setClearBtnShown(true);
         }}
         fetchDetails={true}
         query={{
@@ -141,10 +149,49 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
         }}
         renderLeftButton={() => (
           <View style={styles.iconContainer}>
-            <Image source={defaultValue ? IMAGES.location : errorMessage ? IMAGES.search_error : IMAGES.search} style={styles.leftImage} />
+            <Image
+              source={
+                defaultValue
+                  ? IMAGES.location
+                  : errorMessage
+                  ? IMAGES.search_error
+                  : IMAGES.search
+              }
+              style={styles.leftImage}
+            />
           </View>
         )}
+        renderRightButton={() => (
+          <TouchableOpacity
+           hitSlop={{top:5,bottom:5,left:5,right:5}}
+            style={styles.iconContainer}
+            onPress={handleClearText}>
+            {clearBtnShown && inputTextRef.current && (
+              <Image source={IMAGES.clear} style={styles.leftImage} />
+            )}
+          </TouchableOpacity>
+        )}
         disableScroll={false}
+        textInputProps={{
+          clearButtonMode: 'never',
+          autoCorrect: false,
+          onBlur: () => {
+            setClearBtnShown(false);
+          },
+          onFocus: () => {
+            setClearBtnShown(true);
+          },
+          onChangeText: text => {
+            if (inputTextRef.current === text) return;
+            inputTextRef.current = text;
+            if(!text){
+              setLocation({ address: '', placeId: '', latitude: '', longitude: '' });
+              dispatch(setBaseCity({ address: '', placeId: '' }));
+              googlePlacesRef?.current?.setAddressText('');
+              setError && setError(null);
+            }
+          },
+        }}
       />
       {errorMessage && <Text style={[styles.errorText]}>{errorMessage}</Text>}
     </>
@@ -160,8 +207,8 @@ const styles = StyleSheet.create({
     // marginBottom: 3,
   },
   leftImage: {
-    width: verticalScale(16),
-    height: verticalScale(16),
+    // width: verticalScale(16),
+    // height: verticalScale(16),
     resizeMode: 'contain',
   },
   errorText: {

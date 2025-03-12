@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Alert,
   Linking,
   Platform,
   ScrollView,
@@ -54,6 +55,7 @@ import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import { useNavigation } from '@react-navigation/native';
 import { current } from '@reduxjs/toolkit';
 import { removeSignature } from 'src/utils/functions';
+import { openSettings } from 'react-native-permissions';
 
 interface Location {
   location?: string;
@@ -123,15 +125,15 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     console.log('FORMATED START DATE: ' + formattedStartDate);
   }, [selectedStartDate]);
 
-  const [eventName, setEventName] = useState(item?.name || '');
-  const [startDate, setStartDate] = useState(item.startDate);
-  const [endDate, setEndDate] = useState(item.endDate);
-  const [furtherInstructions, setFurtherInstructions] = useState(
-    item?.furtherInstructions || '',
-  );
-  const [eventDescription, setEventDescription] = useState(
-    item?.description || '',
-  );
+  // const [eventName, setEventName] = useState(item?.name || '');
+  // const [startDate, setStartDate] = useState(item?.startDate);
+  // const [endDate, setEndDate] = useState(item.endDate);
+  // const [furtherInstructions, setFurtherInstructions] = useState(
+  //   item?.furtherInstructions || '',
+  // );
+  // const [eventDescription, setEventDescription] = useState(
+  //   item?.description || '',
+  // );
   const [featureTalent, setFeatureTalent] = useState(item?.talents || []);
   const [image, setImage] = useState<string>(
     removeSignature(item?.imageCover) ||
@@ -192,7 +194,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       dispatch(setRsvpStatus('UPDATE' + Date.now()));
 
 
-      if (response.status === 200) {
+      if (response?.success) {
         FlashMessageComponent.show('success', 'Event Updated Successfully');
         goBack();
         handleBackPress();
@@ -261,6 +263,27 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       cropperCircleOverlay: false,
     }).then((image: ImageOrVideo) => {
       savePhoto(image.path);
+    }).catch(async (error) => {
+      console.log('ImagePicker Error: ', error);
+
+      if (error?.message?.includes('did not grant library permission')) {
+        Alert.alert(
+          'Permission Required',
+          'We need access to your photo library to allow you to add a picture. Please enable photo library permissions in your device settings.',
+          [
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+            {
+              text: 'Open Settings',
+              onPress: async () => {
+                openSettings();
+              },
+            },
+          ]
+        );
+      }
     });
   };
 
@@ -373,7 +396,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
         title='Image Flyer'
         submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
         cancelButtonText={BUTTON_LABLE.CANCEL}
-        snapPoints={[Platform.OS == 'android' ? '80%' : '80%']}
+        // snapPoints={[Platform.OS == 'android' ? '80%' : '80%']}
+        snapPoints={[Platform.OS == 'android' ? 0.7 : 0.7]}
         image={null}
         onPencilClick={openCamera}
         eventImage={image}

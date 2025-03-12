@@ -96,9 +96,9 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
         <TitleSubtitle title={title} subTitle={subTitle} />
 
         {currentTab == '01' ? (
-          <PhoneNumberInput ref={phoneNumberInputRef} />
+          <PhoneNumberInput ref={phoneNumberInputRef} otherStyle={{marginTop:12}} />
         ) : (
-          <EmailInput ref={emailInputRef} />
+          <EmailInput ref={emailInputRef} otherStyle={{marginTop:12}}  />
         )}
 
         <View style={styles.spacer} />

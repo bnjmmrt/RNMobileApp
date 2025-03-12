@@ -65,7 +65,7 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
         );
       } else {
         setEvents(prev =>
-          currentPage === 1 ? data.data.data : [...prev, ...data.data.data],
+          currentPage === 1 ? data.data.result : [...prev, ...data.data.result],
         );
       }
     }
@@ -94,7 +94,7 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
-      {events.length > 0 ? (
+      {events?.length > 0 ? (
         <FlatList
           data={events}
           style={{ paddingBottom: 10, paddingHorizontal: 15 }}

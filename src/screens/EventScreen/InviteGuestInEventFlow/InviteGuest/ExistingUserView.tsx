@@ -63,9 +63,13 @@ const ExistingUserView: React.FC<ExistingUserViewProps> = ({}) => {
       } else {
         response = await markUserFav(payload).unwrap();
       }
-      if (response.status === 200) {
+      if (response.success) {
+        if (isFavorite) {
+          FlashMessageComponent.show('success', 'User removed from favorites');
+        } else {
+          FlashMessageComponent.show('success', 'User added to Favorites');
+        }
         setIsFavorite(!isFavorite);
-        FlashMessageComponent.show('success', 'User marked as favorite!');
       } else {
         const typedError = response as ApiErrorInterface;
         FlashMessageComponent.show('error', getErrorMessage(typedError));

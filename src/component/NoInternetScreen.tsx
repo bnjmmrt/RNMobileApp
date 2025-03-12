@@ -10,23 +10,36 @@ import {
   LABLE,
 } from 'src/utils/constants';
 import { changeSafeAreaViewConfig, fontFamily } from 'src/utils/functions';
-import RNRestart from 'react-native-restart'
+// import RNRestart from 'react-native-restart'
 import { useFocusEffect } from '@react-navigation/native';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import NetInfo from '@react-native-community/netinfo';
 
 const NoInternetScreen: React.FC = () => {
   useFocusEffect(
-      useCallback(() => {
-        changeSafeAreaViewConfig({
-          ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
-          showTopSafeAreaView: false,
-          topSafeAreaViewColor: 'transparent',
-          translucent: true,
-          showBottomSafeAreaView: false,
-          bottomSafeAreaViewColor: 'transparent',
-        });
-      }, []),
-    );
+    useCallback(() => {
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
+        showTopSafeAreaView: false,
+        topSafeAreaViewColor: 'transparent',
+        translucent: true,
+        showBottomSafeAreaView: false,
+        bottomSafeAreaViewColor: 'transparent',
+      });
+    }, []),
+  );
+
+  const handlePress = () => {
+    NetInfo.fetch().then(state => {
+      if (state?.isInternetReachable) {
+        console.log('Internet Available', 'You are connected to the internet.');
+        // Proceed with your action
+      } else {
+        console.log('No Internet', 'Please check your internet connection.');
+      }
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Image source={IMAGES.backgroundLogin} style={styles.imageStyle} />
@@ -42,7 +55,7 @@ const NoInternetScreen: React.FC = () => {
           style={styles.btnStyle}
           title={BUTTON_LABLE.RELOAD}
           textStyle={styles.btnTextStyle}
-          onPress={() => RNRestart.restart()}
+          onPress={() => handlePress()}
         />
       </View>
     </View>
@@ -86,7 +99,7 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     textAlign: 'center',
     marginTop: verticalScale(8),
-    lineHeight:16
+    lineHeight: 16
   },
   btnStyle: {
     // width: Wp(85),

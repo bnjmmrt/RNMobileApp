@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {
   Camera,
@@ -29,6 +30,8 @@ import { ROUTES } from 'src/navigation/Route';
 import { Image } from 'react-native-animatable';
 import FullScreenLoader from 'src/component/FullScreenLoader';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { openSettings } from 'react-native-permissions';
+import BackButton from 'src/component/BackButton/BackButton';
 
 const { width } = Dimensions.get('window');
 const SCANNER_SIZE = width * 0.6;
@@ -43,6 +46,24 @@ const QRCodeScanner = () => {
   const requestPermission = async () => {
     const status = await Camera.requestCameraPermission();
     setHasPermission(status === 'granted');
+    if (status !== 'granted') {
+      Alert.alert(
+        'Permission Required',
+        'We need access to your camera to allow you to scan. Please enable camera permissions in your device settings.',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Open Settings',
+            onPress: async () => {
+              openSettings();
+            },
+          },
+        ],
+      );
+    }
   };
   useEffect(() => {
     requestPermission();
@@ -55,7 +76,7 @@ const QRCodeScanner = () => {
       EndPoint.validate_qr,
       requestObject,
     );
-    if (response.status === 200) {
+    if (response.success) {
       if (response.data.eventQr) {
         navigation.replace(ROUTES.GuestCheckInScreen, {
           guestId: response.data.guestId,
@@ -83,26 +104,30 @@ const QRCodeScanner = () => {
 
   const onClose = () => navigation.goBack();
 
-  const onMenuClick = () => {};
+  const onMenuClick = () => { };
   if (!hasPermission) {
     return (
-      <View style={styles.btnContainer}>
-        <Text>Camera permission is required</Text>
-        <Button
-          imageSource={IMAGES.settings}
-          style={styles.btn}
-          colorTheme="dark"
-          title="Give Access"
-          onPress={() => requestPermission()}
-        />
-      </View>
+      <>
+        <BackButton />
+        <View style={styles.btnContainer}>
+          <Text>Camera permission is required</Text>
+          <Button
+            imageSource={IMAGES.settings}
+            style={styles.btn}
+            colorTheme="dark"
+            title="Give Access"
+            onPress={() => requestPermission()}
+          />
+        </View>
+      </>
+
     );
   }
 
   if (!device) return <Text>Loading Camera...</Text>;
   if (loading)
     return (
-      <FullScreenLoader loading={loading} customStyle={{ backgroundColor: COLORS.transperantBackground,}}>
+      <FullScreenLoader loading={loading} customStyle={{ backgroundColor: COLORS.transperantBackground, }}>
         {null}
       </FullScreenLoader>
     );
@@ -216,5 +241,5 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderTopWidth: 0,
   },
-  validationText:{ flex: 1, justifyContent: 'center', alignItems: 'center' }
+  validationText: { flex: 1, justifyContent: 'center', alignItems: 'center' }
 });

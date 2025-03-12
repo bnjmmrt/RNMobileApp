@@ -36,7 +36,7 @@ const EventTalent: React.FC<EventTalentProps> = ({ talents }) => {
         contentContainerStyle={styles.itemContainer}
         ItemSeparatorComponent={itemSeparatorComponent}
         renderItem={({ item }) => (
-          <Pressable style={styles.talentItem} onPress={() => Alert.alert("Inprogress")}>
+          <View style={styles.talentItem}>
             {item.imageKeyUrl && item.imageKeyUrl.includes("http") ? (
               <FastImage
                 source={{ uri: removeSignature(item.imageKeyUrl) }}
@@ -48,7 +48,7 @@ const EventTalent: React.FC<EventTalentProps> = ({ talents }) => {
               <AvatarInitials name={item.name} size={48} />
             )}
             <Text style={styles.name}>{item.name}</Text>
-          </Pressable>
+          </View>
         )}
       />
     </View>

@@ -6,7 +6,7 @@ import { COLORS, LABLE } from '../../utils/constants';
 import { useNavigation } from '@react-navigation/native';
 import { verticalScale } from 'src/utils/dimensions';
 
-const EmailInput = forwardRef((_, ref) => {
+const EmailInput = forwardRef(({otherStyle}, ref) => {
   const [emailAddress, setEmailAddress] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [disabled, setDisabled] = useState(false);
@@ -26,8 +26,8 @@ const EmailInput = forwardRef((_, ref) => {
   const validateEmailAddress = () => {
     // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const emailRegex =
-      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
+      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,3})$/i;
+   
     console.log(emailRegex.test(emailAddress));
     if (!emailRegex.test(emailAddress)) {
       setErrorMessage(LABLE.EROOR_ENTER_EMAIL);
@@ -48,23 +48,23 @@ const EmailInput = forwardRef((_, ref) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,otherStyle]}>
       <View
         style={[
           styles.inputWrapper,
           errorMessage && styles.errorInputWrapper,
           disabled && styles.disabledInput,
         ]}>
-        <Image
+       { !errorMessage &&  <Image
           source={errorMessage ? IMAGES.email_error : IMAGES.email}
           style={[
             styles.icon,
             { tintColor: errorMessage ? COLORS.errorText : COLORS.light_gray },
           ]}
-        />
+        /> }
         <TextInput
           style={[styles.input, disabled && { color: COLORS.light_gray }]}
-          placeholder="example@gmail.com"
+          placeholder={errorMessage ? '': "example@gmail.com"}
           keyboardType="email-address"
           focusable={true} // Enable input focus
           autoCapitalize="none" // Disable automatic capitalization

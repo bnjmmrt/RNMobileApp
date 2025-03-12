@@ -44,7 +44,7 @@ export type countryType = {
 
 export type PhoneNumberInputRefMethods = {
   handleNextPress: () => void;
-  validatePhoneNumber: () => boolean;
+  validatePhoneNumber: (errorMsg?:string) => boolean;
   setPhoneNumber: React.Dispatch<React.SetStateAction<string>>;
   setCallingCode: React.Dispatch<React.SetStateAction<string>>;
   setFlag: React.Dispatch<React.SetStateAction<string>>;
@@ -53,6 +53,7 @@ export type PhoneNumberInputRefMethods = {
   setDisabled: React.Dispatch<React.SetStateAction<boolean>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setCode: React.Dispatch<React.SetStateAction<CountryCode>>;
+ 
 };
 
 const PhoneNumberInput = forwardRef<
@@ -64,6 +65,7 @@ const PhoneNumberInput = forwardRef<
     onChangeText?: (text: string) => void;
     onSelectCountry?: (selectedCountry: any) => void;
     forBottomSheet?: boolean;
+    // errorMsg?:string | null
   }
 >(
   (
@@ -74,6 +76,7 @@ const PhoneNumberInput = forwardRef<
       onChangeText,
       onSelectCountry,
       forBottomSheet = false,
+      // errorMsg=null
     },
     ref,
   ) => {
@@ -86,7 +89,9 @@ const PhoneNumberInput = forwardRef<
     const [disabled, setDisabled] = useState(false);
     const navigation = useNavigation();
     const dispatch = useDispatch();
-    const [selectedCountry, setSelectedCountry] = useState('');
+    const [selectedCountry, setSelectedCountry] = useState(
+      {"code": "US", "dial_code": "+1", "flag": "🇺🇸", "name": {"ar": "الولايات المتحدة الأمريكية", "bg": "Съединени щати", "by": "Злучаныя Штаты", "cn": "美国", "cz": "Spojené státy", "da": "USA", "de": "Vereinigte Staaten", "ee": "Ühendriigid", "el": "Ηνωμένες Πολιτείες Αμερικής", "en": "United States", "es": "Estados Unidos", "fr": "États-Unis", "he": "ארצות הברית", "it": "stati Uniti", "jp": "アメリカ", "nl": "Verenigde Staten", "pl": "Stany Zjednoczone", "pt": "Estados Unidos", "ro": "Statele Unite", "ru": "Соединенные Штаты", "tr": "Amerika Birleşik Devletleri", "ua": "Сполучені Штати", "zh": "美國"}}
+    );
     const [maxLength, setMaxLength] = useState(12);
 
     const handleCountrySelect = (selectedCountry: any) => {
@@ -126,7 +131,7 @@ const PhoneNumberInput = forwardRef<
       setCode,
     }));
 
-    const validatePhoneNumber = () => {
+    const validatePhoneNumber = (errorMsg?:string) => {
       if (phoneNumber != '') {
         const mobileNumber = `${callingCode}${phoneNumber}`;
         const isValid = isValidPhoneNumber(mobileNumber, code);
@@ -135,12 +140,13 @@ const PhoneNumberInput = forwardRef<
           return false;
         }
       } else {
-        setErrorMessage(LABLE.EROOR_ENTER_PHONE_NUMBER);
+        setErrorMessage(errorMsg ? errorMsg:LABLE.EROOR_ENTER_PHONE_NUMBER);
         return false;
       }
       setErrorMessage('');
       return true;
     };
+    
 
     const handleNextPress = () => {
       if (validatePhoneNumber()) {
@@ -188,6 +194,30 @@ const PhoneNumberInput = forwardRef<
 
     const InputComponent = forBottomSheet ? BottomSheetTextInput : TextInput;
 
+    // Function to format the phone number with spaces for display
+  const formatPhoneNumber = (number: string) => {
+    return number.replace(/(\d{3})(?=\d)/g, '$1 ').trim(); // Format input (add space after every 3 digits)
+  };
+
+  const handlePhoneNumberChange = (text: string) => {
+    // Remove spaces for validation purposes
+    const cleanedText = text.replace(/\s/g, '');
+
+    // Dynamically calculate max length to include spaces
+    const newMaxLength = maxLength + Math.floor(cleanedText.length / 3); // Add space after every 3 digits
+    
+    if (cleanedText.length <= newMaxLength) {
+      setPhoneNumber(cleanedText); // Update raw phone number state without spaces
+      handleChange(cleanedText); // Update state or validation
+
+      // Reset error message when editing
+      setErrorMessage('');
+      if (onChangeText) {
+        onChangeText(cleanedText); // Pass cleaned input to onChangeText
+      }
+    }
+  };
+
     return (
       <View style={[styles.container, otherStyle]}>
         {/* Dynamic Label */}
@@ -220,16 +250,19 @@ const PhoneNumberInput = forwardRef<
             // placeholder="Enter phone number"
             keyboardType="phone-pad"
             returnKeyType="done"
-            value={phoneNumber}
-            maxLength={maxLength}
+            // value={phoneNumber}
+            // maxLength={maxLength}
             // onChangeText={handleChange}
-            onChangeText={(text: string) => {
-              handleChange(text);
-              setErrorMessage('');
-              if (onChangeText) {
-                onChangeText(text);
-              }
-            }}
+            // onChangeText={(text: string) => {
+            //   handleChange(text);
+            //   setErrorMessage('');
+            //   if (onChangeText) {
+            //     onChangeText(text);
+            //   }
+            // }}
+            value={formatPhoneNumber(phoneNumber)}
+            maxLength={maxLength + Math.floor(phoneNumber.length / 3)} 
+            onChangeText={handlePhoneNumberChange} 
             onBlur={validatePhoneNumber}
             editable={!disabled}
           />
@@ -288,7 +321,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   flag: {
-    fontSize: 22,
+    fontSize: 18,
     width: 25,
     textAlign: 'center',
     height: 25,

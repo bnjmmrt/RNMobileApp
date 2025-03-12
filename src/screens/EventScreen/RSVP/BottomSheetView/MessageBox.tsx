@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
         borderRadius: radiusScale(8),
         borderWidth: 1,
         borderColor: COLORS.borderRed,
-        width: '60%',
+        width: '70%',
         justifyContent: 'center',
     },
     statusText: {

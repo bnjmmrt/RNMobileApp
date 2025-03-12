@@ -53,6 +53,7 @@ export const BUTTON_LABLE = {
   DISCOVER_MORE_EVENTS: 'Discover More Events',
   CHECK_IN: 'Check In',
   SHOW_TICKET_BREAKDOWN: 'Show Ticket Breakdown',
+  MANAGE_GUEST_LIST: 'Manage Guest List',
   SAVE_DRAFT: 'Save Draft',
   SEND_INVITE: 'Send Invite',
   APPROVE_REQUEST: 'Approve Request',
@@ -151,10 +152,10 @@ export const LABLE = {
   DISCOVER_EXPERIENCES_IN_ART:
     'Discover experiences in art, fashion, music, and more \n—curated by renowned hosts.',
   COMPLETE_VERIFICATION: 'Complete Verification',
-  SEND_DIRECT_MSG_CODE: 'Send direct message with the code:',
+  SEND_DIRECT_MSG_CODE: 'Send a direct message with the code:',
   WE_WILL_REVIEW_APP:
     "We'll review your application after we receive\nyour message.",
-  EMAIL_THE_CODE: 'Email the code to:',
+  EMAIL_THE_CODE: 'Email the code:',
   DONT_USE_INSTAGRAM: "Don't use Instagram?",
   REFERRAL_CODE: 'Referral Code',
   IF_YOU_HAVE_ANY_REFERRAL_CODE: 'If you have a referral code, enter it below.',
@@ -194,6 +195,7 @@ export const LABLE = {
   ADD_EVENT_ANNOUNCEMENTS_ERROR:"You can’t post event announcements until you have confirmed guests on the guest list.",
   READ_MORE: 'Read More',
   VIEW_ALL: 'View All',
+  VIEW_LESS:'View Less',
   FEATURED_TALENT: 'Featured Talent',
   DUMMY_TEXT:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent bland',
@@ -258,7 +260,11 @@ export const LABLE = {
   NO_NOTIFICATIONS_YET:'No notifications yet',
   NOTIFICATIONS_SUB_TITLE:"We'll let you know when updates arrive!",
   PROFILE_UPDATED_SUCCESSFULLY:'Profile Updated Successfully',
-  PLEASE_SELECT_ONE: 'Please select one'
+  PLEASE_SELECT_ONE: 'Please select one',
+  PLEASE_SELECT_AT_LEAST_ONE: 'Please select at least one',
+  SELECT_UPTO_3: 'Select up to 3',
+  HOST_UNBLOCK_MESSAGE:'Are you sure you want to unblock this host? \nUnblocking this host will allow them to send you new event invites and chat messages.'
+
 };
 export const EVENT = {
   EDIT_EVENT: 'Edit Event',
@@ -283,7 +289,9 @@ export const EVENT = {
   UTILIZE_QR_CODES_FOR_EVENT_CHECK_IN: 'Utilize QR codes for event check-in?',
   EVENT_COLLABORATORS: 'Event Collaborators',
   QUESTIONNAIRE: 'Questionnaire',
-  UPDATE_SETTINGS_ON_WEB: 'Update Settings on Web'
+  UPDATE_SETTINGS_ON_WEB: 'Update Settings on Web',
+  USER_HAS_NO_EVENTS:'User has no events in this status',
+  REPORT_SUBMITTED_SUCCESSFULLY:'Report Submitted Successfully'
 };
 
 
@@ -320,7 +328,7 @@ export const PROFILE = {
   SMS_NOTIFICATIONS: 'SMS Notifications',
   PUSH_NOTIFICATIONS: 'Push Notifications',
   EMAIL_NOTIFICATIONS: 'Email Notifications',
-  FEEDBACK_MESSAGE: 'Thank you for your feedback!',
+  FEEDBACK_MESSAGE: 'Thank you for\nyour feedback!',
   FEEDBACK_CONFIRMATION_MESSAGE:
     'We truly appreciate your input and will use it to enhance our service.',
   REVIEW_REFERRAL_REQUESTS:
@@ -343,13 +351,23 @@ export const ERROR_MESSAGE = {
   WEBSITE_ERROR: 'Please enter your URL.',
   COMPANY_NAME_ERROR: 'Company Name is required',
   TICKET_TYPE_ERROR: 'Select at least one ticket type',
-  COLLABORATOR_ERROR: 'Choose a collaborator',
-  ANNOUNCEMENT_DETAIL_ERROR: "Enter announcement details",
-  FILE_SIZE_EXCEED: "File size exceeds the 5MB limit. Please upload a smaller file.",
-  SOMETHING_WENT_WRONG: "Something went wrong, Please try again later",
+  RECIPIENTS_ERROR: 'Select at least one recipient',
+  COLLABORATOR_ERROR:'Choose a collaborator',
+  ANNOUNCEMENT_DETAIL_ERROR:"Enter announcement details",
+  FILE_SIZE_EXCEED:"File size exceeds the 5MB limit. Please upload a smaller file.",
+  SOMETHING_WENT_WRONG:"Something went wrong, Please try again later",
   TCKET_ERROR_MESSAGE: 'Ticket is not associated with a guest for this event.',
   NO_INTERNET:'You’re not connected to the internet.\nPlease check your connection and try again.',
   EMPTY: '',
+  FIRST_NAME_SIZE_EXCEED:'First Name cannot exceed 30 characters',
+  LAST_NAME_SIZE_EXCEED:'Last Name cannot exceed 30 characters',
+  FIRST_NAME_INVALID_CHARACTERS:'First Name should not contain special characters or numbers',
+  LAST_NAME_INVALID_CHARACTERS:'Last Name should not contain special characters or numbers',
+  FEEDBACK_SIZE_EXCEED:'Feedback cannot exceed 500 words',
+  DESCRIPTION_SIZE_EXCEED:'Bio cannot exceed 200 words',
+  FIRST_NAME_REQUIRED: 'First name is required',
+  LAST_NAME_REQUIRED: 'Last name is required',
+  PLEASE_PROVIDE_EMAIL_OR_PHONE:'Please provide at least one contact method: email or phone number.'
 };
 
 export const COLORS = {

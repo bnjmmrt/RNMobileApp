@@ -23,6 +23,7 @@ import Title from 'src/component/Title/Title';
 import useContacts from 'src/utils/hooks/useContactPermission';
 import SearchInput from 'src/component/SearchInput';
 import { fontScale, horizontalMarginScale, verticalMarginScale } from 'src/utils/dimensions';
+import { environment } from 'environments/environment';
 
 
 interface ContactItem {
@@ -31,7 +32,7 @@ interface ContactItem {
 }
 
 const PAGE_SIZE = 30;
-
+const rumorAppLink = Platform.OS === 'android' ? environment.playstoreLink : environment.appStoreLink
 
 const InviteFriendsSheet = forwardRef((props, ref) => {
   const [contacts, setContacts] = useState<ContactItem[]>([]);
@@ -101,10 +102,11 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
   };
 
   const handleInviteLink = async () => {
+
     try {
       await Share.share({
         message:
-          'Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: [Rumor App Link]',
+          `Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: ${rumorAppLink}`,
       });
     } catch (error) {
       console.error('Error sharing invite link:', error);
@@ -113,7 +115,7 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
 
   const handleInvite = (contact: ContactItem) => {
     const message =
-      'Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: [Rumor App Link]';
+      `Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: ${rumorAppLink}`;
 
     const url = `sms:${contact.phoneNumber}?body=${encodeURIComponent(message)}`;
 
@@ -135,7 +137,7 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
   ) => (
     <View style={styles.listItem}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-        <AvatarInitials name={item.name} size={48} listing={true}/>
+        <AvatarInitials name={item.name} size={48} listing={true} />
         <View>
           <Text style={styles.name}>{item.name}</Text>
           <Text style={styles.phone}>{item.phoneNumber}</Text>
@@ -177,7 +179,7 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
     >
       <View style={{ paddingHorizontal: 20, flex: 1 }}>
         <Title title={BUTTON_LABLE.INVITES} align="center" />
-        <View style={{ flex: 1 ,marginTop:0}}>
+        <View style={{ flex: 1, marginTop: 0 }}>
           <Text style={styles.sectionSubtitle}>{BUTTON_LABLE.INVITE_FREINDS}</Text>
           <SearchInput
             placeholder={LABLE.SEARCH_FRIENDS}
@@ -188,6 +190,9 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
           />
           <FlatList
             data={filteredContacts}
+            style={{
+              marginTop: verticalMarginScale(15)
+            }}
             keyExtractor={(item, index) => '' + item.phoneNumber + index}
             contentContainerStyle={{ gap: 4, flexGrow: 1, paddingBottom: 100, marginTop: 16 }}
             renderItem={({ item }) =>

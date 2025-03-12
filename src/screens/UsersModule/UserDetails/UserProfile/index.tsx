@@ -64,9 +64,13 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
         response = await markUserFav(payload).unwrap();
       }
 
-      if (response.status === 200) {
+      if (response.success) {
+        if (userDetails?.isFavourite) {
+          FlashMessageComponent.show('success', 'User removed from favorites');
+        } else {
+          FlashMessageComponent.show('success', 'User added to Favorites');
+        }
         fetchUserDetails({ user: user });
-        FlashMessageComponent.show('success', 'User marked as favorite!');
       } else {
         const typedError = response as ApiErrorInterface;
         FlashMessageComponent.show('error', getErrorMessage(typedError));

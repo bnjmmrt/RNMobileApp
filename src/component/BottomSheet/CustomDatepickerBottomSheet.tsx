@@ -31,10 +31,13 @@ const CustomDatepickerBottomSheet = forwardRef((props: Props, ref) => {
   );
 
 
-  const years = useMemo(
-    () => Array.from({ length: 2025 - 1900 }, (_, i) => `${1900 + i}`),
-    []
-  );
+  const years = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    const startYear = 1900;
+    const endYear = currentYear; 
+  
+    return Array.from({ length: endYear - startYear + 1 }, (_, i) => `${startYear + i}`);
+  }, []);
 
   // Function to calculate days based on month and year
   const calculateDays = useCallback(() => {
@@ -199,7 +202,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -25 }],
   },
   month: {
-    width: 120,
+    width: Platform.OS === 'ios' ? 130: 150,
     alignItems: 'flex-start',
     paddingLeft: 20
   }

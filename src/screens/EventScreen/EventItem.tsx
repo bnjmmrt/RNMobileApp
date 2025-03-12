@@ -7,7 +7,13 @@ import { CustomText } from 'src/component/CustomText';
 import { ROUTES } from 'src/navigation/Route';
 import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
 import ButtonSmall from '../../component/ButtonSmall';
-import { BUTTON_LABLE, COLORS, EVENT, LABLE, ROLE } from '../../utils/constants';
+import {
+  BUTTON_LABLE,
+  COLORS,
+  EVENT,
+  LABLE,
+  ROLE,
+} from '../../utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -22,8 +28,6 @@ import { Event } from 'src/types';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 
-
-
 interface EventItemProps {
   item: Event;
 }
@@ -34,7 +38,7 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
   const role = useSelector((state: RootState) => state.auth.role);
   const userId = useSelector((state: RootState) => state.auth.userId);
 
-  const dates = formatDetailedEventDate(item?.startDate, item?.endDate,);
+  const dates = formatDetailedEventDate(item?.startDate, item?.endDate);
 
   const handlEventPress = () => {
     navigation.navigate(ROUTES.EventStack, {
@@ -44,43 +48,56 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
   };
 
   const getUserRole = () => {
-    if (!item || !userId) return "";
+    if (!item || !userId) return '';
 
     // Check if the user is the owner
     if (item?.owner?.id === userId) {
-      return "HOST";
+      return 'HOST';
     }
 
     // Check if the user is in the collaborators list
-    const collaborator = item.collaborators?.find(collab => collab?.id === userId);
+    const collaborator = item.collaborators?.find(
+      collab => collab?.id === userId,
+    );
 
     if (collaborator) {
-      return collaborator?.role?.name?.toUpperCase().replace("_", "-");
+      return collaborator?.role?.name?.toUpperCase().replace('_', '-');
     }
 
-    return ""; // Default return if no match is found
+    return ''; // Default return if no match is found
   };
 
+  const isShowLocation =
+    role === ROLE.HOST || item?.currentGuestStatus === 'CONFIRMED';
+  const locationText = isShowLocation
+    ? item?.location?.city
+    : 'RSVP to See Location';
 
   return (
     <View style={styles.container}>
       <FastImage
-        source={{ uri: removeSignature(item?.imageCover) || removeSignature(item?.imageFlyer) }}
+        source={{
+          uri:
+            removeSignature(item?.imageCover) ||
+            removeSignature(item?.imageFlyer),
+        }}
         resizeMode={FastImage.resizeMode.cover}
         defaultSource={IMAGES.eventCoverPlaceholders1} // Your local placeholder image
         style={styles.icon}>
-        {role === ROLE.HOST && <View style={styles.roleContainer}>
-          <CustomText style={styles.roleText}>
-            {getUserRole()}
-          </CustomText>
-        </View>
-        }
+        {role === ROLE.HOST && (
+          <View style={styles.roleContainer}>
+            <CustomText style={styles.roleText}>{getUserRole()}</CustomText>
+          </View>
+        )}
       </FastImage>
 
-
       <View style={styles.contentContainer}>
-        <CustomText style={styles.titleStyle} textProps={{ numberOfLines: 1 }}>{item?.name}</CustomText>
-        <CustomText style={styles.subtitle} textProps={{ numberOfLines: 2 }}>{dates} </CustomText>
+        <CustomText style={styles.titleStyle} textProps={{ numberOfLines: 1 }}>
+          {item?.name}
+        </CustomText>
+        <CustomText style={styles.subtitle} textProps={{ numberOfLines: 2 }}>
+          {dates}{' '}
+        </CustomText>
         {role === ROLE.HOST ? (
           <>
             <CustomText style={styles.subtitle}>
@@ -90,10 +107,14 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
               {EVENT.TOTAL_CHECKEDIN} {item?.totalCheckedInGuests}
             </CustomText>
           </>
-        ) : item?.location?.city && (
-          <CustomText style={styles.subtitle} textProps={{ numberOfLines: 2 }}>
-            {item.location.city}
-          </CustomText>
+        ) : (
+          item?.location?.city && (
+            <CustomText
+              style={styles.subtitle}
+              textProps={{ numberOfLines: 2 }}>
+              {locationText}
+            </CustomText>
+          )
         )}
         <ButtonSmall
           disabled={false}
@@ -145,7 +166,7 @@ const styles = StyleSheet.create({
   subtitle: {
     color: COLORS.light_gray,
     fontFamily: fontFamily.ABCDiatype_Medium,
-    fontSize: fontScale(12)
+    fontSize: fontScale(12),
   },
   roleContainer: {
     backgroundColor: COLORS.white, // Ensure background is applied

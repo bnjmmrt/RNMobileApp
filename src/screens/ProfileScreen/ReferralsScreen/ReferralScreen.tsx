@@ -42,7 +42,7 @@ const ReferralScreen: React.FC = () => {
   const getReferredRequest = async () => {
     const response: any = await apiRequest('get', EndPoint.referral_requests);
 
-    if (response?.status === 200) {
+    if (response?.success) {
       setReferrelRequests(response?.data);
     }
   };
@@ -50,7 +50,7 @@ const ReferralScreen: React.FC = () => {
   const getVouchRequest = async () => {
     const response: any = await apiRequest('get', EndPoint.vouch_requests);
 
-    if (response.status === 200) {
+    if (response.success) {
       setVouchRequests(response?.data);
     }
   };
@@ -61,7 +61,7 @@ const ReferralScreen: React.FC = () => {
       EndPoint.referral_requests + '/' + id,
       { isApproved: status },
     );
-    if (response?.status !== 200) {
+    if (!response?.success) {
       FlashMessageComponent.show(
         'error',
         'Something went wrong, please try later',
@@ -75,7 +75,7 @@ const ReferralScreen: React.FC = () => {
       EndPoint.vouch_requests + '/' + id,
       { isApproved: status },
     );
-    if (response?.status !== 200) {
+    if (!response?.success) {
       FlashMessageComponent.show(
         'error',
         'Something went wrong, please try later',
@@ -101,11 +101,10 @@ const ReferralScreen: React.FC = () => {
   };
 
   const onInvite = async () => {
-    await requestContactPermission();
-    if (permissionGranted) {
+      await requestContactPermission();
       setIsShown(true);
       inviteFriendSheetRef?.current.open();
-    }
+    
   };
 
   const renderContent = () => {

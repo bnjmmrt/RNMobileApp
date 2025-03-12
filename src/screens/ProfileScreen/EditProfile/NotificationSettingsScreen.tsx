@@ -23,6 +23,7 @@ import {
 import useApi from 'src/axios/useApi';
 import {EndPoint} from 'src/ApiManager/config';
 import {setNotificationSettings} from 'src/redux/slices/appSettingsSlice';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 interface NotificationSettingsScreenProps {}
 
@@ -44,56 +45,65 @@ const NotificationSettingsScreen: React.FC<NotificationSettingsScreenProps> = ()
   const userId = useSelector((state: RootState) => state.auth.userId);
 
   const [isSMSNotificationEnabled, setSMSNotificationEnabled] = useState(
-    notificationsSettings?.allowSMSNotifications,
+    notificationsSettings?.enableSmsNotifications,
   );
   const [isPushNotificationEnabled, setPushNotificationEnabled] = useState(
-    notificationsSettings?.allowPushNotifications,
+    notificationsSettings?.enableAppNotifications,
   );
   const [isEmailNotificationEnabled, setEmailNotificationEnabled] = useState(
-    notificationsSettings?.allowEmailNotifications,
+    notificationsSettings?.enableEmailNotifications,
   );
-
+  
   const toggleSMSNotification = () => {
-    setSMSNotificationEnabled(previousState => !previousState);
-    updateSettings({
-      ...notificationsSettings,
-      allowSMSNotifications: !isSMSNotificationEnabled,
-    });
+    const newValue = !isSMSNotificationEnabled;
+    setSMSNotificationEnabled(newValue);
+    updateSettings(
+      { ...notificationsSettings, enableSmsNotifications: newValue },
+      newValue
+    );
   };
-
+  
   const togglePushNotification = () => {
-    setPushNotificationEnabled(previousState => !previousState);
-    updateSettings({
-      ...notificationsSettings,
-      allowPushNotifications: !isPushNotificationEnabled,
-    });
+    const newValue = !isPushNotificationEnabled;
+    setPushNotificationEnabled(newValue);
+    updateSettings(
+      { ...notificationsSettings, enableAppNotifications: newValue },
+      newValue
+    );
   };
-
+  
   const toggleEmailNotification = () => {
-    setEmailNotificationEnabled(previousState => !previousState);
-    updateSettings({
-      ...notificationsSettings,
-      allowEmailNotifications: !isEmailNotificationEnabled,
-    });
+    const newValue = !isEmailNotificationEnabled;
+    setEmailNotificationEnabled(newValue);
+    updateSettings(
+      { ...notificationsSettings, enableEmailNotifications: newValue },
+      newValue
+    );
   };
+  
 
-  const handleBackPress = () => {
-    dispatch(setPageProgress(3));
-    navigation.goBack();
-  };
-
-  const updateSettings = async (requestData: any) => {
+  const updateSettings = async (requestData: any, newValue: boolean) => {
     const response: any = await apiRequest(
       'put',
-      EndPoint.profile_notification_settings + userId,
-      {...requestData,muteDuration:'24h'},
+      EndPoint.user_notification_preferences,
+      {...requestData, muteDuration: '24h'},
     );
-
-    if (response.status === 200) {
-      dispatch(setNotificationSettings(response.data.notificationsSettings));
-      // FlashMessageComponent.show('success','Settings updated successfully')
+  
+    if (response.success) {
+      dispatch(setNotificationSettings(response.data));
+  
+      // Determine the success message dynamically
+      const status = newValue ? 'ON' : 'OFF';
+      FlashMessageComponent.show(
+        'success',
+        `Notifications turned ${status} successfully`
+      );
     }
   };
+  const handleBackPress=()=>{
+    dispatch(setPageProgress(3))
+    navigation.goBack()
+  }
 
   return (
     <SafeAreaView style={styles.container}>

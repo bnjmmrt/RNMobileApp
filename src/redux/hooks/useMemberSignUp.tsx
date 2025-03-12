@@ -29,7 +29,7 @@ export const useMemberSignUp = () => {
       // const requestParam = { email, phoneNumber: phone };
       const response = await memberSignUp(requestParam).unwrap();
 
-      if (response.status === 200) {
+      if (response.success) {
         FlashMessageComponent.show('success', 'OTP resent successfully!');
       }
     } catch (error) {

@@ -1,53 +1,38 @@
-import React, { useCallback, useRef } from 'react';
-import { ScrollView, Text, View, Linking, Platform } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import {
-  LABLE,
-  BUTTON_LABLE,
-  genderList,
-  COLORS,
-} from '../../../utils/constants';
-import IdentityVerificationStyles from './IdentityVerificationStyles';
-import Button from '../../../component/Button';
-import Title from '../../../component/Title/Title';
-import Header from '../../../component/Header/Header';
+import React, { useCallback, useRef } from 'react';
+import { Linking, Platform, ScrollView, Text, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { EndPoint } from '../../../ApiManager/config';
+import IMAGES from '../../../assets/images';
+import useApi from '../../../axios/useApi';
+import Button from '../../../component/Button';
+import { FlashMessageComponent } from '../../../component/FlashMessageComponent/FlashMessageComponent';
+import Header from '../../../component/Header/Header';
+import Input from '../../../component/Input/Input';
+import Title from '../../../component/Title/Title';
+import { useMemberSignUp } from '../../../redux/hooks/useMemberSignUp';
 import {
   resetAppFlowDetails,
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
-import Input from '../../../component/Input/Input';
-import IMAGES from '../../../assets/images';
-import { useMemberSignUp } from '../../../redux/hooks/useMemberSignUp';
-import useApi from '../../../axios/useApi';
-import { EndPoint } from '../../../ApiManager/config';
+import { role, setRole, setRoleId } from '../../../redux/slices/authSlice';
+import {
+  BUTTON_LABLE,
+  COLORS,
+  genderList,
+  LABLE,
+} from '../../../utils/constants';
 import {
   changeSafeAreaViewConfig,
   convertDateFormat,
   loginUser,
   removeSpaceFromStr,
 } from '../../../utils/functions';
-import {
-  role,
-  setAuthToken,
-  setLoginData,
-  setRole,
-  setRoleId,
-  setUserId,
-} from '../../../redux/slices/authSlice';
-import { FlashMessageComponent } from '../../../component/FlashMessageComponent/FlashMessageComponent';
-import { useFocusEffect } from '@react-navigation/native';
-import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
-import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
-import {
-  fontScale,
-  horizontalScale,
-  Hp,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-} from 'src/utils/dimensions';
-import { RootState } from 'src/redux/slices';
+import IdentityVerificationStyles from './IdentityVerificationStyles';
 
 interface IdentityVerificationProps extends NativeStackScreenProps<any, any> {}
 
@@ -68,23 +53,9 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     subject,
   )}&body=${encodeURIComponent(body)}`;
 
-  const {
-    roles,
-    role,
-    profileData,
-    companyLogo,
-    profilePicture,
-    userId,
-    isGuest,
-    varifyStatus,
-  } = useSelector(
+  const { companyLogo, isGuest, varifyStatus } = useSelector(
     (state: RootState) => ({
-      profileData: state.appFlowApiData?.profileData,
-      role: state.auth.role,
-      roles: state.auth.roles,
       companyLogo: state.auth.companyLogo,
-      profilePicture: state.auth.profilePicture,
-      userId: state.auth.userId,
       isGuest: state.auth.isGuest,
       varifyStatus: state.auth.varifyStatus,
     }),
@@ -106,7 +77,9 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       interestsIds: userDetails.interest.map((item: any) => item.id),
       gender: userDetails.gender,
       lastName: userDetails.lastName,
-      phoneNumber: userDetails.phone ? removeSpaceFromStr(userDetails.phone) : removeSpaceFromStr(loginData.phone),
+      phoneNumber: userDetails.phone
+        ? removeSpaceFromStr(userDetails.phone)
+        : removeSpaceFromStr(loginData.phone),
       instagramAccessToken: '',
       instagramUserName: usernameRef.current.inputText,
       linkedInAccessToken: '',
@@ -121,7 +94,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       requestParams,
     );
     console.log('response', response);
-    if (response.status === 200) {
+    if (response.success) {
       loginUser({
         id: response?.data?.id,
         isGuest: isGuest,
@@ -136,7 +109,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       const nonMemberRole = response?.data.roles.find(
         (role: role) => role.roleName === 'non_member',
       );
-      if (roles.length > 1 && nonMemberRole) {
+      if (response?.data.roles.length > 1 && nonMemberRole) {
         newRole = nonMemberRole;
       }
 
@@ -209,10 +182,11 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
           subTitle={LABLE.IDENTITY_VERIFICATION_SUBTITLE}
         />
         <Input
-          otherStyle={{marginTop: 15}}
-          inputFieldContainerStyle={{height: 60}}
+          otherStyle={{ marginTop: 15 }}
+          inputFieldContainerStyle={{ height: 60 }}
           ref={usernameRef}
           placeholder={'@Username'}
+          placeholderTextColor={COLORS.placeHodler}
           leftImage={IMAGES.instagramLogo}
           errorMessage={'Please enter username'}
           defaultValue={''}
@@ -223,7 +197,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
             <Text style={styles.numberText}>1</Text>
           </View>
           <Text style={styles.subTitle}>{LABLE.SEND_DIRECT_MSG_CODE}</Text>
-          <View style={[styles.rumorTextContainer, {marginTop: -5}]}>
+          <View style={[styles.rumorTextContainer, { marginTop: -5 }]}>
             <View style={styles.btnRumorContainer}>
               <Text style={styles.btnRumor}>{LABLE.RUMORAPP}</Text>
             </View>

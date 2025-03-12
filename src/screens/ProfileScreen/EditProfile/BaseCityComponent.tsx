@@ -44,8 +44,10 @@ const BaseCityComponent = forwardRef(
         setSelectedCity(location);
       }
     }, [location]);
+
     useEffect(() => {
       onLocationSelect && onLocationSelect(selectedCity)
+      setErrorMessage(null);
     }, [selectedCity]);
 
     useImperativeHandle(ref, () => ({
@@ -71,7 +73,7 @@ const BaseCityComponent = forwardRef(
           style={styles.container}>
           <CustomSelectableText
             placeholder={LABLE.SEARCH_FOR_A_LOCATION}
-            leftImage={IMAGES.search}
+            leftImage={IMAGES.location}
             errorMessage={errorMessage}
             defaultValue={selectedCity?.address}
             onPress={toggleLocationPicker}
@@ -82,7 +84,7 @@ const BaseCityComponent = forwardRef(
           ref={locationRef}
           setLocation={setSelectedCity}
           setIsShown={setIsShown}
-          toggleLocationPicker={toggleLocationPicker}
+          // toggleLocationPicker={toggleLocationPicker}
         />
       </>
     );

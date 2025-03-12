@@ -15,7 +15,7 @@ import {
 import { CustomText } from '../CustomText';
 import type { EventItem } from './EventsFeed';
 import { formatEventDate } from 'src/utils/dateFunctions';
-import { removeSignature } from 'src/utils/functions';
+import { fontFamily, removeSignature } from 'src/utils/functions';
 
 let screenWidth: number = Dimensions.get('window').width;
 
@@ -67,6 +67,9 @@ const FeedItem: React.FC<FeedItemProps> = ({ item, from = 'AllEvents' }) => {
               {formatEventDate(item.startDate, item.endDate)}
             </CustomText>
           ) : null}
+          <CustomText textProps={{ numberOfLines: 1 }} style={styles.subtitle}>
+            {item?.location?.city}
+          </CustomText>
         </View>
       ) : null}
     </TouchableOpacity>
@@ -80,7 +83,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    marginTop: verticalMarginScale(12),
+    marginVertical: verticalMarginScale(12),
   },
   icon: {
     borderRadius: radiusScale(8),
@@ -90,9 +93,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontScale(16),
+    fontFamily: fontFamily.ABCDiatype_Medium,
+    color: COLORS.black
   },
   subtitle: {
     color: COLORS.light_gray,
+    fontSize: fontScale(12),
+    fontFamily: fontFamily.ABCDiatype_Medium,
     marginTop: verticalMarginScale(4),
   },
 });

@@ -70,6 +70,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   );
   const [_isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState('')
+
   const sendOtp = async (message: string) => {
     let params;
     let endPoint;
@@ -95,9 +96,9 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     }
   };
 
-  useEffect(() => {
-    sendOtp('sent');
-  }, [route.params]);
+  // useEffect(() => {
+  //   sendOtp('sent');
+  // }, [route.params]);
 
   const verifyCode = async () => {
     let params;
@@ -117,7 +118,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     }
     const response: any = await apiRequest('post', endPoint, params);
 
-    if (response.data.verified) {
+    if (response.success) {
       // FlashMessageComponent.show('success', LABLE.OTP_VERIFIED_SUCCESSFULLY);
       dispatch(setPageProgress(3));
       dispatch(setIsEmailPhoneBothVerified(true));
@@ -200,7 +201,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
       <Button
         disabled={false}
         style={[styles.btnStyle, {
-          marginBottom: keyboardVisible ? verticalMarginScale(60) : 0,
+          marginBottom: keyboardVisible ? Platform.OS === 'ios' ? verticalMarginScale(60): verticalMarginScale(10) : 0,
         }]}
         title={BUTTON_LABLE.NEXT}
         colorTheme="dark"

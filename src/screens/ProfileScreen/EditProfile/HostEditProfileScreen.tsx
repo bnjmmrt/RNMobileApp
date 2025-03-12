@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
@@ -68,43 +69,41 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
     // getHostDetails();
   }, []);
 
+  const validateLength = () => {
+      const regex = /^\s*(\S+\s*){0,200}$/;
+       if(!regex.test(bioRef?.current.inputText)){
+        bioRef?.current?.setErrorMessage(
+                  ERROR_MESSAGE.DESCRIPTION_SIZE_EXCEED,
+                );
+                return false;
+       }
+       bioRef?.current?.setErrorMessage('');
+       return true;
+    };
   const onConfirmClick = async () => {
 
     if (
-      companyNameRef.current.validateInputs() &&
+      companyNameRef.current.validateInputs() && validateLength() &&
       websiteRef.current.validateInputs()
     ) {
       console.log("inside")
       const requestObject: any = {
         bio: bioRef?.current.inputText,
         companyName: companyNameRef?.current.inputText,
-        email: profileData?.email,
-        eventsPerYear: 0,
-        firstName: profileData?.firstName,
-        lastName: profileData?.lastName,
-        phoneNumber: profileData?.phoneNumber,
-        socialMedia: {
-          facebook: profileData?.socialMedia.facebook,
-          instagram: profileData?.socialMedia.instagram,
-          linkedin: profileData?.socialMedia.linkedin,
-          tiktok: profileData?.socialMedia.tiktok,
-          x: profileData?.socialMedia.x,
-          youtube: profileData?.socialMedia.youtube,
-        },
         website: websiteRef?.current.inputText,
       };
       console.log("requestobj", requestObject)
       const response: any = await apiRequest(
         'put',
-        `v1/auth/host/${userId}/profile`,
+        `${EndPoint.host_ep}`,
         requestObject,
       );
-      if (response.status === 200) {
+      if (response.success) {
         const responseUser: any = await apiRequest(
           'get',
-          `v1/auth/host/${userId}/profile`,
+          `${EndPoint.host_ep}`,
         );
-        if (responseUser.status === 200) {
+        if (responseUser.success) {
           dispatch(setProfileData(responseUser.data));
         }
         FlashMessageComponent.show('success', LABLE.PROFILE_UPDATED_SUCCESSFULLY)
@@ -126,12 +125,15 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
       />
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+         <KeyboardAvoidingView
+                  behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={styles.contentContainer}>
           <Input
             ref={companyNameRef}
             label={LABLE.COMPANY_NAME}
             errorMessage={ERROR_MESSAGE.COMPANY_NAME_ERROR}
             defaultValue={profileData?.companyName}
+            maxLength={100}
           />
           <Input
             blurOnSubmit={true}
@@ -153,6 +155,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
             defaultValue={profileData?.website}
           />
         </View>
+        </KeyboardAvoidingView>
       </ScrollView>
       <Button
         disabled={false}

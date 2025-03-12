@@ -215,7 +215,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
         checkIn: !checkedIn,
       },
     );
-    if (response.status === 200) {
+    if (response.success) {
       setCheckedIn(response.data.checkInStatus)
     }
   };
@@ -240,7 +240,7 @@ if(status === 'CONFIRMED')
           privateGuestNote: guestNote,
         },
       );
-      if (response.status === 200) {
+      if (response.success) {
       }
     }
   };
@@ -292,7 +292,7 @@ if(status === 'CONFIRMED')
                   source={
                     checkedIn ? IMAGES.checkedinCurved : IMAGES.checkinCurved
                   }
-                  style={styles.actionButtonIcon}
+                  // style={styles.actionButtonIcon}
                 />
                 <Text style={styles.actionButtonText}>
                   {checkedIn ? LABLE.CHECKED_IN : LABLE.CHECK_IN}

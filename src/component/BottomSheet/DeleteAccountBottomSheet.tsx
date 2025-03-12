@@ -1,6 +1,6 @@
 import React, {useRef, forwardRef} from 'react';
 import {View, StyleSheet, Text, Platform} from 'react-native';
-import BottomSheetComponent from './BottomSheet';
+import BottomSheetComponent from './AppBottomSheet';
 import {BUTTON_LABLE, COLORS, PROFILE} from '../../utils/constants';
 import Button from '../Button';
 import {fontFamily} from '../../utils/functions';
@@ -27,7 +27,7 @@ const DeleteAccountBottomSheet = forwardRef(
     return (
       <BottomSheetComponent
         ref={ref}
-        snapPoints={[ '60%']}
+        snapPoints={[ '0.56']}
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
           <Text style={styles.title}>{PROFILE.DELETE_ACCOUNT}</Text>
@@ -50,8 +50,7 @@ const DeleteAccountBottomSheet = forwardRef(
           </Text>
           <Text style={styles.description}>
             If you choose to return after deletion, you’ll need to reapply for
-            membership, and reapproval is not guaranteed.Are you sure you want
-            to proceed?
+            membership, and reapproval is not guaranteed.
           </Text>
           <Text style={styles.description}>
             Are you sure you want to proceed?
@@ -79,19 +78,21 @@ const DeleteAccountBottomSheet = forwardRef(
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal:horizontalMarginScale(20),
-    gap: 12,
+    gap: 8,
   },
   deleteAccountBtnStyle: {
     borderRadius:radiusScale(100),
     backgroundColor: COLORS.errorText,
-    marginTop:verticalMarginScale(8),
+    marginTop:verticalMarginScale(16),
   },
   btnStyle: {
     borderRadius:radiusScale(100),
   },
   title: {
-    fontSize: fontScale(24),
-    fontFamily: fontFamily.RomieTrial_Bold,
+      fontSize: fontScale(24),
+      // fontWeight:'700',
+      color:COLORS.black,
+      fontFamily: fontFamily.RomieTrial_Bold
   },
   description: {
     fontSize: fontScale(14),

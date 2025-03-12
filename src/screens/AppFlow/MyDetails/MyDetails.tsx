@@ -38,14 +38,53 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
 
+  const validateName = (name: string) => {
+    const regex = /^[A-Za-z]+$/;
+    if (
+      name === 'FirstName' &&
+      firstNameRef?.current?.inputText.trim().length > 30
+    ) {
+      firstNameRef?.current?.setErrorMessage(
+        ERROR_MESSAGE.FIRST_NAME_SIZE_EXCEED,
+      );
+      return false;
+    } else {
+      if (!regex.test(firstNameRef?.current?.inputText)) {
+        firstNameRef?.current?.setErrorMessage(
+          ERROR_MESSAGE.FIRST_NAME_INVALID_CHARACTERS,
+        );
+        return false;
+      }
+    }
+
+    if (
+      name === 'LastName' &&
+      lastNameRef?.current?.inputText.trim().length > 30
+    ) {
+      lastNameRef?.current?.setErrorMessage(
+        ERROR_MESSAGE.LAST_NAME_SIZE_EXCEED,
+      );
+      return false;
+    } else {
+      if (!regex.test(lastNameRef?.current?.inputText)) {
+        lastNameRef?.current?.setErrorMessage(
+          ERROR_MESSAGE.LAST_NAME_INVALID_CHARACTERS,
+        );
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const onNextClick = () => {
     firstNameRef.current.validateInputs();
     lastNameRef.current.validateInputs();
     if (
       firstNameRef.current.validateInputs() &&
-      // firstNameRef.current.inputText.length > 2 &&
-      lastNameRef.current.validateInputs()
-      //  && lastNameRef.current.inputText.length > 2
+      validateName('FirstName') &&
+      lastNameRef.current.validateInputs() &&
+      validateName('LastName')
     ) {
       dispatch(setFirstName(firstNameRef.current.inputText));
       dispatch(setLastName(lastNameRef.current.inputText));
@@ -54,8 +93,13 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
         dispatch(setPageProgress(3));
         navigation.navigate('GenderScreen');
       } else {
-        dispatch(setPageProgress(2));
-        navigation.navigate('EnterEmailPhone');
+        if (userDetails?.isEmailPhoneBothVerified) {
+          dispatch(setPageProgress(3));
+          navigation.navigate('GenderScreen');
+        } else {
+          dispatch(setPageProgress(2));
+          navigation.navigate('EnterEmailPhone');
+        }
       }
     }
   };
@@ -86,12 +130,14 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
           label={LABLE.FIRST_NAME}
           errorMessage={ERROR_MESSAGE.FIRST_NAME}
           defaultValue={userDetails.firstName}
+          maxLength={30}
         />
         <Input
           ref={lastNameRef}
           label={LABLE.LAST_NAME}
           errorMessage={ERROR_MESSAGE.LAST_NAME}
           defaultValue={userDetails.lastName}
+          maxLength={30}
         />
       </View>
 

@@ -77,24 +77,24 @@ const ListActionsSheet = forwardRef<
     const getDyanamicSnapPoints = useCallback(() => {
       switch (selectedAction) {
         case 'addUsers':
-          return [`${verticalScale(70)}%`];
+          return [`85%`];
         case 'createList':
-          return [`${verticalScale(35)}%`];
+          return [`45%`];
         case 'deleteList':
-          return [`${verticalScale(35)}%`];
+          return [`35%`];
         case 'duplicateList':
-          return [`${verticalScale(50)}%`];
+          return [`50%`];
         case 'editListName':
-          return [`${verticalScale(40)}%`];
+          return [`40%`];
         case '':
           if (listType === 'custom') {
-            return [`${verticalScale(35)}%`];
+            return [`35%`];
           } else {
-            return [`${verticalScale(15)}%`];
+            return [`15%`];
           }
 
         default:
-          return [`${verticalScale(35)}%`];
+          return [`35%`];
       }
     }, [selectedAction, listType]);
 
@@ -229,7 +229,6 @@ const ListActionsSheet = forwardRef<
               listId={selectedListData?.id || selectedListId || ''}
               listName={selectedListData?.name || selectedListName || ''}
               showError={showError}
-              selectedUsers={selectedUsers}
             />
           ) : null}
         </BottomSheetView>

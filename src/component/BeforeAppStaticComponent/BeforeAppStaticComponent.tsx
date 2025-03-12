@@ -11,6 +11,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { CustomText } from '../CustomText';
 import CustomCarousel from '../Carousel/CarouselComponent';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import FastImage from '@d11/react-native-fast-image';
 
 interface BeforeAppStaticComponentProps {
   isChatScreen: boolean;
@@ -52,6 +53,15 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
     isChatScreen ? listData[2] : listData[0],
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
+        showBottomSafeAreaView: false,
+      });
+    }, []),
+  );
+
   const handleImageClick = (index: number) => {
     console.log('index', index);
     if (isChatScreen) {
@@ -73,28 +83,16 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           <Image source={IMAGES.rumorLogo} style={styles.logoImgStyle} />
         </View>
 
-        <CustomCarousel list={listData} onScroll={handleImageClick} />
-
-        {/* {!isChatScreen ? (
-          <View style={styles.dotContainer}>
-            {[4, 6, 8, 6, 4].map((size, index) => (
-              <View
-                key={index}
-                style={{
-                  width: size,
-                  height: size,
-                  backgroundColor: index === 2 ? COLORS.white : COLORS.white,
-                  borderRadius: size / 2,
-                  marginRight: 8,
-                  opacity:
-                    index === 2 ? 1 : index === 1 || index === 3 ? 0.5 : 0.2,
-                }}
-              />
-            ))}
-          </View>
-        ) : (
-          <View style={styles.dotContainer} />
-        )} */}
+        {!isChatScreen &&
+          <CustomCarousel
+            list={listData}
+            onScroll={handleImageClick}
+          />}
+        {isChatScreen &&
+          <FastImage
+            source={listData[2].uri}
+            style={styles.chatImage}
+          />}
 
         <TitleSubtitle
           style={styles.titleSubtitle}
@@ -182,4 +180,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 20,
   },
+  chatImage: {
+    height: 329,
+    width: 329,
+    alignSelf: 'center'
+  }
 });
