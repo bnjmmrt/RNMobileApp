@@ -101,7 +101,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     fetchHostEventDetails: builder.query({
       query: ({ eventId }: { eventId: string }) => ({
-        url: `events/v1/events/event/${eventId}`,
+        url: `events/v1/event/${eventId}`,
         method: 'GET',
       }),
       providesTags: ['EventDetails'],

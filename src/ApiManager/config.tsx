@@ -100,7 +100,7 @@ export const EndPoint = {
   generate_ticket: 'events/v1/guest/ticket/',
   get_user_with_role_by_email: 'v1/auth/get-user-with-roles-by-email',
   get_user_with_role_by_phone: 'v1/auth/get-user-with-roles-by-phone',
-  edit_event: 'events/v1/events/event/',
+  edit_event: 'events/v1/event/',
   check_phone: 'users/v1/auth/check-phone-number',
   check_email: 'users/v1/auth/check-email',
   event_manage_guests: 'v1/events/manage-guests',
