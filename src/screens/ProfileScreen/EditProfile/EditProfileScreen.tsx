@@ -79,7 +79,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>(
     !isGuest && profileData?.focuses,
   );
-
+  const [selectedCity, setSelectedCity] = useState({address:profileData?.city,placeId:profileData?.placeId});
   useEffect(() => {
     if (profileData?.email && profileData?.email !== '') {
       emailInputRef?.current.setDisabled(true);
@@ -174,7 +174,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
           requestObject,
         );
         if (response.success) {
-          fetchUserById();
+       await fetchUserById();
           FlashMessageComponent.show(
             'success',
             LABLE.PROFILE_UPDATED_SUCCESSFULLY,
@@ -268,8 +268,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
       <ScrollView
         ref={scrollViewRef}
         contentContainerStyle={styles.scrollContainer}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        {/* <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}> */}
           <View style={styles.contentContainer}>
             <Input
               ref={firstNameRef}
@@ -338,10 +338,16 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                 <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>
                 <BaseCityComponent
                   location={{
-                    address: profileData?.city,
-                    placeId: profileData?.placeId,
+                    address: selectedCity?.address,
+                    placeId: selectedCity?.placeId,
                   }}
                   ref={baseCityRef}
+                  onLocationSelect={(city) => {
+                    console.log("selected city",city)
+                    if (city.address !== selectedCity.address) {
+                      setSelectedCity(city);
+                    }
+                  }}
                 />
 
                 <Text
@@ -363,7 +369,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
               </View>
             )}
           </View>
-        </KeyboardAvoidingView>
+        {/* </KeyboardAvoidingView> */}
       </ScrollView>
       {isToastShown && (
         <View
