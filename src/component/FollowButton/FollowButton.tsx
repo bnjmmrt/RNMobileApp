@@ -41,7 +41,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({ id, isFollowing, handleRefr
     };
 
     const followApi = async (hostId: string) => {
-        const response: any = await apiRequest('post', `${EndPoint.host}/${hostId}/follow`, { userId });
+        const response: any = await apiRequest('post', `${EndPoint.host}/${hostId}/follow`, { userId, hostId, follow: true });
         return response?.status;
     };
 

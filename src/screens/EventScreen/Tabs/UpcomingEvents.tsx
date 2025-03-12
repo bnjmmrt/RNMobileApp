@@ -35,18 +35,18 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
   const queryArgs =
     role === ROLE.HOST
       ? ({
-          status: 'UPCOMING_STATUS',
-          searchText,
-          take: 10,
-          skip: (currentPage - 1) * 10,
-        } as const) // Type assertion to prevent union mismatch
+        status: 'UPCOMING_STATUS',
+        searchText,
+        take: 10,
+        skip: (currentPage - 1) * 10,
+      } as const) // Type assertion to prevent union mismatch
       : ({
-          userId,
-          guestEventStatus: 'UPCOMING',
-          searchText,
-          take: 10,
-          skip: (currentPage - 1) * 10,
-        } as const); // Type assertion
+        userId,
+        guestEventStatus: 'UPCOMING',
+        searchText,
+        take: 10,
+        skip: (currentPage - 1) * 10,
+      } as const); // Type assertion
 
   const { data, isLoading, refetch } = useFetchEvents(queryArgs);
 
@@ -57,11 +57,11 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
           currentPage === 1
             ? data.data.result
             : // ? data.data
-              [...prev, ...data.data.result],
+            [...prev, ...data.data.result],
         );
       } else {
         setEvents(prev =>
-          currentPage === 1 ? data.data.data : [...prev, ...data.data.data],
+          currentPage === 1 ? data.data.result : [...prev, ...data.data.result],
         );
       }
     }

@@ -220,8 +220,8 @@ const EventsFeed = () => {
     searchText: searchTerm,
     queryString: filterQuery,
     userId: userId,
-    take: 100,
-    skip: 0
+    // take: 100,
+    // skip: 0
     // skip: (currentPage - 1) * 30,
   });
 

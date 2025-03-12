@@ -60,7 +60,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take?: number;
         skip?: number;
       }) => {
-        let url = `events/v1/events/users/${userId}/events/?`;
+        let url = `events/v1/events/users/${userId}/events?feed=true`;
         if (take) {
           url = `${url}&take=${take}&skip=${skip}`;
         }
@@ -101,7 +101,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     fetchHostEventDetails: builder.query({
       query: ({ eventId }: { eventId: string }) => ({
-        url: `events/v1/events/event/${eventId}`,
+        url: `events/v1/event/${eventId}`,
         method: 'GET',
       }),
       providesTags: ['EventDetails'],

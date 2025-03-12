@@ -65,7 +65,7 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
         );
       } else {
         setEvents(prev =>
-          currentPage === 1 ? data.data.data : [...prev, ...data.data.data],
+          currentPage === 1 ? data.data.result : [...prev, ...data.data.result],
         );
       }
     }
