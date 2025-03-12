@@ -11,7 +11,11 @@ interface InvitedEventsProps {
   tab: any;
 }
 
-const InvitedEvents: React.FC<InvitedEventsProps> = ({ userId, searchText, tab }) => {
+const InvitedEvents: React.FC<InvitedEventsProps> = ({
+  userId,
+  searchText,
+  tab,
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [events, setEvents] = useState<any[]>([]);
@@ -27,21 +31,23 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({ userId, searchText, tab }
 
   useEffect(() => {
     if (data) {
-      setEvents((prev) => (currentPage === 1 ? data.data.result : [...prev, ...data.data.result]));
+      setEvents(prev =>
+        currentPage === 1 ? data.data.result : [...prev, ...data.data.result],
+      );
     }
   }, [data]);
 
   useEffect(() => {
-    setRefreshing(isLoading)
-  }, [isLoading])
+    setRefreshing(isLoading);
+  }, [isLoading]);
 
   const handleRefresh = () => {
-    setCurrentPage(1)
+    setCurrentPage(1);
   };
 
   const loadMore = () => {
     if (events?.length < data?.data?.totalCount && !isLoading) {
-      setCurrentPage((prev) => prev + 1);
+      setCurrentPage(prev => prev + 1);
     }
   };
 
@@ -60,8 +66,17 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({ userId, searchText, tab }
           ListFooterComponent={isLoading && <ActivityIndicator />}
         />
       ) : (
-        <View style={{ height: Hp(55), alignItems: 'center', justifyContent: 'center' }}>
-          <EventEmptyRecord title={tab.title} subTitle={tab.subTitle} isLoading={isLoading} />
+        <View
+          style={{
+            height: Hp(55),
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <EventEmptyRecord
+            title={tab.title}
+            subTitle={tab.subTitle}
+            isLoading={isLoading}
+          />
         </View>
       )}
     </View>

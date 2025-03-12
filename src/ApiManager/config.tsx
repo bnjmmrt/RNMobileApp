@@ -97,7 +97,7 @@ export const EndPoint = {
   vouch_requests: 'events/v1/events/vouch-requests',
   validate_qr: 'events/v1/events/guest/ticket/validate',
   event_guest_details: 'v1/events/guest-details/',
-  events: 'v1/events',
+  events_events: 'events/v1/events',
   generate_ticket: 'events/v1/guest/ticket/',
   get_user_with_role_by_email: 'v1/auth/get-user-with-roles-by-email',
   get_user_with_role_by_phone: 'v1/auth/get-user-with-roles-by-phone',
