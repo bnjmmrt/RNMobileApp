@@ -4,6 +4,7 @@ import {
 } from 'src/screens/EventScreen/types';
 import { createBaseApi } from '../../ApiManager/createBaseApi';
 import { addAnnouncementRequestInterface } from 'src/screens/EventScreen/Announcement/AddAnnouncement/AddAnnouncementInterface';
+import { EndPoint } from 'src/ApiManager/config';
 
 export const eventApiAction = createBaseApi.injectEndpoints({
   endpoints: builder => ({
@@ -156,27 +157,21 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     manageGuest: builder.mutation({
       query: ({
-        guestId,
-        action,
         payload,
+        eventId,
       }: {
-        guestId?: string;
-        action: 'CREATE' | 'UPDATE' | 'DELETE';
+        eventId: string;
         payload?: ManageGuestPayload;
       }) => {
-        const baseUrl = 'users/v1/events/manage-guests';
+        const baseUrl = `${EndPoint.events_events}/manage-guests?eventId=${eventId}`;
 
         return {
           url: baseUrl,
           method: 'PUT',
-          body: {
-            inclusiveIds: [guestId],
-            action,
-            ...payload,
-          },
+          body: payload,
         };
       },
-      invalidatesTags: ['EventDetails', 'GuestStatusCount', 'EventGuestList'],
+      // invalidatesTags: ['EventDetails', 'GuestStatusCount', 'EventGuestList'],
     }),
 
     // create event announcement for host builder.mutation({

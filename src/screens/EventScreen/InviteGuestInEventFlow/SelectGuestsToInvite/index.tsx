@@ -57,9 +57,9 @@ const SelectGuestsToInviteScreen: React.FC<
   const filtersSheetRef = useRef<BottomSheetMethods>(null);
 
   const [allUsers, setAllUsers] = useState<{
-    users: UserItemInterface[];
+    result: UserItemInterface[];
     totalCount: number;
-  }>({ totalCount: 0, users: [] });
+  }>({ totalCount: 0, result: [] });
   const [searchText, setSearchText] = useState<string>('');
   const [filterQuery, setFilterQuery] = useState<string>('');
   const [filterNumber, setFilterNumber] = useState<number>(0);
@@ -87,7 +87,7 @@ const SelectGuestsToInviteScreen: React.FC<
   };
 
   const loadMore = () => {
-    if (allUsers?.users?.length < data?.data?.totalCount && !isLoading) {
+    if (allUsers?.result?.length < data?.data?.totalCount && !isLoading) {
       setCurrentPage(prev => prev + 1);
     }
   };
@@ -183,7 +183,7 @@ const SelectGuestsToInviteScreen: React.FC<
       } else {
         setAllUsers(prev => ({
           totalCount: data.data.totalCount,
-          users: [...prev.users, ...data.data.users],
+          result: [...prev.result, ...data.data.result],
         }));
       }
     }
@@ -191,7 +191,7 @@ const SelectGuestsToInviteScreen: React.FC<
 
   useEffect(() => {
     if (isError) {
-      setAllUsers({ totalCount: 0, users: [] });
+      setAllUsers({ totalCount: 0, result: [] });
     }
   }, [isError]);
 
@@ -238,7 +238,7 @@ const SelectGuestsToInviteScreen: React.FC<
         defaultValue={searchText}
       />
       <FlatList
-        data={allUsers?.users || []}
+        data={allUsers?.result || []}
         style={{
           marginHorizontal: horizontalMarginScale(20),
           marginTop: verticalMarginScale(16),
@@ -291,7 +291,7 @@ const SelectGuestsToInviteScreen: React.FC<
         onEndReachedThreshold={0.4}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          allUsers?.users?.length > 0 ? (
+          allUsers?.result?.length > 0 ? (
             <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
           ) : undefined
         }

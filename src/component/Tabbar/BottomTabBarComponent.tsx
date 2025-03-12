@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import React, { useEffect, useRef } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -116,9 +115,9 @@ const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    position: 'static',
+    position: 'absolute',
     zIndex: 999,
-    bottom: verticalScale(0),
+    bottom: verticalScale(30),
     alignSelf: 'center',
   },
   tabStyle: {
@@ -151,7 +150,7 @@ const styles = StyleSheet.create({
   tabLabel: {
     color: COLORS.black,
     fontSize: fontScale(14),
-    fontFamily: fontFamily.ABCDiatype_Medium,
+    fontFamily: fontFamily.ABCDiatype_Medium
   },
 });
 
