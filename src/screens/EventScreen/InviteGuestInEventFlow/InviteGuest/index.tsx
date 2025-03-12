@@ -143,7 +143,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
           },
         }).unwrap();
 
-        if (response.status === 200) {
+        if (response.success) {
           FlashMessageComponent.show(
             'success',
             `${selectedUsers.length} ${
@@ -244,7 +244,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         payload: newUserInvitePayload,
       }).unwrap();
 
-      if (response.status === 200) {
+      if (response.success) {
         FlashMessageComponent.show(
           'success',
           `Guest has been invited to this event`,
