@@ -263,7 +263,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     );
     if (response.success) {
       if (response.data.eventQr) {
-        setEventDetails({ ...eventDetails, qrUrl: response.data.b64QRCode });
+        setEventDetails({ ...eventDetails, qrUrl: response.data.jwtToken });
         qrCodeBottomSheetRef?.current.open();
       } else {
         FlashMessageComponent.show('error', 'QR not genetaed');
