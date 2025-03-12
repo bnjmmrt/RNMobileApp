@@ -538,7 +538,8 @@ export const fetchUserProfile = async () => {
 
   if (currentRole) {
     if (currentRole === ROLE.HOST) {
-      apiUrl = `${EndPoint.host}/${userId}/profile`;
+      // apiUrl = `${EndPoint.host}/${userId}/profile`;
+      apiUrl = `${EndPoint.host_ep}`;
       apiMethod = 'get';
       apiPayload = {};
     } else {

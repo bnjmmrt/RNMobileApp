@@ -90,31 +90,18 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
       const requestObject: any = {
         bio: bioRef?.current.inputText,
         companyName: companyNameRef?.current.inputText,
-        email: profileData?.email,
-        eventsPerYear: 0,
-        firstName: profileData?.firstName,
-        lastName: profileData?.lastName,
-        phoneNumber: profileData?.phoneNumber,
-        socialMedia: {
-          facebook: profileData?.socialMedia.facebook,
-          instagram: profileData?.socialMedia.instagram,
-          linkedin: profileData?.socialMedia.linkedin,
-          tiktok: profileData?.socialMedia.tiktok,
-          x: profileData?.socialMedia.x,
-          youtube: profileData?.socialMedia.youtube,
-        },
         website: websiteRef?.current.inputText,
       };
       console.log("requestobj", requestObject)
       const response: any = await apiRequest(
         'put',
-        `${EndPoint.host}/${userId}/profile`,
+        `${EndPoint.host_ep}`,
         requestObject,
       );
       if (response.success) {
         const responseUser: any = await apiRequest(
           'get',
-          `${EndPoint.host}/${userId}/profile`,
+          `${EndPoint.host_ep}`,
         );
         if (responseUser.success) {
           dispatch(setProfileData(responseUser.data));

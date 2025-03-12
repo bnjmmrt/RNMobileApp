@@ -86,6 +86,7 @@ export const EndPoint = {
 
   hosts: 'v1/auth/hosts',
   host: 'v1/auth/host',
+  host_ep: 'users/v1/host/profile',
   hosts_custom_lists: 'v1/auth/hosts/custom-lists',
   hosts_favorites_lists: 'v1/auth/hosts/favorites',
   hosts_followers_lists: 'v1/auth/hosts/followers',
