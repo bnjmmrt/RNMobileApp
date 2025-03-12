@@ -139,6 +139,7 @@ const IMAGES = {
   refresh: require('./refresh.png'),
   wifi_off: require('./wifi-off.png'),
   add: require('./add.png'),
+  Handler: require('./Handler.png'),
   help: require('./help-circle.png'),
   upload: require('./upload.png'),
   logo: require('./logo.png'),

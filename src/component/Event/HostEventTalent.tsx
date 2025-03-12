@@ -101,7 +101,7 @@ const HostEventTalent: React.FC<HostEventTalentProps> = ({ talents: initialTalen
               }}
               customStyle={{ position: 'relative' }}
               imageSource={IMAGES.edit}
-              size={32}
+              size={30}
             />
 
             <CircleButtonOverlay
@@ -111,7 +111,7 @@ const HostEventTalent: React.FC<HostEventTalentProps> = ({ talents: initialTalen
               }}
               customStyle={{ position: 'relative', marginLeft: 6 }}
               imageSource={IMAGES.trash}
-              size={32}
+              size={30}
             />
           </Pressable>
         )}
