@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useRef, useState } from 'react';
@@ -58,6 +59,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
         changeSafeAreaViewConfig({
           ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
           showBottomSafeAreaView: false,
+          showTopSafeAreaView: false,
         });
       }
     }, [showEvents]),
@@ -122,6 +124,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
       style={{
         ...styles.container,
         backgroundColor: showEvents ? COLORS.white : COLORS.black2,
+        marginTop: verticalMarginScale(20),
       }}>
       <SafeAreaView />
       {showEvents ? (
@@ -129,7 +132,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
           style={{
             backgroundColor: COLORS.white,
             flex: 1,
-            paddingBottom: 80,
+            paddingBottom: verticalMarginScale(80),
           }}>
           <HeaderComponent isDarkTheme={false} />
           <SearchInput

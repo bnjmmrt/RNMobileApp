@@ -76,6 +76,7 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
       changeSafeAreaViewConfig({
         ...SAFEWAREAVIEW_CONFIG.STATIC_GRADIENT_SCHEME,
         showBottomSafeAreaView: false,
+        showTopSafeAreaView: false,
       });
     }, []),
   );

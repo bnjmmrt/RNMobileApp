@@ -32,6 +32,7 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
       changeSafeAreaViewConfig({
         ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
         showTopSafeAreaView: false,
+        showBottomSafeAreaView: false,
       });
     }, []),
   );
