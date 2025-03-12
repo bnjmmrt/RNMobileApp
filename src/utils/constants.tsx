@@ -263,7 +263,7 @@ export const LABLE = {
   PLEASE_SELECT_ONE: 'Please select one',
   PLEASE_SELECT_AT_LEAST_ONE: 'Please select at least one',
   SELECT_UPTO_3: 'Select up to 3',
-  HOST_UNBLOCK_MESSAGE:'Are you sure you want to unblock this host? \nUnblocking this host will allow them to send you new event invites and chat messages.'
+  HOST_UNBLOCK_MESSAGE:'Are you sure you want to unblock this host?\nUnblocking this host will allow them to send you new event invites and chat messages.'
 
 };
 export const EVENT = {
