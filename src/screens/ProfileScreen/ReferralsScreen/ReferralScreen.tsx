@@ -33,7 +33,7 @@ const ReferralScreen: React.FC = () => {
   const inviteFriendSheetRef = useRef<any>(null);
   const { goBack } = useNavigation();
   const { requestContactPermission, permissionGranted } = useContacts();
-
+  const userId = useSelector((state: RootState) => state.auth.userId);
   const [referrelRequests, setReferrelRequests] = useState<any[]>([]);
 
   const [vouchRequests, setVouchRequests] = useState<any[]>([]);
@@ -73,7 +73,7 @@ const ReferralScreen: React.FC = () => {
     const response: any = await apiRequest(
       'put',
       EndPoint.vouch_requests + '/' + id,
-      { isApproved: status },
+      { userId: userId, isApproved: status },
     );
     if (!response?.success) {
       FlashMessageComponent.show(

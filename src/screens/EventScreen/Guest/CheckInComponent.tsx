@@ -167,7 +167,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   const selectedEvent = useSelector(
     (state: RootState) => state.inviteGuestsFlow.selectedEvent,
   );
-  
+
   const pendingGuestCount = maxAdditionalGuests - additionalGuests.length;
   const guestString = pendingGuestCount > 1 ? ' Guests' : ' Guest';
 
@@ -210,7 +210,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   const validateDetails = async () => {
     const response: any = await apiRequest(
       'post',
-      `v1/events/guest/ticket/${guestProfile.guestId}/validate`,
+      `events/v1/guest/ticket/${guestProfile.guestId}/validate`,
       {
         checkIn: !checkedIn,
       },
@@ -225,11 +225,10 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   };
 
   const manageGuests = async () => {
-if(status === 'CONFIRMED')
-    {
+    if (status === 'CONFIRMED') {
       const response: any = await apiRequest(
         'put',
-        EndPoint.event_manage_guests+'?eventId='+selectedEvent?.id,
+        EndPoint.event_manage_guests + '?eventId=' + selectedEvent?.id,
         {
           action: 'UPDATE',
           bulkUploadStatus: false,
@@ -292,7 +291,7 @@ if(status === 'CONFIRMED')
                   source={
                     checkedIn ? IMAGES.checkedinCurved : IMAGES.checkinCurved
                   }
-                  // style={styles.actionButtonIcon}
+                // style={styles.actionButtonIcon}
                 />
                 <Text style={styles.actionButtonText}>
                   {checkedIn ? LABLE.CHECKED_IN : LABLE.CHECK_IN}
@@ -314,7 +313,7 @@ if(status === 'CONFIRMED')
               placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
               defaultValue={privateGuestNote}
               multiline
-              editable={status === 'CONFIRMED'? true : false}
+              editable={status === 'CONFIRMED' ? true : false}
               onBlur={manageGuests}
             />
           </View>
@@ -332,7 +331,7 @@ if(status === 'CONFIRMED')
                 navigation,
               )
             }
-            //   contentContainerStyle={styles.container}
+          //   contentContainerStyle={styles.container}
           />
         </>
       )}
