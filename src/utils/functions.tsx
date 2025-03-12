@@ -369,7 +369,7 @@ export const convertDateToFormatMMDDYYYY = (dateString: string) => {
 };
 export const removeSignature = (url: string) => {
   return url ? url.split('?')[0] : url;
-}
+};
 export const formatDate = (date: Date) => {
   return date
     .toLocaleDateString('en-US', {
@@ -453,18 +453,14 @@ export const getCountryFlag = (countryCode: string) => {
     : '';
 };
 export interface ApiErrorInterface {
-  data: { error: { message: string; type: string } | string } | string;
+  data: { message: string; statusCode: number; success: boolean } | string;
 }
 export const getErrorMessage = (error: ApiErrorInterface) => {
   let message = 'Something went wrong!';
   if (typeof error.data === 'string') {
     message = error.data;
-  } else if (typeof error.data.error === 'object') {
-    if (error.data.error.message) {
-      message = error.data.error.message;
-    }
-  } else if (typeof error.data.error === 'string') {
-    message = error.data.error;
+  } else if (typeof error?.data === 'object' && error?.data?.message) {
+    message = error.data.message;
   }
   return message;
 };
@@ -542,7 +538,8 @@ export const fetchUserProfile = async () => {
 
   if (currentRole) {
     if (currentRole === ROLE.HOST) {
-      apiUrl = `v1/auth/host/${userId}/profile`;
+      // apiUrl = `${EndPoint.host}/${userId}/profile`;
+      apiUrl = `${EndPoint.host_ep}`;
       apiMethod = 'get';
       apiPayload = {};
     } else {
@@ -551,7 +548,7 @@ export const fetchUserProfile = async () => {
         apiMethod = 'post';
         apiPayload = { id: userId };
       } else {
-        apiUrl = EndPoint.user + userId;
+        apiUrl = `${EndPoint.user}/${userId}`;
         apiMethod = 'get';
         apiPayload = {};
       }
@@ -560,7 +557,7 @@ export const fetchUserProfile = async () => {
 
   try {
     const response = await axiosController[apiMethod](apiUrl, apiPayload, {});
-    if (response.status === 200) {
+    if (response.success) {
       dispatch(
         setProfileData({
           ...response.data,
@@ -583,7 +580,7 @@ export const switchProfile = () => {
 
 export const removeSpaceFromStr = (text: string) => {
   if (text) {
-    return text.split(" ").join("")
+    return text.split(' ').join('');
   }
-  return ""
+  return '';
 };

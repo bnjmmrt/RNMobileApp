@@ -86,7 +86,7 @@ const HostProfileScreen: React.FC = () => {
   };
   const getHostRoleIdFromAPI = async () => {
     try {
-      const response = await apiRequest('post', 'v1/auth/get-user-with-roles-by-id', { id: params?.hostId });
+      const response = await apiRequest('post', 'users/v1/auth/get-user-with-roles-by-id', { id: params?.hostId });
       const hostRole = response.data.roles.find(role => role.name === "host");
       return hostRole ? hostRole.id : null;
     } catch (error) {
@@ -290,7 +290,7 @@ const BlockHostView: React.FC<BlockHostViewProps> = ({ onClose, onPress, userId,
   const { apiRequest, loading, error } = useApi();
   const handleBlock = async () => {
     try {
-      const response = await apiRequest('post', `v1/auth/users/${userId}/hosts/${hostId}/block`, {
+      const response = await apiRequest('post', `users/v1/auth/users/${userId}/hosts/${hostId}/block`, {
         blockedByRoleId: roleId,
         blockedToRoleId: hostRoleId,
       });
@@ -335,7 +335,7 @@ const UnBlockHostView: React.FC<UnBlockHostViewProps> = ({ onClose, onPress, use
   const { apiRequest, loading, error } = useApi();
   const handleUnblock = async () => {
     try {
-      const response = await apiRequest('post', `v1/auth/users/${userId}/hosts/${hostId}/unblock`, {
+      const response = await apiRequest('post', `users/v1/auth/users/${userId}/hosts/${hostId}/unblock`, {
         blockedByRoleId: roleId,
         blockedToRoleId: hostRoleId,
       });

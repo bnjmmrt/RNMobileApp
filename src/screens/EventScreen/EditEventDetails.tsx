@@ -125,15 +125,15 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     console.log('FORMATED START DATE: ' + formattedStartDate);
   }, [selectedStartDate]);
 
-  const [eventName, setEventName] = useState(item?.name || '');
-  const [startDate, setStartDate] = useState(item.startDate);
-  const [endDate, setEndDate] = useState(item.endDate);
-  const [furtherInstructions, setFurtherInstructions] = useState(
-    item?.furtherInstructions || '',
-  );
-  const [eventDescription, setEventDescription] = useState(
-    item?.description || '',
-  );
+  // const [eventName, setEventName] = useState(item?.name || '');
+  // const [startDate, setStartDate] = useState(item?.startDate);
+  // const [endDate, setEndDate] = useState(item.endDate);
+  // const [furtherInstructions, setFurtherInstructions] = useState(
+  //   item?.furtherInstructions || '',
+  // );
+  // const [eventDescription, setEventDescription] = useState(
+  //   item?.description || '',
+  // );
   const [featureTalent, setFeatureTalent] = useState(item?.talents || []);
   const [image, setImage] = useState<string>(
     removeSignature(item?.imageCover) ||
@@ -194,7 +194,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       dispatch(setRsvpStatus('UPDATE' + Date.now()));
 
 
-      if (response.status === 200) {
+      if (response?.success) {
         FlashMessageComponent.show('success', 'Event Updated Successfully');
         goBack();
         handleBackPress();

@@ -1,13 +1,13 @@
-import {BottomSheetView} from '@gorhom/bottom-sheet';
-import React, {useEffect, useRef, useState} from 'react';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { useEffect, useRef, useState } from 'react';
 import Button from 'src/component/Button';
-import {CustomText} from 'src/component/CustomText';
-import Input, {InputRefMethods} from 'src/component/Input/Input';
-import {customListType} from 'src/navigation/AppStack';
-import {useDuplicateCustomListMutation} from 'src/redux/actions/listsApiAction';
-import {verticalMarginScale} from 'src/utils/dimensions';
-import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
-import {styles} from './style';
+import { CustomText } from 'src/component/CustomText';
+import Input, { InputRefMethods } from 'src/component/Input/Input';
+import { customListType } from 'src/navigation/AppStack';
+import { useDuplicateCustomListMutation } from 'src/redux/actions/listsApiAction';
+import { verticalMarginScale } from 'src/utils/dimensions';
+import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
+import { styles } from './style';
 
 const DuplicateList = ({
   onSuccess,
@@ -28,7 +28,7 @@ const DuplicateList = ({
 
   const [
     duplicateCustomList,
-    {error: duplicateCustomListError, isLoading: duplicateListLoading},
+    { error: duplicateCustomListError, isLoading: duplicateListLoading },
   ] = useDuplicateCustomListMutation();
 
   const resetForm = () => {
@@ -48,7 +48,7 @@ const DuplicateList = ({
               ? 'followed'
               : 'custom',
         }).unwrap();
-        if (response.status === 200) {
+        if (response.success) {
           resetForm();
           onSuccess();
         } else {
@@ -83,7 +83,7 @@ const DuplicateList = ({
         defaultValue={customName}
         onChangeText={text => setCustomName(text)}
         forBottomSheet={true}
-        otherStyle={{marginBottom: verticalMarginScale(24)}}
+        otherStyle={{ marginBottom: verticalMarginScale(24) }}
       />
 
       <Button

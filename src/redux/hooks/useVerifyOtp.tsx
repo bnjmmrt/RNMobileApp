@@ -15,7 +15,7 @@ export const useVerifyOtp = (
   const [error, setError] = useState('');
   const verifyOtp = async (code: string, onSuccess: (data: any) => void) => {
     try {
-      setError('')
+      setError('');
       setIsLoading(true);
       const requestParam = {
         email,
@@ -31,7 +31,7 @@ export const useVerifyOtp = (
         onSuccess(data);
       }
     } catch (error) {
-      setError(LABLE.ERROR_VERIFY_CODE)
+      setError(LABLE.ERROR_VERIFY_CODE);
       // FlashMessageComponent.show('error', error?.data?.error?.message);
       console.error('Error verifying OTP:', error);
     } finally {

@@ -47,9 +47,9 @@ const ConfirmationBottomSheet = forwardRef(
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
           {props.logo && (
-            
-              <Image source={props.logo} />
-            
+
+            <Image source={props.logo} />
+
           )}
           {props.title && <Text style={styles.title}>{props.title}</Text>}
           {props.btnLabel == BUTTON_LABLE.CLOSE ? null : props.isSuccess ? (
@@ -98,7 +98,7 @@ const ConfirmationBottomSheet = forwardRef(
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: horizontalMarginScale(32),
-    paddingVertical:verticalMarginScale(8),
+    paddingVertical: verticalMarginScale(8),
     // gap: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
- 
+
   btnStyle: {
     borderRadius: radiusScale(100),
   },
@@ -119,8 +119,8 @@ const styles = StyleSheet.create({
     fontSize: fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
     textAlign: 'center',
-    color:COLORS.black,
-    paddingTop:24
+    color: COLORS.black,
+    paddingTop: 24
   },
   subTitle: {
     color: COLORS.light_gray,
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginVertical: Hp(1),
     textAlign: 'center',
-    paddingBottom:verticalMarginScale(16)
+    paddingBottom: verticalMarginScale(16)
   },
   statusBanner: {
     flexDirection: 'row',

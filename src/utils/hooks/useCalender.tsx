@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Alert, Platform } from 'react-native';
 import RNCalendarEvents from 'react-native-calendar-events';
 import { LABLE } from '../constants';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 type PermissionStatus = boolean | null;
 export interface Event {
@@ -20,7 +21,7 @@ const useCalender = (eventDetails: Event) => {
     try {
       let status = await RNCalendarEvents.checkPermissions();
 
-      if ( status !== 'authorized') {
+      if (status !== 'authorized') {
         status = await RNCalendarEvents.requestPermissions();
       }
 
@@ -38,7 +39,7 @@ const useCalender = (eventDetails: Event) => {
 
   const addEventToCalendar = async () => {
     const status = await RNCalendarEvents.checkPermissions();
- 
+
     if (status !== 'authorized') {
       const newStatus = await RNCalendarEvents.requestPermissions();
       if (newStatus !== 'authorized') {
@@ -46,16 +47,19 @@ const useCalender = (eventDetails: Event) => {
         return;
       }
     }
-  
+
     try {
       const calendars = await RNCalendarEvents.findCalendars();
       const defaultCalendar = calendars.find(cal => cal.isPrimary) || calendars[0];
-    
+
       if (!defaultCalendar) {
-        Alert.alert('Error', LABLE.NO_CALENDAR_FOUND);
+        FlashMessageComponent.show(
+          `error`,
+          LABLE.NO_CALENDAR_FOUND,
+        );
         return;
       }
-    
+
       const eventId = await RNCalendarEvents.saveEvent(title, {
         startDate,
         endDate,
@@ -64,16 +68,23 @@ const useCalender = (eventDetails: Event) => {
         alarms: [{ date: -15 }], // 15 minutes before
         calendarId: defaultCalendar.id, // REQUIRED for Android
       });
-    
+
       if (eventId) {
-        Alert.alert('Event Added', 'Check your calendar for the event.');
+        FlashMessageComponent.show(
+          `success`,
+          `Event Addes: Switched to Check your calendar for the event.`,
+        );
+        // Alert.alert('Event Added', 'Check your calendar for the event.');
       }
     } catch (error) {
       console.error('Error adding event:', error);
-      Alert.alert('Error', 'Failed to add event.');
+      FlashMessageComponent.show(
+        `error`,
+        `Failed to add event.`,
+      );
     }
   };
-  
+
 
   return { permissionGranted, addEventToCalendar, checkPermission };
 };

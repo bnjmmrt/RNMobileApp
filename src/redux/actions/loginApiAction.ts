@@ -1,12 +1,11 @@
-import { EndPoint } from "src/ApiManager/config";
-import { createBaseApi } from "../../ApiManager/createBaseApi";
-import { useGetUserStatus } from "../hooks/useGetUserStatus";
+import { EndPoint } from 'src/ApiManager/config';
+import { createBaseApi } from '../../ApiManager/createBaseApi';
+import { useGetUserStatus } from '../hooks/useGetUserStatus';
 
 export const loginApiAction = createBaseApi.injectEndpoints({
-  endpoints: (builder) => ({
-
+  endpoints: builder => ({
     checkMemberLogin: builder.mutation({
-      query: (requestParam) => ({
+      query: requestParam => ({
         url: 'users/v1/auth/check-member-login',
         method: 'POST',
         body: requestParam,
@@ -15,7 +14,7 @@ export const loginApiAction = createBaseApi.injectEndpoints({
     }),
 
     memberLogin: builder.mutation({
-      query: (requestParam) => ({
+      query: requestParam => ({
         url: 'users/v1/auth/member-login',
         method: 'POST',
         body: requestParam,
@@ -24,7 +23,7 @@ export const loginApiAction = createBaseApi.injectEndpoints({
     }),
 
     getUserStatus: builder.query({
-      query: (requestParam) => ({
+      query: requestParam => ({
         url: EndPoint.get_user_status,
         method: 'POST',
         body: requestParam,
@@ -32,13 +31,11 @@ export const loginApiAction = createBaseApi.injectEndpoints({
       providesTags: ['NO_CACHE'], // Tag to bypass cache logic
       keepUnusedDataFor: 0, // Clear cache immediately when unused
     }),
-
-
   }),
 });
 
 export const {
   useCheckMemberLoginMutation,
   useMemberLoginMutation,
-  useGetUserStatusQuery
+  useGetUserStatusQuery,
 } = loginApiAction;

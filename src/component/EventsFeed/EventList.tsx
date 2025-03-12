@@ -1,16 +1,37 @@
 import React, { useMemo } from 'react';
-import { FlatList, View, Text, RefreshControl, StyleSheet } from 'react-native';
+import {
+    FlatList,
+    View,
+    Text,
+    RefreshControl,
+    StyleSheet,
+    ScrollView,
+} from 'react-native';
 import FeaturedFeedItem from './FeaturedFeedItem';
 import FeedItem from './FeedItem';
-import { fontScale, horizontalMarginScale, Hp, verticalMarginScale, Wp } from 'src/utils/dimensions';
+import {
+    fontScale,
+    horizontalMarginScale,
+    Hp,
+    verticalMarginScale,
+    Wp,
+    verticalScale,
+    horizontalScale,
+} from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
 import { COLORS } from 'src/utils/constants';
 import EventEmptyRecord from '../EmptyRecord/EventEmptyRecord';
-
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const EVENTS_PER_SECTION = 6;
 
-const EventList = ({ allEvents, featuredEvents, isLoading, onRefreshPage, handleLoadMore }) => {
+const EventList = ({
+    allEvents,
+    featuredEvents,
+    isLoading,
+    onRefreshPage,
+    handleLoadMore,
+}) => {
     const mergedData = useMemo(() => {
         let mergedList = [];
         let eventIndex = 0;
@@ -19,29 +40,155 @@ const EventList = ({ allEvents, featuredEvents, isLoading, onRefreshPage, handle
             if (feature.events.length > 0) {
                 mergedList.push({ type: 'featured', data: feature });
             }
-
-            const normalEvents = allEvents?.slice(eventIndex, eventIndex + EVENTS_PER_SECTION);
-            if (normalEvents?.length > 0) {
-                mergedList.push({ type: 'events', data: normalEvents });
-                eventIndex += EVENTS_PER_SECTION;
-            }
         });
+        const normalEvents = allEvents?.slice(
+            eventIndex,
+            eventIndex + EVENTS_PER_SECTION,
+        );
+        if (normalEvents?.length > 0) {
+            mergedList.push({ type: 'events', data: normalEvents });
+            eventIndex += EVENTS_PER_SECTION;
+        }
 
         return mergedList;
     }, [allEvents, featuredEvents]);
+
+    const renderEventSkeletonItem = () => {
+        return (
+            <SkeletonPlaceholder>
+                <View style={{ width: (Wp(100) - horizontalMarginScale(60)) / 2 }}>
+                    <SkeletonPlaceholder.Item
+                        width="100%"
+                        height={verticalScale(245)}
+                        borderRadius={8}
+                    />
+                    <SkeletonPlaceholder.Item
+                        marginTop={verticalMarginScale(12)}
+                        width="80%"
+                        height={16}
+                        borderRadius={4}
+                    />
+                    <SkeletonPlaceholder.Item
+                        marginTop={verticalMarginScale(4)}
+                        width="50%"
+                        height={12}
+                        borderRadius={4}
+                    />
+                    <SkeletonPlaceholder.Item
+                        marginTop={verticalMarginScale(4)}
+                        width="40%"
+                        height={12}
+                        borderRadius={4}
+                    />
+                </View>
+            </SkeletonPlaceholder>
+        );
+    };
+
+    const renderFeaturedSkeletonItem = () => {
+        return (
+            <SkeletonPlaceholder>
+                <View style={{ width: horizontalScale(217) }}>
+                    <SkeletonPlaceholder.Item
+                        width={horizontalScale(217)}
+                        height={verticalScale(317)}
+                        borderRadius={10}
+                    />
+                    <SkeletonPlaceholder.Item
+                        marginTop={verticalMarginScale(8)}
+                        width="80%"
+                        height={16}
+                        borderRadius={4}
+                        marginLeft={horizontalMarginScale(8)}
+                    />
+                    <SkeletonPlaceholder.Item
+                        marginTop={verticalMarginScale(1)}
+                        width="60%"
+                        height={12}
+                        borderRadius={4}
+                        marginLeft={horizontalMarginScale(8)}
+                    />
+                    <SkeletonPlaceholder.Item
+                        marginTop={verticalMarginScale(1)}
+                        width="40%"
+                        height={12}
+                        borderRadius={4}
+                        marginLeft={horizontalMarginScale(8)}
+                    />
+                </View>
+            </SkeletonPlaceholder>
+        );
+    };
+
+    const renderEventSkeletonList = () => {
+        return (
+            <View style={{ flex: 1 }}>
+                {/* Featured Section Skeleton */}
+                <View style={styles.featuredContainer}>
+                    <SkeletonPlaceholder>
+                        <SkeletonPlaceholder.Item
+                            width={Wp(60)}
+                            height={32}
+                            borderRadius={4}
+                            marginLeft={horizontalMarginScale(12)}
+                        />
+                    </SkeletonPlaceholder>
+                    <View style={{ marginTop: verticalMarginScale(16) }}>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    paddingHorizontal: horizontalMarginScale(12),
+                                }}>
+                                {[1, 2, 3].map(item => (
+                                    <View
+                                        key={`featured-skeleton-${item}`}
+                                        style={{ marginRight: horizontalMarginScale(16) }}>
+                                        {renderFeaturedSkeletonItem()}
+                                    </View>
+                                ))}
+                            </View>
+                        </ScrollView>
+                    </View>
+                </View>
+
+                {/* Regular Events Skeleton */}
+                <View
+                    style={{
+                        paddingHorizontal: horizontalMarginScale(20),
+                        marginTop: verticalMarginScale(20),
+                    }}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            flexWrap: 'wrap',
+                            justifyContent: 'space-between',
+                        }}>
+                        {[1, 2, 3, 4].map(item => (
+                            <View
+                                key={`event-skeleton-${item}`}
+                                style={{ marginBottom: verticalMarginScale(20) }}>
+                                {renderEventSkeletonItem()}
+                            </View>
+                        ))}
+                    </View>
+                </View>
+            </View>
+        );
+    };
 
     const renderItem = ({ item }) => {
         if (item.type === 'featured') {
             return (
                 <View style={styles.featuredContainer}>
-                    <Text style={styles.title}>
-                        {item.data.name}
-                    </Text>
+                    <Text style={styles.title}>{item.data.name}</Text>
                     <FlatList
                         data={item.data.events}
                         horizontal
-                        keyExtractor={(event) => event.id}
-                        renderItem={({ item }) => <FeaturedFeedItem item={item} isFeatured />}
+                        keyExtractor={event => event.id}
+                        renderItem={({ item }) => (
+                            <FeaturedFeedItem item={item} isFeatured />
+                        )}
                         showsHorizontalScrollIndicator={false}
                     // contentContainerStyle={{ gap: 10 }}
                     />
@@ -54,16 +201,13 @@ const EventList = ({ allEvents, featuredEvents, isLoading, onRefreshPage, handle
                 <FlatList
                     data={item.data}
                     numColumns={2}
-
                     keyExtractor={(event, index) => event.id || index.toString()}
                     renderItem={({ item }) => <FeedItem item={item} />}
                     columnWrapperStyle={{
                         // justifyContent: 'center',
                         gap: 20,
                         paddingTop: 10,
-                        paddingHorizontal: 20
-
-
+                        paddingHorizontal: 20,
                     }}
                     contentContainerStyle={{
                         alignItems: 'center',
@@ -76,6 +220,10 @@ const EventList = ({ allEvents, featuredEvents, isLoading, onRefreshPage, handle
 
         return null;
     };
+
+    if (isLoading && (!allEvents || allEvents.length === 0)) {
+        return renderEventSkeletonList();
+    }
 
     return (
         <FlatList
@@ -123,7 +271,7 @@ const styles = StyleSheet.create({
         color: COLORS.black,
         lineHeight: 40,
         paddingLeft: horizontalMarginScale(12),
-    }
+    },
 });
 
 export default EventList;

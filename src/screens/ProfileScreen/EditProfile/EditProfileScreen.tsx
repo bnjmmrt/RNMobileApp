@@ -230,7 +230,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
           if (response.success) {
             const responseUser: any = await apiRequest(
               'get',
-              EndPoint.user + userId,
+              `${EndPoint.user}/${userId}`,
             );
             if (responseUser.success) {
               dispatch(
@@ -384,7 +384,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
           />
         </View>
       )}
-
       <Button
         disabled={false}
         style={styles.btnStyle}
