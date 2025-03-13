@@ -243,8 +243,6 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     }
   };
 
-  console.log('guestDetailguestDetail', guestDetail)
-
   const getDeclineSheetProps = () => {
     switch (status) {
       case 'draft':
