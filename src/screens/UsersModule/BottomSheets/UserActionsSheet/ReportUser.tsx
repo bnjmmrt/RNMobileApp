@@ -11,10 +11,10 @@ import {
   useReportUserMutation,
 } from 'src/redux/actions/usersApiAction';
 import { RootState } from 'src/redux/slices';
+import { EVENT } from 'src/utils/constants';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { styles } from './style';
-import { EVENT } from 'src/utils/constants';
 
 const ReportUser = ({
   onPressBack,
@@ -96,7 +96,7 @@ const ReportUser = ({
           placeholder="What would you like to report?"
           label="Report Message"
           defaultValue=""
-          errorMessage="Please enter report message"
+          errorMessage="Please enter a message"
           otherStyle={{ marginTop: 0, marginBottom: verticalMarginScale(24) }}
           forBottomSheet={true}
           onChangeText={setMessage}

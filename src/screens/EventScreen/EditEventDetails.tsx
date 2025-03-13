@@ -10,17 +10,12 @@ import {
   View,
 } from 'react-native';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'src/redux/slices';
 import useApi from 'src/axios/useApi';
 import {
   BUTTON_LABLE,
   COLORS,
-  editEventsTab,
-  ERROR_MESSAGE,
   EVENT,
-  LABLE,
 } from 'src/utils/constants';
 import { EndPoint } from 'src/ApiManager/config';
 import Input from 'src/component/Input/Input';
@@ -28,7 +23,6 @@ import DatePickerComponent from '../ProfileScreen/EditProfile/DatePickerComponen
 import Button from 'src/component/Button';
 import {
   fontScale,
-  horizontalMarginScale,
   horizontalScale,
   radiusScale,
   verticalMarginScale,
@@ -40,20 +34,14 @@ import IMAGES from '@images/index';
 import { Image } from 'react-native-animatable';
 import CircleButtonOverlay from 'src/component/BackButton/CircleButtonOverlay';
 import { CustomText } from 'src/component/CustomText';
-import MapView from 'react-native-maps';
 import { Address } from 'src/redux/slices/appFlowSlice';
 import MapComponent from 'src/component/MapComponent';
-import EventTalent from 'src/component/Event/EventTalent';
 import HostEventTalent from 'src/component/Event/HostEventTalent';
 import EditPictureBottomSheet from 'src/component/BottomSheet/EditPictureBottomSheet';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
-import { environment } from 'environments/environment';
-import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
-import FeatureTalentBottomSheet from 'src/component/BottomSheet/FeatureTalentBottomSheet';
 import moment from 'moment';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import { useNavigation } from '@react-navigation/native';
-import { current } from '@reduxjs/toolkit';
 import { removeSignature } from 'src/utils/functions';
 import { openSettings } from 'react-native-permissions';
 
@@ -89,14 +77,9 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const dispatch = useDispatch();
   const { goBack } = useNavigation();
   const [showAddress, setshowAddress] = useState(item?.showLocation || false);
-  let today = new Date();
-  const [selected, setSelected] = useState<DateType>();
   const [selectedStartDate, setSelectedStartDate] = useState(
     item?.startDate || '',
   );
-
-  const latitude = item?.location?.latitude ?? 37.78825;
-  const longitude = item?.location?.longitude ?? -122.4324;
   const address: Address = {
     placeId: item?.location?.placeId || '',
     address: item?.location?.location || '',
@@ -104,11 +87,6 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     longitude: item?.location?.longitude || '',
   };
   const [eventAddress, setEventAddress] = useState<Address>(address);
-  const profileData = useSelector(
-    (state: RootState) => state.appFlowApiData?.profileData,
-  );
-  const userId = useSelector((state: RootState) => state.auth.userId);
-
   const eventNameRef = useRef<any>(null);
   const furtherInstructioneRef = useRef<any>(null);
   const eventDescriptionRef = useRef<any>(null);
@@ -124,23 +102,32 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     setSelectedStartDate(formattedStartDate);
     console.log('FORMATED START DATE: ' + formattedStartDate);
   }, [selectedStartDate]);
-
-  // const [eventName, setEventName] = useState(item?.name || '');
-  // const [startDate, setStartDate] = useState(item?.startDate);
-  // const [endDate, setEndDate] = useState(item.endDate);
-  // const [furtherInstructions, setFurtherInstructions] = useState(
-  //   item?.furtherInstructions || '',
-  // );
-  // const [eventDescription, setEventDescription] = useState(
-  //   item?.description || '',
-  // );
   const [featureTalent, setFeatureTalent] = useState(item?.talents || []);
   const [image, setImage] = useState<string>(
     removeSignature(item?.imageCover) ||
     removeSignature(item?.imageFlyer) ||
     '',
   );
-  const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
+  const onDiscardChanges = () => {
+    setSelectedStartDate(item?.startDate || '');
+    setEventAddress({
+      placeId: item?.location?.placeId || '',
+      address: item?.location?.location || '',
+      latitude: item?.location?.latitude || '',
+      longitude: item?.location?.longitude || '',
+    });
+    setshowAddress(item?.showLocation || false);
+    setFeatureTalent(item?.talents);
+    setImage(removeSignature(item?.imageCover) || removeSignature(item?.imageFlyer) || '');
+
+    eventNameRef.current?.setInputText(item?.name || '');
+    eventDescriptionRef.current?.setInputText(item?.description || '');
+    furtherInstructioneRef.current?.setInputText(item?.furtherInstructions || '');
+    // baseCityRef.current?.resetCity(item?.location?.location || '');
+    startDateRef.current?.setSelectedDate(item?.startDate || '');
+    endDateRef.current?.setSelectedDate(item?.endDate || '');
+  };
+  console.log('Feature Talent: ', featureTalent);
 
   // console.log("Sayyed item:", item)
   const onConfirmClick = async () => {
@@ -150,7 +137,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     const isEndDateValid = endDateRef.current?.validateEventDate();
     const isBaseCityValid = baseCityRef.current?.validateBaseCity();
     const isEventDescriptionValid = eventDescriptionRef.current?.validateInputs();
-    if (!isEventNameValid || !isStartDateValid || !isEndDateValid || !isBaseCityValid || isEventDescriptionValid) {
+    if (!isEventNameValid || !isStartDateValid || !isEndDateValid || !isBaseCityValid || !isEventDescriptionValid) {
       FlashMessageComponent.show("error", "Please enter details before submitting.");
       return;
     }
@@ -405,15 +392,25 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
         onPencilClick={openCamera}
         eventImage={image}
       />
+      <View style={{ gap: verticalMarginScale(8) }}>
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.SAVE_CHANGES}
+          colorTheme="dark"
+          onPress={onConfirmClick}
+          loading={loading}
+        />
 
-      <Button
-        disabled={false}
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.CONFIRM}
-        colorTheme="dark"
-        onPress={onConfirmClick}
-        loading={loading}
-      />
+        <Button
+          disabled={false}
+          buttonType='stripe'
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.DISCARD_CHANGES}
+          colorTheme="dark"
+          onPress={onDiscardChanges}
+        />
+      </View>
     </View>
   );
 };

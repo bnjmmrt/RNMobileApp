@@ -6,7 +6,14 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { CountryCode } from 'libphonenumber-js';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import {
+  Dimensions,
+  InteractionManager,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  View,
+} from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
@@ -16,7 +23,6 @@ import { InputRefMethods } from 'src/component/Input/Input';
 import {
   countryType,
   PhoneNumberInputRefMethods,
-  TranslatedNames,
 } from 'src/component/PhonNumberComponent/PhoneNumberInput';
 import { EventStackParamList } from 'src/navigation/EventStack';
 import {
@@ -67,8 +73,8 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
   const lastNameRef = useRef<InputRefMethods>(null);
   const phoneRef = useRef<PhoneNumberInputRefMethods>(null);
   const emailRef = useRef<InputRefMethods>(null);
-  const ticketTypeRef = useRef<InputRefMethods>(null);
   const actionSheetRef = useRef<BottomSheetMethods>(null);
+  const scrollRef = useRef<ScrollView>(null);
 
   const [selectedTicketType, setSelectedTicketType] = useState<TicketType>();
   const [ticketTypeError, setTicketTypeError] = useState<string>('');
@@ -109,6 +115,24 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
     inviteNewGuests,
     { error: inviteNewGuestsError, isLoading: inviteNewGuestsLoading },
   ] = useInviteNewGuestsMutation();
+
+  const onFocusInput = (type: 'inviteMessage' | 'guestNote') => {
+    if (scrollRef?.current) {
+      InteractionManager.runAfterInteractions(() => {
+        setTimeout(() => {
+          if (type === 'guestNote') {
+            scrollRef?.current?.scrollToEnd({ animated: true });
+          }
+          if (type === 'inviteMessage') {
+            scrollRef?.current?.scrollTo({
+              animated: true,
+              y: Dimensions.get('window').height / 2,
+            });
+          }
+        }, 1000);
+      });
+    }
+  };
 
   const validateForm = () => {
     if (!selectedTicketType) {
@@ -311,56 +335,68 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
           rightIconWrapperStyle={{ backgroundColor: COLORS.black }}
         />
       )}
-      <ScrollView
-        contentContainerStyle={{
-          gap: verticalMarginScale(16),
-          paddingBottom: verticalMarginScale(50),
-          paddingTop: verticalMarginScale(16),
-        }}>
-        {isManual ? (
-          <NewUserView
-            firstNameRef={firstNameRef}
-            lastNameRef={lastNameRef}
-            phoneRef={phoneRef}
-            emailRef={emailRef}
-            firstName={firstName}
-            lastName={lastName}
-            email={email}
-            phone={phone}
-            setFirstName={setFirstName}
-            setLastName={setLastName}
-            setEmail={setEmail}
-            setPhone={setPhone}
-            existingUserData={existingUserData}
-            setExistingUserData={setExistingUserData}
-            selectedCountry={selectedCountry}
-            setSelectedCountry={setSelectedCountry}
-            type={type}
-          />
-        ) : (
-          <ExistingUserView />
-        )}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={50}>
+        <ScrollView
+          ref={scrollRef}
+          contentContainerStyle={{
+            gap: verticalMarginScale(16),
+            paddingBottom: verticalMarginScale(50),
+            paddingTop: verticalMarginScale(16),
+          }}>
+          {isManual ? (
+            <NewUserView
+              firstNameRef={firstNameRef}
+              lastNameRef={lastNameRef}
+              phoneRef={phoneRef}
+              emailRef={emailRef}
+              firstName={firstName}
+              lastName={lastName}
+              email={email}
+              phone={phone}
+              setFirstName={setFirstName}
+              setLastName={setLastName}
+              setEmail={setEmail}
+              setPhone={setPhone}
+              existingUserData={existingUserData}
+              setExistingUserData={setExistingUserData}
+              selectedCountry={selectedCountry}
+              setSelectedCountry={setSelectedCountry}
+              type={type}
+            />
+          ) : (
+            <ExistingUserView />
+          )}
 
-        <View style={{ marginHorizontal: horizontalMarginScale(16) }}>
-          <InviteDetails
-            isCollapsible
-            selectedTicketType={selectedTicketType}
-            ticketTypeError={ticketTypeError}
-            onTicketTypePress={() => actionSheetRef?.current?.open()}
-            additionalGuests={additionalGuests}
-            onAdditionalGuestsChange={setAdditionalGuests}
-            maxAdditionalGuests={selectedEvent?.limitOnePlus}
-            inviteMessage={inviteMessage}
-            onInviteMessageChange={setInviteMessage}
-            guestNote={guestNote}
-            onGuestNoteChange={setGuestNote}
-            eventName={selectedEvent?.name}
-            eventStartDate={selectedEvent?.startDate}
-            directlySendToConfirm={directlySendToConfirm}
-            onDirectlySendToConfirmChange={setDirectlySendToConfirm}
-          />
-        </View>
-      </ScrollView>
+          <View style={{ marginHorizontal: horizontalMarginScale(16) }}>
+            <InviteDetails
+              isCollapsible
+              selectedTicketType={selectedTicketType}
+              ticketTypeError={ticketTypeError}
+              onTicketTypePress={() => actionSheetRef?.current?.open()}
+              additionalGuests={additionalGuests}
+              onAdditionalGuestsChange={setAdditionalGuests}
+              maxAdditionalGuests={selectedEvent?.limitOnePlus}
+              inviteMessage={inviteMessage}
+              onInviteMessageChange={setInviteMessage}
+              guestNote={guestNote}
+              onGuestNoteChange={setGuestNote}
+              eventName={selectedEvent?.name}
+              eventStartDate={selectedEvent?.startDate}
+              directlySendToConfirm={directlySendToConfirm}
+              onDirectlySendToConfirmChange={setDirectlySendToConfirm}
+              onFocusGuestNote={() => {
+                onFocusInput('guestNote');
+              }}
+              onFocusInviteMessage={() => {
+                onFocusInput('inviteMessage');
+              }}
+            />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
       <View style={styles.actionCtaContainer}>
         {!isManual && !directlySendToConfirm ? (
           <Button
