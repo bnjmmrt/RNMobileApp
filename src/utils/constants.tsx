@@ -192,6 +192,8 @@ export const LABLE = {
   EVENT_ANNOUNCEMENTS: 'Event Announcements',
   NO_EVENT_ANNOUNCEMENTS: 'You have no announcements',
   PAST_EVENT_ANNOUNCEMENTS_ERROR:"You can’t post event announcements for past events.",
+  PUBLISH_EVENT_ANNOUNCEMENTS_ERROR:"Event is not published yet.",
+
   ADD_EVENT_ANNOUNCEMENTS_ERROR:"You can’t post event announcements until you have confirmed guests on the guest list.",
   READ_MORE: 'Read More',
   VIEW_ALL: 'View All',

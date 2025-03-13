@@ -38,6 +38,7 @@ const AppContent: React.FC = () => {
 
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
+    console.log("focusResponse.data",focusResponse.data)
     if (focusResponse.data) {
       focusResponse.data.sort((a, b) => a.name.localeCompare(b.name));
       dispatch(setCreativeFocus(focusResponse.data));
