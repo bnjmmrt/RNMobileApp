@@ -146,12 +146,12 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const onConfirmClick = async () => {
     // Validate inputs before proceeding
     const isEventNameValid = eventNameRef.current?.validateInputs();
-    const isStartDateValid = startDateRef.current?.validateBirthDate();
-    const isEndDateValid = endDateRef.current?.validateBirthDate();
+    const isStartDateValid = startDateRef.current?.validateEventDate();
+    const isEndDateValid = endDateRef.current?.validateEventDate();
     const isBaseCityValid = baseCityRef.current?.validateBaseCity();
-
-    if (!isEventNameValid || !isStartDateValid || !isEndDateValid || !isBaseCityValid) {
-      FlashMessageComponent.show("error", "Please fill in all required fields correctly.");
+    const isEventDescriptionValid = eventDescriptionRef.current?.validateInputs();
+    if (!isEventNameValid || !isStartDateValid || !isEndDateValid || !isBaseCityValid || isEventDescriptionValid) {
+      FlashMessageComponent.show("error", "Please enter details before submitting.");
       return;
     }
     const formattedStartDate = moment
@@ -368,6 +368,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
 
           <Input
             ref={furtherInstructioneRef}
+            placeholder='Provide details to help attendees find your event'
             label={EVENT.FURTHER_INSTRUCTION}
             defaultValue={item?.furtherInstructions}
           />
@@ -378,9 +379,11 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
 
           <Input
             ref={eventDescriptionRef}
+            errorMessage={"Please, enter an event description"}
             label={EVENT.EVENT_DESCRIPTION}
             defaultValue={item?.description}
             multiline={true}
+            hasHandler={true}
           />
 
           <HostEventTalent

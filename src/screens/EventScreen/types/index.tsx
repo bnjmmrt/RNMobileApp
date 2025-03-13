@@ -60,7 +60,7 @@ export interface ManageGuestPayload {
   isSelectedAll: boolean;
   maxAdditionalGuests?: number;
   privateGuestNote?: string;
-  sendNotification: true;
+  sendNotification: boolean;
   ticketTypeId?: string;
 }
 

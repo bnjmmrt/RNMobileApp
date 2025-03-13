@@ -21,6 +21,7 @@ import LocationPickerBottomSheet from 'src/component/BottomSheet/LocationPickerB
 
 interface BaseCityComponentProps {
   location?: Address;
+  onLocationSelect?:(value:any)=>void
 }
 
 const BaseCityComponent = forwardRef(
@@ -35,6 +36,7 @@ const BaseCityComponent = forwardRef(
     const [selectedCity, setSelectedCity] = useState<Address>(
       location || defaultAddress,
     );
+    console.log("selectedCityselectedCityselectedCityselectedCityselectedCity",selectedCity)
     const [isShown, setIsShown] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const locationRef = useRef<any>(null);

@@ -263,7 +263,7 @@ export const LABLE = {
   PLEASE_SELECT_ONE: 'Please select one',
   PLEASE_SELECT_AT_LEAST_ONE: 'Please select at least one',
   SELECT_UPTO_3: 'Select up to 3',
-  HOST_UNBLOCK_MESSAGE:'Are you sure you want to unblock this host? \nUnblocking this host will allow them to send you new event invites and chat messages.'
+  HOST_UNBLOCK_MESSAGE:'Are you sure you want to unblock this host?\nUnblocking this host will allow them to send you new event invites and chat messages.'
 
 };
 export const EVENT = {
@@ -344,6 +344,7 @@ export const ERROR_MESSAGE = {
   LAST_NAME: 'Please enter your last name',
   PLEASE_ENTER_YOUR_BASE_CITY: 'Please enter your base city',
   PLEASE_ENTER_YOUR_BIRTHDAY: 'Please enter your birthday',
+  PLEASE_ENTER_EVENT_DATE:"Please enter event date",
   PLEASE_ENTER_A_VALID_EMAIL_ADDRESS: 'Please enter a valid email address',
   PLEASE_ENTER_A_VALID_REFERRAL_CODE: 'Please enter a valid referral code',
   AGE_REQUIREMENT_NOT_MET: 'Age requirement not met',
