@@ -23,6 +23,7 @@ const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) =>
   useImperativeHandle(ref, () => ({
     validateBirthDate, selectedDate,
     validateEventDate,
+    setSelectedDate
   }));
 
   const handleDateChange = (date: string) => {
