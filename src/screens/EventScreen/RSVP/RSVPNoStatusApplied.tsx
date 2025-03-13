@@ -454,7 +454,7 @@ const RSVPNoStatusApplied: React.FC = () => {
                 <BottomSheetComponent
                     ref={bottomSheetRef}
                     onClose={() => { (activeView !== "cancel" && activeView !== "guests" && activeView !== "leave" && activeView !== "options") && goBack() }}
-                    snapPoints={[getSnapPoints()]}>
+                    snapPoints={[getSnapPoints(), '95%']}>
                     <View style={styles.bottomSheetContent}>
                         {renderBottomSheetContent()}
                     </View>

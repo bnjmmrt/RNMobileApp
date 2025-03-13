@@ -11,10 +11,7 @@ import { feedList } from 'src/utils/constants';
 import { horizontalMarginScale } from 'src/utils/dimensions';
 import { SelectedFilters } from '.';
 import FilterAccordian from './FilterAccordian';
-import FilterOptions, {
-  FilterOption,
-  FilterOptionTypes,
-} from './FilterOptions';
+import FilterOptions, { FilterOption, FilterOptionTypes } from './FilterOptions';
 
 type FilterType = {
   id: string;
@@ -106,8 +103,8 @@ const DiscoverEventsFilters = ({
             date: startDate,
             name:
               moment(new Date(startDate)).format('MMM DD, YYYY') +
-                ' - ' +
-                moment(new Date(endDate)).format('MMM DD, YYYY') || '',
+              ' - ' +
+              moment(new Date(endDate)).format('MMM DD, YYYY') || '',
           },
         ],
       };

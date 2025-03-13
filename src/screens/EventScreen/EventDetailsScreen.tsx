@@ -770,6 +770,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
     paddingHorizontal: 10,
+    color: COLORS.black
   },
   subtitle: {
     color: COLORS.black2,
