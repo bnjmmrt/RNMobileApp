@@ -86,12 +86,22 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
               <MediaItem key={index} item={mediaItem} media={item.attachments} name={companyName} image={imageKeyUrl} />
             ))}
           </ScrollView>
-          {!expanded && shouldShowReadMore && (
+          {/* {!expanded && shouldShowReadMore && (
             <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.toggleContainer}>
               <Text style={styles.toggleText}>{LABLE.READ_MORE}</Text>
               <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
             </TouchableOpacity>
-          )}
+          )} */}
+              {!expanded && shouldShowReadMore ? (
+                        <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.toggleContainer}>
+                            <Text style={styles.toggleText}>{ANNOUNCEMENT.READ_MORE}</Text>
+                            <FastImage source={IMAGES.downArrow} style={styles.toggleIcon} />
+                        </TouchableOpacity>) : shouldShowReadMore && (
+                            <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.toggleContainer}>
+                                <Text style={styles.toggleText}>{ANNOUNCEMENT.READ_LESS}</Text>
+                                <FastImage source={IMAGES.downArrow} style={styles.toggleIcon} />
+                            </TouchableOpacity>
+                        )}
         </View>
       </View>
     );

@@ -50,10 +50,6 @@ axiosController.interceptors.request.use(
 // Response interceptor for global error handling
 axiosController.interceptors.response.use(
   (response: AxiosResponse) => {
-    console.log('Response URL:', response.config.url);
-    console.log('Response Status:', response.status);
-    console.log('Response Data:', response.data);
-
     return response.data;
   },
   (error: AxiosError) => {

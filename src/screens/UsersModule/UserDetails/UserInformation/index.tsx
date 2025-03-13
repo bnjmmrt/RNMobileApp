@@ -55,7 +55,7 @@ const UserInformation: React.FC<UserInformationProps> = ({
       try {
         const response = await addUserNote(payload).unwrap();
 
-        if (response.status === 200) {
+        if (response.success) {
           FlashMessageComponent.show('success', 'User notes updated');
           fetchUserDetails({ user: user });
         } else {
