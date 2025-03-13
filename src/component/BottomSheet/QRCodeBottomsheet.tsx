@@ -139,7 +139,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
             )}
             <View style={[styles.vipContainer, {marginTop: props.isQRShown ? 25: 50}]}>
               <Text style={styles.vipText}>VIP</Text>
-              <TouchableOpacity onPress={showTooltip}>
+              <TouchableOpacity onPress={()=>{}}>
                 <Image source={IMAGES.info_filled} style={styles.icon} />
               </TouchableOpacity>
             </View>
