@@ -2,6 +2,7 @@ import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { useEffect, useRef, useState } from 'react';
 import Button from 'src/component/Button';
 import { CustomText } from 'src/component/CustomText';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import Input, { InputRefMethods } from 'src/component/Input/Input';
 import { customListType } from 'src/navigation/AppStack';
 import { useDuplicateCustomListMutation } from 'src/redux/actions/listsApiAction';
@@ -49,6 +50,7 @@ const DuplicateList = ({
               : 'custom',
         }).unwrap();
         if (response.success) {
+          FlashMessageComponent.show('success', 'List duplicated.');
           resetForm();
           onSuccess();
         } else {

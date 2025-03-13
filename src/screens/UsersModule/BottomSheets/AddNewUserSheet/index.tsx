@@ -23,7 +23,7 @@ import PhoneNumberInput, {
 import { AppStackParamList } from 'src/navigation/AppStack';
 import { ROUTES } from 'src/navigation/Route';
 import { useAddNewUserMutation } from 'src/redux/actions/usersApiAction';
-import { ERROR_MESSAGE } from 'src/utils/constants';
+import { ERROR_MESSAGE, LABLE } from 'src/utils/constants';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { styles } from './style';
@@ -74,6 +74,18 @@ const AddNewUserSheet = forwardRef<
 
   const [addNewUser, { error, isLoading }] = useAddNewUserMutation();
 
+  const validateEmailAddress = () => {
+    const emailRegex =
+      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+    if (!emailRegex.test(email)) {
+      emailRef?.current?.setErrorMessage(LABLE.EROOR_ENTER_EMAIL);
+      return false;
+    }
+    emailRef?.current?.setErrorMessage('');
+    return true;
+  };
+
   const resetForm = () => {
     setFirstName('');
     setLastName('');
@@ -95,6 +107,52 @@ const AddNewUserSheet = forwardRef<
     }
   };
 
+  const validateName = (name: string) => {
+    console.log("validateNamevalidateNamevalidateNamevalidateNamevalidateName",firstNameRef?.current?.inputText.trim().length > 30)
+      const regex = /^[A-Za-z]+$/;
+      if (
+        name === 'FirstName' &&
+        firstNameRef?.current?.inputText.trim().length > 30
+      ) {
+        firstNameRef?.current?.setErrorMessage(
+          ERROR_MESSAGE.FIRST_NAME_SIZE_EXCEED,
+        );
+        return false;
+      } else {
+        if (
+          firstNameRef?.current?.inputText.trim() !== '' &&
+          !regex.test(firstNameRef?.current?.inputText)
+        ) {
+          firstNameRef?.current?.setErrorMessage(
+            ERROR_MESSAGE.FIRST_NAME_INVALID_CHARACTERS,
+          );
+          return false;
+        }
+      }
+  
+      if (
+        name === 'LastName' &&
+        lastNameRef?.current?.inputText.trim().length > 30
+      ) {
+        lastNameRef?.current?.setErrorMessage(
+          ERROR_MESSAGE.LAST_NAME_SIZE_EXCEED,
+        );
+        return false;
+      } else {
+        if (
+          lastNameRef?.current?.inputText.trim() !== '' &&
+          !regex.test(lastNameRef?.current?.inputText)
+        ) {
+          lastNameRef?.current?.setErrorMessage(
+            ERROR_MESSAGE.LAST_NAME_INVALID_CHARACTERS,
+          );
+          return false;
+        }
+      }
+  
+      return true;
+    };
+
   const onPressAddUser = async () => {
     firstNameRef?.current?.setErrorMessage('');
     lastNameRef?.current?.setErrorMessage('');
@@ -103,7 +161,6 @@ const AddNewUserSheet = forwardRef<
 
     firstNameRef?.current?.validateInputs();
     lastNameRef?.current?.validateInputs();
-
     if (
       phoneNumberRef?.current?.validatePhoneNumber(
         ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
@@ -118,13 +175,17 @@ const AddNewUserSheet = forwardRef<
     }
 
     if (
-      firstNameRef?.current?.validateInputs() &&
-      lastNameRef?.current?.validateInputs() &&
+      firstNameRef?.current?.validateInputs() &&  validateName('FirstName') && 
+      lastNameRef?.current?.validateInputs() && validateName('LastName') &&
       (phoneNumberRef?.current?.validatePhoneNumber(
         ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
       ) ||
         emailRef?.current?.validateInputs())
     ) {
+      let validEmail = validateEmailAddress();
+
+      if (!validEmail) return;
+
       try {
         // const requestParam = { email, phoneNumber: phone };
         const response = await addNewUser({
@@ -197,6 +258,9 @@ const AddNewUserSheet = forwardRef<
           onChangeText={text => setEmail(text)}
           forBottomSheet={true}
           isBackgroundRed={errorMessage == null ? false : true}
+          extraInputProps={{
+            onBlur: validateEmailAddress,
+          }}
         />
         <PhoneNumberInput
           ref={phoneNumberRef}

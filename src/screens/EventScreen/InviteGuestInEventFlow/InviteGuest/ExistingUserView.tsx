@@ -164,6 +164,7 @@ const ExistingUserView: React.FC<ExistingUserViewProps> = ({}) => {
                 title: 'Favorite',
                 icon: isFavorite ? IMAGES.star_active : IMAGES.star_inactive,
                 onPress: () => handleFavCta(selectedUsers[0].id),
+                loading: markUserFavLoading || unMarkUserFavLoading,
               },
               {
                 title: 'Profile',

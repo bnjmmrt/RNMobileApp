@@ -67,8 +67,13 @@ const FilterOptions = ({
   const minAgeInputRef = useRef<InputRefMethods>(null);
   const maxAgeInputRef = useRef<InputRefMethods>(null);
 
-  const [minAge, setMinAge] = useState<string>('');
-  const [maxAge, setMaxAge] = useState<string>('');
+  const [minAge, setMinAge] = useState<string>(
+    ((selectedFilters && selectedFilters?.ageFrom?.value[0].id) as string) ||
+      '',
+  );
+  const [maxAge, setMaxAge] = useState<string>(
+    ((selectedFilters && selectedFilters?.ageTo?.value[0].id) as string) || '',
+  );
 
   const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false);
   const [alert, setAlert] = useState<boolean>(false);

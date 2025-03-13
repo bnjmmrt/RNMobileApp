@@ -1,39 +1,43 @@
 import IMAGES from '@images/index';
-import React, {useEffect, useRef, useState} from 'react';
-import {shallowEqual, useSelector} from 'react-redux';
+import React, { useEffect, useRef, useState } from 'react';
+import { shallowEqual, useSelector } from 'react-redux';
 import ButtonSmall from 'src/component/ButtonSmall';
-import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import Input from 'src/component/Input/Input';
 import {
   useAddUserNoteMutation,
   useLazyFetchUserDetailsQuery,
   UserDetailResponse,
 } from 'src/redux/actions/usersApiAction';
-import {RootState} from 'src/redux/slices';
+import { RootState } from 'src/redux/slices';
 import {
   horizontalMarginScale,
   radiusScale,
   verticalMarginScale,
 } from 'src/utils/dimensions';
-import {ApiErrorInterface, getErrorMessage} from 'src/utils/functions';
+import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import UserDetailCard from '../UserDetailCard';
 
 interface UserInformationProps {
   user: string;
+  onUserNoteFocus: () => void;
 }
 
-const UserInformation: React.FC<UserInformationProps> = ({user}) => {
+const UserInformation: React.FC<UserInformationProps> = ({
+  user,
+  onUserNoteFocus,
+}) => {
   const noteRef = useRef<any>(null);
 
   const [userNote, setUserNote] = useState<string>('');
 
-  const [addUserNote, {error, isLoading}] = useAddUserNoteMutation();
+  const [addUserNote, { error, isLoading }] = useAddUserNoteMutation();
   const [fetchUserDetails, {}] = useLazyFetchUserDetailsQuery();
 
-  const {userDetails} = useSelector((state: RootState) => {
+  const { userDetails } = useSelector((state: RootState) => {
     const queryResult = state.api.queries[
-      `fetchUserDetails(${JSON.stringify({user})})`
-    ] as {data: UserDetailResponse} | undefined;
+      `fetchUserDetails(${JSON.stringify({ user })})`
+    ] as { data: UserDetailResponse } | undefined;
 
     return {
       userDetails: queryResult?.data?.data ?? undefined,
@@ -53,7 +57,7 @@ const UserInformation: React.FC<UserInformationProps> = ({user}) => {
 
         if (response.success) {
           FlashMessageComponent.show('success', 'User notes updated');
-          fetchUserDetails({user: user});
+          fetchUserDetails({ user: user });
         } else {
           const typedError = response as ApiErrorInterface;
           FlashMessageComponent.show('error', getErrorMessage(typedError));
@@ -81,7 +85,10 @@ const UserInformation: React.FC<UserInformationProps> = ({user}) => {
         defaultValue={userNote}
         onChangeText={text => setUserNote(text)}
         errorMessage="Please enter user note"
-        otherStyle={{marginTop: 0}}
+        otherStyle={{ marginTop: 0 }}
+        extraInputProps={{
+          onFocus: onUserNoteFocus,
+        }}
       />
       {userDetails?.note !== userNote ? (
         <ButtonSmall
@@ -95,7 +102,7 @@ const UserInformation: React.FC<UserInformationProps> = ({user}) => {
           title="Save"
           onPress={onSaveNote}
           leftIcon={IMAGES.check}
-          leftIconStyle={{tintColor: 'white'}}
+          leftIconStyle={{ tintColor: 'white' }}
           loading={isLoading}
         />
       ) : null}

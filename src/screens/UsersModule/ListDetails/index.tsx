@@ -130,6 +130,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
       navigation.goBack();
     } else {
       setCurrentPage(1);
+      onClearFilter();
       refetch();
     }
     // setSelectedActionSheetAction('');
@@ -206,6 +207,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
           listActionSheetRef?.current?.open();
         }}
         showBackButton={true}
+        numberOfLines={1}
       />
       <View style={{ marginHorizontal: horizontalMarginScale(20), flex: 1 }}>
         <SearchInput

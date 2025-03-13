@@ -179,6 +179,7 @@ const AllUsersFilters = ({
       ItemSeparatorComponent={itemSeparatorComponent}
       contentContainerStyle={{ marginHorizontal: horizontalMarginScale(12) }}
       style={{ flex: 1 }}
+      keyboardShouldPersistTaps="always"
       ListEmptyComponent={
         <BottomSheetView
           style={{
