@@ -34,7 +34,7 @@ export const listsApiAction = createBaseApi.injectEndpoints({
           userIds: [],
         },
       }),
-      invalidatesTags: ['CustomListDetail'],
+      invalidatesTags: ['CustomListDetail', 'CustomLists'],
     }),
     deleteCustomList: builder.mutation({
       query: ({ listId }: { listId: string }) => ({

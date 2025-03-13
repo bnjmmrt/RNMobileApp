@@ -23,7 +23,7 @@ import PhoneNumberInput, {
 import { AppStackParamList } from 'src/navigation/AppStack';
 import { ROUTES } from 'src/navigation/Route';
 import { useAddNewUserMutation } from 'src/redux/actions/usersApiAction';
-import { ERROR_MESSAGE } from 'src/utils/constants';
+import { ERROR_MESSAGE, LABLE } from 'src/utils/constants';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { styles } from './style';
@@ -73,6 +73,18 @@ const AddNewUserSheet = forwardRef<
   );
 
   const [addNewUser, { error, isLoading }] = useAddNewUserMutation();
+
+  const validateEmailAddress = () => {
+    const emailRegex =
+      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+    if (!emailRegex.test(email)) {
+      emailRef?.current?.setErrorMessage(LABLE.EROOR_ENTER_EMAIL);
+      return false;
+    }
+    emailRef?.current?.setErrorMessage('');
+    return true;
+  };
 
   const resetForm = () => {
     setFirstName('');
@@ -170,6 +182,10 @@ const AddNewUserSheet = forwardRef<
       ) ||
         emailRef?.current?.validateInputs())
     ) {
+      let validEmail = validateEmailAddress();
+
+      if (!validEmail) return;
+
       try {
         // const requestParam = { email, phoneNumber: phone };
         const response = await addNewUser({
@@ -242,6 +258,9 @@ const AddNewUserSheet = forwardRef<
           onChangeText={text => setEmail(text)}
           forBottomSheet={true}
           isBackgroundRed={errorMessage == null ? false : true}
+          extraInputProps={{
+            onBlur: validateEmailAddress,
+          }}
         />
         <PhoneNumberInput
           ref={phoneNumberRef}
