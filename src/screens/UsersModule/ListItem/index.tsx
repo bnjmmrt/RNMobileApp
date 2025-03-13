@@ -1,11 +1,11 @@
 import IMAGES from '@images/index';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {Image, TouchableOpacity, View, ViewStyle} from 'react-native';
-import {CustomText} from 'src/component/CustomText';
-import {AppStackParamList, customListType} from 'src/navigation/AppStack';
-import {ROUTES} from 'src/navigation/Route';
-import {horizontalMarginScale} from 'src/utils/dimensions';
+import { Image, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { CustomText } from 'src/component/CustomText';
+import { AppStackParamList, customListType } from 'src/navigation/AppStack';
+import { ROUTES } from 'src/navigation/Route';
+import { horizontalMarginScale } from 'src/utils/dimensions';
 import createStyle from './style';
 
 export interface ListItemProps {
@@ -35,14 +35,14 @@ const ListItem: React.FC<ListItemProps> = ({
   const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
   const onPressList = () => {
-    navigation.navigate(ROUTES.ListDetail, {list: id, listType: listType});
+    navigation.navigate(ROUTES.ListDetail, { list: id, listType: listType });
   };
 
   return (
     <TouchableOpacity
       style={[styles.usersListRowContainer, containerStyle]}
       onPress={onPressList}>
-      <CustomText style={styles.usersListName}>
+      <CustomText style={styles.usersListName} textProps={{ numberOfLines: 1 }}>
         {from === 'customList'
           ? index === 0
             ? 'My Followers'

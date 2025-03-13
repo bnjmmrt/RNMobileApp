@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   fontScale,
   horizontalMarginScale,
@@ -6,7 +6,7 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import {COLORS} from '../../../utils/constants';
+import { COLORS } from '../../../utils/constants';
 
 const createStyle = () => {
   return StyleSheet.create({
@@ -22,6 +22,7 @@ const createStyle = () => {
       gap: horizontalMarginScale(4),
     },
     usersListName: {
+      flex: 1,
       color: COLORS.black,
     },
     usersListUserCountWrapper: {

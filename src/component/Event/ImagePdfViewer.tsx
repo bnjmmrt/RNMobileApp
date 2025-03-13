@@ -28,7 +28,7 @@ import {
 import { fontFamily } from 'src/utils/functions';
 import Button from '../Button';
 interface MediaItem {
-  mediaType: 'image' | 'file';
+  mediaType: 'image' | 'pdf';
   media?: any;
   mediaName?: any;
   size?: string;
@@ -126,7 +126,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
       return (
         <FastImage source={{ uri: currentItem?.media }} style={styles.media} />
       );
-    } else if (currentItem?.mediaType === 'file') {
+    } else if (currentItem?.mediaType === 'pdf') {
       return (
         <>
           {/* <WebViewBottomSheet url={currentItem?.media} ref={bottomSheetRef} isFromLanding={true} /> */}

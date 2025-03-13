@@ -12,17 +12,16 @@ import {
   Platform,
   TouchableWithoutFeedback,
 } from 'react-native';
+import { DateType } from 'react-native-ui-datepicker';
 import BottomSheetComponent, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import { CustomText } from 'src/component/CustomText';
-import { verticalScale } from 'src/utils/dimensions';
 import AllUsersFilters from './AllUsersFilters';
 import DiscoverEventsFilters from './DiscoverEventsFilters';
 import { FilterOptionTypes } from './FilterOptions';
 import { styles } from './style';
-import { DateType } from 'react-native-ui-datepicker';
 
 export type SelectedSingleFilter = {
   type: FilterOptionTypes;

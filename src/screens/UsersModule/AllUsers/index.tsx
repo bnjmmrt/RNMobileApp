@@ -217,6 +217,13 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
     }
   }, [isError]);
 
+  useEffect(() => {
+    return () => {
+      setSelectedUsers([]);
+      dispatch(changeBottomTabsVisibility({ showBottomTabs: true }));
+    };
+  }, []);
+
   return (
     <View style={{ marginTop: verticalMarginScale(8), flex: 1 }}>
       <SearchInput

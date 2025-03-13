@@ -197,6 +197,7 @@ const DiscoverEventsFilters = ({
       showsVerticalScrollIndicator={false}
       ItemSeparatorComponent={itemSeparatorComponent}
       contentContainerStyle={{ marginHorizontal: horizontalMarginScale(12) }}
+      keyboardShouldPersistTaps="always"
     />
   );
 };

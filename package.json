@@ -80,8 +80,6 @@
     "react-native-video": "^6.9.0",
     "react-native-vision-camera": "^4.6.3",
     "react-native-webview": "^13.12.5",
-    "react-native-wheel-pick": "^1.2.2",
-    "react-native-wheel-scrollview-picker": "^2.0.6",
     "react-redux": "^9.2.0",
     "reactotron-react-native": "^5.1.12",
     "redux": "^5.0.1",
