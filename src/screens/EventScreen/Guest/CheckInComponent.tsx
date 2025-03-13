@@ -51,6 +51,7 @@ interface CheckInComponentProps {
   maxAdditionalGuests: number;
   status?: string;
   guestProfile?: any;
+  selectedTicketType?: any;
 }
 const renderItemComponent = (
   item: any,
@@ -154,6 +155,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   maxAdditionalGuests,
   status,
   guestProfile,
+  selectedTicketType,
 }) => {
   const navigation = useNavigation();
   const { apiRequest, loading, error } = useApi();
@@ -171,6 +173,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   const selectedEvent = useSelector(
     (state: RootState) => state.inviteGuestsFlow.selectedEvent,
   );
+  const [manageGuest] = useManageGuestMutation();
 
   const pendingGuestCount = maxAdditionalGuests - additionalGuests.length;
   const guestString = pendingGuestCount > 1 ? ' Guests' : ' Guest';
@@ -230,44 +233,59 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
     validateDetails();
   };
 
+   const handleGuestAction = async () => {
+      try {
+        const payload: ManageGuestPayload = {
+          "action": "UPDATE",
+          "currentStatus": "confirmed",
+          "exclusiveIds": [],
+          "guestStatus": "CONFIRMED",
+          "inclusiveIds": [guestProfile?.guestId],
+          "inviteMessage": "",
+          "isSelectedAll": false,
+          "maxAdditionalGuests": maxAdditionalGuests,
+          "sendNotification": true,
+          "ticketTypeId": selectedTicketType?.id,
+          privateGuestNote: guestNote,
+        }
+  
+        await manageGuest({
+          payload,
+          eventId: selectedEvent?.id,
+        }).unwrap();
+  
+        FlashMessageComponent.show(
+          'success',
+          `${guestProfile?.name}'s invite has been updated`,
+        );
+  
+        // navigation.goBack();
+      } catch (error) {
+        const typedError = error as ApiErrorInterface;
+        FlashMessageComponent.show('error', getErrorMessage(typedError));
+      } finally {
+        // setIsLoadingAction(false);
+      }
+    };
+
   const manageGuests = async () => {
     if (status === 'CONFIRMED' && selectedEvent?.id) {
-      // try {
-      //   const payload: ManageGuestPayload = {
+      // const response: any = await apiRequest(
+      //   'put',
+      //   EndPoint.event_manage_guests + '?eventId=' + selectedEvent?.id,
+      //   {
       //     action: 'UPDATE',
-      //     currentStatus: status as GuestStatus,
-      //     guestStatus: 'CONFIRMED',
+      //     bulkUploadStatus: false,
       //     exclusiveIds: [],
+      //     guestStatus: 'CONFIRMED',
       //     inclusiveIds: additionalGuests.map(guest => guest.id),
-      //     privateGuestNote: guestNote,
-      //     sendNotification: false,
       //     isSelectedAll: false,
-      //   };
-
-      //   await manageGuest({
-      //     payload,
-      //     eventId: selectedEvent?.id,
-      //   }).unwrap();
-      // } catch (error) {
-      //   const typedError = error as ApiErrorInterface;
-      //   FlashMessageComponent.show('error', getErrorMessage(typedError));
+      //     privateGuestNote: guestNote,
+      //   },
+      // );
+      // if (response.success) {
       // }
-
-      const response: any = await apiRequest(
-        'put',
-        EndPoint.event_manage_guests + '?eventId=' + selectedEvent?.id,
-        {
-          action: 'UPDATE',
-          bulkUploadStatus: false,
-          exclusiveIds: [],
-          guestStatus: 'CONFIRMED',
-          inclusiveIds: additionalGuests.map(guest => guest.id),
-          isSelectedAll: false,
-          privateGuestNote: guestNote,
-        },
-      );
-      if (response.success) {
-      }
+      handleGuestAction()
     }
   };
   return (

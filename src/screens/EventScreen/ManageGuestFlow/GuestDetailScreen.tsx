@@ -243,6 +243,8 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     }
   };
 
+  console.log('guestDetailguestDetail', guestDetail)
+
   const getDeclineSheetProps = () => {
     switch (status) {
       case 'draft':
@@ -553,6 +555,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               privateGuestNote={guestDetail?.privateGuestNote}
               additionalGuests={guestProfile?.additionalGuests}
               maxAdditionalGuests={guestDetail?.maxAdditionalGuests}
+              selectedTicketType={selectedTicketType}
             />
           )}
         </ScrollView>
