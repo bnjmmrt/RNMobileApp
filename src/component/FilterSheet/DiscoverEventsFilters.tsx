@@ -3,15 +3,15 @@ import {
   BottomSheetFlatListMethods,
 } from '@gorhom/bottom-sheet';
 import moment from 'moment';
-import React, {useCallback, useRef} from 'react';
-import {InteractionManager} from 'react-native';
-import {DateType} from 'react-native-ui-datepicker';
+import React, { useCallback, useRef } from 'react';
+import { InteractionManager } from 'react-native';
+import { DateType } from 'react-native-ui-datepicker';
 import GradientSeprator from 'src/component/GradientSeprator';
-import {feedList} from 'src/utils/constants';
-import {horizontalMarginScale} from 'src/utils/dimensions';
-import {SelectedFilters} from '.';
+import { feedList } from 'src/utils/constants';
+import { horizontalMarginScale } from 'src/utils/dimensions';
+import { SelectedFilters } from '.';
 import FilterAccordian from './FilterAccordian';
-import FilterOptions, {FilterOption, FilterOptionTypes} from './FilterOptions';
+import FilterOptions, { FilterOption, FilterOptionTypes } from './FilterOptions';
 
 type FilterType = {
   id: string;
@@ -42,7 +42,7 @@ const DiscoverEventsFilters = ({
       long?: string;
     },
   ) => {
-    let tempSelectedFilter = {...selectedFilters};
+    let tempSelectedFilter = { ...selectedFilters };
 
     if (optionType === 'checkbox') {
       if (tempSelectedFilter[id]) {
@@ -82,13 +82,13 @@ const DiscoverEventsFilters = ({
         if (value.long) {
           tempSelectedFilter['longitude'] = {
             type: optionType,
-            value: [{id: value.long, name: value.name}],
+            value: [{ id: value.long, name: value.name }],
           };
         }
         if (value.lat) {
           tempSelectedFilter['latitude'] = {
             type: optionType,
-            value: [{id: value.lat, name: ''}],
+            value: [{ id: value.lat, name: '' }],
           };
         }
       }
@@ -103,8 +103,8 @@ const DiscoverEventsFilters = ({
             date: startDate,
             name:
               moment(new Date(startDate)).format('MMM DD, YYYY') +
-                ' - ' +
-                moment(new Date(endDate)).format('MMM DD, YYYY') || '',
+              ' - ' +
+              moment(new Date(endDate)).format('MMM DD, YYYY') || '',
           },
         ],
       };
@@ -124,7 +124,7 @@ const DiscoverEventsFilters = ({
   };
 
   const renderItem = useCallback(
-    ({item, index}: {item: FilterType; index: number}) => {
+    ({ item, index }: { item: FilterType; index: number }) => {
       const scrollToOpenedAccordian = (index: number) => {
         InteractionManager.runAfterInteractions(() => {
           setTimeout(() => {
@@ -164,7 +164,7 @@ const DiscoverEventsFilters = ({
   }, []);
 
   const categories: FilterOption[] = feedList.map((item: string) => {
-    return {id: item, name: item} as FilterOption;
+    return { id: item, name: item } as FilterOption;
   });
 
   const filterData: FilterType[] = [
@@ -196,7 +196,7 @@ const DiscoverEventsFilters = ({
       keyExtractor={(item, index) => `filters_header_${index.toString()}`}
       showsVerticalScrollIndicator={false}
       ItemSeparatorComponent={itemSeparatorComponent}
-      contentContainerStyle={{marginHorizontal: horizontalMarginScale(12)}}
+      contentContainerStyle={{ marginHorizontal: horizontalMarginScale(12) }}
     />
   );
 };
