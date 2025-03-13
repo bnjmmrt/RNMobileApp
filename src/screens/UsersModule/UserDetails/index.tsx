@@ -3,6 +3,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  InteractionManager,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -49,6 +50,7 @@ const tabsData: TabItem[] = [
 const UserDetails: React.FC<UserDetailsProps> = ({ route }) => {
   const styles = userDetailsStyle();
   const actionSheetRef = useRef<BottomSheetMethods>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
   const { user } = route?.params;
 
   const [currentTab, setCurrentTab] = useState<TabItem>(tabsData[0]);
@@ -61,6 +63,16 @@ const UserDetails: React.FC<UserDetailsProps> = ({ route }) => {
 
   const handleTabChange = (tab: TabItem) => {
     setCurrentTab(tab);
+  };
+
+  const onUserNoteFocus = () => {
+    if (scrollViewRef?.current) {
+      InteractionManager.runAfterInteractions(() => {
+        setTimeout(() => {
+          scrollViewRef?.current?.scrollToEnd({ animated: true });
+        }, 1000);
+      });
+    }
   };
 
   return (
@@ -86,6 +98,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ route }) => {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           keyboardVerticalOffset={50}>
           <ScrollView
+            ref={scrollViewRef}
             style={{ marginTop: verticalMarginScale(16) }}
             contentContainerStyle={{ gap: verticalMarginScale(16) }}
             stickyHeaderIndices={currentTab.id === '2' ? [2] : []}
@@ -109,7 +122,10 @@ const UserDetails: React.FC<UserDetailsProps> = ({ route }) => {
                     actionSheetRef?.current?.open();
                   }}
                 />
-                <UserInformation user={user} />
+                <UserInformation
+                  user={user}
+                  onUserNoteFocus={onUserNoteFocus}
+                />
               </View>
             ) : null}
             {currentTab.id === '2' ? (

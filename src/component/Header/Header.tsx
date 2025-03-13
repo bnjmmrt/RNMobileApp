@@ -30,6 +30,7 @@ interface HeaderProps {
   rightIcon?: ImageSourcePropType;
   onPressRightIcon?: () => void;
   rightIconWrapperStyle?: StyleProp<ViewStyle>;
+  numberOfLines?: number;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -40,6 +41,7 @@ const Header: React.FC<HeaderProps> = ({
   rightIcon,
   showBackButton = true,
   rightIconWrapperStyle = {},
+  numberOfLines,
 }) => {
   const navigation = useNavigation();
 
@@ -52,7 +54,15 @@ const Header: React.FC<HeaderProps> = ({
   };
   return (
     <View style={{}}>
-      <View style={[styles.container, {paddingBottom: showProgressBar ? verticalMarginScale(7): verticalMarginScale(16)}]}>
+      <View
+        style={[
+          styles.container,
+          {
+            paddingBottom: showProgressBar
+              ? verticalMarginScale(7)
+              : verticalMarginScale(16),
+          },
+        ]}>
         {/* Back Arrow */}
         {showBackButton ? (
           <TouchableOpacity
@@ -66,7 +76,9 @@ const Header: React.FC<HeaderProps> = ({
 
         {/* Header Title */}
         <View style={styles.titleWrapper}>
-          <Text style={styles.headerTitle}>{headerTitle}</Text>
+          <Text style={styles.headerTitle} numberOfLines={numberOfLines}>
+            {headerTitle}
+          </Text>
         </View>
 
         {/* Right Icon */}
