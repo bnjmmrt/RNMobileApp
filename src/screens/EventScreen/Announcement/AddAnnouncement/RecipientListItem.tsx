@@ -13,7 +13,7 @@ const RecipientListItem: React.FC<RecipientListItemProps> = ({
   index,
   isSelected = false,
   onSelectUser = () => { },
-  showCheckbox = true,
+  showCheckbox = false,
 }) => {
   const styles = RecipientListItemStyle();
   const name = item?.user?.firstName + ' ' + item?.user?.lastName

@@ -21,7 +21,8 @@ const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) =>
     bottomSheetRef.current?.open();
   };
   useImperativeHandle(ref, () => ({
-    validateBirthDate, selectedDate
+    validateBirthDate, selectedDate,
+    validateEventDate,
   }));
 
   const handleDateChange = (date: string) => {
@@ -41,6 +42,17 @@ const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) =>
     setErrorMessage(null);
     return true;
   };
+
+  const validateEventDate = () => {
+    if (!selectedDate) {
+      setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_EVENT_DATE);
+      return false;
+    }
+    setErrorMessage(null);
+    return true;
+  };
+
+
 
   return (
     <>

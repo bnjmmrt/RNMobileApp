@@ -70,7 +70,6 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   );
   const [_isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState('')
-
   const sendOtp = async (message: string) => {
     let params;
     let endPoint;

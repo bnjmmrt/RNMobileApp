@@ -20,16 +20,18 @@ const FilterBar: React.FC<FilterBarProps> = ({
   const getChipColor = () => {
     if (selectedFilter) {
       switch (selectedFilter.value) {
-        case 'UPCOMING':
+        case 'CONFIRMED':
           return { bg: COLORS.bgGreen, text: COLORS.success };
+        case 'DECLINED':
+          return { bg: COLORS.bgRed, text: COLORS.errorText };
         case 'PAST':
           return { bg: COLORS.yellowLight, text: COLORS.yellowDark };
         case 'INVITED':
           return { bg: COLORS.bgBlue, text: COLORS.blueDark };
         case 'APPLIED':
           return { bg: COLORS.black, text: COLORS.white };
-        case '':
-          return { bg: COLORS.black, text: COLORS.white };
+        case 'CONFIRMED,INVITED,APPLIED,PAST,DECLINED':
+          return { bg: COLORS.lighter_gray, text: COLORS.neutral_disabled };
       }
     }
   };

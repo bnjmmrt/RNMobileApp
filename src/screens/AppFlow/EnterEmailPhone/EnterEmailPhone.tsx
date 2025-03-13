@@ -22,7 +22,7 @@ import { verticalMarginScale } from 'src/utils/dimensions';
 import { EndPoint } from 'src/ApiManager/config';
 import useApi from '../../../axios/useApi';
 
-interface EnterEmailPhoneProps extends NativeStackScreenProps<any, any> {}
+interface EnterEmailPhoneProps extends NativeStackScreenProps<any, any> { }
 
 const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
   const dispatch = useDispatch();

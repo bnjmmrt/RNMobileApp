@@ -150,6 +150,10 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         sendNotification: true,
       };
 
+      if (guestProfile?.status === 'CONFIRMED') {
+        delete payload.privateGuestNote;
+      }
+
       await manageGuest({
         payload,
         eventId: route?.params?.eventId,
