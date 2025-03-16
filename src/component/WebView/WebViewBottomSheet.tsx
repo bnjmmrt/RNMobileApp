@@ -40,6 +40,7 @@ const WebViewBottomSheet = forwardRef((props, ref) => {
             <WebView
                 source={{ uri: props.url }}
                 style={styles.webView}
+                startInLoadingState={true}
             />
         </BottomSheetComponent>
     );

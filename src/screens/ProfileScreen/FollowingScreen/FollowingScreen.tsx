@@ -139,14 +139,16 @@ const FollowingScreen: React.FC = () => {
           </View> : null
         }
         ListHeaderComponent={
-          <View style={{ marginBottom: 16 }}>
-            <SearchInput
-              onSearchTextChange={handleSearch}
-              placeholder="Search Hosts.."
-              value={searchQuery}
-              mainContainerStyle={{ marginHorizontal: 0 }}
-            />
-          </View>
+          hostList.length > 0 || searchQuery.length > 0 ? (
+            <View style={{ marginBottom: 16 }}>
+              <SearchInput
+                onSearchTextChange={handleSearch}
+                placeholder="Search Hosts.."
+                value={searchQuery}
+                mainContainerStyle={{ marginHorizontal: 0 }}
+              />
+            </View>
+          ) : null
         }
         keyExtractor={(item: any) => item.id}
         renderItem={({ item }) => (

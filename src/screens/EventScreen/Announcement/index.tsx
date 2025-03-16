@@ -100,7 +100,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
         const displayedText = expanded || !shouldShowReadMore ? item?.announcement : `${item?.announcement.substring(0, 100)}...`;
         const date = formatViewAnnouncementDate(item?.createdAt)
         const imageKeyUrl = item?.user?.additionalHostInformation?.companyLogo
-        const name = item?.user?.additionalHostInformation?.companyName
+        const name = item?.user?.firstName + ' ' + item?.user?.lastName
 
         return (
             <View style={styles.Detailcontainer}>

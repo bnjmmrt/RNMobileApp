@@ -38,6 +38,7 @@ import useApi from '../../../axios/useApi';
 import { EndPoint } from 'src/ApiManager/config';
 import { RootState } from '../../../redux/slices';
 import Input from 'src/component/Input/Input';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 interface FeedbackScreenProps {}
 
@@ -109,6 +110,8 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
       if (response.success) {
         confirmationRef.current.open();
         //  clearData()
+      }else{
+        FlashMessageComponent.show("error",response.message)
       }
     } else {
       // setIsToastShown(true);

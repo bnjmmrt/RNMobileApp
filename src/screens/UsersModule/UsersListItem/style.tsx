@@ -1,7 +1,7 @@
-import {StyleSheet} from 'react-native';
-import {horizontalMarginScale} from 'src/utils/dimensions';
-import {COLORS} from '../../../utils/constants';
-import {fontFamily} from '../../../utils/functions';
+import { StyleSheet } from 'react-native';
+import { horizontalMarginScale } from 'src/utils/dimensions';
+import { COLORS } from '../../../utils/constants';
+import { fontFamily } from '../../../utils/functions';
 
 const UserListItemStyle = () => {
   return StyleSheet.create({
@@ -18,9 +18,10 @@ const UserListItemStyle = () => {
       gap: horizontalMarginScale(12),
     },
     username: {
-      textAlign: 'center',
+      // textAlign: 'center',
       color: COLORS.black,
       fontFamily: fontFamily.ABCDiatype_Medium,
+      flex: 1,
     },
   });
 };

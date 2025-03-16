@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 import { Keyboard } from 'react-native';
 import Button from 'src/component/Button';
 import { CustomText } from 'src/component/CustomText';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import Header from 'src/component/Header/Header';
 import Input, { InputRefMethods } from 'src/component/Input/Input';
 import { useAddNewCustomListMutation } from 'src/redux/actions/listsApiAction';
@@ -44,6 +45,7 @@ const CreateList = ({
       try {
         const response = await createNewList(payload).unwrap();
         if (response.success) {
+          FlashMessageComponent.show('success', 'User added to list');
           onSuccess();
         } else {
           const typedError = response as ApiErrorInterface;

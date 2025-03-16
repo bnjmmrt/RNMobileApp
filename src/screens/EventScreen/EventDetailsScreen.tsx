@@ -133,6 +133,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     React.useCallback(() => {
       refetchAnnouncement();
       setEventLocalID(eventId);
+      setshowError(false);
     }, [announcementData]),
   );
 
@@ -292,13 +293,17 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     if (date1.isBefore(date2)) {
       FlashMessageComponent.show('error', LABLE.PAST_EVENT_ANNOUNCEMENTS_ERROR);
     } else {
-      // if (eventCount?.data?.confirmedCount == 0) {
-      //   setshowError(true);
+      // if (data?.data?.isPublished) {
+        if (eventCount?.data?.confirmedCount == 0) {
+          setshowError(true);
+        } else {
+          navigation.navigate(ROUTES.EventStack, {
+            screen: ROUTES.AddAnnouncementScreen,
+            params: { eventData, announcementId: null },
+          });
+        }
       // } else {
-      navigation.navigate(ROUTES.EventStack, {
-        screen: ROUTES.AddAnnouncementScreen,
-        params: { eventData, announcementId: null },
-      });
+      //   FlashMessageComponent.show('error', LABLE.PUBLISH_EVENT_ANNOUNCEMENTS_ERROR);
       // }
     }
   };
@@ -765,6 +770,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
     paddingHorizontal: 10,
+    color: COLORS.black
   },
   subtitle: {
     color: COLORS.black2,

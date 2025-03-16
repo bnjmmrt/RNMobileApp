@@ -2,6 +2,8 @@ import { BottomSheetFlatList, BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import Button from 'src/component/Button';
+import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import {
   useAddUsersToCustomListMutation,
   useFetchAllCustomListsQuery,
@@ -11,8 +13,6 @@ import { Hp, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { ListInterface, ListItemInterface } from '../../Lists';
 import { styles } from './style';
-import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
-import FullScreenLoader from 'src/component/FullScreenLoader';
 
 const AddToList = ({
   showError,
@@ -65,6 +65,14 @@ const AddToList = ({
     try {
       const response = await addUsersToList(payload).unwrap();
       if (response.success) {
+        FlashMessageComponent.show(
+          'success',
+          `${
+            selectedUsers && selectedUsers?.length > 1
+              ? `${selectedUsers?.length} Users`
+              : 'User'
+          } added to list`,
+        );
         onSuccess();
       } else {
         const typedError = response as ApiErrorInterface;
@@ -127,30 +135,18 @@ const AddToList = ({
         }
         ListHeaderComponent={<></>}
         ListEmptyComponent={
-          isLoading ? (
-            <FullScreenLoader
-              loading={isLoading}
-              customStyle={{
-                height: Hp(40),
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              {''}
-            </FullScreenLoader>
-          ) : (
-            <View
-              style={{
-                height: Hp(40),
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <EventEmptyRecord
-                title="No Lists"
-                subTitle="There are no lists available"
-                isLoading={isLoading}
-              />
-            </View>
-          )
+          <View
+            style={{
+              height: Hp(40),
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <EventEmptyRecord
+              title="No Lists"
+              subTitle="There are no lists available"
+              isLoading={isLoading}
+            />
+          </View>
         }
       />
       <BottomSheetView style={{ marginBottom: verticalMarginScale(20) }}>
