@@ -155,6 +155,7 @@ const IMAGES = {
   rumor: require('./rumor.png'),
   message: require('./message.png'),
   check_gray: require('./check-gray.png'),
+  tiktok_rounded: require('./tiktok_rounded.png'),
   facebook_black: require('./facebook_black.png'),
   instagram_black: require('./instagram_black.png'),
   tiktok_black: require('./tiktok_black.png'),
