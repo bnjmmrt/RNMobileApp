@@ -1,5 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
+  Keyboard,
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
@@ -50,6 +52,7 @@ const HostConnectedAccountsScreen: React.FC<
   const hostProfileData = useSelector(
     (state: RootState) => state.appFlowApiData.profileData,
   );
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
   const instagramRef = useRef<any>(null);
   const tiktokRef = useRef<any>(null);
   const facebookRef = useRef<any>(null);
@@ -90,8 +93,32 @@ const HostConnectedAccountsScreen: React.FC<
     navigation.goBack();
   };
 
+   useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+          'keyboardDidShow',
+          () => {
+            setKeyboardVisible(true);
+          },
+        );
+    
+        const keyboardDidHideListener = Keyboard.addListener(
+          'keyboardDidHide',
+          () => {
+            setKeyboardVisible(false);
+          },
+        );
+    
+        return () => {
+          keyboardDidShowListener.remove();
+          keyboardDidHideListener.remove();
+        };
+      }, []);
+
   return (
-    <View style={styles.container}>
+     <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.container}>
+    <View  style={[styles.container,{paddingBottom:keyboardVisible ? Platform.OS === 'ios' ? verticalMarginScale(50): verticalMarginScale(10) : 0}]}>
       <Header
         headerTitle={PROFILE.CONNECTED_ACCOUNTS}
         onPress={handleBackPress}
@@ -165,6 +192,7 @@ const HostConnectedAccountsScreen: React.FC<
         loading={loading}
       />
     </View>
+    </KeyboardAvoidingView>
   );
 };
 
