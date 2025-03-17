@@ -21,6 +21,8 @@ import { persistor, store } from './src/redux/store';
 // import MainNavigation from 'src/navigation';
 import RNPreventScreenshot from 'react-native-screenshot-prevent';
 import ScreenshotDetectedDialog from 'src/component/ScreenshotDetectedDialog';
+import Intercom, { Visibility } from '@intercom/intercom-react-native';
+
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
@@ -29,6 +31,7 @@ const AppContent: React.FC = () => {
 
   useEffect(() => {
     RNPreventScreenshot?.enableSecureView();
+    Intercom.setLauncherVisibility(Visibility.GONE);
 
     return () => {
       RNPreventScreenshot?.disableSecureView();
