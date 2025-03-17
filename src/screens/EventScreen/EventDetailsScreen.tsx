@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
@@ -7,13 +9,7 @@ import {
   Platform,
   Image,
 } from 'react-native';
-import {
-  BUTTON_LABLE,
-  COLORS,
-  EVENT_STATUS,
-  LABLE,
-  ROLE,
-} from '../../utils/constants';
+import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FastImage from '@d11/react-native-fast-image';
 import { fontFamily, removeSignature } from 'src/utils/functions';
@@ -22,8 +18,6 @@ import {
   fontScale,
   verticalMarginScale,
   verticalScale,
-  Wp,
-  Hp,
   horizontalScale,
 } from 'src/utils/dimensions';
 import BackButtonOverlay from 'src/component/BackButton/BackButtonOverlay';
@@ -42,17 +36,12 @@ import {
   useFetchGuestStatusCountQuery,
   useFetchHostEventDetailsQuery,
   useFetchHostEventsAnnouncementQuery,
-  useFetchPublicEventDetailsQuery,
-  useLazyFetchEventDetailsQuery,
-  useLazyFetchPublicEventDetailsQuery,
 } from 'src/redux/actions/eventApiAction';
 import IMAGES from '@images/index';
 import EventTalent from 'src/component/Event/EventTalent';
 import { ROUTES } from 'src/navigation/Route';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import { useAcceptInvitationMutation } from 'src/redux/actions/rspvApiAction';
 import EventRequests from 'src/component/Event/EventRequests';
-import CircleButtonOverlay from 'src/component/BackButton/CircleButtonOverlay';
 import { setSelectedEventForInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
 import { EndPoint } from 'src/ApiManager/config';
 import useApi from 'src/axios/useApi';
@@ -62,14 +51,14 @@ import { BlurView } from '@react-native-community/blur';
 import LinearGradient from 'react-native-linear-gradient';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { setRefresh, setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import EventAnnouncements from 'src/component/Event/EventAnnouncements';
-import FullScreenLoader from 'src/component/FullScreenLoader';
 import ImageComponent from 'src/component/Image/ImageComponent';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import SignupFormsBottomSheet from 'src/component/BottomSheet/SignupFormsBottomSheet';
+import { useFetchSignupFormsQuery } from 'src/redux/actions/eventApiAction';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: any;
@@ -78,16 +67,14 @@ type RouteParams = {
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   navigation,
 }) => {
-  const { apiRequest, loading, error } = useApi();
+  const { apiRequest, loading } = useApi();
   const dispatch = useDispatch();
   const route = useRoute<RouteProp<RouteParams>>();
   const [isDeclinedByMe, setIsDeclinedByMe] = useState(false);
   const [isDeclinedByHost, setIsDeclinedByHost] = useState(false);
   const [guestStatus, setGuestStatus] = useState('NO_STATUS');
   const userId = useSelector((state: RootState) => state.auth.userId);
-  const [isCurrentUserIsGuest, setIsCurrentGuestStatus] = useState(
-    route?.params?.isCurrentUserIsGuest,
-  );
+  const [isCurrentUserIsGuest] = useState(route?.params?.isCurrentUserIsGuest);
   const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
   const refresh = useSelector((state: RootState) => state.rspv.refresh);
   const [showError, setshowError] = useState(false);
@@ -99,23 +86,21 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     take: 50,
     skip: 0,
   };
-  const [eventLocalId, setEventLocalID] = useState(eventId);
   const { data: announcementData, refetch: refetchAnnouncement } =
     useFetchHostEventsAnnouncementQuery(annqueryArgs);
   const [loading1, setLoading] = useState(false);
   const role = useSelector((state: RootState) => state.auth.role);
-  // const insets = useSafeAreaInsets();
-
-  console.log('role', role);
-
   const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 44 : 24;
+  const TOP_SPACING = Platform.OS === 'ios' ? 16 + STATUS_BAR_HEIGHT : 0;
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-        showTopSafeAreaView: false,
-      });
+      if (Platform.OS === 'ios') {
+        changeSafeAreaViewConfig({
+          ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+          showTopSafeAreaView: false,
+        });
+      }
 
       return () => {
         // Reset to default when screen is unfocused
@@ -124,15 +109,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     }, []),
   );
 
-  const [acceptInvite, { isLoading: acceptLoading }] =
-    useAcceptInvitationMutation();
   const [collaborators, setCollaborators] = useState([]);
   const [talents, setTalents] = useState([]);
 
   useFocusEffect(
     React.useCallback(() => {
       refetchAnnouncement();
-      setEventLocalID(eventId);
       setshowError(false);
     }, [announcementData]),
   );
@@ -148,54 +130,44 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   useEffect(() => {
     dispatch(setRsvpStatus(isCurrentUserIsGuest ? 'TRUE' : 'NO_STATUS'));
   }, [isCurrentUserIsGuest]);
+
   const queryArgs =
     role === ROLE.HOST
-      ? ({ eventId: route?.params?.id } as const) // Type assertion to prevent union mismatch
+      ? ({ eventId: route?.params?.id } as const)
       : ({
-        userId,
-        eventId: route?.params?.id,
-      } as const); // Type assertion
+          userId,
+          eventId: route?.params?.id,
+        } as const);
+
   const useFetchEventDetailsHook =
     role === ROLE.HOST
       ? useFetchHostEventDetailsQuery
       : useFetchEventDetailsQuery;
-  const { data, isLoading, refetch } = useFetchEventDetailsHook(queryArgs);
+  const { data, isLoading, refetch } = useFetchEventDetailsHook(
+    queryArgs as any,
+  );
 
   useEffect(() => {
     refetch();
-    // Manually refetch when RSVP status changes
     dispatch(setRefresh(false));
   }, [rspvStatus, refetch, refresh]);
-
-  // Ensure argument structure remains consistent
-
-  // const { data, isLoading, refetch, isSuccess } = useFetchEventDetailsQuery(
-  //   { eventId: route?.params?.id, userId: userId },
-  //   { refetchOnMountOrArgChange: true },
-  // );
 
   const qrCodeBottomSheetRef = useRef<any>(null);
   const calenderEventsBottomSheetRef = useRef<any>(null);
 
   const [isQRShown, setIsQRShown] = useState(true);
-  // const [qrURL, setQrURL] = useState('');
   const [eventDetails, setEventDetails] = useState<any>({});
   const [calendarDetails, setCalendarDetails] = useState<any>({});
 
   const [useQr, setUseQr] = useState<boolean>(false);
   useEffect(() => {
     if (guestStatus === 'DECLINED') {
-      setIsDeclinedByMe(data?.data?.invitationDeclinedBy == userId);
+      setIsDeclinedByMe(data?.data?.invitationDeclinedBy === userId);
       setIsDeclinedByHost(data?.data?.invitationDeclinedBy !== userId);
     }
   }, [guestStatus]);
 
-  const parseDate = (dateStr: any) => {
-    const [datePart, timePart] = dateStr.split(' ');
-    return new Date(`${datePart}T${timePart}Z`).toISOString();
-  };
   useEffect(() => {
-    //  console.log('Event data:', data);
     if (data?.data) {
       setUseQr(data.data.useQr);
       setEventDetails({
@@ -225,7 +197,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       };
 
       // Merge the owner as a collaborator with existing collaborators
-      setCollaborators([collaborator, ...data.data.collaborators]);
+      setCollaborators([collaborator, ...data.data.collaborators] as any);
     }
 
     if (data && data.data && data?.data?.talents) {
@@ -234,17 +206,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
     setGuestStatus(data?.data?.currentGuestStatus);
   }, [data]);
-  // console.log('Event details', route.params.id);
-  const statusMap = [
-    { id: '1', label: EVENT_STATUS.AWAITING },
-    { id: '2', label: EVENT_STATUS.INVITED },
-    { id: '3', label: EVENT_STATUS.DECLINED_BY_HOST },
-    { id: '4', label: EVENT_STATUS.DECLINED_BY_YOU },
-    { id: '5', label: EVENT_STATUS.GOING },
-  ];
-  const [images, setImages] = useState(statusMap);
-
-  // const styles = EventDetailsScreenStyle();
 
   const onNextClick = () => {
     if (guestStatus === 'INVITED' || guestStatus === 'CONFIRMED') {
@@ -252,10 +213,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     } else {
       navigation.navigate('RSVPNoStatusApplied', { event: data.data });
     }
-  };
-
-  const onDiscoverMoreClick = () => {
-    navigation.goBack();
   };
 
   const generateTicket = async () => {
@@ -293,52 +250,28 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     if (date1.isBefore(date2)) {
       FlashMessageComponent.show('error', LABLE.PAST_EVENT_ANNOUNCEMENTS_ERROR);
     } else {
-      // if (data?.data?.isPublished) {
-        if (eventCount?.data?.confirmedCount == 0) {
-          setshowError(true);
-        } else {
-          navigation.navigate(ROUTES.EventStack, {
-            screen: ROUTES.AddAnnouncementScreen,
-            params: { eventData, announcementId: null },
-          });
-        }
-      // } else {
-      //   FlashMessageComponent.show('error', LABLE.PUBLISH_EVENT_ANNOUNCEMENTS_ERROR);
-      // }
-    }
-  };
-  const acceptInvitation = async () => {
-    try {
-      const accept_response = await acceptInvite({
-        id: userId,
-        eventId: route?.params?.id,
-      });
-      const updatedData = await refetch();
-      if (updatedData?.data) {
-        navigation.navigate('RSVPInvitedUpcoming', {
-          event: updatedData?.data?.data,
-        });
+      if (eventCount?.data?.confirmedCount === 0) {
+        setshowError(true);
       } else {
-        console.warn('Failed to get updated event data');
+        navigation.navigate(ROUTES.EventStack, {
+          screen: ROUTES.AddAnnouncementScreen,
+          params: { eventData, announcementId: null },
+        });
       }
-    } catch (error) {
-      console.error('Error accepting invitation:', error);
     }
   };
 
   const onCheckInClick = async () => {
-    setLoading(true)
+    setLoading(true);
     setTimeout(() => {
       if (useQr) {
         dispatch(setEventId(route?.params?.id));
         navigation.navigate(ROUTES.QRCodeScanner);
       } else {
         navigateToViewList();
-
       }
-      setLoading(false)
+      setLoading(false);
     }, 500);
-
   };
 
   const onPressInviteGuests = () => {
@@ -360,7 +293,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       height: verticalScale(528),
       borderRadius: 20,
       overflow: 'hidden' as const,
-      marginTop: verticalScale(20) + STATUS_BAR_HEIGHT,
+      marginTop:
+        Platform.OS === 'ios' ? verticalScale(20) + STATUS_BAR_HEIGHT : 0,
     },
   });
   const renderHostButtons = () => {
@@ -370,13 +304,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
     return (
       <>
-        {/* <Button
-          disabled={false}
-          style={styles.btnStyleLight}
-          title="View Guest List"
-          colorTheme="light"
-          onPress={navigateToViewList}
-        /> */}
         <Button
           disabled={false}
           style={styles.btnStyle}
@@ -524,6 +451,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     );
   };
 
+  const signupFormsBottomSheetRef = useRef<any>(null);
+  const { data: signupFormsData } = useFetchSignupFormsQuery({
+    eventId: route?.params?.id,
+  });
+
   return (
     <>
       {isLoading ? (
@@ -533,27 +465,29 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           {/* <SafeAreaView style={{ backgroundColor: COLORS.white }} /> */}
           <View style={styles.container}>
             <ScrollView>
-              <View style={styles.blurredBackgroundContainer}>
-                <FastImage
-                  source={{
-                    uri: removeSignature(data?.data?.imageFlyer),
-                  }}
-                  resizeMode={FastImage.resizeMode.cover}
-                  defaultSource={IMAGES.eventCoverPlaceholders1}
-                  style={styles.blurredBackground}
-                />
-                <BlurView
-                  style={StyleSheet.absoluteFill}
-                  blurType="light"
-                  blurAmount={128}
-                  reducedTransparencyFallbackColor="white"
-                />
-                <LinearGradient
-                  style={StyleSheet.absoluteFill}
-                  colors={['rgba(255, 255, 255, 0)', '#FFFFFF']}
-                  locations={[0, 0.9]}
-                />
-              </View>
+              {Platform.OS === 'ios' && (
+                <View style={styles.blurredBackgroundContainer}>
+                  <FastImage
+                    source={{
+                      uri: removeSignature(data?.data?.imageFlyer),
+                    }}
+                    resizeMode={FastImage.resizeMode.cover}
+                    defaultSource={IMAGES.eventCoverPlaceholders1}
+                    style={styles.blurredBackground}
+                  />
+                  <BlurView
+                    style={StyleSheet.absoluteFill}
+                    blurType="light"
+                    blurAmount={128}
+                    reducedTransparencyFallbackColor="white"
+                  />
+                  <LinearGradient
+                    style={StyleSheet.absoluteFill}
+                    colors={['rgba(255, 255, 255, 0)', '#FFFFFF']}
+                    locations={[0, 0.9]}
+                  />
+                </View>
+              )}
 
               {/* <SafeAreaView /> */}
 
@@ -629,31 +563,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                   </View>
                 )}
               </View>
-              {/* {role === ROLE.HOST && <Button
-                disabled={false}
-                style={styles.btnStyleLight}
-                title="View Guest List"
-                colorTheme="light"
-                onPress={navigateToViewList}
-              />}
-
-              {role === ROLE.HOST && <Button
-                disabled={false}
-                style={styles.btnStyleLight}
-                title={BUTTON_LABLE.INVITE_GUESTS}
-                colorTheme="light"
-                onPress={onPressInviteGuests}
-              />}
-
-              {role === ROLE.HOST && (
-                <Button
-                  disabled={false}
-                  style={styles.btnStyle}
-                  title={BUTTON_LABLE.CHECK_IN}
-                  colorTheme="dark"
-                  onPress={onCheckInClick}
-                />
-              )} */}
             </ScrollView>
             {renderHostButtons()}
             {renderRSVPButton()}
@@ -687,14 +596,24 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               name={eventDetails?.name}
             />
 
+            <SignupFormsBottomSheet
+              ref={signupFormsBottomSheetRef}
+              signupForms={signupFormsData?.data || []}
+            />
+
             <BackButtonOverlay
-              customStyle={{ top: 16 + STATUS_BAR_HEIGHT }}
+              customStyle={{
+                top: TOP_SPACING,
+              }}
               onPress={() => navigation.goBack()}
             />
 
             {role === ROLE.HOST && (
               <BackButtonOverlay
-                customStyle={{ right: 0, top: 16 + STATUS_BAR_HEIGHT }}
+                customStyle={{
+                  right: 0,
+                  top: TOP_SPACING,
+                }}
                 imageSource={IMAGES.edits}
                 onPress={() =>
                   navigation.navigate(ROUTES.EditEventScreen, {
@@ -705,11 +624,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             )}
             {role === ROLE.HOST && (
               <BackButtonOverlay
-                customStyle={{ right: 55, top: 16 + STATUS_BAR_HEIGHT }}
+                customStyle={{
+                  right: 55,
+                  top: TOP_SPACING,
+                }}
                 imageSource={IMAGES.share}
-                onPress={() =>
-                  FlashMessageComponent.show('info', 'In Progress')
-                }
+                onPress={() => signupFormsBottomSheetRef.current?.open()}
               />
             )}
           </View>
@@ -770,7 +690,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
     paddingHorizontal: 10,
-    color: COLORS.black
+    color: COLORS.black,
   },
   subtitle: {
     color: COLORS.black2,
