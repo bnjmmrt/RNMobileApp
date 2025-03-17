@@ -34,13 +34,19 @@ const EventOverview: React.FC<EventOverviewProps> = ({ item }) => {
         {item?.description}
       </Text>
 
-      {!expanded && <View style={styles.divider} />}
+      {shouldShowReadMore && <View style={styles.divider} />}
 
-      {shouldShowReadMore && !expanded && (
+      {shouldShowReadMore && (
         <TouchableOpacity onPress={handleToggle} style={styles.toggleContainer}>
-          <Text style={styles.toggleText}>
-            {LABLE.READ_MORE}
-          </Text>
+          {!expanded ?
+            <Text style={styles.toggleText}>
+              {LABLE.READ_MORE}
+            </Text> :
+            <Text style={styles.toggleText}>
+              {LABLE.VIEW_LESS}
+            </Text>
+          }
+
           <Image
             source={IMAGES.downArrow}
             tintColor={COLORS.light_gray}
