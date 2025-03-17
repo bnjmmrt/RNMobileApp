@@ -42,8 +42,10 @@ import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import moment from 'moment';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import { useNavigation } from '@react-navigation/native';
-import { removeSignature } from 'src/utils/functions';
+import { dateFormat, removeSignature } from 'src/utils/functions';
 import { openSettings } from 'react-native-permissions';
+import { formatSingleDate, formatSingleToDeviceTimeZone } from 'src/utils/dateFunctions';
+import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
 
 interface Location {
   location?: string;
@@ -244,12 +246,22 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const openCamera = async () => {
     editPhotoBottomSheetRef.current?.close();
     ImagePicker.openPicker({
-      width: 300,
-      height: 400,
+      width: 400,
+      height: 585,
       cropping: true,
       cropperCircleOverlay: false,
+      mediaType: 'photo'
     }).then((image: ImageOrVideo) => {
-      savePhoto(image.path);
+      console.log('ImagePicker Response: ', image);
+      if (image.size && image.size <= 5 * 1024 * 1024) {
+        savePhoto(image.path);
+      } else {
+        Alert.alert(
+          'File Too Large',
+          'Please select an image smaller than 5MB.',
+          [{ text: 'OK', style: 'cancel' }]
+        );
+      }
     }).catch(async (error) => {
       console.log('ImagePicker Error: ', error);
 
@@ -276,6 +288,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
 
   useEffect(() => { }, [eventAddress]);
 
+
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -288,7 +302,6 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
                 uri: image,
               }}
               resizeMode={FastImage.resizeMode.cover}
-              defaultSource={IMAGES.eventCoverPlaceholders1} // Placeholder
               style={styles.coverImageStyle}
             />
             <CircleButtonOverlay
@@ -299,6 +312,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
           </View>
           <Input
             ref={eventNameRef}
+            maxLength={50}
             label={EVENT.EVENT_NAME}
             errorMessage={"Event name is required"}
             defaultValue={item?.name}
