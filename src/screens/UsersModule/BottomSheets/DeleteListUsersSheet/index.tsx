@@ -50,7 +50,7 @@ const DeleteListUsersSheet = forwardRef<
     };
     try {
       const response = await removeUsersFromList(payload).unwrap();
-      if (response.status === 200) {
+      if (response.success) {
         onSuccess();
         sheetRef.current?.close();
       } else {
@@ -71,7 +71,11 @@ const DeleteListUsersSheet = forwardRef<
       <BottomSheetView style={styles.actionContentWrapper}>
         <CustomText style={styles.title}>{'Remove user from list?'}</CustomText>
         <CustomText style={styles.message}>
-          {'Are you sure you want to remove [User Name] from this list?'}
+          {`Are you sure you want to remove ${
+            selectedUsers.length > 1
+              ? `${selectedUsers.length} users`
+              : `${selectedUsers.length} user`
+          } from this list?`}
         </CustomText>
 
         <Button

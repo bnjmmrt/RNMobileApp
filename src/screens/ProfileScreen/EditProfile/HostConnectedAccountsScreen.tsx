@@ -36,6 +36,7 @@ import SocialMediaInput from 'src/component/Input/SocialMediaInput';
 import IMAGES from '@images/index';
 import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import { EndPoint } from 'src/ApiManager/config';
 
 interface HostConnectedAccountsScreenProps
   extends NativeStackScreenProps<any, any> {}
@@ -60,22 +61,13 @@ const HostConnectedAccountsScreen: React.FC<
 
   const onConfirmClick = async () => {
     const requestObject: any = {
-      bio: hostProfileData?.bio,
-      companyLogo: hostProfileData?.companyLogo,
-      companyName: hostProfileData?.companyName,
-      email: hostProfileData?.email,
-      eventsPerYear: hostProfileData?.eventsPerYear,
-      firstName: hostProfileData?.firstName,
-      lastName: hostProfileData?.lastName,
-      phoneNumber: hostProfileData?.phoneNumber,
-      referredBy: hostProfileData?.referredBy,
       socialMedia: {
         facebook: facebookRef?.current.inputText,
         instagram: instagramRef?.current.inputText,
         linkedin: linkedinRef?.current.inputText,
-        tiktok: '@'+tiktokRef?.current.inputText,
+        tiktok: tiktokRef?.current.inputText ? '@'+tiktokRef?.current.inputText : '',
         x: xRef?.current.inputText,
-        youtube: '@'+youtubeRef?.current.inputText,
+        youtube: youtubeRef?.current.inputText ? '@'+youtubeRef?.current.inputText :'',
       },
     };
 
@@ -83,10 +75,10 @@ const HostConnectedAccountsScreen: React.FC<
 
     const response: any = await apiRequest(
       'put',
-      `v1/auth/host/${userId}/profile`,
+      `${EndPoint.host_ep}`,
       requestObject,
     );
-    if (response.status === 200) {
+    if (response.success) {
       FlashMessageComponent.show('success', 'Connected Accounts updated successfully');
       //navigate if required
       dispatch(setProfileData({...hostProfileData,...response?.data}))
@@ -114,7 +106,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.INSTAGRAM}
             prefix="instagram.com/"
             isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia.instagram}
+            defaultValue={hostProfileData?.socialMedia?.instagram ? hostProfileData?.socialMedia?.instagram: '' }
           />
           <SocialMediaInput
             image={IMAGES.host_tiktok}
@@ -122,7 +114,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.TIKTOK}
             prefix="tiktok.com/@"
             isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia.tiktok}
+            defaultValue={hostProfileData?.socialMedia?.tiktok ? hostProfileData?.socialMedia?.tiktok?.replace('@', '') : ''}
           />
           <SocialMediaInput
             image={IMAGES.fb}
@@ -130,7 +122,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.FACEBOOK}
             prefix="facebook.com/"
             isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia.facebook}
+            defaultValue={hostProfileData?.socialMedia?.facebook ? hostProfileData?.socialMedia?.facebook : ''}
           />
           <SocialMediaInput
             image={IMAGES.linkdn}
@@ -138,7 +130,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.LINKEDIN}
             prefix="linkedin.com/in/"
             isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia.linkedin}
+            defaultValue={hostProfileData?.socialMedia?.linkedin ? hostProfileData?.socialMedia?.linkedin : ''}
           />
           <SocialMediaInput
             image={IMAGES.host_x}
@@ -146,7 +138,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.X}
             prefix="x.com/"
             isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia.x}
+            defaultValue={hostProfileData?.socialMedia?.x ? hostProfileData?.socialMedia?.x :''}
           />
           <SocialMediaInput
             image={IMAGES.yt}
@@ -154,7 +146,7 @@ const HostConnectedAccountsScreen: React.FC<
             label={PROFILE.YOUTUBE}
             prefix="youtube.com/@"
             isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia.youtube}
+            defaultValue={hostProfileData?.socialMedia?.youtube ? hostProfileData?.socialMedia?.youtube?.replace('@', '') :''}
           />
         </View>
         {isToastShown && (

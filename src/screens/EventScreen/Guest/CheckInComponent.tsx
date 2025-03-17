@@ -16,6 +16,7 @@ import { EndPoint } from 'src/ApiManager/config';
 import useApi from 'src/axios/useApi';
 import AvatarInitials from 'src/component/AvatarInitials';
 import { ROUTES } from 'src/navigation/Route';
+import { useManageGuestMutation } from 'src/redux/actions/eventApiAction';
 import { RootState } from 'src/redux/slices';
 import { BUTTON_LABLE, COLORS, LABLE } from 'src/utils/constants';
 import {
@@ -26,6 +27,9 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
+import { GuestStatus, ManageGuestPayload } from '../types';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 
 interface AdditionalGuest {
   addedBy: string;
@@ -47,6 +51,7 @@ interface CheckInComponentProps {
   maxAdditionalGuests: number;
   status?: string;
   guestProfile?: any;
+  selectedTicketType?: any;
 }
 const renderItemComponent = (
   item: any,
@@ -150,6 +155,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   maxAdditionalGuests,
   status,
   guestProfile,
+  selectedTicketType,
 }) => {
   const navigation = useNavigation();
   const { apiRequest, loading, error } = useApi();
@@ -167,9 +173,12 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   const selectedEvent = useSelector(
     (state: RootState) => state.inviteGuestsFlow.selectedEvent,
   );
-  
+  const [manageGuest] = useManageGuestMutation();
+
   const pendingGuestCount = maxAdditionalGuests - additionalGuests.length;
   const guestString = pendingGuestCount > 1 ? ' Guests' : ' Guest';
+
+  // const [manageGuest] = useManageGuestMutation();
 
   useEffect(() => {
     let expandIndex = additionalGuests.map((guest, index) => ({
@@ -210,13 +219,13 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   const validateDetails = async () => {
     const response: any = await apiRequest(
       'post',
-      `v1/events/guest/ticket/${guestProfile.guestId}/validate`,
+      `events/v1/guest/ticket/${guestProfile.guestId}/validate`,
       {
         checkIn: !checkedIn,
       },
     );
-    if (response.status === 200) {
-      setCheckedIn(response.data.checkInStatus)
+    if (response.success) {
+      setCheckedIn(response.data.checkInStatus);
     }
   };
 
@@ -224,24 +233,59 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
     validateDetails();
   };
 
-  const manageGuests = async () => {
-if(status === 'CONFIRMED')
-    {
-      const response: any = await apiRequest(
-        'put',
-        EndPoint.event_manage_guests+'?eventId='+selectedEvent?.id,
-        {
-          action: 'UPDATE',
-          bulkUploadStatus: false,
-          exclusiveIds: [],
-          guestStatus: 'CONFIRMED',
-          inclusiveIds: additionalGuests.map(guest => guest.id),
-          isSelectedAll: false,
+   const handleGuestAction = async () => {
+      try {
+        const payload: ManageGuestPayload = {
+          "action": "UPDATE",
+          "currentStatus": "confirmed",
+          "exclusiveIds": [],
+          "guestStatus": "CONFIRMED",
+          "inclusiveIds": [guestProfile?.guestId],
+          "inviteMessage": "",
+          "isSelectedAll": false,
+          "maxAdditionalGuests": maxAdditionalGuests,
+          "sendNotification": true,
+          "ticketTypeId": selectedTicketType?.id,
           privateGuestNote: guestNote,
-        },
-      );
-      if (response.status === 200) {
+        }
+  
+        await manageGuest({
+          payload,
+          eventId: selectedEvent?.id,
+        }).unwrap();
+  
+        FlashMessageComponent.show(
+          'success',
+          `${guestProfile?.name}'s invite has been updated`,
+        );
+  
+        // navigation.goBack();
+      } catch (error) {
+        const typedError = error as ApiErrorInterface;
+        FlashMessageComponent.show('error', getErrorMessage(typedError));
+      } finally {
+        // setIsLoadingAction(false);
       }
+    };
+
+  const manageGuests = async () => {
+    if (status === 'CONFIRMED' && selectedEvent?.id) {
+      // const response: any = await apiRequest(
+      //   'put',
+      //   EndPoint.event_manage_guests + '?eventId=' + selectedEvent?.id,
+      //   {
+      //     action: 'UPDATE',
+      //     bulkUploadStatus: false,
+      //     exclusiveIds: [],
+      //     guestStatus: 'CONFIRMED',
+      //     inclusiveIds: additionalGuests.map(guest => guest.id),
+      //     isSelectedAll: false,
+      //     privateGuestNote: guestNote,
+      //   },
+      // );
+      // if (response.success) {
+      // }
+      handleGuestAction()
     }
   };
   return (
@@ -292,7 +336,7 @@ if(status === 'CONFIRMED')
                   source={
                     checkedIn ? IMAGES.checkedinCurved : IMAGES.checkinCurved
                   }
-                  style={styles.actionButtonIcon}
+                  // style={styles.actionButtonIcon}
                 />
                 <Text style={styles.actionButtonText}>
                   {checkedIn ? LABLE.CHECKED_IN : LABLE.CHECK_IN}
@@ -309,12 +353,15 @@ if(status === 'CONFIRMED')
               onChangeText={text => setGuestNote(text)}
               style={[
                 styles.input,
-                { backgroundColor: status === 'CONFIRMED' ? COLORS.white : COLORS.bgGray },
+                {
+                  backgroundColor:
+                    status === 'CONFIRMED' ? COLORS.white : COLORS.bgGray,
+                },
               ]}
               placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
               defaultValue={privateGuestNote}
               multiline
-              editable={status === 'CONFIRMED'? true : false}
+              editable={status === 'CONFIRMED' ? true : false}
               onBlur={manageGuests}
             />
           </View>

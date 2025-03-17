@@ -18,7 +18,7 @@ import Button from 'src/component/Button';
 import ButtonSmall from 'src/component/ButtonSmall';
 import Header from 'src/component/Header/Header';
 import Title from 'src/component/Title/Title';
-import { COLORS } from 'src/utils/constants';
+import { COLORS, LABLE } from 'src/utils/constants';
 import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale, Wp } from 'src/utils/dimensions';
 import { fontFamily, removeSignature } from 'src/utils/functions';
 import ReportHostView from './ReportHostView';
@@ -86,7 +86,7 @@ const HostProfileScreen: React.FC = () => {
   };
   const getHostRoleIdFromAPI = async () => {
     try {
-      const response = await apiRequest('post', 'v1/auth/get-user-with-roles-by-id', { id: params?.hostId });
+      const response = await apiRequest('post', 'users/v1/auth/get-user-with-roles-by-id', { id: params?.hostId });
       const hostRole = response.data.roles.find(role => role.name === "host");
       return hostRole ? hostRole.id : null;
     } catch (error) {
@@ -290,7 +290,7 @@ const BlockHostView: React.FC<BlockHostViewProps> = ({ onClose, onPress, userId,
   const { apiRequest, loading, error } = useApi();
   const handleBlock = async () => {
     try {
-      const response = await apiRequest('post', `v1/auth/users/${userId}/hosts/${hostId}/block`, {
+      const response = await apiRequest('post', `users/v1/auth/users/${userId}/hosts/${hostId}/block`, {
         blockedByRoleId: roleId,
         blockedToRoleId: hostRoleId,
       });
@@ -335,7 +335,7 @@ const UnBlockHostView: React.FC<UnBlockHostViewProps> = ({ onClose, onPress, use
   const { apiRequest, loading, error } = useApi();
   const handleUnblock = async () => {
     try {
-      const response = await apiRequest('post', `v1/auth/users/${userId}/hosts/${hostId}/unblock`, {
+      const response = await apiRequest('post', `users/v1/auth/users/${userId}/hosts/${hostId}/unblock`, {
         blockedByRoleId: roleId,
         blockedToRoleId: hostRoleId,
       });
@@ -352,7 +352,7 @@ const UnBlockHostView: React.FC<UnBlockHostViewProps> = ({ onClose, onPress, use
       <Title
         align="center"
         title="Unblock Host"
-        subTitle="Are you sure you want to unblock this host?\nUnblocking this host will allow them to send you new event invites and chat messages."
+        subTitle={LABLE.HOST_UNBLOCK_MESSAGE}
       />
 
       <Button

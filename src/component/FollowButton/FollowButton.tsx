@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import { useUnfollowHostMutation } from 'src/redux/actions/referralApiAction';
 import { setRefresh } from 'src/redux/slices/rspvSlice';
+import { EndPoint } from 'src/ApiManager/config';
 
 interface FollowButtonProps {
     id: string;
@@ -35,12 +36,12 @@ const FollowButton: React.FC<FollowButtonProps> = ({ id, isFollowing, handleRefr
     };
 
     const unFollowApi = async (hostId: string) => {
-        const response: any = await apiRequest('delete', `v1/auth/host/${hostId}/follow`, { userId });
+        const response: any = await apiRequest('delete', `${EndPoint.host}/${hostId}/follow`, { userId });
         return response?.status;
     };
 
     const followApi = async (hostId: string) => {
-        const response: any = await apiRequest('post', `v1/auth/host/${hostId}/follow`, { userId });
+        const response: any = await apiRequest('post', `${EndPoint.host}/${hostId}/follow`, { userId, hostId, follow: true });
         return response?.status;
     };
 

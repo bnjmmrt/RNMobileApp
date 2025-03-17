@@ -15,17 +15,17 @@ type OTPComponentProps = {
   performCodeVerification: (code: string) => void;
   resendVerificationCode: (isResend: boolean) => void;
   error?:string
-
 };
 
 type OTPComponentHandle = {
   handleNextPress: () => void;
+  code?:string
 };
 
 const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
   (props, ref) => {
     const [code, setCode] = useState<string>('');
-    const [errorMessage, setErrorMessage] = useState<string>('');
+    const [errorMessage, setErrorMessage] = useState<any>('');
     const otpInput = useRef(null);
 
     const setApiError = (error: string) => {
@@ -65,6 +65,7 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
     };
 
     const handleNextPress = (): void => {
+      setErrorMessage('');
       if (validateCode()) {
         props.performCodeVerification(code);
       }

@@ -21,7 +21,7 @@ export type FilterTypes =
   | 'APPLIED'
   | 'PAST'
   | 'DECLINED'
-  | '';
+  | 'CONFIRMED,INVITED,APPLIED,PAST,DECLINED';
 export type Filter = {
   label: string;
   value: FilterTypes;

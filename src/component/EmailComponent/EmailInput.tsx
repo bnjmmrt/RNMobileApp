@@ -6,7 +6,7 @@ import { COLORS, LABLE } from '../../utils/constants';
 import { useNavigation } from '@react-navigation/native';
 import { verticalScale } from 'src/utils/dimensions';
 
-const EmailInput = forwardRef((_, ref) => {
+const EmailInput = forwardRef(({otherStyle}, ref) => {
   const [emailAddress, setEmailAddress] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [disabled, setDisabled] = useState(false);
@@ -25,10 +25,9 @@ const EmailInput = forwardRef((_, ref) => {
   // Validate email format
   const validateEmailAddress = () => {
     // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const emailRegex =
-      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,3})$/i;
-   
-    console.log(emailRegex.test(emailAddress));
+    const emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+    console.log(emailRegex.test(emailAddress))
     if (!emailRegex.test(emailAddress)) {
       setErrorMessage(LABLE.EROOR_ENTER_EMAIL);
       return false;
@@ -48,7 +47,7 @@ const EmailInput = forwardRef((_, ref) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,otherStyle]}>
       <View
         style={[
           styles.inputWrapper,

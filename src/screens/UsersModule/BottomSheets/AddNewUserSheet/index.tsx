@@ -23,7 +23,8 @@ import PhoneNumberInput, {
 import { AppStackParamList } from 'src/navigation/AppStack';
 import { ROUTES } from 'src/navigation/Route';
 import { useAddNewUserMutation } from 'src/redux/actions/usersApiAction';
-import { verticalMarginScale, verticalScale } from 'src/utils/dimensions';
+import { ERROR_MESSAGE, LABLE } from 'src/utils/constants';
+import { verticalMarginScale } from 'src/utils/dimensions';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { styles } from './style';
 
@@ -63,6 +64,7 @@ const AddNewUserSheet = forwardRef<
   const [lastName, setLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
+  const [errorMessage, setError] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<countryType | null>(
     null,
   );
@@ -71,6 +73,18 @@ const AddNewUserSheet = forwardRef<
   );
 
   const [addNewUser, { error, isLoading }] = useAddNewUserMutation();
+
+  const validateEmailAddress = () => {
+    const emailRegex =
+      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+    if (!emailRegex.test(email)) {
+      emailRef?.current?.setErrorMessage(LABLE.EROOR_ENTER_EMAIL);
+      return false;
+    }
+    emailRef?.current?.setErrorMessage('');
+    return true;
+  };
 
   const resetForm = () => {
     setFirstName('');
@@ -82,6 +96,7 @@ const AddNewUserSheet = forwardRef<
     lastNameRef?.current?.setErrorMessage('');
     phoneNumberRef?.current?.setErrorMessage('');
     emailRef?.current?.setErrorMessage('');
+    setError(null);
   };
 
   const onPressExsitingUser = () => {
@@ -92,6 +107,52 @@ const AddNewUserSheet = forwardRef<
     }
   };
 
+  const validateName = (name: string) => {
+    console.log("validateNamevalidateNamevalidateNamevalidateNamevalidateName",firstNameRef?.current?.inputText.trim().length > 30)
+      const regex = /^[A-Za-z]+$/;
+      if (
+        name === 'FirstName' &&
+        firstNameRef?.current?.inputText.trim().length > 30
+      ) {
+        firstNameRef?.current?.setErrorMessage(
+          ERROR_MESSAGE.FIRST_NAME_SIZE_EXCEED,
+        );
+        return false;
+      } else {
+        if (
+          firstNameRef?.current?.inputText.trim() !== '' &&
+          !regex.test(firstNameRef?.current?.inputText)
+        ) {
+          firstNameRef?.current?.setErrorMessage(
+            ERROR_MESSAGE.FIRST_NAME_INVALID_CHARACTERS,
+          );
+          return false;
+        }
+      }
+  
+      if (
+        name === 'LastName' &&
+        lastNameRef?.current?.inputText.trim().length > 30
+      ) {
+        lastNameRef?.current?.setErrorMessage(
+          ERROR_MESSAGE.LAST_NAME_SIZE_EXCEED,
+        );
+        return false;
+      } else {
+        if (
+          lastNameRef?.current?.inputText.trim() !== '' &&
+          !regex.test(lastNameRef?.current?.inputText)
+        ) {
+          lastNameRef?.current?.setErrorMessage(
+            ERROR_MESSAGE.LAST_NAME_INVALID_CHARACTERS,
+          );
+          return false;
+        }
+      }
+  
+      return true;
+    };
+
   const onPressAddUser = async () => {
     firstNameRef?.current?.setErrorMessage('');
     lastNameRef?.current?.setErrorMessage('');
@@ -100,14 +161,31 @@ const AddNewUserSheet = forwardRef<
 
     firstNameRef?.current?.validateInputs();
     lastNameRef?.current?.validateInputs();
-    phoneNumberRef?.current?.validatePhoneNumber();
-    emailRef?.current?.validateInputs();
     if (
-      firstNameRef?.current?.validateInputs() &&
-      lastNameRef?.current?.validateInputs() &&
-      phoneNumberRef?.current?.validatePhoneNumber() &&
+      phoneNumberRef?.current?.validatePhoneNumber(
+        ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
+      ) ||
       emailRef?.current?.validateInputs()
     ) {
+      // phoneNumberRef?.current?.setErrorMessage('');
+      setError('');
+    } else {
+      emailRef.current?.setErrorMessage('');
+      setError(ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE);
+    }
+
+    if (
+      firstNameRef?.current?.validateInputs() &&  validateName('FirstName') && 
+      lastNameRef?.current?.validateInputs() && validateName('LastName') &&
+      (phoneNumberRef?.current?.validatePhoneNumber(
+        ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
+      ) ||
+        emailRef?.current?.validateInputs())
+    ) {
+      let validEmail = validateEmailAddress();
+
+      if (!validEmail) return;
+
       try {
         // const requestParam = { email, phoneNumber: phone };
         const response = await addNewUser({
@@ -117,7 +195,7 @@ const AddNewUserSheet = forwardRef<
           phoneNumber: `${selectedCountry?.dial_code}${phone}`,
         }).unwrap();
 
-        if (response.status === 200) {
+        if (response.success) {
           if (response.data.hasEmail || response.data.hasPhone) {
             setExistingUser(response.data);
             if (response.data?.hasEmail) {
@@ -148,7 +226,7 @@ const AddNewUserSheet = forwardRef<
   return (
     <BottomSheetComponent
       ref={sheetRef}
-      snapPoints={['85%']}
+      snapPoints={['88%']}
       enableDynamicSizing={true}
       onClose={() => resetForm()}>
       <BottomSheetScrollView style={styles.container}>
@@ -157,7 +235,7 @@ const AddNewUserSheet = forwardRef<
 
         <Input
           ref={firstNameRef}
-          errorMessage={'Please enter first name'}
+          errorMessage={ERROR_MESSAGE.FIRST_NAME_REQUIRED}
           label="First Name *"
           defaultValue={firstName}
           onChangeText={text => setFirstName(text)}
@@ -165,7 +243,7 @@ const AddNewUserSheet = forwardRef<
         />
         <Input
           ref={lastNameRef}
-          errorMessage={'Please enter last name'}
+          errorMessage={ERROR_MESSAGE.LAST_NAME_REQUIRED}
           label="Last Name *"
           defaultValue={lastName}
           onChangeText={text => setLastName(text)}
@@ -173,12 +251,16 @@ const AddNewUserSheet = forwardRef<
         />
         <Input
           ref={emailRef}
-          errorMessage={'Please enter email'}
+          errorMessage={''}
           label="Email *"
           placeholder="example@gmail.com"
           defaultValue={email}
           onChangeText={text => setEmail(text)}
           forBottomSheet={true}
+          isBackgroundRed={errorMessage == null ? false : true}
+          extraInputProps={{
+            onBlur: validateEmailAddress,
+          }}
         />
         <PhoneNumberInput
           ref={phoneNumberRef}
@@ -187,6 +269,7 @@ const AddNewUserSheet = forwardRef<
           onChangeText={text => setPhone(text)}
           onSelectCountry={setSelectedCountry}
           forBottomSheet={true}
+          // errorMsg={errorMessage}
         />
 
         {existingUser ? (

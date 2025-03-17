@@ -1,19 +1,11 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import React, { ReactNode, useEffect, useRef } from 'react';
-import {
-  Image,
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { COLORS } from '../../utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
-  Hp,
   radiusScale,
   verticalMarginScale,
   verticalScale,
@@ -45,9 +37,12 @@ const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
         ? { 0: { scale: 0 }, 1: { scale: 1 } }
         : { 0: { scale: 1 }, 1: { scale: 0 } };
 
-      labelRefs.current[index]?.animate(animation);
+      labelRefs.current[index]?.animate(animation as any);
     });
   }, [state.index]);
+
+  const currentRouteName = state.routes[state.index]?.name;
+  const isChatScreen = currentRouteName === 'ChatScreen';
 
   return (
     <View
@@ -55,6 +50,8 @@ const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
         styles.container,
         {
           display: showBottomTabs ? 'flex' : 'none',
+          bottom: verticalScale(30),
+          position: isChatScreen ? 'absolute' : 'static',
         },
       ]}>
       <View style={styles.tabStyle}>

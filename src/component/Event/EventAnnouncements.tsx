@@ -21,10 +21,12 @@ interface EventAnnouncementProps {
 const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleAddPress, handleViewAll, announcementData, role }) => {
   const [viewerVisible, setViewerVisible] = useState(false);
   const [media, setMedia] = useState([]);
-  const [showAll, setShowAll] = useState(false);
+  const [showAll, setShowAll] = useState(true);
   const [announcementListData, setannouncementListData] = useState([]);
   const [companyName, setCompanyName] = useState('');
   const [companyLogo, setCompanyLogo] = useState('');
+  const [viewAllLess, setviewAllLess] = useState(true);
+
   // const queryArgs = ({ eventId: eventId, take: 50, skip: 0 })
   // console.log("queryArgs", queryArgs)
   // const { data, isLoading } = useFetchHostEventsAnnouncementQuery(queryArgs);
@@ -71,7 +73,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
 
     return (
       <View style={styles.talentItem}>
-        {imageKeyUrl?.includes("http") ? (
+        {imageKeyUrl?.includes("https") ? (
           <FastImage source={{ uri: imageKeyUrl }} style={styles.icon} />
         ) : (
           <AvatarInitials name={name} size={48} />
@@ -84,12 +86,22 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
               <MediaItem key={index} item={mediaItem} media={item.attachments} name={companyName} image={imageKeyUrl} />
             ))}
           </ScrollView>
-          {!expanded && shouldShowReadMore && (
+          {/* {!expanded && shouldShowReadMore && (
             <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.toggleContainer}>
               <Text style={styles.toggleText}>{LABLE.READ_MORE}</Text>
               <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
             </TouchableOpacity>
-          )}
+          )} */}
+              {!expanded && shouldShowReadMore ? (
+                        <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.toggleContainer}>
+                            <Text style={styles.toggleText}>{ANNOUNCEMENT.READ_MORE}</Text>
+                            <FastImage source={IMAGES.downArrow} style={styles.toggleIcon} />
+                        </TouchableOpacity>) : shouldShowReadMore && (
+                            <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.toggleContainer}>
+                                <Text style={styles.toggleText}>{ANNOUNCEMENT.READ_LESS}</Text>
+                                <FastImage source={IMAGES.downArrow} style={styles.toggleIcon} />
+                            </TouchableOpacity>
+                        )}
         </View>
       </View>
     );
@@ -99,25 +111,27 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
   }
 
   const onClickViewAll = () => {
-    role == ROLE.HOST ?
+    console.log("role", role)
+    if (role == ROLE.HOST) {
       handleViewAll
-      :
-      setShowAll(!showAll)
+    } else {
+      viewAllLess ? setviewAllLess(false) : setviewAllLess(true)
+    }
   }
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Text style={styles.heading}>{LABLE.EVENT_ANNOUNCEMENTS}</Text>
         {role === ROLE.HOST &&
-        <TouchableOpacity style={styles.iconWrapper} onPress={handleAddPress}>
-          <Image source={IMAGES.plus} tintColor={'black'} style={styles.addicon} />
-        </TouchableOpacity>
-       }
+          <TouchableOpacity style={styles.iconWrapper} onPress={handleAddPress}>
+            <Image source={IMAGES.plus} tintColor={'black'} style={styles.addicon} />
+          </TouchableOpacity>
+        }
 
       </View>
       <View style={styles.divider} />
       <FlatList
-        data={showAll ? announcementListData?.slice(0, 3) : announcementListData}
+        data={viewAllLess ? announcementListData?.slice(0, 3) : announcementListData}
         keyExtractor={(item) => item?.id}
         renderItem={({ item }) => <EventItem item={item} />}
         ListEmptyComponent={
@@ -130,10 +144,16 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
       {announcementListData?.length > 3 && (
         <View style={{ paddingVertical: 5 }}>
           <View style={styles.divider} />
-          <TouchableOpacity onPress={onClickViewAll} style={[styles.toggleContainer, { marginTop: 5 }]}>
-            <Text style={styles.toggleText}>{showAll ? LABLE.VIEW_ALL : LABLE.VIEW_LESS}</Text>
-            <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
-          </TouchableOpacity>
+          {role == ROLE.HOST ?
+            <TouchableOpacity onPress={handleViewAll} style={[styles.toggleContainer, { marginTop: 5 }]}>
+              <Text style={styles.toggleText}>{LABLE.VIEW_ALL}</Text>
+              <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
+            </TouchableOpacity> :
+            <TouchableOpacity onPress={() => setviewAllLess(!viewAllLess)} style={[styles.toggleContainer, { marginTop: 5 }]}>
+              <Text style={styles.toggleText}>{viewAllLess ? LABLE.VIEW_ALL : LABLE.VIEW_LESS}</Text>
+              <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
+            </TouchableOpacity>
+          }
         </View>
       )}
       {viewerVisible &&

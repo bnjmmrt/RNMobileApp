@@ -1,6 +1,15 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Platform, StyleSheet,SafeAreaView,KeyboardAvoidingView,Keyboard, Text,View, ScrollView} from 'react-native';
-import { useSelector} from 'react-redux';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  Platform,
+  StyleSheet,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Keyboard,
+  Text,
+  View,
+  ScrollView,
+} from 'react-native';
+import { useSelector } from 'react-redux';
 import Header from '../../../component/Header/Header';
 import {
   BUTTON_LABLE,
@@ -9,7 +18,7 @@ import {
   LABLE,
   PROFILE,
 } from '../../../utils/constants';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import {
   fontScale,
   horizontalMarginScale,
@@ -19,16 +28,17 @@ import {
   verticalScale,
   Wp,
 } from '../../../utils/dimensions';
-import {fontFamily} from '../../../utils/functions';
+import { fontFamily } from '../../../utils/functions';
 import CreativeFocusComponent from './CreativeFocusComponent';
 import Button from '../../../component/Button';
 import ConfirmationBottomSheet from '../../../component/BottomSheet/ConfirmationBottomSheet';
 import IMAGES from '@images/index';
 import Toast from '../../../component/Toast/Toast';
 import useApi from '../../../axios/useApi';
-import {EndPoint} from 'src/ApiManager/config';
-import {RootState} from '../../../redux/slices';
+import { EndPoint } from 'src/ApiManager/config';
+import { RootState } from '../../../redux/slices';
 import Input from 'src/component/Input/Input';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 interface FeedbackScreenProps {}
 
@@ -39,14 +49,14 @@ export interface Tag {
 }
 
 const list: Tag[] = [
-  {id: 1, name: 'General', value: 'general'},
-  {id: 2, name: 'Bug', value: 'bug'},
-  {id: 3, name: 'New Feature Suggestions', value: 'new_feature_suggestion'},
-  {id: 4, name: 'New Event Suggestions', value: 'new_feature_suggestion'},
+  { id: 1, name: 'General', value: 'general' },
+  { id: 2, name: 'Bug', value: 'bug' },
+  { id: 3, name: 'New Feature Suggestions', value: 'new_feature_suggestion' },
+  { id: 4, name: 'New Event Suggestions', value: 'new_feature_suggestion' },
 ];
 const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   const navigation = useNavigation();
-  const {apiRequest, loading, error} = useApi();
+  const { apiRequest, loading, error } = useApi();
   const confirmationRef = useRef<any>(null);
   const [isToastShown, setIsToastShown] = useState(false);
 
@@ -54,18 +64,36 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   const userId = useSelector((state: RootState) => state.auth.userId);
   const feedbackRef = useRef<any>(null);
 
-  useEffect(()=>{
+  useEffect(() => {
     // Keyboard.dismiss()
-  },[selectedData])
+  }, [selectedData]);
   const handleBackPress = () => {
     navigation.goBack();
   };
 
+  const validateLength = () => {
+    const regex = /^\s*(\S+\s*){0,500}$/;
+     if(!regex.test(feedbackRef?.current.inputText)){
+      feedbackRef?.current?.setErrorMessage(
+                ERROR_MESSAGE.FEEDBACK_SIZE_EXCEED,
+              );
+              return false;
+     }
+     feedbackRef?.current?.setErrorMessage('');
+     return true;
+  };
   const onSubmit = async () => {
+    console.log("selectedData",selectedData)
+    if(selectedData?.length){
+      setIsToastShown(false);
+    }else{
+      setIsToastShown(true);
+    }
     if (
       feedbackRef?.current.validateInputs() &&
+      validateLength() &&
       !isToastShown &&
-      selectedData
+      selectedData?.length
     ) {
       const requestData = {
         description: feedbackRef?.current.inputText,
@@ -79,12 +107,14 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
         requestData,
       );
       console.log('feedback response', response);
-      if (response.status === 200) {
+      if (response.success) {
         confirmationRef.current.open();
         //  clearData()
+      }else{
+        FlashMessageComponent.show("error",response.message)
       }
     } else {
-      setIsToastShown(true);
+      // setIsToastShown(true);
     }
   };
 
@@ -92,50 +122,46 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
     
   
     <SafeAreaView style={styles.container}>
-    <ScrollView >
-    <KeyboardAvoidingView 
-    behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
-  
->
-      <Header
-        headerTitle={PROFILE.FEEDBACK}
-        onPress={handleBackPress}
-        showProgressBar={false}
-      />
+      <ScrollView>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <Header
+            headerTitle={PROFILE.FEEDBACK}
+            onPress={handleBackPress}
+            showProgressBar={false}
+          />
 
-      <View style={styles.contentContainer}>
-        <Text style={styles.subTitle}>{PROFILE.FEEDBACK_SUBTITLE}</Text>
-        <Input
-          ref={feedbackRef}
-          placeholder={LABLE.ENTER_FEEDBACK}
-          errorMessage={ERROR_MESSAGE.FEEDBACK_ERROR}
-          multiline={true}
-          maxLength={500}
-        />
-        <Text style={styles.tagText}>Tag</Text>
-        <CreativeFocusComponent
-          list={list}
-          setIsToastShown={setIsToastShown}
-          getSelectedData={getSelectedData}
-        />
-{isToastShown && (
-          <Text style={styles.error}>Please select tag</Text>
-        )}
-       
-      </View>
+          <View style={styles.contentContainer}>
+            <Text style={styles.subTitle}>{PROFILE.FEEDBACK_SUBTITLE}</Text>
+            <Input
+              ref={feedbackRef}
+              placeholder={LABLE.ENTER_FEEDBACK}
+              errorMessage={ERROR_MESSAGE.FEEDBACK_ERROR}
+              multiline={true}
+              // maxLength={500}
+            />
+            <Text style={styles.tagText}>Tag</Text>
+            <CreativeFocusComponent
+              list={list}
+              setIsToastShown={setIsToastShown}
+              getSelectedData={getSelectedData}
+            />
+            {isToastShown && (
+              <Text style={styles.error}>Please select tag</Text>
+            )}
+          </View>
 
-      <ConfirmationBottomSheet
-        ref={confirmationRef}
-        logo={IMAGES.check_gray}
-        title={PROFILE.FEEDBACK_MESSAGE}
-        subTitle={PROFILE.FEEDBACK_CONFIRMATION_MESSAGE}
-        btnLabel={BUTTON_LABLE.CLOSE}
-        back={handleBackPress}
-      />
-      </KeyboardAvoidingView>
-      
+          <ConfirmationBottomSheet
+            ref={confirmationRef}
+            logo={IMAGES.check_gray}
+            title={PROFILE.FEEDBACK_MESSAGE}
+            subTitle={PROFILE.FEEDBACK_CONFIRMATION_MESSAGE}
+            btnLabel={BUTTON_LABLE.CLOSE}
+            back={handleBackPress}
+          />
+        </KeyboardAvoidingView>
       </ScrollView>
-      
+
       <Button
         disabled={false}
         style={styles.btnStyle}
@@ -160,7 +186,7 @@ const styles = StyleSheet.create({
     paddingVertical: verticalMarginScale(0),
     paddingHorizontal: horizontalMarginScale(20),
     height: '100%',
-    paddingBottom:100
+    paddingBottom: 100,
   },
   subTitle: {
     color: COLORS.light_gray,
@@ -204,10 +230,10 @@ const styles = StyleSheet.create({
     marginTop: verticalMarginScale(5),
     color: COLORS.errorText,
   },
-  error:{
-    color:COLORS.errorText,
-    fontSize:fontScale(12),
-    fontWeight:'500'
-  }
+  error: {
+    color: COLORS.errorText,
+    fontSize: fontScale(12),
+    fontWeight: '500',
+  },
 });
 export default FeedbackScreen;

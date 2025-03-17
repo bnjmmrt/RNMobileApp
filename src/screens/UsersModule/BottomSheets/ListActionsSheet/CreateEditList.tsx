@@ -51,7 +51,7 @@ const EditListName = ({
           customName: customName,
           userIds: [],
         }).unwrap();
-        if (response.status === 200) {
+        if (response.success) {
           resetForm();
           onSuccessAdd(response?.data?.id, response?.data?.name);
         } else {
@@ -72,7 +72,7 @@ const EditListName = ({
           customName: customName,
           listId: listId,
         }).unwrap();
-        if (response.status === 200) {
+        if (response.success) {
           resetForm();
           onSuccessEdit();
         } else {

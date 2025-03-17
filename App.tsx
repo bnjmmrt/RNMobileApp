@@ -26,7 +26,7 @@ import { setFcmToken } from 'src/redux/slices/authSlice';
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
-  const { apiRequest, loading, error } = useApi();
+  const { apiRequest } = useApi();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -39,18 +39,17 @@ const AppContent: React.FC = () => {
   }
 
 
-  // useEffect(() => {
-  //   // Enable screenshot prevention
-  //   RNPreventScreenshot?.enableSecureView();
+  useEffect(() => {
+    RNPreventScreenshot?.enableSecureView();
+    return () => {
+      RNPreventScreenshot?.disableSecureView();
+    };
+  }, [RNPreventScreenshot]);
 
-  //   // Cleanup on unmount
-  //   return () => {
-  //     RNPreventScreenshot?.disableSecureView();
-  //   };
-  // }, [RNPreventScreenshot]);
 
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
+    console.log("focusResponse.data",focusResponse.data)
     if (focusResponse.data) {
       focusResponse.data.sort((a, b) => a.name.localeCompare(b.name));
       dispatch(setCreativeFocus(focusResponse.data));

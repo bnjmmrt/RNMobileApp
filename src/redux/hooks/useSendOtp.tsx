@@ -14,7 +14,7 @@ export const useSendOtp = (email?: string, phone?: string) => {
             const requestParam = { email, phoneNumber: phone };
             const response = await checkMemberLogin(requestParam).unwrap();
 
-            if (response.status === 200) {
+            if (response.success) {
                 setMemberExist(response?.data?.isValid);
                 setGuest(response?.data?.isGuest || false)
                 dispatch(setIsGuest(response?.data?.isGuest || false))

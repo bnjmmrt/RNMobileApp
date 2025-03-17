@@ -29,7 +29,7 @@ import {
   setLastName,
   setPhone,
 } from 'src/redux/slices/appFlowSlice';
-import { RootState } from 'src/redux/slices';
+import { verticalMarginScale } from 'src/utils/dimensions';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -80,6 +80,20 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         setKeyboardVisible(false);
       },
     );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardVisible(true);
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardVisible(false);
+    });
 
     return () => {
       keyboardDidShowListener.remove();
@@ -166,7 +180,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}>
+      style={styles.container}>
       {/* <FullScreenLoader loading={isLoading}> */}
       <View style={styles.container}>
         <BackButton onPress={handleBackPress} />
@@ -185,7 +199,12 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
           <View style={styles.spacer} />
           <Button
             disabled={false}
-            style={styles.btnStyle}
+            style={[
+              styles.btnStyle,
+              {
+                marginBottom: keyboardVisible ? Platform.OS === 'ios' ? verticalMarginScale(60): verticalMarginScale(10) : 0,
+              },
+            ]}
             title={BUTTON_LABLE.GET_STARTED}
             colorTheme="dark"
             onPress={onNextClick}

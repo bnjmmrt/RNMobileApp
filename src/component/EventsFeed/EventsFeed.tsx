@@ -220,7 +220,8 @@ const EventsFeed = () => {
     searchText: searchTerm,
     queryString: filterQuery,
     userId: userId,
-    // take: 30,
+    // take: 100,
+    // skip: 0
     // skip: (currentPage - 1) * 30,
   });
 
@@ -276,13 +277,16 @@ const EventsFeed = () => {
   };
 
   useEffect(() => {
-    if (data?.data?.data) {
-      const eventsRes = data?.data?.data;
+
+
+    if (data?.data?.result) {
+      const eventsRes = data?.result;
       // const featuredEventsRes = data?.data?.data?.filter(
       //   (item: any) => item.featuredEventSection,
       // );
       const { result, allArray } = groupEventsByFeaturedSection(data);
-      // console.log("Grouped Events:", result);
+      console.log("Grouped Events:", result);
+      console.log("All Events:", allArray);
 
 
 
@@ -320,6 +324,40 @@ const EventsFeed = () => {
 
     return { result, allArray }; // Return both grouped featured events and all other events in a single array
   }
+
+
+  function groupEventsByFeaturedSection(mainResponse) {
+    // console.log(":DATA RESULTH:0", mainResponse);
+    console.log(":DATA RESULTH:1", mainResponse?.data?.result);
+
+    let groupedEvents = {};
+    let allArray = []; // Single array to store all non-featured events
+
+    mainResponse?.data?.result.forEach(event => {
+      if (event?.featuredEventSection) {
+        const sectionId = event.featuredEventSection.id;
+        if (!groupedEvents[sectionId]) {
+          groupedEvents[sectionId] = {
+            id: sectionId,
+            index: event.featuredEventSection.index,
+            name: event.featuredEventSection.name,
+            events: []
+          };
+        }
+        groupedEvents[sectionId].events.push(event);
+      } else {
+        allArray.push(event); // Push non-featured events into a single array
+      }
+    });
+
+    // Convert groupedEvents object into an array
+    let result = Object.values(groupedEvents);
+
+    return { result, allArray }; // Return both grouped featured events and all other events in a single array
+  }
+  useEffect(() => {
+    console.log("ALl Events", allEvents);
+  }, [allEvents])
 
 
   useFocusEffect(

@@ -19,9 +19,17 @@ export const inviteGuestsApiAction = createBaseApi.injectEndpoints({
           users: string[];
         };
       }) => ({
-        url: `${EndPoint.events}/${eventId}/guests`,
-        method: 'POST',
-        body: payload,
+        url: `${EndPoint.events_events}/manage-guests?eventId=${eventId}`,
+        method: 'PUT',
+        body: {
+          ...payload,
+          action: 'CREATE',
+          exclusiveIds: [],
+          currentStatus: payload.guestStatus,
+          inclusiveIds: payload.users,
+          isSelectedAll: false,
+          sendNotification: true,
+        },
       }),
     }),
     inviteNewGuests: builder.mutation({
@@ -43,7 +51,7 @@ export const inviteGuestsApiAction = createBaseApi.injectEndpoints({
           phoneNumber?: string;
         };
       }) => ({
-        url: `${EndPoint.events}/${eventId}/invite-new-user`,
+        url: `${EndPoint.events_events}/${eventId}/invite-new-user`,
         method: 'POST',
         body: payload,
       }),

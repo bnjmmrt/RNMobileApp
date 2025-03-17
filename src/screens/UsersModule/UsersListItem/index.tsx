@@ -17,6 +17,7 @@ export interface UserItemInterface {
   id: string;
   interests: string[];
   isFavourite: boolean;
+  isInCustomList: boolean;
   name: string;
   profilePicture: string;
   type: string;
@@ -50,7 +51,9 @@ const UserListItem: React.FC<UserListItemProps> = ({
           imgUrl={item.profilePicture}
           size={40}
         />
-        <CustomText style={styles.username}>{item.name}</CustomText>
+        <CustomText style={styles.username} textProps={{ numberOfLines: 2 }}>
+          {item.name}
+        </CustomText>
       </View>
       {showCheckbox ? (
         <TouchableOpacity onPress={() => onSelectUser(item)}>

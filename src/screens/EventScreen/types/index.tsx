@@ -51,12 +51,17 @@ export interface EventGuest {
 }
 
 export interface ManageGuestPayload {
+  action: 'CREATE' | 'UPDATE' | 'DELETE';
+  exclusiveIds: string[];
   guestStatus: GuestStatus;
+  currentStatus: GuestStatus;
+  inclusiveIds: string[];
   inviteMessage?: string;
+  isSelectedAll: boolean;
   maxAdditionalGuests?: number;
   privateGuestNote?: string;
+  sendNotification: boolean;
   ticketTypeId?: string;
-  users?: string[];
 }
 
 export interface GuestListResponse {

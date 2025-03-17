@@ -66,7 +66,7 @@ const EventRequests: React.FC<EventOverviewProps> = ({
         <Button
           disabled={false}
           style={styles.btnStyle}
-          title={BUTTON_LABLE.SHOW_TICKET_BREAKDOWN}
+          title={BUTTON_LABLE.MANAGE_GUEST_LIST}
           colorTheme="dark"
           onPress={onTicketBreakdownPress}
         />

@@ -22,7 +22,7 @@ const ReportHostView = ({ onClose, userId, hostId, roleId, hostRoleId }: {
 
         if (validateInputs()) {
             try {
-                const response = await apiRequest('post', `v1/auth/user/${userId}/report`, {
+                const response = await apiRequest('post', `users/v1/auth/user/${userId}/report`, {
                     reportMessage: inputText,
                     reportedByRoleId: roleId,
                     reportedToroleId: hostRoleId,

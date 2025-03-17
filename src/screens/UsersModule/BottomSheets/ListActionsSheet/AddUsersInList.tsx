@@ -7,6 +7,7 @@ import AvatarInitials from 'src/component/AvatarInitials';
 import Button from 'src/component/Button';
 import { CustomText } from 'src/component/CustomText';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import SearchInput from 'src/component/SearchInput';
 import { AppStackParamList } from 'src/navigation/AppStack';
 import { ROUTES } from 'src/navigation/Route';
@@ -27,14 +28,12 @@ const AddUsersInList = ({
   showError,
   listId,
   listName,
-  selectedUsers: users,
 }: {
   onSuccess: () => void;
   closeSheet: () => void;
   showError: (message: string) => void;
   listId: string;
   listName: string;
-  selectedUsers?: string[];
 }) => {
   const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
@@ -42,14 +41,15 @@ const AddUsersInList = ({
   const [searchText, setSearchText] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
   const [allUsers, setAllUsers] = useState<{
-    users: UserItemInterface[];
+    result: UserItemInterface[];
     totalCount: number;
-  }>({ totalCount: 0, users: [] });
+  }>({ totalCount: 0, result: [] });
 
   const { data, isLoading } = useFetchAllUsersQuery({
     take: 10,
     skip: (currentPage - 1) * 10,
     searchValue: searchText,
+    customListId: listId,
   });
 
   const [
@@ -58,7 +58,7 @@ const AddUsersInList = ({
   ] = useAddUsersToCustomListMutation();
 
   const loadMore = () => {
-    if (allUsers?.users?.length < data?.data?.totalCount && !isLoading) {
+    if (allUsers?.result?.length < data?.data?.totalCount && !isLoading) {
       setCurrentPage(prev => prev + 1);
     }
   };
@@ -98,7 +98,15 @@ const AddUsersInList = ({
     };
     try {
       const response = await addUsersToList(payload).unwrap();
-      if (response.status === 200) {
+      if (response.success) {
+        FlashMessageComponent.show(
+          'success',
+          `${
+            selectedUsers && selectedUsers?.length > 1
+              ? `${selectedUsers?.length} Users`
+              : 'User'
+          } added to list`,
+        );
         onSuccess();
       } else {
         showError('Something went wrong!');
@@ -111,11 +119,16 @@ const AddUsersInList = ({
 
   const renderListRow = useCallback(
     ({ item, index }: { item: UserItemInterface; index: number }) => {
-      const isSelected = selectedUsers.some(user => user === item.id);
+      const isSelected =
+        selectedUsers.some(user => user === item.id) || item.isInCustomList;
       return (
         <TouchableOpacity
-          style={styles.userContainer}
-          onPress={() => onSelectUser(item)}>
+          style={[
+            styles.userContainer,
+            item.isInCustomList && { opacity: 0.5 },
+          ]}
+          onPress={() => onSelectUser(item)}
+          disabled={item.isInCustomList}>
           <View style={styles.userInfoContainer}>
             <Image
               source={
@@ -151,7 +164,7 @@ const AddUsersInList = ({
       } else {
         setAllUsers(prev => ({
           totalCount: data.data.totalCount,
-          users: [...prev.users, ...data.data.users],
+          result: [...prev.result, ...data.data.result],
         }));
       }
     }
@@ -163,13 +176,7 @@ const AddUsersInList = ({
         {'Select Users to Add to List'}
       </CustomText>
       <BottomSheetFlatList
-        data={
-          users
-            ? allUsers.users.filter(
-                item1 => !users.some(item2 => item2 === item1.id),
-              )
-            : allUsers?.users || []
-        }
+        data={allUsers?.result || []}
         renderItem={renderListRow}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{ gap: verticalMarginScale(8) }}

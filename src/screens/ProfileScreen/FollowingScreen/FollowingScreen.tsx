@@ -30,7 +30,7 @@ const FollowingScreen: React.FC = () => {
   const { apiRequest, loading } = useApi();
   const [searchQuery, setSearchQuery] = useState('');
   const { setParams, navigate, goBack } = useNavigation<any>();
-  const [pagination, setPagination] = useState({ take: 12, skip: 0 });
+  const [pagination, setPagination] = useState({ take: 100, skip: 0 });
   const [hostList, setHostList] = useState<any[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -71,7 +71,7 @@ const FollowingScreen: React.FC = () => {
 
   const handleRefresh = () => {
     setIsRefreshing(true);
-    setPagination({ take: 12, skip: 0 });
+    setPagination({ take: 100, skip: 0 });
     setHostList([]);
     setHasMore(true);
   };
@@ -139,14 +139,16 @@ const FollowingScreen: React.FC = () => {
           </View> : null
         }
         ListHeaderComponent={
-          <View style={{ marginBottom: 16 }}>
-            <SearchInput
-              onSearchTextChange={handleSearch}
-              placeholder="Search Hosts.."
-              value={searchQuery}
-              mainContainerStyle={{ marginHorizontal: 0 }}
-            />
-          </View>
+          hostList.length > 0 || searchQuery.length > 0 ? (
+            <View style={{ marginBottom: 16 }}>
+              <SearchInput
+                onSearchTextChange={handleSearch}
+                placeholder="Search Hosts.."
+                value={searchQuery}
+                mainContainerStyle={{ marginHorizontal: 0 }}
+              />
+            </View>
+          ) : null
         }
         keyExtractor={(item: any) => item.id}
         renderItem={({ item }) => (

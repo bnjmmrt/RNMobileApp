@@ -67,8 +67,13 @@ const FilterOptions = ({
   const minAgeInputRef = useRef<InputRefMethods>(null);
   const maxAgeInputRef = useRef<InputRefMethods>(null);
 
-  const [minAge, setMinAge] = useState<string>('');
-  const [maxAge, setMaxAge] = useState<string>('');
+  const [minAge, setMinAge] = useState<string>(
+    ((selectedFilters && selectedFilters?.ageFrom?.value[0].id) as string) ||
+      '',
+  );
+  const [maxAge, setMaxAge] = useState<string>(
+    ((selectedFilters && selectedFilters?.ageTo?.value[0].id) as string) || '',
+  );
 
   const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false);
   const [alert, setAlert] = useState<boolean>(false);
@@ -96,6 +101,12 @@ const FilterOptions = ({
       }
     }
   }, [minAge, maxAge, setDisableApplyCta]);
+  const minStartDate = selectedFilters['minStartDate']?.value[0]?.id;
+  const maxEndDate = selectedFilters['maxEndDate']?.value[0]?.id;
+
+  const formattedMinDate = dayjs(minStartDate).isValid() ? dayjs(minStartDate).format('MM/DD/YY') : '';
+  const formattedMaxDate = dayjs(maxEndDate).isValid() ? dayjs(maxEndDate).format('MM/DD/YY') : 'No max date';
+
 
   return (
     <BottomSheetView>
@@ -147,15 +158,7 @@ const FilterOptions = ({
               resizeMode="contain"
             />
             <BottomSheetView style={styles.inputValueWithLabel}>
-              <CustomText>{`${dayjs(
-                selectedFilters['minStartDate']?.value[0]
-                  ? selectedFilters['minStartDate']?.value[0]?.id
-                  : undefined,
-              ).format('MM/DD/YY')} - ${dayjs(
-                selectedFilters['maxEndDate']?.value[0]
-                  ? selectedFilters['maxEndDate']?.value[0]?.id
-                  : undefined,
-              ).format('MM/DD/YY')}`}</CustomText>
+              <CustomText>{`${formattedMinDate} - ${formattedMaxDate}`}</CustomText>
               <Image
                 source={IMAGES.downArrow}
                 style={styles.icon}
@@ -236,7 +239,10 @@ const FilterOptions = ({
             inputFieldContainerStyle={{ height: verticalScale(40) }}
             onChangeText={text => {
               setMinAge(text);
-              onChangeOptionValue(id, optionType, { id: text, name: text });
+              onChangeOptionValue('ageFrom', optionType, {
+                id: text,
+                name: text,
+              });
             }}
             keyboardType="number-pad"
           />
@@ -251,7 +257,10 @@ const FilterOptions = ({
             inputFieldContainerStyle={{ height: verticalScale(40) }}
             onChangeText={text => {
               setMaxAge(text);
-              onChangeOptionValue(id, optionType, { id: text, name: text });
+              onChangeOptionValue('ageTo', optionType, {
+                id: text,
+                name: text,
+              });
             }}
             keyboardType="number-pad"
           />

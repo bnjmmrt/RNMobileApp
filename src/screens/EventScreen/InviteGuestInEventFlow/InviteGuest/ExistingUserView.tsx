@@ -63,7 +63,7 @@ const ExistingUserView: React.FC<ExistingUserViewProps> = ({}) => {
       } else {
         response = await markUserFav(payload).unwrap();
       }
-      if (response.status === 200) {
+      if (response.success) {
         if (isFavorite) {
           FlashMessageComponent.show('success', 'User removed from favorites');
         } else {
@@ -164,6 +164,7 @@ const ExistingUserView: React.FC<ExistingUserViewProps> = ({}) => {
                 title: 'Favorite',
                 icon: isFavorite ? IMAGES.star_active : IMAGES.star_inactive,
                 onPress: () => handleFavCta(selectedUsers[0].id),
+                loading: markUserFavLoading || unMarkUserFavLoading,
               },
               {
                 title: 'Profile',

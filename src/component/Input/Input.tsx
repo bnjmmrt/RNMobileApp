@@ -27,6 +27,7 @@ import {
 } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import IMAGES from '@images/index';
 
 interface InputProps {
   label?: string;
@@ -52,6 +53,8 @@ interface InputProps {
   placeholderTextColor?: string
   maxLength?: number;
   hasDropdown?: boolean;
+  isBackgroundRed?: boolean;
+  hasHandler?: boolean;
 }
 
 export type InputRefMethods = {
@@ -84,7 +87,9 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     extraInputProps,
     labelStyle,
     maxLength,
-    hasDropdown = false
+    hasDropdown = false,
+    isBackgroundRed = false,
+    hasHandler = false
   } = props;
 
   const [inputText, setInputText] = useState(defaultValue);
@@ -128,6 +133,8 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     }
   }, [defaultValue]);
 
+  const InputWrapper = onPressImage ? TouchableOpacity : View;
+
   const InputComponent = forBottomSheet ? BottomSheetTextInput : TextInput;
 
   return (
@@ -141,7 +148,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
       )}
 
       {/* Input Field */}
-      <View
+      <InputWrapper
         style={[
           styles.inputContainer,
           multiline ? styles.multilineInputContainer : null,
@@ -150,8 +157,10 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
               ? [styles.errorInputWrapper, styles.multilineInputContainer]
               : styles.errorInputWrapper
             : null,
+
           inputFieldContainerStyle,
-          !hasDropdown && { backgroundColor: !editable ? COLORS.borderGray : errorMessage ? COLORS.bgRed : COLORS.white }
+          !hasDropdown && { backgroundColor: !editable ? COLORS.borderGray : errorMessage ? COLORS.bgRed : COLORS.white },
+          isBackgroundRed && [styles.errorInputWrapper],
         ]}>
         {leftImage && (
           <Image
@@ -160,7 +169,10 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
           />
         )}
         <InputComponent
+
           {...props}
+          onPress={onPressImage}
+          activeOpacity={onPressImage ? 0.7 : 1}
           blurOnSubmit={blurOnSubmit}
           editable={editable}
           style={[styles.input, multiline ? styles.multilineInput : null, { color: editable ? COLORS.black : COLORS.neutral_disabled }]}
@@ -179,6 +191,14 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
           {...extraInputProps}
           maxLength={maxLength}
         />
+        {
+          hasHandler && (
+            <View style={styles.resizeHandle}>
+              <Image style={{ width: 10, height: 10 }} resizeMode='contain' source={IMAGES.Handler} />
+            </View>
+          )
+        }
+
         {rightImage && (
           <TouchableOpacity onPress={onPressImage}>
             <Image
@@ -187,7 +207,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
             />
           </TouchableOpacity>
         )}
-      </View>
+      </InputWrapper>
 
       {/* Dynamic Error Message */}
       {errorMessage ? (
@@ -249,6 +269,13 @@ const styles = StyleSheet.create({
     fontSize: fontScale(12),
     marginTop: verticalMarginScale(5),
     color: COLORS.errorText,
+  },
+  resizeHandle: {
+    position: "absolute",
+    bottom: 5,
+    right: 5,
+    backgroundColor: "white",
+    padding: 2,
   },
 });
 

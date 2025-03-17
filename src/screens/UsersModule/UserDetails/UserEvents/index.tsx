@@ -20,7 +20,7 @@ interface UserEventsProps {
 }
 
 const filterData: Filter[] = [
-  { label: 'All', value: '' },
+  { label: 'All', value: 'CONFIRMED,INVITED,APPLIED,PAST,DECLINED' },
   { label: 'Upcoming', value: 'CONFIRMED' },
   { label: 'Past', value: 'PAST' },
   { label: 'Invited', value: 'INVITED' },
@@ -32,45 +32,43 @@ const UserEvents: React.FC<UserEventsProps> = ({ user }) => {
   const actionSheetRef = useRef<BottomSheetMethods>(null);
 
   const [allEvents, setAllEvents] = useState<{
-    data: EventItem[];
+    result: EventItem[];
     totalCount: number;
   }>({
-    data: [],
+    result: [],
     totalCount: 0,
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState<Filter>(filterData[0]);
 
   const { data, isLoading, error, isError, refetch } = useFetchAllEventsQuery({
-    queryString: `${
-      selectedFilter.value !== ''
-        ? `guestEventStatus=${selectedFilter.value}`
-        : ''
-    }`,
+    queryString: `guestEventStatus=${selectedFilter.value}`,
     userId: user,
     take: 10,
     skip: (currentPage - 1) * 10,
+    isFeed: false,
   });
 
   const onPressApplyFilter = (filter: Filter) => {
+    setCurrentPage(1);
     setSelectedFilter(filter);
     actionSheetRef?.current?.close();
   };
 
   const handleLoadMore = () => {
-    if (allEvents?.data?.length < data?.data?.totalCount && !isLoading) {
+    if (allEvents?.result?.length < data?.data?.totalCount && !isLoading) {
       setCurrentPage(prev => prev + 1);
     }
   };
 
   useEffect(() => {
-    if (data && data.data) {
+    if (data?.data?.result) {
       if (currentPage === 1) {
         setAllEvents(data.data);
       } else {
         setAllEvents(prev => ({
           totalCount: data.data.totalCount,
-          data: [...prev.data, ...data?.data?.data],
+          result: [...prev.result, ...data?.data.result],
         }));
       }
     }
@@ -88,7 +86,7 @@ const UserEvents: React.FC<UserEventsProps> = ({ user }) => {
       />
 
       <FlatList
-        data={allEvents?.data || []}
+        data={allEvents?.result || []}
         keyExtractor={(_item, index) => index.toString()}
         renderItem={renderItem}
         onEndReached={handleLoadMore}

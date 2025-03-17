@@ -41,7 +41,7 @@ const MarkAsSpam = ({
           user: user,
         }).unwrap();
 
-        if (response.status === 200) {
+        if (response.success) {
           showSuccess(
             `${userDetails.firstName} ${userDetails.lastName} ${
               userDetails?.isSpam ? 'unmarked' : 'marked'

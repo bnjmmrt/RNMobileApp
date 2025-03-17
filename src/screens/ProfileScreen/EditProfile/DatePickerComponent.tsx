@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
 import IMAGES from '../../../assets/images';
 import { LABLE, ERROR_MESSAGE } from '../../../utils/constants';
-import DatepickerBottomSheet from '../../../component/BottomSheet/CustomDatepickerBottomSheet';
+import CustomDatepickerBottomSheet from '../../../component/BottomSheet/CustomDatepickerBottomSheet';
 import { validateAge } from '../../../utils/functions';
 import { horizontalMarginScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import CustomDateTimePickerBottomSheet from 'src/component/BottomSheet/CustomDateTimePickerBottomSheet';
@@ -21,7 +21,9 @@ const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) =>
     bottomSheetRef.current?.open();
   };
   useImperativeHandle(ref, () => ({
-    validateBirthDate, selectedDate
+    validateBirthDate, selectedDate,
+    validateEventDate,
+    setSelectedDate
   }));
 
   const handleDateChange = (date: string) => {
@@ -42,6 +44,17 @@ const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) =>
     return true;
   };
 
+  const validateEventDate = () => {
+    if (!selectedDate) {
+      setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_EVENT_DATE);
+      return false;
+    }
+    setErrorMessage(null);
+    return true;
+  };
+
+
+
   return (
     <>
       <CustomSelectableText
@@ -58,7 +71,7 @@ const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) =>
         minDate={props?.startDate}
         setSelectedDate={handleDateChange}
         date={selectedDate}
-      /> : <DatepickerBottomSheet
+      /> : <CustomDatepickerBottomSheet
         ref={bottomSheetRef}
         setSelectedDate={handleDateChange}
         date={selectedDate}
