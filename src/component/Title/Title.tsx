@@ -7,25 +7,27 @@ import { fontScale, Hp, verticalMarginScale } from '../../utils/dimensions';
 interface HeaderProps {
   title?: string;
   subTitle?: string;
-  align?: 'left' | 'center' | 'right'; 
+  align?: 'left' | 'center' | 'right';
+  numberOfLinesTitle?: number;
+  numberOfLinesSubtitle?: number;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, subTitle, align = 'left' }) => {
+const Header: React.FC<HeaderProps> = ({ title, subTitle, align = 'left', numberOfLinesTitle, numberOfLinesSubtitle }) => {
   return (
     <View style={[styles.container, { alignItems: align }]}>
-      { title && <Text style={[styles.title,{textAlign:align}]}>{title}</Text>}
-      {subTitle && <Text style={[styles.subTitle,{textAlign:align}]}>{subTitle}</Text>}
+      {title && <Text numberOfLines={numberOfLinesTitle} style={[styles.title, { textAlign: align }]}>{title}</Text>}
+      {subTitle && <Text numberOfLines={numberOfLinesSubtitle} style={[styles.subTitle, { textAlign: align }]}>{subTitle}</Text>}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop:verticalMarginScale(10),
+    marginTop: verticalMarginScale(10),
   },
   title: {
     color: COLORS.black,
-    fontSize:32,
+    fontSize: 32,
     fontFamily: fontFamily.RomieTrial_Bold,
   },
   subTitle: {
