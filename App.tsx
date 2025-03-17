@@ -23,25 +23,23 @@ import RNPreventScreenshot from 'react-native-screenshot-prevent';
 import ScreenshotDetectedDialog from 'src/component/ScreenshotDetectedDialog';
 import Intercom, { Visibility } from '@intercom/intercom-react-native';
 
-
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
   const { apiRequest } = useApi();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    RNPreventScreenshot?.enableSecureView();
+    // RNPreventScreenshot?.enableSecureView();
     Intercom.setLauncherVisibility(Visibility.GONE);
 
-    return () => {
-      RNPreventScreenshot?.disableSecureView();
-    };
-  }, [RNPreventScreenshot]);
-
+    // return () => {
+    //   RNPreventScreenshot?.disableSecureView();
+    // };
+  }, []);
 
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
-    console.log("focusResponse.data",focusResponse.data)
+    console.log('focusResponse.data', focusResponse.data);
     if (focusResponse.data) {
       focusResponse.data.sort((a, b) => a.name.localeCompare(b.name));
       dispatch(setCreativeFocus(focusResponse.data));
