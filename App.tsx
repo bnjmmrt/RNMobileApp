@@ -27,18 +27,18 @@ const AppContent: React.FC = () => {
   const { apiRequest } = useApi();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    RNPreventScreenshot?.enableSecureView();
+  // useEffect(() => {
+  //   RNPreventScreenshot?.enableSecureView();
 
-    return () => {
-      RNPreventScreenshot?.disableSecureView();
-    };
-  }, [RNPreventScreenshot]);
+  //   return () => {
+  //     RNPreventScreenshot?.disableSecureView();
+  //   };
+  // }, [RNPreventScreenshot]);
 
 
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
-    console.log("focusResponse.data",focusResponse.data)
+    console.log("focusResponse.data", focusResponse.data)
     if (focusResponse.data) {
       focusResponse.data.sort((a, b) => a.name.localeCompare(b.name));
       dispatch(setCreativeFocus(focusResponse.data));

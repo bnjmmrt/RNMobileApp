@@ -1,4 +1,4 @@
-package com.rumor
+package com.therumor
 
 import android.os.Bundle
 import android.os.Handler
@@ -9,6 +9,7 @@ import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
 import android.view.WindowManager;
+import com.therumor.R
 
 class MainActivity : ReactActivity() {
 
