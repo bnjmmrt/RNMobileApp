@@ -115,7 +115,7 @@ interface NotificationsScreenProps extends NativeStackScreenProps<any, any> { }
 const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
   navigation,
 }) => {
-  const [notifications, setNotifications] = useState(initialNotifications);
+  const [notifications, setNotifications] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const queryArgs = ({
@@ -123,10 +123,10 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
     skip: (currentPage - 1) * 10
   })
   const { data, isLoading, refetch } = useFetchNotificationQuery(queryArgs);
-
+  console.log("siya notifi", data)
   useEffect(() => {
-    if (data) {
-      setNotifications((prev) => (currentPage === 1 ? data?.data?.result : [...prev, ...data?.data?.result]));
+    if (data?.notifications.length > 0) {
+      setNotifications((prev) => (currentPage === 1 ? data?.notifications : [...prev, ...data?.notifications]));
     }
   }, [data]);
 

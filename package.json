@@ -16,8 +16,8 @@
   "dependencies": {
     "@d11/react-native-fast-image": "^8.9.1",
     "@gorhom/bottom-sheet": "^5.0.6",
-    "@notifee/react-native": "^9.1.8",
     "@intercom/intercom-react-native": "^8.3.0",
+    "@notifee/react-native": "^9.1.8",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-native-clipboard/clipboard": "^1.15.0",
     "@react-native-community/blur": "^4.4.1",
@@ -57,6 +57,7 @@
     "react-native-country-codes-picker": "^2.3.5",
     "react-native-date-picker": "^5.0.9",
     "react-native-date-ranges": "^2.5.0",
+    "react-native-device-info": "^14.0.4",
     "react-native-document-picker": "^9.3.1",
     "react-native-flash-message": "^0.4.2",
     "react-native-fs": "^2.20.0",

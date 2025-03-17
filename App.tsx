@@ -19,10 +19,10 @@ import {
 } from './src/redux/slices/appGlobalDataSlice';
 import { persistor, store } from './src/redux/store';
 import RNPreventScreenshot from 'react-native-screenshot-prevent';
-import { getFCMToken, NotificationsListener, requestUserPermission } from 'src/component/PushNotification';
+import { NotificationsListener, requestUserPermission } from 'src/component/PushNotification';
 import { navigationRef } from 'src/component/NavigationService';
 import ScreenshotDetectedDialog from 'src/component/ScreenshotDetectedDialog';
-import { setFcmToken } from 'src/redux/slices/authSlice';
+import { getDeviceId } from 'src/utils/functions';
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
@@ -34,6 +34,7 @@ const AppContent: React.FC = () => {
   }, []);
 
   const NotificationSetup = async () => {
+    getDeviceId()
     requestUserPermission()
     NotificationsListener()
   }
@@ -49,7 +50,7 @@ const AppContent: React.FC = () => {
 
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
-    console.log("focusResponse.data",focusResponse.data)
+    console.log("focusResponse.data", focusResponse.data)
     if (focusResponse.data) {
       focusResponse.data.sort((a, b) => a.name.localeCompare(b.name));
       dispatch(setCreativeFocus(focusResponse.data));

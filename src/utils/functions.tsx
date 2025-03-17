@@ -21,6 +21,9 @@ import { ROLE } from './constants';
 import { AxiosRequestConfig } from 'axios';
 import { axiosController } from 'src/axios/axiosController';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import DeviceInfo from 'react-native-device-info';
+import { setDeviceId } from 'src/redux/slices/authSlice';
+
 // import moment from 'moment-timezone';
 
 // ErrorText component with TypeScript props
@@ -30,6 +33,19 @@ interface ErrorTextProps {
 
 export const getApiBaseUrl = () => {
   return settings.apiUrl.replace(/[^\x20-\x7E]/g, '');
+};
+
+export const getDeviceId = async () => {
+  const dispatch = store.store.dispatch;
+
+  DeviceInfo.getUniqueId()
+    .then(uniqueId => {
+      console.log('Device Unique ID:', uniqueId);
+      dispatch(setDeviceId(uniqueId))
+    })
+    .catch(error => {
+      console.error('Error getting unique ID:', error);
+    });
 };
 
 export const LINKS = {
@@ -446,10 +462,10 @@ export const extractCountryCode = (phoneNumber: string) => {
 export const getCountryFlag = (countryCode: string) => {
   return countryCode
     ? countryCode
-        .toUpperCase()
-        .split('')
-        .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
-        .join('')
+      .toUpperCase()
+      .split('')
+      .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
+      .join('')
     : '';
 };
 export interface ApiErrorInterface {
