@@ -86,7 +86,7 @@ interface Props {
   searchMessage?: string;
   androidWindowSoftInputMode?: string;
   initialState?: string;
-  selectedCountry?: any
+  selectedCountry?: any;
 }
 
 export const CountryPicker = ({
@@ -215,7 +215,7 @@ export const CountryPicker = ({
   };
 
   const closeModal = () => {
-    setSearchValue('')
+    setSearchValue('');
     Animated.timing(animationDriver, {
       toValue: 0,
       duration: 300,
@@ -223,7 +223,13 @@ export const CountryPicker = ({
     }).start(() => setShowModal(false));
   };
 
-  const renderItem = ({ item, index }: { item: CountryItem; index: number }) => {
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: CountryItem;
+    index: number;
+  }) => {
     let itemName = item?.name[lang];
     let checkName = itemName?.length ? itemName : item?.name['en'];
     return (
@@ -284,8 +290,7 @@ export const CountryPicker = ({
       <Pressable
         onPress={() => {
           Keyboard.dismiss();
-          typeof closeCountryModal === 'function' &&
-            closeCountryModal();
+          typeof closeCountryModal === 'function' && closeCountryModal();
         }}
         style={{
           flex: 1,
@@ -320,9 +325,17 @@ export const CountryPicker = ({
               ],
             },
           ]}>
-          <View style={{ alignSelf: 'center', padding: 2.5, borderRadius: 10, width: 50, borderColor: COLORS.borderGray, backgroundColor: COLORS.borderGray }} />
-          <Pressable
-            style={{ flexDirection: 'column' }}>
+          <View
+            style={{
+              alignSelf: 'center',
+              padding: 2.5,
+              borderRadius: 10,
+              width: 50,
+              borderColor: COLORS.borderGray,
+              backgroundColor: COLORS.borderGray,
+            }}
+          />
+          <Pressable style={{ flexDirection: 'column' }}>
             <Text
               style={{
                 fontSize: 32,
@@ -366,20 +379,20 @@ export const CountryPicker = ({
           {resultCountries.length === 0 ? (
             <View
               style={[styles.countryMessage, style?.countryMessageContainer]}>
-             <View style={{
-                marginTop: verticalMarginScale(180)
-              }}>
+              <View
+                style={{
+                  marginTop: verticalMarginScale(180),
+                }}>
                 <EventEmptyRecord
-                  title={"No Results"}
-                  subTitle={"Please refine your search."}
+                  title={'No Results'}
+                  subTitle={'Please refine your search.'}
                   isLoading={false}
                 />
               </View>
-
             </View>
           ) : (
             <View style={{ marginTop: 15 }}>
-              {selectedCountry != '' &&
+              {selectedCountry != '' && (
                 <View>
                   <TouchableOpacity
                     style={{
@@ -398,7 +411,8 @@ export const CountryPicker = ({
                       typeof pickerButtonOnPress === 'function' &&
                         pickerButtonOnPress(selectedCountry);
                     }}>
-                    <Text style={[style?.flag, { fontSize: 25, marginEnd: 10 }]}>
+                    <Text
+                      style={[style?.flag, { fontSize: 25, marginEnd: 10 }]}>
                       {selectedCountry?.flag}
                     </Text>
                     <Text
@@ -415,14 +429,17 @@ export const CountryPicker = ({
                     <Text
                       style={[
                         style?.dialCode,
-                        { color: '#838282', fontFamily: fontFamily.ABCDiatype_Regular },
+                        {
+                          color: '#838282',
+                          fontFamily: fontFamily.ABCDiatype_Regular,
+                        },
                       ]}>
-                      {selectedCountry.dial_code}
+                      {selectedCountry?.dial_code}
                     </Text>
                   </TouchableOpacity>
                   <View style={[styles.line, style?.line]} />
                 </View>
-              }
+              )}
               <FlatList
                 showsVerticalScrollIndicator={false}
                 data={resultCountries || codes}
@@ -449,7 +466,6 @@ export const CountryPicker = ({
                 {...rest}
               />
             </View>
-
           )}
         </Animated.View>
         <Animated.View
@@ -534,7 +550,13 @@ export const CountryList = ({
     });
   }, [searchValue]);
 
-  const renderItem = ({ item, index }: { item: CountryItem; index: number }) => {
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: CountryItem;
+    index: number;
+  }) => {
     let itemName = item?.name[lang];
     let checkName = itemName.length ? itemName : item?.name['en'];
     return (

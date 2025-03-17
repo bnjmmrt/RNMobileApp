@@ -220,6 +220,7 @@ const ListActionsSheet = forwardRef<
                 if (onSuccess) onSuccess();
               }}
               showError={showError}
+              listName={selectedListData?.name || selectedListName || ''}
             />
           ) : null}
           {selectedAction === 'addUsers' ? (

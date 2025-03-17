@@ -159,7 +159,6 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
               ? 'INVITED'
               : 'DRAFT',
             maxAdditionalGuests: additionalGuests || 0,
-            sendInvite: sendInvite,
             ticketTypeId: selectedTicketType?.id || '',
             users: selectedUsers.map((item, index) => item.id),
             inviteMessage: inviteMessage,
@@ -168,14 +167,26 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         }).unwrap();
 
         if (response.success) {
-          FlashMessageComponent.show(
-            'success',
-            `${selectedUsers.length} ${
-              sendInvite
-                ? 'Guests have been invited to this event'
-                : 'Guests have been saved as drafts'
-            }`,
-          );
+          if (directlySendToConfirm) {
+            FlashMessageComponent.show(
+              'success',
+              `${
+                selectedUsers.length > 1
+                  ? `${selectedUsers.length} Guests`
+                  : selectedUsers[0].name
+              } ${'added to Confirmed'}`,
+            );
+          } else {
+            FlashMessageComponent.show(
+              'success',
+              `${selectedUsers.length} ${
+                sendInvite
+                  ? 'Guests have been invited to this event'
+                  : 'Guests have been saved as drafts'
+              }`,
+            );
+          }
+
           dispatch(setSelectedUsersToInvite(removedUsers));
           dispatch(removeSelectedUsersToInvite([]));
           navigation.goBack();

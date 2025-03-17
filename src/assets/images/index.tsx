@@ -113,7 +113,7 @@ const IMAGES = {
   info_filled: require('./info-filled.png'),
   ticket: require('./cardTicketBg.png'),
   calendarCircle: require('./calendar-circle.png'),
-  x_circle:require('./x-circle.png'),
+  x_circle: require('./x-circle.png'),
   confirmed_badge: require('./confirmed-badge.png'),
   nested_badge: require('./nested.png'),
   arrowDownCircle: require('./arrow-down-circle.png'),
@@ -155,7 +155,14 @@ const IMAGES = {
   rumor: require('./rumor.png'),
   message: require('./message.png'),
   check_gray: require('./check-gray.png'),
-  tiktok_rounded: require('./tiktok_rounded.png')
+  tiktok_rounded: require('./tiktok_rounded.png'),
+  facebook_black: require('./facebook_black.png'),
+  instagram_black: require('./instagram_black.png'),
+  tiktok_black: require('./tiktok_black.png'),
+  x_black: require('./x_black.png'),
+  youtube_black: require('./youtube_black.png'),
+  website_black: require('./website_black.png'),
+  linkedin_black: require('./linkedin_black.png'),
 };
 
 export default IMAGES;

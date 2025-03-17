@@ -171,10 +171,11 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
 
   const handleAddGuest = () => {
     // Navigate to add guest screen or open add guest modal
-    navigation.navigate(ROUTES.InviteGuestScreen, {
-      isManual: false,
-      type: 'new',
-    });
+    navigation.navigate(ROUTES.SelectGuestsToInviteScreen);
+    // navigation.navigate(ROUTES.InviteGuestScreen, {
+    //   isManual: false,
+    //   type: 'new',
+    // });
   };
 
   const handleResetFilters = () => {
@@ -336,6 +337,8 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
             onAddGuest={handleAddGuest}
             isSearchResult={Boolean(searchText.trim())}
             onResetFilters={handleResetFilters}
+            filterApplied={Boolean(filterNumber)}
+            statusFilter={selectedFilter}
           />
         </View>
       );
@@ -438,7 +441,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
 
       <FiltersSheet
         ref={searchFilterRef}
-        from="allUsersList"
+        from="manageGuests"
         onApplyFilter={onApplyFilter}
         onClearFilter={onClearFilter}
       />
@@ -509,6 +512,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: horizontalMarginScale(10),
+    flex: 1,
   },
   rightContainer: {
     flexDirection: 'row',
@@ -520,6 +524,7 @@ const styles = StyleSheet.create({
 
   guestInfo: {
     gap: verticalMarginScale(4),
+    flex: 1,
   },
   nameContainer: {
     flexDirection: 'row',

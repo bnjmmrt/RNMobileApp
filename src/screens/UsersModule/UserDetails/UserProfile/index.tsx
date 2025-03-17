@@ -147,12 +147,23 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
 
         <View style={styles.userActionsFloatingContainer}>
           {userDetails?.isSpam ? (
-            <TouchableOpacity style={styles.userActionButton}>
+            <TouchableOpacity
+              style={styles.userActionButton}
+              onPress={() => {
+                FlashMessageComponent.show(
+                  'info',
+                  'You marked this user as spam',
+                );
+              }}>
               <Image source={IMAGES.alert_triangle_filled} />
             </TouchableOpacity>
           ) : null}
           {userDetails?.isFollow ? (
-            <TouchableOpacity style={styles.userActionButton}>
+            <TouchableOpacity
+              style={styles.userActionButton}
+              onPress={() => {
+                FlashMessageComponent.show('info', 'User is following you');
+              }}>
               <Image source={IMAGES.user_check} />
             </TouchableOpacity>
           ) : null}

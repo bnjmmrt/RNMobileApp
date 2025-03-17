@@ -2,7 +2,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useRef, useState } from 'react';
-import { SafeAreaView, View } from 'react-native';
+import { Platform, SafeAreaView, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
 import AfterAppStaticComponent from 'src/component/BeforeAppStaticComponent/AfterAppStaticComponent';
@@ -55,7 +55,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      if (showEvents) {
+      if (showEvents && Platform.OS === 'ios') {
         changeSafeAreaViewConfig({
           ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
           showBottomSafeAreaView: false,
@@ -124,32 +124,35 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
       style={{
         ...styles.container,
         backgroundColor: showEvents ? COLORS.white : COLORS.black2,
-        marginTop: verticalMarginScale(20),
+        marginTop:
+          Platform.OS === 'ios' && showEvents ? verticalMarginScale(20) : 0,
       }}>
-      <SafeAreaView />
       {showEvents ? (
-        <View
-          style={{
-            backgroundColor: COLORS.white,
-            flex: 1,
-            paddingBottom: verticalMarginScale(80),
-          }}>
-          <HeaderComponent isDarkTheme={false} />
-          <SearchInput
-            ref={searchInputRef}
-            onSearchTextChange={handleSearchTextChange}
-            mainContainerStyle={{
-              marginHorizontal: horizontalMarginScale(20),
-              marginBottom: verticalMarginScale(8),
-            }}
-          />
-          <DynamicTabBar
-            onTabChange={handleTabChange}
-            tabs={tabs}
-            activeTabIndex={isGuest ? 1 : 0}
-          />
-          <View style={styles.contentContainer}>{renderTabContent()}</View>
-        </View>
+        <>
+          <SafeAreaView />
+          <View
+            style={{
+              backgroundColor: COLORS.white,
+              flex: 1,
+              paddingBottom: verticalMarginScale(80),
+            }}>
+            <HeaderComponent isDarkTheme={false} />
+            <SearchInput
+              ref={searchInputRef}
+              onSearchTextChange={handleSearchTextChange}
+              mainContainerStyle={{
+                marginHorizontal: horizontalMarginScale(20),
+                marginBottom: verticalMarginScale(8),
+              }}
+            />
+            <DynamicTabBar
+              onTabChange={handleTabChange}
+              tabs={tabs}
+              activeTabIndex={isGuest ? 1 : 0}
+            />
+            <View style={styles.contentContainer}>{renderTabContent()}</View>
+          </View>
+        </>
       ) : (
         <AfterAppStaticComponent />
       )}
