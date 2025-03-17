@@ -18,16 +18,15 @@ interface AddedBySectionProps {
     avatar?: string;
     id: string;
   };
-  onPress?: () => void;
 }
 
-const AddedBySection: React.FC<AddedBySectionProps> = ({ user, onPress }) => {
+const AddedBySection: React.FC<AddedBySectionProps> = ({ user }) => {
   if (!user) {
     return null;
   }
 
   return (
-    <TouchableOpacity style={styles.addedByContainer} onPress={onPress}>
+    <View style={styles.addedByContainer}>
       {user.avatar ? (
         <FastImage source={{ uri: user.avatar }} style={styles.addedByAvatar} />
       ) : (
@@ -39,7 +38,7 @@ const AddedBySection: React.FC<AddedBySectionProps> = ({ user, onPress }) => {
         <Text style={styles.addedByText}>Added by</Text>
         <Text style={styles.addedByName}>{user.name}</Text>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
