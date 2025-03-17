@@ -8,7 +8,6 @@ import {
   Linking,
   Share,
   Clipboard,
-  Platform,
 } from 'react-native';
 import { COLORS } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
@@ -86,7 +85,7 @@ const SignupFormsBottomSheet = forwardRef<
   return (
     <BottomSheetComponent
       ref={bottomSheetRef}
-      snapPoints={['90%']}
+      snapPoints={['80%', '100%']}
       onClose={() => {}}
       backgroundColor={COLORS.white}>
       <View style={styles.content}>
@@ -123,7 +122,8 @@ const SignupFormsBottomSheet = forwardRef<
           <TouchableOpacity
             style={styles.actionButton}
             onPress={handleMessages}>
-            <View style={styles.messagesIconContainer}>
+            <View
+              style={[styles.messagesIconContainer]}>
               <MessagesIcons width={60} height={60} />
             </View>
             <Text style={styles.actionText}>Messages</Text>
@@ -144,21 +144,19 @@ const SignupFormsBottomSheet = forwardRef<
 const styles = StyleSheet.create({
   content: {
     flex: 1,
-    paddingHorizontal: horizontalScale(20),
-    paddingTop: verticalScale(16),
   },
   title: {
     fontSize: fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
     color: COLORS.black,
-    marginBottom: verticalScale(4),
+    marginBottom: verticalScale(16),
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: fontScale(16),
+    fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Regular,
     color: COLORS.light_gray,
-    marginBottom: verticalScale(40),
+    marginBottom: verticalScale(32),
     textAlign: 'center',
   },
   formCard: {
@@ -172,7 +170,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    marginBottom: verticalScale(60),
+    marginBottom: verticalScale(32),
   },
   formImage: {
     width: '100%',
@@ -184,13 +182,12 @@ const styles = StyleSheet.create({
     padding: horizontalScale(16),
   },
   eventNameText: {
-    fontSize: fontScale(18),
+    fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Medium,
     color: COLORS.black,
-    marginBottom: verticalScale(4),
   },
   formNameText: {
-    fontSize: fontScale(16),
+    fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Regular,
     color: COLORS.light_gray,
   },
@@ -220,17 +217,20 @@ const styles = StyleSheet.create({
     tintColor: COLORS.black,
   },
   messageIcon: {
-    tintColor: COLORS.white,
+    tintColor: COLORS.black,
   },
   messagesIconContainer: {
     width: horizontalScale(60),
     height: verticalScale(60),
-    borderRadius: 300,
+    borderRadius: 30,
+    backgroundColor: '#00D856',
+    alignItems: 'center',
     overflow: 'hidden',
+    justifyContent: 'center',
     marginBottom: verticalScale(8),
   },
   actionText: {
-    fontSize: fontScale(14),
+    fontSize: fontScale(12),
     fontFamily: fontFamily.ABCDiatype_Regular,
     color: COLORS.black,
   },
