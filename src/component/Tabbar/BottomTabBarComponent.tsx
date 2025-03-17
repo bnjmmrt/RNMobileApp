@@ -51,7 +51,7 @@ const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
         {
           display: showBottomTabs ? 'flex' : 'none',
           bottom: verticalScale(30),
-          position: isChatScreen ? 'absolute' : 'static',
+          // position: isChatScreen ? 'absolute' : 'static',
         },
       ]}>
       <View style={styles.tabStyle}>
