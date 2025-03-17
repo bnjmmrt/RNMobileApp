@@ -15,7 +15,6 @@ import { EVENT } from 'src/utils/constants';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { styles } from './style';
-import { EVENT } from 'src/utils/constants';
 
 const ReportUser = ({
   onPressBack,
