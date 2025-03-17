@@ -67,8 +67,13 @@ const FilterOptions = ({
   const minAgeInputRef = useRef<InputRefMethods>(null);
   const maxAgeInputRef = useRef<InputRefMethods>(null);
 
-  const [minAge, setMinAge] = useState<string>('');
-  const [maxAge, setMaxAge] = useState<string>('');
+  const [minAge, setMinAge] = useState<string>(
+    ((selectedFilters && selectedFilters?.ageFrom?.value[0].id) as string) ||
+      '',
+  );
+  const [maxAge, setMaxAge] = useState<string>(
+    ((selectedFilters && selectedFilters?.ageTo?.value[0].id) as string) || '',
+  );
 
   const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false);
   const [alert, setAlert] = useState<boolean>(false);
@@ -96,6 +101,12 @@ const FilterOptions = ({
       }
     }
   }, [minAge, maxAge, setDisableApplyCta]);
+  const minStartDate = selectedFilters['minStartDate']?.value[0]?.id;
+  const maxEndDate = selectedFilters['maxEndDate']?.value[0]?.id;
+
+  const formattedMinDate = dayjs(minStartDate).isValid() ? dayjs(minStartDate).format('MM/DD/YY') : '';
+  const formattedMaxDate = dayjs(maxEndDate).isValid() ? dayjs(maxEndDate).format('MM/DD/YY') : 'No max date';
+
 
   return (
     <BottomSheetView>
@@ -114,8 +125,8 @@ const FilterOptions = ({
                 isSelected={
                   selectedFilters
                     ? selectedFilters[id]?.value?.some(
-                        innerItem => innerItem.id === item.id,
-                      )
+                      innerItem => innerItem.id === item.id,
+                    )
                     : false || false
                 }
                 onPress={optionId => {
@@ -147,15 +158,7 @@ const FilterOptions = ({
               resizeMode="contain"
             />
             <BottomSheetView style={styles.inputValueWithLabel}>
-              <CustomText>{`${dayjs(
-                selectedFilters['minStartDate']?.value[0]
-                  ? selectedFilters['minStartDate']?.value[0]?.id
-                  : undefined,
-              ).format('MM/DD/YY')} - ${dayjs(
-                selectedFilters['maxEndDate']?.value[0]
-                  ? selectedFilters['maxEndDate']?.value[0]?.id
-                  : undefined,
-              ).format('MM/DD/YY')}`}</CustomText>
+              <CustomText>{`${formattedMinDate} - ${formattedMaxDate}`}</CustomText>
               <Image
                 source={IMAGES.downArrow}
                 style={styles.icon}
@@ -177,7 +180,7 @@ const FilterOptions = ({
                 startDate={
                   selectedFilters['minStartDate']?.value[0]
                     ? selectedFilters['minStartDate']?.value[0]?.date ||
-                      undefined
+                    undefined
                     : undefined
                 }
                 endDate={
@@ -267,14 +270,14 @@ const FilterOptions = ({
       {optionType === 'baseCityFilter' || optionType === 'location' ? (
         <BottomSheetView>
           <GooglePlacesInput
-            submit={() => {}}
+            submit={() => { }}
             autoFetchCurrentLocation={optionType === 'location'}
             allowFullAddres={false}
             defaultValue={
               optionType === 'baseCityFilter'
                 ? selectedFilters &&
-                  selectedFilters[id] &&
-                  selectedFilters[id].value[0]?.name
+                selectedFilters[id] &&
+                selectedFilters[id].value[0]?.name
                 : selectedFilters['longitude']?.value[0]?.name || ''
             }
             setLocation={location => {
@@ -287,9 +290,9 @@ const FilterOptions = ({
             }}
           />
           {showSelectedLocationChip &&
-          selectedFilters &&
-          selectedFilters[id] &&
-          selectedFilters[id].value ? (
+            selectedFilters &&
+            selectedFilters[id] &&
+            selectedFilters[id].value ? (
             <BottomSheetScrollView
               contentContainerStyle={{
                 gap: horizontalMarginScale(4),

@@ -36,22 +36,38 @@ const EventList = ({
         let mergedList = [];
         let eventIndex = 0;
 
-        featuredEvents.forEach((feature, idx) => {
-            if (feature.events.length > 0) {
-                mergedList.push({ type: 'featured', data: feature });
+        if (featuredEvents.length > 0) {
+            featuredEvents.forEach((feature, idx) => {
+                if (feature.events.length > 0) {
+                    mergedList.push({ type: 'featured', data: feature });
+                }
+
+                let isLastFeature = idx === featuredEvents.length - 1;
+                let eventsToAdd;
+
+                if (isLastFeature) {
+                    // If this is the last featured event, add all remaining normal events
+                    eventsToAdd = allEvents?.slice(eventIndex);
+                } else {
+                    // Otherwise, add the next batch of normal events
+                    eventsToAdd = allEvents?.slice(eventIndex, eventIndex + EVENTS_PER_SECTION);
+                    eventIndex += EVENTS_PER_SECTION;
+                }
+
+                if (eventsToAdd?.length > 0) {
+                    mergedList.push({ type: 'events', data: eventsToAdd });
+                }
+            });
+        } else {
+            // If no featured events, just add all normal events in sections
+            for (let i = 0; i < allEvents.length; i += EVENTS_PER_SECTION) {
+                mergedList.push({ type: 'events', data: allEvents.slice(i, i + EVENTS_PER_SECTION) });
             }
-        });
-        const normalEvents = allEvents?.slice(
-            eventIndex,
-            eventIndex + EVENTS_PER_SECTION,
-        );
-        if (normalEvents?.length > 0) {
-            mergedList.push({ type: 'events', data: normalEvents });
-            eventIndex += EVENTS_PER_SECTION;
         }
 
         return mergedList;
     }, [allEvents, featuredEvents]);
+
 
     const renderEventSkeletonItem = () => {
         return (

@@ -133,6 +133,8 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     }
   }, [defaultValue]);
 
+  const InputWrapper = onPressImage ? TouchableOpacity : View;
+
   const InputComponent = forBottomSheet ? BottomSheetTextInput : TextInput;
 
   return (
@@ -146,7 +148,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
       )}
 
       {/* Input Field */}
-      <View
+      <InputWrapper
         style={[
           styles.inputContainer,
           multiline ? styles.multilineInputContainer : null,
@@ -167,7 +169,10 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
           />
         )}
         <InputComponent
+
           {...props}
+          onPress={onPressImage}
+          activeOpacity={onPressImage ? 0.7 : 1}
           blurOnSubmit={blurOnSubmit}
           editable={editable}
           style={[styles.input, multiline ? styles.multilineInput : null, { color: editable ? COLORS.black : COLORS.neutral_disabled }]}
@@ -202,7 +207,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
             />
           </TouchableOpacity>
         )}
-      </View>
+      </InputWrapper>
 
       {/* Dynamic Error Message */}
       {errorMessage ? (

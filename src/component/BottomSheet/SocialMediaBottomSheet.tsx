@@ -1,11 +1,33 @@
-import React, {useRef, forwardRef} from 'react';
-import {View, StyleSheet, Text, ViewStyle, Image, Platform} from 'react-native';
+import React, { useRef, forwardRef } from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  ViewStyle,
+  Image,
+  Platform,
+} from 'react-native';
 import BottomSheetComponent from './BottomSheet';
-import {BUTTON_LABLE, COLORS, LABLE, PROFILE} from '../../utils/constants';
+import { BUTTON_LABLE, COLORS, LABLE, PROFILE } from '../../utils/constants';
 import Button from '../Button';
-import {fontFamily} from '../../utils/functions';
-import {fontScale, horizontalMarginScale, horizontalScale, Hp, radiusScale, verticalMarginScale} from '../../utils/dimensions';
+import {
+  convertDateFormat,
+  fontFamily,
+  removeSpaceFromStr,
+} from '../../utils/functions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  horizontalScale,
+  Hp,
+  radiusScale,
+  verticalMarginScale,
+} from '../../utils/dimensions';
 import Input from '../Input/Input';
+import { EndPoint } from 'src/ApiManager/config';
+import { useSelector } from 'react-redux';
+import useApi from 'src/axios/useApi';
+import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
 
 interface SocialMediaBottomSheetProps {
   onPress: () => void;
@@ -17,18 +39,53 @@ interface SocialMediaBottomSheetProps {
 }
 const SocialMediaBottomSheet = forwardRef(
   (props: SocialMediaBottomSheetProps, ref) => {
+    const userDetails = useSelector(
+      (state: any) => state.appFlowApiData.profileData,
+    );
+    const userId = useSelector((state: any) => state.auth.userId);
+    const { apiRequest, loading, error } = useApi();
     const usernameRef = useRef<any>(null);
     const cancelClick = () => {
       ref.current?.close();
     };
 
-    const connect = () => {
+    const connect = async () => {
       if (props.title === PROFILE.CONNECT_INSTAGRAM) {
         usernameRef.current && usernameRef.current.validateInputs();
 
         if (usernameRef.current.validateInputs()) {
           //connect to Insta
+          await connectInstgram();
         }
+      }
+    };
+
+    const connectInstgram = async () => {
+      const requestParams: any = {
+        address: {
+          address: userDetails.city,
+          placeId: userDetails.placeId,
+          city: '',
+          latitude: '',
+          longitude: '',
+          regionCode: '',
+        },
+        birthDate:  userDetails.dateOfBirth,
+        focusIds:userDetails?.focuses.map((item: any) => item.id),
+        firstName: userDetails.firstName,
+        gender: userDetails.gender,
+        lastName: userDetails.lastName,
+        instagramUserName: usernameRef.current.inputText,
+      };
+      console.log('connectInstgram', requestParams);
+      const response: any = await apiRequest(
+        'put',
+        EndPoint.user_profile + userId,
+        requestParams,
+      );
+      console.log('response', response);
+      if (response.success) {
+        FlashMessageComponent.show("success",LABLE.PROFILE_UPDATED_SUCCESSFULLY)
       }
     };
     return (
@@ -69,7 +126,7 @@ const SocialMediaBottomSheet = forwardRef(
                 </Text>
                 {/* <Text style={styles.subTitle1}> */}
 
-                <View style={{flexDirection: 'row', alignItems: 'baseline'}}>
+                <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
                   <View style={styles.btnRumorContainer}>
                     <Text style={styles.btnRumorText}>{LABLE.RUMORAPP}</Text>
                   </View>
@@ -89,7 +146,8 @@ const SocialMediaBottomSheet = forwardRef(
                   style={styles.btnSmallStyle}
                   title={BUTTON_LABLE.GO_TO_INSTAGRAM}
                   colorTheme="light"
-                  onPress={() => {}}
+                  onPress={()=>{}}
+                  
                 />
               </View>
             </View>
@@ -98,7 +156,7 @@ const SocialMediaBottomSheet = forwardRef(
             disabled={false}
             style={[
               styles.btnStyle,
-              {backgroundColor: props.connectBtnBackground},
+              { backgroundColor: props.connectBtnBackground },
             ]}
             title={props.title}
             colorTheme="dark"
@@ -109,6 +167,7 @@ const SocialMediaBottomSheet = forwardRef(
                   : COLORS.white,
             }}
             onPress={connect}
+            loading={loading}
           />
           <Button
             disabled={false}
@@ -117,7 +176,7 @@ const SocialMediaBottomSheet = forwardRef(
             colorTheme="dark"
             onPress={cancelClick}
             clearButtonStyle={styles.clearButton}
-            textStyle={{color: COLORS.black}}
+            textStyle={{ color: COLORS.black }}
           />
         </View>
       </BottomSheetComponent>
@@ -127,16 +186,16 @@ const SocialMediaBottomSheet = forwardRef(
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal:horizontalMarginScale(20),
+    paddingHorizontal: horizontalMarginScale(20),
     gap: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
-    marginTop:verticalMarginScale(5),
+    marginTop: verticalMarginScale(5),
   },
   btnStyle: {
-    borderRadius:radiusScale(100),
+    borderRadius: radiusScale(100),
   },
   clearButton: {
     borderWidth: 1,
@@ -144,7 +203,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.black,
   },
   title: {
-    fontSize:fontScale(24),
+    fontSize: fontScale(24),
     fontFamily: fontFamily.RomieTrial_Bold,
     textAlign: 'center',
   },
@@ -155,14 +214,14 @@ const styles = StyleSheet.create({
     marginVertical: Hp(1),
     textAlign: 'center',
   },
-  input: {marginTop: 0},
+  input: { marginTop: 0 },
   mainContainer: {
-    borderWidth:horizontalScale(1),
+    borderWidth: horizontalScale(1),
     borderColor: COLORS.borderGray,
-    borderRadius:radiusScale(8),
+    borderRadius: radiusScale(8),
     alignItems: 'center',
-    padding:verticalMarginScale(15),
-    marginVertical:verticalMarginScale(15),
+    padding: verticalMarginScale(15),
+    marginVertical: verticalMarginScale(15),
   },
   title1: {
     color: COLORS.black,
@@ -177,9 +236,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   numberContainer: {
-    height:verticalMarginScale(20),
-    width:verticalMarginScale(20),
-    borderRadius:radiusScale(10),
+    height: verticalMarginScale(20),
+    width: verticalMarginScale(20),
+    borderRadius: radiusScale(10),
     backgroundColor: COLORS.surfaceSecondary,
     fontSize: fontScale(14),
     marginTop: Hp(1),
@@ -198,7 +257,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     backgroundColor: COLORS.tabBorderColor,
     fontSize: fontScale(11),
-    padding:verticalMarginScale(10),
+    padding: verticalMarginScale(10),
   },
   emailStyle: {
     color: COLORS.black,
@@ -207,13 +266,13 @@ const styles = StyleSheet.create({
   divider: {
     height: 0.5,
     backgroundColor: COLORS.tabBorderColor,
-    width:horizontalMarginScale(200),
+    width: horizontalMarginScale(200),
     marginTop: verticalMarginScale(20),
   },
   btnSmallStyle: {
     width: 'auto',
-    height:verticalMarginScale(40),
-    borderRadius:radiusScale(100),
+    height: verticalMarginScale(40),
+    borderRadius: radiusScale(100),
     alignSelf: 'center',
     backgroundColor: COLORS.tabBorderColor,
     marginTop: Hp(1),
@@ -221,8 +280,8 @@ const styles = StyleSheet.create({
 
   btnRumorContainer: {
     backgroundColor: COLORS.lighter_gray,
-    paddingHorizontal:horizontalMarginScale(6),
-    paddingVertical:verticalMarginScale(3),
+    paddingHorizontal: horizontalMarginScale(6),
+    paddingVertical: verticalMarginScale(3),
     borderRadius: radiusScale(8),
   },
   btnRumorText: {

@@ -7,6 +7,7 @@ import AvatarInitials from 'src/component/AvatarInitials';
 import Button from 'src/component/Button';
 import { CustomText } from 'src/component/CustomText';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import SearchInput from 'src/component/SearchInput';
 import { AppStackParamList } from 'src/navigation/AppStack';
 import { ROUTES } from 'src/navigation/Route';
@@ -98,6 +99,14 @@ const AddUsersInList = ({
     try {
       const response = await addUsersToList(payload).unwrap();
       if (response.success) {
+        FlashMessageComponent.show(
+          'success',
+          `${
+            selectedUsers && selectedUsers?.length > 1
+              ? `${selectedUsers?.length} Users`
+              : 'User'
+          } added to list`,
+        );
         onSuccess();
       } else {
         showError('Something went wrong!');

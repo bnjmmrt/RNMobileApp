@@ -64,8 +64,10 @@ export const BUTTON_LABLE = {
   INVITE_FROM_CONTACTS: 'Invite from Contacts',
   INVITE_MANUALLY: 'Invite Manually',
   CLEAR: "Clear",
-  RELOAD:'Reload',
-  DELETE:'Delete'
+  RELOAD: 'Reload',
+  DELETE: 'Delete',
+  SAVE_CHANGES: 'Save Changes',
+  DISCARD_CHANGES: 'Discard Changes',
 } as const;
 
 export const LABLE = {
@@ -192,10 +194,12 @@ export const LABLE = {
   EVENT_ANNOUNCEMENTS: 'Event Announcements',
   NO_EVENT_ANNOUNCEMENTS: 'You have no announcements',
   PAST_EVENT_ANNOUNCEMENTS_ERROR:"You can’t post event announcements for past events.",
+  PUBLISH_EVENT_ANNOUNCEMENTS_ERROR:"Event is not published yet.",
+
   ADD_EVENT_ANNOUNCEMENTS_ERROR:"You can’t post event announcements until you have confirmed guests on the guest list.",
   READ_MORE: 'Read More',
   VIEW_ALL: 'View All',
-  VIEW_LESS:'View Less',
+  VIEW_LESS: 'View Less',
   FEATURED_TALENT: 'Featured Talent',
   DUMMY_TEXT:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent bland',
@@ -255,15 +259,15 @@ export const LABLE = {
   VIP_TOOLTIP_CONTENT: 'Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.',
   EVENT_SETTING_INFO: "Edit event settings on Rumor’s web platform.\nClick the button below to take you there.",
   MANAGE_INVITE: 'Manage Invite',
-  YOU_ARE_OFFLINE:'You’re Offline',
-  NOTIFICATIONS:'Notifications',
-  NO_NOTIFICATIONS_YET:'No notifications yet',
-  NOTIFICATIONS_SUB_TITLE:"We'll let you know when updates arrive!",
-  PROFILE_UPDATED_SUCCESSFULLY:'Profile Updated Successfully',
+  YOU_ARE_OFFLINE: 'You’re Offline',
+  NOTIFICATIONS: 'Notifications',
+  NO_NOTIFICATIONS_YET: 'No notifications yet',
+  NOTIFICATIONS_SUB_TITLE: "We'll let you know when updates arrive!",
+  PROFILE_UPDATED_SUCCESSFULLY: 'Profile Updated Successfully',
   PLEASE_SELECT_ONE: 'Please select one',
   PLEASE_SELECT_AT_LEAST_ONE: 'Please select at least one',
   SELECT_UPTO_3: 'Select up to 3',
-  HOST_UNBLOCK_MESSAGE:'Are you sure you want to unblock this host?\nUnblocking this host will allow them to send you new event invites and chat messages.'
+  HOST_UNBLOCK_MESSAGE: 'Are you sure you want to unblock this host?\nUnblocking this host will allow them to send you new event invites and chat messages.'
 
 };
 export const EVENT = {
@@ -290,8 +294,8 @@ export const EVENT = {
   EVENT_COLLABORATORS: 'Event Collaborators',
   QUESTIONNAIRE: 'Questionnaire',
   UPDATE_SETTINGS_ON_WEB: 'Update Settings on Web',
-  USER_HAS_NO_EVENTS:'User has no events in this status',
-  REPORT_SUBMITTED_SUCCESSFULLY:'Report Submitted Successfully'
+  USER_HAS_NO_EVENTS: 'User has no events in this status',
+  REPORT_SUBMITTED_SUCCESSFULLY: 'Report Submitted Successfully'
 };
 
 
@@ -344,7 +348,7 @@ export const ERROR_MESSAGE = {
   LAST_NAME: 'Please enter your last name',
   PLEASE_ENTER_YOUR_BASE_CITY: 'Please enter your base city',
   PLEASE_ENTER_YOUR_BIRTHDAY: 'Please enter your birthday',
-  PLEASE_ENTER_EVENT_DATE:"Please enter event date",
+  PLEASE_ENTER_EVENT_DATE: "Please enter event date",
   PLEASE_ENTER_A_VALID_EMAIL_ADDRESS: 'Please enter a valid email address',
   PLEASE_ENTER_A_VALID_REFERRAL_CODE: 'Please enter a valid referral code',
   AGE_REQUIREMENT_NOT_MET: 'Age requirement not met',
@@ -353,22 +357,22 @@ export const ERROR_MESSAGE = {
   COMPANY_NAME_ERROR: 'Company Name is required',
   TICKET_TYPE_ERROR: 'Select at least one ticket type',
   RECIPIENTS_ERROR: 'Select at least one recipient',
-  COLLABORATOR_ERROR:'Choose a collaborator',
-  ANNOUNCEMENT_DETAIL_ERROR:"Enter announcement details",
-  FILE_SIZE_EXCEED:"File size exceeds the 5MB limit. Please upload a smaller file.",
-  SOMETHING_WENT_WRONG:"Something went wrong, Please try again later",
+  COLLABORATOR_ERROR: 'Choose a collaborator',
+  ANNOUNCEMENT_DETAIL_ERROR: "Enter announcement details",
+  FILE_SIZE_EXCEED: "File size exceeds the 5MB limit. Please upload a smaller file.",
+  SOMETHING_WENT_WRONG: "Something went wrong, Please try again later",
   TCKET_ERROR_MESSAGE: 'Ticket is not associated with a guest for this event.',
-  NO_INTERNET:'You’re not connected to the internet.\nPlease check your connection and try again.',
+  NO_INTERNET: 'You’re not connected to the internet.\nPlease check your connection and try again.',
   EMPTY: '',
-  FIRST_NAME_SIZE_EXCEED:'First Name cannot exceed 30 characters',
-  LAST_NAME_SIZE_EXCEED:'Last Name cannot exceed 30 characters',
-  FIRST_NAME_INVALID_CHARACTERS:'First Name should not contain special characters or numbers',
-  LAST_NAME_INVALID_CHARACTERS:'Last Name should not contain special characters or numbers',
-  FEEDBACK_SIZE_EXCEED:'Feedback cannot exceed 500 words',
-  DESCRIPTION_SIZE_EXCEED:'Bio cannot exceed 200 words',
+  FIRST_NAME_SIZE_EXCEED: 'First Name cannot exceed 30 characters',
+  LAST_NAME_SIZE_EXCEED: 'Last Name cannot exceed 30 characters',
+  FIRST_NAME_INVALID_CHARACTERS: 'First Name should not contain special characters or numbers',
+  LAST_NAME_INVALID_CHARACTERS: 'Last Name should not contain special characters or numbers',
+  FEEDBACK_SIZE_EXCEED: 'Feedback cannot exceed 500 words',
+  DESCRIPTION_SIZE_EXCEED: 'Bio cannot exceed 200 words',
   FIRST_NAME_REQUIRED: 'First name is required',
   LAST_NAME_REQUIRED: 'Last name is required',
-  PLEASE_PROVIDE_EMAIL_OR_PHONE:'Please provide at least one contact method: email or phone number.'
+  PLEASE_PROVIDE_EMAIL_OR_PHONE: 'Please provide at least one contact method: email or phone number.'
 };
 
 export const COLORS = {
@@ -800,7 +804,7 @@ export const collaboratorList = [
 
 export const ANNOUNCEMENT = {
   New_Announcement: 'New Announcement',
-  Edit_Announcement:'Edit Announcement',
+  Edit_Announcement: 'Edit Announcement',
   Recipient_Details: 'Recipient Details',
   Announcement_Description: 'Confirmed guests will receive the post via email, SMS and in-app notification. It will also be shown on the event page.',
   Ticket_Type: 'Ticket Type',
@@ -811,28 +815,28 @@ export const ANNOUNCEMENT = {
   Share_updates: "Share updates or important event details...",
   Attachments: "Attachments",
   Attachments_Descripiton: "Upload up to 3 files. Allowed File types: JPEG, PNG, PDF.  Max file size: 5 MB.  ",
-  Post_Announcement:"Post Announcement",
-  Choose_Document:"Choose Document",
-  Choose_from_file:"Choose from file",
-  Choose_photo_or_video:"Choose photo or video",
-  ADD_ATTACHMENT:"ADD ATTACHMENT",
-  POSTED_BY:"Posted by",
-  CANCEL:"Cancel",
-  Recipients:"Recipients",
-  No_results:"No results",
-  No_Recipients:"No recipients",
-  Please_refine_your_search:"Please refine your search.",
-  Choose_Photo:"Choose Photo",
-  READ_MORE:"Read more",
-  READ_LESS:"Show less",
-  Delete:"Delete",
-  Update_Announcement:"Update Announcement",
-  Update_Event_Announcement:"Update Event Announcement",
-  update_text:"Are you sure you want to update this announcement? Changes will be reflected in the event page.",
-  Delete_Event_Announcement:"Delete Event Announcement",
-  delete_text:"Are you sure you want to remove this announcement from the event page?",
-  leave_title:"Are you sure you want to leave? ",
-  leave_text:"You have unsaved changes. Are you sure you want to leave without saving?",
-  announcement_des:"Announcements will be sent immediately to [X] recipients",
-  Leave_Without_Saving:"Leave Without Saving"
+  Post_Announcement: "Post Announcement",
+  Choose_Document: "Choose Document",
+  Choose_from_file: "Choose from file",
+  Choose_photo_or_video: "Choose photo or video",
+  ADD_ATTACHMENT: "ADD ATTACHMENT",
+  POSTED_BY: "Posted by",
+  CANCEL: "Cancel",
+  Recipients: "Recipients",
+  No_results: "No results",
+  No_Recipients: "No recipients",
+  Please_refine_your_search: "Please refine your search.",
+  Choose_Photo: "Choose Photo",
+  READ_MORE: "Read more",
+  READ_LESS: "Show less",
+  Delete: "Delete",
+  Update_Announcement: "Update Announcement",
+  Update_Event_Announcement: "Update Event Announcement",
+  update_text: "Are you sure you want to update this announcement? Changes will be reflected in the event page.",
+  Delete_Event_Announcement: "Delete Event Announcement",
+  delete_text: "Are you sure you want to remove this announcement from the event page?",
+  leave_title: "Are you sure you want to leave? ",
+  leave_text: "You have unsaved changes. Are you sure you want to leave without saving?",
+  announcement_des: "Announcements will be sent immediately to [X] recipients",
+  Leave_Without_Saving: "Leave Without Saving"
 };

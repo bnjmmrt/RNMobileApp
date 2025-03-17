@@ -9,7 +9,7 @@ import Button from '../../../component/Button';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
 import IMAGES from '../../../assets/images';
 import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants'; ``
-import DatepickerBottomSheet from '../../../component/BottomSheet/CustomDatepickerBottomSheet';
+import CustomDatepickerBottomSheet from '../../../component/BottomSheet/CustomDatepickerBottomSheet';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import BirthdayScreenStyles from './BirthdayScreenStyles';
 import { validateAge } from 'src/utils/functions';
@@ -80,7 +80,7 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
             LABLE.WE_WILL_USE_THIS_INFORMATION_TO_TAILOR_YOUR_EXPERIENCE
           }
         />
-        <View style={{height: 15}}/>
+        <View style={{ height: 15 }} />
         <CustomSelectableText
           placeholder={LABLE.DATE_PLACEHOLDER}
           leftImage={errorMessage ? IMAGES.calendar_error : IMAGES.calender}
@@ -98,8 +98,7 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
         onPress={onNextClick} // Validate and navigate to the next screen
       />
 
-      {/* Pass the handleDateChange function to the DatepickerBottomSheet */}
-      <DatepickerBottomSheet
+      <CustomDatepickerBottomSheet
         ref={bottomSheetRef}
         setSelectedDate={handleDateChange}
         date={selectedDate}
