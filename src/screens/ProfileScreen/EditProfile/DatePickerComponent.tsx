@@ -7,6 +7,7 @@ import CustomDatepickerBottomSheet from '../../../component/BottomSheet/CustomDa
 import { validateAge } from '../../../utils/functions';
 import { horizontalMarginScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import CustomDateTimePickerBottomSheet from 'src/component/BottomSheet/CustomDateTimePickerBottomSheet';
+import { formatSingleToDeviceTimeZone } from 'src/utils/dateFunctions';
 
 interface DatePickerComponentProps {
   birthDate: string,
@@ -53,7 +54,7 @@ const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) =>
     return true;
   };
 
-
+  const formattedDate = formatSingleToDeviceTimeZone(selectedDate);
 
   return (
     <>
@@ -62,7 +63,7 @@ const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) =>
         leftImage={IMAGES.calender}
         rightImage={IMAGES.downArrow}
         errorMessage={errorMessage}
-        defaultValue={selectedDate}
+        defaultValue={formattedDate}
         onPress={openDatePicker}
         style={styles.container}
       />
