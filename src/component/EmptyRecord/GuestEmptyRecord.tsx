@@ -9,34 +9,51 @@ interface GuestEmptyRecordProps {
   onAddGuest?: () => void;
   isSearchResult?: boolean;
   onResetFilters?: () => void;
+  filterApplied?: boolean;
+  statusFilter?: string;
 }
 
 const GuestEmptyRecord: React.FC<GuestEmptyRecordProps> = ({
   onAddGuest,
   isSearchResult = false,
   onResetFilters,
+  filterApplied,
+  statusFilter,
 }) => {
+  let title = 'No Guests Yet';
+  let message =
+    'Start by inviting guests to this event by clicking:\n“Invite Guests” below.';
+  if (isSearchResult) {
+    title = 'No users found';
+    message = 'Expand your search or invite a new guest';
+  } else {
+    if (filterApplied) {
+      title = 'No guests';
+      message = 'Remove filters to expand your search';
+    } else {
+      if (statusFilter !== 'all') {
+        title = 'No Guests Yet';
+        message =
+          'Start by inviting guests to this event by clicking:\n“Invite Guests” below.';
+      }
+    }
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <Image source={IMAGES.noRecord} style={styles.image} />
-        <Text style={styles.title}>
-          {isSearchResult ? 'No Users found' : 'No guests'}
-        </Text>
-        <Text style={styles.subtitle}>
-          {isSearchResult
-            ? 'Remove filters to expand your search'
-            : 'Expand your search or invite a new guest'}
-        </Text>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.subtitle}>{message}</Text>
         <TouchableOpacity
           style={styles.addButton}
-          onPress={isSearchResult ? onAddGuest : onResetFilters}>
+          onPress={filterApplied ? onResetFilters : onAddGuest}>
           <Image
-            source={isSearchResult ? IMAGES.plus : IMAGES.refresh}
+            source={filterApplied ? IMAGES.refresh : IMAGES.plus}
             style={styles.plusIcon}
           />
           <Text style={styles.buttonText}>
-            {isSearchResult ? 'New Guests' : 'Reset Filters'}
+            {filterApplied ? 'Reset Filters' : 'Invite Guests'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -65,12 +82,14 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.RomieTrial_Bold,
     color: COLORS.black,
     marginBottom: 8,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Regular,
     color: COLORS.light_gray,
     marginBottom: 24,
+    textAlign: 'center',
   },
   addButton: {
     flexDirection: 'row',
