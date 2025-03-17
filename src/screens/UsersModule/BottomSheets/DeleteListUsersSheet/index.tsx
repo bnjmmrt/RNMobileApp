@@ -51,6 +51,12 @@ const DeleteListUsersSheet = forwardRef<
     try {
       const response = await removeUsersFromList(payload).unwrap();
       if (response.success) {
+        FlashMessageComponent.show(
+          'success',
+          `${selectedUsers.length} ${
+            selectedUsers.length > 1 ? 'users' : 'user'
+          } has been removed from list`,
+        );
         onSuccess();
         sheetRef.current?.close();
       } else {
