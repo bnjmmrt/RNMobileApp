@@ -155,6 +155,7 @@ const IMAGES = {
   rumor: require('./rumor.png'),
   message: require('./message.png'),
   check_gray: require('./check-gray.png'),
+  tiktok_rounded: require('./tiktok_rounded.png')
 };
 
 export default IMAGES;
