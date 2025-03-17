@@ -162,6 +162,7 @@ const IMAGES = {
   youtube_black: require('./youtube_black.png'),
   website_black: require('./website_black.png'),
   linkedin_black: require('./linkedin_black.png'),
+  link03: require('./link-03.png'),
 };
 
 export default IMAGES;
