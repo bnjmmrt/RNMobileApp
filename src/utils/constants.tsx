@@ -428,6 +428,7 @@ export const COLORS = {
   borderBlur: '#BFBFBF',
   bgGray: '#EAEAEA',
   webBlack: '#181818'
+  
 };
 
 

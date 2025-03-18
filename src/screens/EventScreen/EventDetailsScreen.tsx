@@ -55,8 +55,8 @@ import { setRefresh, setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import EventAnnouncements from 'src/component/Event/EventAnnouncements';
 import ImageComponent from 'src/component/Image/ImageComponent';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-// import SignupFormsBottomSheet from 'src/component/BottomSheet/SignupFormsBottomSheet';
-// import { useFetchSignupFormsQuery } from 'src/redux/actions/eventApiAction';
+import SignupFormsBottomSheet from 'src/component/BottomSheet/SignupFormsBottomSheet';
+import { useFetchSignupFormsQuery } from 'src/redux/actions/eventApiAction';
 
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -452,9 +452,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const signupFormsBottomSheetRef = useRef<any>(null);
-  // const { data: signupFormsData } = useFetchSignupFormsQuery({
-  //   eventId: route?.params?.id,
-  // });
+  const { data: signupFormsData } = useFetchSignupFormsQuery({
+    eventId: route?.params?.id,
+  });
 
   return (
     <>
@@ -596,10 +596,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               name={eventDetails?.name}
             />
 
-            {/* <SignupFormsBottomSheet
+            <SignupFormsBottomSheet
               ref={signupFormsBottomSheetRef}
               signupForms={signupFormsData?.data || []}
-            /> */}
+            />
 
             <BackButtonOverlay
               customStyle={{
