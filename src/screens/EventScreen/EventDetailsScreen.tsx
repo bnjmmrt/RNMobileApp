@@ -307,6 +307,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     if (role !== ROLE.HOST) {
       return null;
     }
+    if (data?.data?.status === 'PAST_STATUS') {
+      return null;
+    }
 
     return (
       <>

@@ -20,6 +20,7 @@ import {
 } from 'src/utils/dimensions';
 import useContacts, { ContactItem } from 'src/utils/hooks/useContactPermission';
 import createStyles from './styles';
+import { EventGuest } from '../../types';
 
 interface InviteFromContactsProps {}
 
@@ -38,20 +39,20 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
   const [contacts, setContacts] = useState<ContactItem[]>([]);
   const [filteredContacts, setFilteredContacts] = useState<ContactItem[]>([]);
 
-  // const { selectedEvent } = useSelector(
-  //   (state: RootState) => ({
-  //     selectedEvent: state.inviteGuestsFlow.selectedEvent,
-  //   }),
-  //   shallowEqual,
-  // );
+  const { selectedEvent } = useSelector(
+    (state: RootState) => ({
+      selectedEvent: state.inviteGuestsFlow.selectedEvent,
+    }),
+    shallowEqual,
+  );
 
-  // const {
-  //   data: guestsData,
-  //   error: guestsError,
-  //   isLoading: isLoadingGuests,
-  //   isFetching: isFetchingGuests,
-  //   refetch: refetchGuests,
-  // } = useGetGuestsQuery({ eventId: selectedEvent?.id });
+  const {
+    data: guestsData,
+    error: guestsError,
+    isLoading: isLoadingGuests,
+    isFetching: isFetchingGuests,
+    refetch: refetchGuests,
+  } = useGetGuestsQuery({ eventId: selectedEvent?.id });
 
   const fetchContacts = async () => {
     await requestContactPermission();
@@ -86,6 +87,17 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
   };
 
   const renderItem = useCallback(({ item }: { item: ContactItem }) => {
+    const userPhone = getPhoneNumber(item.phoneNumber).phoneNumber;
+
+    const isInvited = guestsData?.data?.result.some((user: EventGuest) => {
+      const hasPlus = user.phoneNumber?.includes('+');
+      const phoneWithoutPlus = hasPlus
+        ? user.phoneNumber?.split('+')[1]
+        : user.phoneNumber;
+      return phoneWithoutPlus === `${userPhone}`;
+    });
+    // console.log('isInvited', isInvited, `+${userPhone}`);
+
     return (
       <View style={styles.listItem}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -97,19 +109,22 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
         </View>
         <ButtonSmall
           style={styles.smallBtnStyle}
-          title={'Invite'}
+          title={!isInvited ? 'Invite' : 'Invited'}
           colorTheme={'dark'}
+          disabled={isInvited}
           onPress={() => {
-            dispatch(
-              setSelectedManualUser({
-                ...item,
-                phoneNumber: getPhoneNumber(item.phoneNumber).phoneNumber,
-              }),
-            );
-            navigation.navigate(ROUTES.InviteGuestScreen, {
-              isManual: true,
-              type: 'contact',
-            });
+            if (!isInvited) {
+              dispatch(
+                setSelectedManualUser({
+                  ...item,
+                  phoneNumber: getPhoneNumber(item.phoneNumber).phoneNumber,
+                }),
+              );
+              navigation.navigate(ROUTES.InviteGuestScreen, {
+                isManual: true,
+                type: 'contact',
+              });
+            }
           }}
         />
       </View>
