@@ -439,7 +439,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             profilePic={
               role?.toLocaleLowerCase() === 'host'
                 ? companyLogo
-                : profilePicture
+                : profilePicture ? profilePicture : profileData?.profilePicture
             }
             name={getUserName()}
             loading={loading}
