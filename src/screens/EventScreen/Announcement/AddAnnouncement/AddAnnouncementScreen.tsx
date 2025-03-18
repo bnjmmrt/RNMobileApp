@@ -241,13 +241,15 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
         }
     };
     const getSnapPoints = (): string => {
+        const ticketHeight = eventData?.ticketTypes?.length <= 1 ? 30 : eventData?.ticketTypes?.length * 18
+        const collaboratorHeight = collaborators?.length <= 1 ? 30 : collaborators?.length * 18
         switch (activeView) {
             case 'collaborator':
-                return '30%';
+                return `${collaboratorHeight}%`;
             case 'submit':
                 return '70%';
             case 'ticketTypeOptions':
-                return '40%';
+                return `${ticketHeight}%`;
             case 'receipient':
                 return allRecipients?.length == 0 ? '50%' : '85%';
             default:
@@ -616,7 +618,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                 }
                 else {
                     editPhotoBottomSheetRef.current?.close();
-                    savePhoto(res[0].uri, 'pdf', res[0].name,res[0].size)
+                    savePhoto(res[0].uri, 'pdf', res[0].name, res[0].size)
                 }
             }
             else FlashMessageComponent.show('error', ERROR_MESSAGE.SOMETHING_WENT_WRONG);
@@ -631,7 +633,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
         }
     };
 
-    const uploadFile = async (image: string,size:string) => {
+    const uploadFile = async (image: string, size: string) => {
         const mimeType = `images/${image.split('.').pop()}`;
         const fileName = image.split('/').pop();
 
@@ -640,7 +642,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
             uri: image,
             type: mimeType,
             name: fileName,
-            size:size
+            size: size
         });
 
         return await apiRequest('post', EndPoint.file_upload, formData, null, {
@@ -676,8 +678,8 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
 
     );
 
-    const savePhoto = async (image: any, type: string, name: any,size:any) => {
-        const response: any = await uploadFile(image,size);
+    const savePhoto = async (image: any, type: string, name: any, size: any) => {
+        const response: any = await uploadFile(image, size);
         console.log('savePhoto', response);
         if (response.success == true) {
             const imageUrl = response?.data?.pathFileUrl
@@ -698,8 +700,8 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                 headerTitle={announcementId != null ? ANNOUNCEMENT.Edit_Announcement : ANNOUNCEMENT.New_Announcement}
                 onPress={handleBackPress}
                 showProgressBar={false}
-                rightIcon={IMAGES.plus}
-                // onPressRightIcon={removeAnnouncementId}
+                rightIcon={announcementId != null ? IMAGES.plus : null}
+                onPressRightIcon={removeAnnouncementId}
                 rightIconWrapperStyle={{ backgroundColor: COLORS.black }}
             />
             <ScrollView contentContainerStyle={styles.scrollContainer}>

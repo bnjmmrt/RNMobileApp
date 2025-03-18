@@ -32,6 +32,7 @@ import { useNavigation } from '@react-navigation/native';
 
 interface EventHostItemProps {
   item: any;
+  length: number
 }
 
 const handlEventPress = () => {
