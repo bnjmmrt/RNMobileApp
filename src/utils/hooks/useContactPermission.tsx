@@ -23,6 +23,8 @@ const useContacts = () => {
 
   const getPhoneNumber = (phoneNumber: string) => {
     const phone = parsePhoneNumberFromString(phoneNumber);
+    console.log('phone', phone, phoneNumber);
+
     return phone
       ? {
           countryCode: phone.countryCallingCode,

@@ -7,6 +7,7 @@ import axios, {
 import { environment } from '../../environments/environment';
 import { FlashMessageComponent } from '../component/FlashMessageComponent/FlashMessageComponent';
 import { store } from 'src/redux/store';
+import { getErrorMessage } from 'src/utils/functions';
 
 // Create an Axios instance with type annotations
 export const axiosController: AxiosInstance = axios.create({
@@ -65,7 +66,7 @@ axiosController.interceptors.response.use(
       console.error('Bad request:', errorMessage);
       FlashMessageComponent.show(
         'error',
-        errorMessage || 'Something went wrong, please try again!',
+        getErrorMessage(error?.response) || 'Something went wrong, please try again!',
       );
     } else if (status === 401) {
       console.error('Unauthorized access - Token might be expired');

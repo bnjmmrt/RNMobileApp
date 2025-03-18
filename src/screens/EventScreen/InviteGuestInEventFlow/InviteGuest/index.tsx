@@ -43,6 +43,7 @@ import {
 import {
   ApiErrorInterface,
   changeSafeAreaViewConfig,
+  extractCountryCode,
   getErrorMessage,
   removeSpaceFromStr,
 } from 'src/utils/functions';
@@ -310,6 +311,8 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
       // phoneRef?.current?.setPhoneNumber(selectedManualUser?.phoneNumber || '');
       if (selectedManualUser?.phoneNumber) {
         const phoneData = getPhoneNumber(selectedManualUser?.phoneNumber);
+        console.log('phoneData', phoneData);
+
         phoneRef?.current?.setPhoneNumber(phoneData.phoneNumber);
         phoneRef?.current?.setFlag(phoneData.flag);
         phoneRef?.current?.setCallingCode(phoneData.countryCode);

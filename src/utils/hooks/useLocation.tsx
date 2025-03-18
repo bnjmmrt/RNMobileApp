@@ -99,8 +99,21 @@ const useLocation = (autoFetchLocation: boolean) => {
     try {
       const response = await axios.get(geocodeUrl);
       if (response.data.status === 'OK') {
+        const addressComponents = response.data.results[0].address_components;
+        let city = '';
+        let country = '';
+
+        addressComponents.forEach(component => {
+          if (component.types.includes('locality')) {
+            city = component.long_name;
+          }
+          if (component.types.includes('country')) {
+            country = component.long_name;
+          }
+        });
+
         return {
-          formatted_address: response.data.results[0].formatted_address,
+          formatted_address: city && country ? `${city}, ${country}` : defaultResponse.formatted_address,
           place_id: response.data.results[0].place_id,
         };
       } else {
@@ -122,6 +135,7 @@ const useLocation = (autoFetchLocation: boolean) => {
           position.coords.latitude,
           position.coords.longitude,
         );
+        console.log('foo', formatted_address)
         setCurrentAddress(formatted_address.formatted_address);
         setCurrentPlaceId(formatted_address.place_id);
       },

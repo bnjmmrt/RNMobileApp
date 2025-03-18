@@ -41,6 +41,7 @@ export type FilterSheetFromType =
   | 'allUsersList'
   | 'discoverEvents'
   | 'manageGuests'
+  | 'inviteGuests'
   | 'listDetail';
 
 type FiltersSheetProps = {
@@ -154,6 +155,7 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
 
               {from === 'allUsersList' ||
               from === 'listDetail' ||
+              from === 'inviteGuests' ||
               from === 'manageGuests' ? (
                 <AllUsersFilters
                   selectedFilters={selectedFilters}

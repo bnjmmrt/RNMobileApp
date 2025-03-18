@@ -3,11 +3,12 @@ import IMAGES from '@images/index';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, {
   forwardRef,
+  useEffect,
   useImperativeHandle,
   useRef,
   useState,
 } from 'react';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, TouchableOpacity, View } from 'react-native';
 import AvatarInitials from 'src/component/AvatarInitials';
 import BottomSheetComponent, {
   BottomSheetMethods,
@@ -27,6 +28,7 @@ import { ERROR_MESSAGE, LABLE } from 'src/utils/constants';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { ApiErrorInterface, getErrorMessage, removeSpaceFromStr } from 'src/utils/functions';
 import { styles } from './style';
+import { PhoneNumber } from 'libphonenumber-js';
 
 type existingUserType = {
   hasEmail: boolean;
@@ -75,9 +77,9 @@ const AddNewUserSheet = forwardRef<
   const [addNewUser, { error, isLoading }] = useAddNewUserMutation();
 
   const validateEmailAddress = () => {
+    if (!email) return;
     const emailRegex =
       /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
     if (!emailRegex.test(email)) {
       emailRef?.current?.setErrorMessage(LABLE.EROOR_ENTER_EMAIL);
       return false;
@@ -108,13 +110,10 @@ const AddNewUserSheet = forwardRef<
   };
 
   const validateName = (name: string) => {
-    console.log(
-      'validateNamevalidateNamevalidateNamevalidateNamevalidateName',
-      firstNameRef?.current?.inputText.trim().length > 30,
-    );
     const regex = /^[A-Za-z]+$/;
     if (
       name === 'FirstName' &&
+      firstNameRef?.current?.inputText &&
       firstNameRef?.current?.inputText.trim().length > 30
     ) {
       firstNameRef?.current?.setErrorMessage(
@@ -124,7 +123,7 @@ const AddNewUserSheet = forwardRef<
     } else {
       if (
         firstNameRef?.current?.inputText.trim() !== '' &&
-        !regex.test(firstNameRef?.current?.inputText)
+        !regex.test(firstNameRef?.current?.inputText || '')
       ) {
         firstNameRef?.current?.setErrorMessage(
           ERROR_MESSAGE.FIRST_NAME_INVALID_CHARACTERS,
@@ -135,6 +134,7 @@ const AddNewUserSheet = forwardRef<
 
     if (
       name === 'LastName' &&
+      lastNameRef?.current?.inputText &&
       lastNameRef?.current?.inputText.trim().length > 30
     ) {
       lastNameRef?.current?.setErrorMessage(
@@ -144,7 +144,7 @@ const AddNewUserSheet = forwardRef<
     } else {
       if (
         lastNameRef?.current?.inputText.trim() !== '' &&
-        !regex.test(lastNameRef?.current?.inputText)
+        !regex.test(lastNameRef?.current?.inputText || '')
       ) {
         lastNameRef?.current?.setErrorMessage(
           ERROR_MESSAGE.LAST_NAME_INVALID_CHARACTERS,
@@ -164,17 +164,24 @@ const AddNewUserSheet = forwardRef<
 
     firstNameRef?.current?.validateInputs();
     lastNameRef?.current?.validateInputs();
-    if (
+
+    if (!email && !phone) {
+      emailRef.current?.setErrorMessage('');
       phoneNumberRef?.current?.validatePhoneNumber(
         ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
-      ) ||
-      emailRef?.current?.validateInputs()
-    ) {
-      // phoneNumberRef?.current?.setErrorMessage('');
-      setError('');
+      );
+      setError(ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE);
     } else {
       emailRef.current?.setErrorMessage('');
-      setError(ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE);
+      setError(null);
+    }
+    if (phone) {
+      phoneNumberRef?.current?.validatePhoneNumber(
+        ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
+      );
+    }
+    if (email) {
+      validateEmailAddress();
     }
 
     if (
@@ -228,7 +235,14 @@ const AddNewUserSheet = forwardRef<
     }
   };
 
-  console.log('selectedCountry', selectedCountry);
+  useEffect(() => {
+    if (email) {
+      emailRef?.current?.validateInputs();
+      if (emailRef?.current?.validateInputs()) {
+        validateEmailAddress();
+      }
+    }
+  }, [email]);
 
   return (
     <BottomSheetComponent
@@ -262,7 +276,9 @@ const AddNewUserSheet = forwardRef<
           label="Email *"
           placeholder="example@gmail.com"
           defaultValue={email}
-          onChangeText={text => setEmail(text)}
+          onChangeText={text => {
+            setEmail(text);
+          }}
           forBottomSheet={true}
           isBackgroundRed={errorMessage == null ? false : true}
           extraInputProps={{
