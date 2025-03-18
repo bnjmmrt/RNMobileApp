@@ -59,6 +59,9 @@ const authSlice = createSlice({
     setRole(state, action: PayloadAction<string>) {
       state.role = action.payload;
     },
+    setRoles(state, action: PayloadAction<string>) {
+      state.roles = action.payload;
+    },
     setRoleId(state, action: PayloadAction<string>) {
       state.roleId = action.payload;
     },
@@ -77,6 +80,7 @@ export const {
   setAuthToken,
   setUserId,
   setRole,
+  setRoles,
   setRoleId,
   setIsGuest,
   resetLoginData,
