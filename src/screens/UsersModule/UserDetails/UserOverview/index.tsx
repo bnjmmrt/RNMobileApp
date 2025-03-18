@@ -39,28 +39,30 @@ const UserOverview: React.FC<UserOverviewProps> = ({ user }) => {
       value: userDetails?.socialStats?.instagramFollowersCount || 0,
     },
     {
-      icon: IMAGES.linkdn,
-      value: userDetails?.socialStats?.linkedinFollowersCount || 0,
-    },
-    {
-      icon: IMAGES.snapchat,
-      value: userDetails?.socialStats?.snapchatFollowersCount || 0,
-    },
-    {
-      icon: IMAGES.tiktok,
-      value: userDetails?.socialStats?.tiktokFollowersCount || 0,
-    },
-    {
       icon: IMAGES.x,
       value: userDetails?.socialStats?.xFollowersCount || 0,
+    },
+
+    {
+      icon: IMAGES.tiktok_rounded,
+      value: userDetails?.socialStats?.tiktokFollowersCount || 0,
+    },
+
+    {
+      icon: IMAGES.fb,
+      value: userDetails?.socialStats?.facebookFollowersCount || 0,
+    },
+    {
+      icon: IMAGES.linkdn,
+      value: userDetails?.socialStats?.linkedinFollowersCount || 0,
     },
     {
       icon: IMAGES.yt,
       value: userDetails?.socialStats?.youtubeFollowersCount || 0,
     },
     {
-      icon: IMAGES.fb,
-      value: userDetails?.socialStats?.facebookFollowersCount || 0,
+      icon: IMAGES.snapchat,
+      value: userDetails?.socialStats?.snapchatFollowersCount || 0,
     },
   ];
 
@@ -96,9 +98,13 @@ const UserOverview: React.FC<UserOverviewProps> = ({ user }) => {
           resizeMode="contain"
           style={styles.socialPresenceRowIcon}
         />
-        <CustomText style={styles.socialPresenceRowValue}>
-          {item.value || '--'}
-        </CustomText>
+        {item?.value ? (
+          <CustomText style={styles.socialPresenceRowValue}>
+            {item.value}
+          </CustomText>
+        ) : (
+          <View style={styles.line} />
+        )}
       </View>
     );
   }, []);

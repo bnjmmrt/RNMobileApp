@@ -55,6 +55,7 @@ const createStyle = () => {
     },
     socialPresenceRowValue: {
       color: COLORS.black,
+    
     },
 
     totalFollowingContainer: {
@@ -71,6 +72,12 @@ const createStyle = () => {
       height: verticalScale(64),
       color: COLORS.black,
       fontFamily: fontFamily.RomieTrial_Bold,
+    },
+    line: {
+      height: 2,
+      width: 20,
+      backgroundColor: COLORS.black,
+     
     },
   });
 };

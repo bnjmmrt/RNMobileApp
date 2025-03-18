@@ -119,6 +119,8 @@ dependencies {
     implementation("com.facebook.react:react-android")
     implementation 'com.google.android.gms:play-services-location:21.0.1' 
     implementation 'com.google.firebase:firebase-analytics' // Or other Firebase dependencies
+    implementation("io.intercom.android:intercom-sdk:latest.release")
+    implementation("com.google.firebase:firebase-messaging:23.1.+")
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

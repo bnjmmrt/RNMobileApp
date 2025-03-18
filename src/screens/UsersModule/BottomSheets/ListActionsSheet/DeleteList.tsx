@@ -6,20 +6,24 @@ import { useDeleteCustomListMutation } from 'src/redux/actions/listsApiAction';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { styles } from './style';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 const DeleteList = ({
   onSuccess,
   listId,
   showError,
+  listName,
 }: {
   onSuccess: () => void;
   listId: string;
   showError: (message: string) => void;
+  listName: string;
 }) => {
   const [
     deleteCustomList,
     { error: deleteCustomListError, isLoading: deleteCustomListLoading },
   ] = useDeleteCustomListMutation();
+  console.log(listName);
 
   const onPressDeleteList = async () => {
     if (!listId) {
@@ -32,6 +36,7 @@ const DeleteList = ({
     try {
       const response = await deleteCustomList(payload).unwrap();
       if (response.success) {
+        FlashMessageComponent.show('success', `${listName} has been deleted`);
         onSuccess();
       } else {
         showError('Something went wrong!');

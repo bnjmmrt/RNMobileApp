@@ -92,7 +92,7 @@ const FeatureTalentBottomSheet = forwardRef<BottomSheetMethods, FeatureTalentBot
             console.log('savePhoto', response);
             setImage(response?.data?.pathFileUrl);
 
-            if (response.status !== 200) {
+            if (response.statusCode !== 200) {
                 setImageError(true);
             }
         }

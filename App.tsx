@@ -23,6 +23,7 @@ import { NotificationsListener, requestUserPermission } from 'src/component/Push
 import { navigationRef } from 'src/component/NavigationService';
 import ScreenshotDetectedDialog from 'src/component/ScreenshotDetectedDialog';
 import { getDeviceId } from 'src/utils/functions';
+import Intercom, { Visibility } from '@intercom/intercom-react-native';
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
@@ -31,6 +32,7 @@ const AppContent: React.FC = () => {
 
   useEffect(() => {
     NotificationSetup()
+    Intercom.setLauncherVisibility(Visibility.GONE);
   }, []);
 
   const NotificationSetup = async () => {
@@ -47,10 +49,9 @@ const AppContent: React.FC = () => {
     };
   }, [RNPreventScreenshot]);
 
-
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
-    console.log("focusResponse.data", focusResponse.data)
+    console.log('focusResponse.data', focusResponse.data);
     if (focusResponse.data) {
       focusResponse.data.sort((a, b) => a.name.localeCompare(b.name));
       dispatch(setCreativeFocus(focusResponse.data));

@@ -14,7 +14,6 @@ export const inviteGuestsApiAction = createBaseApi.injectEndpoints({
           inviteMessage: string;
           maxAdditionalGuests: number;
           privateGuestNote: string;
-          sendInvite: boolean;
           ticketTypeId: string;
           users: string[];
         };
@@ -22,10 +21,14 @@ export const inviteGuestsApiAction = createBaseApi.injectEndpoints({
         url: `${EndPoint.events_events}/manage-guests?eventId=${eventId}`,
         method: 'PUT',
         body: {
-          ...payload,
+          maxAdditionalGuests: payload.maxAdditionalGuests,
+          ticketTypeId: payload.ticketTypeId,
+          inviteMessage: payload.inviteMessage,
+          privateGuestNote: payload.privateGuestNote,
           action: 'CREATE',
           exclusiveIds: [],
           currentStatus: payload.guestStatus,
+          guestStatus: payload.guestStatus,
           inclusiveIds: payload.users,
           isSelectedAll: false,
           sendNotification: true,

@@ -1,13 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, StatusBar, SafeAreaView, Platform } from 'react-native';
-import { Hp, Wp } from '../../utils/dimensions';
-import {
-  BUTTON_LABLE,
-  COLORS,
-  eventData,
-  LABLE,
-  ROLE,
-} from '../../utils/constants';
+import React, { useCallback, useRef } from 'react';
+import { View, StyleSheet, StatusBar, Platform } from 'react-native';
+import { Hp, verticalScale, Wp } from '../../utils/dimensions';
+import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 import Button from '../Button';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
 import { ScrollView } from 'react-native';
@@ -42,8 +36,6 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
     navigate('InviteReferralScreen');
   };
 
-  console.log('llll');
-
   useFocusEffect(
     useCallback(() => {
       const fetchUserById = async () => {
@@ -73,11 +65,13 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.STATIC_GRADIENT_SCHEME,
-        showBottomSafeAreaView: false,
-        showTopSafeAreaView: false,
-      });
+      if (Platform.OS === 'ios') {
+        changeSafeAreaViewConfig({
+          ...SAFEWAREAVIEW_CONFIG.STATIC_GRADIENT_SCHEME,
+          showBottomSafeAreaView: false,
+          showTopSafeAreaView: false,
+        });
+      }
     }, []),
   );
 
@@ -134,7 +128,6 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
         </ScrollView>
       </View>
       <ReferralCodeBottomSheet ref={bottomSheetRef} />
-
     </>
   );
 };
@@ -151,7 +144,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: Platform.OS === 'ios' ? 0 : 30
+    paddingTop: Platform.OS === 'ios' ? verticalScale(60) : 0,
   },
   btnStyle: {
     width: Wp(85),

@@ -144,7 +144,7 @@ const SelectGuestsToInviteScreen: React.FC<
     } else if (filterNumber > 0) {
       return 'Remove filters to expand your search';
     } else if (searchText) {
-      return 'Please refine your search.';
+      return 'This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest';
     } else {
       return 'This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest';
     }
@@ -156,7 +156,7 @@ const SelectGuestsToInviteScreen: React.FC<
     } else if (filterNumber > 0) {
       return 'No users';
     } else if (searchText) {
-      return 'No results';
+      return 'User not found';
     } else {
       return 'No users found!';
     }

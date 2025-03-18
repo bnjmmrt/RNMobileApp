@@ -37,8 +37,16 @@ const basicUserAllowedFilters = [
 ];
 const allUsersAllowedFilters = ['list', ...basicUserAllowedFilters];
 const listDetailsAllowedFilters = basicUserAllowedFilters;
+const manageGuestsAllowedFilters = [
+  'category',
+  'gender',
+  'age',
+  'ticketType',
+  'checkedIn',
+];
 //followers is out of scope for now
-
+// Ticket Type
+// Check in status
 const AllUsersFilters = ({
   selectedFilters,
   setSelectedFilters,
@@ -62,6 +70,8 @@ const AllUsersFilters = ({
   const allowedFilters =
     from === 'allUsersList'
       ? allUsersAllowedFilters
+      : from === 'manageGuests'
+      ? manageGuestsAllowedFilters
       : listDetailsAllowedFilters;
 
   const filterData: FilterType[] =

@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   FlatList,
   Image,
+  Platform,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -277,18 +278,14 @@ const EventsFeed = () => {
   };
 
   useEffect(() => {
-
-
     if (data?.data?.result) {
       const eventsRes = data?.result;
       // const featuredEventsRes = data?.data?.data?.filter(
       //   (item: any) => item.featuredEventSection,
       // );
       const { result, allArray } = groupEventsByFeaturedSection(data);
-      console.log("Grouped Events:", result);
-      console.log("All Events:", allArray);
-
-
+      console.log('Grouped Events:', result);
+      console.log('All Events:', allArray);
 
       setFeaturedEvents(result);
       setAllEvents(allArray);
@@ -299,36 +296,8 @@ const EventsFeed = () => {
   }, [data]);
 
   function groupEventsByFeaturedSection(mainResponse) {
-    let groupedEvents = {};
-    let allArray = []; // Single array to store all non-featured events
-
-    mainResponse.data.data.forEach(event => {
-      if (event.featuredEventSection) {
-        const sectionId = event.featuredEventSection.id;
-        if (!groupedEvents[sectionId]) {
-          groupedEvents[sectionId] = {
-            id: sectionId,
-            index: event.featuredEventSection.index,
-            name: event.featuredEventSection.name,
-            events: []
-          };
-        }
-        groupedEvents[sectionId].events.push(event);
-      } else {
-        allArray.push(event); // Push non-featured events into a single array
-      }
-    });
-
-    // Convert groupedEvents object into an array
-    let result = Object.values(groupedEvents);
-
-    return { result, allArray }; // Return both grouped featured events and all other events in a single array
-  }
-
-
-  function groupEventsByFeaturedSection(mainResponse) {
     // console.log(":DATA RESULTH:0", mainResponse);
-    console.log(":DATA RESULTH:1", mainResponse?.data?.result);
+    console.log(':DATA RESULTH:1', mainResponse?.data?.result);
 
     let groupedEvents = {};
     let allArray = []; // Single array to store all non-featured events
@@ -341,7 +310,7 @@ const EventsFeed = () => {
             id: sectionId,
             index: event.featuredEventSection.index,
             name: event.featuredEventSection.name,
-            events: []
+            events: [],
           };
         }
         groupedEvents[sectionId].events.push(event);
@@ -355,10 +324,6 @@ const EventsFeed = () => {
 
     return { result, allArray }; // Return both grouped featured events and all other events in a single array
   }
-  useEffect(() => {
-    console.log("ALl Events", allEvents);
-  }, [allEvents])
-
 
   useFocusEffect(
     useCallback(() => {
@@ -366,11 +331,13 @@ const EventsFeed = () => {
         changeSafeAreaViewConfig({
           ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
           showBottomSafeAreaView: false,
+          showTopSafeAreaView: false,
         });
       } else {
         changeSafeAreaViewConfig({
           ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
           showBottomSafeAreaView: false,
+          showTopSafeAreaView: false,
         });
       }
     }, []),
@@ -471,7 +438,6 @@ const EventsFeed = () => {
         handleLoadMore={handleLoadMore}
       />
 
-
       {/* <FlatList
         data={allEvents || []}
         keyExtractor={(_item, index) => index.toString()}
@@ -536,7 +502,6 @@ const EventsFeed = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
   featuredContainer: {
     flexDirection: 'column',
@@ -563,7 +528,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    // paddingBottom: verticalMarginScale(80),
+    marginTop: Platform.OS === 'ios' ? verticalMarginScale(61) : 0,
   },
   responseSubmitted: {
     display: 'flex',

@@ -27,8 +27,12 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
   const styles = createStyles();
   const navigation = useNavigation<NavigationProp<EventStackParamList>>();
   const dispatch = useDispatch();
-  const { getContacts, permissionGranted, requestContactPermission } =
-    useContacts();
+  const {
+    getContacts,
+    permissionGranted,
+    requestContactPermission,
+    getPhoneNumber,
+  } = useContacts();
   const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [contacts, setContacts] = useState<ContactItem[]>([]);
@@ -96,7 +100,12 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
           title={'Invite'}
           colorTheme={'dark'}
           onPress={() => {
-            dispatch(setSelectedManualUser(item));
+            dispatch(
+              setSelectedManualUser({
+                ...item,
+                phoneNumber: getPhoneNumber(item.phoneNumber).phoneNumber,
+              }),
+            );
             navigation.navigate(ROUTES.InviteGuestScreen, {
               isManual: true,
               type: 'contact',
