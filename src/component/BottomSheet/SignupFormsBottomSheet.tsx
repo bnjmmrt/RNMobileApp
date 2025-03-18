@@ -1,4 +1,10 @@
-import React, { forwardRef, useRef, useImperativeHandle } from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import React, {
+  forwardRef,
+  useRef,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import {
   View,
   Text,
@@ -7,21 +13,24 @@ import {
   Image,
   Linking,
   Share,
-  Clipboard,
+  FlatList,
+  Dimensions,
 } from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
 import { COLORS } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
 import {
   fontScale,
   verticalScale,
   horizontalScale,
-  radiusScale,
 } from '../../utils/dimensions';
-import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
 import BottomSheetComponent, { BottomSheetMethods } from './BottomSheet';
 import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
 import MessagesIcons from '../../assets/svgs/icons/messages.svg';
+import FormCard from '../FormCard/FormCard';
+
+const { width } = Dimensions.get('window');
 
 interface SignupForm {
   id: string;
@@ -40,10 +49,25 @@ const SignupFormsBottomSheet = forwardRef<
   BottomSheetMethods,
   SignupFormsBottomSheetProps
 >((props, ref) => {
-  const form = props.signupForms[0]; // Only show the first form
+  const [activeFormIndex, setActiveFormIndex] = useState(0);
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
+  const flatListRef = useRef<FlatList>(null);
 
-  // Forward ref methods while keeping local access
+  // Create test data by duplicating and modifying IDs
+  // const originalForms = props.signupForms || [];
+  // const duplicatedForms = originalForms.map((form, index) => ({
+  //   ...form,
+  //   id: `${form.id}_duplicate_${index}`,
+  //   name: `form.name_${index}`,
+  //   url: form.url + 'yam',
+  // }));
+  // const testSignupForms = [...originalForms, ...duplicatedForms];
+
+  const { signupForms } = props;
+  const activeForm = signupForms[activeFormIndex];
+
+  console.log('activeFormIndex', activeForm);
+
   useImperativeHandle(ref, () => ({
     open: () => bottomSheetRef.current?.open(),
     close: () => bottomSheetRef.current?.close(),
@@ -52,62 +76,117 @@ const SignupFormsBottomSheet = forwardRef<
   }));
 
   const handleCopyLink = () => {
-    if (form?.url) {
-      Clipboard.setString(form.url);
-      // Show flash message using FlashMessageComponent
+    if (activeForm?.url) {
+      Clipboard.setString(activeForm.url);
       FlashMessageComponent.show('success', 'Link copied to clipboard');
     }
   };
 
   const handleMessages = () => {
-    if (form?.url) {
-      // Open iMessage with the link
-      const messageUrl = `sms:&body=${encodeURIComponent(form.url)}`;
+    if (activeForm?.url) {
+      const messageUrl = `sms:&body=${encodeURIComponent(activeForm.url)}`;
       Linking.openURL(messageUrl).catch(err => {
         console.error('Error opening Messages app:', err);
       });
     }
   };
 
-  const handleMore = () => {
-    if (form?.url) {
-      // Open native share dialog
-      Share.share({
-        message: form.url,
-        url: form.url, // iOS only
-        title: form.name || 'Sign Up Form',
-      }).catch(err => {
-        console.error('Error sharing:', err);
-      });
+  const handleMore = async () => {
+    if (activeForm?.url) {
+      try {
+        await Share.share({
+          message: `${activeForm.name}\n${activeForm.url}`,
+          url: activeForm.url,
+        });
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
     }
+  };
+
+  const renderFormContent = () => {
+    if (signupForms.length <= 1) {
+      return (
+        <FormCard
+          styling={activeForm?.styling}
+          eventName={activeForm?.eventName}
+          name={activeForm?.name}
+        />
+      );
+    }
+
+    const carouselItems = signupForms.map(form => ({
+      uri: { uri: form.styling },
+      eventName: form.eventName,
+      name: form.name,
+    }));
+
+    return (
+      <View style={styles.carouselContainer}>
+        <FlatList
+          data={carouselItems}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled
+          snapToInterval={width}
+          decelerationRate="fast"
+          getItemLayout={(data, index) => ({
+            length: width,
+            offset: width * index,
+            index,
+          })}
+          renderItem={({ item }) => (
+            <View style={styles.carouselItemContainer}>
+              <FormCard
+                styling={item.uri.uri}
+                eventName={item.eventName}
+                name={item.name}
+              />
+            </View>
+          )}
+          onScroll={event => {
+            const scrollPosition = event.nativeEvent.contentOffset.x;
+            const index = Math.round(scrollPosition / width);
+            if (index !== activeFormIndex) {
+              setActiveFormIndex(index);
+            }
+          }}
+          scrollEventThrottle={16}
+        />
+
+        <View style={styles.paginationContainer}>
+          {carouselItems.map((_, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => {
+                setActiveFormIndex(index);
+                flatListRef.current?.scrollToIndex({ index, animated: true });
+              }}
+              style={[
+                styles.paginationDot,
+                {
+                  opacity: index === activeFormIndex ? 1 : 0.2,
+                  marginRight: index === carouselItems.length - 1 ? 0 : 8,
+                },
+              ]}
+            />
+          ))}
+        </View>
+      </View>
+    );
   };
 
   return (
     <BottomSheetComponent
       ref={bottomSheetRef}
-      snapPoints={['80%', '100%']}
+      snapPoints={['80%', '90%']}
       onClose={() => {}}
       backgroundColor={COLORS.white}>
       <View style={styles.content}>
         <Text style={styles.title}>Share Sign Up Form</Text>
         <Text style={styles.subtitle}>Anyone with the link can RSVP</Text>
 
-        <View style={styles.formCard}>
-          <FastImage
-            source={{ uri: form?.styling }}
-            style={styles.formImage}
-            defaultSource={IMAGES.eventCoverPlaceholders1}
-            resizeMode="cover"
-          />
-          <View style={styles.formTextContainer}>
-            <Text style={styles.eventNameText}>
-              {form?.eventName || '[Event Name]'}
-            </Text>
-            <Text style={styles.formNameText}>
-              {form?.name || '[Sign-Up Form Name]'}
-            </Text>
-          </View>
-        </View>
+        {renderFormContent()}
 
         <View style={styles.actionButtonsContainer}>
           <TouchableOpacity
@@ -122,8 +201,7 @@ const SignupFormsBottomSheet = forwardRef<
           <TouchableOpacity
             style={styles.actionButton}
             onPress={handleMessages}>
-            <View
-              style={[styles.messagesIconContainer]}>
+            <View style={[styles.messagesIconContainer]}>
               <MessagesIcons width={60} height={60} />
             </View>
             <Text style={styles.actionText}>Messages</Text>
@@ -159,42 +237,11 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(32),
     textAlign: 'center',
   },
-  formCard: {
-    width: verticalScale(205),
-    marginHorizontal: 'auto',
-    borderRadius: radiusScale(16),
-    overflow: 'hidden',
-    backgroundColor: COLORS.lighter_gray,
-    shadowColor: COLORS.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    marginBottom: verticalScale(32),
-  },
-  formImage: {
-    width: '100%',
-    height: verticalScale(300),
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-  },
-  formTextContainer: {
-    padding: horizontalScale(16),
-  },
-  eventNameText: {
-    fontSize: fontScale(14),
-    fontFamily: fontFamily.ABCDiatype_Medium,
-    color: COLORS.black,
-  },
-  formNameText: {
-    fontSize: fontScale(14),
-    fontFamily: fontFamily.ABCDiatype_Regular,
-    color: COLORS.light_gray,
-  },
   actionButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingHorizontal: horizontalScale(20),
+    marginTop: verticalScale(32),
     marginBottom: verticalScale(20),
   },
   actionButton: {
@@ -233,6 +280,24 @@ const styles = StyleSheet.create({
     fontSize: fontScale(12),
     fontFamily: fontFamily.ABCDiatype_Regular,
     color: COLORS.black,
+  },
+  carouselContainer: {
+    width: '100%',
+  },
+  carouselItemContainer: {
+    width,
+  },
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: verticalScale(12),
+  },
+  paginationDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 4,
+    backgroundColor: COLORS.black,
   },
 });
 
