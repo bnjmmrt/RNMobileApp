@@ -622,7 +622,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                 }
               />
             )}
-            {role === ROLE.HOST && (
+            {role === ROLE.HOST && signupFormsData?.data?.length > 0 && (
               <BackButtonOverlay
                 customStyle={{
                   right: 55,
