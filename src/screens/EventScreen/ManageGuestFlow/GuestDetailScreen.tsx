@@ -500,7 +500,6 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                   id: guestProfile.addedById || '',
                   avatar: guestProfile.addedByPicture || '',
                 }}
-                onPress={() => handleProfile(guestProfile.addedById)}
               />
             )}
 

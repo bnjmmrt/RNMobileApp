@@ -42,7 +42,7 @@ export const listsApiAction = createBaseApi.injectEndpoints({
         method: 'DELETE',
         body: {},
       }),
-      invalidatesTags: ['CustomLists'],
+      invalidatesTags: ['CustomLists', 'UserDetail'],
     }),
     duplicateCustomList: builder.mutation({
       query: ({
@@ -139,7 +139,7 @@ export const listsApiAction = createBaseApi.injectEndpoints({
           userIds: [],
         },
       }),
-      invalidatesTags: ['CustomLists'],
+      invalidatesTags: ['CustomLists', 'UserDetail'],
     }),
   }),
 });

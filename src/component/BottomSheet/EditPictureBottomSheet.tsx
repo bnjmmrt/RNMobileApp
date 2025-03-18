@@ -55,18 +55,17 @@ const EditPictureBottomSheet = forwardRef(
             </View>
 
           )}
-          <View style={{height: 5}}/>
+          <View style={{ height: 5 }} />
           {props?.eventImage &&
             <FastImage
               source={{
                 uri: removeSignature(props?.eventImage),
               }}
               resizeMode={FastImage.resizeMode.cover}
-              defaultSource={IMAGES.eventCoverPlaceholders1} // Placeholder
               style={styles.coverImageStyle}
             />
           }
-          <View style={{height: 5}}/>
+          <View style={{ height: 5 }} />
           <Button
             disabled={false}
             style={styles.btnStyle}
@@ -102,14 +101,14 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     backgroundColor: COLORS.white,
     borderColor: COLORS.black,
-    marginTop:verticalMarginScale(8)
+    marginTop: verticalMarginScale(8)
   },
   title: {
     fontSize: fontScale(24),
     textAlign: 'center',
     // fontWeight:'700',
-    color:COLORS.black,
-    paddingBottom:verticalMarginScale(16),
+    color: COLORS.black,
+    paddingBottom: verticalMarginScale(16),
     fontFamily: fontFamily.RomieTrial_Bold,
   },
   profilePhotoContainer: {

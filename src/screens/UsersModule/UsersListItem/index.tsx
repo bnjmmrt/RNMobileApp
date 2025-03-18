@@ -7,6 +7,7 @@ import { CustomText } from 'src/component/CustomText';
 import { AppStackParamList } from 'src/navigation/AppStack';
 import { ROUTES } from 'src/navigation/Route';
 import UserListItemStyle from './style';
+import { horizontalMarginScale } from 'src/utils/dimensions';
 
 export interface UserItemInterface {
   age: number;
@@ -56,7 +57,13 @@ const UserListItem: React.FC<UserListItemProps> = ({
         </CustomText>
       </View>
       {showCheckbox ? (
-        <TouchableOpacity onPress={() => onSelectUser(item)}>
+        <TouchableOpacity
+          onPress={() => onSelectUser(item)}
+          style={{
+            paddingLeft: horizontalMarginScale(16),
+            height: '100%',
+            justifyContent: 'center',
+          }}>
           <Image
             source={
               isSelected ? IMAGES.checkbox_active : IMAGES.checkbox_inactive

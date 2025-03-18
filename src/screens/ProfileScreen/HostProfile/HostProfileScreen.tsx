@@ -168,13 +168,19 @@ const HostProfileScreen: React.FC = () => {
       params: item
     });
   };
-  const socialMediaData = Object.keys(socialMediaLinks)
-    .map((key) => ({
-      id: key,
-      icon: IMAGES[key],
-      url: socialMediaLinks[key],
-    }))
-    .filter((item) => item.icon && item.url !== "");
+  const socialMediaData = [
+    ...(profile?.website
+      ? [{ id: 'website', icon: IMAGES['website_black'], url: profile?.website }]
+      : []),
+    ...Object.keys(socialMediaLinks)
+      .map((key) => ({
+        id: key,
+        icon: IMAGES[key + '_black'],
+        url: socialMediaLinks[key],
+      }))
+      .filter((item) => item.icon && item.url !== ""),
+  ];
+  console.log("profill", profile?.website)
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <Header
@@ -192,6 +198,8 @@ const HostProfileScreen: React.FC = () => {
               {profile?.isMemberBlockedHost && <Blocked height={32} width={32} style={{ position: 'absolute', bottom: 0, right: -5 }} />}
             </View>
             <Title
+              numberOfLinesTitle={2}
+              numberOfLinesSubtitle={4}
               title={profile?.companyName || 'Company Name'}
               subTitle={profile?.bio || 'Bio not available'}
               align="center"
@@ -210,7 +218,7 @@ const HostProfileScreen: React.FC = () => {
                     item?.url ? Linking.openURL(item?.url) : FlashMessageComponent.show('success', 'Link not available')
                   }
                 >
-                  <Image style={{ width: 20, height: 20, marginRight: verticalMarginScale(8) }} source={item.icon} />
+                  <Image style={{ width: 20, height: 20, marginRight: verticalMarginScale(12) }} source={item.icon} />
                 </TouchableOpacity>
               )}
             />

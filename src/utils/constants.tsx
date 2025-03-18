@@ -136,7 +136,7 @@ export const LABLE = {
   ADD_A_PHOTO: 'Add a photo',
   ADD_A_PHOTO_SUBTITLE: 'Upload a profile photo to complete your profile.',
   CHAT_WITH_HOST: 'Chat\nwith hosts.',
-  SEARCH_FOR_EVENT: 'Search for an event…',
+  SEARCH_FOR_EVENT: 'Search for an event...',
   ACCESS_THE_MOST_VALUABLE_CALENDAR: 'Access the most \n valuable calendar.',
   TWO_MINUTES_TO_COMPLETE: '~2 min to Complete',
   STREAMLINE_YOUR_LIFESTYLE: 'Streamline\nyour lifestyle.',
@@ -193,10 +193,10 @@ export const LABLE = {
   FEATURE_TALENT: 'Featured Talent',
   EVENT_ANNOUNCEMENTS: 'Event Announcements',
   NO_EVENT_ANNOUNCEMENTS: 'You have no announcements',
-  PAST_EVENT_ANNOUNCEMENTS_ERROR:"You can’t post event announcements for past events.",
-  PUBLISH_EVENT_ANNOUNCEMENTS_ERROR:"Event is not published yet.",
+  PAST_EVENT_ANNOUNCEMENTS_ERROR: "You can’t post event announcements for past events.",
+  PUBLISH_EVENT_ANNOUNCEMENTS_ERROR: "Event is not published yet.",
 
-  ADD_EVENT_ANNOUNCEMENTS_ERROR:"You can’t post event announcements until you have confirmed guests on the guest list.",
+  ADD_EVENT_ANNOUNCEMENTS_ERROR: "You can’t post event announcements until you have confirmed guests on the guest list.",
   READ_MORE: 'Read More',
   VIEW_ALL: 'View All',
   VIEW_LESS: 'View Less',
@@ -428,6 +428,7 @@ export const COLORS = {
   borderBlur: '#BFBFBF',
   bgGray: '#EAEAEA',
   webBlack: '#181818'
+  
 };
 
 
