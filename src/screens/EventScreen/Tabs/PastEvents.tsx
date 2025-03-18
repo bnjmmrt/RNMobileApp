@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
+import { ActivityIndicator, FlatList, View } from 'react-native';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+import { ROLE } from 'src/utils/constants';
+import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
 import {
   useFetchEventsQuery,
   useFetchHostEventsQuery,
 } from '../../../redux/actions/eventApiAction';
-import EventItem from '../EventItem';
-import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
 import { Hp } from '../../../utils/dimensions';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/redux/slices';
-import { ROLE } from 'src/utils/constants';
+import EventItem from '../EventItem';
 
 interface PastEventsProps {
   userId: string;
@@ -30,18 +30,18 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
   const queryArgs =
     role === ROLE.HOST
       ? ({
-        status: 'PAST_STATUS',
-        searchText,
-        take: 10,
-        skip: (currentPage - 1) * 10,
-      } as const) // Type assertion to prevent union mismatch
+          status: 'PAST_STATUS',
+          searchText,
+          take: 10,
+          skip: (currentPage - 1) * 10,
+        } as const) // Type assertion to prevent union mismatch
       : ({
-        userId,
-        guestEventStatus: 'PAST',
-        searchText,
-        take: 10,
-        skip: (currentPage - 1) * 10,
-      } as const); // Type assertion
+          userId,
+          guestEventStatus: 'PAST',
+          searchText,
+          take: 10,
+          skip: (currentPage - 1) * 10,
+        } as const); // Type assertion
 
   const { data, isLoading, refetch } = useFetchEvents(queryArgs);
 
@@ -53,15 +53,14 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
   //   skip: (currentPage - 1) * 10,
   // });
 
-
   useEffect(() => {
     if (data) {
       if (role === ROLE.HOST) {
         setEvents(prev =>
           currentPage === 1
-            ? data.data.eventsResponse
+            ? data.data.result
             : // ? data.data
-            [...prev, ...data.data.eventsResponse],
+              [...prev, ...data.data.result],
         );
       } else {
         setEvents(prev =>
@@ -72,19 +71,18 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.data]);
 
-
   useEffect(() => {
     setRefreshing(isLoading);
   }, [isLoading]);
 
   const handleRefresh = () => {
     setCurrentPage(1);
-    refetch()
+    refetch();
   };
 
   useEffect(() => {
-    refetch()
-  }, [currentPage])
+    refetch();
+  }, [currentPage]);
 
   const loadMore = () => {
     if (events?.length < data?.data?.totalCount && !isLoading) {
