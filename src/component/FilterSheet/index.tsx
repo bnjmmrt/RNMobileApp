@@ -144,7 +144,7 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
         ref={sheetRef}
         snapPoints={[`${isKeyboardOpen ? 100 : 88}%`]}
         enableDynamicSizing={false}
-        onClose={() => {}}>
+        onClose={() => { }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -153,8 +153,8 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
               <CustomText style={styles.title}>{getHeading()}</CustomText>
 
               {from === 'allUsersList' ||
-              from === 'listDetail' ||
-              from === 'manageGuests' ? (
+                from === 'listDetail' ||
+                from === 'manageGuests' ? (
                 <AllUsersFilters
                   selectedFilters={selectedFilters}
                   setSelectedFilters={setSelectedFilters}

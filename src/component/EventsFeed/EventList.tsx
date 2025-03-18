@@ -31,7 +31,21 @@ const EventList = ({
     isLoading,
     onRefreshPage,
     handleLoadMore,
+    searchTerm,
+    selectedFilters,
 }) => {
+    const getEmptyStateMessage = () => {
+        console.log('getEmptyStateMessage', selectedFilters);
+        if (Object.entries(selectedFilters) && searchTerm) {
+            return 'Please refine your search.';
+        } else if (Object.entries(selectedFilters)) {
+            return 'Remove filters to expand your search';
+        } else if (searchTerm) {
+            return 'Please refine your search.';
+        } else {
+            return 'There are no events available';
+        }
+    };
     const mergedData = useMemo(() => {
         let mergedList = [];
         let eventIndex = 0;
@@ -257,7 +271,7 @@ const EventList = ({
                     }}>
                     <EventEmptyRecord
                         title="No Events"
-                        subTitle="There are no events available"
+                        subTitle={getEmptyStateMessage()}
                         isLoading={isLoading}
                     />
                 </View>

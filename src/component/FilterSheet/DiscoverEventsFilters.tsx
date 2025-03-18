@@ -95,30 +95,44 @@ const DiscoverEventsFilters = ({
     } else if (optionType === 'dateRange') {
       const startDate = value?.date[0];
       const endDate = value?.date[1];
-      tempSelectedFilter['minStartDate'] = {
-        type: 'minStartDate',
-        value: [
-          {
-            id: moment(new Date(startDate)).format('YYYY-MM-DD'),
-            date: startDate,
-            name:
-              moment(new Date(startDate)).format('MMM DD, YYYY') +
-              ' - ' +
-              moment(new Date(endDate)).format('MMM DD, YYYY') || '',
-          },
-        ],
-      };
 
-      tempSelectedFilter['maxEndDate'] = {
-        type: 'maxEndDate',
-        value: [
-          {
-            id: moment(new Date(endDate)).format('YYYY-MM-DD'),
-            date: endDate,
-            name: '',
-          },
-        ],
-      };
+      if (startDate) {
+        const formattedMinStartDate = moment
+          .utc(new Date(startDate))
+          .format('YYYY-MM-DDTHH:mm:ss[Z]');
+
+        tempSelectedFilter['minStartDate'] = {
+          type: 'minStartDate',
+          value: [
+            {
+              id: formattedMinStartDate,
+              date: startDate,
+              name:
+                moment(new Date(startDate)).format('MMM DD, YYYY') +
+                (endDate
+                  ? ' - ' + moment(new Date(endDate)).format('MMM DD, YYYY')
+                  : ''),
+            },
+          ],
+        };
+      }
+
+      if (endDate) {
+        const formattedMaxEndDate = moment
+          .utc(new Date(endDate))
+          .format('YYYY-MM-DDTHH:mm:ss[Z]');
+
+        tempSelectedFilter['maxEndDate'] = {
+          type: 'maxEndDate',
+          value: [
+            {
+              id: formattedMaxEndDate,
+              date: endDate,
+              name: '',
+            },
+          ],
+        };
+      }
     }
     setSelectedFilters(tempSelectedFilter);
   };

@@ -188,17 +188,17 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
         goBack();
         handleBackPress();
       } else {
-        FlashMessageComponent.show(
-          'error',
-          'Failed to update event. Please try again.',
-        );
+        // FlashMessageComponent.show(
+        //   'error',
+        //   'Failed to update event. Please try again.',
+        // );
       }
     } catch (error) {
       console.error('Error updating event:', error);
-      FlashMessageComponent.show(
-        'error',
-        'An error occurred while updating the event.',
-      );
+      // FlashMessageComponent.show(
+      //   'error',
+      //   'An error occurred while updating the event.',
+      // );
     }
   };
 
