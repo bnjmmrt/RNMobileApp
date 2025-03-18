@@ -128,7 +128,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         interest: '',
         lastName: userDetails.lastName,
 
-        phoneNumber: userDetails.phone ? userDetails.phone : loginData.phone,
+        phoneNumber: userDetails.phone ? removeSpaceFromStr(userDetails.phone) : removeSpaceFromStr(loginData.phone),
         role: response?.data?.roles[0]?.roleName,
       };
       dispatch(setProfileData(userProfile));

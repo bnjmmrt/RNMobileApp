@@ -20,6 +20,7 @@ import { setSelectedUsersToInvite } from 'src/redux/slices/inviteGuestsFlowSlice
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { existingUserType } from '.';
 import createStyles from './styles';
+import { removeSpaceFromStr } from 'src/utils/functions';
 
 interface NewUserViewProps {
   firstNameRef: React.RefObject<InputRefMethods>;
@@ -108,7 +109,7 @@ const NewUserView: React.FC<NewUserViewProps> = ({
   const fetchUserByPhone = async () => {
     try {
       const phoneResponse = await getUserWithPhone({
-        phoneNumber: `${selectedCountry?.dial_code}${phone}`,
+        phoneNumber: removeSpaceFromStr(`${selectedCountry?.dial_code}${phone}`),
       }).unwrap();
       if (phoneResponse.status === 200) {
         const isExisitingUser = checkIfExistingUser(phoneResponse?.data?.roles);
