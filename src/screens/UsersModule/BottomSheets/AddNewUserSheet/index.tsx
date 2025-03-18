@@ -108,50 +108,53 @@ const AddNewUserSheet = forwardRef<
   };
 
   const validateName = (name: string) => {
-    console.log("validateNamevalidateNamevalidateNamevalidateNamevalidateName",firstNameRef?.current?.inputText.trim().length > 30)
-      const regex = /^[A-Za-z]+$/;
+    console.log(
+      'validateNamevalidateNamevalidateNamevalidateNamevalidateName',
+      firstNameRef?.current?.inputText.trim().length > 30,
+    );
+    const regex = /^[A-Za-z]+$/;
+    if (
+      name === 'FirstName' &&
+      firstNameRef?.current?.inputText.trim().length > 30
+    ) {
+      firstNameRef?.current?.setErrorMessage(
+        ERROR_MESSAGE.FIRST_NAME_SIZE_EXCEED,
+      );
+      return false;
+    } else {
       if (
-        name === 'FirstName' &&
-        firstNameRef?.current?.inputText.trim().length > 30
+        firstNameRef?.current?.inputText.trim() !== '' &&
+        !regex.test(firstNameRef?.current?.inputText)
       ) {
         firstNameRef?.current?.setErrorMessage(
-          ERROR_MESSAGE.FIRST_NAME_SIZE_EXCEED,
+          ERROR_MESSAGE.FIRST_NAME_INVALID_CHARACTERS,
         );
         return false;
-      } else {
-        if (
-          firstNameRef?.current?.inputText.trim() !== '' &&
-          !regex.test(firstNameRef?.current?.inputText)
-        ) {
-          firstNameRef?.current?.setErrorMessage(
-            ERROR_MESSAGE.FIRST_NAME_INVALID_CHARACTERS,
-          );
-          return false;
-        }
       }
-  
+    }
+
+    if (
+      name === 'LastName' &&
+      lastNameRef?.current?.inputText.trim().length > 30
+    ) {
+      lastNameRef?.current?.setErrorMessage(
+        ERROR_MESSAGE.LAST_NAME_SIZE_EXCEED,
+      );
+      return false;
+    } else {
       if (
-        name === 'LastName' &&
-        lastNameRef?.current?.inputText.trim().length > 30
+        lastNameRef?.current?.inputText.trim() !== '' &&
+        !regex.test(lastNameRef?.current?.inputText)
       ) {
         lastNameRef?.current?.setErrorMessage(
-          ERROR_MESSAGE.LAST_NAME_SIZE_EXCEED,
+          ERROR_MESSAGE.LAST_NAME_INVALID_CHARACTERS,
         );
         return false;
-      } else {
-        if (
-          lastNameRef?.current?.inputText.trim() !== '' &&
-          !regex.test(lastNameRef?.current?.inputText)
-        ) {
-          lastNameRef?.current?.setErrorMessage(
-            ERROR_MESSAGE.LAST_NAME_INVALID_CHARACTERS,
-          );
-          return false;
-        }
       }
-  
-      return true;
-    };
+    }
+
+    return true;
+  };
 
   const onPressAddUser = async () => {
     firstNameRef?.current?.setErrorMessage('');
@@ -175,8 +178,10 @@ const AddNewUserSheet = forwardRef<
     }
 
     if (
-      firstNameRef?.current?.validateInputs() &&  validateName('FirstName') && 
-      lastNameRef?.current?.validateInputs() && validateName('LastName') &&
+      firstNameRef?.current?.validateInputs() &&
+      validateName('FirstName') &&
+      lastNameRef?.current?.validateInputs() &&
+      validateName('LastName') &&
       (phoneNumberRef?.current?.validatePhoneNumber(
         ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
       ) ||
@@ -223,6 +228,8 @@ const AddNewUserSheet = forwardRef<
     }
   };
 
+  console.log('selectedCountry', selectedCountry);
+
   return (
     <BottomSheetComponent
       ref={sheetRef}
@@ -261,6 +268,7 @@ const AddNewUserSheet = forwardRef<
           extraInputProps={{
             onBlur: validateEmailAddress,
           }}
+          keyboardType="email-address"
         />
         <PhoneNumberInput
           ref={phoneNumberRef}

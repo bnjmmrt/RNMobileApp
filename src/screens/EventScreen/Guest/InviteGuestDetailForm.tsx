@@ -90,7 +90,12 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
           gap: horizontalMarginScale(8),
         }}>
         <View style={{ flex: 1 }}>
-          <CustomText style={styles.label}>{'Ticket Type'}</CustomText>
+          <CustomText style={styles.label}>
+            {'Ticket Type'}
+            <CustomText style={[styles.label, { color: COLORS.errorText }]}>
+              {' *'}
+            </CustomText>
+          </CustomText>
           <TouchableOpacity
             style={styles.selectTicketTypeContainer}
             onPress={onTicketTypePress}>
@@ -194,7 +199,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
                 style={styles.bypassInfo}
                 resizeMode="contain"
               />
-              <CustomText style={{ flex: 1 }}>
+              <CustomText style={{ flex: 1, fontSize: fontScale(14) }}>
                 {'This guest will be added directly to the confirmed tab'}
               </CustomText>
               <Button
