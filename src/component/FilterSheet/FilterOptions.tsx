@@ -18,6 +18,7 @@ import { fontFamily } from 'src/utils/functions';
 import { SelectedFilters } from '.';
 import { CustomText } from '../CustomText';
 import { styles } from './style';
+import moment from 'moment';
 
 export type FilterOptionTypes =
   | 'checkbox'
@@ -69,7 +70,7 @@ const FilterOptions = ({
 
   const [minAge, setMinAge] = useState<string>(
     ((selectedFilters && selectedFilters?.ageFrom?.value[0].id) as string) ||
-      '',
+    '',
   );
   const [maxAge, setMaxAge] = useState<string>(
     ((selectedFilters && selectedFilters?.ageTo?.value[0].id) as string) || '',
@@ -104,9 +105,8 @@ const FilterOptions = ({
   const minStartDate = selectedFilters['minStartDate']?.value[0]?.id;
   const maxEndDate = selectedFilters['maxEndDate']?.value[0]?.id;
 
-  const formattedMinDate = dayjs(minStartDate).isValid() ? dayjs(minStartDate).format('MM/DD/YY') : '';
-  const formattedMaxDate = dayjs(maxEndDate).isValid() ? dayjs(maxEndDate).format('MM/DD/YY') : 'No max date';
-
+  const formattedMinDate = dayjs(minStartDate).isValid() ? dayjs(minStartDate).format('DD/MM/YY') : '';
+  const formattedMaxDate = dayjs(maxEndDate).isValid() ? dayjs(maxEndDate).format('DD/MM/YY') : 'No max date';
 
   return (
     <BottomSheetView>
@@ -271,7 +271,7 @@ const FilterOptions = ({
         <BottomSheetView>
           <GooglePlacesInput
             submit={() => { }}
-            autoFetchCurrentLocation={optionType === 'location'}
+            autoFetchCurrentLocation={true}
             allowFullAddres={false}
             defaultValue={
               optionType === 'baseCityFilter'
