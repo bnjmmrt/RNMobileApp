@@ -36,6 +36,7 @@ interface QRCodeBottomsheetProps {
   imageURL: string;
   name: string;
   isQRShown: boolean;
+  profilePic?:string
 }
 const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
   const cancelClick = () => {
@@ -66,7 +67,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
             {dateFormat(props?.subTitle, 'dddd, MMMM Do, hh:mm:A')}
           </Text>
           <View style={styles.pic_Container}>
-            <AvatarInitials name={props.name} size={32} />
+            <AvatarInitials name={props.name} size={32} imgUrl={props?.profilePic} />
             <Text style={styles.name}>{props.name}</Text>
             <TouchableOpacity
               onPress={() => setShowProfileToolitip(!showProfileToolitip)}>
