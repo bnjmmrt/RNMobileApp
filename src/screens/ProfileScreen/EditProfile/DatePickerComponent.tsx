@@ -54,8 +54,6 @@ const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) =>
     return true;
   };
 
-  const formattedDate = formatSingleToDeviceTimeZone(selectedDate);
-
   return (
     <>
       <CustomSelectableText
@@ -63,7 +61,7 @@ const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) =>
         leftImage={IMAGES.calender}
         rightImage={IMAGES.downArrow}
         errorMessage={errorMessage}
-        defaultValue={formattedDate}
+        defaultValue={selectedDate}
         onPress={openDatePicker}
         style={styles.container}
       />
