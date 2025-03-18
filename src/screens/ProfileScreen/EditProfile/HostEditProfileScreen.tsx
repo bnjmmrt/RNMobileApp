@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -56,7 +57,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
   const websiteRef = useRef<any>(null);
-
+const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   useEffect(() => {
          const phoneNumberDetails = extractCountryCode(profileData?.phoneNumber);
@@ -116,8 +117,32 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
     navigation.goBack();
   };
 
+   useEffect(() => {
+          const keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            () => {
+              setKeyboardVisible(true);
+            },
+          );
+      
+          const keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            () => {
+              setKeyboardVisible(false);
+            },
+          );
+      
+          return () => {
+            keyboardDidShowListener.remove();
+            keyboardDidHideListener.remove();
+          };
+        }, []);
+
   return (
-    <View style={styles.container}>
+      <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={styles.container}>
+    <View style={[styles.container,{paddingBottom:keyboardVisible ? Platform.OS === 'ios' ? verticalMarginScale(50): verticalMarginScale(10) : 0}]}>
       <Header
         headerTitle={PROFILE.EDIT_PROFILE}
         onPress={handleBackPress}
@@ -125,8 +150,6 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
       />
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-         <KeyboardAvoidingView
-                  behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={styles.contentContainer}>
           <Input
             ref={companyNameRef}
@@ -155,7 +178,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
             defaultValue={profileData?.website}
           />
         </View>
-        </KeyboardAvoidingView>
+
       </ScrollView>
       <Button
         disabled={false}
@@ -166,6 +189,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
         loading={loading}
       />
     </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -187,7 +211,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: horizontalMarginScale(20),
   },
-  scrollContainer: { paddingBottom: verticalMarginScale(200) },
+  scrollContainer: {paddingVertical: verticalMarginScale(16) },
   label: {
     paddingVertical: horizontalMarginScale(2),
     fontSize: fontScale(14),

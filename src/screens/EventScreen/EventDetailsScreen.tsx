@@ -154,7 +154,13 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
   const qrCodeBottomSheetRef = useRef<any>(null);
   const calenderEventsBottomSheetRef = useRef<any>(null);
-
+  const userDetails = useSelector(
+    (state: any) => state.appFlowApiData.profileData,
+  );
+  const profilePicture = useSelector(
+    (state: any) => state.auth.profilePicture,
+  );
+  
   const [isQRShown, setIsQRShown] = useState(true);
   const [eventDetails, setEventDetails] = useState<any>({});
   const [calendarDetails, setCalendarDetails] = useState<any>({});
@@ -578,7 +584,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               subTitle={eventDetails?.subTitle}
               imageURL={eventDetails?.qrUrl}
               isQRShown={isQRShown}
-              name={eventDetails?.name}
+              name={`${userDetails?.firstName} ${userDetails?.lastName}`}
+              profilePic={profilePicture}
             />
 
             <CalenderEventsBottomSheet
@@ -593,7 +600,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                 eventDetails?.qrUrl ? eventDetails?.qrUrl : IMAGES.ticket
               }
               isQRShown={isQRShown}
-              name={eventDetails?.name}
+              name={`${userDetails?.firstName} ${userDetails?.lastName}`}
+              profilePic={profilePicture}
             />
 
             <SignupFormsBottomSheet
