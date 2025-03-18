@@ -39,11 +39,16 @@ const handlEventPress = () => {
   FlashMessageComponent.show('success', 'in Prrogress..');
 };
 
-const EventHostItem: React.FC<EventHostItemProps> = ({ item }) => {
+const EventHostItem: React.FC<EventHostItemProps> = ({ item, length }) => {
   const role = useSelector((state: RootState) => state.auth.role);
   const { navigate } = useNavigation();
+  const getWidth = () => {
+    if (length === 1) return Wp('90%');
+    if (length === 2) return Wp('65%');
+    return Wp('55%');
+  };
   return (
-    <View style={[styles.container]}>
+    <View style={[styles.container, { width: getWidth() }]}>
       <AvatarInitials
         onPress={() => {
           role == ROLE.MEMBER && navigate("ProfileStack", { screen: ROUTES.HostProfileScreen, params: { hostId: item.id } });
@@ -52,7 +57,7 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item }) => {
         imgUrl={removeSignature(item?.companyLogo)}
         size={40}
       />
-      <View style={{ paddingHorizontal: 10, marginEnd: 20, maxWidth: verticalScale(100) }}>
+      <View style={{ paddingHorizontal: 10, marginEnd: 20, flex: 1 }}>
         <Text numberOfLines={1} style={styles.title}>{capitalizeFirstLetter(item?.name)}</Text>
         <Text style={styles.subtitle}>
           {capitalizeFirstLetter(item?.role?.name)}
@@ -80,6 +85,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'flex-start',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   image: {
     resizeMode: 'center',
@@ -96,6 +102,7 @@ const styles = StyleSheet.create({
   title: {
     color: COLORS.black2,
     fontSize: fontScale(14),
+    width: '80%',
     fontFamily: fontFamily.ABCDiatype_Regular,
   },
   subtitle: {

@@ -58,7 +58,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import SignupFormsBottomSheet from 'src/component/BottomSheet/SignupFormsBottomSheet';
 import { useFetchSignupFormsQuery } from 'src/redux/actions/eventApiAction';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: any;
@@ -135,9 +135,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const)
       : ({
-          userId,
-          eventId: route?.params?.id,
-        } as const);
+        userId,
+        eventId: route?.params?.id,
+      } as const);
 
   const useFetchEventDetailsHook =
     role === ROLE.HOST
@@ -201,9 +201,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           name: 'host',
         },
       };
+      const approvedCollaborators = data.data.collaborators.filter(
+        (col: any) => col.isApproved
+      );
 
-      // Merge the owner as a collaborator with existing collaborators
-      setCollaborators([collaborator, ...data.data.collaborators] as any);
+      setCollaborators([collaborator, ...approvedCollaborators] as any);
     }
 
     if (data && data.data && data?.data?.talents) {
@@ -526,7 +528,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                     // style={{ marginVertical: 20 }}
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(item: any, index) => `${item.id}-${index}`}
-                    renderItem={({ item }) => <EventHostItem item={item} />}
+                    renderItem={({ item }) => <EventHostItem item={item} length={collaborators.length} />}
                   />
                 )}
 
