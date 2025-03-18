@@ -309,7 +309,7 @@ const SelectGuestsToInviteScreen: React.FC<
 
       <FiltersSheet
         ref={filtersSheetRef}
-        from="allUsersList"
+        from="inviteGuests"
         onApplyFilter={onApplyFilter}
         onClearFilter={onClearFilter}
       />

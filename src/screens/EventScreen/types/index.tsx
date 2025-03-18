@@ -48,6 +48,7 @@ export interface EventGuest {
   userId: string;
   vouches?: Vouch[];
   privateGuestNote?: string;
+  phoneNumber?: string;
 }
 
 export interface ManageGuestPayload {
