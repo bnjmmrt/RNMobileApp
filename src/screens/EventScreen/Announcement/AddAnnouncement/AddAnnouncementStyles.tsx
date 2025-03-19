@@ -69,7 +69,7 @@ const AddAnnouncementStyles = () => {
     },
     inputStyle: {
       fontSize: fontScale(14),
-      color: COLORS.light_text,
+      color: COLORS.black,
       fontWeight: '500',
       left: -11,
       fontFamily: fontFamily.ABCDiatype_Bold,
@@ -134,6 +134,10 @@ const AddAnnouncementStyles = () => {
     icon: {
       width: verticalScale(16),
       height: verticalScale(16),
+    },
+    downicon: {
+      width: verticalScale(11),
+      height: verticalScale(5.5),
     },
     arrowicon: {
       width: verticalScale(10),

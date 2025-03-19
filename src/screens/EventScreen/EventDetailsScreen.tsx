@@ -587,19 +587,37 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                 <EventOverview item={data?.data} />
 
                 {talents.length > 0 && <EventTalent talents={talents} />}
+                {role == ROLE.HOST ?
+                  <EventAnnouncements
+                    role={role}
+                    handleAddPress={addAnouncement}
+                    announcementData={announcementData}
+                    eventId={eventId}
+                    handleViewAll={() =>
+                      navigation.navigate(ROUTES.EventStack, {
+                        screen: ROUTES.Announcement,
+                        params: data?.data,
+                      })
+                    }
+                  /> :
+                  <>
+                    {guestStatus == 'CONFIRMED' &&
+                      <EventAnnouncements
+                        role={role}
+                        handleAddPress={addAnouncement}
+                        announcementData={announcementData}
+                        eventId={eventId}
+                        handleViewAll={() =>
+                          navigation.navigate(ROUTES.EventStack, {
+                            screen: ROUTES.Announcement,
+                            params: data?.data,
+                          })
+                        }
+                      />
+                    }
+                  </>
+                }
 
-                {guestStatus == 'CONFIRMED' && <EventAnnouncements
-                  role={role}
-                  handleAddPress={addAnouncement}
-                  announcementData={announcementData}
-                  eventId={eventId}
-                  handleViewAll={() =>
-                    navigation.navigate(ROUTES.EventStack, {
-                      screen: ROUTES.Announcement,
-                      params: data?.data,
-                    })
-                  }
-                />}
                 {showError && (
                   <View style={styles.errorTextContainer}>
                     <Image

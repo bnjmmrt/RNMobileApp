@@ -81,6 +81,8 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const dispatch = useDispatch();
     const [refreshing, setRefreshing] = useState<boolean>(false);
     const [collaborators, setCollaborators] = useState([]);
+    const [showRecipientDetail, setshowRecipientDetail] = useState(true)
+    const [showAnnouncementDetail, setshowAnnouncementDetail] = useState(true)
 
     useEffect(() => {
         if (eventData?.collaborators) {
@@ -706,217 +708,236 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
             />
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.contentContainer}>
-                    <View style={[styles.Detailcontainer]}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={styles.headerTitle}>{ANNOUNCEMENT.Recipient_Details}</Text>
-                            <View style={styles.iconWrapper}>
-                                <Image source={IMAGES.upArrow} style={styles.icon} />
+                    {!showRecipientDetail ?
+                        <View style={[styles.Detailcontainer]}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Text style={styles.headerTitle}>{ANNOUNCEMENT.Recipient_Details}</Text>
+                                <TouchableOpacity onPress={() => { setshowRecipientDetail(!showRecipientDetail) }} style={styles.iconWrapper}>
+                                    <Image source={IMAGES.downArrow} style={styles.downicon} />
+                                </TouchableOpacity>
                             </View>
-                        </View>
-                        <Text style={styles.headerDes}>{ANNOUNCEMENT.Announcement_Description}</Text>
-                        <View style={styles.lineView} />
-                        <View>
-                            <CustomText style={[styles.label]} >
-                                {ANNOUNCEMENT.Ticket_Type}
-                                <CustomText style={{ color: COLORS.errorText }}> *</CustomText>
-                            </CustomText>
-                            <TouchableOpacity onPress={() => {
-                                if (announcementId == null) {
-                                    setActiveTab('ticketTypeOptions');
-                                    setSelectedTicketType(ticketTypeArr)
-                                    bottomSheetRef?.current?.open();
-                                }
-                            }} style={ticketerrorMessage ? styles.errorContainer : [styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
-                                <View ref={ticketTypeRef} style={styles.userInfoContainer}>
-                                    {ticketTypeArr?.length == 0 ?
-                                        <Text style={[styles.inputStyle, { left: 0 }]}>Please Select...</Text>
-                                        :
-                                        <ScrollView horizontal={true} style={{ marginVertical: verticalMarginScale(10) }}>
-                                            {ticketTypeArr?.map((item: any) => {
-                                                return (
-                                                    <View style={[styles.countWrapper, {
-                                                        marginHorizontal: 3, paddingVertical: verticalScale(3), flexDirection: 'row'
-                                                    }]}>
-                                                        <Text style={[styles.label, { paddingTop: 0 }]}>{item?.name}</Text>
-                                                        {announcementId == null &&
-                                                            <TouchableOpacity onPress={() => removeTicketType(item)}>
-                                                                <Image source={IMAGES.cross} style={{ left: 5 }} />
-                                                            </TouchableOpacity>
-                                                        }
-                                                    </View>
-                                                )
-                                            })
-                                            }
-                                        </ScrollView>
-                                    }
-                                </View>
+                        </View> :
+                        <View style={[styles.Detailcontainer]}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Text style={styles.headerTitle}>{ANNOUNCEMENT.Recipient_Details}</Text>
+                                <TouchableOpacity onPress={() => { setshowRecipientDetail(!showRecipientDetail) }} style={styles.iconWrapper}>
+                                    <Image source={IMAGES.upArrow} style={styles.icon} />
+                                </TouchableOpacity>
+                            </View>
+                            <Text style={styles.headerDes}>{ANNOUNCEMENT.Announcement_Description}</Text>
+                            <View style={styles.lineView} />
+                            <View>
+                                <CustomText style={[styles.label]} >
+                                    {ANNOUNCEMENT.Ticket_Type}
+                                    <CustomText style={{ color: COLORS.errorText }}> *</CustomText>
+                                </CustomText>
                                 <TouchableOpacity onPress={() => {
                                     if (announcementId == null) {
                                         setActiveTab('ticketTypeOptions');
                                         setSelectedTicketType(ticketTypeArr)
                                         bottomSheetRef?.current?.open();
                                     }
-                                }}>
-                                    <Image
-                                        style={styles.arrowicon}
-                                        source={IMAGES.downArrow}
-                                    />
+                                }} style={ticketerrorMessage ? styles.errorContainer : [styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
+                                    <View ref={ticketTypeRef} style={styles.userInfoContainer}>
+                                        {ticketTypeArr?.length == 0 ?
+                                            <Text style={[styles.inputStyle, { left: 0 }]}>Please select...</Text>
+                                            :
+                                            <ScrollView horizontal={true} style={{ marginVertical: verticalMarginScale(10) }}>
+                                                {ticketTypeArr?.map((item: any) => {
+                                                    return (
+                                                        <View style={[styles.countWrapper, {
+                                                            marginHorizontal: 3, paddingVertical: verticalScale(3), flexDirection: 'row'
+                                                        }]}>
+                                                            <Text style={[styles.label, { paddingTop: 0 }]}>{item?.name}</Text>
+                                                            {announcementId == null &&
+                                                                <TouchableOpacity onPress={() => removeTicketType(item)}>
+                                                                    <Image source={IMAGES.cross} style={{ left: 5 }} />
+                                                                </TouchableOpacity>
+                                                            }
+                                                        </View>
+                                                    )
+                                                })
+                                                }
+                                            </ScrollView>
+                                        }
+                                    </View>
+                                    <TouchableOpacity onPress={() => {
+                                        if (announcementId == null) {
+                                            setActiveTab('ticketTypeOptions');
+                                            setSelectedTicketType(ticketTypeArr)
+                                            bottomSheetRef?.current?.open();
+                                        }
+                                    }}>
+                                        <Image
+                                            style={styles.arrowicon}
+                                            source={IMAGES.downArrow}
+                                        />
+                                    </TouchableOpacity>
                                 </TouchableOpacity>
-                            </TouchableOpacity>
-                            {ticketerrorMessage ? (
-                                <Text style={[styles.errorText]}>{ERROR_MESSAGE.TICKET_TYPE_ERROR}</Text>
-                            ) : null}
-                        </View>
+                                {ticketerrorMessage ? (
+                                    <Text style={[styles.errorText]}>{ERROR_MESSAGE.TICKET_TYPE_ERROR}</Text>
+                                ) : null}
+                            </View>
 
-                        <View>
-                            <CustomText style={[styles.label]} >
-                                {ANNOUNCEMENT.Added_by}
-                                <CustomText style={{ color: COLORS.errorText }}> *</CustomText>
-                            </CustomText>
-                            <TouchableOpacity onPress={() => {
-                                if (announcementId == null) {
-                                    setActiveTab('collaborator');
-                                    setselectedCollaborator(collaboratorArr)
-                                    bottomSheetRef?.current?.open();
-                                }
-                            }} style={addedByerrorMessage ? styles.errorContainer : [styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
-                                <View ref={addedRef} style={styles.userInfoContainer}>
-                                    {collaboratorArr?.length == 0 ?
-                                        <Text style={[styles.inputStyle, { left: 0 }]}>Please Select...</Text>
-                                        :
-                                        <ScrollView horizontal={true} style={{ marginVertical: verticalMarginScale(10) }}>
-                                            {collaboratorArr?.map((item: any) => {
-                                                return (
-                                                    <View style={[styles.countWrapper, {
-                                                        marginHorizontal: 3, paddingVertical: verticalScale(3), flexDirection: 'row'
-                                                    }]}>
-                                                        <Text style={[styles.label, { paddingTop: 0 }]}>{announcementId == null ? item?.role?.firstName + ' ' + item?.role?.lastName : item?.firstName + ' ' + item?.lastName}</Text>
-                                                        {announcementId == null &&
-                                                            <TouchableOpacity onPress={() => removeCollaborator(item)}>
-                                                                <Image source={IMAGES.cross} style={{ left: 5 }} />
-
-                                                            </TouchableOpacity>
-                                                        }
-                                                    </View>
-                                                )
-                                            })
-                                            }
-                                        </ScrollView>
-                                    }
-                                </View>
+                            <View>
+                                <CustomText style={[styles.label]} >
+                                    {ANNOUNCEMENT.Added_by}
+                                    <CustomText style={{ color: COLORS.errorText }}> *</CustomText>
+                                </CustomText>
                                 <TouchableOpacity onPress={() => {
                                     if (announcementId == null) {
                                         setActiveTab('collaborator');
                                         setselectedCollaborator(collaboratorArr)
                                         bottomSheetRef?.current?.open();
                                     }
-                                }}>
-                                    <Image
-                                        style={styles.arrowicon}
-                                        source={IMAGES.downArrow}
-                                    />
-                                </TouchableOpacity>
-                            </TouchableOpacity>
-                            {addedByerrorMessage ? (
-                                <Text style={[styles.errorText]}>{ERROR_MESSAGE.COLLABORATOR_ERROR}</Text>
-                            ) : null}
-                        </View>
+                                }} style={addedByerrorMessage ? styles.errorContainer : [styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
+                                    <View ref={addedRef} style={styles.userInfoContainer}>
+                                        {collaboratorArr?.length == 0 ?
+                                            <Text style={[styles.inputStyle, { left: 0 }]}>Please select...</Text>
+                                            :
+                                            <ScrollView horizontal={true} style={{ marginVertical: verticalMarginScale(10) }}>
+                                                {collaboratorArr?.map((item: any) => {
+                                                    return (
+                                                        <View style={[styles.countWrapper, {
+                                                            marginHorizontal: 3, paddingVertical: verticalScale(3), flexDirection: 'row'
+                                                        }]}>
+                                                            <Text style={[styles.label, { paddingTop: 0 }]}>{announcementId == null ? item?.role?.firstName + ' ' + item?.role?.lastName : item?.firstName + ' ' + item?.lastName}</Text>
+                                                            {announcementId == null &&
+                                                                <TouchableOpacity onPress={() => removeCollaborator(item)}>
+                                                                    <Image source={IMAGES.cross} style={{ left: 5 }} />
 
-                        <View>
-                            <Text style={styles.label}>{ANNOUNCEMENT.Send_to}</Text>
-                            <TouchableOpacity onPress={() => {
-                                if (announcementId == null) {
-                                    setActiveTab('receipient')
-                                    bottomSheetRef?.current?.open()
-                                }
-                            }} style={recipienterrorMessage ? styles.errorContainer : [styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
-                                <View style={styles.userInfoContainer}>
-                                    {allRecipients.length == 0 ?
-                                        <View style={styles.recipintWrapper} />
-                                        :
-                                        <FlatList
-                                            horizontal={true}
-                                            showsHorizontalScrollIndicator={false}
-                                            data={allRecipients}
-                                            renderItem={({ item, index }) => {
-                                                const name = announcementId == null ? item?.user?.firstName + ' ' + item?.user?.lastName : item?.firstName + ' ' + item?.lastName
-                                                const profilePicture = announcementId == null ? item?.user?.profilePicture : item?.profilePicture
-                                                return (
-                                                    <View>
-                                                        {index < 3 ? <View style={[styles.receipientImg, { left: index * -15 }]}>
-                                                            <AvatarInitials
-                                                                name={name}
-                                                                imgUrl={profilePicture}
-                                                                size={30}
-                                                                textColor="white"
-                                                            />
+                                                                </TouchableOpacity>
+                                                            }
                                                         </View>
-                                                            : null}
-                                                    </View>
-                                                )
-                                            }
-                                            }
-                                        />
-                                    }
-                                    <View style={{ alignItems: 'center', justifyContent: 'center', left: allRecipients.length == 1 ? horizontalScale(-160) : allRecipients.length == 2 ? horizontalScale(-140) : allRecipients.length >= 3 ? horizontalScale(-120) : horizontalScale(10) }}>
-                                        <Text style={[styles.label, { paddingTop: 0 }]}>{ANNOUNCEMENT.Recipients}</Text>
-                                        <Text style={styles.attachDes}>{allRecipients.length} Users</Text>
+                                                    )
+                                                })
+                                                }
+                                            </ScrollView>
+                                        }
                                     </View>
-                                </View>
+                                    <TouchableOpacity onPress={() => {
+                                        if (announcementId == null) {
+                                            setActiveTab('collaborator');
+                                            setselectedCollaborator(collaboratorArr)
+                                            bottomSheetRef?.current?.open();
+                                        }
+                                    }}>
+                                        <Image
+                                            style={styles.arrowicon}
+                                            source={IMAGES.downArrow}
+                                        />
+                                    </TouchableOpacity>
+                                </TouchableOpacity>
+                                {addedByerrorMessage ? (
+                                    <Text style={[styles.errorText]}>{ERROR_MESSAGE.COLLABORATOR_ERROR}</Text>
+                                ) : null}
+                            </View>
+
+                            <View>
+                                <Text style={styles.label}>{ANNOUNCEMENT.Send_to}</Text>
                                 <TouchableOpacity onPress={() => {
                                     if (announcementId == null) {
                                         setActiveTab('receipient')
                                         bottomSheetRef?.current?.open()
                                     }
-                                }}>
-                                    <Image
-                                        source={IMAGES.arrowRight}
-                                    />
+                                }} style={recipienterrorMessage ? styles.errorContainer : [styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
+                                    <View style={styles.userInfoContainer}>
+                                        {allRecipients.length == 0 ?
+                                            <View style={styles.recipintWrapper} />
+                                            :
+                                            <FlatList
+                                                horizontal={true}
+                                                showsHorizontalScrollIndicator={false}
+                                                data={allRecipients}
+                                                renderItem={({ item, index }) => {
+                                                    const name = announcementId == null ? item?.user?.firstName + ' ' + item?.user?.lastName : item?.firstName + ' ' + item?.lastName
+                                                    const profilePicture = announcementId == null ? item?.user?.profilePicture : item?.profilePicture
+                                                    return (
+                                                        <View>
+                                                            {index < 3 ? <View style={[styles.receipientImg, { left: index * -15 }]}>
+                                                                <AvatarInitials
+                                                                    name={name}
+                                                                    imgUrl={profilePicture}
+                                                                    size={30}
+                                                                    textColor="white"
+                                                                />
+                                                            </View>
+                                                                : null}
+                                                        </View>
+                                                    )
+                                                }
+                                                }
+                                            />
+                                        }
+                                        <View style={{ alignItems: 'center', justifyContent: 'center', left: allRecipients.length == 1 ? horizontalScale(-160) : allRecipients.length == 2 ? horizontalScale(-140) : allRecipients.length >= 3 ? horizontalScale(-120) : horizontalScale(10) }}>
+                                            <Text style={[styles.label, { paddingTop: 0 }]}>{ANNOUNCEMENT.Recipients}</Text>
+                                            <Text style={styles.attachDes}>{allRecipients.length} Users</Text>
+                                        </View>
+                                    </View>
+                                    <TouchableOpacity onPress={() => {
+                                        if (announcementId == null) {
+                                            setActiveTab('receipient')
+                                            bottomSheetRef?.current?.open()
+                                        }
+                                    }}>
+                                        <Image
+                                            source={IMAGES.arrowRight}
+                                        />
+                                    </TouchableOpacity>
                                 </TouchableOpacity>
-                            </TouchableOpacity>
-                            {recipienterrorMessage ? (
-                                <Text style={[styles.errorText]}>{ERROR_MESSAGE.RECIPIENTS_ERROR}</Text>
-                            ) : null}
-                        </View>
-
-                    </View>
-
-                    <View style={[styles.Detailcontainer]}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={styles.headerTitle}>{ANNOUNCEMENT.Announcement_Details}</Text>
-                            <View style={styles.iconWrapper}>
-                                <Image source={IMAGES.upArrow} style={styles.icon} />
+                                {recipienterrorMessage ? (
+                                    <Text style={[styles.errorText]}>{ERROR_MESSAGE.RECIPIENTS_ERROR}</Text>
+                                ) : null}
                             </View>
-                        </View>
-                        <View style={styles.lineView} />
-                        <Input
-                            editable={true}
-                            isRequired={true}
-                            multiline={true}
-                            ref={announcementRef}
-                            placeholder={ANNOUNCEMENT.Share_updates}
-                            defaultValue={announcementText}
-                            onChangeText={setAnnouncementText}
-                            label={ANNOUNCEMENT.Announcement}
-                            errorMessage={ERROR_MESSAGE.ANNOUNCEMENT_DETAIL_ERROR} />
-                        <Text style={styles.label}>{ANNOUNCEMENT.Attachments}</Text>
 
-                        <View style={{ flexDirection: 'row' }}>
-                            {atachmentArr.length < 3 &&
-                                <TouchableOpacity onPress={() => editPhotoClick()} style={styles.attachWrapper}>
-                                    <Image source={IMAGES.upload} style={styles.icon} />
+                        </View>
+                    }
+                    {!showAnnouncementDetail ?
+                        <View style={[styles.Detailcontainer]}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Text style={styles.headerTitle}>{ANNOUNCEMENT.Announcement_Details}</Text>
+                                <TouchableOpacity onPress={() => { setshowAnnouncementDetail(!showAnnouncementDetail) }} style={styles.iconWrapper}>
+                                    <Image source={IMAGES.downArrow} style={styles.downicon} />
                                 </TouchableOpacity>
-                            }
-                            <FlatList
-                                data={atachmentArr}
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                renderItem={renderAttchmentItem}
-                            />
-                        </View>
-                        <Text style={styles.attachDescription}>{ANNOUNCEMENT.Attachments_Descripiton}</Text>
+                            </View>
+                        </View> :
+                        <View style={[styles.Detailcontainer]}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Text style={styles.headerTitle}>{ANNOUNCEMENT.Announcement_Details}</Text>
+                                <TouchableOpacity onPress={() => { setshowAnnouncementDetail(!showAnnouncementDetail) }} style={styles.iconWrapper}>
+                                    <Image source={IMAGES.upArrow} style={styles.icon} />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.lineView} />
+                            <Input
+                                editable={true}
+                                isRequired={true}
+                                multiline={true}
+                                ref={announcementRef}
+                                placeholder={ANNOUNCEMENT.Share_updates}
+                                defaultValue={announcementText}
+                                onChangeText={setAnnouncementText}
+                                label={ANNOUNCEMENT.Announcement}
+                                errorMessage={ERROR_MESSAGE.ANNOUNCEMENT_DETAIL_ERROR} />
+                            <Text style={styles.label}>{ANNOUNCEMENT.Attachments}</Text>
 
-                    </View>
+                            <View style={{ flexDirection: 'row' }}>
+                                {atachmentArr.length < 3 &&
+                                    <TouchableOpacity onPress={() => editPhotoClick()} style={styles.attachWrapper}>
+                                        <Image source={IMAGES.upload} style={styles.icon} />
+                                    </TouchableOpacity>
+                                }
+                                <FlatList
+                                    data={atachmentArr}
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    renderItem={renderAttchmentItem}
+                                />
+                            </View>
+                            <Text style={styles.attachDescription}>{ANNOUNCEMENT.Attachments_Descripiton}</Text>
+
+                        </View>
+                    }
                 </View>
             </ScrollView>
             {announcementId != null ?
