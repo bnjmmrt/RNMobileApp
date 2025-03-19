@@ -85,26 +85,28 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
     placeId: profileData?.placeId,
   });
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-    useEffect(() => {
-      const keyboardDidShowListener = Keyboard.addListener(
-        'keyboardDidShow',
-        () => {
-          setKeyboardVisible(true);
-        },
-      );
-  
-      const keyboardDidHideListener = Keyboard.addListener(
-        'keyboardDidHide',
-        () => {
-          setKeyboardVisible(false);
-        },
-      );
-  
-      return () => {
-        keyboardDidShowListener.remove();
-        keyboardDidHideListener.remove();
-      };
-    }, []);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true);
+      },
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false);
+      },
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   useEffect(() => {
     if (profileData?.email && profileData?.email !== '') {
       emailInputRef?.current.setDisabled(true);
@@ -136,6 +138,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
 
   const validateName = (name: string) => {
     const regex = /^[A-Za-z]+$/;
+    let isFirstNameValid = false;
+    let isLastNameValid = false;
     if (
       name === 'FirstName' &&
       firstNameRef?.current?.inputText.trim().length > 30
@@ -143,7 +147,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
       firstNameRef?.current?.setErrorMessage(
         ERROR_MESSAGE.FIRST_NAME_SIZE_EXCEED,
       );
-      return false;
+      isFirstNameValid = false;
     } else {
       if (
         firstNameRef?.current?.inputText.trim() !== '' &&
@@ -152,7 +156,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         firstNameRef?.current?.setErrorMessage(
           ERROR_MESSAGE.FIRST_NAME_INVALID_CHARACTERS,
         );
-        return false;
+        isFirstNameValid = false;
+      } else {
+        isFirstNameValid = true;
       }
     }
 
@@ -163,7 +169,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
       lastNameRef?.current?.setErrorMessage(
         ERROR_MESSAGE.LAST_NAME_SIZE_EXCEED,
       );
-      return false;
+      isLastNameValid = false;
     } else {
       if (
         lastNameRef?.current?.inputText.trim() !== '' &&
@@ -172,11 +178,13 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         lastNameRef?.current?.setErrorMessage(
           ERROR_MESSAGE.LAST_NAME_INVALID_CHARACTERS,
         );
-        return false;
+        isLastNameValid = false;
+      } else {
+        isLastNameValid = true;
       }
     }
 
-    return true;
+    return isFirstNameValid && isLastNameValid;
   };
 
   const onConfirmClick = async () => {
@@ -208,7 +216,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         }
       }
     } else {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
       firstNameRef.current.validateInputs();
       validateName('FirstName');
       lastNameRef.current.validateInputs();
@@ -286,7 +293,17 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}>
-      <View  style={[styles.container,{paddingBottom:keyboardVisible ? Platform.OS === 'ios' ? verticalMarginScale(50): verticalMarginScale(10) : 0}]}>
+      <View
+        style={[
+          styles.container,
+          {
+            paddingBottom: keyboardVisible
+              ? Platform.OS === 'ios'
+                ? verticalMarginScale(50)
+                : verticalMarginScale(10)
+              : 0,
+          },
+        ]}>
         <Header
           headerTitle={PROFILE.EDIT_PROFILE}
           onPress={handleBackPress}
