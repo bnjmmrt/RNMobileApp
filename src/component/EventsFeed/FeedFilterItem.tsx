@@ -19,6 +19,7 @@ const FeedFilterItem: React.FC<FeedFilterItemProps> = ({
   content,
   handleClear,
 }) => {
+
   if (!content || content === ' - ') return null;
 
   return (

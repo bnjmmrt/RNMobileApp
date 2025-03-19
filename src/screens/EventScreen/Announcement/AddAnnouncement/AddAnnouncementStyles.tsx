@@ -67,7 +67,7 @@ const AddAnnouncementStyles = () => {
       left: -11,
       fontFamily: fontFamily.ABCDiatype_Bold,
     },
-    inputStyle:{
+    inputStyle: {
       fontSize: fontScale(14),
       color: COLORS.light_text,
       fontWeight: '500',
@@ -102,7 +102,7 @@ const AddAnnouncementStyles = () => {
       justifyContent: 'center',
       alignItems: 'center',
     },
-    receipientImg :{ borderRadius: 20, borderWidth: 3, borderColor: COLORS.white},
+    receipientImg: { borderRadius: 20, borderWidth: 3, borderColor: COLORS.white },
     attachWrapper: {
       width: verticalScale(96),
       height: verticalScale(96),
@@ -112,7 +112,7 @@ const AddAnnouncementStyles = () => {
       justifyContent: 'center',
       alignItems: 'center',
     },
-    attachImgWrapper:{
+    attachImgWrapper: {
       width: verticalScale(96),
       height: verticalScale(96),
       borderRadius: radiusScale(8),
@@ -125,8 +125,8 @@ const AddAnnouncementStyles = () => {
       paddingHorizontal: horizontalScale(10),
       paddingVertical: verticalScale(3),
       borderRadius: radiusScale(128),
-      borderWidth:1,
-      borderColor:COLORS.tabBorderColor,
+      borderWidth: 1,
+      borderColor: COLORS.tabBorderColor,
       backgroundColor: COLORS.borderGray,
       justifyContent: 'center',
       alignItems: 'center',
@@ -140,12 +140,25 @@ const AddAnnouncementStyles = () => {
       height: verticalScale(7),
     },
     pdfContainer: {
-      width: width * 0.8,
-      height: height * 0.65,
-      backgroundColor: '#222',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 10,
+      width: horizontalScale(90),
+      height: verticalScale(95),
+      marginTop: 5,
+      marginLeft: 10,
+      marginRight: 10,
+      backgroundColor: "#f0f0f0",
+      justifyContent: "center",
+      alignItems: "center",
+      borderRadius: 8,
+    },
+    pdfSize: {
+      fontSize: 12,
+      color: "gray",
+    },
+    pdftitle: {
+      color: COLORS.black2,
+      fontSize: fontScale(12),
+      textAlign: 'center',
+      fontFamily: fontFamily.ABCDiatype_Medium,
     },
     pdfIcon: {
       width: 30,
@@ -177,7 +190,7 @@ const AddAnnouncementStyles = () => {
       height: verticalScale(50),
       marginTop: verticalMarginScale(5),
     },
-    errorContainer:{
+    errorContainer: {
       flex: 1,
       borderWidth: 1,
       borderColor: COLORS.borderRed,

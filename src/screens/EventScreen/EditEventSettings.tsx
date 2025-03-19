@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import { COLORS, ERROR_MESSAGE, EVENT, LABLE } from 'src/utils/constants';
@@ -34,7 +34,9 @@ const EditEventSettings: React.FC<EditEventSettingsProps> = ({ event }) => {
     return [owner, ...(event?.collaborators || [])];
   }, [event]);
 
-  const onConfirmClick = useCallback(async () => { }, []);
+  const onConfirmClick = useCallback(async () => {
+    Linking.openURL('https://stagehost.therumor.com/events');
+  }, []);
 
   const getUserRole = useCallback(
     (item: Collaborator) => {

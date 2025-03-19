@@ -59,6 +59,7 @@ const Lists: React.FC<ListsProps> = ({}) => {
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
     useState<listActionCurrentPageType>('');
   const [selectedList, setSelectedList] = useState<string | null>(null);
+  const [selectedListName, setSelectedListName] = useState<string | null>(null);
 
   const { data, isLoading, refetch } = useFetchAllCustomListsQuery({
     take: 10,
@@ -107,6 +108,7 @@ const Lists: React.FC<ListsProps> = ({}) => {
             showDelete={index > 1}
             onPressDelete={() => {
               setSelectedList(item.id);
+              setSelectedListName(item.name);
               setSelectedActionSheetAction('deleteList');
               actionSheetRef?.current?.open();
             }}
@@ -232,6 +234,7 @@ const Lists: React.FC<ListsProps> = ({}) => {
         selectedListId={selectedList || ''}
         onSuccess={onListActionSheetSuccess}
         listType="custom"
+        selectedListName={selectedListName || ''}
       />
     </View>
   );

@@ -37,8 +37,25 @@ const basicUserAllowedFilters = [
 ];
 const allUsersAllowedFilters = ['list', ...basicUserAllowedFilters];
 const listDetailsAllowedFilters = basicUserAllowedFilters;
+const inviteGuestsAllowedFilters = [
+  'list',
+  'pastEvents',
+  'category',
+  'basecity',
+  'gender',
+  'age',
+  'interest',
+];
+const manageGuestsAllowedFilters = [
+  'category',
+  'gender',
+  'age',
+  'ticketType',
+  'checkedIn',
+];
 //followers is out of scope for now
-
+// Ticket Type
+// Check in status
 const AllUsersFilters = ({
   selectedFilters,
   setSelectedFilters,
@@ -56,12 +73,21 @@ const AllUsersFilters = ({
     shallowEqual,
   );
 
+  const selectedEvent = useSelector(
+    (state: RootState) => state.inviteGuestsFlow.selectedEvent,
+    shallowEqual,
+  );
+
   const [fetchFilters, { data, isLoading, error }] =
     useLazyFetchUserFiltersQuery();
 
   const allowedFilters =
     from === 'allUsersList'
       ? allUsersAllowedFilters
+      : from === 'manageGuests'
+      ? manageGuestsAllowedFilters
+      : from === 'inviteGuests'
+      ? inviteGuestsAllowedFilters
       : listDetailsAllowedFilters;
 
   const filterData: FilterType[] =
@@ -165,7 +191,11 @@ const AllUsersFilters = ({
 
   useEffect(() => {
     if (userId) {
-      fetchFilters({ id: userId });
+      if (from === 'manageGuests') {
+        fetchFilters({ id: userId, eventId: selectedEvent?.id });
+      } else {
+        fetchFilters({ id: userId });
+      }
     }
   }, [userId]);
 

@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   FlatList,
   Image,
+  Platform,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -277,18 +278,12 @@ const EventsFeed = () => {
   };
 
   useEffect(() => {
-
-
     if (data?.data?.result) {
       const eventsRes = data?.result;
       // const featuredEventsRes = data?.data?.data?.filter(
       //   (item: any) => item.featuredEventSection,
       // );
       const { result, allArray } = groupEventsByFeaturedSection(data);
-      console.log("Grouped Events:", result);
-      console.log("All Events:", allArray);
-
-
 
       setFeaturedEvents(result);
       setAllEvents(allArray);
@@ -298,10 +293,8 @@ const EventsFeed = () => {
     }
   }, [data]);
 
-
   function groupEventsByFeaturedSection(mainResponse) {
     // console.log(":DATA RESULTH:0", mainResponse);
-    console.log(":DATA RESULTH:1", mainResponse?.data?.result);
 
     let groupedEvents = {};
     let allArray = []; // Single array to store all non-featured events
@@ -314,7 +307,7 @@ const EventsFeed = () => {
             id: sectionId,
             index: event.featuredEventSection.index,
             name: event.featuredEventSection.name,
-            events: []
+            events: [],
           };
         }
         groupedEvents[sectionId].events.push(event);
@@ -328,10 +321,6 @@ const EventsFeed = () => {
 
     return { result, allArray }; // Return both grouped featured events and all other events in a single array
   }
-  useEffect(() => {
-    console.log("ALl Events", allEvents);
-  }, [allEvents])
-
 
   useFocusEffect(
     useCallback(() => {
@@ -339,11 +328,13 @@ const EventsFeed = () => {
         changeSafeAreaViewConfig({
           ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
           showBottomSafeAreaView: false,
+          showTopSafeAreaView: false,
         });
       } else {
         changeSafeAreaViewConfig({
           ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
           showBottomSafeAreaView: false,
+          showTopSafeAreaView: false,
         });
       }
     }, []),
@@ -352,18 +343,32 @@ const EventsFeed = () => {
   const renderFilters = useCallback(() => {
     const onRemoveFilter = (filterKey: string, valueIndex: number) => {
       let tempSelectedFilters = { ...selectedFilters };
+
+      // Remove the specific value from the selected filter
       tempSelectedFilters = {
         ...tempSelectedFilters,
         [filterKey]: {
           ...tempSelectedFilters[filterKey],
           value: tempSelectedFilters[filterKey].value.filter(
-            (_: any, index: number) => index !== valueIndex,
+            (_: any, index: number) => index !== valueIndex
           ),
         },
       };
+
+      if (filterKey === "minStartDate" && tempSelectedFilters.maxEndDate) {
+        delete tempSelectedFilters.maxEndDate;
+      }
+
+      if (filterKey === "longitude" && tempSelectedFilters.latitude) {
+        delete tempSelectedFilters.latitude;
+      }
+
       const { queryString, filtersCount } = getFilterQuery(tempSelectedFilters);
       onApplyFilter(queryString, filtersCount, tempSelectedFilters);
     };
+
+
+
 
     return (
       <View style={{ alignSelf: 'flex-start', flexDirection: 'row' }}>
@@ -442,8 +447,9 @@ const EventsFeed = () => {
         isLoading={isLoading}
         onRefreshPage={onRefreshPage}
         handleLoadMore={handleLoadMore}
+        searchTerm={searchTerm}
+        selectedFilters={selectedFilters}
       />
-
 
       {/* <FlatList
         data={allEvents || []}
@@ -509,7 +515,6 @@ const EventsFeed = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
   featuredContainer: {
     flexDirection: 'column',
@@ -529,6 +534,7 @@ const styles = StyleSheet.create({
   filterScrollView: {
     marginHorizontal: horizontalMarginScale(20),
     marginTop: verticalMarginScale(8),
+    marginBottom: verticalMarginScale(8)
   },
   scrollView: {
     height: verticalScale(390),
@@ -536,7 +542,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    // paddingBottom: verticalMarginScale(80),
+    marginTop: Platform.OS === 'ios' ? verticalMarginScale(61) : 0,
   },
   responseSubmitted: {
     display: 'flex',

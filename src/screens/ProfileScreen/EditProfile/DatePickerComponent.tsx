@@ -7,6 +7,7 @@ import CustomDatepickerBottomSheet from '../../../component/BottomSheet/CustomDa
 import { validateAge } from '../../../utils/functions';
 import { horizontalMarginScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import CustomDateTimePickerBottomSheet from 'src/component/BottomSheet/CustomDateTimePickerBottomSheet';
+import { formatSingleToDeviceTimeZone } from 'src/utils/dateFunctions';
 
 interface DatePickerComponentProps {
   birthDate: string,
@@ -52,8 +53,6 @@ const DatePickerComponent = forwardRef((props: DatePickerComponentProps, ref) =>
     setErrorMessage(null);
     return true;
   };
-
-
 
   return (
     <>

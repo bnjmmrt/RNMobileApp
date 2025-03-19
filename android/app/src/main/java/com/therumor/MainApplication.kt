@@ -1,4 +1,4 @@
-package com.rumor
+package com.therumor
 
 import android.app.Application
 import com.facebook.react.PackageList
@@ -10,6 +10,8 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
+import io.intercom.android.sdk.Intercom
+import com.therumor.BuildConfig
 
 class MainApplication : Application(), ReactApplication {
 
@@ -34,10 +36,17 @@ class MainApplication : Application(), ReactApplication {
 
   override fun onCreate() {
     super.onCreate()
+
+    Intercom.initialize(this, "android_sdk-0bc77d78f8b9f7fe0aa96daa3bef19ffd655f938", "ucnhg0me")
+    Intercom.client().loginUnidentifiedUser() // If you have identifying information for your user you can use loginIdentifiedUser() instead
+    Intercom.client().setLauncherVisibility(Intercom.Visibility.VISIBLE)
+    
     SoLoader.init(this, false)
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
       load()
     }
+
+  
   }
 }

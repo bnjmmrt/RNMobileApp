@@ -70,8 +70,8 @@ const TicketTypeBottomSheet = forwardRef<
   return (
     <BottomSheetComponent
       ref={sheetRef}
-      snapPoints={['30%', '40%']}
-      enableDynamicSizing
+      snapPoints={['40%']}
+      enableDynamicSizing={false}
       onClose={closeSheet}>
       <BottomSheetFlatList
         data={ticketTypes}

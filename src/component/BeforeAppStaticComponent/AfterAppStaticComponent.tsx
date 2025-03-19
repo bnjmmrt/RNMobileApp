@@ -1,13 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, StatusBar, SafeAreaView, Platform } from 'react-native';
-import { Hp, Wp } from '../../utils/dimensions';
-import {
-  BUTTON_LABLE,
-  COLORS,
-  eventData,
-  LABLE,
-  ROLE,
-} from '../../utils/constants';
+import React, { useCallback, useRef } from 'react';
+import { View, StyleSheet, StatusBar, Platform } from 'react-native';
+import { Hp, verticalScale, Wp } from '../../utils/dimensions';
+import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 import Button from '../Button';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
 import { ScrollView } from 'react-native';
@@ -23,7 +17,7 @@ import { RootState } from 'src/redux/slices';
 import GradientOverlay from 'src/screens/BeforeApplicationFlow/GradientOverlay';
 import { ROUTES } from 'src/navigation/Route';
 import { EndPoint } from 'src/ApiManager/config';
-import { setRole } from 'src/redux/slices/authSlice';
+import { role, setRole, setRoles } from 'src/redux/slices/authSlice';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BottomSheetMethods } from '../BottomSheet/BottomSheet';
 
@@ -42,7 +36,6 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
     navigate('InviteReferralScreen');
   };
 
-  console.log('llll');
 
   useFocusEffect(
     useCallback(() => {
@@ -53,13 +46,23 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
             EndPoint.get_user_with_role_by_id,
             { id: userId },
           );
+
           if (response.success) {
-            if (
-              response.data.roles[0].roleName == ROLE.MEMBER ||
-              response.data.roles[0].name == ROLE.MEMBER
-            ) {
-              navigate(ROUTES.WelcomeScreen, { userName: response?.data.name });
-              dispatch(setRole(response?.data?.roles[0].name));
+            const { roles, name } = response.data;
+
+            const transformedRoles = roles.map((role: any) => ({
+              roleName: role.name,
+              roleId: role.id,
+            }));
+
+            const isMember = transformedRoles.some(
+              (role: role) => role.roleName === ROLE.MEMBER,
+            );
+
+            if (isMember) {
+              navigate(ROUTES.WelcomeScreen, { userName: name });
+              dispatch(setRole(ROLE.MEMBER));
+              dispatch(setRoles(transformedRoles));
             }
           }
         } catch (error) {
@@ -67,17 +70,65 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
         }
       };
 
-      role == ROLE.NON_MEMBER && fetchUserById();
-    }, []),
+      if (role === ROLE.NON_MEMBER) {
+        fetchUserById();
+      }
+    }, [role, userId, dispatch]),
   );
+
+
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     const fetchUserById = async () => {
+  //       try {
+  //         const response: any = await apiRequest(
+  //           'post',
+  //           EndPoint.get_user_with_role_by_id,
+  //           { id: userId },
+  //         );
+  //         if (response.success) {
+
+  //           if (response.data.roles > 1) {
+  //             if (
+  //               response.data.roles[0].roleName == ROLE.MEMBER ||
+  //               response.data.roles[0].name == ROLE.MEMBER ||
+  //               response.data.roles[1].roleName == ROLE.MEMBER ||
+  //               response.data.roles[1].name == ROLE.MEMBER
+  //             ) {
+  //               navigate(ROUTES.WelcomeScreen, { userName: response?.data.name });
+  //               dispatch(setRole(ROLE.MEMBER));
+  //             }
+
+  //           }
+
+
+
+  //           if (
+  //             response.data.roles[0].roleName == ROLE.MEMBER ||
+  //             response.data.roles[0].name == ROLE.MEMBER
+  //           ) {
+  //             navigate(ROUTES.WelcomeScreen, { userName: response?.data.name });
+  //             dispatch(setRole(ROLE.MEMBER));
+  //           }
+  //         }
+  //       } catch (error) {
+  //         console.error('Error fetching user:', error);
+  //       }
+  //     };
+
+  //     role == ROLE.NON_MEMBER && fetchUserById();
+  //   }, []),
+  // );
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.STATIC_GRADIENT_SCHEME,
-        showBottomSafeAreaView: false,
-        showTopSafeAreaView: false,
-      });
+      if (Platform.OS === 'ios') {
+        changeSafeAreaViewConfig({
+          ...SAFEWAREAVIEW_CONFIG.STATIC_GRADIENT_SCHEME,
+          showBottomSafeAreaView: false,
+          showTopSafeAreaView: false,
+        });
+      }
     }, []),
   );
 
@@ -134,7 +185,6 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
         </ScrollView>
       </View>
       <ReferralCodeBottomSheet ref={bottomSheetRef} />
-
     </>
   );
 };
@@ -151,7 +201,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: Platform.OS === 'ios' ? 0 : 30
+    paddingTop: Platform.OS === 'ios' ? verticalScale(60) : 0,
   },
   btnStyle: {
     width: Wp(85),

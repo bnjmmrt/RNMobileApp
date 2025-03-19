@@ -49,7 +49,7 @@ import { openSettings } from 'react-native-permissions';
 import Intercom, { Visibility } from '@intercom/intercom-react-native';
 
 // Define the type for navigation props
-interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
+interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
 interface ListItem {
   id: string;
@@ -431,7 +431,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         { backgroundColor: !isGuest ? COLORS.black2 : COLORS.white },
       ]}>
       <View style={{ backgroundColor: COLORS.white }}>
-        <HeaderComponent isDarkTheme={false} />
+        {/* <HeaderComponent isDarkTheme={false} /> */}
 
         <ScrollView>
           <ProfileTopView
@@ -439,7 +439,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             profilePic={
               role?.toLocaleLowerCase() === 'host'
                 ? companyLogo
-                : profilePicture
+                : profilePicture ? profilePicture : profileData?.profilePicture
             }
             name={getUserName()}
             loading={loading}
@@ -482,7 +482,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           onPencilClick={openCamera}
           submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
           cancelButtonText={BUTTON_LABLE.CANCEL}
-          snapPoints={[Platform.OS === 'android' ? 0.4 : 0.5]}
+          snapPoints={[Platform.OS === 'android' ? 0.4 : 0.4]}
           image={image}
         />
 

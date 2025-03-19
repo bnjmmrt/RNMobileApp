@@ -43,7 +43,9 @@ import {
 import {
   ApiErrorInterface,
   changeSafeAreaViewConfig,
+  extractCountryCode,
   getErrorMessage,
+  removeSpaceFromStr,
 } from 'src/utils/functions';
 import useContacts from 'src/utils/hooks/useContactPermission';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
@@ -159,7 +161,6 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
               ? 'INVITED'
               : 'DRAFT',
             maxAdditionalGuests: additionalGuests || 0,
-            sendInvite: sendInvite,
             ticketTypeId: selectedTicketType?.id || '',
             users: selectedUsers.map((item, index) => item.id),
             inviteMessage: inviteMessage,
@@ -168,14 +169,26 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         }).unwrap();
 
         if (response.success) {
-          FlashMessageComponent.show(
-            'success',
-            `${selectedUsers.length} ${
-              sendInvite
-                ? 'Guests have been invited to this event'
-                : 'Guests have been saved as drafts'
-            }`,
-          );
+          if (directlySendToConfirm) {
+            FlashMessageComponent.show(
+              'success',
+              `${
+                selectedUsers.length > 1
+                  ? `${selectedUsers.length} Guests`
+                  : selectedUsers[0].name
+              } ${'added to Confirmed'}`,
+            );
+          } else {
+            FlashMessageComponent.show(
+              'success',
+              `${selectedUsers.length} ${
+                sendInvite
+                  ? 'Guests have been invited to this event'
+                  : 'Guests have been saved as drafts'
+              }`,
+            );
+          }
+
           dispatch(setSelectedUsersToInvite(removedUsers));
           dispatch(removeSelectedUsersToInvite([]));
           navigation.goBack();
@@ -252,7 +265,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         inviteMessage: inviteMessage,
         privateGuestNote: guestNote,
         email: email,
-        phoneNumber: `${selectedCountry?.dial_code}${phone}`,
+        phoneNumber: removeSpaceFromStr(`${selectedCountry?.dial_code}${phone}`),
         firstName: firstName,
         lastName: lastName,
       };
@@ -298,6 +311,8 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
       // phoneRef?.current?.setPhoneNumber(selectedManualUser?.phoneNumber || '');
       if (selectedManualUser?.phoneNumber) {
         const phoneData = getPhoneNumber(selectedManualUser?.phoneNumber);
+        console.log('phoneData', phoneData);
+
         phoneRef?.current?.setPhoneNumber(phoneData.phoneNumber);
         phoneRef?.current?.setFlag(phoneData.flag);
         phoneRef?.current?.setCallingCode(phoneData.countryCode);

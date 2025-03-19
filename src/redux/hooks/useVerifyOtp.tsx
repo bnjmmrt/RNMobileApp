@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMemberLoginMutation } from '../../redux/actions/loginApiAction';
 import { FlashMessageComponent } from '../../component/FlashMessageComponent/FlashMessageComponent';
 import { LABLE } from 'src/utils/constants';
+import { removeSpaceFromStr } from 'src/utils/functions';
 
 export const useVerifyOtp = (
   isMemberExist: boolean,
@@ -19,7 +20,7 @@ export const useVerifyOtp = (
       setIsLoading(true);
       const requestParam = {
         email,
-        phoneNumber: phone,
+        phoneNumber: removeSpaceFromStr(phone),
         code,
         isExist: isMemberExist,
         isGuest: isGuest,

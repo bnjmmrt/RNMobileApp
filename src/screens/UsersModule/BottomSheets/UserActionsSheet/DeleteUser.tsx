@@ -40,11 +40,11 @@ const DeleteUser = ({
     if (userDetails) {
       try {
         const response = await deleteUser({
-          user: user,
+          user: userDetails?.hostUserMappingId,
         }).unwrap();
 
         if (response.success) {
-          showSuccess(`${userDetails.firstName} deleted!`);
+          showSuccess(`${userDetails.firstName} has been deleted`);
           navigation.goBack();
         } else {
           const typedError = response as ApiErrorInterface;

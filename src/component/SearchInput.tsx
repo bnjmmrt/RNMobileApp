@@ -69,7 +69,7 @@ const SearchInput = forwardRef(
           <Image source={IMAGES.search} style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder={placeholder ? placeholder : 'Search for an event..'}
+            placeholder={placeholder ? placeholder : 'Search for an event...'}
             value={searchText}
             onChangeText={handleTextChange}
           />
