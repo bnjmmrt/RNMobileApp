@@ -72,7 +72,7 @@ const useCalender = (eventDetails: Event) => {
       if (eventId) {
         FlashMessageComponent.show(
           `success`,
-          `Event Addes: Switched to Check your calendar for the event.`,
+          `Event added successfully to the calender.`,
         );
         // Alert.alert('Event Added', 'Check your calendar for the event.');
       }

@@ -98,16 +98,14 @@ const formatToDeviceTimeZone = (
 
   // Extract the time zone abbreviation
   const timeZoneName = formattedStartTime.split(' ').pop();
-  let formattedTimeRange = `${formattedStartTime.split(' ')[0]} - ${
-    formattedEndTime.split(' ')[0]
-  } ${timeZoneName}`;
+  let formattedTimeRange = `${formattedStartTime.split(' ')[0]} - ${formattedEndTime.split(' ')[0]
+    } ${timeZoneName}`;
   if (!isRequiredTimeZone) {
-    formattedTimeRange = `${formattedStartTime.split(' ')[0]} - ${
-      formattedEndTime.split(' ')[0]
-    }`;
+    formattedTimeRange = `${formattedStartTime.split(' ')[0]} - ${formattedEndTime.split(' ')[0]
+      }`;
   }
 
-  return [formattedDate, formattedTimeRange];
+  return [formattedDate, " ", formattedTimeRange];
 };
 
 export default formatToDeviceTimeZone;

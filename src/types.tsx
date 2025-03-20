@@ -87,6 +87,7 @@ export interface Event {
     location?: Location;
     currentGuestStatus?: string;
     description?: string;
+    status?: string;
     totalCheckedInGuests?: number;
     totalConfirmedGuests?: number;
     showLocation?: boolean;

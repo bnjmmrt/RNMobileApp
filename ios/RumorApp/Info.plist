@@ -62,6 +62,8 @@
 	<string>We need permission to save images to your gallery.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Give Rumor app  access to your photos</string>
+	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
+	<false/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>ABCDiatype-Bold.ttf</string>
@@ -94,6 +96,8 @@
 	<array>
 		<string>arm64</string>
 	</array>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This app collects your device ID to provide better analytics, enhance your experience, and improve app performance.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

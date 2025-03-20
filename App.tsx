@@ -3,7 +3,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import React, { useEffect, useCallback } from 'react';
-import { LogBox, StyleSheet } from 'react-native';
+import { LogBox, Platform, StyleSheet } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Provider, useDispatch } from 'react-redux';
@@ -24,16 +24,40 @@ import { navigationRef } from 'src/component/NavigationService';
 import ScreenshotDetectedDialog from 'src/component/ScreenshotDetectedDialog';
 import { getDeviceId } from 'src/utils/functions';
 import Intercom, { Visibility } from '@intercom/intercom-react-native';
+import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+import analytics from '@react-native-firebase/analytics';
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
   const { apiRequest } = useApi();
   const dispatch = useDispatch();
 
+  const updateAnalyticsStatus = async (status: boolean) => {
+    await analytics().setAnalyticsCollectionEnabled(status);
+  };
+
   useEffect(() => {
     NotificationSetup()
     Intercom.setLauncherVisibility(Visibility.GONE);
+    if (Platform.OS === 'ios') {
+      request(PERMISSIONS.IOS.APP_TRACKING_TRANSPARENCY).then(status => {
+        switch (status) {
+          case RESULTS.UNAVAILABLE:
+            updateAnalyticsStatus(true);
+          case RESULTS.DENIED:
+            updateAnalyticsStatus(false);
+          case RESULTS.BLOCKED:
+            updateAnalyticsStatus(false);
+          case RESULTS.GRANTED:
+            updateAnalyticsStatus(true);
+          case RESULTS.LIMITED:
+            updateAnalyticsStatus(true);
+        }
+      });
+    }
   }, []);
+
+
 
   const NotificationSetup = async () => {
     getDeviceId()
