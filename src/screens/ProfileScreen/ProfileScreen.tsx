@@ -113,6 +113,31 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const deleteAccount = () => {
     deleteAccountBottomSheetRef.current?.open();
   };
+  const callDeleteAccountAPpi = async () => {
+    try {
+      const response = await apiRequest('delete', `users/v1/auth/users/${userId}`);
+      if (response?.success) {
+        FlashMessageComponent.show('success', response?.message || 'User account deactivated successfully.');
+        deleteAccountBottomSheetRef.current?.close();
+        const resetAction = CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'AuthStack' }],
+        });
+        dispatch(resetProfileData());
+        dispatch(resetLoginData());
+        dispatch(setAuthToken(null));
+        dispatch(resetAppFlowDetails());
+        logoutBottomSheetRef.current?.close();
+        // navigation.dispatch(resetAction);
+        navigation.replace('AuthStack');
+      } else {
+        Alert.alert('Error', response?.message || 'Something went wrong');
+      }
+    } catch (error) {
+      Alert.alert('Error', error?.message || 'Failed to delete account');
+    }
+  };
+
 
   useEffect(() => {
     if (profileData?.email) {
@@ -499,6 +524,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         <DeleteAccountBottomSheet
           ref={deleteAccountBottomSheetRef}
           onPress={deleteAccount}
+          onDeletePress={callDeleteAccountAPpi}
         />
       </View>
     </View>
