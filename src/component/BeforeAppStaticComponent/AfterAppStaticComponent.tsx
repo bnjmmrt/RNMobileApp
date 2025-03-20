@@ -36,7 +36,6 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
     navigate('InviteReferralScreen');
   };
 
-
   useFocusEffect(
     useCallback(() => {
       const fetchUserById = async () => {
@@ -76,7 +75,6 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
     }, [role, userId, dispatch]),
   );
 
-
   // useFocusEffect(
   //   useCallback(() => {
   //     const fetchUserById = async () => {
@@ -100,8 +98,6 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
   //             }
 
   //           }
-
-
 
   //           if (
   //             response.data.roles[0].roleName == ROLE.MEMBER ||
@@ -139,6 +135,11 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
   return (
     <>
       <View style={styles.container}>
+        <StatusBar
+          translucent
+          backgroundColor="transparent"
+          barStyle="light-content"
+        />
         <GradientOverlay />
         <ScrollView>
           <View style={styles.contentContainer}>
