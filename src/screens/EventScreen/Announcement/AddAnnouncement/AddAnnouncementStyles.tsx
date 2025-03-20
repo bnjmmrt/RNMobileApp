@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet } from "react-native"
+import { Dimensions, Platform, StyleSheet } from "react-native"
 import { COLORS } from "src/utils/constants"
 import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalMarginScale, verticalScale } from "src/utils/dimensions"
 import { fontFamily } from "src/utils/functions"
@@ -227,7 +227,30 @@ const AddAnnouncementStyles = () => {
       marginTop: verticalMarginScale(5),
       color: COLORS.errorText,
     },
-    recipientHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }
+    recipientHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+    toolTipStyle: {
+      backgroundColor: COLORS.dark_gray,
+      width: horizontalScale(200),
+      paddingHorizontal: 15,
+      height: Platform.OS === 'ios' ? verticalScale(20) : verticalScale(20),
+    },
+    displayInsetStyle: {
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0
+    },
+    toolTipCriteriaMainView: {
+      paddingRight: verticalScale(5),
+      paddingTop: verticalScale(1)
+    },
+    tooltipHeadStyle: {
+      fontSize: fontScale(12),
+      marginBottom: 5,
+      lineHeight: 18,
+      fontWeight: '500',
+      color: COLORS.white
+    },
   })
 }
 

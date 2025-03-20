@@ -33,7 +33,7 @@ import { ROUTES } from "src/navigation/Route";
 import { useDispatch } from "react-redux";
 import { setRsvpStatus } from "src/redux/slices/rspvSlice";
 import { openSettings } from "react-native-permissions";
-
+import Tooltip, { Placement } from 'react-native-tooltip-2';
 interface AddAnnouncementScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
@@ -83,16 +83,19 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const [collaborators, setCollaborators] = useState([]);
     const [showRecipientDetail, setshowRecipientDetail] = useState(true)
     const [showAnnouncementDetail, setshowAnnouncementDetail] = useState(true)
-
+    const [showProfileToolitip, setShowProfileToolitip] = useState(false);
+    const showTooltip = () => {
+        console.log('showTooltipshowTooltipshowTooltip');
+        setShowProfileToolitip(true)
+    };
     useEffect(() => {
         if (eventData?.collaborators) {
             let collaborator = {
                 ...eventData?.owner,
-                name: eventData?.owner?.companyName,
+                name: eventData?.owner?.firstName + ' ' + eventData?.owner?.lastName,
+                // id: eventData?.owner?.id,
                 role: {
-                    id: eventData?.owner?.id,
-                    firstName: eventData?.owner?.firstName,
-                    lastName: eventData?.owner?.lastName + ' (Host)',
+                    name: 'Host',
                 },
             };
 
@@ -379,7 +382,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                             style={[styles.guestButton, isSelected && { borderWidth: 2, borderColor: COLORS.black, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 12 }]}
                             onPress={() => toggleCollaborator(item, index)}>
                             {isSelected && <Image source={IMAGES.check} style={{ width: 16, height: 16 }} />}
-                            <Text style={styles.guestButtonText}>{item?.role?.firstName + ' ' + item?.role?.lastName}</Text>
+                            <Text style={styles.guestButtonText}>{item?.name + ' (' + item?.role?.name + ')'}</Text>
                             {isSelected && <View />}
                         </TouchableOpacity>
                     )
@@ -783,7 +786,34 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                 <CustomText style={[styles.label]} >
                                     {ANNOUNCEMENT.Added_by}
                                     <CustomText style={{ color: COLORS.errorText }}> *</CustomText>
+                                    <TouchableOpacity
+                                        onPress={() => setShowProfileToolitip(!showProfileToolitip)}>
+                                        <Image style={{ marginTop: 25 }} tintColor={COLORS.light_gray} source={IMAGES.info_filled} />
+                                    </TouchableOpacity>
                                 </CustomText>
+                                <Tooltip
+                                    contentStyle={[styles.toolTipStyle, {
+                                        height: verticalScale(90),
+                                    }]}
+                                    isVisible={showProfileToolitip}
+                                    displayInsets={{
+                                        left: 130,
+                                        right: 0,
+                                        top: 0,
+                                        bottom: 0
+                                    }}
+                                    backgroundColor='transparent'
+                                    topAdjustment={verticalScale(-10)}
+                                    content={
+                                        <View style={[styles.toolTipCriteriaMainView]}>
+                                            <Text style={styles.tooltipHeadStyle}>{ANNOUNCEMENT.ANNOUNCEMENT_TOOLTIP}</Text>
+                                        </View>
+                                    }
+                                    placement={Placement.LEFT}
+                                    onClose={() => setShowProfileToolitip(false)}
+                                >
+                                    <View />
+                                </Tooltip>
                                 <TouchableOpacity onPress={() => {
                                     if (announcementId == null) {
                                         setActiveTab('collaborator');
@@ -801,7 +831,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                                         <View style={[styles.countWrapper, {
                                                             marginHorizontal: 3, paddingVertical: verticalScale(3), flexDirection: 'row'
                                                         }]}>
-                                                            <Text style={[styles.label, { paddingTop: 0 }]}>{announcementId == null ? item?.role?.firstName + ' ' + item?.role?.lastName : item?.firstName + ' ' + item?.lastName}</Text>
+                                                            <Text style={[styles.label, { paddingTop: 0 }]}>{announcementId == null ? item?.name : item?.firstName + ' ' + item?.lastName}</Text>
                                                             {announcementId == null &&
                                                                 <TouchableOpacity onPress={() => removeCollaborator(item)}>
                                                                     <Image source={IMAGES.cross} style={{ left: 5 }} />
@@ -842,7 +872,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                     }
                                 }} style={recipienterrorMessage ? styles.errorContainer : [styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
                                     <View style={styles.userInfoContainer}>
-                                        {allRecipients.length == 0 ?
+                                        {allRecipients?.length == 0 ?
                                             <View style={styles.recipintWrapper} />
                                             :
                                             <FlatList
@@ -1020,7 +1050,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                 isAnnouncement={true}
                 snapPoints={['0.30']}
                 title={ANNOUNCEMENT.Post_Announcement}
-                subTitle={ANNOUNCEMENT.announcement_des}
+                subTitle={ANNOUNCEMENT.announcement_des + allRecipients.length + ' recipients'}
                 btnLabel={ANNOUNCEMENT.Post_Announcement}
                 back={() => postAnnouncement()}
             />
