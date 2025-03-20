@@ -21,7 +21,7 @@ import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { RootState } from 'src/redux/slices';
 
-interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> { }
+interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> {}
 
 const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();

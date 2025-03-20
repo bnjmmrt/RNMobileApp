@@ -216,8 +216,8 @@ const EventsFeed = () => {
     searchText: searchTerm,
     queryString: filterQuery,
     userId: userId,
-    take: 10,
-    skip: (currentPage - 1) * 10,
+    // take: 10,
+    // skip: (currentPage - 1) * 10,
   });
 
   const debouncedSearch = useCallback(
@@ -236,10 +236,10 @@ const EventsFeed = () => {
   }, []);
 
   const handleLoadMore = useCallback(() => {
-    const totalCount = data?.data?.totalCount;
-    if (allEvents?.length < totalCount && !isLoading) {
-      setCurrentPage(prev => prev + 1);
-    }
+    // const totalCount = data?.data?.totalCount;
+    // if (allEvents?.length < totalCount && !isLoading) {
+    //   setCurrentPage(prev => prev + 1);
+    // }
   }, [allEvents]);
 
   const onRefreshPage = () => {
@@ -277,11 +277,7 @@ const EventsFeed = () => {
       const { result, allArray } = groupEventsByFeaturedSection(data);
 
       setFeaturedEvents(result);
-      setAllEvents(prev =>
-        currentPage === 1
-          ? data?.data?.result
-          : [...prev, ...data?.data?.result],
-      );
+      setAllEvents(allArray);
     }
   }, [data]);
 

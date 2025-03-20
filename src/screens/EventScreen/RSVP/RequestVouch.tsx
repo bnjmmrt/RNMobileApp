@@ -40,6 +40,9 @@ const RequestVouch = ({
   const fetchContacts = async () => {
     try {
       const contacts = await getContactNumbersOnly();
+      if (contacts.length === 0) {
+        return;
+      }
       const response = await getConfirmedMembers({ contacts });
       const vouchUserId =
         vouchData && vouchData.map(request => request.idUserVouch);
@@ -96,10 +99,13 @@ const RequestVouch = ({
   return (
     <View style={{ gap: 12 }}>
       <Title title={'Select a Member to Vouch for You'} align="center" />
-      <SearchInput
-        placeholder="Search friends"
-        onSearchTextChange={handleSearch}
-      />
+      {members.length > 0 ? (
+        <SearchInput
+          placeholder="Search friends"
+          onSearchTextChange={handleSearch}
+        />
+      ) : null}
+
       <View style={{ gap: 6 }}>
         <Text style={styles.title}>{'Friends who are members'}</Text>
         <Text style={styles.description}>

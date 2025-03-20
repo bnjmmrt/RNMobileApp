@@ -72,6 +72,7 @@ type RouteParams = {
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   navigation,
 }) => {
+  const scrollViewRef = useRef<ScrollView>(null);
   const { apiRequest, loading } = useApi();
   const dispatch = useDispatch();
   const route = useRoute<RouteProp<RouteParams>>();
@@ -271,6 +272,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     } else {
       if (eventCount?.data?.confirmedCount === 0) {
         setshowError(true);
+        setTimeout(() => {
+          scrollViewRef?.current?.scrollToEnd({ animated: true });
+        }, 1000);
       } else {
         navigation.navigate(ROUTES.EventStack, {
           screen: ROUTES.AddAnnouncementScreen,
@@ -372,10 +376,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     if (isDeclinedByHost || guestStatus === 'CONFIRMED' || role === ROLE.HOST) {
       return null;
     }
-    const date1 = moment.utc(data?.data?.endDate);
-    const date2 = moment();
 
-    if (!date1.isBefore(date2)) {
+    if (data?.data?.status === 'PAST_STATUS') {
       return null;
     }
     return (
@@ -400,9 +402,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       return null;
     }
 
-    const date1 = moment.utc(data?.data?.endDate);
-    const date2 = moment();
-    const isPastEvent = !date1.isBefore(date2);
+    const isPastEvent = data?.data?.status === 'PAST_STATUS';
 
     return (
       <View style={{ margin: 20 }}>
@@ -519,7 +519,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         <>
           {/* <SafeAreaView style={{ backgroundColor: COLORS.white }} /> */}
           <View style={styles.container}>
-            <ScrollView>
+            <ScrollView ref={scrollViewRef}>
               {Platform.OS === 'ios' && (
                 <View style={styles.blurredBackgroundContainer}>
                   <FastImage
