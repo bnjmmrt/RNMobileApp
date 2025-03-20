@@ -1,26 +1,27 @@
-import React, { useRef, useState } from 'react';
-import { Platform, ScrollView, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../redux/slices';
-import { setPageProgress } from '../../../redux/slices/appFlowSlice';
-import Header from '../../../component/Header/Header';
-import Button from '../../../component/Button';
-import IMAGES from '../../../assets/images';
-import {
-  LABLE,
-  BUTTON_LABLE,
-  ERROR_MESSAGE,
-  COLORS,
-  PROFILE,
-} from '../../../utils/constants';
 import { useNavigation } from '@react-navigation/native';
-import { fontScale, horizontalMarginScale, Hp, radiusScale, verticalMarginScale, Wp } from '../../../utils/dimensions';
+import React, { useRef, useState } from 'react';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch } from 'react-redux';
+import IMAGES from '../../../assets/images';
+import Button from '../../../component/Button';
+import Header from '../../../component/Header/Header';
+import { setPageProgress } from '../../../redux/slices/appFlowSlice';
+import { BUTTON_LABLE, COLORS, PROFILE } from '../../../utils/constants';
+import {
+  fontScale,
+  horizontalMarginScale,
+  Hp,
+  radiusScale,
+  verticalMarginScale,
+  Wp,
+} from '../../../utils/dimensions';
 import { fontFamily } from '../../../utils/functions';
 
-import AccountItem from './AccountItem';
 import SocialMediaBottomSheet from 'src/component/BottomSheet/SocialMediaBottomSheet';
-interface ConnectedAccountsScreenProps { }
+import useKeyboard from 'src/utils/hooks/useKeyboard';
+import AccountItem from './AccountItem';
+interface ConnectedAccountsScreenProps {}
 
 const items: any = [
   { id: '1', title: PROFILE.INSTAGRAM, image: IMAGES.profileInsta },
@@ -37,11 +38,12 @@ interface ConfigData {
   title: string;
   subTitle: string;
   connectBtnBackground: string;
-  snapPoints?: any
+  snapPoints?: any;
 }
 
 const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
   const dispatch = useDispatch();
+  const { keyboardVisible } = useKeyboard();
   const navigation = useNavigation();
   const socialMediaBottomSheetRef = useRef<any>(null);
   //   const birthday = useSelector((state: RootState) => state.appFlow.birthday);
@@ -71,7 +73,7 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
           title: PROFILE.CONNECT_INSTAGRAM,
           subTitle: 'Please enter your Instagram Handle below',
           connectBtnBackground: COLORS.pink,
-          snapPoints: [Platform.OS === 'android' ? '85%' : '85%']
+          snapPoints: [Platform.OS === 'android' ? '85%' : '85%'],
         });
         break;
       case PROFILE.TIKTOK:
@@ -131,7 +133,7 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
     }
   };
 
-  const onConfirm = () => { };
+  const onConfirm = () => {};
 
   return (
     <SafeAreaView style={styles.container}>
@@ -163,16 +165,18 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
             subTitle={configData.subTitle}
             snapPoints={configData.snapPoints}
             connectBtnBackground={configData.connectBtnBackground}
-            onPress={() => { }}
+            onPress={() => {}}
           />
         </View>
       </ScrollView>
-      <Button
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.CONFIRM}
-        colorTheme="dark"
-        onPress={onConfirm}
-      />
+      {!keyboardVisible ? (
+        <Button
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.CONFIRM}
+          colorTheme="dark"
+          onPress={onConfirm}
+        />
+      ) : null}
     </SafeAreaView>
   );
 };

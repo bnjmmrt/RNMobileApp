@@ -1,58 +1,47 @@
-import React, {useEffect, useRef, useState} from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useRef, useState } from 'react';
 import {
-  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
-  TextInput,
   View,
 } from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {
-  LABLE,
-  BUTTON_LABLE,
-  ERROR_MESSAGE,
-  COLORS,
-  PROFILE,
-} from '../../../utils/constants';
 import Button from '../../../component/Button';
-import Input from '../../../component/Input/Input';
 import Header from '../../../component/Header/Header';
+import { BUTTON_LABLE, COLORS, PROFILE } from '../../../utils/constants';
 // import {useGetPostsQuery} from '../../../redux/slices/apiSlice';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../redux/slices';
+import IMAGES from '@images/index';
+import { useDispatch, useSelector } from 'react-redux';
+import { EndPoint } from 'src/ApiManager/config';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import SocialMediaInput from 'src/component/Input/SocialMediaInput';
+import Toast from 'src/component/Toast/Toast';
+import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 import useApi from '../../../axios/useApi';
+import { RootState } from '../../../redux/slices';
 import {
   fontScale,
   horizontalMarginScale,
   radiusScale,
   verticalMarginScale,
   verticalScale,
-  Wp,
 } from '../../../utils/dimensions';
-import Toast from 'src/component/Toast/Toast';
-import SocialMediaInput from 'src/component/Input/SocialMediaInput';
-import IMAGES from '@images/index';
-import {FlashMessageComponent} from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
-import { EndPoint } from 'src/ApiManager/config';
 
 interface HostConnectedAccountsScreenProps
   extends NativeStackScreenProps<any, any> {}
 
 const HostConnectedAccountsScreen: React.FC<
   HostConnectedAccountsScreenProps
-> = ({navigation}) => {
-  const {apiRequest, loading, error} = useApi();
+> = ({ navigation }) => {
+  const { apiRequest, loading, error } = useApi();
+  const { keyboardVisible } = useKeyboard();
   const dispatch = useDispatch();
   const userId = useSelector((state: RootState) => state.auth.userId);
   const hostProfileData = useSelector(
     (state: RootState) => state.appFlowApiData.profileData,
   );
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
   const instagramRef = useRef<any>(null);
   const tiktokRef = useRef<any>(null);
   const facebookRef = useRef<any>(null);
@@ -68,9 +57,13 @@ const HostConnectedAccountsScreen: React.FC<
         facebook: facebookRef?.current.inputText,
         instagram: instagramRef?.current.inputText,
         linkedin: linkedinRef?.current.inputText,
-        tiktok: tiktokRef?.current.inputText ? '@'+tiktokRef?.current.inputText : '',
+        tiktok: tiktokRef?.current.inputText
+          ? '@' + tiktokRef?.current.inputText
+          : '',
         x: xRef?.current.inputText,
-        youtube: youtubeRef?.current.inputText ? '@'+youtubeRef?.current.inputText :'',
+        youtube: youtubeRef?.current.inputText
+          ? '@' + youtubeRef?.current.inputText
+          : '',
       },
     };
 
@@ -82,10 +75,13 @@ const HostConnectedAccountsScreen: React.FC<
       requestObject,
     );
     if (response.success) {
-      FlashMessageComponent.show('success', 'Connected Accounts updated successfully');
+      FlashMessageComponent.show(
+        'success',
+        'Connected Accounts updated successfully',
+      );
       //navigate if required
-      dispatch(setProfileData({...hostProfileData,...response?.data}))
-      handleBackPress()
+      dispatch(setProfileData({ ...hostProfileData, ...response?.data }));
+      handleBackPress();
     }
   };
 
@@ -93,105 +89,120 @@ const HostConnectedAccountsScreen: React.FC<
     navigation.goBack();
   };
 
-   useEffect(() => {
-        const keyboardDidShowListener = Keyboard.addListener(
-          'keyboardDidShow',
-          () => {
-            setKeyboardVisible(true);
-          },
-        );
-    
-        const keyboardDidHideListener = Keyboard.addListener(
-          'keyboardDidHide',
-          () => {
-            setKeyboardVisible(false);
-          },
-        );
-    
-        return () => {
-          keyboardDidShowListener.remove();
-          keyboardDidHideListener.remove();
-        };
-      }, []);
-
   return (
-     <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.container}>
-    <View  style={[styles.container,{paddingBottom:keyboardVisible ? Platform.OS === 'ios' ? verticalMarginScale(50): verticalMarginScale(10) : 0}]}>
-      <Header
-        headerTitle={PROFILE.CONNECTED_ACCOUNTS}
-        onPress={handleBackPress}
-        showProgressBar={false}
-      />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          {
+            paddingBottom: keyboardVisible
+              ? Platform.OS === 'ios'
+                ? verticalMarginScale(50)
+                : verticalMarginScale(10)
+              : 0,
+          },
+        ]}>
+        <Header
+          headerTitle={PROFILE.CONNECTED_ACCOUNTS}
+          onPress={handleBackPress}
+          showProgressBar={false}
+        />
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.contentContainer}>
-          <SocialMediaInput
-            image={IMAGES.profileInsta}
-            ref={instagramRef}
-            label={PROFILE.INSTAGRAM}
-            prefix="instagram.com/"
-            isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia?.instagram ? hostProfileData?.socialMedia?.instagram: '' }
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.contentContainer}>
+            <SocialMediaInput
+              image={IMAGES.profileInsta}
+              ref={instagramRef}
+              label={PROFILE.INSTAGRAM}
+              prefix="instagram.com/"
+              isIconShown={false}
+              defaultValue={
+                hostProfileData?.socialMedia?.instagram
+                  ? hostProfileData?.socialMedia?.instagram
+                  : ''
+              }
+            />
+            <SocialMediaInput
+              image={IMAGES.host_tiktok}
+              ref={tiktokRef}
+              label={PROFILE.TIKTOK}
+              prefix="tiktok.com/@"
+              isIconShown={false}
+              defaultValue={
+                hostProfileData?.socialMedia?.tiktok
+                  ? hostProfileData?.socialMedia?.tiktok?.replace('@', '')
+                  : ''
+              }
+            />
+            <SocialMediaInput
+              image={IMAGES.fb}
+              ref={facebookRef}
+              label={PROFILE.FACEBOOK}
+              prefix="facebook.com/"
+              isIconShown={false}
+              defaultValue={
+                hostProfileData?.socialMedia?.facebook
+                  ? hostProfileData?.socialMedia?.facebook
+                  : ''
+              }
+            />
+            <SocialMediaInput
+              image={IMAGES.linkdn}
+              ref={linkedinRef}
+              label={PROFILE.LINKEDIN}
+              prefix="linkedin.com/in/"
+              isIconShown={false}
+              defaultValue={
+                hostProfileData?.socialMedia?.linkedin
+                  ? hostProfileData?.socialMedia?.linkedin
+                  : ''
+              }
+            />
+            <SocialMediaInput
+              image={IMAGES.host_x}
+              ref={xRef}
+              label={PROFILE.X}
+              prefix="x.com/"
+              isIconShown={false}
+              defaultValue={
+                hostProfileData?.socialMedia?.x
+                  ? hostProfileData?.socialMedia?.x
+                  : ''
+              }
+            />
+            <SocialMediaInput
+              image={IMAGES.yt}
+              ref={youtubeRef}
+              label={PROFILE.YOUTUBE}
+              prefix="youtube.com/@"
+              isIconShown={false}
+              defaultValue={
+                hostProfileData?.socialMedia?.youtube
+                  ? hostProfileData?.socialMedia?.youtube?.replace('@', '')
+                  : ''
+              }
+            />
+          </View>
+          {isToastShown && (
+            <Toast
+              message={'Please select at least one'}
+              onClose={() => setIsToastShown(false)}
+            />
+          )}
+        </ScrollView>
+        {!keyboardVisible ? (
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={BUTTON_LABLE.CONFIRM}
+            colorTheme="dark"
+            onPress={onConfirmClick}
+            loading={loading}
           />
-          <SocialMediaInput
-            image={IMAGES.host_tiktok}
-            ref={tiktokRef}
-            label={PROFILE.TIKTOK}
-            prefix="tiktok.com/@"
-            isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia?.tiktok ? hostProfileData?.socialMedia?.tiktok?.replace('@', '') : ''}
-          />
-          <SocialMediaInput
-            image={IMAGES.fb}
-            ref={facebookRef}
-            label={PROFILE.FACEBOOK}
-            prefix="facebook.com/"
-            isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia?.facebook ? hostProfileData?.socialMedia?.facebook : ''}
-          />
-          <SocialMediaInput
-            image={IMAGES.linkdn}
-            ref={linkedinRef}
-            label={PROFILE.LINKEDIN}
-            prefix="linkedin.com/in/"
-            isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia?.linkedin ? hostProfileData?.socialMedia?.linkedin : ''}
-          />
-          <SocialMediaInput
-            image={IMAGES.host_x}
-            ref={xRef}
-            label={PROFILE.X}
-            prefix="x.com/"
-            isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia?.x ? hostProfileData?.socialMedia?.x :''}
-          />
-          <SocialMediaInput
-            image={IMAGES.yt}
-            ref={youtubeRef}
-            label={PROFILE.YOUTUBE}
-            prefix="youtube.com/@"
-            isIconShown={false}
-            defaultValue={hostProfileData?.socialMedia?.youtube ? hostProfileData?.socialMedia?.youtube?.replace('@', '') :''}
-          />
-        </View>
-        {isToastShown && (
-          <Toast
-            message={'Please select at least one'}
-            onClose={() => setIsToastShown(false)}
-          />
-        )}
-      </ScrollView>
-      <Button
-        disabled={false}
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.CONFIRM}
-        colorTheme="dark"
-        onPress={onConfirmClick}
-        loading={loading}
-      />
-    </View>
+        ) : null}
+      </View>
     </KeyboardAvoidingView>
   );
 };

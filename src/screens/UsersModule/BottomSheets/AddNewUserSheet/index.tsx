@@ -8,7 +8,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Alert, Image, TouchableOpacity, View } from 'react-native';
+import { Image, TouchableOpacity, View } from 'react-native';
 import AvatarInitials from 'src/component/AvatarInitials';
 import BottomSheetComponent, {
   BottomSheetMethods,
@@ -26,9 +26,12 @@ import { ROUTES } from 'src/navigation/Route';
 import { useAddNewUserMutation } from 'src/redux/actions/usersApiAction';
 import { ERROR_MESSAGE, LABLE } from 'src/utils/constants';
 import { verticalMarginScale } from 'src/utils/dimensions';
-import { ApiErrorInterface, getErrorMessage, removeSpaceFromStr } from 'src/utils/functions';
+import {
+  ApiErrorInterface,
+  getErrorMessage,
+  removeSpaceFromStr,
+} from 'src/utils/functions';
 import { styles } from './style';
-import { PhoneNumber } from 'libphonenumber-js';
 
 type existingUserType = {
   hasEmail: boolean;
@@ -204,7 +207,9 @@ const AddNewUserSheet = forwardRef<
           email: email,
           firstName: firstName,
           lastName: lastName,
-          phoneNumber: removeSpaceFromStr(`${selectedCountry?.dial_code}${phone}`),
+          phoneNumber: removeSpaceFromStr(
+            `${selectedCountry?.dial_code}${phone}`,
+          ),
         }).unwrap();
 
         if (response.success) {

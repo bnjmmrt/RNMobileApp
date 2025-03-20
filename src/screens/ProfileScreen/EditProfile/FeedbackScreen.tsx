@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux';
 import { EndPoint } from 'src/ApiManager/config';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import Input, { InputRefMethods } from 'src/component/Input/Input';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 import useApi from '../../../axios/useApi';
 import ConfirmationBottomSheet from '../../../component/BottomSheet/ConfirmationBottomSheet';
 import Button from '../../../component/Button';
@@ -53,6 +54,7 @@ const list: Tag[] = [
 ];
 const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   const navigation = useNavigation();
+  const { keyboardVisible } = useKeyboard();
   const { apiRequest, loading, error } = useApi();
   const confirmationRef = useRef<any>(null);
   const [isToastShown, setIsToastShown] = useState(false);
@@ -152,15 +154,16 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
           />
         </KeyboardAvoidingView>
       </ScrollView>
-
-      <Button
-        disabled={false}
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.SUBMIT}
-        colorTheme="dark"
-        onPress={onSubmit}
-        loading={loading}
-      />
+      {!keyboardVisible ? (
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.SUBMIT}
+          colorTheme="dark"
+          onPress={onSubmit}
+          loading={loading}
+        />
+      ) : null}
     </SafeAreaView>
   );
 };
