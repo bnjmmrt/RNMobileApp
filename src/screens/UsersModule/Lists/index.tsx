@@ -1,24 +1,25 @@
 /* eslint-disable react-native/no-inline-styles */
+import { useScrollToTop } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, RefreshControl, View } from 'react-native';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import GradientSeprator from 'src/component/GradientSeprator';
 import { useFetchAllCustomListsQuery } from 'src/redux/actions/listsApiAction';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import { COLORS } from 'src/utils/constants';
 import {
+  horizontalMarginScale,
   Hp,
+  verticalMarginScale,
   verticalScale,
   Wp,
-  horizontalMarginScale,
-  verticalMarginScale,
 } from 'src/utils/dimensions';
 import ListActionsSheet, {
   listActionCurrentPageType,
 } from '../BottomSheets/ListActionsSheet';
 import ListItem from '../ListItem';
 import createStyle from './style';
-import { COLORS } from 'src/utils/constants';
 
 export interface ListUserItemInterface {
   age: number;
@@ -50,6 +51,8 @@ interface ListsProps {}
 const Lists: React.FC<ListsProps> = ({}) => {
   const styles = createStyle();
   const actionSheetRef = useRef<BottomSheetMethods>(null);
+  const scrollToTopRef = useRef(null);
+  useScrollToTop(scrollToTopRef);
 
   const [allCustomLists, setAllCustomLists] = useState<ListInterface>({
     result: [],
@@ -191,6 +194,7 @@ const Lists: React.FC<ListsProps> = ({}) => {
         renderListSkeletonList()
       ) : (
         <FlatList
+          ref={scrollToTopRef}
           data={allCustomLists?.result || []}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}

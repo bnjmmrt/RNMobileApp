@@ -64,14 +64,14 @@ export const styles = StyleSheet.create({
     ...(Platform.OS === 'android'
       ? { elevation: 100 }
       : {
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 15,
-        },
-        shadowOpacity: 0.58,
-        shadowRadius: 16.0,
-      }),
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 15,
+          },
+          shadowOpacity: 0.58,
+          shadowRadius: 16.0,
+        }),
   },
   clearAllCta: {
     // flex: 0.3
@@ -108,6 +108,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: verticalMarginScale(6),
     paddingHorizontal: horizontalMarginScale(12),
+    paddingVertical: horizontalMarginScale(12),
   },
   icon: {
     width: verticalScale(10),

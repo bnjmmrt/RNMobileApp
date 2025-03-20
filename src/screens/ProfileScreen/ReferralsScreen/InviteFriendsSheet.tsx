@@ -1,30 +1,35 @@
-
-import React, { useState, useRef, forwardRef, useEffect, useCallback } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  FlatList,
-  Share,
-  PermissionsAndroid,
-  Platform,
-  Linking,
-} from 'react-native';
-import Contacts from 'react-native-contacts';
 import IMAGES from '@images/index';
-import { fontFamily } from 'src/utils/functions';
-import ButtonSmall from 'src/component/ButtonSmall';
-import AvatarInitials from 'src/component/AvatarInitials';
-import Button from 'src/component/Button';
-import { BUTTON_LABLE, COLORS, LABLE } from 'src/utils/constants';
-import BottomSheetComponent from 'src/component/BottomSheet/BottomSheet';
-import Input from 'src/component/Input/Input';
-import Title from 'src/component/Title/Title';
-import useContacts from 'src/utils/hooks/useContactPermission';
-import SearchInput from 'src/component/SearchInput';
-import { fontScale, horizontalMarginScale, verticalMarginScale } from 'src/utils/dimensions';
 import { environment } from 'environments/environment';
-
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import {
+  FlatList,
+  Linking,
+  Platform,
+  Share,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import AvatarInitials from 'src/component/AvatarInitials';
+import BottomSheetComponent from 'src/component/BottomSheet/BottomSheet';
+import Button from 'src/component/Button';
+import ButtonSmall from 'src/component/ButtonSmall';
+import SearchInput from 'src/component/SearchInput';
+import Title from 'src/component/Title/Title';
+import { BUTTON_LABLE, COLORS, LABLE } from 'src/utils/constants';
+import {
+  fontScale,
+  horizontalMarginScale,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
+import { fontFamily } from 'src/utils/functions';
+import useContacts from 'src/utils/hooks/useContactPermission';
 
 interface ContactItem {
   name: string;
@@ -32,11 +37,15 @@ interface ContactItem {
 }
 
 const PAGE_SIZE = 30;
-const rumorAppLink = Platform.OS === 'android' ? environment.playstoreLink : environment.appStoreLink
+const rumorAppLink =
+  Platform.OS === 'android'
+    ? environment.playstoreLink
+    : environment.appStoreLink;
 
 const InviteFriendsSheet = forwardRef((props, ref) => {
   const [contacts, setContacts] = useState<ContactItem[]>([]);
-  const { getContacts, permissionGranted } = useContacts();
+  const { getContacts, permissionGranted, requestContactPermission } =
+    useContacts();
   const [filteredContacts, setFilteredContacts] = useState<ContactItem[]>([]);
   const [requestSent, setRequestSent] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -46,48 +55,49 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
 
   useEffect(() => {
     fetchContacts();
-  }, []);
-
+  }, [permissionGranted]);
+  console.log(permissionGranted);
 
   const fetchContacts = async () => {
+    await requestContactPermission();
     try {
-
       const formattedContacts = await getContacts();
       setContacts(formattedContacts);
       setFilteredContacts(formattedContacts.slice(0, PAGE_SIZE));
-
     } catch (error) {
       console.error('Error fetching contacts:', error);
     }
   };
 
-  const handleSearch = useCallback((query: string) => {
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current);
-    }
-
-    debounceTimeoutRef.current = setTimeout(() => {
-      const lowercasedQuery = query.toLowerCase().trim();
-
-      if (lowercasedQuery.length === 0) {
-        setFilteredContacts(contacts.slice(0, PAGE_SIZE));
-        return;
+  const handleSearch = useCallback(
+    (query: string) => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
       }
 
-      if (lowercasedQuery.length < 2) {
-        setFilteredContacts([]);
-        return;
-      }
-      setFilteredContacts(
-        contacts
-          .filter((contact) =>
-            contact.name.toLowerCase().includes(lowercasedQuery)
-          )
-          .slice(0, PAGE_SIZE)
-      );
-    }, 500);
-  }, [contacts]);
+      debounceTimeoutRef.current = setTimeout(() => {
+        const lowercasedQuery = query.toLowerCase().trim();
 
+        if (lowercasedQuery.length === 0) {
+          setFilteredContacts(contacts.slice(0, PAGE_SIZE));
+          return;
+        }
+
+        if (lowercasedQuery.length < 2) {
+          setFilteredContacts([]);
+          return;
+        }
+        setFilteredContacts(
+          contacts
+            .filter(contact =>
+              contact.name.toLowerCase().includes(lowercasedQuery),
+            )
+            .slice(0, PAGE_SIZE),
+        );
+      }, 500);
+    },
+    [contacts],
+  );
 
   const handleLoadMore = () => {
     const nextPage = currentPage + 1;
@@ -96,17 +106,15 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
 
     const newContacts = contacts.slice(startIndex, endIndex);
     if (newContacts.length > 0) {
-      setFilteredContacts((prev) => [...prev, ...newContacts]);
+      setFilteredContacts(prev => [...prev, ...newContacts]);
       setCurrentPage(nextPage);
     }
   };
 
   const handleInviteLink = async () => {
-
     try {
       await Share.share({
-        message:
-          `Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: ${rumorAppLink}`,
+        message: `Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: ${rumorAppLink}`,
       });
     } catch (error) {
       console.error('Error sharing invite link:', error);
@@ -114,17 +122,18 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
   };
 
   const handleInvite = (contact: ContactItem) => {
-    const message =
-      `Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: ${rumorAppLink}`;
+    const message = `Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: ${rumorAppLink}`;
 
-    const url = `sms:${contact.phoneNumber}?body=${encodeURIComponent(message)}`;
+    const url = `sms:${contact.phoneNumber}?body=${encodeURIComponent(
+      message,
+    )}`;
 
     Linking.openURL(url)
       .then(() => {
-        setRequestSent((prev) => [...prev, contact.phoneNumber]);
+        setRequestSent(prev => [...prev, contact.phoneNumber]);
         console.log(`Invitation sent to ${contact.name}.`);
       })
-      .catch((error) => {
+      .catch(error => {
         console.error('Error opening messaging app:', error);
       });
   };
@@ -133,7 +142,7 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
     item: ContactItem,
     buttonLabel: string,
     onPressAction: () => void,
-    isSent: boolean
+    isSent: boolean,
   ) => (
     <View style={styles.listItem}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -174,16 +183,17 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
       footer={footerComponent()}
       onClose={() => {
         setSearchQuery('');
-        handleSearch('')
-      }}
-    >
+        handleSearch('');
+      }}>
       <View style={{ paddingHorizontal: 20, flex: 1 }}>
         <Title title={BUTTON_LABLE.INVITES} align="center" />
         <View style={{ flex: 1, marginTop: 0 }}>
-          <Text style={styles.sectionSubtitle}>{BUTTON_LABLE.INVITE_FREINDS}</Text>
+          <Text style={styles.sectionSubtitle}>
+            {BUTTON_LABLE.INVITE_FREINDS}
+          </Text>
           <SearchInput
             placeholder={LABLE.SEARCH_FRIENDS}
-            onSearchTextChange={(query) => {
+            onSearchTextChange={query => {
               setSearchQuery(query);
               handleSearch(query);
             }}
@@ -191,16 +201,21 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
           <FlatList
             data={filteredContacts}
             style={{
-              marginTop: verticalMarginScale(15)
+              marginTop: verticalMarginScale(15),
             }}
             keyExtractor={(item, index) => '' + item.phoneNumber + index}
-            contentContainerStyle={{ gap: 4, flexGrow: 1, paddingBottom: 100, marginTop: 16 }}
+            contentContainerStyle={{
+              gap: 4,
+              flexGrow: 1,
+              paddingBottom: 100,
+              marginTop: 16,
+            }}
             renderItem={({ item }) =>
               renderListItem(
                 item,
                 'Invite',
                 () => handleInvite(item),
-                requestSent.includes(item.phoneNumber)
+                requestSent.includes(item.phoneNumber),
               )
             }
             showsVerticalScrollIndicator={false}
@@ -208,7 +223,6 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
             onEndReachedThreshold={0.5}
           />
         </View>
-
       </View>
     </BottomSheetComponent>
   );
@@ -220,7 +234,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 100,
   },
-  settingsButton: { marginTop: 12, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 100 },
+  settingsButton: {
+    marginTop: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 100,
+  },
   btnStyle: {
     borderRadius: 100,
     marginTop: 20,
@@ -237,7 +256,7 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.ABCDiatype_Medium,
     textAlign: 'center',
     marginBottom: verticalMarginScale(16),
-    marginTop: verticalMarginScale(8)
+    marginTop: verticalMarginScale(8),
   },
   listItem: {
     flexDirection: 'row',
@@ -252,7 +271,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Medium,
-    color: COLORS.black
+    color: COLORS.black,
   },
   phone: {
     fontSize: fontScale(12),

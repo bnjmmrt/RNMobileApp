@@ -63,7 +63,7 @@ import {
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: any;
@@ -140,9 +140,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const)
       : ({
-        userId,
-        eventId: route?.params?.id,
-      } as const);
+          userId,
+          eventId: route?.params?.id,
+        } as const);
 
   const useFetchEventDetailsHook =
     role === ROLE.HOST
@@ -372,7 +372,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     if (isDeclinedByHost || guestStatus === 'CONFIRMED' || role === ROLE.HOST) {
       return null;
     }
+    const date1 = moment.utc(data?.data?.endDate);
+    const date2 = moment();
 
+    if (!date1.isBefore(date2)) {
+      return null;
+    }
     return (
       <View>
         <Button
@@ -395,6 +400,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       return null;
     }
 
+    const date1 = moment.utc(data?.data?.endDate);
+    const date2 = moment();
+    const isPastEvent = !date1.isBefore(date2);
+
     return (
       <View style={{ margin: 20 }}>
         <Button
@@ -405,13 +414,15 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           onPress={onViewTicketClick}
           loading={loading}
         />
-        <Button
-          disabled={false}
-          style={styles.btnStyleLight}
-          title={BUTTON_LABLE.UPDATE_RSVP}
-          colorTheme="light"
-          onPress={onNextClick}
-        />
+        {isPastEvent ? (
+          <Button
+            disabled={false}
+            style={styles.btnStyleLight}
+            title={BUTTON_LABLE.UPDATE_RSVP}
+            colorTheme="light"
+            onPress={onNextClick}
+          />
+        ) : null}
       </View>
     );
   };
@@ -587,7 +598,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                 <EventOverview item={data?.data} />
 
                 {talents.length > 0 && <EventTalent talents={talents} />}
-                {role == ROLE.HOST ?
+                {role == ROLE.HOST ? (
                   <EventAnnouncements
                     role={role}
                     handleAddPress={addAnouncement}
@@ -599,9 +610,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                         params: data?.data,
                       })
                     }
-                  /> :
+                  />
+                ) : (
                   <>
-                    {guestStatus == 'CONFIRMED' &&
+                    {guestStatus == 'CONFIRMED' && (
                       <EventAnnouncements
                         role={role}
                         handleAddPress={addAnouncement}
@@ -614,9 +626,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                           })
                         }
                       />
-                    }
+                    )}
                   </>
-                }
+                )}
 
                 {showError && (
                   <View style={styles.errorTextContainer}>

@@ -12,7 +12,6 @@ import BottomSheetComponent, {
 import Button from 'src/component/Button';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { customListType } from 'src/navigation/AppStack';
-import { verticalScale } from 'src/utils/dimensions';
 import AddUsersInList from './AddUsersInList';
 import CreateEditList from './CreateEditList';
 import DeleteList from './DeleteList';
@@ -147,6 +146,9 @@ const ListActionsSheet = forwardRef<
         ref={sheetRef}
         snapPoints={getDyanamicSnapPoints()} // Adjustable snap points
         onClose={() => {
+          if (from === 'listDetail') {
+            sheetRef?.current?.close();
+          }
           setSelectedAction('');
         }}
         enableDynamicSizing={getDyanamicSizeConfig()}>

@@ -43,7 +43,6 @@ import {
 import {
   ApiErrorInterface,
   changeSafeAreaViewConfig,
-  extractCountryCode,
   getErrorMessage,
   removeSpaceFromStr,
 } from 'src/utils/functions';
@@ -265,7 +264,9 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         inviteMessage: inviteMessage,
         privateGuestNote: guestNote,
         email: email,
-        phoneNumber: removeSpaceFromStr(`${selectedCountry?.dial_code}${phone}`),
+        phoneNumber: removeSpaceFromStr(
+          `${selectedCountry?.dial_code}${phone}`,
+        ),
         firstName: firstName,
         lastName: lastName,
       };

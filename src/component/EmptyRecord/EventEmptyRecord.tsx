@@ -44,7 +44,7 @@ const EventEmptyRecord: React.FC<EventEmptyRecordProps> = ({
       {footerContent ? footerContent : null}
     </View>
   ) : (
-    <ActivityIndicator />
+    <ActivityIndicator color={COLORS.black} />
   );
 };
 

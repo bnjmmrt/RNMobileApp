@@ -1,6 +1,8 @@
 import IMAGES from '@images/index';
+import { useScrollToTop } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, RefreshControl, View } from 'react-native';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useDispatch } from 'react-redux';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
@@ -10,7 +12,6 @@ import { InputRefMethods } from 'src/component/Input/Input';
 import SearchInput from 'src/component/SearchInput';
 import { useFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
 import { changeBottomTabsVisibility } from 'src/redux/slices/bottomTabsConfigSlice';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {
   horizontalMarginScale,
   Hp,
@@ -30,6 +31,8 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   const searchInputRef = useRef<InputRefMethods>(null);
   const actionSheetRef = useRef<BottomSheetMethods>(null);
   const filtersSheetRef = useRef<BottomSheetMethods>(null);
+  const scrollToTopRef = useRef(null);
+  useScrollToTop(scrollToTopRef);
 
   const [allUsers, setAllUsers] = useState<{
     result: UserItemInterface[];
@@ -243,6 +246,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
         renderUserSkeletonList()
       ) : (
         <FlatList
+          ref={scrollToTopRef}
           data={allUsers?.result || []}
           style={{
             marginHorizontal: horizontalMarginScale(20),

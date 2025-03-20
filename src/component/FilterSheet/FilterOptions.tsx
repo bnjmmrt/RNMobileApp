@@ -70,14 +70,13 @@ const FilterOptions = ({
 
   const [minAge, setMinAge] = useState<string>(
     ((selectedFilters && selectedFilters?.ageFrom?.value[0].id) as string) ||
-    '',
+      '',
   );
   const [maxAge, setMaxAge] = useState<string>(
     ((selectedFilters && selectedFilters?.ageTo?.value[0].id) as string) || '',
   );
 
   const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false);
-  const [alert, setAlert] = useState<boolean>(false);
 
   useEffect(() => {
     if (minAge && parseInt(minAge) < 18) {
@@ -105,8 +104,14 @@ const FilterOptions = ({
   const minStartDate = selectedFilters['minStartDate']?.value[0]?.id;
   const maxEndDate = selectedFilters['maxEndDate']?.value[0]?.id;
 
-  const formattedMinDate = dayjs(minStartDate).isValid() ? dayjs(minStartDate).format('DD/MM/YY') : '';
-  const formattedMaxDate = dayjs(maxEndDate).isValid() ? dayjs(maxEndDate).format('DD/MM/YY') : 'No max date';
+  const formattedMinDate = dayjs(minStartDate).isValid()
+    ? dayjs(minStartDate).format('DD/MM/YY')
+    : '';
+  const formattedMaxDate = dayjs(maxEndDate).isValid()
+    ? dayjs(maxEndDate).format('DD/MM/YY')
+    : 'No max date';
+
+  console.log('selectedFilters', JSON.stringify(selectedFilters));
 
   return (
     <BottomSheetView>
@@ -125,8 +130,8 @@ const FilterOptions = ({
                 isSelected={
                   selectedFilters
                     ? selectedFilters[id]?.value?.some(
-                      innerItem => innerItem.id === item.id,
-                    )
+                        innerItem => innerItem.id === item.id,
+                      )
                     : false || false
                 }
                 onPress={optionId => {
@@ -167,12 +172,6 @@ const FilterOptions = ({
             </BottomSheetView>
           </TouchableOpacity>
 
-          {alert && (
-            <CustomText style={styles.alert}>
-              Please choose an End Date.
-            </CustomText>
-          )}
-
           {datePickerVisible && (
             <BottomSheetView style={styles.datePicker}>
               <DateTimePicker
@@ -180,7 +179,7 @@ const FilterOptions = ({
                 startDate={
                   selectedFilters['minStartDate']?.value[0]
                     ? selectedFilters['minStartDate']?.value[0]?.date ||
-                    undefined
+                      undefined
                     : undefined
                 }
                 endDate={
@@ -270,14 +269,14 @@ const FilterOptions = ({
       {optionType === 'baseCityFilter' || optionType === 'location' ? (
         <BottomSheetView>
           <GooglePlacesInput
-            submit={() => { }}
+            submit={() => {}}
             autoFetchCurrentLocation={true}
             allowFullAddres={false}
             defaultValue={
               optionType === 'baseCityFilter'
                 ? selectedFilters &&
-                selectedFilters[id] &&
-                selectedFilters[id].value[0]?.name
+                  selectedFilters[id] &&
+                  selectedFilters[id].value[0]?.name
                 : selectedFilters['longitude']?.value[0]?.name || ''
             }
             setLocation={location => {
@@ -290,9 +289,9 @@ const FilterOptions = ({
             }}
           />
           {showSelectedLocationChip &&
-            selectedFilters &&
-            selectedFilters[id] &&
-            selectedFilters[id].value ? (
+          selectedFilters &&
+          selectedFilters[id] &&
+          selectedFilters[id].value ? (
             <BottomSheetScrollView
               contentContainerStyle={{
                 gap: horizontalMarginScale(4),

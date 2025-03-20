@@ -19,8 +19,8 @@ import {
   verticalScale,
 } from 'src/utils/dimensions';
 import useContacts, { ContactItem } from 'src/utils/hooks/useContactPermission';
-import createStyles from './styles';
 import { EventGuest } from '../../types';
+import createStyles from './styles';
 
 interface InviteFromContactsProps {}
 
@@ -38,6 +38,7 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
 
   const [contacts, setContacts] = useState<ContactItem[]>([]);
   const [filteredContacts, setFilteredContacts] = useState<ContactItem[]>([]);
+  const [contactsFetching, setContactsFetching] = useState<boolean>(false);
 
   const { selectedEvent } = useSelector(
     (state: RootState) => ({
@@ -55,13 +56,17 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
   } = useGetGuestsQuery({ eventId: selectedEvent?.id });
 
   const fetchContacts = async () => {
+    setContactsFetching(true);
     await requestContactPermission();
     try {
+      setContactsFetching(true);
       const formattedContacts = await getContacts();
       setContacts(formattedContacts);
       setFilteredContacts(formattedContacts);
+      setContactsFetching(false);
     } catch (error) {
-      console.error('Error fetching contacts:', error);
+      setContactsFetching(false);
+      console.error('Error fetching contascts:', error);
     }
   };
 
@@ -86,54 +91,63 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
     }, 500);
   };
 
-  const renderItem = useCallback(({ item }: { item: ContactItem }) => {
-    const userPhone = getPhoneNumber(item.phoneNumber).phoneNumber;
+  const renderItem = useCallback(
+    ({ item }: { item: ContactItem }) => {
+      const userPhone = getPhoneNumber(item.phoneNumber).phoneNumber;
 
-    const isInvited = guestsData?.data?.result.some((user: EventGuest) => {
-      const hasPlus = user.phoneNumber?.includes('+');
-      const phoneWithoutPlus = hasPlus
-        ? user.phoneNumber?.split('+')[1]
-        : user.phoneNumber;
-      return phoneWithoutPlus === `${userPhone}`;
-    });
-    // console.log('isInvited', isInvited, `+${userPhone}`);
+      const isInvited = guestsData?.data?.result.some((user: EventGuest) => {
+        const hasPlus = user.phoneNumber?.includes('+');
+        const phoneWithoutPlus = hasPlus
+          ? user.phoneNumber?.split('+')[1]
+          : user.phoneNumber;
 
-    return (
-      <View style={styles.listItem}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <AvatarInitials name={item.name} size={verticalScale(40)} listing />
-          <View>
-            <CustomText style={styles.name}>{item.name}</CustomText>
-            <CustomText style={styles.phone}>{item.phoneNumber}</CustomText>
+        return phoneWithoutPlus === `${userPhone}`;
+      });
+
+      return (
+        <View style={styles.listItem}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <AvatarInitials name={item.name} size={verticalScale(40)} listing />
+            <View>
+              <CustomText style={styles.name}>{item.name}</CustomText>
+              <CustomText style={styles.phone}>{item.phoneNumber}</CustomText>
+            </View>
           </View>
+          <ButtonSmall
+            style={styles.smallBtnStyle}
+            title={!isInvited ? 'Invite' : 'Invited'}
+            colorTheme={'dark'}
+            disabled={isInvited}
+            onPress={() => {
+              if (!isInvited) {
+                dispatch(
+                  setSelectedManualUser({
+                    ...item,
+                    phoneNumber: userPhone,
+                  }),
+                );
+                navigation.navigate(ROUTES.InviteGuestScreen, {
+                  isManual: true,
+                  type: 'contact',
+                });
+              }
+            }}
+          />
         </View>
-        <ButtonSmall
-          style={styles.smallBtnStyle}
-          title={!isInvited ? 'Invite' : 'Invited'}
-          colorTheme={'dark'}
-          disabled={isInvited}
-          onPress={() => {
-            if (!isInvited) {
-              dispatch(
-                setSelectedManualUser({
-                  ...item,
-                  phoneNumber: getPhoneNumber(item.phoneNumber).phoneNumber,
-                }),
-              );
-              navigation.navigate(ROUTES.InviteGuestScreen, {
-                isManual: true,
-                type: 'contact',
-              });
-            }
-          }}
-        />
-      </View>
-    );
-  }, []);
+      );
+    },
+    [guestsData],
+  );
 
   useEffect(() => {
     fetchContacts();
-  }, []);
+  }, [permissionGranted]);
+
+  console.log(
+    '!contactsFetching && !permissionGranted',
+    !contactsFetching && !permissionGranted,
+    permissionGranted,
+  );
 
   if (!permissionGranted) {
     return (
@@ -172,6 +186,7 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
         ListFooterComponent={
           <View style={{ marginBottom: verticalMarginScale(150) }} />
         }
+        initialNumToRender={50}
         ListEmptyComponent={
           <View
             style={{
@@ -182,6 +197,7 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
             <EventEmptyRecord
               title="User not found"
               subTitle="This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest"
+              isLoading={contactsFetching}
             />
           </View>
         }
