@@ -388,6 +388,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   };
 
   const logOut = () => {
+    logoutBottomSheetRef.current?.close();
     const resetAction = CommonActions.reset({
       index: 0,
       routes: [{ name: 'AuthStack' }],
@@ -396,9 +397,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     dispatch(resetLoginData());
     dispatch(setAuthToken(null));
     dispatch(resetAppFlowDetails());
-    logoutBottomSheetRef.current?.close();
     // navigation.dispatch(resetAction);
-    navigation.replace('AuthStack');
+    setTimeout(() => {
+      navigation.replace('AuthStack');
+    }, 500)
   };
 
   const getUserName = () => {

@@ -147,11 +147,12 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
             setallRecipients(selectedRecipientData?.data?.result)
         }
     }, [selectedRecipientData]);
-
+    const ticketQueryString = selectedTicketType.map((item: any) => `ticketType=${item.id}`).join('&');
+    const collaboratorQueryString = selectedCollaborator.map((item: any) => `addedBy=${item.id}`).join('&');
     const queryArgs = ({
         eventId: eventData?.id,
-        ticketType: selectedTicketType.map((item: any) => item.id),
-        addedBy: selectedCollaborator.map((item: any) => item.id),
+        ticketType: ticketQueryString,
+        addedBy: collaboratorQueryString,
         searchText: searchText,
         take: 10,
         skip: (currentPage - 1) * 10,
