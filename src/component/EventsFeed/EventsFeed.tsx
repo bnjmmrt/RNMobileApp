@@ -3,10 +3,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { debounce } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  FlatList,
   Image,
   Platform,
-  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -24,7 +22,6 @@ import {
   fontScale,
   horizontalMarginScale,
   horizontalScale,
-  Hp,
   radiusScale,
   verticalMarginScale,
   verticalScale,
@@ -35,14 +32,12 @@ import { BottomSheetMethods } from '../BottomSheet/BottomSheet';
 import FiltersSheet, { getFilterQuery, SelectedFilters } from '../FilterSheet';
 import { InputRefMethods } from '../Input/Input';
 import SearchInput from '../SearchInput';
+import EventList from './EventList';
 import FeaturedFeedItem from './FeaturedFeedItem';
 import FeedDetail from './FeedDetail';
 import FeedFilterItem from './FeedFilterItem';
 import FeedItem from './FeedItem';
 import FeedSeriesDetail from './FeedSeriesDetail';
-import EventEmptyRecord from '../EmptyRecord/EventEmptyRecord';
-import { formatDetailedEventDate } from 'src/utils/dateFunctions';
-import EventList from './EventList';
 
 export interface EventItem {
   admissionType: {
@@ -221,9 +216,8 @@ const EventsFeed = () => {
     searchText: searchTerm,
     queryString: filterQuery,
     userId: userId,
-    // take: 100,
-    // skip: 0
-    // skip: (currentPage - 1) * 30,
+    // take: 10,
+    // skip: (currentPage - 1) * 10,
   });
 
   const debouncedSearch = useCallback(
@@ -243,8 +237,6 @@ const EventsFeed = () => {
 
   const handleLoadMore = useCallback(() => {
     // const totalCount = data?.data?.totalCount;
-    // console.log("totalCount", totalCount)
-    // console.log("AllEvent", allEvents?.length)
     // if (allEvents?.length < totalCount && !isLoading) {
     //   setCurrentPage(prev => prev + 1);
     // }
@@ -279,7 +271,6 @@ const EventsFeed = () => {
 
   useEffect(() => {
     if (data?.data?.result) {
-      const eventsRes = data?.result;
       // const featuredEventsRes = data?.data?.data?.filter(
       //   (item: any) => item.featuredEventSection,
       // );
@@ -287,9 +278,6 @@ const EventsFeed = () => {
 
       setFeaturedEvents(result);
       setAllEvents(allArray);
-      // setAllEvents(prev =>
-      //   currentPage === 1 ? eventsRes : [...prev, ...eventsRes],
-      // );
     }
   }, [data]);
 
@@ -350,25 +338,22 @@ const EventsFeed = () => {
         [filterKey]: {
           ...tempSelectedFilters[filterKey],
           value: tempSelectedFilters[filterKey].value.filter(
-            (_: any, index: number) => index !== valueIndex
+            (_: any, index: number) => index !== valueIndex,
           ),
         },
       };
 
-      if (filterKey === "minStartDate" && tempSelectedFilters.maxEndDate) {
+      if (filterKey === 'minStartDate' && tempSelectedFilters.maxEndDate) {
         delete tempSelectedFilters.maxEndDate;
       }
 
-      if (filterKey === "longitude" && tempSelectedFilters.latitude) {
+      if (filterKey === 'longitude' && tempSelectedFilters.latitude) {
         delete tempSelectedFilters.latitude;
       }
 
       const { queryString, filtersCount } = getFilterQuery(tempSelectedFilters);
       onApplyFilter(queryString, filtersCount, tempSelectedFilters);
     };
-
-
-
 
     return (
       <View style={{ alignSelf: 'flex-start', flexDirection: 'row' }}>
@@ -534,7 +519,7 @@ const styles = StyleSheet.create({
   filterScrollView: {
     marginHorizontal: horizontalMarginScale(20),
     marginTop: verticalMarginScale(8),
-    marginBottom: verticalMarginScale(8)
+    marginBottom: verticalMarginScale(8),
   },
   scrollView: {
     height: verticalScale(390),

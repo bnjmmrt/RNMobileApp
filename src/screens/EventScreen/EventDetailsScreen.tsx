@@ -63,7 +63,7 @@ import {
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: any;
@@ -72,6 +72,7 @@ type RouteParams = {
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   navigation,
 }) => {
+  const scrollViewRef = useRef<ScrollView>(null);
   const { apiRequest, loading } = useApi();
   const dispatch = useDispatch();
   const route = useRoute<RouteProp<RouteParams>>();
@@ -140,9 +141,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const)
       : ({
-        userId,
-        eventId: route?.params?.id,
-      } as const);
+          userId,
+          eventId: route?.params?.id,
+        } as const);
 
   const useFetchEventDetailsHook =
     role === ROLE.HOST
@@ -271,6 +272,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     } else {
       if (eventCount?.data?.confirmedCount === 0) {
         setshowError(true);
+        setTimeout(() => {
+          scrollViewRef?.current?.scrollToEnd({ animated: true });
+        }, 1000);
       } else {
         navigation.navigate(ROUTES.EventStack, {
           screen: ROUTES.AddAnnouncementScreen,
@@ -373,6 +377,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       return null;
     }
 
+    if (data?.data?.status === 'PAST_STATUS') {
+      return null;
+    }
     return (
       <View>
         <Button
@@ -395,6 +402,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       return null;
     }
 
+    const isPastEvent = data?.data?.status === 'PAST_STATUS';
+
     return (
       <View style={{ margin: 20 }}>
         <Button
@@ -405,13 +414,15 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           onPress={onViewTicketClick}
           loading={loading}
         />
-        <Button
-          disabled={false}
-          style={styles.btnStyleLight}
-          title={BUTTON_LABLE.UPDATE_RSVP}
-          colorTheme="light"
-          onPress={onNextClick}
-        />
+        {isPastEvent ? (
+          <Button
+            disabled={false}
+            style={styles.btnStyleLight}
+            title={BUTTON_LABLE.UPDATE_RSVP}
+            colorTheme="light"
+            onPress={onNextClick}
+          />
+        ) : null}
       </View>
     );
   };
@@ -508,7 +519,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         <>
           {/* <SafeAreaView style={{ backgroundColor: COLORS.white }} /> */}
           <View style={styles.container}>
-            <ScrollView>
+            <ScrollView ref={scrollViewRef}>
               {Platform.OS === 'ios' && (
                 <View style={styles.blurredBackgroundContainer}>
                   <FastImage
@@ -587,7 +598,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                 <EventOverview item={data?.data} />
 
                 {talents.length > 0 && <EventTalent talents={talents} />}
-                {role == ROLE.HOST ?
+                {role == ROLE.HOST ? (
                   <EventAnnouncements
                     role={role}
                     handleAddPress={addAnouncement}
@@ -599,9 +610,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                         params: data?.data,
                       })
                     }
-                  /> :
+                  />
+                ) : (
                   <>
-                    {guestStatus == 'CONFIRMED' &&
+                    {guestStatus == 'CONFIRMED' && (
                       <EventAnnouncements
                         role={role}
                         handleAddPress={addAnouncement}
@@ -614,9 +626,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                           })
                         }
                       />
-                    }
+                    )}
                   </>
-                }
+                )}
 
                 {showError && (
                   <View style={styles.errorTextContainer}>

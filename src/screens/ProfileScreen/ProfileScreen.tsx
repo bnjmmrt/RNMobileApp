@@ -115,9 +115,15 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   };
   const callDeleteAccountAPpi = async () => {
     try {
-      const response = await apiRequest('delete', `users/v1/auth/users/${userId}`);
+      const response = await apiRequest(
+        'delete',
+        `users/v1/auth/users/${userId}`,
+      );
       if (response?.success) {
-        FlashMessageComponent.show('success', response?.message || 'User account deactivated successfully.');
+        FlashMessageComponent.show(
+          'success',
+          response?.message || 'User account deactivated successfully.',
+        );
         deleteAccountBottomSheetRef.current?.close();
         const resetAction = CommonActions.reset({
           index: 0,
@@ -137,7 +143,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       Alert.alert('Error', error?.message || 'Failed to delete account');
     }
   };
-
 
   useEffect(() => {
     if (profileData?.email) {
@@ -387,8 +392,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       });
   };
 
-
-
   const logOut = () => {
     logoutBottomSheetRef.current?.close();
     const resetAction = CommonActions.reset({
@@ -402,7 +405,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     // navigation.dispatch(resetAction);
     setTimeout(() => {
       navigation.replace('AuthStack');
-    }, 500)
+    }, 500);
   };
 
   const getUserName = () => {
@@ -462,6 +465,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         {/* <HeaderComponent isDarkTheme={false} /> */}
 
         <ScrollView>
+          <View style={{ height: verticalScale(20) }} />
           <ProfileTopView
             editPhotoClick={editPhotoClick}
             profilePic={

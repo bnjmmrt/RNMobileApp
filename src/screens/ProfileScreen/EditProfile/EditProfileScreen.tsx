@@ -167,7 +167,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   };
 
   const onConfirmClick = async () => {
-  
     if (isGuest && role === ROLE.NON_MEMBER) {
       if (
         firstNameRef.current.validateInputs() &&
@@ -262,8 +261,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         }
       }
     }
-    
-   
   };
 
   const handleBackPress = () => {

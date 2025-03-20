@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useScrollToTop } from '@react-navigation/native';
+import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, FlatList, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
@@ -18,6 +19,9 @@ interface PastEventsProps {
 }
 
 const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
+  const scrollToTopRef = useRef(null);
+  useScrollToTop(scrollToTopRef);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [events, setEvents] = useState<any[]>([]);
@@ -94,6 +98,7 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
     <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
       {events?.length > 0 ? (
         <FlatList
+          ref={scrollToTopRef}
           data={events}
           style={{ paddingBottom: 10, paddingHorizontal: 15 }}
           keyExtractor={(item, index) => `${item.id}-${index}`}

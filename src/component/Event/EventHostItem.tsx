@@ -1,7 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { Text, StyleSheet, View, Image } from 'react-native';
-import { capitalizeFirstLetter, fontFamily, removeSignature } from '../../utils/functions';
+import { Text, StyleSheet, View, Image, Dimensions } from 'react-native';
+import {
+  capitalizeFirstLetter,
+  fontFamily,
+  removeSignature,
+} from '../../utils/functions';
 import {
   BUTTON_LABLE,
   COLORS,
@@ -32,7 +36,7 @@ import { useNavigation } from '@react-navigation/native';
 
 interface EventHostItemProps {
   item: any;
-  length: number
+  length: number;
 }
 
 const handlEventPress = () => {
@@ -44,7 +48,7 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item, length }) => {
   const role = useSelector((state: RootState) => state.auth.role);
   const { navigate } = useNavigation();
   const getWidth = () => {
-    if (length === 1) return Wp('90%');
+    if (length === 1) return Dimensions.get('screen').width - 30;
     if (length === 2) return Wp('65%');
     return Wp('55%');
   };
@@ -52,20 +56,25 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item, length }) => {
     <View style={[styles.container, { width: getWidth() }]}>
       <AvatarInitials
         onPress={() => {
-          role == ROLE.MEMBER && navigate("ProfileStack", { screen: ROUTES.HostProfileScreen, params: { hostId: item.id } });
-        }
-        }
+          role == ROLE.MEMBER &&
+            navigate('ProfileStack', {
+              screen: ROUTES.HostProfileScreen,
+              params: { hostId: item.id },
+            });
+        }}
         imgUrl={removeSignature(item?.companyLogo)}
         size={40}
       />
       <View style={{ paddingHorizontal: 10, marginEnd: 20, flex: 1 }}>
-        <Text numberOfLines={1} style={styles.title}>{capitalizeFirstLetter(item?.name)}</Text>
+        <Text numberOfLines={1} style={styles.title}>
+          {capitalizeFirstLetter(item?.name)}
+        </Text>
         <Text style={styles.subtitle}>
           {capitalizeFirstLetter(item?.role?.name)}
         </Text>
       </View>
 
-      {(role == ROLE.MEMBER && item.role.name == "host") && (
+      {role == ROLE.MEMBER && item.role.name == 'host' && (
         <FollowButton
           id={item.id}
           isFollowing={item.isFollowedByCurrentGuest}

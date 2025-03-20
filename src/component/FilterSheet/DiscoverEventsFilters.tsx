@@ -11,7 +11,10 @@ import { feedList } from 'src/utils/constants';
 import { horizontalMarginScale } from 'src/utils/dimensions';
 import { SelectedFilters } from '.';
 import FilterAccordian from './FilterAccordian';
-import FilterOptions, { FilterOption, FilterOptionTypes } from './FilterOptions';
+import FilterOptions, {
+  FilterOption,
+  FilterOptionTypes,
+} from './FilterOptions';
 
 type FilterType = {
   id: string;
@@ -117,22 +120,26 @@ const DiscoverEventsFilters = ({
         };
       }
 
+      let formattedMaxEndDate = endDate;
       if (endDate) {
-        const formattedMaxEndDate = moment
-          .utc(new Date(endDate))
+        formattedMaxEndDate = moment
+          .utc(new Date(endDate as Date))
           .format('YYYY-MM-DDTHH:mm:ss[Z]');
 
-        tempSelectedFilter['maxEndDate'] = {
-          type: 'maxEndDate',
-          value: [
-            {
-              id: formattedMaxEndDate,
-              date: endDate,
-              name: '',
-            },
-          ],
-        };
+        setDisableApplyCta(false);
+      } else {
+        setDisableApplyCta(true);
       }
+      tempSelectedFilter['maxEndDate'] = {
+        type: 'maxEndDate',
+        value: [
+          {
+            id: formattedMaxEndDate,
+            date: endDate,
+            name: '',
+          },
+        ],
+      };
     }
     setSelectedFilters(tempSelectedFilter);
   };

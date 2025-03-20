@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import { PermissionsAndroid, Platform } from 'react-native';
-import Contacts from 'react-native-contacts';
 import {
   getCountryCallingCode,
   parsePhoneNumberFromString,
 } from 'libphonenumber-js';
+import { useState } from 'react';
+import { PermissionsAndroid, Platform } from 'react-native';
+import Contacts from 'react-native-contacts';
 import { getCountry } from 'react-native-localize';
 import { getCountryFlag } from '../functions';
 
@@ -23,8 +23,6 @@ const useContacts = () => {
 
   const getPhoneNumber = (phoneNumber: string) => {
     const phone = parsePhoneNumberFromString(phoneNumber);
-    console.log('phone', phone, phoneNumber);
-
     return phone
       ? {
           countryCode: phone.countryCallingCode,
@@ -41,6 +39,9 @@ const useContacts = () => {
   };
 
   const getContacts = async (): Promise<ContactItem[]> => {
+    if (!permissionGranted) {
+      return [];
+    }
     try {
       const deviceContacts = await Contacts.getAll();
 
@@ -60,6 +61,9 @@ const useContacts = () => {
     }
   };
   const getContactNumbersOnly = async (): Promise<string[]> => {
+    if (!permissionGranted) {
+      return [];
+    }
     try {
       const deviceContacts = await Contacts.getAll();
       const contactNumbers = deviceContacts
