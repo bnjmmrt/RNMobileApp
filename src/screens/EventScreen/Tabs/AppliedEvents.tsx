@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
-import { useFetchEventsQuery } from '../../../redux/actions/eventApiAction';
-import EventItem from '../EventItem';
+import { ActivityIndicator, FlatList, View } from 'react-native';
 import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
-import { Hp } from '../../../utils/dimensions';
+import { useFetchEventsQuery } from '../../../redux/actions/eventApiAction';
+import { Hp, verticalMarginScale } from '../../../utils/dimensions';
+import EventItem from '../EventItem';
 
 interface AppliedEventsProps {
   userId: string;
@@ -11,7 +11,11 @@ interface AppliedEventsProps {
   tab: any;
 }
 
-const AppliedEvents: React.FC<AppliedEventsProps> = ({ userId, searchText, tab }) => {
+const AppliedEvents: React.FC<AppliedEventsProps> = ({
+  userId,
+  searchText,
+  tab,
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [events, setEvents] = useState<any[]>([]);
@@ -25,22 +29,23 @@ const AppliedEvents: React.FC<AppliedEventsProps> = ({ userId, searchText, tab }
 
   useEffect(() => {
     if (data) {
-
-      setEvents((prev) => (currentPage === 1 ? data.data.result : [...prev, ...data.data.result]));
+      setEvents(prev =>
+        currentPage === 1 ? data.data.result : [...prev, ...data.data.result],
+      );
     }
   }, [data]);
 
   useEffect(() => {
-    setRefreshing(isLoading)
-  }, [isLoading])
+    setRefreshing(isLoading);
+  }, [isLoading]);
 
   const handleRefresh = () => {
-    setCurrentPage(1)
+    setCurrentPage(1);
   };
 
   const loadMore = () => {
     if (events?.length < data?.data?.totalCount && !isLoading) {
-      setCurrentPage((prev) => prev + 1);
+      setCurrentPage(prev => prev + 1);
     }
   };
 
@@ -56,11 +61,24 @@ const AppliedEvents: React.FC<AppliedEventsProps> = ({ userId, searchText, tab }
           onRefresh={handleRefresh}
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={isLoading && <ActivityIndicator />}
+          ListFooterComponent={
+            <View style={{ marginBottom: verticalMarginScale(100) }}>
+              {isLoading ? <ActivityIndicator /> : null}
+            </View>
+          }
         />
       ) : (
-        <View style={{ height: Hp(55), alignItems: 'center', justifyContent: 'center' }}>
-          <EventEmptyRecord title={tab.title} subTitle={tab.subTitle} isLoading={isLoading} />
+        <View
+          style={{
+            height: Hp(55),
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <EventEmptyRecord
+            title={tab.title}
+            subTitle={tab.subTitle}
+            isLoading={isLoading}
+          />
         </View>
       )}
     </View>

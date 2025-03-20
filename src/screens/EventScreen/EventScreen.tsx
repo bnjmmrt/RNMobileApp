@@ -1,11 +1,15 @@
 /* eslint-disable react-native/no-inline-styles */
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import debounce from 'lodash/debounce';
 import React, { useCallback, useRef, useState } from 'react';
 import { Platform, SafeAreaView, View } from 'react-native';
 import { useSelector } from 'react-redux';
-import debounce from 'lodash/debounce';
 import AfterAppStaticComponent from 'src/component/BeforeAppStaticComponent/AfterAppStaticComponent';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import DynamicTabBar from '../../component/ActiveTabBar/DynamicTabBar';
@@ -23,10 +27,6 @@ import AppliedEvents from './Tabs/AppliedEvents';
 import InvitedEvents from './Tabs/InvitedEvents';
 import PastEvents from './Tabs/PastEvents';
 import UpcomingEvents from './Tabs/UpcomingEvents';
-import {
-  horizontalMarginScale,
-  verticalMarginScale,
-} from 'src/utils/dimensions';
 
 interface EventScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -134,7 +134,6 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
             style={{
               backgroundColor: COLORS.white,
               flex: 1,
-              paddingBottom: verticalMarginScale(80),
             }}>
             <HeaderComponent isDarkTheme={false} />
             <SearchInput

@@ -1,14 +1,20 @@
-import React, { useRef, forwardRef, useState } from 'react';
-import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
-import BottomSheetComponent from '../BottomSheet/AppBottomSheet';
-import { COLORS } from '../../utils/constants';
-import Button from '../Button';
-import { fontFamily, removeSignature } from '../../utils/functions';
-import { EndPoint } from '../../ApiManager/config';
-import useApi from '../../axios/useApi';
-import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
-import IMAGES from '@images/index';
 import FastImage from '@d11/react-native-fast-image';
+import IMAGES from '@images/index';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  fontScale,
+  horizontalMarginScale,
+  horizontalScale,
+  verticalMarginScale,
+  verticalScale,
+} from 'src/utils/dimensions';
+import { COLORS } from '../../utils/constants';
+import { fontFamily, removeSignature } from '../../utils/functions';
+import BottomSheetComponent, {
+  BottomSheetMethods,
+} from '../BottomSheet/AppBottomSheet';
+import Button from '../Button';
 
 interface EditPictureBottomSheetProps {
   onPress: () => void;
@@ -18,75 +24,81 @@ interface EditPictureBottomSheetProps {
   cancelButtonText: string;
   snapPoints: any;
   image: any | null;
-  eventImage?: string
+  eventImage?: string;
 }
-const EditPictureBottomSheet = forwardRef(
-  (props: EditPictureBottomSheetProps, ref) => {
-    const inputRef = useRef(null);
-    // const [image, setImage] = useState<string>(image);
-    console.log(props)
+const EditPictureBottomSheet = forwardRef<
+  BottomSheetMethods,
+  EditPictureBottomSheetProps
+>((props, ref) => {
+  const sheetRef = useRef<BottomSheetMethods>(null);
+  useImperativeHandle(ref, () => ({
+    open: () => sheetRef.current?.open(),
+    close: () => sheetRef.current?.close(),
+    showFlashMessage: (type, message) =>
+      sheetRef.current?.showFlashMessage(type, message),
+  }));
 
-    const cancelClick = () => {
-      ref.current?.close();
-    };
+  const cancelClick = () => {
+    sheetRef?.current?.close();
+  };
 
-    return (
-      <BottomSheetComponent
-        ref={ref}
-        snapPoints={props.snapPoints}
-        onClose={() => console.log(ref)}>
-        <View style={styles.container}>
-          {props.title && <Text style={styles.title}>{props.title}</Text>}
+  return (
+    <BottomSheetComponent
+      ref={sheetRef}
+      snapPoints={props.snapPoints}
+      onClose={() => console.log(ref)}>
+      <View style={styles.container}>
+        {props.title && <Text style={styles.title}>{props.title}</Text>}
 
-          {props.image && (
-            <View style={styles.profilePhotoContainer}>
-              <Image
-                style={styles.profilePhotoContainer}
-                source={{ uri: props.image }}
-                resizeMode="cover"
-              />
-              <TouchableOpacity style={styles.iconContainer} onPress={props.onPencilClick}>
-                <Image
-                  resizeMode="contain"
-                  source={IMAGES.pencil}
-                  style={styles.ic_pencil}
-                />
-              </TouchableOpacity>
-            </View>
-
-          )}
-          <View style={{ height: 5 }} />
-          {props?.eventImage &&
-            <FastImage
-              source={{
-                uri: removeSignature(props?.eventImage),
-              }}
-              resizeMode={FastImage.resizeMode.cover}
-              style={styles.coverImageStyle}
+        {props.image && (
+          <View style={styles.profilePhotoContainer}>
+            <Image
+              style={styles.profilePhotoContainer}
+              source={{ uri: props.image }}
+              resizeMode="cover"
             />
-          }
-          <View style={{ height: 5 }} />
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={props.submitButtonText}
-            colorTheme="dark"
-            onPress={props.onPress}
+            <TouchableOpacity
+              style={styles.iconContainer}
+              onPress={props.onPencilClick}>
+              <Image
+                resizeMode="contain"
+                source={IMAGES.pencil}
+                style={styles.ic_pencil}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
+        <View style={{ height: 5 }} />
+        {props?.eventImage && (
+          <FastImage
+            source={{
+              uri: removeSignature(props?.eventImage),
+            }}
+            resizeMode={FastImage.resizeMode.cover}
+            style={styles.coverImageStyle}
           />
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={props.cancelButtonText}
-            colorTheme="dark"
-            onPress={cancelClick}
-            clearButtonStyle={styles.clearButton}
-            textStyle={{ color: '#000' }}
-          />
-        </View>
-      </BottomSheetComponent>
-    );
-  },
-);
+        )}
+        <View style={{ height: 5 }} />
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={props.submitButtonText}
+          colorTheme="dark"
+          onPress={props.onPress}
+        />
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={props.cancelButtonText}
+          colorTheme="dark"
+          onPress={cancelClick}
+          clearButtonStyle={styles.clearButton}
+          textStyle={{ color: '#000' }}
+        />
+      </View>
+    </BottomSheetComponent>
+  );
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -101,7 +113,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     backgroundColor: COLORS.white,
     borderColor: COLORS.black,
-    marginTop: verticalMarginScale(8)
+    marginTop: verticalMarginScale(8),
   },
   title: {
     fontSize: fontScale(24),
@@ -149,8 +161,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 20,
     elevation: 5,
-    alignSelf: 'center'
-
+    alignSelf: 'center',
   },
 });
 
