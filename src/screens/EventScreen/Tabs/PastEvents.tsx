@@ -8,7 +8,7 @@ import {
   useFetchEventsQuery,
   useFetchHostEventsQuery,
 } from '../../../redux/actions/eventApiAction';
-import { Hp } from '../../../utils/dimensions';
+import { Hp, verticalMarginScale } from '../../../utils/dimensions';
 import EventItem from '../EventItem';
 
 interface PastEventsProps {
@@ -102,7 +102,11 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
           onRefresh={handleRefresh}
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={isLoading && <ActivityIndicator />}
+          ListFooterComponent={
+            <View style={{ marginBottom: verticalMarginScale(100) }}>
+              {isLoading ? <ActivityIndicator /> : null}
+            </View>
+          }
         />
       ) : (
         <View

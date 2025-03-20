@@ -1,50 +1,48 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useEffect, useRef } from 'react';
 import {
-  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import Button from '../../../component/Button';
+import Header from '../../../component/Header/Header';
+import Input from '../../../component/Input/Input';
 import {
-  LABLE,
   BUTTON_LABLE,
-  ERROR_MESSAGE,
   COLORS,
+  ERROR_MESSAGE,
+  LABLE,
   PROFILE,
 } from '../../../utils/constants';
-import Button from '../../../component/Button';
-import Input from '../../../component/Input/Input';
-import Header from '../../../component/Header/Header';
 // import {useGetPostsQuery} from '../../../redux/slices/apiSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../redux/slices';
-import useApi from '../../../axios/useApi';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import { extractCountryCode } from 'src/utils/functions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { EndPoint } from '../../../ApiManager/config';
+import useApi from '../../../axios/useApi';
+import EmailInput from '../../../component/EmailComponent/EmailInput';
+import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
+import { RootState } from '../../../redux/slices';
 import {
   fontScale,
   horizontalMarginScale,
   radiusScale,
   verticalMarginScale,
   verticalScale,
-  Wp,
 } from '../../../utils/dimensions';
-import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
-import EmailInput from '../../../component/EmailComponent/EmailInput';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
-import { extractCountryCode } from 'src/utils/functions';
 
-interface HostEditProfileScreenProps extends NativeStackScreenProps<any, any> { }
+interface HostEditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
 const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
   navigation,
 }) => {
+  const { keyboardVisible } = useKeyboard();
   const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
   const userId = useSelector((state: RootState) => state.auth.userId);
@@ -57,43 +55,40 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
   const websiteRef = useRef<any>(null);
-const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   useEffect(() => {
-         const phoneNumberDetails = extractCountryCode(profileData?.phoneNumber);
-         phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
-         phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
-         phoneNumberInputRef?.current.setCallingCode(null);
-         phoneNumberInputRef?.current.setDisabled(true);
-         emailInputRef?.current.setEmailAddress(profileData?.email);
-         emailInputRef?.current.setDisabled(true);
+    const phoneNumberDetails = extractCountryCode(profileData?.phoneNumber);
+    phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
+    phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
+    phoneNumberInputRef?.current.setCallingCode(null);
+    phoneNumberInputRef?.current.setDisabled(true);
+    emailInputRef?.current.setEmailAddress(profileData?.email);
+    emailInputRef?.current.setDisabled(true);
     // getHostDetails();
   }, []);
 
   const validateLength = () => {
-      const regex = /^\s*(\S+\s*){0,200}$/;
-       if(!regex.test(bioRef?.current.inputText)){
-        bioRef?.current?.setErrorMessage(
-                  ERROR_MESSAGE.DESCRIPTION_SIZE_EXCEED,
-                );
-                return false;
-       }
-       bioRef?.current?.setErrorMessage('');
-       return true;
-    };
+    const regex = /^\s*(\S+\s*){0,200}$/;
+    if (!regex.test(bioRef?.current.inputText)) {
+      bioRef?.current?.setErrorMessage(ERROR_MESSAGE.DESCRIPTION_SIZE_EXCEED);
+      return false;
+    }
+    bioRef?.current?.setErrorMessage('');
+    return true;
+  };
   const onConfirmClick = async () => {
-
     if (
-      companyNameRef.current.validateInputs() && validateLength() &&
+      companyNameRef.current.validateInputs() &&
+      validateLength() &&
       websiteRef.current.validateInputs()
     ) {
-      console.log("inside")
+      console.log('inside');
       const requestObject: any = {
         bio: bioRef?.current.inputText,
         companyName: companyNameRef?.current.inputText,
         website: websiteRef?.current.inputText,
       };
-      console.log("requestobj", requestObject)
+      console.log('requestobj', requestObject);
       const response: any = await apiRequest(
         'put',
         `${EndPoint.host_ep}`,
@@ -107,8 +102,11 @@ const [keyboardVisible, setKeyboardVisible] = useState(false);
         if (responseUser.success) {
           dispatch(setProfileData(responseUser.data));
         }
-        FlashMessageComponent.show('success', LABLE.PROFILE_UPDATED_SUCCESSFULLY)
-        handleBackPress()
+        FlashMessageComponent.show(
+          'success',
+          LABLE.PROFILE_UPDATED_SUCCESSFULLY,
+        );
+        handleBackPress();
       }
     }
   };
@@ -117,78 +115,68 @@ const [keyboardVisible, setKeyboardVisible] = useState(false);
     navigation.goBack();
   };
 
-   useEffect(() => {
-          const keyboardDidShowListener = Keyboard.addListener(
-            'keyboardDidShow',
-            () => {
-              setKeyboardVisible(true);
-            },
-          );
-      
-          const keyboardDidHideListener = Keyboard.addListener(
-            'keyboardDidHide',
-            () => {
-              setKeyboardVisible(false);
-            },
-          );
-      
-          return () => {
-            keyboardDidShowListener.remove();
-            keyboardDidHideListener.remove();
-          };
-        }, []);
-
   return (
-      <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={styles.container}>
-    <View style={[styles.container,{paddingBottom:keyboardVisible ? Platform.OS === 'ios' ? verticalMarginScale(50): verticalMarginScale(10) : 0}]}>
-      <Header
-        headerTitle={PROFILE.EDIT_PROFILE}
-        onPress={handleBackPress}
-        showProgressBar={false}
-      />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          {
+            paddingBottom: keyboardVisible
+              ? Platform.OS === 'ios'
+                ? verticalMarginScale(50)
+                : verticalMarginScale(10)
+              : 0,
+          },
+        ]}>
+        <Header
+          headerTitle={PROFILE.EDIT_PROFILE}
+          onPress={handleBackPress}
+          showProgressBar={false}
+        />
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.contentContainer}>
-          <Input
-            ref={companyNameRef}
-            label={LABLE.COMPANY_NAME}
-            errorMessage={ERROR_MESSAGE.COMPANY_NAME_ERROR}
-            defaultValue={profileData?.companyName}
-            maxLength={100}
-          />
-          <Input
-            blurOnSubmit={true}
-            ref={bioRef}
-            label={LABLE.BIO}
-            errorMessage={''}
-            defaultValue={profileData?.bio}
-            multiline={true}
-          />
-          <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
-          <EmailInput ref={emailInputRef} />
-          <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
-          <PhoneNumberInput ref={phoneNumberInputRef} />
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.contentContainer}>
+            <Input
+              ref={companyNameRef}
+              label={LABLE.COMPANY_NAME}
+              errorMessage={ERROR_MESSAGE.COMPANY_NAME_ERROR}
+              defaultValue={profileData?.companyName}
+              maxLength={100}
+            />
+            <Input
+              blurOnSubmit={true}
+              ref={bioRef}
+              label={LABLE.BIO}
+              errorMessage={''}
+              defaultValue={profileData?.bio}
+              multiline={true}
+            />
+            <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
+            <EmailInput ref={emailInputRef} />
+            <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
+            <PhoneNumberInput ref={phoneNumberInputRef} />
 
-          <Input
-            ref={websiteRef}
-            label={LABLE.WEBSITE}
-            errorMessage={ERROR_MESSAGE.WEBSITE_ERROR}
-            defaultValue={profileData?.website}
+            <Input
+              ref={websiteRef}
+              label={LABLE.WEBSITE}
+              errorMessage={ERROR_MESSAGE.WEBSITE_ERROR}
+              defaultValue={profileData?.website}
+            />
+          </View>
+        </ScrollView>
+        {!keyboardVisible ? (
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={BUTTON_LABLE.CONFIRM}
+            colorTheme="dark"
+            onPress={onConfirmClick}
+            loading={loading}
           />
-        </View>
-
-      </ScrollView>
-      <Button
-        disabled={false}
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.CONFIRM}
-        colorTheme="dark"
-        onPress={onConfirmClick}
-        loading={loading}
-      />
-    </View>
+        ) : null}
+      </View>
     </KeyboardAvoidingView>
   );
 };
@@ -211,7 +199,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: horizontalMarginScale(20),
   },
-  scrollContainer: {paddingVertical: verticalMarginScale(16) },
+  scrollContainer: { paddingVertical: verticalMarginScale(16) },
   label: {
     paddingVertical: horizontalMarginScale(2),
     fontSize: fontScale(14),
