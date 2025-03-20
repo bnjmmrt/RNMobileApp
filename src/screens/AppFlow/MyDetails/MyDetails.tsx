@@ -1,20 +1,23 @@
-import React, { useCallback, useRef } from 'react';
-import { Text, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useCallback, useRef } from 'react';
+import { View } from 'react-native';
+import Button from '../../../component/Button';
+import Header from '../../../component/Header/Header';
+import Input from '../../../component/Input/Input';
+import Title from '../../../component/Title/Title';
 import {
-  LABLE,
   BUTTON_LABLE,
   ERROR_MESSAGE,
+  LABLE,
   ROLE,
 } from '../../../utils/constants';
 import EmailPhoneStyles from './MyDetailsStyles';
-import Button from '../../../component/Button';
-import Title from '../../../component/Title/Title';
-import Input from '../../../component/Input/Input';
-import Header from '../../../component/Header/Header';
 // import {useGetPostsQuery} from '../../../redux/slices/apiSlice';
+import { useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { RootState } from '../../../redux/slices';
 import {
   setFirstName,
@@ -22,15 +25,13 @@ import {
   setLastName,
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
-import useApi from '../../../axios/useApi';
-import { useFocusEffect } from '@react-navigation/native';
-import { changeSafeAreaViewConfig } from 'src/utils/functions';
-import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
 interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
+  const { keyboardVisible } = useKeyboard();
+
   const userDetails = useSelector((state: RootState) => state.appFlow);
   const role = useSelector((state: RootState) => state.auth.role);
 
@@ -140,14 +141,15 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
           maxLength={30}
         />
       </View>
-
-      <Button
-        disabled={false}
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.NEXT}
-        colorTheme="dark"
-        onPress={onNextClick}
-      />
+      {!keyboardVisible ? (
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.NEXT}
+          colorTheme="dark"
+          onPress={onNextClick}
+        />
+      ) : null}
     </View>
   );
 };

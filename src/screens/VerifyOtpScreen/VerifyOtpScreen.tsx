@@ -6,14 +6,22 @@ import {
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import { useDispatch } from 'react-redux';
+import {
+  setEmail,
+  setFirstName,
+  setLastName,
+  setPhone,
+} from 'src/redux/slices/appFlowSlice';
+import { verticalMarginScale } from 'src/utils/dimensions';
 import {
   changeSafeAreaViewConfig,
   fetchUserProfile,
   getPriorityRole,
   loginUser,
 } from 'src/utils/functions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import BackButton from '../../component/BackButton/BackButton';
 import Button from '../../component/Button';
@@ -23,13 +31,6 @@ import { useSendOtp } from '../../redux//hooks/useSendOtp';
 import { useVerifyOtp } from '../../redux/hooks/useVerifyOtp';
 import { BUTTON_LABLE, LABLE, ROLE } from '../../utils/constants';
 import VerifyOtpStyles from './VerifyOtpStyles';
-import {
-  setEmail,
-  setFirstName,
-  setLastName,
-  setPhone,
-} from 'src/redux/slices/appFlowSlice';
-import { verticalMarginScale } from 'src/utils/dimensions';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -58,46 +59,13 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   );
 
   const dispatch = useDispatch();
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const { keyboardVisible } = useKeyboard();
+
   const [errorMsg, setErrorMsg] = useState('');
   useEffect(() => {
     otpInputRef?.current?.setApiError(error);
   }, [error]);
 
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        setKeyboardVisible(true);
-      },
-    );
-
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setKeyboardVisible(false);
-      },
-    );
-
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
-      setKeyboardVisible(true);
-    });
-
-    const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
-      setKeyboardVisible(false);
-    });
-
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
   useEffect(() => {
     const sendTo = route.params.isEmail
       ? route.params.email
@@ -185,8 +153,9 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         <View style={styles.contentContainer}>
           <TitleSubtitle
             title={LABLE.ENTER_YOUR_VERIFICATION_CODE}
-            subTitle={`${LABLE.SEND_TO}${route.params.isEmail ? route.params.email : route.params.phone
-              }`}
+            subTitle={`${LABLE.SEND_TO}${
+              route.params.isEmail ? route.params.email : route.params.phone
+            }`}
           />
           <OTPComponent
             error={errorMsg}
@@ -195,19 +164,25 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
             resendVerificationCode={clearOTPAndResend}
           />
           <View style={styles.spacer} />
-          <Button
-            disabled={false}
-            style={[
-              styles.btnStyle,
-              {
-                marginBottom: keyboardVisible ? Platform.OS === 'ios' ? verticalMarginScale(60): verticalMarginScale(10) : 0,
-              },
-            ]}
-            title={BUTTON_LABLE.GET_STARTED}
-            colorTheme="dark"
-            onPress={onNextClick}
-            loading={isLoading}
-          />
+          {!keyboardVisible ? (
+            <Button
+              disabled={false}
+              style={[
+                styles.btnStyle,
+                {
+                  marginBottom: keyboardVisible
+                    ? Platform.OS === 'ios'
+                      ? verticalMarginScale(60)
+                      : verticalMarginScale(10)
+                    : 0,
+                },
+              ]}
+              title={BUTTON_LABLE.GET_STARTED}
+              colorTheme="dark"
+              onPress={onNextClick}
+              loading={isLoading}
+            />
+          ) : null}
         </View>
       </View>
       {/* </FullScreenLoader> */}

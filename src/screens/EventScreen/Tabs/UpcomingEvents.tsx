@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
+import { ActivityIndicator, FlatList, View } from 'react-native';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
 import {
   useFetchEventsQuery,
   useFetchHostEventsQuery,
 } from '../../../redux/actions/eventApiAction';
+import { ROLE } from '../../../utils/constants';
+import { Hp, verticalMarginScale } from '../../../utils/dimensions';
 import EventItem from '../EventItem';
-import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
-import { BUTTON_LABLE, COLORS, ROLE } from '../../../utils/constants';
-import { Hp } from '../../../utils/dimensions';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/redux/slices';
 
 interface UpcomingEventsProps {
   userId: string;
@@ -35,18 +35,18 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
   const queryArgs =
     role === ROLE.HOST
       ? ({
-        status: 'UPCOMING_STATUS',
-        searchText,
-        take: 10,
-        skip: (currentPage - 1) * 10,
-      } as const) // Type assertion to prevent union mismatch
+          status: 'UPCOMING_STATUS',
+          searchText,
+          take: 10,
+          skip: (currentPage - 1) * 10,
+        } as const) // Type assertion to prevent union mismatch
       : ({
-        userId,
-        guestEventStatus: 'UPCOMING',
-        searchText,
-        take: 10,
-        skip: (currentPage - 1) * 10,
-      } as const); // Type assertion
+          userId,
+          guestEventStatus: 'UPCOMING',
+          searchText,
+          take: 10,
+          skip: (currentPage - 1) * 10,
+        } as const); // Type assertion
 
   const { data, isLoading, refetch } = useFetchEvents(queryArgs);
 
@@ -57,7 +57,7 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
           currentPage === 1
             ? data.data.result
             : // ? data.data
-            [...prev, ...data.data.result],
+              [...prev, ...data.data.result],
         );
       } else {
         setEvents(prev =>
@@ -99,7 +99,11 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
           onRefresh={handleRefresh}
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={isLoading ? <ActivityIndicator /> : null}
+          ListFooterComponent={
+            <View style={{ marginBottom: verticalMarginScale(100) }}>
+              {isLoading ? <ActivityIndicator /> : null}
+            </View>
+          }
         />
       ) : (
         <View

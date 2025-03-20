@@ -1,31 +1,37 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Keyboard, KeyboardAvoidingView, Platform, Text, View } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
-import EnterEmailPhoneStyles from './EnterEmailPhoneStyles';
-import Button from '../../../component/Button';
-import Title from '../../../component/Title/Title';
-import Header from '../../../component/Header/Header';
+import React, { useCallback, useRef } from 'react';
+import { KeyboardAvoidingView, Platform, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import { EndPoint } from 'src/ApiManager/config';
+import { verticalMarginScale } from 'src/utils/dimensions';
+import {
+  changeSafeAreaViewConfig,
+  removeSpaceFromStr,
+} from 'src/utils/functions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import useApi from '../../../axios/useApi';
+import Button from '../../../component/Button';
+import EmailInput from '../../../component/EmailComponent/EmailInput';
+import Header from '../../../component/Header/Header';
+import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
+import Title from '../../../component/Title/Title';
+import { RootState } from '../../../redux/slices';
 import {
   setEmail,
   setPageProgress,
   setPhone,
 } from '../../../redux/slices/appFlowSlice';
-import { RootState } from '../../../redux/slices';
-import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
-import EmailInput from '../../../component/EmailComponent/EmailInput';
-import { useFocusEffect } from '@react-navigation/native';
-import { changeSafeAreaViewConfig, removeSpaceFromStr } from 'src/utils/functions';
-import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
-import { verticalMarginScale } from 'src/utils/dimensions';
-import { EndPoint } from 'src/ApiManager/config';
-import useApi from '../../../axios/useApi';
+import { BUTTON_LABLE, LABLE } from '../../../utils/constants';
+import EnterEmailPhoneStyles from './EnterEmailPhoneStyles';
 
-interface EnterEmailPhoneProps extends NativeStackScreenProps<any, any> { }
+interface EnterEmailPhoneProps extends NativeStackScreenProps<any, any> {}
 
 const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
   const dispatch = useDispatch();
+  const { keyboardVisible } = useKeyboard();
+
   const { apiRequest, loading, error } = useApi();
   // const isEmailVerified = useSelector((state: RootState) => state.appFlow.isEmailVerified);
   const varifyStatus = useSelector(
@@ -35,28 +41,6 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
   const styles = EnterEmailPhoneStyles();
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        setKeyboardVisible(true);
-      },
-    );
-
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setKeyboardVisible(false);
-      },
-    );
-
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
 
   const onNextClick = async () => {
     let endPoint;
@@ -65,22 +49,25 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
       if (phoneNumberInputRef.current.validatePhoneNumber()) {
         endPoint = EndPoint.check_phone;
         params = {
-          phoneNumber:
-            removeSpaceFromStr(phoneNumberInputRef.current.callingCode +
-            phoneNumberInputRef.current.phoneNumber),
+          phoneNumber: removeSpaceFromStr(
+            phoneNumberInputRef.current.callingCode +
+              phoneNumberInputRef.current.phoneNumber,
+          ),
         };
         try {
           const response: any = await apiRequest('post', endPoint, params);
           if (response?.data.isValid) {
             dispatch(
               setPhone(
-                phoneNumberInputRef.current.callingCode + " " +
+                phoneNumberInputRef.current.callingCode +
+                  ' ' +
                   phoneNumberInputRef.current.phoneNumber,
               ),
             );
             navigation.navigate('VerifyEmail', {
               phone:
-                phoneNumberInputRef.current.callingCode + " " +
+                phoneNumberInputRef.current.callingCode +
+                ' ' +
                 phoneNumberInputRef.current.phoneNumber,
               isEmail: false,
             });
@@ -158,7 +145,7 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
               : LABLE.WHATS_YOUR_EMAIL_SUBTITLE
           }
         />
-        <View style={{height: 10}}/>
+        <View style={{ height: 10 }} />
         {isEmailVerified === 1 ? (
           <PhoneNumberInput ref={phoneNumberInputRef} />
         ) : (
@@ -168,19 +155,24 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
           </>
         )}
       </View>
-
-      <Button
-        disabled={false}
-        style={[
-          styles.btnStyle,
-          {
-            marginBottom: keyboardVisible ? Platform.OS === 'ios' ? verticalMarginScale(60): verticalMarginScale(10) : 0,
-          },
-        ]}
-        title={BUTTON_LABLE.NEXT}
-        colorTheme="dark"
-        onPress={onNextClick}
-      />
+      {!keyboardVisible ? (
+        <Button
+          disabled={false}
+          style={[
+            styles.btnStyle,
+            {
+              marginBottom: keyboardVisible
+                ? Platform.OS === 'ios'
+                  ? verticalMarginScale(60)
+                  : verticalMarginScale(10)
+                : 0,
+            },
+          ]}
+          title={BUTTON_LABLE.NEXT}
+          colorTheme="dark"
+          onPress={onNextClick}
+        />
+      ) : null}
     </KeyboardAvoidingView>
   );
 };

@@ -1,8 +1,13 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { KeyboardAvoidingView, View } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
+import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
+import { verticalMarginScale } from 'src/utils/dimensions';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import TabBar from '../../component/ActiveTabBar/TabBar';
 import BackButton from '../../component/BackButton/BackButton';
@@ -14,38 +19,20 @@ import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle'
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
 import { BUTTON_LABLE, LABLE } from '../../utils/constants';
 import EmailPhoneStyles from './EmailPhoneStyles';
-import { useDispatch } from 'react-redux';
-import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
-import { verticalMarginScale } from 'src/utils/dimensions';
 
-interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> { }
+interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> {}
 
 const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const { keyboardVisible } = useKeyboard();
   const styles = EmailPhoneStyles();
   const [currentTab, setCurrentTab] = useState('01');
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
   const [URL, setURL] = useState('');
-  const bottomSheetRef = useRef(null);
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
-      setKeyboardVisible(true);
-    });
-
-    const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
-      setKeyboardVisible(false);
-    });
-
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
-
-  dispatch(resetAppFlowDetails())
+  dispatch(resetAppFlowDetails());
 
   useEffect(() => {
     URL.length > 0 && bottomSheetRef?.current?.open();
@@ -85,7 +72,7 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
       : LABLE.RUMOR_WILL_SEND_YOU_A_EMAIL_WITH_A_VERIFICATION_CODE;
 
   return (
-    <KeyboardAvoidingView behavior='padding' style={styles.container}>
+    <KeyboardAvoidingView behavior="padding" style={styles.container}>
       <BackButton onPress={handleBackPress} />
       <TabBar
         onTabChange={handleTabChange}
@@ -96,23 +83,35 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
         <TitleSubtitle title={title} subTitle={subTitle} />
 
         {currentTab == '01' ? (
-          <PhoneNumberInput ref={phoneNumberInputRef} otherStyle={{marginTop:12}} />
+          <PhoneNumberInput
+            ref={phoneNumberInputRef}
+            otherStyle={{ marginTop: 12 }}
+          />
         ) : (
-          <EmailInput ref={emailInputRef} otherStyle={{marginTop:12}}  />
+          <EmailInput ref={emailInputRef} otherStyle={{ marginTop: 12 }} />
         )}
 
         <View style={styles.spacer} />
-        <TermsAndPolicy setUrl={setWebUrl} type="large" showMessage={true} />
-        <Button
-          disabled={false}
-          style={{
-            width: '100%',
-            marginBottom: keyboardVisible ? verticalMarginScale(60) : verticalMarginScale(15),
-          }}
-          title={BUTTON_LABLE.NEXT}
-          colorTheme="dark"
-          onPress={onNextClick}
-        />
+
+        {!keyboardVisible ? (
+          <>
+            <TermsAndPolicy
+              setUrl={setWebUrl}
+              type="large"
+              showMessage={true}
+            />
+            <Button
+              disabled={false}
+              style={{
+                width: '100%',
+                marginBottom: verticalMarginScale(15),
+              }}
+              title={BUTTON_LABLE.NEXT}
+              colorTheme="dark"
+              onPress={onNextClick}
+            />
+          </>
+        ) : null}
       </View>
       <WebViewBottomSheet url={URL} ref={bottomSheetRef} />
     </KeyboardAvoidingView>

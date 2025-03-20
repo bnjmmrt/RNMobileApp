@@ -1,16 +1,25 @@
+import IMAGES from '@images/index';
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  Platform,
-  StyleSheet,
-  SafeAreaView,
   KeyboardAvoidingView,
-  Keyboard,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
   Text,
   View,
-  ScrollView,
 } from 'react-native';
 import { useSelector } from 'react-redux';
+import { EndPoint } from 'src/ApiManager/config';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import Input, { InputRefMethods } from 'src/component/Input/Input';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
+import useApi from '../../../axios/useApi';
+import ConfirmationBottomSheet from '../../../component/BottomSheet/ConfirmationBottomSheet';
+import Button from '../../../component/Button';
 import Header from '../../../component/Header/Header';
+import { RootState } from '../../../redux/slices';
 import {
   BUTTON_LABLE,
   COLORS,
@@ -18,11 +27,9 @@ import {
   LABLE,
   PROFILE,
 } from '../../../utils/constants';
-import { useNavigation } from '@react-navigation/native';
 import {
   fontScale,
   horizontalMarginScale,
-  Hp,
   radiusScale,
   verticalMarginScale,
   verticalScale,
@@ -30,15 +37,6 @@ import {
 } from '../../../utils/dimensions';
 import { fontFamily } from '../../../utils/functions';
 import CreativeFocusComponent from './CreativeFocusComponent';
-import Button from '../../../component/Button';
-import ConfirmationBottomSheet from '../../../component/BottomSheet/ConfirmationBottomSheet';
-import IMAGES from '@images/index';
-import Toast from '../../../component/Toast/Toast';
-import useApi from '../../../axios/useApi';
-import { EndPoint } from 'src/ApiManager/config';
-import { RootState } from '../../../redux/slices';
-import Input from 'src/component/Input/Input';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 interface FeedbackScreenProps {}
 
@@ -56,13 +54,14 @@ const list: Tag[] = [
 ];
 const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   const navigation = useNavigation();
+  const { keyboardVisible } = useKeyboard();
   const { apiRequest, loading, error } = useApi();
   const confirmationRef = useRef<any>(null);
   const [isToastShown, setIsToastShown] = useState(false);
 
   const [selectedData, getSelectedData] = useState<Tag[]>();
   const userId = useSelector((state: RootState) => state.auth.userId);
-  const feedbackRef = useRef<any>(null);
+  const feedbackRef = useRef<InputRefMethods>(null);
 
   useEffect(() => {
     // Keyboard.dismiss()
@@ -73,45 +72,41 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
 
   const validateLength = () => {
     const regex = /^\s*(\S+\s*){0,500}$/;
-     if(!regex.test(feedbackRef?.current.inputText)){
-      feedbackRef?.current?.setErrorMessage(
-                ERROR_MESSAGE.FEEDBACK_SIZE_EXCEED,
-              );
-              return false;
-     }
-     feedbackRef?.current?.setErrorMessage('');
-     return true;
+    if (!regex.test(feedbackRef?.current?.inputText || '')) {
+      feedbackRef?.current?.setErrorMessage(ERROR_MESSAGE.FEEDBACK_SIZE_EXCEED);
+      return false;
+    }
+    feedbackRef?.current?.setErrorMessage('');
+    return true;
   };
+
   const onSubmit = async () => {
-    console.log("selectedData",selectedData)
-    if(selectedData?.length){
+    if (selectedData?.length) {
       setIsToastShown(false);
-    }else{
+    } else {
       setIsToastShown(true);
     }
     if (
-      feedbackRef?.current.validateInputs() &&
+      feedbackRef?.current?.validateInputs() &&
       validateLength() &&
       !isToastShown &&
       selectedData?.length
     ) {
       const requestData = {
-        description: feedbackRef?.current.inputText,
+        description: feedbackRef?.current?.inputText,
         tag: selectedData[0].value,
         userId: userId,
       };
-      console.log('requestObject', requestData);
       const response: any = await apiRequest(
         'post',
         EndPoint.host_feedback,
         requestData,
       );
-      console.log('feedback response', response);
       if (response.success) {
         confirmationRef.current.open();
         //  clearData()
-      }else{
-        FlashMessageComponent.show("error",response.message)
+      } else {
+        FlashMessageComponent.show('error', response.message);
       }
     } else {
       // setIsToastShown(true);
@@ -120,21 +115,21 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Header
+        headerTitle={PROFILE.FEEDBACK}
+        onPress={handleBackPress}
+        showProgressBar={false}
+      />
       <ScrollView>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-          <Header
-            headerTitle={PROFILE.FEEDBACK}
-            onPress={handleBackPress}
-            showProgressBar={false}
-          />
-
           <View style={styles.contentContainer}>
             <Text style={styles.subTitle}>{PROFILE.FEEDBACK_SUBTITLE}</Text>
             <Input
               ref={feedbackRef}
               placeholder={LABLE.ENTER_FEEDBACK}
               errorMessage={ERROR_MESSAGE.FEEDBACK_ERROR}
+              keyboardType="ascii-capable"
               multiline={true}
               // maxLength={500}
             />
@@ -159,15 +154,16 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
           />
         </KeyboardAvoidingView>
       </ScrollView>
-
-      <Button
-        disabled={false}
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.SUBMIT}
-        colorTheme="dark"
-        onPress={onSubmit}
-        loading={loading}
-      />
+      {!keyboardVisible ? (
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.SUBMIT}
+          colorTheme="dark"
+          onPress={onSubmit}
+          loading={loading}
+        />
+      ) : null}
     </SafeAreaView>
   );
 };

@@ -1,3 +1,4 @@
+import Intercom, { Visibility } from '@intercom/intercom-react-native';
 import { CommonActions, useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -10,6 +11,7 @@ import {
 } from 'react-native';
 import { Text } from 'react-native-animatable';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
+import { openSettings } from 'react-native-permissions';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import DeleteAccountBottomSheet from 'src/component/BottomSheet/DeleteAccountBottomSheet';
@@ -44,12 +46,9 @@ import { BUTTON_LABLE, COLORS, PROFILE, ROLE } from '../../utils/constants';
 import ProfileListItem from './ProfileListItem';
 import ProfileScreenStyle from './ProfileScreenStyle';
 import ProfileTopView from './ProfileTopView';
-import HeaderComponent from 'src/component/HeaderComponent';
-import { openSettings } from 'react-native-permissions';
-import Intercom, { Visibility } from '@intercom/intercom-react-native';
 
 // Define the type for navigation props
-interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
+interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
 interface ListItem {
   id: string;
@@ -114,6 +113,31 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const deleteAccount = () => {
     deleteAccountBottomSheetRef.current?.open();
   };
+  const callDeleteAccountAPpi = async () => {
+    try {
+      const response = await apiRequest('delete', `users/v1/auth/users/${userId}`);
+      if (response?.success) {
+        FlashMessageComponent.show('success', response?.message || 'User account deactivated successfully.');
+        deleteAccountBottomSheetRef.current?.close();
+        const resetAction = CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'AuthStack' }],
+        });
+        dispatch(resetProfileData());
+        dispatch(resetLoginData());
+        dispatch(setAuthToken(null));
+        dispatch(resetAppFlowDetails());
+        logoutBottomSheetRef.current?.close();
+        // navigation.dispatch(resetAction);
+        navigation.replace('AuthStack');
+      } else {
+        Alert.alert('Error', response?.message || 'Something went wrong');
+      }
+    } catch (error) {
+      Alert.alert('Error', error?.message || 'Failed to delete account');
+    }
+  };
+
 
   useEffect(() => {
     if (profileData?.email) {
@@ -441,7 +465,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             profilePic={
               role?.toLocaleLowerCase() === 'host'
                 ? companyLogo
-                : profilePicture ? profilePicture : profileData?.profilePicture
+                : profilePicture
+                ? profilePicture
+                : profileData?.profilePicture
             }
             name={getUserName()}
             loading={loading}
@@ -484,7 +510,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           onPencilClick={openCamera}
           submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
           cancelButtonText={BUTTON_LABLE.CANCEL}
-          snapPoints={[Platform.OS === 'android' ? 0.4 : 0.4]}
+          snapPoints={[Platform.OS === 'android' ? 0.51 : 0.41]}
           image={image}
         />
 
@@ -500,6 +526,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         <DeleteAccountBottomSheet
           ref={deleteAccountBottomSheetRef}
           onPress={deleteAccount}
+          onDeletePress={callDeleteAccountAPpi}
         />
       </View>
     </View>

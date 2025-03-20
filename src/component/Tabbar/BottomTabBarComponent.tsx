@@ -1,7 +1,19 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import React, { useEffect, useRef } from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import * as Animatable from 'react-native-animatable';
+import { shallowEqual, useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+import { fontFamily } from 'src/utils/functions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { COLORS } from '../../utils/constants';
 import {
   fontScale,
@@ -12,9 +24,6 @@ import {
   Wp,
 } from '../../utils/dimensions';
 import { CustomText } from '../CustomText';
-import { shallowEqual, useSelector } from 'react-redux';
-import { RootState } from 'src/redux/slices';
-import { fontFamily } from 'src/utils/functions';
 
 const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
   state,
@@ -22,6 +31,7 @@ const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
   navigation,
 }) => {
   const labelRefs = useRef<(Animatable.View & View)[]>([]);
+  const { keyboardVisible } = useKeyboard();
 
   const { showBottomTabs } = useSelector(
     (state: RootState) => ({
@@ -41,17 +51,29 @@ const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
     });
   }, [state.index]);
 
-  const currentRouteName = state.routes[state.index]?.name;
-  const isChatScreen = currentRouteName === 'ChatScreen';
+  let deviceHeight = Dimensions.get('screen').height;
+  let windowHeight = Dimensions.get('window').height;
+  let statusBarHeight = StatusBar.currentHeight || 0;
+  let bottomNavBarHeight = deviceHeight - windowHeight - statusBarHeight;
+  const hasSoftNavButtons = bottomNavBarHeight > 0;
+
+  const isTabBarVisible =
+    Platform.OS === 'android'
+      ? !keyboardVisible && showBottomTabs
+      : showBottomTabs;
 
   return (
     <View
       style={[
         styles.container,
         {
-          display: showBottomTabs ? 'flex' : 'none',
-          bottom: verticalScale(30),
-          // position: isChatScreen ? 'absolute' : 'static',
+          display: isTabBarVisible ? 'flex' : 'none',
+          bottom:
+            Platform.OS === 'android'
+              ? hasSoftNavButtons
+                ? verticalScale(10)
+                : verticalScale(20)
+              : verticalScale(30),
         },
       ]}>
       <View style={styles.tabStyle}>
@@ -150,7 +172,7 @@ const styles = StyleSheet.create({
   tabLabel: {
     color: COLORS.black,
     fontSize: fontScale(14),
-    fontFamily: fontFamily.ABCDiatype_Medium
+    fontFamily: fontFamily.ABCDiatype_Medium,
   },
 });
 

@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
-import { useFetchEventsQuery } from '../../../redux/actions/eventApiAction';
-import EventItem from '../EventItem';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, View } from 'react-native';
 import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
-import { Hp } from '../../../utils/dimensions';
+import { useFetchEventsQuery } from '../../../redux/actions/eventApiAction';
+import { Hp, verticalMarginScale } from '../../../utils/dimensions';
+import EventItem from '../EventItem';
 
 interface InvitedEventsProps {
   userId: string;
@@ -63,7 +63,11 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({
           onRefresh={handleRefresh}
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={isLoading && <ActivityIndicator />}
+          ListFooterComponent={
+            <View style={{ marginBottom: verticalMarginScale(100) }}>
+              {isLoading ? <ActivityIndicator /> : null}
+            </View>
+          }
         />
       ) : (
         <View

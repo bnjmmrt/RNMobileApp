@@ -1,23 +1,24 @@
-import React, { useCallback, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants';
-import BaseCityScreenStyles from './BaseCityScreenStyles';
-import Button from '../../../component/Button';
-import Title from '../../../component/Title/Title';
-import Header from '../../../component/Header/Header';
+import React, { useCallback, useState } from 'react';
+import { View } from 'react-native-animatable';
 import { useDispatch, useSelector } from 'react-redux';
+import { SelectedSingleFilter } from 'src/component/FilterSheet';
+import GooglePlacesInput from 'src/component/GooglePlacesInput/GooglePlacesInput';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import Button from '../../../component/Button';
+import Header from '../../../component/Header/Header';
+import Title from '../../../component/Title/Title';
 import { RootState } from '../../../redux/slices';
 import {
   Address,
   setBaseCity,
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
-import { useFocusEffect } from '@react-navigation/native';
-import { changeSafeAreaViewConfig } from 'src/utils/functions';
-import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
-import GooglePlacesInput from 'src/component/GooglePlacesInput/GooglePlacesInput';
-import { SelectedSingleFilter } from 'src/component/FilterSheet';
-import { View } from 'react-native-animatable';
+import { BUTTON_LABLE, ERROR_MESSAGE, LABLE } from '../../../utils/constants';
+import BaseCityScreenStyles from './BaseCityScreenStyles';
 
 export type SelectedFilters = {
   [id: string]: SelectedSingleFilter;
@@ -26,9 +27,9 @@ interface BaseCityScreenProps extends NativeStackScreenProps<any, any> {}
 
 const BaseCityScreen: React.FC<BaseCityScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
+  const { keyboardVisible } = useKeyboard();
   const baseCity = useSelector((state: RootState) => state.appFlow.baseCity);
   const [selectedCity, setSelectedCity] = useState<Address>(baseCity);
-console.log(selectedCity)
 
   const styles = BaseCityScreenStyles();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -75,7 +76,7 @@ console.log(selectedCity)
           title={LABLE.WHERE_DO_YOU_CALL_HOME}
           subTitle={LABLE.WE_WILL_RECOMMEND_EVENTS_AND_EXPERIENCES_NEAR_YOU}
         />
-        <View style={{height: 15}}/>
+        <View style={{ height: 15 }} />
         {/* <TouchableOpacity onPress={openLocationPicker}>
           <CustomSelectableText
             placeholder={LABLE.SEARCH_FOR_A_LOCATION}
@@ -94,7 +95,7 @@ console.log(selectedCity)
         )} */}
 
         <GooglePlacesInput
-        defaultValue={selectedCity.address}
+          defaultValue={selectedCity.address}
           errorMessage={errorMessage}
           setError={setErrorMessage}
           submit={() => {}}
@@ -152,14 +153,15 @@ console.log(selectedCity)
             // </BottomSheetScrollView>
           )} */}
       </View>
-
-      <Button
-        disabled={false}
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.NEXT}
-        colorTheme="dark"
-        onPress={onNextClick}
-      />
+      {!keyboardVisible ? (
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.NEXT}
+          colorTheme="dark"
+          onPress={onNextClick}
+        />
+      ) : null}
     </View>
   );
 };
