@@ -4,6 +4,7 @@ import { FlashMessageComponent } from '../../component/FlashMessageComponent/Fla
 import { LABLE } from 'src/utils/constants';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
+import { removeSpaceFromStr } from 'src/utils/functions';
 
 export const useVerifyOtp = (
   isMemberExist: boolean,
@@ -26,7 +27,7 @@ export const useVerifyOtp = (
       setIsLoading(true);
       const requestParam = {
         email,
-        phoneNumber: phone,
+        phoneNumber: removeSpaceFromStr(phone),
         code,
         isExist: isMemberExist,
         isGuest: isGuest,

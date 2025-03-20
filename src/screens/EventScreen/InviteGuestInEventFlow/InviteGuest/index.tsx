@@ -43,7 +43,9 @@ import {
 import {
   ApiErrorInterface,
   changeSafeAreaViewConfig,
+  extractCountryCode,
   getErrorMessage,
+  removeSpaceFromStr,
 } from 'src/utils/functions';
 import useContacts from 'src/utils/hooks/useContactPermission';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
@@ -263,7 +265,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         inviteMessage: inviteMessage,
         privateGuestNote: guestNote,
         email: email,
-        phoneNumber: `${selectedCountry?.dial_code}${phone}`,
+        phoneNumber: removeSpaceFromStr(`${selectedCountry?.dial_code}${phone}`),
         firstName: firstName,
         lastName: lastName,
       };
@@ -309,6 +311,8 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
       // phoneRef?.current?.setPhoneNumber(selectedManualUser?.phoneNumber || '');
       if (selectedManualUser?.phoneNumber) {
         const phoneData = getPhoneNumber(selectedManualUser?.phoneNumber);
+        console.log('phoneData', phoneData);
+
         phoneRef?.current?.setPhoneNumber(phoneData.phoneNumber);
         phoneRef?.current?.setFlag(phoneData.flag);
         phoneRef?.current?.setCallingCode(phoneData.countryCode);

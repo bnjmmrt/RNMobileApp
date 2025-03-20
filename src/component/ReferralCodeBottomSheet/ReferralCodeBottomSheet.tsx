@@ -1,47 +1,37 @@
-import React, { useRef, forwardRef } from 'react';
-import { Platform, View, StyleSheet, StatusBar } from 'react-native';
-import BottomSheetComponent from '../BottomSheet/BottomSheet';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import React, { forwardRef, useRef } from 'react';
+import { Platform, StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+import { useSubmitReferralCodeMutation } from '../../redux/actions/referralApiAction';
+import { BUTTON_LABLE, ERROR_MESSAGE, LABLE } from '../../utils/constants';
 import {
   horizontalMarginScale,
-  Hp,
   verticalMarginScale,
-  verticalScale,
 } from '../../utils/dimensions';
-import {
-  BUTTON_LABLE,
-  COLORS,
-  ERROR_MESSAGE,
-  LABLE,
-} from '../../utils/constants';
-import Title from '../Title/Title';
-import Input from '../Input/Input';
+import BottomSheetComponent from '../BottomSheet/BottomSheet';
 import Button from '../Button';
 import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
-import { useSubmitReferralCodeMutation } from '../../redux/actions/referralApiAction';
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { RootState } from 'src/redux/slices';
-import { useSelector } from 'react-redux';
-import GradientOverlay from 'src/screens/BeforeApplicationFlow/GradientOverlay';
+import Input, { InputRefMethods } from '../Input/Input';
+import Title from '../Title/Title';
 
 const ReferralCodeBottomSheet = forwardRef((props, ref) => {
-  const inputRef = useRef(null);
+  const inputRef = useRef<InputRefMethods>(null);
   const userId = useSelector((state: RootState) => state.auth.userId);
 
   const [submitReferralCode, { isLoading }] = useSubmitReferralCodeMutation();
   const handleSubmit = async () => {
-    const { inputText, validateInputs } = inputRef.current;
-
-    if (validateInputs()) {
+    if (inputRef?.current?.validateInputs()) {
       try {
         const response = await submitReferralCode({
-          referralCode: inputText,
+          referralCode: inputRef?.current?.inputText,
           userId: userId,
         }).unwrap();
         FlashMessageComponent.show('success', 'Code submitted successfully!');
         ref.current?.close();
       } catch (error) {
         console.log(error?.data?.error);
-        inputRef.current.setErrorMessage("Please enter a valid referral code");
+        inputRef.current.setErrorMessage('Please enter a valid referral code');
       }
     }
   };
@@ -49,15 +39,12 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   return (
     <BottomSheetComponent
       ref={ref}
-      activeSafeAreaViewColor={"#121f22"}
-      inActiveSafeAreaViewColor={'#121f22'}
-      snapPoints={[`${verticalScale(45)}%`]}
+      snapPoints={[`${Platform.OS === 'android' ? 45 : 40}%`]}
       onClose={() => console.log(ref)}
       activeSafeAreaViewColor={'#121f22'}
       inActiveSafeAreaViewColor={'#121f22'}
-    // footer={}
+      // footer={}
     >
-
       <BottomSheetScrollView style={styles.container}>
         <Title
           title={LABLE.REFERRAL_CODE}

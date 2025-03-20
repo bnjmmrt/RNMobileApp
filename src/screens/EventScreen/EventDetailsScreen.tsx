@@ -1,64 +1,69 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
+import FastImage from '@d11/react-native-fast-image';
+import IMAGES from '@images/index';
+import { BlurView } from '@react-native-community/blur';
+import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import moment from 'moment';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  View,
+  Image,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
-  Platform,
-  Image,
+  View,
 } from 'react-native';
-import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import FastImage from '@d11/react-native-fast-image';
-import { fontFamily, removeSignature } from 'src/utils/functions';
-import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
-import {
-  fontScale,
-  verticalMarginScale,
-  verticalScale,
-  horizontalScale,
-} from 'src/utils/dimensions';
-import BackButtonOverlay from 'src/component/BackButton/BackButtonOverlay';
-import EventStatus from 'src/component/Event/EventStatus';
-import EventHostItem from 'src/component/Event/EventHostItem';
 import { FlatList } from 'react-native-gesture-handler';
-import EventVenue from 'src/component/Event/EventVenue';
-import EventOverview from 'src/component/Event/EventOverview';
-import Button from 'src/component/Button';
-import QRCodeBottomsheet from 'src/component/BottomSheet/QRCodeBottomsheet';
-import CalenderEventsBottomSheet from 'src/component/BottomSheet/CalenderEventsBottomSheet';
+import LinearGradient from 'react-native-linear-gradient';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'src/redux/slices';
+import { EndPoint } from 'src/ApiManager/config';
+import useApi from 'src/axios/useApi';
+import BackButtonOverlay from 'src/component/BackButton/BackButtonOverlay';
+import CalenderEventsBottomSheet from 'src/component/BottomSheet/CalenderEventsBottomSheet';
+import QRCodeBottomsheet from 'src/component/BottomSheet/QRCodeBottomsheet';
+import SignupFormsBottomSheet from 'src/component/BottomSheet/SignupFormsBottomSheet';
+import Button from 'src/component/Button';
+import EventAnnouncements from 'src/component/Event/EventAnnouncements';
+import EventHostItem from 'src/component/Event/EventHostItem';
+import EventOverview from 'src/component/Event/EventOverview';
+import EventRequests from 'src/component/Event/EventRequests';
+import EventStatus from 'src/component/Event/EventStatus';
+import EventTalent from 'src/component/Event/EventTalent';
+import EventVenue from 'src/component/Event/EventVenue';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import ImageComponent from 'src/component/Image/ImageComponent';
+import Toast from 'src/component/Toast/Toast';
+import { ROUTES } from 'src/navigation/Route';
 import {
   useFetchEventDetailsQuery,
   useFetchGuestStatusCountQuery,
   useFetchHostEventDetailsQuery,
   useFetchHostEventsAnnouncementQuery,
+  useFetchSignupFormsQuery,
 } from 'src/redux/actions/eventApiAction';
-import IMAGES from '@images/index';
-import EventTalent from 'src/component/Event/EventTalent';
-import { ROUTES } from 'src/navigation/Route';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import EventRequests from 'src/component/Event/EventRequests';
-import { setSelectedEventForInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
-import { EndPoint } from 'src/ApiManager/config';
-import useApi from 'src/axios/useApi';
-import moment from 'moment';
+import { RootState } from 'src/redux/slices';
 import { setEventId } from 'src/redux/slices/eventSlice';
-import { BlurView } from '@react-native-community/blur';
-import LinearGradient from 'react-native-linear-gradient';
-import { changeSafeAreaViewConfig } from 'src/utils/functions';
-import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { setSelectedEventForInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
 import { setRefresh, setRsvpStatus } from 'src/redux/slices/rspvSlice';
-import EventAnnouncements from 'src/component/Event/EventAnnouncements';
-import ImageComponent from 'src/component/Image/ImageComponent';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import SignupFormsBottomSheet from 'src/component/BottomSheet/SignupFormsBottomSheet';
-import { useFetchSignupFormsQuery } from 'src/redux/actions/eventApiAction';
+import {
+  fontScale,
+  horizontalMarginScale,
+  horizontalScale,
+  verticalMarginScale,
+  verticalScale,
+} from 'src/utils/dimensions';
+import {
+  changeSafeAreaViewConfig,
+  fontFamily,
+  removeSignature,
+} from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: any;
@@ -135,9 +140,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const)
       : ({
-          userId,
-          eventId: route?.params?.id,
-        } as const);
+        userId,
+        eventId: route?.params?.id,
+      } as const);
 
   const useFetchEventDetailsHook =
     role === ROLE.HOST
@@ -154,10 +159,16 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
   const qrCodeBottomSheetRef = useRef<any>(null);
   const calenderEventsBottomSheetRef = useRef<any>(null);
+  const userDetails = useSelector(
+    (state: any) => state.appFlowApiData.profileData,
+  );
+  const profilePicture = useSelector((state: any) => state.auth.profilePicture);
 
   const [isQRShown, setIsQRShown] = useState(true);
   const [eventDetails, setEventDetails] = useState<any>({});
   const [calendarDetails, setCalendarDetails] = useState<any>({});
+  const [showInviteGuestAlert, setShowInviteGuestAlert] =
+    useState<boolean>(false);
 
   const [useQr, setUseQr] = useState<boolean>(false);
   useEffect(() => {
@@ -166,6 +177,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       setIsDeclinedByHost(data?.data?.invitationDeclinedBy !== userId);
     }
   }, [guestStatus]);
+
+  useEffect(() => {
+    return () => {
+      setShowInviteGuestAlert(false);
+    };
+  }, []);
 
   useEffect(() => {
     if (data?.data) {
@@ -195,9 +212,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           name: 'host',
         },
       };
+      const approvedCollaborators = data.data.collaborators.filter(
+        (col: any) => col.isApproved,
+      );
 
-      // Merge the owner as a collaborator with existing collaborators
-      setCollaborators([collaborator, ...data.data.collaborators] as any);
+      setCollaborators([collaborator, ...approvedCollaborators] as any);
     }
 
     if (data && data.data && data?.data?.talents) {
@@ -276,8 +295,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
   const onPressInviteGuests = () => {
     if (data && data.data) {
-      dispatch(setSelectedEventForInvite(data.data));
-      navigation.navigate(ROUTES.SelectGuestsToInviteScreen);
+      if (data?.data?.status === 'PAST_STATUS') {
+        setShowInviteGuestAlert(true);
+      } else {
+        dispatch(setSelectedEventForInvite(data.data));
+        navigation.navigate(ROUTES.SelectGuestsToInviteScreen);
+      }
     }
   };
 
@@ -304,6 +327,27 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
     return (
       <>
+        {showInviteGuestAlert ? (
+          <Toast
+            message={
+              'You can no longer invite guests as the event date has passed. '
+            }
+            onClose={() => {
+              setShowInviteGuestAlert(false);
+            }}
+            toastStyle={{
+              position: 'relative',
+              left: 0,
+              right: 0,
+              marginHorizontal: horizontalMarginScale(12),
+              height: undefined,
+              paddingVertical: verticalMarginScale(12),
+              paddingHorizontal: verticalMarginScale(8),
+              alignItems: 'flex-start',
+            }}
+          />
+        ) : null}
+
         <Button
           disabled={false}
           style={styles.btnStyle}
@@ -517,7 +561,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                     // style={{ marginVertical: 20 }}
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(item: any, index) => `${item.id}-${index}`}
-                    renderItem={({ item }) => <EventHostItem item={item} />}
+                    renderItem={({ item }) => (
+                      <EventHostItem
+                        item={item}
+                        length={collaborators.length}
+                      />
+                    )}
                   />
                 )}
 
@@ -538,19 +587,37 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                 <EventOverview item={data?.data} />
 
                 {talents.length > 0 && <EventTalent talents={talents} />}
+                {role == ROLE.HOST ?
+                  <EventAnnouncements
+                    role={role}
+                    handleAddPress={addAnouncement}
+                    announcementData={announcementData}
+                    eventId={eventId}
+                    handleViewAll={() =>
+                      navigation.navigate(ROUTES.EventStack, {
+                        screen: ROUTES.Announcement,
+                        params: data?.data,
+                      })
+                    }
+                  /> :
+                  <>
+                    {guestStatus == 'CONFIRMED' &&
+                      <EventAnnouncements
+                        role={role}
+                        handleAddPress={addAnouncement}
+                        announcementData={announcementData}
+                        eventId={eventId}
+                        handleViewAll={() =>
+                          navigation.navigate(ROUTES.EventStack, {
+                            screen: ROUTES.Announcement,
+                            params: data?.data,
+                          })
+                        }
+                      />
+                    }
+                  </>
+                }
 
-                <EventAnnouncements
-                  role={role}
-                  handleAddPress={addAnouncement}
-                  announcementData={announcementData}
-                  eventId={eventId}
-                  handleViewAll={() =>
-                    navigation.navigate(ROUTES.EventStack, {
-                      screen: ROUTES.Announcement,
-                      params: data?.data,
-                    })
-                  }
-                />
                 {showError && (
                   <View style={styles.errorTextContainer}>
                     <Image
@@ -578,7 +645,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               subTitle={eventDetails?.subTitle}
               imageURL={eventDetails?.qrUrl}
               isQRShown={isQRShown}
-              name={eventDetails?.name}
+              name={`${userDetails?.firstName} ${userDetails?.lastName}`}
+              profilePic={profilePicture}
             />
 
             <CalenderEventsBottomSheet
@@ -593,7 +661,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                 eventDetails?.qrUrl ? eventDetails?.qrUrl : IMAGES.ticket
               }
               isQRShown={isQRShown}
-              name={eventDetails?.name}
+              name={`${userDetails?.firstName} ${userDetails?.lastName}`}
+              profilePic={profilePicture}
             />
 
             <SignupFormsBottomSheet

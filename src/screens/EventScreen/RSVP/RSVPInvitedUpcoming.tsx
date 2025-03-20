@@ -25,7 +25,7 @@ import useApi from "src/axios/useApi"
 import SelectReason from "./BottomSheetView/SelectReason"
 import MessageBox from "./BottomSheetView/MessageBox"
 import formatToDeviceTimeZone from "src/utils/formatToDeviceTimeZone"
-import { fontFamily, removeSignature } from "src/utils/functions"
+import { fontFamily, removeSignature, removeSpaceFromStr } from "src/utils/functions"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 
 const reasons = [
@@ -507,7 +507,7 @@ const RSVPInvitedUpcoming = () => {
                                                         <SwipeableGuestList
                                                             key={guest.id}
                                                             guest={guest}
-                                                            onDelete={() => dispatch(deleteGuest({ phoneNumber: guest.phoneNumber, email: guest.email }))} />
+                                                            onDelete={() => dispatch(deleteGuest({ phoneNumber: removeSpaceFromStr(guest.phoneNumber), email: guest.email }))} />
                                                     </GestureHandlerRootView>
                                                 )
 
@@ -562,7 +562,7 @@ const RSVPInvitedUpcoming = () => {
             onDelete={(value) => {
                 console.log(item)
                 if (value.type === 'local') {
-                    dispatch(deleteGuest({ phoneNumber: item.phoneNumber, email: item.email }))
+                    dispatch(deleteGuest({ phoneNumber: removeSpaceFromStr(item.phoneNumber), email: item.email }))
                 }
                 else {
                     setSelectedDeleteGuest(item)

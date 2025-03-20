@@ -14,9 +14,9 @@ interface ProfileTopViewProps {
     profilePic: any;
     name: string;
     loading?: boolean;
-    role:string
+    role: string
 }
-const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick, profilePic, name, loading,role }) => {
+const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick, profilePic, name, loading, role }) => {
 
     // Handle the "Next" button press
     const handlEventPress = () => {
@@ -35,7 +35,7 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({ editPhotoClick, profile
                         />
                     ) : (
                         <View style={styles.profilePhotoContainer}>
-                            <AvatarInitials name={name} size={48} />
+                            <AvatarInitials name={name} size={48} listing={false} />
                         </View>
                     )}
                 </FullScreenLoader>
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         justifyContent: "center",
         alignItems: "center",
-        zIndex:-1
+        zIndex: -1
     },
     iconContainer: {
         justifyContent: 'center',

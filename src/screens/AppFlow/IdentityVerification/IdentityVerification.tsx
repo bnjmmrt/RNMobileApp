@@ -5,6 +5,7 @@ import { Linking, Platform, ScrollView, Text, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { EndPoint } from '../../../ApiManager/config';
 import IMAGES from '../../../assets/images';
@@ -39,6 +40,7 @@ interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
 const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   navigation,
 }) => {
+  const { keyboardVisible } = useKeyboard();
   const { signUp } = useMemberSignUp();
   const { apiRequest, loading, error } = useApi();
   const userDetails = useSelector((state: any) => state.appFlow);
@@ -131,7 +133,9 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         interest: '',
         lastName: userDetails.lastName,
 
-        phoneNumber: userDetails.phone ? userDetails.phone : loginData.phone,
+        phoneNumber: userDetails.phone
+          ? removeSpaceFromStr(userDetails.phone)
+          : removeSpaceFromStr(loginData.phone),
         role: response?.data?.roles[0]?.roleName,
       };
       dispatch(setProfileData(userProfile));
@@ -249,15 +253,16 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
           />
         </View>
       </ScrollView>
-
-      <Button
-        disabled={false}
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.SUBMTI_APPLICATION}
-        colorTheme="dark"
-        loading={loading}
-        onPress={onNextClick}
-      />
+      {!keyboardVisible ? (
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.SUBMTI_APPLICATION}
+          colorTheme="dark"
+          loading={loading}
+          onPress={onNextClick}
+        />
+      ) : null}
     </View>
   );
 };

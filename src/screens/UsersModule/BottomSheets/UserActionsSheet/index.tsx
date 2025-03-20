@@ -79,7 +79,7 @@ const UserActionsSheet = forwardRef<
         : selectedAction === 'markSpam'
         ? ['35%']
         : selectedAction === 'delete'
-        ? ['30%']
+        ? ['33%']
         : selectedAction === 'addToList'
         ? ['60%']
         : selectedAction === 'createList'
@@ -117,6 +117,10 @@ const UserActionsSheet = forwardRef<
       FlashMessageComponent.show('success', message);
     };
 
+    const isNonMemberHasNotAppliedUser = userDetails?.hostUserMappingId;
+    // userDetails?.role === 'non_member' &&
+    // userDetails?.status === 'NEW_APPLICANT' &&
+
     const getDyanamicSizeConfig = useCallback(() => {
       if (selectedAction === 'addToList') {
         return false;
@@ -127,7 +131,7 @@ const UserActionsSheet = forwardRef<
       } else {
         return true;
       }
-    }, [selectedAction, from]);
+    }, [selectedAction, from, isNonMemberHasNotAppliedUser]);
 
     return (
       <BottomSheetComponent
@@ -140,13 +144,15 @@ const UserActionsSheet = forwardRef<
         <BottomSheetView style={{ flex: 1 }}>
           {selectedAction === '' ? (
             <BottomSheetView style={styles.actionButtonContainer}>
-              {/* <Button
-                title={'Delete User'}
-                onPress={() => {
-                  setSelectedAction('delete');
-                }}
-                style={styles.actionButton}
-              /> */}
+              {isNonMemberHasNotAppliedUser ? (
+                <Button
+                  title={'Delete User'}
+                  onPress={() => {
+                    setSelectedAction('delete');
+                  }}
+                  style={styles.actionButton}
+                />
+              ) : null}
               <Button
                 title="Add to list"
                 onPress={() => {
@@ -154,20 +160,26 @@ const UserActionsSheet = forwardRef<
                 }}
                 style={styles.actionButton}
               />
-              <Button
-                title={userDetails?.isSpam ? 'Unmark as Spam' : 'Mark as Spam'}
-                onPress={() => {
-                  setSelectedAction('markSpam');
-                }}
-                style={styles.actionButton}
-              />
-              <Button
-                title="Report User"
-                onPress={() => {
-                  setSelectedAction('report');
-                }}
-                style={styles.actionButton}
-              />
+              {!isNonMemberHasNotAppliedUser ? (
+                <Button
+                  title={
+                    userDetails?.isSpam ? 'Unmark as Spam' : 'Mark as Spam'
+                  }
+                  onPress={() => {
+                    setSelectedAction('markSpam');
+                  }}
+                  style={styles.actionButton}
+                />
+              ) : null}
+              {!isNonMemberHasNotAppliedUser ? (
+                <Button
+                  title="Report User"
+                  onPress={() => {
+                    setSelectedAction('report');
+                  }}
+                  style={styles.actionButton}
+                />
+              ) : null}
             </BottomSheetView>
           ) : null}
           {selectedAction === 'report' ? (

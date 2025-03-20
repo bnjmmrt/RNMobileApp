@@ -46,10 +46,16 @@ export const usersApiAction = createBaseApi.injectEndpoints({
     }),
 
     fetchUserFilters: builder.query({
-      query: ({ id }: { id: string }) => ({
-        url: `${EndPoint.host}/${id}/filters`,
-        method: 'GET',
-      }),
+      query: ({ id, eventId }: { id: string; eventId?: string }) => {
+        let url = `${EndPoint.host}/${id}/filters`;
+        if (eventId) {
+          url = `${url}?eventId=${eventId}`;
+        }
+        return {
+          url: url,
+          method: 'GET',
+        };
+      },
       providesTags: ['Filters'], // Adjust the tag if needed for cache invalidation
     }),
 
@@ -137,7 +143,7 @@ export const usersApiAction = createBaseApi.injectEndpoints({
         method: 'DELETE',
         body: {},
       }),
-      invalidatesTags: ['UserDetail'],
+      invalidatesTags: ['UserDetail', 'Users'],
     }),
 
     // fetch notification

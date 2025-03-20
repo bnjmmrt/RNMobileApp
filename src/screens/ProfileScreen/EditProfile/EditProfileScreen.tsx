@@ -1,6 +1,6 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -8,40 +8,40 @@ import {
   Text,
   View,
 } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import Button from '../../../component/Button';
+import Header from '../../../component/Header/Header';
+import Input from '../../../component/Input/Input';
 import {
-  LABLE,
   BUTTON_LABLE,
-  ERROR_MESSAGE,
   COLORS,
-  PROFILE,
+  ERROR_MESSAGE,
   genderList,
+  LABLE,
+  PROFILE,
   ROLE,
 } from '../../../utils/constants';
-import Button from '../../../component/Button';
-import Input from '../../../component/Input/Input';
-import Header from '../../../component/Header/Header';
 // import {useGetPostsQuery} from '../../../redux/slices/apiSlice';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../redux/slices';
-import useApi from '../../../axios/useApi';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import Toast from 'src/component/Toast/Toast';
+import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import { extractCountryCode, fontFamily } from 'src/utils/functions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { EndPoint } from '../../../ApiManager/config';
+import useApi from '../../../axios/useApi';
+import EmailInput from '../../../component/EmailComponent/EmailInput';
+import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
+import { RootState } from '../../../redux/slices';
 import {
   fontScale,
   horizontalMarginScale,
   radiusScale,
   verticalMarginScale,
 } from '../../../utils/dimensions';
-import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
-import EmailInput from '../../../component/EmailComponent/EmailInput';
-import DatePickerComponent from './DatePickerComponent';
 import BaseCityComponent from './BaseCityComponent';
 import CreativeFocusComponent from './CreativeFocusComponent';
+import DatePickerComponent from './DatePickerComponent';
 import GenderComponent from './GenderComponent';
-import Toast from 'src/component/Toast/Toast';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import { extractCountryCode, fontFamily } from 'src/utils/functions';
-import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -50,6 +50,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
 }) => {
   const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
+  const { keyboardVisible } = useKeyboard();
 
   const { userId, isGuest, profileData, role } = useSelector(
     (state: RootState) => ({
@@ -84,27 +85,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
     address: profileData?.city,
     placeId: profileData?.placeId,
   });
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
-    useEffect(() => {
-      const keyboardDidShowListener = Keyboard.addListener(
-        'keyboardDidShow',
-        () => {
-          setKeyboardVisible(true);
-        },
-      );
-  
-      const keyboardDidHideListener = Keyboard.addListener(
-        'keyboardDidHide',
-        () => {
-          setKeyboardVisible(false);
-        },
-      );
-  
-      return () => {
-        keyboardDidShowListener.remove();
-        keyboardDidHideListener.remove();
-      };
-    }, []);
+
   useEffect(() => {
     if (profileData?.email && profileData?.email !== '') {
       emailInputRef?.current.setDisabled(true);
@@ -136,6 +117,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
 
   const validateName = (name: string) => {
     const regex = /^[A-Za-z]+$/;
+    let isFirstNameValid = false;
+    let isLastNameValid = false;
     if (
       name === 'FirstName' &&
       firstNameRef?.current?.inputText.trim().length > 30
@@ -143,7 +126,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
       firstNameRef?.current?.setErrorMessage(
         ERROR_MESSAGE.FIRST_NAME_SIZE_EXCEED,
       );
-      return false;
+      isFirstNameValid = false;
     } else {
       if (
         firstNameRef?.current?.inputText.trim() !== '' &&
@@ -152,7 +135,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         firstNameRef?.current?.setErrorMessage(
           ERROR_MESSAGE.FIRST_NAME_INVALID_CHARACTERS,
         );
-        return false;
+        isFirstNameValid = false;
+      } else {
+        isFirstNameValid = true;
       }
     }
 
@@ -163,7 +148,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
       lastNameRef?.current?.setErrorMessage(
         ERROR_MESSAGE.LAST_NAME_SIZE_EXCEED,
       );
-      return false;
+      isLastNameValid = false;
     } else {
       if (
         lastNameRef?.current?.inputText.trim() !== '' &&
@@ -172,11 +157,13 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         lastNameRef?.current?.setErrorMessage(
           ERROR_MESSAGE.LAST_NAME_INVALID_CHARACTERS,
         );
-        return false;
+        isLastNameValid = false;
+      } else {
+        isLastNameValid = true;
       }
     }
 
-    return true;
+    return isFirstNameValid && isLastNameValid;
   };
 
   const onConfirmClick = async () => {
@@ -209,7 +196,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         }
       }
     } else {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
       firstNameRef.current.validateInputs();
       validateName('FirstName');
       lastNameRef.current.validateInputs();
@@ -288,7 +274,17 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}>
-      <View  style={[styles.container,{paddingBottom:keyboardVisible ? Platform.OS === 'ios' ? verticalMarginScale(50): verticalMarginScale(10) : 0}]}>
+      <View
+        style={[
+          styles.container,
+          {
+            paddingBottom: keyboardVisible
+              ? Platform.OS === 'ios'
+                ? verticalMarginScale(50)
+                : verticalMarginScale(10)
+              : 0,
+          },
+        ]}>
         <Header
           headerTitle={PROFILE.EDIT_PROFILE}
           onPress={handleBackPress}
@@ -414,14 +410,16 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
             />
           </View>
         )}
-        <Button
-          disabled={false}
-          style={styles.btnStyle}
-          title={BUTTON_LABLE.CONFIRM}
-          colorTheme="dark"
-          onPress={onConfirmClick}
-          loading={loading}
-        />
+        {!keyboardVisible ? (
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={BUTTON_LABLE.CONFIRM}
+            colorTheme="dark"
+            onPress={onConfirmClick}
+            loading={loading}
+          />
+        ) : null}
       </View>
     </KeyboardAvoidingView>
   );

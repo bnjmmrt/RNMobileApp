@@ -149,6 +149,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
 
       {/* Input Field */}
       <InputWrapper
+        onPress={onPressImage}
         style={[
           styles.inputContainer,
           multiline ? styles.multilineInputContainer : null,

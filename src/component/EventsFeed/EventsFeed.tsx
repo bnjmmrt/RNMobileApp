@@ -284,8 +284,6 @@ const EventsFeed = () => {
       //   (item: any) => item.featuredEventSection,
       // );
       const { result, allArray } = groupEventsByFeaturedSection(data);
-      console.log('Grouped Events:', result);
-      console.log('All Events:', allArray);
 
       setFeaturedEvents(result);
       setAllEvents(allArray);
@@ -297,7 +295,6 @@ const EventsFeed = () => {
 
   function groupEventsByFeaturedSection(mainResponse) {
     // console.log(":DATA RESULTH:0", mainResponse);
-    console.log(':DATA RESULTH:1', mainResponse?.data?.result);
 
     let groupedEvents = {};
     let allArray = []; // Single array to store all non-featured events
@@ -346,18 +343,32 @@ const EventsFeed = () => {
   const renderFilters = useCallback(() => {
     const onRemoveFilter = (filterKey: string, valueIndex: number) => {
       let tempSelectedFilters = { ...selectedFilters };
+
+      // Remove the specific value from the selected filter
       tempSelectedFilters = {
         ...tempSelectedFilters,
         [filterKey]: {
           ...tempSelectedFilters[filterKey],
           value: tempSelectedFilters[filterKey].value.filter(
-            (_: any, index: number) => index !== valueIndex,
+            (_: any, index: number) => index !== valueIndex
           ),
         },
       };
+
+      if (filterKey === "minStartDate" && tempSelectedFilters.maxEndDate) {
+        delete tempSelectedFilters.maxEndDate;
+      }
+
+      if (filterKey === "longitude" && tempSelectedFilters.latitude) {
+        delete tempSelectedFilters.latitude;
+      }
+
       const { queryString, filtersCount } = getFilterQuery(tempSelectedFilters);
       onApplyFilter(queryString, filtersCount, tempSelectedFilters);
     };
+
+
+
 
     return (
       <View style={{ alignSelf: 'flex-start', flexDirection: 'row' }}>
@@ -436,6 +447,8 @@ const EventsFeed = () => {
         isLoading={isLoading}
         onRefreshPage={onRefreshPage}
         handleLoadMore={handleLoadMore}
+        searchTerm={searchTerm}
+        selectedFilters={selectedFilters}
       />
 
       {/* <FlatList
@@ -521,6 +534,7 @@ const styles = StyleSheet.create({
   filterScrollView: {
     marginHorizontal: horizontalMarginScale(20),
     marginTop: verticalMarginScale(8),
+    marginBottom: verticalMarginScale(8)
   },
   scrollView: {
     height: verticalScale(390),

@@ -1,16 +1,18 @@
-import React, {useRef, forwardRef} from 'react';
-import {View, StyleSheet, Text, Platform} from 'react-native';
+import React, { useRef, forwardRef, useCallback } from 'react';
+import { View, StyleSheet, Text, Platform } from 'react-native';
 import BottomSheetComponent from './AppBottomSheet';
-import {BUTTON_LABLE, COLORS, PROFILE} from '../../utils/constants';
+import { BUTTON_LABLE, COLORS, PROFILE } from '../../utils/constants';
 import Button from '../Button';
-import {fontFamily} from '../../utils/functions';
+import { fontFamily } from '../../utils/functions';
 import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale } from 'src/utils/dimensions';
 
 interface DeleteAccountBottomSheetProps {
-
+  onDeletePress?: () => void;
 }
 const DeleteAccountBottomSheet = forwardRef(
-  (props: DeleteAccountBottomSheetProps, ref) => {
+  ({
+    onDeletePress
+  }, ref) => {
     const inputRef = useRef(null);
     //   const [submitReferralCode, { isLoading }] = useSubmitReferralCodeMutation();
 
@@ -18,23 +20,22 @@ const DeleteAccountBottomSheet = forwardRef(
       ref.current?.close();
     };
 
-    const handleDeleteAccount = () => {
+    const handleDeleteAccount = useCallback(() => {
+      onDeletePress?.();
+    }, [onDeletePress]);
 
-      // handle API here
-      ref.current?.close();
-    };
 
     return (
       <BottomSheetComponent
         ref={ref}
-        snapPoints={[ '0.56']}
+        snapPoints={['0.56']}
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
           <Text style={styles.title}>{PROFILE.DELETE_ACCOUNT}</Text>
           <Text style={styles.description}>
             Deleting your account will immediately:
           </Text>
-          <View style={{paddingTop: 6}}>
+          <View style={{ paddingTop: 6 }}>
             <Text style={styles.description}>
               • Cancel all your RSVPs, requests, and invitations.
             </Text>
@@ -77,22 +78,22 @@ const DeleteAccountBottomSheet = forwardRef(
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal:horizontalMarginScale(20),
+    paddingHorizontal: horizontalMarginScale(20),
     gap: 8,
   },
   deleteAccountBtnStyle: {
-    borderRadius:radiusScale(100),
+    borderRadius: radiusScale(100),
     backgroundColor: COLORS.errorText,
-    marginTop:verticalMarginScale(16),
+    marginTop: verticalMarginScale(16),
   },
   btnStyle: {
-    borderRadius:radiusScale(100),
+    borderRadius: radiusScale(100),
   },
   title: {
-      fontSize: fontScale(24),
-      // fontWeight:'700',
-      color:COLORS.black,
-      fontFamily: fontFamily.RomieTrial_Bold
+    fontSize: fontScale(24),
+    // fontWeight:'700',
+    color: COLORS.black,
+    fontFamily: fontFamily.RomieTrial_Bold
   },
   description: {
     fontSize: fontScale(14),

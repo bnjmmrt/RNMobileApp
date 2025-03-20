@@ -229,7 +229,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take: number;
         skip: number;
       }) => ({
-        url: `/events/v1/event/${eventId}/event-announcement-guest?ticketType=${ticketType}&addedBy=${addedBy}&findByName=${searchText}&take=${take}&skip=${skip}`,
+        url: `/events/v1/event/${eventId}/event-announcement-guest?${ticketType}&${addedBy}&findByName=${searchText}&take=${take}&skip=${skip}`,
         method: 'GET',
       }),
       providesTags: ['AnnouncmentRecipient'],
