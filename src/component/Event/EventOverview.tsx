@@ -15,22 +15,21 @@ const MAX_LINES = 4;
 const EventOverview: React.FC<EventOverviewProps> = ({ item }) => {
   const [expanded, setExpanded] = useState(false);
 
-  const handleToggle = () => setExpanded((prev) => !prev);
+  const handleToggle = () => setExpanded(prev => !prev);
 
   // Check if "Read More" is needed
-  const shouldShowReadMore = item?.description && item?.description?.split(' ').length > 26;
+  const shouldShowReadMore =
+    item?.description && item?.description?.split(' ').length > 26;
 
   return (
     <View style={styles.container}>
-
       <Text style={styles.title}>{LABLE.ABOUT_THE_EVENT}</Text>
 
       <View style={styles.divider} />
 
       <Text
         style={styles.subtitle}
-        numberOfLines={expanded ? undefined : MAX_LINES}
-      >
+        numberOfLines={expanded ? undefined : MAX_LINES}>
         {item?.description}
       </Text>
 
@@ -38,17 +37,14 @@ const EventOverview: React.FC<EventOverviewProps> = ({ item }) => {
 
       {shouldShowReadMore && (
         <TouchableOpacity onPress={handleToggle} style={styles.toggleContainer}>
-          {!expanded ?
-            <Text style={styles.toggleText}>
-              {LABLE.READ_MORE}
-            </Text> :
-            <Text style={styles.toggleText}>
-              {LABLE.VIEW_LESS}
-            </Text>
-          }
+          {!expanded ? (
+            <Text style={styles.toggleText}>{LABLE.READ_MORE}</Text>
+          ) : (
+            <Text style={styles.toggleText}>{LABLE.VIEW_LESS}</Text>
+          )}
 
           <Image
-            source={IMAGES.downArrow}
+            source={expanded ? IMAGES.upArrow : IMAGES.downArrow}
             tintColor={COLORS.light_gray}
             style={styles.toggleIcon}
           />
@@ -73,15 +69,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontFamily: fontFamily.ABCDiatype_Medium,
     paddingHorizontal: verticalMarginScale(15),
-
   },
   subtitle: {
     color: COLORS.black,
     fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Medium,
     paddingHorizontal: verticalMarginScale(15),
-    paddingVertical: verticalMarginScale(4)
-
+    paddingVertical: verticalMarginScale(4),
   },
   divider: {
     height: 1,
@@ -93,8 +87,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: verticalMarginScale(8),
-    paddingHorizontal: verticalMarginScale(15)
-
+    paddingHorizontal: verticalMarginScale(15),
   },
   toggleText: {
     color: COLORS.black2,
@@ -106,7 +99,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     tintColor: COLORS.light_gray,
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
 });
 
