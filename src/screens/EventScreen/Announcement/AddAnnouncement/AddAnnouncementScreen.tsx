@@ -734,18 +734,18 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                     {ANNOUNCEMENT.Ticket_Type}
                                     <CustomText style={{ color: COLORS.errorText }}> *</CustomText>
                                 </CustomText>
-                                <TouchableOpacity onPress={() => {
-                                    if (announcementId == null) {
-                                        setActiveTab('ticketTypeOptions');
-                                        setSelectedTicketType(ticketTypeArr)
-                                        bottomSheetRef?.current?.open();
-                                    }
-                                }} style={ticketerrorMessage ? styles.errorContainer : [styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
+                                <View style={ticketerrorMessage ? styles.errorContainer : [styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
                                     <View ref={ticketTypeRef} style={styles.userInfoContainer}>
                                         {ticketTypeArr?.length == 0 ?
-                                            <Text style={[styles.inputStyle, { left: 0 }]}>Please select...</Text>
+                                            <Text onPress={() => {
+                                                if (announcementId == null) {
+                                                    setActiveTab('ticketTypeOptions');
+                                                    setSelectedTicketType(ticketTypeArr)
+                                                    bottomSheetRef?.current?.open();
+                                                }
+                                            }} style={[styles.inputStyle, { left: 0 }]}>Please select...</Text>
                                             :
-                                            <ScrollView horizontal={true} style={{ marginVertical: verticalMarginScale(10) }}>
+                                            <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ marginVertical: verticalMarginScale(10), width: '100%' }}>
                                                 {ticketTypeArr?.map((item: any) => {
                                                     return (
                                                         <View style={[styles.countWrapper, {
@@ -764,7 +764,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                             </ScrollView>
                                         }
                                     </View>
-                                    <TouchableOpacity onPress={() => {
+                                    <TouchableOpacity style={{ width: '8%', alignItems: 'flex-end', justifyContent: 'flex-end', paddingVertical: '5%' }} onPress={() => {
                                         if (announcementId == null) {
                                             setActiveTab('ticketTypeOptions');
                                             setSelectedTicketType(ticketTypeArr)
@@ -776,7 +776,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                             source={IMAGES.downArrow}
                                         />
                                     </TouchableOpacity>
-                                </TouchableOpacity>
+                                </View>
                                 {ticketerrorMessage ? (
                                     <Text style={[styles.errorText]}>{ERROR_MESSAGE.TICKET_TYPE_ERROR}</Text>
                                 ) : null}
@@ -788,7 +788,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                     <CustomText style={{ color: COLORS.errorText }}> *</CustomText>
                                     <TouchableOpacity
                                         onPress={() => setShowProfileToolitip(!showProfileToolitip)}>
-                                        <Image style={{ marginTop: 25 }} tintColor={COLORS.light_gray} source={IMAGES.info_filled} />
+                                        <Image style={{ marginTop: 25, left: 5 }} tintColor={COLORS.light_gray} source={IMAGES.info_filled} />
                                     </TouchableOpacity>
                                 </CustomText>
                                 <Tooltip
@@ -797,35 +797,36 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                     }]}
                                     isVisible={showProfileToolitip}
                                     displayInsets={{
-                                        left: 130,
-                                        right: 0,
+                                        left: 0,
+                                        right: 270,
                                         top: 0,
                                         bottom: 0
                                     }}
+                                    arrowStyle={{ left: -10 }}
                                     backgroundColor='transparent'
                                     topAdjustment={verticalScale(-10)}
                                     content={
-                                        <View style={[styles.toolTipCriteriaMainView]}>
+                                        <View>
                                             <Text style={styles.tooltipHeadStyle}>{ANNOUNCEMENT.ANNOUNCEMENT_TOOLTIP}</Text>
                                         </View>
                                     }
-                                    placement={Placement.LEFT}
+                                    placement={Placement.RIGHT}
                                     onClose={() => setShowProfileToolitip(false)}
                                 >
                                     <View />
                                 </Tooltip>
-                                <TouchableOpacity onPress={() => {
-                                    if (announcementId == null) {
-                                        setActiveTab('collaborator');
-                                        setselectedCollaborator(collaboratorArr)
-                                        bottomSheetRef?.current?.open();
-                                    }
-                                }} style={addedByerrorMessage ? styles.errorContainer : [styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
+                                <View style={addedByerrorMessage ? styles.errorContainer : [styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
                                     <View ref={addedRef} style={styles.userInfoContainer}>
                                         {collaboratorArr?.length == 0 ?
-                                            <Text style={[styles.inputStyle, { left: 0 }]}>Please select...</Text>
+                                            <Text onPress={() => {
+                                                if (announcementId == null) {
+                                                    setActiveTab('collaborator');
+                                                    setselectedCollaborator(collaboratorArr)
+                                                    bottomSheetRef?.current?.open();
+                                                }
+                                            }} style={[styles.inputStyle, { left: 0 }]}>Please select...</Text>
                                             :
-                                            <ScrollView horizontal={true} style={{ marginVertical: verticalMarginScale(10) }}>
+                                            <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ marginVertical: verticalMarginScale(10) }}>
                                                 {collaboratorArr?.map((item: any) => {
                                                     return (
                                                         <View style={[styles.countWrapper, {
@@ -845,7 +846,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                             </ScrollView>
                                         }
                                     </View>
-                                    <TouchableOpacity onPress={() => {
+                                    <TouchableOpacity style={{ width: '8%', alignItems: 'flex-end', justifyContent: 'flex-end', paddingVertical: '5%' }} onPress={() => {
                                         if (announcementId == null) {
                                             setActiveTab('collaborator');
                                             setselectedCollaborator(collaboratorArr)
@@ -857,7 +858,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                             source={IMAGES.downArrow}
                                         />
                                     </TouchableOpacity>
-                                </TouchableOpacity>
+                                </View>
                                 {addedByerrorMessage ? (
                                     <Text style={[styles.errorText]}>{ERROR_MESSAGE.COLLABORATOR_ERROR}</Text>
                                 ) : null}

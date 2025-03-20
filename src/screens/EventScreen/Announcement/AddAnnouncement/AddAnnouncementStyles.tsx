@@ -246,7 +246,7 @@ const AddAnnouncementStyles = () => {
     },
     tooltipHeadStyle: {
       fontSize: fontScale(12),
-      marginBottom: 5,
+      // marginBottom: 5,
       lineHeight: 18,
       fontWeight: '500',
       color: COLORS.white

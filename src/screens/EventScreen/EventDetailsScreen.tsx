@@ -369,9 +369,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     );
   };
   const renderRSVPButton = () => {
-    if (isDeclinedByHost || guestStatus === 'CONFIRMED' || role === ROLE.HOST) {
-      return null;
-    }
+    // if (isDeclinedByHost || guestStatus === 'CONFIRMED' || role === ROLE.HOST) {
+    //   return null;
+    // }
 
     return (
       <View>
