@@ -11,7 +11,7 @@ visible:boolean;
 position?:Position,
 style?:any
 }
-const TooltipComponent:React.FC<TooltipComponentProps> = ({message,visible,position="Bottom",style}) => {
+const TooltipComponent:React.FC<TooltipComponentProps> = ({message,visible,position="top",style}) => {
   // const [visible, setVisible] = useState(visible);
 
   return (
