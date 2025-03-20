@@ -19,7 +19,7 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [events, setEvents] = useState<any[]>([]);
-  const { data, isLoading } = useFetchEventsQuery({
+  const { data, isLoading, refetch } = useFetchEventsQuery({
     userId,
     guestEventStatus: 'INVITED',
     searchText: searchText,
@@ -43,6 +43,7 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({
 
   const handleRefresh = () => {
     setCurrentPage(1);
+    refetch();
   };
 
   const loadMore = () => {

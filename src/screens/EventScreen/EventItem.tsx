@@ -68,7 +68,7 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
   };
 
   const isShowLocation =
-    role === ROLE.HOST || item?.currentGuestStatus === 'CONFIRMED';
+    role === ROLE.HOST || item?.currentGuestStatus === 'CONFIRMED' || item?.guest?.guestStatus === 'CONFIRMED';
   const locationText = isShowLocation
     ? item?.location?.city
     : 'RSVP to See Location';
@@ -108,13 +108,13 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
             </CustomText>
           </>
         ) : (
-          item?.location?.city && (
-            <CustomText
-              style={styles.subtitle}
-              textProps={{ numberOfLines: 2 }}>
-              {locationText}
-            </CustomText>
-          )
+
+          <CustomText
+            style={styles.subtitle}
+            textProps={{ numberOfLines: 2 }}>
+            {locationText}
+          </CustomText>
+
         )}
         <ButtonSmall
           disabled={false}

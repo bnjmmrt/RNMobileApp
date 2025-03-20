@@ -95,7 +95,7 @@ const RSVPInvitedUpcoming = () => {
     const scrollRef = React.useRef(null);
     const { id, name, location, imageFlyer, startDate, endDate } = params.event;
     const [maxAdditionalGuests, setMaxAdditionalGuests] = React.useState(0);
-    const status = params.event.currentGuestStatus;
+    const status = params?.event?.currentGuestStatus;
     const { requestContactPermission } = useContacts();
     const { navigate, goBack } = useNavigation();
     const [activeView, setActiveTab] = React.useState<string>('');
@@ -178,6 +178,9 @@ const RSVPInvitedUpcoming = () => {
     };
 
     const getSnapPoints = (): string => {
+        console.log("Sayyed activeView:", activeView)
+        console.log("Sayyed maxAdditionalGuests:", maxAdditionalGuests)
+
         switch (activeView) {
             case 'guests':
                 return '30%';
@@ -194,7 +197,7 @@ const RSVPInvitedUpcoming = () => {
             case 'reasons':
                 return '60%';
             case 'noofguests':
-                return '40%';
+                return maxAdditionalGuests == 0 ? '10%' : `${(maxAdditionalGuests * 8) + 10}%`
             case 'success':
                 return '42%';
             case 'failed':

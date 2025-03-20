@@ -2,10 +2,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { KeyboardAvoidingView, View } from 'react-native';
-import { useDispatch } from 'react-redux';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
-import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
-import { verticalMarginScale } from 'src/utils/dimensions';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
@@ -24,7 +21,7 @@ import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { RootState } from 'src/redux/slices';
 
-interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> {}
+interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> { }
 
 const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
