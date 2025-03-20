@@ -136,6 +136,7 @@ export const usersApiAction = createBaseApi.injectEndpoints({
       }),
       invalidatesTags: ['UserDetail'],
     }),
+
     deleteUser: builder.mutation({
       query: (requestParam: { user: string }) => ({
         url: `${EndPoint.user}/${requestParam.user}`,
@@ -144,6 +145,32 @@ export const usersApiAction = createBaseApi.injectEndpoints({
       }),
       invalidatesTags: ['UserDetail', 'Users'],
     }),
+
+    // fetch notification
+    fetchNotification: builder.query({
+      query: ({
+        take,
+        skip,
+      }: {
+        take: number;
+        skip: number;
+      }) => ({
+        url: `/notifications/v1/notifications?take=${take}&skip=${skip}`,
+        method: 'GET',
+      }),
+      providesTags: ['fetchNotification']
+    }),
+
+    // fetch notification detail  for host 
+    fetchNotificationDetail: builder.query({
+      query: ({ notificationId }: { notificationId: string }) => ({
+        url: `/notifications/v1/notification/${notificationId}`,
+        method: 'GET',
+      }),
+      providesTags: ['notificationDetail'],
+    }),
+
+
   }),
 });
 
@@ -165,6 +192,8 @@ export const {
   useLazyFetchUserFiltersQuery,
 
   useDeleteUserMutation,
+  useFetchNotificationQuery,
+  useFetchNotificationDetailQuery
 } = usersApiAction;
 
 export interface UserDetailResponse {

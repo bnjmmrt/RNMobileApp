@@ -6,8 +6,9 @@ import {
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { KeyboardAvoidingView, Platform, View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+
 import {
   setEmail,
   setFirstName,
@@ -59,6 +60,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   );
 
   const dispatch = useDispatch();
+  const fcmToken = useSelector((state: RootState) => state.auth.fcmToken);
   const { keyboardVisible } = useKeyboard();
 
   const [errorMsg, setErrorMsg] = useState('');

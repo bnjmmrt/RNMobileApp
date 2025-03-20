@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useMemberLoginMutation } from '../../redux/actions/loginApiAction';
 import { FlashMessageComponent } from '../../component/FlashMessageComponent/FlashMessageComponent';
 import { LABLE } from 'src/utils/constants';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
 import { removeSpaceFromStr } from 'src/utils/functions';
 
 export const useVerifyOtp = (
@@ -14,6 +16,11 @@ export const useVerifyOtp = (
   const [isLoading, setIsLoading] = useState(false);
   const [memberLogin] = useMemberLoginMutation();
   const [error, setError] = useState('');
+  const fcmToken = useSelector((state: RootState) => state.auth.fcmToken);
+  const deviceId = useSelector((state: RootState) => state.auth.deviceId);
+  console.log('fcmToken', fcmToken);
+  console.log('deviceId', deviceId);
+
   const verifyOtp = async (code: string, onSuccess: (data: any) => void) => {
     try {
       setError('');
@@ -24,6 +31,8 @@ export const useVerifyOtp = (
         code,
         isExist: isMemberExist,
         isGuest: isGuest,
+        fcmToken: fcmToken,
+        deviceId: deviceId
       };
       const response = await memberLogin(requestParam).unwrap();
 

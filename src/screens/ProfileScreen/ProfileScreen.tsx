@@ -387,6 +387,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       });
   };
 
+
+
   const logOut = () => {
     logoutBottomSheetRef.current?.close();
     const resetAction = CommonActions.reset({

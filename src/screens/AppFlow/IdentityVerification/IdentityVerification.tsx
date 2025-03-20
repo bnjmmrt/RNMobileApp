@@ -35,7 +35,7 @@ import {
 } from '../../../utils/functions';
 import IdentityVerificationStyles from './IdentityVerificationStyles';
 
-interface IdentityVerificationProps extends NativeStackScreenProps<any, any> {}
+interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
 
 const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   navigation,
@@ -65,7 +65,8 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   );
 
   console.log('userDetails', userDetails);
-
+  const fcmToken = useSelector((state: RootState) => state.auth.fcmToken);
+  const deviceId = useSelector((state: RootState) => state.auth.deviceId);
   const onNextClick = async () => {
     const requestParams: any = {
       address: {
@@ -89,6 +90,8 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       platform: Platform.OS,
       socialUrl: '',
       profilePicture: userDetails.profilePic,
+      fcmToken: fcmToken,
+      deviceId: deviceId
     };
     const response: any = await apiRequest(
       'post',

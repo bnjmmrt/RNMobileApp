@@ -1,26 +1,28 @@
-import {useMemberSignUpMutation} from '../actions/appFlowApiAction';
-import {FlashMessageComponent} from '../../component/FlashMessageComponent/FlashMessageComponent';
+import { useMemberSignUpMutation } from '../actions/appFlowApiAction';
+import { FlashMessageComponent } from '../../component/FlashMessageComponent/FlashMessageComponent';
 
 export interface UserProfile {
-    address: {
-      address: string;
-      placeId: string;
-    };
-    dateOfBirth: string;
-    email: string;
-    facebookAccessToken: string;
-    firstName: string;
-    focusIds: string[];
-    gender: number; 
-    instagramAccessToken: string;
-    instagramUserName: string;
-    lastName: string;
-    linkedInAccessToken: string;
-    phoneNumber: string;
-    platform: string;
-    socialUrl: string;
-  }
-  
+  address: {
+    address: string;
+    placeId: string;
+  };
+  dateOfBirth: string;
+  email: string;
+  facebookAccessToken: string;
+  firstName: string;
+  focusIds: string[];
+  gender: number;
+  instagramAccessToken: string;
+  instagramUserName: string;
+  lastName: string;
+  linkedInAccessToken: string;
+  phoneNumber: string;
+  platform: string;
+  socialUrl: string;
+  fcmToken: string;
+  deviceId: string;
+}
+
 export const useMemberSignUp = () => {
   const [memberSignUp, { error, isLoading }] = useMemberSignUpMutation();
 
@@ -41,5 +43,5 @@ export const useMemberSignUp = () => {
     }
   };
 
-  return {signUp,error,isLoading};
+  return { signUp, error, isLoading };
 };

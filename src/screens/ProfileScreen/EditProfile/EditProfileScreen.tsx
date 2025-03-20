@@ -167,6 +167,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   };
 
   const onConfirmClick = async () => {
+  
     if (isGuest && role === ROLE.NON_MEMBER) {
       if (
         firstNameRef.current.validateInputs() &&
@@ -232,7 +233,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
               ? selectedCreativeFocus.map((item: any) => item.id)
               : profileData?.creativeFocus.map((item: any) => item.id),
           };
-
           const response: any = await apiRequest(
             'put',
             EndPoint.user_profile + userId,
@@ -262,6 +262,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         }
       }
     }
+    
+   
   };
 
   const handleBackPress = () => {

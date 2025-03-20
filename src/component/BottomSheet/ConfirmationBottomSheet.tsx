@@ -111,7 +111,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   btnStyle: {
     borderRadius: radiusScale(100),
   },

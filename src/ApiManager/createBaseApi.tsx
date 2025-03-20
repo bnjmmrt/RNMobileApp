@@ -86,6 +86,8 @@ export const createBaseApi = createApi({
     'CreateEventsAnnouncment',
     'DeleteAnnouncement',
     'AnnouncmentDetail',
+    'fetchNotification',
+    'notificationDetail',
     'EventSignupForms',
   ], // Accept tagTypes as a parameter
   endpoints: () => ({}),

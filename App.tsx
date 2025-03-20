@@ -2,7 +2,7 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { LogBox, StyleSheet } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -18,9 +18,11 @@ import {
   setInterests,
 } from './src/redux/slices/appGlobalDataSlice';
 import { persistor, store } from './src/redux/store';
-// import MainNavigation from 'src/navigation';
 import RNPreventScreenshot from 'react-native-screenshot-prevent';
+import { NotificationsListener, requestUserPermission } from 'src/component/PushNotification';
+import { navigationRef } from 'src/component/NavigationService';
 import ScreenshotDetectedDialog from 'src/component/ScreenshotDetectedDialog';
+import { getDeviceId } from 'src/utils/functions';
 import Intercom, { Visibility } from '@intercom/intercom-react-native';
 
 const AppContent: React.FC = () => {
@@ -29,13 +31,23 @@ const AppContent: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // RNPreventScreenshot?.enableSecureView();
+    NotificationSetup()
     Intercom.setLauncherVisibility(Visibility.GONE);
-
-    // return () => {
-    //   RNPreventScreenshot?.disableSecureView();
-    // };
   }, []);
+
+  const NotificationSetup = async () => {
+    getDeviceId()
+    requestUserPermission()
+    NotificationsListener()
+  }
+
+
+  useEffect(() => {
+    RNPreventScreenshot?.enableSecureView();
+    return () => {
+      RNPreventScreenshot?.disableSecureView();
+    };
+  }, [RNPreventScreenshot]);
 
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
@@ -61,6 +73,7 @@ const AppContent: React.FC = () => {
     return <NoInternetScreen />;
   }
   return <MainNavigation />;
+  return null;
 };
 
 const App: React.FC = () => {
@@ -79,7 +92,7 @@ const App: React.FC = () => {
         <SafeAreaViewWrapper>
           <ScreenshotDetectedDialog />
           <GestureHandlerRootView style={{ flex: 1 }}>
-            <NavigationContainer theme={MyTheme}>
+            <NavigationContainer theme={MyTheme} ref={navigationRef}>
               <BottomSheetModalProvider>
                 <AppContent />
               </BottomSheetModalProvider>

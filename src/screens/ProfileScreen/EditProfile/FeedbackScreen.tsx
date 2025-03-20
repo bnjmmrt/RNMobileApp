@@ -114,6 +114,8 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   };
 
   return (
+    
+  
     <SafeAreaView style={styles.container}>
       <Header
         headerTitle={PROFILE.FEEDBACK}
@@ -165,6 +167,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
         />
       ) : null}
     </SafeAreaView>
+    
   );
 };
 
@@ -172,6 +175,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    
   },
   contentContainer: {
     flex: 1,

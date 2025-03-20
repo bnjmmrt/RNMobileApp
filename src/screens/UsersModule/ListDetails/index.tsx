@@ -345,6 +345,14 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
         onClearFilter={onClearFilter}
         selectedFiltersInParent={selectedFilters}
       />
+
+      <FiltersSheet
+        ref={filtersSheetRef}
+        from="listDetail"
+        onApplyFilter={onApplyFilter}
+        onClearFilter={onClearFilter}
+        selectedFiltersInParent={selectedFilters}
+      />
     </View>
   );
 };

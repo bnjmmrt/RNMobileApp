@@ -19,6 +19,10 @@ import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle'
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
 import { BUTTON_LABLE, LABLE } from '../../utils/constants';
 import EmailPhoneStyles from './EmailPhoneStyles';
+import { useDispatch, useSelector } from 'react-redux';
+import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
+import { verticalMarginScale } from 'src/utils/dimensions';
+import { RootState } from 'src/redux/slices';
 
 interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -30,6 +34,8 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
   const [URL, setURL] = useState('');
+  const fcmToken = useSelector((state: RootState) => state.auth.fcmToken);
+
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
   dispatch(resetAppFlowDetails());
