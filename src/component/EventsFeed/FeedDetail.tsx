@@ -1,22 +1,22 @@
-import React from 'react';
-import {Modal, View, StyleSheet, Text, Image} from 'react-native';
-import {format} from 'date-fns';
-import Button from '../Button';
-import IMAGES from '../../assets/images';
-import {EventItem} from './EventsFeed';
-import {COLORS} from '../../utils/constants';
-import {fontFamily} from '../../utils/functions';
 import FastImage from '@d11/react-native-fast-image';
+import { format } from 'date-fns';
+import React from 'react';
+import { Modal, StyleSheet, Text, View } from 'react-native';
+import IMAGES from '../../assets/images';
+import { COLORS } from '../../utils/constants';
 import {
-  horizontalMarginScale,
-  verticalMarginScale,
-  horizontalScale,
-  verticalScale,
-  radiusScale,
   fontScale,
+  horizontalMarginScale,
+  horizontalScale,
   Hp,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
   Wp,
 } from '../../utils/dimensions';
+import { fontFamily } from '../../utils/functions';
+import Button from '../Button';
+import { EventItem } from './EventsFeed';
 
 interface FeedDetailProps {
   detail: EventItem | null;
@@ -59,13 +59,8 @@ const FeedDetail: React.FC<FeedDetailProps> = ({
         <View style={styles.modalContent}>
           <View style={styles.modalBar} />
           <FastImage
-            source={
-              detail.image
-                ? {uri: detail.image}
-                : IMAGES.eventCoverPlaceholders1
-            }
+            source={{ uri: detail?.image }}
             resizeMode={FastImage.resizeMode.cover}
-            defaultSource={IMAGES.eventCoverPlaceholders1}
             style={styles.image}
           />
           <Text style={styles.title}>{detail.title}</Text>
@@ -157,6 +152,7 @@ const styles = StyleSheet.create({
     borderRadius: radiusScale(16),
     objectFit: 'contain',
     alignSelf: 'center',
+    backgroundColor: COLORS.borderGray,
   },
   showResults: {
     width: Wp(45),

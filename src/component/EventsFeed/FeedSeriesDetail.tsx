@@ -1,5 +1,12 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, StyleSheet, Modal, ScrollView, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import { Image } from 'react-native-animatable';
 import { COLORS } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
@@ -52,9 +59,8 @@ const FeedSeriesDetail: React.FC<FeedSeriesDetailProps> = ({
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
             <View>
               <FastImage
-                source={series.image || IMAGES.eventCoverPlaceholders1}
+                source={series.image}
                 resizeMode={FastImage.resizeMode.cover}
-                defaultSource={IMAGES.eventCoverPlaceholders1}
                 style={styles.seriesImage}
               />
               <TouchableOpacity
@@ -86,9 +92,7 @@ const FeedSeriesDetail: React.FC<FeedSeriesDetailProps> = ({
                 </Text>
                 <TouchableOpacity
                   style={styles.readMoreCard}
-                  onPress={() =>
-                    setReadMore(prev => (prev ? undefined : 5))
-                  }>
+                  onPress={() => setReadMore(prev => (prev ? undefined : 5))}>
                   <Text style={styles.readMore}>Read More</Text>
                   <Image
                     source={readMore ? IMAGES.downArrow : IMAGES.upArrow}
@@ -137,11 +141,12 @@ const EventItem: React.FC<EventItemProps> = ({ event, setDetail }) => {
   };
 
   return (
-    <TouchableOpacity style={styles.eventContainer} onPress={() => setDetail(event)}>
+    <TouchableOpacity
+      style={styles.eventContainer}
+      onPress={() => setDetail(event)}>
       <FastImage
-        source={event.image ? { uri: event.image } : IMAGES.eventCoverPlaceholders1}
+        source={{ uri: event?.image }}
         resizeMode={FastImage.resizeMode.cover}
-        defaultSource={IMAGES.eventCoverPlaceholders1}
         style={styles.icon}
       />
       <View style={styles.eventBody}>
@@ -175,6 +180,7 @@ const styles = StyleSheet.create({
     height: Hp(33),
     width: Wp(97),
     borderRadius: radiusScale(24),
+    backgroundColor: COLORS.borderGray,
   },
   contentContainer: {
     flexDirection: 'column',
