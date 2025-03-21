@@ -57,15 +57,12 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const { goBack, navigate } = useNavigation()
     const [selectedTicketType, setSelectedTicketType] = useState<any[]>([]);
     const [selectedCollaborator, setselectedCollaborator] = useState<any>([]);
-    const [image, setImage] = useState<string>('');
     const { apiRequest, loading } = useApi();
     const searchInputRef = useRef<InputRefMethods>(null);
     const [searchText, setSearchText] = useState<string>('');
     const [allRecipients, setallRecipients] = useState<any[]>([]);
     const [selectedUsers, setSelectedUsers] = useState<guestInterface[]>([]);
-    const [selectedRecipients, setSelectedRecipients] = useState<guestInterface[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [filterQuery, setFilterQuery] = useState<string>('');
     const [atachmentArr, setAttachmentArr] = useState<attachmentArrInterface[]>([]);
     const [ticketerrorMessage, setticketerrorMessage] = useState(false);
     const [recipienterrorMessage, setrecipienterrorMessage] = useState(false);
@@ -84,10 +81,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const [showRecipientDetail, setshowRecipientDetail] = useState(true)
     const [showAnnouncementDetail, setshowAnnouncementDetail] = useState(true)
     const [showProfileToolitip, setShowProfileToolitip] = useState(false);
-    const showTooltip = () => {
-        console.log('showTooltipshowTooltipshowTooltip');
-        setShowProfileToolitip(true)
-    };
+
     useEffect(() => {
         if (eventData?.collaborators) {
             let collaborator = {
