@@ -28,12 +28,7 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
   const styles = createStyles();
   const navigation = useNavigation<NavigationProp<EventStackParamList>>();
   const dispatch = useDispatch();
-  const {
-    getContacts,
-    permissionGranted,
-    requestContactPermission,
-    getPhoneNumber,
-  } = useContacts();
+  const { getContacts, permissionGranted, getPhoneNumber } = useContacts(true);
   const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [contacts, setContacts] = useState<ContactItem[]>([]);
@@ -57,7 +52,6 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
 
   const fetchContacts = async () => {
     setContactsFetching(true);
-    await requestContactPermission();
     try {
       setContactsFetching(true);
       const formattedContacts = await getContacts();

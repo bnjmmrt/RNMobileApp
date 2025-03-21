@@ -23,8 +23,7 @@ const RequestVouch = ({
   eventId: string;
   vouchData: any;
 }) => {
-  const { getContactNumbersOnly, permissionGranted, requestContactPermission } =
-    useContacts();
+  const { getContactNumbersOnly, permissionGranted } = useContacts(true, 2000);
   const [members, setMembers] = useState<ContactItem[]>([]);
 
   const [getConfirmedMembers] = useGetConfirmedMembersMutation();
@@ -33,8 +32,9 @@ const RequestVouch = ({
   const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    requestContactPermission();
-    fetchContacts();
+    if (permissionGranted) {
+      fetchContacts();
+    }
   }, [permissionGranted]);
 
   const fetchContacts = async () => {

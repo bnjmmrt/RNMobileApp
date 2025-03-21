@@ -2,11 +2,18 @@ import {
   getCountryCallingCode,
   parsePhoneNumberFromString,
 } from 'libphonenumber-js';
-import { useState } from 'react';
-import { PermissionsAndroid, Platform } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  Alert,
+  InteractionManager,
+  PermissionsAndroid,
+  Platform,
+} from 'react-native';
 import Contacts from 'react-native-contacts';
 import { getCountry } from 'react-native-localize';
 import { getCountryFlag } from '../functions';
+import { openSettings } from 'react-native-permissions';
+import { useNavigation } from '@react-navigation/native';
 
 type PermissionStatus = boolean | null;
 export type ContactItem = {
@@ -16,10 +23,30 @@ export type ContactItem = {
   lastName?: string;
 };
 
-const useContacts = () => {
+const useContacts = (autoRequestForPermision?: boolean, timout?: number) => {
+  const navigation = useNavigation();
   const [permissionGranted, setPermissionGranted] =
     useState<PermissionStatus>(null);
   const currentCountry = getCountry();
+
+  const showAllowPermissionFromSettingAlert = () => {
+    Alert.alert(
+      'Contact Permission Required',
+      'Please allow contact permission from app settings.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Open Settings',
+          onPress: async () => {
+            navigation.goBack();
+          },
+        },
+      ],
+    );
+  };
 
   const getPhoneNumber = (phoneNumber: string) => {
     const phone = parsePhoneNumberFromString(phoneNumber);
@@ -60,6 +87,7 @@ const useContacts = () => {
       return [];
     }
   };
+
   const getContactNumbersOnly = async (): Promise<string[]> => {
     if (!permissionGranted) {
       return [];
@@ -94,10 +122,12 @@ const useContacts = () => {
         setPermissionGranted(true);
         await getContacts();
       } else {
+        showAllowPermissionFromSettingAlert();
         console.log('Contact permission denied on Android');
         setPermissionGranted(false);
       }
     } catch (error) {
+      showAllowPermissionFromSettingAlert();
       console.error('Android permission error: ', error);
       setPermissionGranted(false);
     }
@@ -111,10 +141,12 @@ const useContacts = () => {
         setPermissionGranted(true);
         await getContacts();
       } else {
+        showAllowPermissionFromSettingAlert();
         console.log('Contact permission denied on iOS');
         setPermissionGranted(false);
       }
     } catch (error) {
+      showAllowPermissionFromSettingAlert();
       console.error('iOS permission error: ', error);
       setPermissionGranted(false);
     }
@@ -127,6 +159,16 @@ const useContacts = () => {
       await requestIOSPermission();
     }
   };
+
+  useEffect(() => {
+    if (autoRequestForPermision) {
+      InteractionManager.runAfterInteractions(() => {
+        setTimeout(() => {
+          requestContactPermission();
+        }, timout || 200);
+      });
+    }
+  }, [autoRequestForPermision]);
 
   return {
     permissionGranted,

@@ -1,14 +1,16 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
+import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { useSelector } from 'react-redux';
+import { EndPoint } from 'src/ApiManager/config';
+import useApi from 'src/axios/useApi';
 import TabBar from 'src/component/ActiveTabBar/TabBar';
-import Header from 'src/component/Header/Header';
-import { BUTTON_LABLE, COLORS, PROFILE } from 'src/utils/constants';
-import { Text } from 'react-native';
-import { fontFamily } from 'src/utils/functions';
-import ReferralRequestItem from './ReferralRequestItem';
 import Button from 'src/component/Button';
-import InviteFriendsSheet from './InviteFriendsSheet';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import Header from 'src/component/Header/Header';
+import { RootState } from 'src/redux/slices';
+import { BUTTON_LABLE, COLORS, PROFILE } from 'src/utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -17,13 +19,9 @@ import {
   verticalMarginScale,
   Wp,
 } from 'src/utils/dimensions';
-import { useNavigation } from '@react-navigation/native';
-import useContacts from 'src/utils/hooks/useContactPermission';
-import useApi from 'src/axios/useApi';
-import { EndPoint } from 'src/ApiManager/config';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/redux/slices';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { fontFamily } from 'src/utils/functions';
+import InviteFriendsSheet from './InviteFriendsSheet';
+import ReferralRequestItem from './ReferralRequestItem';
 
 const ReferralScreen: React.FC = () => {
   const { apiRequest, loading } = useApi();
@@ -32,7 +30,6 @@ const ReferralScreen: React.FC = () => {
   );
   const inviteFriendSheetRef = useRef<any>(null);
   const { goBack } = useNavigation();
-  const { requestContactPermission, permissionGranted } = useContacts();
   const userId = useSelector((state: RootState) => state.auth.userId);
   const [referrelRequests, setReferrelRequests] = useState<any[]>([]);
 
@@ -101,10 +98,10 @@ const ReferralScreen: React.FC = () => {
   };
 
   const onInvite = async () => {
-      await requestContactPermission();
-      setIsShown(true);
+    setIsShown(true);
+    setTimeout(() => {
       inviteFriendSheetRef?.current.open();
-    
+    }, 1000);
   };
 
   const renderContent = () => {
