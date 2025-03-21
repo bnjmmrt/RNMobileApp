@@ -122,6 +122,8 @@ async function onDisplayNotification(remoteMessage: any) {
 
 
 export const navigateToScreen = (data: any) => {
+    console.log("navigateToScreen data:", data)
+    let notifee = data?.data
     // Use navigationRef to navigate if navigation is not yet mounted
     setTimeout(() => {
         // if (data?.type === 'eventReminder' || 'eventInvitation' || 'eventPosted' || 'eventPostedCity' || 'eventRequestApproved' || 'eventRequestDenied' || 'signUpFormApproved' || 'eventSubmissionApproved' || 'eventAnnouncement') {
@@ -130,15 +132,15 @@ export const navigateToScreen = (data: any) => {
         //     }
         //     navigateToNestedStack(ROUTES.EventStack, ROUTES.EventDetailsScreen, eventData);
         // }
-        if (data?.type === 'eventVouch') {
-            let eventData = {
-                id: data?.eventId
-            }
-            navigateToNestedStack(ROUTES.EventStack, 'Profile - Referrals page ', eventData);
+        if (notifee?.type === 'eventVouch') {
+            // let eventData = {
+            //     id: notifee?.body?.eventId
+            // }
+            // navigateToNestedStack(ROUTES.EventStack, 'Profile - Referrals page ', eventData);
         }
         else {
             let eventData = {
-                id: data?.eventId
+                id: notifee?.body?.eventId
             }
             navigateToNestedStack(ROUTES.EventStack, ROUTES.EventDetailsScreen, eventData);
         }

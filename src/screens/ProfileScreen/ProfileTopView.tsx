@@ -28,7 +28,6 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.profilePhotoContainer}>
-       
         <FullScreenLoader
           loading={loading}
           customStyle={styles.profilePhotoContainer}>

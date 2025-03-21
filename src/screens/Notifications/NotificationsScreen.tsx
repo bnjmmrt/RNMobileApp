@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useFocusEffect } from '@react-navigation/native';
-import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { ApiErrorInterface, changeSafeAreaViewConfig, getErrorMessage } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { COLORS, LABLE } from 'src/utils/constants';
 import Header from 'src/component/Header/Header';
@@ -23,92 +23,10 @@ import {
 import AvatarInitials from 'src/component/AvatarInitials';
 import SwapToDeleteComponent from 'src/component/SwappableItem/SwapToDeleteComponent';
 import EmptyRecordComponent from 'src/component/EmptyRecord/EmptyRecordComponent';
-import { useFetchNotificationDetailQuery, useFetchNotificationQuery } from 'src/redux/actions/usersApiAction';
+import { useDeleteNotificationMutation, useFetchNotificationDetailQuery, useFetchNotificationQuery } from 'src/redux/actions/usersApiAction';
 import { navigateToScreen } from 'src/component/PushNotification';
-
-const initialNotifications = [
-  {
-    id: '1',
-    name: 'Revolve',
-    message: 'just published a new event',
-    address: 'Coachella 2025',
-    time: '10m',
-    avatar: 'https://via.placeholder.com/50',
-    read: false,
-  },
-  {
-    id: '2',
-    name: 'Coachella 2025',
-    message: 'was just published in Los Angeles',
-    address: 'Los Angeles',
-    time: '33m',
-    avatar: 'https://via.placeholder.com/50',
-    read: false,
-  },
-  {
-    id: '3',
-    name: 'Revolve',
-    message: 'approved your request to attend',
-    address: 'Coachella 2025',
-    time: '1h',
-    avatar: 'https://via.placeholder.com/50',
-    read: false,
-  },
-  {
-    id: '4',
-    name: 'Revolve',
-    message: 'declined your request to attend',
-    address: 'Coachella 2025',
-    time: '2h',
-    avatar: 'https://via.placeholder.com/50',
-    read: false,
-  },
-  {
-    id: '5',
-    name: 'Revolve',
-    message: 'invited you to attend',
-    address: 'Coachella 2025',
-    time: '6h',
-    avatar: 'https://via.placeholder.com/50',
-    read: true,
-  },
-  {
-    id: '6',
-    name: 'Revolve',
-    message: 'posted a new announcement',
-    address: 'Coachella 2025',
-    time: '23h',
-    avatar: 'https://via.placeholder.com/50',
-    read: true,
-  },
-  {
-    id: '7',
-    name: 'Revolve',
-    message: 'canceled',
-    address: 'Coachella 2025',
-    time: '12/24/25',
-    avatar: 'https://via.placeholder.com/50',
-    read: true,
-  },
-  {
-    id: '8',
-    name: 'Bessie Cooper',
-    message: 'has requested your referral to become a Rumor member',
-    address: '',
-    time: '12/23/25',
-    avatar: 'https://via.placeholder.com/50',
-    read: false,
-  },
-  {
-    id: '9',
-    name: 'Michael Fox',
-    message: 'has requested for you to vouch for them.',
-    address: '',
-    time: '12/22/25',
-    avatar: 'https://via.placeholder.com/50',
-    read: true,
-  },
-];
+import { timeAgo } from 'src/utils/dateFunctions';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 interface NotificationsScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -125,8 +43,10 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
   const { data, isLoading, refetch } = useFetchNotificationQuery(queryArgs);
   console.log("siya notifi", data)
   useEffect(() => {
-    if (data?.notifications.length > 0) {
-      setNotifications((prev) => (currentPage === 1 ? data?.notifications : [...prev, ...data?.notifications]));
+    if (data?.data?.result?.length > 0) {
+      setNotifications((prev) => (currentPage === 1 ? data?.data?.result : [...prev, ...data?.data?.result]));
+    } else {
+      setNotifications([])
     }
   }, [data]);
 
@@ -138,16 +58,31 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
     setCurrentPage(1)
   };
 
-  const markAsRead = (id: string) => {
-    const queryArgs = ({
-      notificationId: id
-    })
-    const { data: notiDetail, isLoading, refetch } = useFetchNotificationDetailQuery(queryArgs);
-    navigateToScreen(notiDetail)
+  const [selectedNotification, setSelectedNotification] = useState<any>(null);
+
+  const detailQueryArgs = selectedNotification ? { notificationId: String(selectedNotification.id) } : undefined;
+  const { data: notiDetail } = useFetchNotificationDetailQuery(detailQueryArgs as { notificationId: string }, { skip: !selectedNotification });
+  const [deleteNotification, { isLoading: deleteLoading, isError: deleteError, isSuccess: deleteSuccess }] = useDeleteNotificationMutation();
+
+  useEffect(() => {
+    console.log("notiDetail", notiDetail)
+    if (notiDetail) {
+      refetch()
+      navigateToScreen(notiDetail);
+    }
+  }, [notiDetail]);
+
+  const markAsRead = (noti: any) => {
+    // if (!noti.isSeen) {
+    setSelectedNotification(noti);
+    // } else {
+    //   navigateToScreen(noti);
+    // }
   };
 
   const loadMore = () => {
     setCurrentPage(prev => prev + 1);
+    refetch()
     // setNotifications([...notifications, ...notifications]);
   };
 
@@ -158,23 +93,44 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
     }, []),
   );
   const handleBackPress = () => navigation.goBack();
-  const handleDelete = (id: string) => {
+
+  const handleDelete = async (id: string) => {
     console.log('Delete item:', id);
-    // setNotifications(notifications.filter(notification => notification.id !== id))
+    try {
+      const response = await deleteNotification({
+        notificationId: id || '',
+      }).unwrap();
+      if (response.success == true) {
+        FlashMessageComponent.show(
+          'success',
+          response?.data?.message,
+        );
+        refetch();
+      } else {
+        const typedError = response as ApiErrorInterface;
+        FlashMessageComponent.show('error', getErrorMessage(typedError));
+      }
+    } catch (error) {
+      const typedError = error as ApiErrorInterface;
+      FlashMessageComponent.show('error', getErrorMessage(typedError));
+    }
   };
 
   const renderItem = (item: any) => {
     return (
       <TouchableOpacity
-        style={[styles.notification, !item.read && styles.unread]}
-        onPress={() => markAsRead(item?.id)}>
-        <AvatarInitials size={48} />
-        {/* <Text numberOfLines={2} style={styles.textContainer}>
-          <Text style={[styles.title, styles.bold]}>{item.name}</Text>
-          <Text style={styles.title}>{` ${item.message} `}</Text>
-          <Text style={[styles.title, styles.bold]}>{item.address}</Text>
+        style={[styles.notification, !item.isSeen && styles.unread]}
+        onPress={() => markAsRead(item)}>
+        <AvatarInitials
+          name={item?.title}
+          imgUrl={item?.image}
+          size={48}
+          textColor="white"
+        />
+        <Text numberOfLines={2} style={styles.textContainer}>
+          <Text style={[styles.title, styles.bold]}>{item?.message}</Text>
         </Text>
-        <Text style={styles.time}>{item.time}</Text> */}
+        <Text style={styles.time}>{timeAgo(item.createdDate)}</Text>
       </TouchableOpacity>
     );
   };
@@ -190,7 +146,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
         <View style={styles.contentContainer}>
           <FlatList
             data={notifications}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item?.id}
             renderItem={({ item }) => (
               <SwapToDeleteComponent
                 item={item}
@@ -252,7 +208,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   bold: {
-    fontWeight: '700',
+    fontWeight: '600',
   },
   time: {
     fontSize: fontScale(11),

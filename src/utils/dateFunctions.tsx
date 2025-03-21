@@ -58,6 +58,21 @@ export const formatViewAnnouncementDate = (startDate: string) => {
     return `${startFormat}, ${startTime}`;
   }
 };
+export const timeAgo = (timestamp:any) => {
+  const now:any = new Date();
+  const past:any = new Date(timestamp);
+  const diff = Math.floor((now - past) / 1000); // Difference in seconds
+
+  if (diff < 60) {
+      return `${diff} sec ago`;
+  } else if (diff < 3600) {
+      return `${Math.floor(diff / 60)}m`;
+  } else if (diff < 86400) {
+      return `${Math.floor(diff / 3600)}h`;
+  } else {
+      return `${Math.floor(diff / 86400)}d`;
+  }
+}
 export const formatSingleToDeviceTimeZone = (dateString) => {
   if (!dateString) return 'Invalid date';
 

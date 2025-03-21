@@ -47,6 +47,10 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
   const handleNotificationPress = () =>
     navigation.navigate(ROUTES.NotificationsScreen);
 
+  const notiCount = useSelector(
+    (state: RootState) => state.appFlowApiData.notiCount,
+  );
+  console.log("notiCount", notiCount)
   return (
     <View
       style={[
@@ -90,7 +94,9 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
             styles.iconButton,
             { backgroundColor: backgroundColorNotification },
           ]}>
-          <Image style={styles.badge} source={IMAGES.notification_badge} />
+          {notiCount > 0 &&
+            <Image style={styles.badge} source={IMAGES.notification_badge} />
+          }
           <Image
             style={[styles.imgStyle, rightImageStyle]}
             source={IMAGES.bell}
