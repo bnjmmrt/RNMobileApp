@@ -35,7 +35,6 @@ import {
   verticalScale,
 } from 'src/utils/dimensions';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
-import useContacts from 'src/utils/hooks/useContactPermission';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import createStyles from './styles';
 
@@ -51,7 +50,6 @@ const SelectGuestsToInviteScreen: React.FC<
   const styles = createStyles();
   const navigation = useNavigation<NavigationProp<EventStackParamList>>();
   const dispatch = useDispatch();
-  const { requestContactPermission } = useContacts();
 
   const searchInputRef = useRef<InputRefMethods>(null);
   const filtersSheetRef = useRef<BottomSheetMethods>(null);
@@ -134,7 +132,6 @@ const SelectGuestsToInviteScreen: React.FC<
   };
 
   const onPressInviteManually = async () => {
-    await requestContactPermission();
     navigation.navigate(ROUTES.InviteGuestsManuallyScreen);
   };
 

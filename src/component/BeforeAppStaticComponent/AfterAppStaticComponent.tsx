@@ -1,28 +1,31 @@
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useRef } from 'react';
-import { View, StyleSheet, StatusBar, Platform } from 'react-native';
-import { Hp, verticalScale, Wp } from '../../utils/dimensions';
+import {
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  View,
+} from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { EndPoint } from 'src/ApiManager/config';
+import useApi from 'src/axios/useApi';
+import { ROUTES } from 'src/navigation/Route';
+import { RootState } from 'src/redux/slices';
+import { role, setRole, setRoles } from 'src/redux/slices/authSlice';
+import GradientOverlay from 'src/screens/BeforeApplicationFlow/GradientOverlay';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
-import Button from '../Button';
-import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
-import { ScrollView } from 'react-native';
+import { Hp, verticalScale, Wp } from '../../utils/dimensions';
 import { changeSafeAreaViewConfig, fontFamily } from '../../utils/functions';
+import { BottomSheetMethods } from '../BottomSheet/BottomSheet';
+import Button from '../Button';
 import HeaderComponent from '../HeaderComponent';
 import ReferralCodeBottomSheet from '../ReferralCodeBottomSheet/ReferralCodeBottomSheet';
 import MiddleStaticComponent from '../TitleSubTitleComponent/MiddleStaticComponent';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import useContacts from 'src/utils/hooks/useContactPermission';
-import { useDispatch, useSelector } from 'react-redux';
-import useApi from 'src/axios/useApi';
-import { RootState } from 'src/redux/slices';
-import GradientOverlay from 'src/screens/BeforeApplicationFlow/GradientOverlay';
-import { ROUTES } from 'src/navigation/Route';
-import { EndPoint } from 'src/ApiManager/config';
-import { role, setRole, setRoles } from 'src/redux/slices/authSlice';
-import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
-import { BottomSheetMethods } from '../BottomSheet/BottomSheet';
+import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
 
 const AfterAppStaticComponent: React.FC<{}> = () => {
-  const { requestContactPermission } = useContacts();
   const { navigate } = useNavigation();
   const { apiRequest, loading, error } = useApi();
   const userId = useSelector((state: RootState) => state.auth.userId);
@@ -32,7 +35,6 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
   const dispatch = useDispatch();
 
   const onAccessContactClick = async () => {
-    await requestContactPermission();
     navigate('InviteReferralScreen');
   };
 
