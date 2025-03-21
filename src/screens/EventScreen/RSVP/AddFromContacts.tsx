@@ -23,14 +23,12 @@ interface ContactItem {
 }
 
 const AddFromContacts: React.FC<MyDetailsScreenProps> = () => {
-  const { getContacts, permissionGranted, requestContactPermission } =
-    useContacts();
+  const { getContacts, permissionGranted } = useContacts(true);
   const { navigate } = useNavigation();
   const [contacts, setContacts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    requestContactPermission();
     const fetchContacts = async () => {
       if (permissionGranted) {
         const formattedContacts = await getContacts();

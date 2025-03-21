@@ -49,7 +49,6 @@ import {
   removeSignature,
   removeSpaceFromStr,
 } from 'src/utils/functions';
-import useContacts from 'src/utils/hooks/useContactPermission';
 import MessageBox from './BottomSheetView/MessageBox';
 import SelectReason from './BottomSheetView/SelectReason';
 import RenderCancelPopup from './RenderCancelPopup';
@@ -135,7 +134,6 @@ const RSVPInvitedUpcoming = () => {
   const { id, name, location, imageFlyer, startDate, endDate } = params.event;
   const [maxAdditionalGuests, setMaxAdditionalGuests] = React.useState(0);
   const status = params?.event?.currentGuestStatus;
-  const { requestContactPermission } = useContacts();
   const { navigate, goBack } = useNavigation();
   const [activeView, setActiveTab] = React.useState<string>('');
   const bottomSheetRef = React.useRef<any>(null);
@@ -207,7 +205,6 @@ const RSVPInvitedUpcoming = () => {
       scrollRef.current?.scrollToEnd({ animated: true });
       setIsToastShown(true);
     } else {
-      await requestContactPermission();
       navigate('AddGuestOptionScreen');
     }
   };
