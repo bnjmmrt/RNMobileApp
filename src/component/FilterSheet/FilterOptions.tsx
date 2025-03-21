@@ -116,13 +116,13 @@ const FilterOptions = ({
   return (
     <BottomSheetView>
       {optionType === 'checkbox' ? (
-        <BottomSheetScrollView
-          contentContainerStyle={{
+        <TouchableOpacity
+          style={{
             gap: horizontalMarginScale(4),
             flexDirection: 'row',
             flexWrap: 'wrap',
           }}
-          scrollEnabled={false}>
+          activeOpacity={1}>
           {options.map((item: FilterOption, index: number) => {
             return (
               <Chip
@@ -144,7 +144,7 @@ const FilterOptions = ({
               />
             );
           })}
-        </BottomSheetScrollView>
+        </TouchableOpacity>
       ) : null}
 
       {optionType === 'dateRange' ? (

@@ -118,13 +118,13 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
 
   useFocusEffect(
     useCallback(() => {
-      if (Platform.OS === 'ios') {
-        changeSafeAreaViewConfig({
-          ...SAFEWAREAVIEW_CONFIG.STATIC_GRADIENT_SCHEME,
-          showBottomSafeAreaView: false,
-          showTopSafeAreaView: false,
-        });
-      }
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.STATIC_GRADIENT_SCHEME,
+        showBottomSafeAreaView: false,
+        showTopSafeAreaView: false,
+        translucent: true,
+        topSafeAreaViewColor: 'transparent',
+      });
     }, []),
   );
 
@@ -135,14 +135,18 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
   return (
     <>
       <View style={styles.container}>
-        <StatusBar
-          translucent
-          backgroundColor="transparent"
-          barStyle="light-content"
-        />
         <GradientOverlay />
         <ScrollView>
-          <View style={styles.contentContainer}>
+          <View
+            style={[
+              styles.contentContainer,
+              {
+                paddingTop:
+                  Platform.OS === 'ios'
+                    ? verticalScale(60)
+                    : StatusBar.currentHeight,
+              },
+            ]}>
             <HeaderComponent isDarkTheme={true} hasGradient={true} />
 
             <View style={{ height: Hp(5) }} />
@@ -197,7 +201,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: Platform.OS === 'ios' ? verticalScale(60) : 0,
   },
   btnStyle: {
     width: Wp(85),

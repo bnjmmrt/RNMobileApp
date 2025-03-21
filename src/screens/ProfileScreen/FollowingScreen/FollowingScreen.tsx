@@ -1,5 +1,9 @@
 import IMAGES from '@images/index';
-import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   FlatList,
@@ -37,7 +41,7 @@ const FollowingScreen: React.FC = () => {
   const userId = useSelector((state: RootState) => state.auth.userId);
   const refresh = useSelector((state: RootState) => state.rspv.refresh);
   const routes = useRoute();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const getFollowings = useCallback(async () => {
     dispatch(setRefresh(false));
@@ -45,7 +49,7 @@ const FollowingScreen: React.FC = () => {
     try {
       const response = await apiRequest(
         'get',
-        `${EndPoint.hosts_followed}${userId}?take=${pagination.take}&skip=${pagination.skip}`
+        `${EndPoint.hosts_followed}${userId}?take=${pagination.take}&skip=${pagination.skip}`,
       );
 
       if (response?.data?.hosts?.length || refresh) {
@@ -53,13 +57,15 @@ const FollowingScreen: React.FC = () => {
           ...host,
           isFollowing: true,
         }));
-        setHostList(prev => (pagination.skip === 0 ? newHosts : [...prev, ...newHosts]));
+        setHostList(prev =>
+          pagination.skip === 0 ? newHosts : [...prev, ...newHosts],
+        );
         setHasMore(newHosts.length >= pagination.take);
       } else {
         setHasMore(false);
       }
     } catch (error) {
-      console.error("Error fetching followings:", error);
+      console.error('Error fetching followings:', error);
     } finally {
       setIsRefreshing(false);
     }
@@ -73,7 +79,7 @@ const FollowingScreen: React.FC = () => {
     setIsRefreshing(true);
     setPagination({ take: 100, skip: 0 });
     setHostList([]);
-    setHasMore(true);
+    setHasMore(false);
   };
 
   const loadMoreHosts = () => {
@@ -85,23 +91,10 @@ const FollowingScreen: React.FC = () => {
     setSearchQuery(query);
   };
 
-
   const filteredHosts = hostList.filter(host =>
     host.companyName.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  if (loading && hostList.length === 0) {
-    return (
-      <View style={styles.loader}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
-  if (isRefreshing) {
-    return null
-  }
-  console.log(filteredHosts[0])
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <Header
@@ -112,31 +105,35 @@ const FollowingScreen: React.FC = () => {
       <FlatList
         data={filteredHosts}
         ListEmptyComponent={
-          !loading ? searchQuery == "" ? (
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: Hp(60),
-                flexDirection: 'row',
-              }}>
-              <EventEmptyRecord
-                title="No Following"
-                subTitle="You are not following any hosts."
-              />
-            </View>
-          ) : <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: Hp(60),
-              flexDirection: 'row',
-            }}>
-            <EventEmptyRecord
-              title="No Results"
-              subTitle="Please refine your search."
-            />
-          </View> : null
+          !loading ? (
+            searchQuery == '' ? (
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: Hp(60),
+                  flexDirection: 'row',
+                }}>
+                <EventEmptyRecord
+                  title="No Following"
+                  subTitle="You are not following any hosts."
+                />
+              </View>
+            ) : (
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: Hp(60),
+                  flexDirection: 'row',
+                }}>
+                <EventEmptyRecord
+                  title="No Results"
+                  subTitle="Please refine your search."
+                />
+              </View>
+            )
+          ) : null
         }
         ListHeaderComponent={
           hostList.length > 0 || searchQuery.length > 0 ? (
@@ -161,10 +158,7 @@ const FollowingScreen: React.FC = () => {
               size={48}
             />
             <Text style={styles.itemName}>{item?.companyName}</Text>
-            <FollowButton
-              isFollowing={item?.isFollowing}
-              id={item?.id}
-            />
+            <FollowButton isFollowing={item?.isFollowing} id={item?.id} />
           </View>
         )}
         refreshing={isRefreshing}
@@ -173,7 +167,8 @@ const FollowingScreen: React.FC = () => {
         // onEndReached={hasMore ? loadMoreHosts : null}
         onEndReachedThreshold={0.5}
         ListFooterComponent={
-          loading && hasMore && <ActivityIndicator size="small" />
+          loading &&
+          hasMore && <ActivityIndicator size="small" color={COLORS.black} />
         }
       />
     </SafeAreaView>

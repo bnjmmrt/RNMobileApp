@@ -1,4 +1,7 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from '@react-navigation/stack';
 import React from 'react';
 import EventDetailsScreen from 'src/screens/EventScreen/EventDetailsScreen';
 import EventScreen from 'src/screens/EventScreen/EventScreen';
@@ -48,7 +51,9 @@ export const EventStack: React.FC = () => {
   return (
     <Stack.Navigator
       initialRouteName={'EventScreen'}
-      screenOptions={({ route, navigation }) => ({})}>
+      screenOptions={({ route, navigation }) => ({
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      })}>
       <Stack.Screen
         name="EventScreen"
         component={EventScreen}
@@ -101,11 +106,11 @@ export const EventStack: React.FC = () => {
         component={AddAnnouncementScreen}
         options={{ headerShown: false }}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="Announcement"
         component={Announcement}
-          options={{ headerShown: false }}
-         />
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="QRCodeScanner"
         component={QRCodeScanner}

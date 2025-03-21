@@ -35,7 +35,7 @@ import {
 } from '../../../utils/functions';
 import IdentityVerificationStyles from './IdentityVerificationStyles';
 
-interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
+interface IdentityVerificationProps extends NativeStackScreenProps<any, any> {}
 
 const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   navigation,
@@ -91,7 +91,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       socialUrl: '',
       profilePicture: userDetails.profilePic,
       fcmToken: fcmToken,
-      deviceId: deviceId
+      deviceId: deviceId,
     };
     const response: any = await apiRequest(
       'post',
@@ -142,7 +142,11 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       dispatch(resetAppFlowDetails());
       dispatch(setPageProgress(1));
 
-      navigation.navigate('BottomTabBar');
+      // navigation.navigate('BottomTabBar');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'BottomTabBar' }],
+      });
 
       // dispatch(resetAppFlowDetails());
       // persistStore(store).purge(); // This clears the persisted state

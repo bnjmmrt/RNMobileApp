@@ -626,7 +626,8 @@ const styles = StyleSheet.create({
     paddingTop: verticalMarginScale(8),
     backgroundColor: COLORS.white,
     gap: horizontalMarginScale(4),
-    borderRadius: radiusScale(32),
+    borderTopLeftRadius: radiusScale(32),
+    borderTopRightRadius: radiusScale(32),
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,
@@ -634,7 +635,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.04,
     shadowRadius: radiusScale(9),
-    elevation: 4,
+    elevation: 10,
     position: 'relative',
     zIndex: 1,
   },

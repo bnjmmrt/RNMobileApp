@@ -11,6 +11,7 @@ import {
   Image,
   Platform,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -62,6 +63,7 @@ import {
 } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -96,17 +98,22 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     useFetchHostEventsAnnouncementQuery(annqueryArgs);
   const [loading1, setLoading] = useState(false);
   const role = useSelector((state: RootState) => state.auth.role);
+
+  const { top } = useSafeAreaInsets();
   const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 44 : 24;
-  const TOP_SPACING = Platform.OS === 'ios' ? 16 + STATUS_BAR_HEIGHT : 0;
+  const TOP_SPACING =
+    Platform.OS === 'ios'
+      ? STATUS_BAR_HEIGHT + verticalMarginScale(16)
+      : (StatusBar.currentHeight || 0) + verticalMarginScale(16);
 
   useFocusEffect(
     useCallback(() => {
-      if (Platform.OS === 'ios') {
-        changeSafeAreaViewConfig({
-          ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-          showTopSafeAreaView: false,
-        });
-      }
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+        showTopSafeAreaView: false,
+        topSafeAreaViewColor: 'transparent',
+        translucent: true,
+      });
 
       return () => {
         // Reset to default when screen is unfocused
@@ -320,8 +327,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       height: verticalScale(528),
       borderRadius: 20,
       overflow: 'hidden' as const,
-      marginTop:
-        Platform.OS === 'ios' ? verticalScale(20) + STATUS_BAR_HEIGHT : 0,
+      marginTop: Platform.OS === 'ios' ? TOP_SPACING : TOP_SPACING,
     },
   });
   const renderHostButtons = () => {
@@ -519,30 +525,30 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         <>
           {/* <SafeAreaView style={{ backgroundColor: COLORS.white }} /> */}
           <View style={styles.container}>
-            <ScrollView ref={scrollViewRef}>
-              {Platform.OS === 'ios' && (
-                <View style={styles.blurredBackgroundContainer}>
-                  <FastImage
-                    source={{
-                      uri: removeSignature(data?.data?.imageFlyer),
-                    }}
-                    resizeMode={FastImage.resizeMode.cover}
-                    defaultSource={IMAGES.eventCoverPlaceholders1}
-                    style={styles.blurredBackground}
-                  />
-                  <BlurView
-                    style={StyleSheet.absoluteFill}
-                    blurType="light"
-                    blurAmount={128}
-                    reducedTransparencyFallbackColor="white"
-                  />
-                  <LinearGradient
-                    style={StyleSheet.absoluteFill}
-                    colors={['rgba(255, 255, 255, 0)', '#FFFFFF']}
-                    locations={[0, 0.9]}
-                  />
-                </View>
-              )}
+            <ScrollView ref={scrollViewRef} bounces={false}>
+              <View style={styles.blurredBackgroundContainer}>
+                <FastImage
+                  source={{
+                    uri: removeSignature(data?.data?.imageFlyer),
+                  }}
+                  resizeMode={FastImage.resizeMode.cover}
+                  defaultSource={IMAGES.eventCoverPlaceholders1}
+                  style={styles.blurredBackground}
+                />
+                <BlurView
+                  style={StyleSheet.absoluteFill}
+                  blurType="light"
+                  blurAmount={128}
+                  reducedTransparencyFallbackColor="white"
+                />
+                <LinearGradient
+                  style={StyleSheet.absoluteFill}
+                  colors={['rgba(255, 255, 255, 0)', '#FFFFFF']}
+                  locations={[0, 0.9]}
+                />
+              </View>
+              {/* {Platform.OS === 'ios' && (
+              )} */}
 
               {/* <SafeAreaView /> */}
 
@@ -685,6 +691,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             <BackButtonOverlay
               customStyle={{
                 top: TOP_SPACING,
+                marginTop: 0,
+                marginHorizontal: 15,
               }}
               onPress={() => navigation.goBack()}
             />
@@ -694,6 +702,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                 customStyle={{
                   right: 0,
                   top: TOP_SPACING,
+                  marginTop: 0,
+                  marginHorizontal: 15,
                 }}
                 imageSource={IMAGES.edits}
                 onPress={() =>
@@ -708,6 +718,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                 customStyle={{
                   right: 55,
                   top: TOP_SPACING,
+                  marginTop: 0,
+                  marginHorizontal: 15,
                 }}
                 imageSource={IMAGES.share}
                 onPress={() => signupFormsBottomSheetRef.current?.open()}
@@ -730,7 +742,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     flexDirection: 'column',
     paddingHorizontal: 15,
-    paddingVertical: 5,
     gap: verticalScale(20),
     flex: 1,
   },
@@ -770,7 +781,7 @@ const styles = StyleSheet.create({
   titleStyle: {
     fontSize: fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     color: COLORS.black,
   },
   subtitle: {

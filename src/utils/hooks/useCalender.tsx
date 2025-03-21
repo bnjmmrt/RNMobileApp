@@ -15,7 +15,8 @@ export interface Event {
 
 const useCalender = (eventDetails: Event) => {
   const { title, startDate, endDate, location, notes } = eventDetails;
-  const [permissionGranted, setPermissionGranted] = useState<PermissionStatus>(null);
+  const [permissionGranted, setPermissionGranted] =
+    useState<PermissionStatus>(null);
 
   const checkPermission = async () => {
     try {
@@ -50,13 +51,11 @@ const useCalender = (eventDetails: Event) => {
 
     try {
       const calendars = await RNCalendarEvents.findCalendars();
-      const defaultCalendar = calendars.find(cal => cal.isPrimary) || calendars[0];
+      const defaultCalendar =
+        calendars.find(cal => cal.isPrimary) || calendars[0];
 
       if (!defaultCalendar) {
-        FlashMessageComponent.show(
-          `error`,
-          LABLE.NO_CALENDAR_FOUND,
-        );
+        FlashMessageComponent.show(`error`, LABLE.NO_CALENDAR_FOUND);
         return;
       }
 
@@ -78,13 +77,9 @@ const useCalender = (eventDetails: Event) => {
       }
     } catch (error) {
       console.error('Error adding event:', error);
-      FlashMessageComponent.show(
-        `error`,
-        `Failed to add event.`,
-      );
+      FlashMessageComponent.show(`error`, `Failed to add event.`);
     }
   };
-
 
   return { permissionGranted, addEventToCalendar, checkPermission };
 };

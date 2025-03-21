@@ -19,12 +19,26 @@ import ButtonSmall from 'src/component/ButtonSmall';
 import Header from 'src/component/Header/Header';
 import Title from 'src/component/Title/Title';
 import { COLORS, LABLE } from 'src/utils/constants';
-import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale, Wp } from 'src/utils/dimensions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+} from 'src/utils/dimensions';
 import { fontFamily, removeSignature } from 'src/utils/functions';
 import ReportHostView from './ReportHostView';
 import ReportAndBlockHostView from './ReportandBlockView';
-import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
-import { mockProfileDetails, useFetchProfileDetailsQuery } from 'src/redux/actions/profileListApiAction';
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
+import {
+  mockProfileDetails,
+  useFetchProfileDetailsQuery,
+} from 'src/redux/actions/profileListApiAction';
 import useApi from 'src/axios/useApi';
 import FastImage from '@d11/react-native-fast-image';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
@@ -35,7 +49,13 @@ import { RootState } from 'src/redux/slices';
 import { ROUTES } from 'src/navigation/Route';
 import Blocked from 'src/assets/svgs/icons/Blocked.svg';
 
-type ViewType = 'options' | 'report' | 'block' | 'unblock' | 'reportAndBlock' | null;
+type ViewType =
+  | 'options'
+  | 'report'
+  | 'block'
+  | 'unblock'
+  | 'reportAndBlock'
+  | null;
 
 type BottomSheetRef = {
   open: () => void;
@@ -49,14 +69,11 @@ const HostProfileScreen: React.FC = () => {
   const { goBack, setParams, navigate } = useNavigation<any>();
   const dispatch = useDispatch();
   const userId = useSelector((state: RootState) => state.auth.userId);
-  const roleId = useSelector(
-    (state: RootState) => state.auth.roleId,
-  );
+  const roleId = useSelector((state: RootState) => state.auth.roleId);
   const refresh = useSelector((state: RootState) => state.rspv.refresh);
 
-
-
-  const { data, isLoading, error, refetch, isSuccess } = useFetchProfileDetailsQuery(params?.hostId);
+  const { data, isLoading, error, refetch, isSuccess } =
+    useFetchProfileDetailsQuery(params?.hostId);
   const { apiRequest, loading: apiLoading, error: apiError } = useApi();
 
   const [hostRoleId, setHostRoleId] = useState(null);
@@ -73,12 +90,12 @@ const HostProfileScreen: React.FC = () => {
   useFocusEffect(
     useCallback(() => {
       refetch();
-    }, [refresh])
+    }, [refresh]),
   );
   // const data = mockProfileDetails;
   useEffect(() => {
-    dispatch(setRefresh(false))
-  }, [refresh])
+    dispatch(setRefresh(false));
+  }, [refresh]);
 
   const handleOpenBottomSheet = (view: ViewType) => {
     setActiveView(view);
@@ -86,11 +103,15 @@ const HostProfileScreen: React.FC = () => {
   };
   const getHostRoleIdFromAPI = async () => {
     try {
-      const response = await apiRequest('post', 'users/v1/auth/get-user-with-roles-by-id', { id: params?.hostId });
-      const hostRole = response.data.roles.find(role => role.name === "host");
+      const response = await apiRequest(
+        'post',
+        'users/v1/auth/get-user-with-roles-by-id',
+        { id: params?.hostId },
+      );
+      const hostRole = response.data.roles.find(role => role.name === 'host');
       return hostRole ? hostRole.id : null;
     } catch (error) {
-      console.error("Error fetching user roles:", error);
+      console.error('Error fetching user roles:', error);
       return null;
     }
   };
@@ -105,42 +126,58 @@ const HostProfileScreen: React.FC = () => {
           />
         );
       case 'report':
-        return <ReportHostView roleId={roleId} hostRoleId={hostRoleId} userId={userId} onClose={() => bottomSheetRef.current?.close()} hostId={params?.hostId} />;
+        return (
+          <ReportHostView
+            roleId={roleId}
+            hostRoleId={hostRoleId}
+            userId={userId}
+            onClose={() => bottomSheetRef.current?.close()}
+            hostId={params?.hostId}
+          />
+        );
       case 'block':
         return (
           <BlockHostView
             onPress={(e: string) => handleOpenBottomSheet(e as ViewType)}
-            onClose={(e) => {
-              bottomSheetRef.current?.close()
+            onClose={e => {
+              bottomSheetRef.current?.close();
               if (e) {
-                refetch()
+                refetch();
               }
             }}
             userId={userId}
             hostId={params?.hostId}
-            roleId={roleId} hostRoleId={hostRoleId}
+            roleId={roleId}
+            hostRoleId={hostRoleId}
           />
         );
       case 'unblock':
         return (
           <UnBlockHostView
             onPress={(e: string) => handleOpenBottomSheet(e as ViewType)}
-            onClose={(e) => {
-              bottomSheetRef.current?.close()
+            onClose={e => {
+              bottomSheetRef.current?.close();
               e && refetch();
             }}
             userId={userId}
             hostId={params?.hostId}
-            roleId={roleId} hostRoleId={hostRoleId}
+            roleId={roleId}
+            hostRoleId={hostRoleId}
           />
         );
       case 'reportAndBlock':
-        return <ReportAndBlockHostView
-          roleId={roleId} hostRoleId={hostRoleId}
-          userId={userId} onClose={(e) => {
-            bottomSheetRef.current?.close()
-            e && refetch();
-          }} hostId={params?.hostId} />;
+        return (
+          <ReportAndBlockHostView
+            roleId={roleId}
+            hostRoleId={hostRoleId}
+            userId={userId}
+            onClose={e => {
+              bottomSheetRef.current?.close();
+              e && refetch();
+            }}
+            hostId={params?.hostId}
+          />
+        );
       default:
         return null;
     }
@@ -162,40 +199,65 @@ const HostProfileScreen: React.FC = () => {
   const profile = data?.data;
   const socialMediaLinks = profile?.socialMedia || {};
 
-  const handlEventPress = (item) => {
+  const handlEventPress = item => {
     navigate(ROUTES.EventStack, {
       screen: ROUTES.EventDetailsScreen,
-      params: item
+      params: item,
     });
   };
   const socialMediaData = [
     ...(profile?.website
-      ? [{ id: 'website', icon: IMAGES['website_black'], url: profile?.website }]
+      ? [
+          {
+            id: 'website',
+            icon: IMAGES['website_black'],
+            url: profile?.website,
+          },
+        ]
       : []),
     ...Object.keys(socialMediaLinks)
-      .map((key) => ({
+      .map(key => ({
         id: key,
         icon: IMAGES[key + '_black'],
         url: socialMediaLinks[key],
       }))
-      .filter((item) => item.icon && item.url !== ""),
+      .filter(item => item.icon && item.url !== ''),
   ];
-  console.log("profill", profile?.website)
+  console.log('profill', profile?.website);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <Header
         showProgressBar={false}
         rightIcon={IMAGES.dots}
-        onPressRightIcon={() => profile?.isMemberBlockedHost ? handleOpenBottomSheet('unblock') : handleOpenBottomSheet('options')}
+        onPressRightIcon={() =>
+          profile?.isMemberBlockedHost
+            ? handleOpenBottomSheet('unblock')
+            : handleOpenBottomSheet('options')
+        }
         showBackButton={true}
       />
 
       <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
         <View style={{ paddingHorizontal: horizontalMarginScale(20) }}>
-          <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: verticalMarginScale(16), gap: verticalMarginScale(4) }}>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: verticalMarginScale(16),
+              gap: verticalMarginScale(4),
+            }}>
             <View style={{ marginBottom: verticalMarginScale(12) }}>
-              <AvatarInitials imgUrl={removeSignature(profile?.companyLogo) || ''} size={radiusScale(96)} />
-              {profile?.isMemberBlockedHost && <Blocked height={32} width={32} style={{ position: 'absolute', bottom: 0, right: -5 }} />}
+              <AvatarInitials
+                imgUrl={removeSignature(profile?.companyLogo) || ''}
+                size={radiusScale(96)}
+              />
+              {profile?.isMemberBlockedHost && (
+                <Blocked
+                  height={32}
+                  width={32}
+                  style={{ position: 'absolute', bottom: 0, right: -5 }}
+                />
+              )}
             </View>
             <Title
               numberOfLinesTitle={2}
@@ -208,17 +270,31 @@ const HostProfileScreen: React.FC = () => {
               horizontal
               contentContainerStyle={
                 socialMediaData.length > 0
-                  ? { marginBottom: verticalMarginScale(16), marginTop: verticalMarginScale(6) }
+                  ? {
+                      marginBottom: verticalMarginScale(16),
+                      marginTop: verticalMarginScale(6),
+                    }
                   : {}
               }
               data={socialMediaData}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   onPress={() =>
-                    item?.url ? Linking.openURL(item?.url) : FlashMessageComponent.show('success', 'Link not available')
-                  }
-                >
-                  <Image style={{ width: 20, height: 20, marginRight: verticalMarginScale(12) }} source={item.icon} />
+                    item?.url
+                      ? Linking.openURL(item?.url)
+                      : FlashMessageComponent.show(
+                          'success',
+                          'Link not available',
+                        )
+                  }>
+                  <Image
+                    style={{
+                      width: 20,
+                      height: 20,
+                      marginRight: verticalMarginScale(12),
+                    }}
+                    source={item.icon}
+                  />
                 </TouchableOpacity>
               )}
             />
@@ -232,20 +308,36 @@ const HostProfileScreen: React.FC = () => {
           <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
-            ListEmptyComponent={<Text style={styles.dateText}>No upcoming events.</Text>}
-            contentContainerStyle={{ gap: 16, marginVertical: verticalMarginScale(12) }}
+            ListEmptyComponent={
+              <Text style={styles.dateText}>No upcoming events.</Text>
+            }
+            contentContainerStyle={{
+              gap: 16,
+              marginVertical: verticalMarginScale(12),
+            }}
             data={profile?.upcomingEvents || []}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => { handlEventPress(item) }}>
+              <TouchableOpacity
+                onPress={() => {
+                  handlEventPress(item);
+                }}>
                 <FastImage
                   defaultSource={IMAGES.eventCoverPlaceholders1}
-                  style={{ width: Wp('42%'), height: verticalScale(245), borderRadius: 8 }}
+                  style={{
+                    width: Wp('42%'),
+                    height: verticalScale(245),
+                    borderRadius: 8,
+                  }}
                   source={{ uri: removeSignature(item?.imageFlyer) }}
                 />
                 <View style={{ width: Wp('42%') }}>
-                  <Text style={styles.eventNameText} numberOfLines={1}>{item.name}</Text>
+                  <Text style={styles.eventNameText} numberOfLines={1}>
+                    {item.name}
+                  </Text>
                   <Text style={styles.dateText}>{item.startDate}</Text>
-                  <Text style={styles.dateText} numberOfLines={1}>{item?.eventLocation?.city}</Text>
+                  <Text style={styles.dateText} numberOfLines={1}>
+                    {item?.eventLocation?.city}
+                  </Text>
                 </View>
               </TouchableOpacity>
             )}
@@ -253,21 +345,38 @@ const HostProfileScreen: React.FC = () => {
           <Text style={styles.headerText}>Past Events</Text>
           <FlatList
             horizontal
-            ListEmptyComponent={<Text style={styles.dateText}>No past events.</Text>}
-            contentContainerStyle={{ gap: 16, marginTop: verticalMarginScale(12), marginBottom: 100 }}
+            ListEmptyComponent={
+              <Text style={styles.dateText}>No past events.</Text>
+            }
+            contentContainerStyle={{
+              gap: 16,
+              marginTop: verticalMarginScale(12),
+              marginBottom: 100,
+            }}
             data={profile?.pastEvents || []}
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => { handlEventPress(item) }}>
+              <TouchableOpacity
+                onPress={() => {
+                  handlEventPress(item);
+                }}>
                 <FastImage
                   defaultSource={IMAGES.eventCoverPlaceholders1}
-                  style={{ width: Wp('42%'), height: verticalScale(245), borderRadius: 8 }}
+                  style={{
+                    width: Wp('42%'),
+                    height: verticalScale(245),
+                    borderRadius: 8,
+                  }}
                   source={{ uri: removeSignature(item.imageFlyer) }}
                 />
                 <View style={{ width: Wp('42%') }}>
-                  <Text style={styles.eventNameText} numberOfLines={1}>{item.name}</Text>
+                  <Text style={styles.eventNameText} numberOfLines={1}>
+                    {item.name}
+                  </Text>
                   <Text style={styles.dateText}>{item.startDate}</Text>
-                  <Text style={styles.dateText} numberOfLines={1}>{item?.eventLocation?.city}</Text>
+                  <Text style={styles.dateText} numberOfLines={1}>
+                    {item?.eventLocation?.city}
+                  </Text>
                 </View>
               </TouchableOpacity>
             )}
@@ -277,8 +386,7 @@ const HostProfileScreen: React.FC = () => {
       <BottomSheetComponent
         snapPoints={[getSnapPoints()]}
         ref={bottomSheetRef}
-        onClose={() => setActiveView(null)}
-      >
+        onClose={() => setActiveView(null)}>
         {renderBottomSheetContent()}
       </BottomSheetComponent>
     </SafeAreaView>
@@ -294,16 +402,30 @@ interface BlockHostViewProps {
   roleId: string;
 }
 
-const BlockHostView: React.FC<BlockHostViewProps> = ({ onClose, onPress, userId, hostId, roleId, hostRoleId }) => {
+const BlockHostView: React.FC<BlockHostViewProps> = ({
+  onClose,
+  onPress,
+  userId,
+  hostId,
+  roleId,
+  hostRoleId,
+}) => {
   const { apiRequest, loading, error } = useApi();
   const handleBlock = async () => {
     try {
-      const response = await apiRequest('post', `users/v1/auth/users/${userId}/hosts/${hostId}/block`, {
-        blockedByRoleId: roleId,
-        blockedToRoleId: hostRoleId,
-      });
+      const response = await apiRequest(
+        'post',
+        `users/v1/auth/users/${userId}/hosts/${hostId}/block`,
+        {
+          blockedByRoleId: roleId,
+          blockedToRoleId: hostRoleId,
+        },
+      );
       if (response) {
-        FlashMessageComponent.show('success', 'Host has been blocked successfully');
+        FlashMessageComponent.show(
+          'success',
+          'Host has been blocked successfully',
+        );
         onClose(true);
       } else {
         // Alert.alert('Error', response?.message || 'Something went wrong');
@@ -320,10 +442,21 @@ const BlockHostView: React.FC<BlockHostViewProps> = ({ onClose, onPress, userId,
         title="Block Host"
         subTitle={`Are you sure you want to block this host?\nIf they invite you to an event in the future, your invite will automatically be declined.`}
       />
-      <TouchableOpacity disabled={loading} onPress={handleBlock} style={styles.redButton}>
-        {loading ? <ActivityIndicator /> : <Text style={[styles.optionText, { color: COLORS.white }]}>Block</Text>}
+      <TouchableOpacity
+        disabled={loading}
+        onPress={handleBlock}
+        style={styles.redButton}>
+        {loading ? (
+          <ActivityIndicator color={COLORS.black} />
+        ) : (
+          <Text style={[styles.optionText, { color: COLORS.white }]}>
+            Block
+          </Text>
+        )}
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => onPress('reportAndBlock')} style={styles.blackStripe}>
+      <TouchableOpacity
+        onPress={() => onPress('reportAndBlock')}
+        style={styles.blackStripe}>
         <Text style={styles.optionText}>Report & Block</Text>
       </TouchableOpacity>
     </View>
@@ -339,17 +472,30 @@ interface UnBlockHostViewProps {
   roleId: string;
 }
 
-const UnBlockHostView: React.FC<UnBlockHostViewProps> = ({ onClose, onPress, userId, hostId, roleId, hostRoleId }) => {
+const UnBlockHostView: React.FC<UnBlockHostViewProps> = ({
+  onClose,
+  onPress,
+  userId,
+  hostId,
+  roleId,
+  hostRoleId,
+}) => {
   const { apiRequest, loading, error } = useApi();
   const handleUnblock = async () => {
     try {
-      const response = await apiRequest('post', `users/v1/auth/users/${userId}/hosts/${hostId}/unblock`, {
-        blockedByRoleId: roleId,
-        blockedToRoleId: hostRoleId,
-      });
-      FlashMessageComponent.show('success', 'Host has been unblocked successfully');
+      const response = await apiRequest(
+        'post',
+        `users/v1/auth/users/${userId}/hosts/${hostId}/unblock`,
+        {
+          blockedByRoleId: roleId,
+          blockedToRoleId: hostRoleId,
+        },
+      );
+      FlashMessageComponent.show(
+        'success',
+        'Host has been unblocked successfully',
+      );
       onClose(true);
-
     } catch (error) {
       // Alert.alert('Error', error?.message || 'Failed to unblock host');
     }
@@ -378,13 +524,16 @@ const UnBlockHostView: React.FC<UnBlockHostViewProps> = ({ onClose, onPress, use
   );
 };
 
-
 const RenderOptions = ({ onClose, onPress }: { onClose: () => void }) => (
   <View style={{ paddingHorizontal: 12, gap: 8 }}>
-    <TouchableOpacity onPress={() => onPress('report')} style={styles.greyStripeButton}>
+    <TouchableOpacity
+      onPress={() => onPress('report')}
+      style={styles.greyStripeButton}>
       <Text style={styles.optionText}>Report Host</Text>
     </TouchableOpacity>
-    <TouchableOpacity onPress={() => onPress('block')} style={styles.greyStripeButton}>
+    <TouchableOpacity
+      onPress={() => onPress('block')}
+      style={styles.greyStripeButton}>
       <Text style={styles.optionText}>Block Host</Text>
     </TouchableOpacity>
   </View>
@@ -402,7 +551,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     height: 48,
     width: '100%',
-    marginTop: 12
+    marginTop: 12,
   },
   headerText: {
     fontSize: fontScale(24),
@@ -420,7 +569,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(12),
     fontFamily: fontFamily.ABCDiatype_Medium,
     color: COLORS.light_gray,
-    marginTop: verticalMarginScale(2)
+    marginTop: verticalMarginScale(2),
   },
   optionText: {
     fontSize: fontScale(14),
@@ -429,17 +578,27 @@ const styles = StyleSheet.create({
   },
   greyStripeButton: {
     paddingVertical: verticalMarginScale(12),
-    alignItems: 'center', borderRadius: 1000, borderWidth: 1, borderColor: COLORS.borderGray
+    alignItems: 'center',
+    borderRadius: 1000,
+    borderWidth: 1,
+    borderColor: COLORS.borderGray,
   },
   redButton: {
     backgroundColor: COLORS.errorText,
-    justifyContent: 'center', alignItems: 'center', borderRadius: 1000, height: 48, marginTop: verticalMarginScale(12)
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 1000,
+    height: 48,
+    marginTop: verticalMarginScale(12),
   },
   blackStripe: {
     paddingVertical: verticalMarginScale(12),
-    alignItems: 'center', borderRadius: 1000,
-    borderWidth: 2, borderColor: COLORS.black, height: 48
-  }
+    alignItems: 'center',
+    borderRadius: 1000,
+    borderWidth: 2,
+    borderColor: COLORS.black,
+    height: 48,
+  },
 });
 
 export default HostProfileScreen;

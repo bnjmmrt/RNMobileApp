@@ -1,5 +1,8 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from '@react-navigation/stack';
 import { AppStack } from './AppStack';
 import { AuthStack } from './AuthStack';
 import WelcomeScreen from '../screens/AppFlow/WelcomeScreen/WelcomeScreen';
@@ -24,7 +27,10 @@ export const MainStack: React.FC<MainStackProps> = ({
   return (
     <Stack.Navigator
       initialRouteName={initialRouteName}
-      screenOptions={{ headerShown: false }}>
+      screenOptions={{
+        headerShown: false,
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      }}>
       <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
       <Stack.Screen name="AuthStack" component={AuthStack} />
       <Stack.Screen
