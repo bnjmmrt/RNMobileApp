@@ -31,7 +31,6 @@ import { BUTTON_LABLE, COLORS } from 'src/utils/constants';
 import { verticalScale } from 'src/utils/dimensions';
 import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
 import { fontFamily, removeSignature } from 'src/utils/functions';
-import useContactPermission from 'src/utils/hooks/useContactPermission';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { EventCard } from '../RSVP/RSVPInvitedUpcoming';
 import { styles } from './RSVPScreenStyle';
@@ -74,7 +73,6 @@ const RSVPNoStatusApplied: React.FC = () => {
   const [selectedGuests, setSelectedGuests] = useState<any>(null);
   const [vouchData, setVouchData] = useState<any>([]);
   const [activeView, setActiveTab] = useState<string>('');
-  const { requestContactPermission } = useContactPermission();
   const guestInputRef = useRef(null);
   const [submitApplication, { isLoading: isSubmitting }] =
     useSubmitApplicationMutation();
@@ -244,7 +242,6 @@ const RSVPNoStatusApplied: React.FC = () => {
           title={'Request a Vouch'}
           colorTheme="dark"
           onPress={async () => {
-            await requestContactPermission();
             setActiveTab('vouch');
           }}
         />

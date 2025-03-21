@@ -44,8 +44,7 @@ const rumorAppLink =
 
 const InviteFriendsSheet = forwardRef((props, ref) => {
   const [contacts, setContacts] = useState<ContactItem[]>([]);
-  const { getContacts, permissionGranted, requestContactPermission } =
-    useContacts();
+  const { getContacts, permissionGranted } = useContacts(true, 2000);
   const [filteredContacts, setFilteredContacts] = useState<ContactItem[]>([]);
   const [requestSent, setRequestSent] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -56,10 +55,8 @@ const InviteFriendsSheet = forwardRef((props, ref) => {
   useEffect(() => {
     fetchContacts();
   }, [permissionGranted]);
-  console.log(permissionGranted);
 
   const fetchContacts = async () => {
-    await requestContactPermission();
     try {
       const formattedContacts = await getContacts();
       setContacts(formattedContacts);

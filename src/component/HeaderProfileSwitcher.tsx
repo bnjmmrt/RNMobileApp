@@ -23,6 +23,7 @@ import {
   ApiErrorInterface,
   fetchUserProfile,
   getErrorMessage,
+  removeSignature,
 } from 'src/utils/functions';
 import { COLORS, ROLE } from '../utils/constants';
 import { Wp } from '../utils/dimensions';
@@ -126,7 +127,7 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
         <AvatarInitials
           name={name}
           size={48}
-          imgUrl={photo}
+          imgUrl={removeSignature(photo) || ''}
           onPress={() => {
             setSwitchingRole(position);
             toggleRole(roles[index]);

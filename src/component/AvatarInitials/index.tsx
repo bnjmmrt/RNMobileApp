@@ -1,6 +1,6 @@
 import FastImage, { ImageStyle } from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, ViewStyle } from 'react-native';
 import { radiusScale } from 'src/utils/dimensions';
 import { COLORS } from '../../../src/utils/constants';
@@ -14,7 +14,7 @@ type AvatarInitialsProps = {
   imgUrl?: string;
   onPress?: any;
   containerStyle?: ViewStyle;
-  listing?: boolean
+  listing?: boolean;
 };
 
 const AvatarInitials: React.FC<AvatarInitialsProps> = ({
@@ -27,6 +27,7 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
   containerStyle,
   listing = true,
 }) => {
+  const [isPhotoError, setIsPhotoError] = useState<boolean>(false);
   const getInitials = (name: string): string => {
     if (!name) return '';
 
@@ -56,6 +57,9 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
       <FastImage
         source={{ uri: imgUrl }}
         defaultSource={IMAGES.rumorLogo}
+        onError={() => setIsPhotoError(true)}
+        onLoad={() => setIsPhotoError(false)}
+        resizeMode={isPhotoError ? 'contain' : 'cover'}
         style={[
           styles.avatar,
           {
@@ -83,7 +87,12 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
       <Text
         style={[
           styles.text,
-          { color: textColor, fontSize: listing ? radiusScale(size) / 2.5 : radiusScale(size) / 1.5 },
+          {
+            color: textColor,
+            fontSize: listing
+              ? radiusScale(size) / 2.5
+              : radiusScale(size) / 1.5,
+          },
         ]}>
         {initials}
       </Text>
