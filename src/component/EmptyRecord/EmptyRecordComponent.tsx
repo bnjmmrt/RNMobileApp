@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,11 +7,17 @@ import {
   Pressable,
   ActivityIndicator,
 } from 'react-native';
-import {fontScale, horizontalMarginScale, Hp, verticalMarginScale, Wp} from '../../utils/dimensions';
-import {BUTTON_LABLE, COLORS, LABLE} from '../../utils/constants';
+import {
+  fontScale,
+  horizontalMarginScale,
+  Hp,
+  verticalMarginScale,
+  Wp,
+} from '../../utils/dimensions';
+import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '../../assets/images/index';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
-import {fontFamily} from '../../utils/functions';
+import { fontFamily } from '../../utils/functions';
 import Button from '../Button';
 
 interface EmptyRecordComponentProps {
@@ -60,7 +66,7 @@ const EmptyRecordComponent: React.FC<EmptyRecordComponentProps> = ({
       )}
     </View>
   ) : (
-    <ActivityIndicator />
+    <ActivityIndicator color={COLORS.black} />
   );
 };
 
@@ -68,20 +74,20 @@ export default EmptyRecordComponent;
 
 const styles = StyleSheet.create({
   container: {
-    flex:1,
-    justifyContent:'center',
-    alignItems:'center',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: COLORS.white,
-    paddingHorizontal:horizontalMarginScale(20)
+    paddingHorizontal: horizontalMarginScale(20),
   },
   contentContainer: {
     flex: 1,
   },
   btnStyle: {
     width: 'auto',
-    paddingHorizontal:horizontalMarginScale(20),
+    paddingHorizontal: horizontalMarginScale(20),
     borderRadius: 100,
-    marginTop:verticalMarginScale(30)
+    marginTop: verticalMarginScale(30),
   },
   logoContainer: {
     alignItems: 'center',

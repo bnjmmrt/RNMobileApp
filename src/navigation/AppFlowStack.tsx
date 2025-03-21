@@ -1,5 +1,8 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from '@react-navigation/stack';
 import MyDetailsScreen from '../screens/AppFlow/MyDetails/MyDetails';
 import EnterEmailPhone from '../screens/AppFlow/EnterEmailPhone/EnterEmailPhone';
 import VerifyEmail from '../screens/AppFlow/VerifyOtp/VerifyOtp';
@@ -14,7 +17,6 @@ import WelcomeScreen from '../screens/AppFlow/WelcomeScreen/WelcomeScreen';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/slices';
 import ReferralScreen from 'src/screens/ProfileScreen/ReferralsScreen/ReferralScreen';
-
 
 // Define the param list for the stack navigator
 export type AppFlowStackParamList = {
@@ -52,7 +54,9 @@ export const AppFlowStack: React.FC = () => {
   return (
     <Stack.Navigator
       initialRouteName={'MyDetailsScreen'}
-      screenOptions={({ route, navigation }) => ({})}>
+      screenOptions={({ route, navigation }) => ({
+        cardStyleInterpolator: CardStyleInterpolators.forNoAnimation,
+      })}>
       <Stack.Screen
         name="MyDetailsScreen"
         component={MyDetailsScreen}

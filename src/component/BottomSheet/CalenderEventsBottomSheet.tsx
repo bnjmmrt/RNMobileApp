@@ -1,10 +1,9 @@
-import React, {useRef, forwardRef} from 'react';
-import {View, StyleSheet, Text, Image, Platform, Alert} from 'react-native';
+import React, { useRef, forwardRef } from 'react';
+import { View, StyleSheet, Text, Image, Platform, Alert } from 'react-native';
 import BottomSheetComponent from './BottomSheet';
-import {BUTTON_LABLE, COLORS, LABLE} from '../../utils/constants';
+import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import Button from '../Button';
-import {fontFamily} from '../../utils/functions';
-;
+import { fontFamily } from '../../utils/functions';
 import {
   fontScale,
   horizontalMarginScale,
@@ -15,15 +14,12 @@ import {
 } from 'src/utils/dimensions';
 import useCalender from 'src/utils/hooks/useCalender';
 
-
-
 interface CalenderEventsBottomSheetProps {
   eventDetails: any;
 }
 const CalenderEventsBottomSheet = forwardRef(
   (props: CalenderEventsBottomSheetProps, ref) => {
-
-    const {addEventToCalendar} = useCalender(props.eventDetails)
+    const { addEventToCalendar } = useCalender(props.eventDetails);
     const cancelClick = () => {
       ref.current?.close();
     };
@@ -31,14 +27,12 @@ const CalenderEventsBottomSheet = forwardRef(
     return (
       <BottomSheetComponent
         ref={ref}
-        snapPoints={[Platform.OS == 'android' ? '35%' : '30%']}
+        snapPoints={[Platform.OS == 'android' ? '32%' : '30%']}
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
           <Text style={styles.title}>{LABLE.ADD_TO_CALENDAR}</Text>
 
-          <Text style={[styles.subTitle]}>
-            {LABLE.NEVER_MISS_MOMENT}
-          </Text>
+          <Text style={[styles.subTitle]}>{LABLE.NEVER_MISS_MOMENT}</Text>
 
           <Button
             disabled={false}
@@ -59,7 +53,7 @@ const CalenderEventsBottomSheet = forwardRef(
             colorTheme="dark"
             onPress={cancelClick}
             clearButtonStyle={styles.clearButton}
-            textStyle={{color: '#000'}}
+            textStyle={{ color: '#000' }}
           />
         </View>
       </BottomSheetComponent>

@@ -33,6 +33,7 @@ import FollowButton from '../FollowButton/FollowButton';
 import AvatarInitials from '../AvatarInitials';
 import { ROUTES } from 'src/navigation/Route';
 import { useNavigation } from '@react-navigation/native';
+import { CustomText } from '../CustomText';
 
 interface EventHostItemProps {
   item: any;
@@ -52,6 +53,7 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item, length }) => {
     if (length === 2) return Wp('65%');
     return Wp('55%');
   };
+
   return (
     <View style={[styles.container, { width: getWidth() }]}>
       <AvatarInitials
@@ -66,12 +68,12 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item, length }) => {
         size={40}
       />
       <View style={{ paddingHorizontal: 10, marginEnd: 20, flex: 1 }}>
-        <Text numberOfLines={1} style={styles.title}>
+        <CustomText style={styles.title} textProps={{ numberOfLines: 1 }}>
           {capitalizeFirstLetter(item?.name)}
-        </Text>
-        <Text style={styles.subtitle}>
+        </CustomText>
+        <CustomText style={styles.subtitle}>
           {capitalizeFirstLetter(item?.role?.name)}
-        </Text>
+        </CustomText>
       </View>
 
       {role == ROLE.MEMBER && item.role.name == 'host' && (
@@ -87,10 +89,10 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item, length }) => {
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 2,
+    borderWidth: 1,
     padding: verticalMarginScale(8),
     marginRight: 10,
-    borderRadius: 30,
+    borderRadius: 99,
     borderColor: COLORS.borderGray,
     flexDirection: 'row',
     alignSelf: 'flex-start',
@@ -110,15 +112,12 @@ const styles = StyleSheet.create({
     // marginEnd: 20,
   },
   title: {
-    color: COLORS.black2,
-    fontSize: fontScale(14),
     width: '80%',
-    fontFamily: fontFamily.ABCDiatype_Regular,
+    fontFamily: fontFamily.ABCDiatype_Medium,
   },
   subtitle: {
     color: COLORS.light_gray,
     fontSize: fontScale(12),
-    fontFamily: fontFamily.ABCDiatype_Regular,
   },
   btnStyle: {
     borderRadius: 100,

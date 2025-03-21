@@ -1,4 +1,7 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from '@react-navigation/stack';
 import React from 'react';
 import BottomTabBar from '../component/Tabbar/BottomTabBar';
 import BeforeAppStaticScreen from '../screens/BeforeApplicationFlow/BeforeAppStaticScreen';
@@ -43,7 +46,10 @@ export const AppStack: React.FC<AppStackProps> = ({
   return (
     <Stack.Navigator
       initialRouteName={initialRouteName}
-      screenOptions={{ headerShown: false }}>
+      screenOptions={{
+        headerShown: false,
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      }}>
       <Stack.Screen
         name={ROUTES.BeforeAppStaticScreen}
         component={BeforeAppStaticScreen}
@@ -53,10 +59,7 @@ export const AppStack: React.FC<AppStackProps> = ({
         component={InviteReferralBottomSheet}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name={ROUTES.WelcomeScreen}
-        component={WelcomeScreen}
-      />
+      <Stack.Screen name={ROUTES.WelcomeScreen} component={WelcomeScreen} />
       <Stack.Screen name={ROUTES.AppFlowStack} component={AppFlowStack} />
       <Stack.Screen name={ROUTES.BottomTabBar} component={BottomTabBar} />
       <Stack.Screen name={ROUTES.ProfileStack} component={ProfileStack} />
@@ -73,7 +76,11 @@ export const AppStack: React.FC<AppStackProps> = ({
         component={EditEventScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name={ROUTES.NotificationsScreen} component={NotificationsScreen}  options={{ headerShown: false }} />
+      <Stack.Screen
+        name={ROUTES.NotificationsScreen}
+        component={NotificationsScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

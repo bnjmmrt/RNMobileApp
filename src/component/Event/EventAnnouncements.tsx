@@ -1,24 +1,52 @@
 import React, { useEffect, useState } from 'react';
-import { Text, StyleSheet, View, FlatList, TouchableOpacity, ScrollView, Image } from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  FlatList,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+} from 'react-native';
 import FastImage from '@d11/react-native-fast-image';
 import AvatarInitials from '../AvatarInitials';
-import { ANNOUNCCEMENTS_DATA, ANNOUNCEMENT, COLORS, LABLE, ROLE } from '../../utils/constants';
+import {
+  ANNOUNCCEMENTS_DATA,
+  ANNOUNCEMENT,
+  COLORS,
+  LABLE,
+  ROLE,
+} from '../../utils/constants';
 import IMAGES from '@images/index';
 import { dateFormat, fontFamily } from '../../utils/functions';
-import { fontScale, horizontalScale, verticalScale, verticalMarginScale, horizontalMarginScale, Wp, radiusScale } from 'src/utils/dimensions';
+import {
+  fontScale,
+  horizontalScale,
+  verticalScale,
+  verticalMarginScale,
+  horizontalMarginScale,
+  Wp,
+  radiusScale,
+} from 'src/utils/dimensions';
 import ImagePdfViewer from './ImagePdfViewer';
 import { useFetchHostEventsAnnouncementQuery } from 'src/redux/actions/eventApiAction';
+import { CustomText } from '../CustomText';
 
 interface EventAnnouncementProps {
-  role?: string,
-  announcementData?: any,
+  role?: string;
+  announcementData?: any;
   eventId: string;
-  handleAddPress: () => void,
-  handleViewAll: () => void
+  handleAddPress: () => void;
+  handleViewAll: () => void;
 }
 
-
-const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleAddPress, handleViewAll, announcementData, role }) => {
+const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
+  eventId,
+  handleAddPress,
+  handleViewAll,
+  announcementData,
+  role,
+}) => {
   const [viewerVisible, setViewerVisible] = useState(false);
   const [media, setMedia] = useState([]);
   const [showAll, setShowAll] = useState(true);
@@ -34,56 +62,95 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
   useEffect(() => {
     if (announcementData != undefined) {
       setannouncementListData(announcementData?.data?.result);
-      setShowAll(announcementData?.data?.length > 3)
+      setShowAll(announcementData?.data?.length > 3);
     }
   }, [announcementData]);
 
-  const MediaItem = ({ item, media, name, image }: { item: any, media: any, name: any, image: any }) => (
-    item.mediaType === "image" ? (
-      <TouchableOpacity onPress={() => {
-        setMedia(media)
-        setViewerVisible(true)
-        setCompanyName(name)
-        setCompanyLogo(image)
-      }}>
+  const MediaItem = ({
+    item,
+    media,
+    name,
+    image,
+  }: {
+    item: any;
+    media: any;
+    name: any;
+    image: any;
+  }) =>
+    item.mediaType === 'image' ? (
+      <TouchableOpacity
+        onPress={() => {
+          setMedia(media);
+          setViewerVisible(true);
+          setCompanyName(name);
+          setCompanyLogo(image);
+        }}>
         <FastImage source={{ uri: item?.media }} style={styles.mediaImage} />
       </TouchableOpacity>
     ) : (
-      <TouchableOpacity onPress={() => {
-        setMedia(media)
-        setViewerVisible(true)
-        setCompanyName(name)
-        setCompanyLogo(image)
-      }} style={styles.pdfContainer}>
-        <Image source={IMAGES.pdf} style={styles.pdfIcon} resizeMode='contain' />
-        <Text style={styles.title} numberOfLines={2}>{item?.mediaName}</Text>
+      <TouchableOpacity
+        onPress={() => {
+          setMedia(media);
+          setViewerVisible(true);
+          setCompanyName(name);
+          setCompanyLogo(image);
+        }}
+        style={styles.pdfContainer}>
+        <Image
+          source={IMAGES.pdf}
+          style={styles.pdfIcon}
+          resizeMode="contain"
+        />
+        <Text style={styles.title} numberOfLines={2}>
+          {item?.mediaName}
+        </Text>
         {/* <Text style={styles.pdfSize}>{item.size}</Text> */}
       </TouchableOpacity>
-    )
-  );
+    );
 
   const EventItem = ({ item }: { item: any }) => {
     const [expanded, setExpanded] = useState(false);
     const shouldShowReadMore = item?.announcement?.split(' ').length > 25;
-    const displayedText = expanded || !shouldShowReadMore ? item?.announcement : `${item?.announcement.substring(0, 100)}...`;
-    const date = dateFormat(item?.createdAt, 'DD/MM/YYYY')
-    const imageKeyUrl = item?.user?.additionalHostInformation?.companyLogo
-    const name = item?.user?.additionalHostInformation?.firstName + ' ' + item?.user?.additionalHostInformation?.lastName
-    const companyName = item?.user?.additionalHostInformation?.companyName
+    const displayedText =
+      expanded || !shouldShowReadMore
+        ? item?.announcement
+        : `${item?.announcement.substring(0, 100)}...`;
+    const date = dateFormat(item?.createdAt, 'DD/MM/YYYY');
+    const imageKeyUrl = item?.user?.additionalHostInformation?.companyLogo;
+    const name =
+      item?.user?.additionalHostInformation?.firstName +
+      ' ' +
+      item?.user?.additionalHostInformation?.lastName;
+    const companyName = item?.user?.additionalHostInformation?.companyName;
 
     return (
       <View style={styles.talentItem}>
-        {imageKeyUrl?.includes("https") ? (
+        {imageKeyUrl?.includes('https') ? (
           <FastImage source={{ uri: imageKeyUrl }} style={styles.icon} />
         ) : (
           <AvatarInitials name={name} size={48} />
         )}
         <View style={styles.textContainer}>
-          <Text numberOfLines={expanded ? undefined : 3} style={styles.name}>{displayedText}</Text>
-          <Text style={styles.subtitle}>{date}</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 5 }}>
+          <CustomText
+            textProps={{
+              numberOfLines: expanded ? undefined : 3,
+            }}
+            style={styles.name}>
+            {displayedText}
+          </CustomText>
+          <CustomText style={styles.subtitle}>{date}</CustomText>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginTop: 5 }}>
             {item?.attachments?.map((mediaItem: string, index: number) => (
-              <MediaItem key={index} item={mediaItem} media={item.attachments} name={companyName} image={imageKeyUrl} />
+              <MediaItem
+                key={index}
+                item={mediaItem}
+                media={item.attachments}
+                name={companyName}
+                image={imageKeyUrl}
+              />
             ))}
           </ScrollView>
           {/* {!expanded && shouldShowReadMore && (
@@ -92,95 +159,132 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({ eventId, handleA
               <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
             </TouchableOpacity>
           )} */}
-              {!expanded && shouldShowReadMore ? (
-                        <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.toggleContainer}>
-                            <Text style={styles.toggleText}>{ANNOUNCEMENT.READ_MORE}</Text>
-                            <FastImage source={IMAGES.downArrow} style={styles.toggleIcon} />
-                        </TouchableOpacity>) : shouldShowReadMore && (
-                            <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.toggleContainer}>
-                                <Text style={styles.toggleText}>{ANNOUNCEMENT.READ_LESS}</Text>
-                                <FastImage source={IMAGES.downArrow} style={styles.toggleIcon} />
-                            </TouchableOpacity>
-                        )}
+          {!expanded && shouldShowReadMore ? (
+            <TouchableOpacity
+              onPress={() => setExpanded(!expanded)}
+              style={styles.toggleContainer}>
+              <CustomText style={styles.toggleText}>
+                {ANNOUNCEMENT.READ_MORE}
+              </CustomText>
+              <FastImage source={IMAGES.downArrow} style={styles.toggleIcon} />
+            </TouchableOpacity>
+          ) : (
+            shouldShowReadMore && (
+              <TouchableOpacity
+                onPress={() => setExpanded(!expanded)}
+                style={styles.toggleContainer}>
+                <CustomText style={styles.toggleText}>
+                  {ANNOUNCEMENT.READ_LESS}
+                </CustomText>
+                <FastImage
+                  source={IMAGES.downArrow}
+                  style={styles.toggleIcon}
+                />
+              </TouchableOpacity>
+            )
+          )}
         </View>
       </View>
     );
   };
   const viewerClose = () => {
-    setViewerVisible(false)
-  }
+    setViewerVisible(false);
+  };
 
   const onClickViewAll = () => {
-    console.log("role", role)
+    console.log('role', role);
     if (role == ROLE.HOST) {
-      handleViewAll
+      handleViewAll;
     } else {
-      viewAllLess ? setviewAllLess(false) : setviewAllLess(true)
+      viewAllLess ? setviewAllLess(false) : setviewAllLess(true);
     }
-  }
+  };
   return (
     <View style={styles.container}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Text style={styles.heading}>{LABLE.EVENT_ANNOUNCEMENTS}</Text>
-        {role === ROLE.HOST &&
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingBottom: verticalMarginScale(12),
+        }}>
+        <CustomText style={styles.heading}>
+          {LABLE.EVENT_ANNOUNCEMENTS}
+        </CustomText>
+        {role === ROLE.HOST && (
           <TouchableOpacity style={styles.iconWrapper} onPress={handleAddPress}>
-            <Image source={IMAGES.plus} tintColor={'black'} style={styles.addicon} />
+            <Image
+              source={IMAGES.plus}
+              tintColor={'black'}
+              style={styles.addicon}
+            />
           </TouchableOpacity>
-        }
-
+        )}
       </View>
       <View style={styles.divider} />
       <FlatList
-        data={viewAllLess ? announcementListData?.slice(0, 3) : announcementListData}
-        keyExtractor={(item) => item?.id}
+        data={
+          viewAllLess ? announcementListData?.slice(0, 3) : announcementListData
+        }
+        keyExtractor={item => item?.id}
         renderItem={({ item }) => <EventItem item={item} />}
+        style={{}}
         ListEmptyComponent={
-          <View>
-            <Text style={styles.heading}>{LABLE.NO_EVENT_ANNOUNCEMENTS}</Text>
-          </View>
+          <CustomText style={{ marginVertical: verticalMarginScale(16) }}>
+            {LABLE.NO_EVENT_ANNOUNCEMENTS}
+          </CustomText>
         }
       />
-
       {announcementListData?.length > 3 && (
-        <View style={{ paddingVertical: 5 }}>
-          <View style={styles.divider} />
-          {role == ROLE.HOST ?
-            <TouchableOpacity onPress={handleViewAll} style={[styles.toggleContainer, { marginTop: 5 }]}>
-              <Text style={styles.toggleText}>{LABLE.VIEW_ALL}</Text>
-              <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
-            </TouchableOpacity> :
-            <TouchableOpacity onPress={() => setviewAllLess(!viewAllLess)} style={[styles.toggleContainer, { marginTop: 5 }]}>
-              <Text style={styles.toggleText}>{viewAllLess ? LABLE.VIEW_ALL : LABLE.VIEW_LESS}</Text>
+        <View style={{ paddingBottom: verticalMarginScale(20) }}>
+          <View
+            style={[styles.divider, { marginBottom: verticalMarginScale(20) }]}
+          />
+          {role == ROLE.HOST ? (
+            <TouchableOpacity
+              onPress={handleViewAll}
+              style={styles.toggleContainer}>
+              <CustomText style={styles.toggleText}>
+                {LABLE.VIEW_ALL}
+              </CustomText>
               <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
             </TouchableOpacity>
-          }
+          ) : (
+            <TouchableOpacity
+              onPress={() => setviewAllLess(!viewAllLess)}
+              style={styles.toggleContainer}>
+              <CustomText style={styles.toggleText}>
+                {viewAllLess ? LABLE.VIEW_ALL : LABLE.VIEW_LESS}
+              </CustomText>
+              <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
+            </TouchableOpacity>
+          )}
         </View>
       )}
-      {viewerVisible &&
+      {viewerVisible && (
         <ImagePdfViewer
           visible={viewerVisible}
           onClose={viewerClose}
           mediaItems={media}
           name={companyName}
-          logo={companyLogo} />}
+          logo={companyLogo}
+        />
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: COLORS.borderGray,
-    borderRadius: 15,
-    paddingVertical: verticalMarginScale(20),
-    paddingHorizontal: horizontalMarginScale(20),
-    backgroundColor: COLORS.white,
+    borderRadius: radiusScale(16),
+    paddingTop: verticalMarginScale(12),
+    paddingHorizontal: horizontalMarginScale(16),
   },
   heading: {
-    color: COLORS.black2,
     fontSize: fontScale(16),
     fontFamily: fontFamily.ABCDiatype_Medium,
-    paddingBottom: verticalMarginScale(5),
   },
   icon: {
     height: 48,
@@ -193,17 +297,16 @@ const styles = StyleSheet.create({
     height: verticalScale(16),
   },
   iconWrapper: {
-    width: verticalScale(24),
-    height: verticalScale(24),
-    borderRadius: radiusScale(24),
+    width: verticalScale(32),
+    height: verticalScale(32),
+    borderRadius: radiusScale(32),
     backgroundColor: COLORS.tabBorderColor,
     justifyContent: 'center',
     alignItems: 'center',
   },
   textContainer: {
     flex: 1,
-    marginStart: 10,
-    gap: 5
+    marginStart: horizontalMarginScale(16),
   },
   pdfIcon: {
     width: 30,
@@ -212,9 +315,8 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: COLORS.light_gray,
-    fontSize: fontScale(14),
-    fontFamily: fontFamily.ABCDiatype_Regular,
-    marginVertical: 5
+    fontSize: fontScale(12),
+    marginTop: verticalMarginScale(8),
   },
   title: {
     color: COLORS.black2,
@@ -227,15 +329,12 @@ const styles = StyleSheet.create({
     width: Wp(92),
     alignSelf: 'center',
     backgroundColor: COLORS.borderGray,
-    marginVertical: 10,
   },
   talentItem: {
     flexDirection: 'row',
-    marginVertical: verticalMarginScale(10),
+    marginVertical: verticalMarginScale(16),
   },
   name: {
-    color: COLORS.black2,
-    fontSize: fontScale(14),
     flex: 1,
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
@@ -264,14 +363,14 @@ const styles = StyleSheet.create({
     width: horizontalScale(90),
     height: verticalScale(128),
     marginRight: 10,
-    backgroundColor: "#f0f0f0",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: '#f0f0f0',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 8,
   },
   pdfSize: {
     fontSize: 12,
-    color: "gray",
+    color: 'gray',
   },
 });
 

@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from '@react-navigation/stack';
 import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
 import EditProfileScreen from '../screens/ProfileScreen/EditProfile/EditProfileScreen';
 import ConnectedAccountsScreen from '../screens/ProfileScreen/EditProfile/ConnectedAccountsScreen';
@@ -12,7 +15,6 @@ import FollowingScreen from 'src/screens/ProfileScreen/FollowingScreen/Following
 import HostEditProfileScreen from 'src/screens/ProfileScreen/EditProfile/HostEditProfileScreen';
 import HostConnectedAccountsScreen from 'src/screens/ProfileScreen/EditProfile/HostConnectedAccountsScreen';
 
-
 // Define the param list for the stack navigator
 export type ProfileStackParamList = {
   EditProfileScreen: undefined;
@@ -24,8 +26,8 @@ export type ProfileStackParamList = {
   HostProfileScreen: undefined;
   ReferralScreen: undefined;
   FollowingScreen: undefined;
-  HostEditProfileScreen:undefined;
-  HostConnectedAccountsScreen:undefined
+  HostEditProfileScreen: undefined;
+  HostConnectedAccountsScreen: undefined;
 };
 
 const Stack = createStackNavigator<ProfileStackParamList>();
@@ -34,9 +36,10 @@ const Stack = createStackNavigator<ProfileStackParamList>();
 export const ProfileStack: React.FC = () => {
   return (
     <Stack.Navigator
-      initialRouteName={"ProfileScreen"}
-      screenOptions={({ route, navigation }) => ({})}>
-
+      initialRouteName={'ProfileScreen'}
+      screenOptions={({ route, navigation }) => ({
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      })}>
       <Stack.Screen
         name="ProfileScreen"
         component={ProfileScreen}
@@ -89,7 +92,7 @@ export const ProfileStack: React.FC = () => {
         component={HostEditProfileScreen}
         options={{ headerShown: false }}
       />
-        <Stack.Screen
+      <Stack.Screen
         name="HostConnectedAccountsScreen"
         component={HostConnectedAccountsScreen}
         options={{ headerShown: false }}

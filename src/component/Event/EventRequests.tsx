@@ -11,6 +11,7 @@ import {
 } from 'src/utils/dimensions';
 import { useFetchGuestStatusCountQuery } from 'src/redux/actions/eventApiAction';
 import Button from '../Button';
+import { CustomText } from '../CustomText';
 
 interface EventOverviewProps {
   eventId: string; // Extend this type with actual item properties for better type safety.
@@ -39,8 +40,8 @@ const EventRequests: React.FC<EventOverviewProps> = ({
   const renderCountView = (count: number, type: string) => {
     return (
       <View style={styles.countContainer}>
-        <Text style={styles.countStyle}>{count}</Text>
-        <Text style={styles.subtitle}>{type}</Text>
+        <CustomText style={styles.countStyle}>{count}</CustomText>
+        <CustomText style={styles.subtitle}>{type}</CustomText>
       </View>
     );
   };
@@ -48,7 +49,7 @@ const EventRequests: React.FC<EventOverviewProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}>
-        <Text style={styles.title}>{LABLE.GUEST_LIST}</Text>
+        <CustomText style={styles.title}>{LABLE.GUEST_LIST}</CustomText>
       </View>
 
       <View style={styles.divider} />
@@ -62,7 +63,11 @@ const EventRequests: React.FC<EventOverviewProps> = ({
 
       <View style={styles.divider} />
 
-      <View style={styles.wrapper}>
+      <View
+        style={{
+          paddingVertical: verticalMarginScale(12),
+          paddingHorizontal: horizontalMarginScale(16),
+        }}>
         <Button
           disabled={false}
           style={styles.btnStyle}
@@ -90,30 +95,23 @@ const styles = StyleSheet.create({
     paddingVertical: verticalMarginScale(16),
   },
   wrapper: {
-    paddingVertical: verticalMarginScale(16),
+    paddingVertical: verticalMarginScale(18),
     paddingHorizontal: horizontalMarginScale(16),
   },
   title: {
-    color: COLORS.black2,
     fontSize: fontScale(16),
     fontFamily: fontFamily.ABCDiatype_Medium,
-    fontWeight: '500',
   },
   countContainer: {
     alignItems: 'center',
     flex: 1,
   },
   countStyle: {
-    color: COLORS.black,
     fontSize: fontScale(32),
-    fontWeight: '400',
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
   subtitle: {
     color: COLORS.light_gray,
-    fontSize: fontScale(14),
-    fontWeight: '500',
-    fontFamily: fontFamily.ABCDiatype_Regular,
   },
   divider: {
     height: 1,

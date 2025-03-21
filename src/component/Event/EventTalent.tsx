@@ -1,11 +1,17 @@
-import React from 'react';
-import { Text, StyleSheet, View, FlatList, Pressable, Alert } from 'react-native';
-import { fontFamily, removeSignature } from '../../utils/functions';
-import { COLORS, LABLE } from '../../utils/constants';
-import IMAGES from '@images/index';
 import FastImage from '@d11/react-native-fast-image';
+import IMAGES from '@images/index';
+import React from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
+import { COLORS, LABLE } from '../../utils/constants';
+import { fontFamily, removeSignature } from '../../utils/functions';
 import AvatarInitials from '../AvatarInitials';
-import { fontScale, verticalMarginScale } from 'src/utils/dimensions';
+import { CustomText } from '../CustomText';
 import GradientSeprator from '../GradientSeprator';
 
 interface Talent {
@@ -19,25 +25,24 @@ interface EventTalentProps {
 }
 
 const EventTalent: React.FC<EventTalentProps> = ({ talents }) => {
-
   const itemSeparatorComponent = () => {
     return <GradientSeprator />;
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{LABLE.FEATURE_TALENT}</Text>
+      <CustomText style={styles.title}>{LABLE.FEATURE_TALENT}</CustomText>
       <View style={styles.divider} />
 
       <FlatList
         data={talents}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         horizontal={false}
         contentContainerStyle={styles.itemContainer}
         ItemSeparatorComponent={itemSeparatorComponent}
         renderItem={({ item }) => (
           <View style={styles.talentItem}>
-            {item.imageKeyUrl && item.imageKeyUrl.includes("http") ? (
+            {item.imageKeyUrl && item.imageKeyUrl.includes('http') ? (
               <FastImage
                 source={{ uri: removeSignature(item.imageKeyUrl) }}
                 resizeMode={FastImage.resizeMode.cover}
@@ -47,7 +52,7 @@ const EventTalent: React.FC<EventTalentProps> = ({ talents }) => {
             ) : (
               <AvatarInitials name={item.name} size={48} />
             )}
-            <Text style={styles.name}>{item.name}</Text>
+            <CustomText style={styles.name}>{item.name}</CustomText>
           </View>
         )}
       />
@@ -57,11 +62,10 @@ const EventTalent: React.FC<EventTalentProps> = ({ talents }) => {
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: COLORS.borderGray,
-    borderRadius: 15,
-    paddingHorizontal: 15,
-    paddingTop: 20,
+    borderRadius: radiusScale(16),
+    paddingTop: verticalMarginScale(18),
     backgroundColor: COLORS.white,
   },
   icon: {
@@ -71,30 +75,27 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.borderGray,
   },
   title: {
-    color: COLORS.black2,
-    fontSize: 16,
-    marginBottom: 5,
+    fontSize: fontScale(16),
     fontFamily: fontFamily.ABCDiatype_Medium,
+    paddingHorizontal: horizontalMarginScale(16),
   },
   divider: {
     height: 1,
     width: '100%',
     backgroundColor: COLORS.borderGray,
-    marginVertical: 10,
+    marginTop: verticalMarginScale(18),
   },
   itemContainer: {
-    paddingVertical: verticalMarginScale(10),
+    // paddingVertical: verticalMarginScale(10),
   },
   talentItem: {
     alignItems: 'center',
-    marginRight: 15,
-    marginBottom: 15,
-    flexDirection: 'row'
+    marginHorizontal: horizontalMarginScale(16),
+    paddingVertical: verticalMarginScale(16),
+    flexDirection: 'row',
+    gap: horizontalMarginScale(16),
   },
   name: {
-    color: COLORS.black2,
-    fontSize: fontScale(14),
-    padding: 10,
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
 });

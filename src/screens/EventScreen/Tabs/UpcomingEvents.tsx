@@ -106,7 +106,7 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
           onEndReachedThreshold={0.5}
           ListFooterComponent={
             <View style={{ marginBottom: verticalMarginScale(100) }}>
-              {isLoading ? <ActivityIndicator /> : null}
+              {isLoading ? <ActivityIndicator color={COLORS.black} /> : null}
             </View>
           }
         />

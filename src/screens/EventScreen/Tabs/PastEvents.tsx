@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, FlatList, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
-import { ROLE } from 'src/utils/constants';
+import { COLORS, ROLE } from 'src/utils/constants';
 import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
 import {
   useFetchEventsQuery,
@@ -109,7 +109,7 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
           onEndReachedThreshold={0.5}
           ListFooterComponent={
             <View style={{ marginBottom: verticalMarginScale(100) }}>
-              {isLoading ? <ActivityIndicator /> : null}
+              {isLoading ? <ActivityIndicator color={COLORS.black} /> : null}
             </View>
           }
         />

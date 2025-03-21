@@ -348,7 +348,7 @@ const RSVPNoStatusApplied: React.FC = () => {
         onPress={handleCancelApplication}
         style={styles.redButton}>
         {isDeleting ? (
-          <ActivityIndicator />
+          <ActivityIndicator color={COLORS.black} />
         ) : (
           <Text style={[styles.optionText, { color: COLORS.white }]}>
             Cancel Application

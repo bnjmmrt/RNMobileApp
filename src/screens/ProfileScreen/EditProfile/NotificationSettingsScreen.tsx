@@ -1,18 +1,12 @@
-import React, {useState} from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Switch,
-  Text,
-  View,
-} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useDispatch, useSelector} from 'react-redux';
-import {setPageProgress} from '../../../redux/slices/appFlowSlice';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPageProgress } from '../../../redux/slices/appFlowSlice';
 import Header from '../../../component/Header/Header';
-import {COLORS, PROFILE} from '../../../utils/constants';
-import {useNavigation} from '@react-navigation/native';
-import {RootState} from '../../../redux/slices';
+import { COLORS, PROFILE } from '../../../utils/constants';
+import { useNavigation } from '@react-navigation/native';
+import { RootState } from '../../../redux/slices';
 import {
   fontScale,
   horizontalMarginScale,
@@ -21,8 +15,8 @@ import {
   verticalScale,
 } from 'src/utils/dimensions';
 import useApi from 'src/axios/useApi';
-import {EndPoint} from 'src/ApiManager/config';
-import {setNotificationSettings} from 'src/redux/slices/appSettingsSlice';
+import { EndPoint } from 'src/ApiManager/config';
+import { setNotificationSettings } from 'src/redux/slices/appSettingsSlice';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 interface NotificationSettingsScreenProps {}
@@ -35,9 +29,11 @@ interface ConfigData {
   snapPoints?: any;
 }
 
-const NotificationSettingsScreen: React.FC<NotificationSettingsScreenProps> = () => {
+const NotificationSettingsScreen: React.FC<
+  NotificationSettingsScreenProps
+> = () => {
   const dispatch = useDispatch();
-  const {apiRequest, loading, error} = useApi();
+  const { apiRequest, loading, error } = useApi();
   const navigation = useNavigation();
   const notificationsSettings = useSelector(
     (state: RootState) => state.appSettings.notificationsSettings,
@@ -53,57 +49,63 @@ const NotificationSettingsScreen: React.FC<NotificationSettingsScreenProps> = ()
   const [isEmailNotificationEnabled, setEmailNotificationEnabled] = useState(
     notificationsSettings?.enableEmailNotifications,
   );
-  
+
   const toggleSMSNotification = () => {
     const newValue = !isSMSNotificationEnabled;
     setSMSNotificationEnabled(newValue);
     updateSettings(
       { ...notificationsSettings, enableSmsNotifications: newValue },
-      newValue
+      newValue,
+      'SMS',
     );
   };
-  
+
   const togglePushNotification = () => {
     const newValue = !isPushNotificationEnabled;
     setPushNotificationEnabled(newValue);
     updateSettings(
       { ...notificationsSettings, enableAppNotifications: newValue },
-      newValue
+      newValue,
+      'Push',
     );
   };
-  
+
   const toggleEmailNotification = () => {
     const newValue = !isEmailNotificationEnabled;
     setEmailNotificationEnabled(newValue);
     updateSettings(
       { ...notificationsSettings, enableEmailNotifications: newValue },
-      newValue
+      newValue,
+      'Email',
     );
   };
-  
 
-  const updateSettings = async (requestData: any, newValue: boolean) => {
+  const updateSettings = async (
+    requestData: any,
+    newValue: boolean,
+    type: 'SMS' | 'Push' | 'Email',
+  ) => {
     const response: any = await apiRequest(
       'put',
       EndPoint.user_notification_preferences,
-      {...requestData, muteDuration: '24h'},
+      { ...requestData, muteDuration: '24h' },
     );
-  
+
     if (response.success) {
       dispatch(setNotificationSettings(response.data));
-  
+
       // Determine the success message dynamically
       const status = newValue ? 'ON' : 'OFF';
       FlashMessageComponent.show(
         'success',
-        `Notifications turned ${status} successfully`
+        `${type} Notifications turned ${status} successfully`,
       );
     }
   };
-  const handleBackPress=()=>{
-    dispatch(setPageProgress(3))
-    navigation.goBack()
-  }
+  const handleBackPress = () => {
+    dispatch(setPageProgress(3));
+    navigation.goBack();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -118,7 +120,7 @@ const NotificationSettingsScreen: React.FC<NotificationSettingsScreenProps> = ()
             <Text style={styles.label}>{PROFILE.SMS_NOTIFICATIONS}</Text>
             <Switch
               style={styles.switch}
-              trackColor={{false: COLORS.black, true: COLORS.black}}
+              trackColor={{ false: COLORS.black, true: COLORS.black }}
               thumbColor={
                 isSMSNotificationEnabled ? COLORS.white : COLORS.white
               }
@@ -130,7 +132,7 @@ const NotificationSettingsScreen: React.FC<NotificationSettingsScreenProps> = ()
             <Text style={styles.label}>{PROFILE.PUSH_NOTIFICATIONS}</Text>
             <Switch
               style={styles.switch}
-              trackColor={{false: COLORS.black, true: COLORS.black}}
+              trackColor={{ false: COLORS.black, true: COLORS.black }}
               thumbColor={
                 isPushNotificationEnabled ? COLORS.white : COLORS.white
               }
@@ -142,7 +144,7 @@ const NotificationSettingsScreen: React.FC<NotificationSettingsScreenProps> = ()
             <Text style={styles.label}>{PROFILE.EMAIL_NOTIFICATIONS}</Text>
             <Switch
               style={styles.switch}
-              trackColor={{false: COLORS.black, true: COLORS.black}}
+              trackColor={{ false: COLORS.black, true: COLORS.black }}
               thumbColor={
                 isEmailNotificationEnabled ? COLORS.white : COLORS.white
               }
@@ -192,7 +194,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   switch: {
-    transform: [{scaleX: 0.7}, {scaleY: 0.7}],
+    transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }],
   },
 });
 export default NotificationSettingsScreen;

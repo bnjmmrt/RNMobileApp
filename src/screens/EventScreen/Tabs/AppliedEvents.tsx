@@ -5,6 +5,7 @@ import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
 import { useFetchEventsQuery } from '../../../redux/actions/eventApiAction';
 import { Hp, verticalMarginScale } from '../../../utils/dimensions';
 import EventItem from '../EventItem';
+import { COLORS } from 'src/utils/constants';
 
 interface AppliedEventsProps {
   userId: string;
@@ -68,7 +69,7 @@ const AppliedEvents: React.FC<AppliedEventsProps> = ({
           onEndReachedThreshold={0.5}
           ListFooterComponent={
             <View style={{ marginBottom: verticalMarginScale(100) }}>
-              {isLoading ? <ActivityIndicator /> : null}
+              {isLoading ? <ActivityIndicator color={COLORS.black} /> : null}
             </View>
           }
         />

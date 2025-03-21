@@ -6,82 +6,100 @@ import {
   Image,
   TouchableOpacity,
   Platform,
-  Linking
+  Linking,
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import MapView from 'react-native-maps';
 import { fontFamily } from '../../utils/functions';
 import { COLORS, ROLE } from '../../utils/constants';
 import IMAGES from '@images/index';
-import { fontScale, verticalMarginScale } from 'src/utils/dimensions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
 import { RootState } from 'src/redux/slices';
 import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
 import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
 import GradientSeprator from '../GradientSeprator';
 import MapComponent from '../MapComponent';
 import { Event } from 'src/types';
-
-
+import { CustomText } from '../CustomText';
 
 interface EventVenueProps {
   item: Event;
-  handleCalendarPress: () => void
-
+  handleCalendarPress: () => void;
 }
 
-
-const EventVenue: React.FC<EventVenueProps> = ({ item, handleCalendarPress }) => {
+const EventVenue: React.FC<EventVenueProps> = ({
+  item,
+  handleCalendarPress,
+}) => {
   const dates = formatToDeviceTimeZone(item?.startDate, item?.endDate);
   const role = useSelector((state: RootState) => state.auth.role);
   // const dates = useMemo(() => formatToDeviceTimeZone(item?.startDate, item?.endDate));
 
-  const isShowLocation = role === ROLE.HOST || item?.currentGuestStatus === 'CONFIRMED';
-  const locationText = isShowLocation ? item?.location?.location : 'RSVP to See Location';
+  const isShowLocation =
+    role === ROLE.HOST || item?.currentGuestStatus === 'CONFIRMED';
+  const locationText = isShowLocation
+    ? item?.location?.location
+    : 'RSVP to See Location';
 
   return (
     <View style={[styles.container]}>
-      <View style={{ marginBottom: verticalMarginScale(8) }}>
-        <View style={{ marginVertical: verticalMarginScale(2), flexDirection: 'row', justifyContent: 'space-between' }}>
-          <View>
-            <Text style={styles.title}>{dates[0]}</Text>
-            <Text style={styles.subtitle}>{dates[1]}</Text>
-          </View>
-          {isShowLocation && <TouchableOpacity onPress={handleCalendarPress}>
-            <Image source={IMAGES.calendarCircle} />
-          </TouchableOpacity>}
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          gap: horizontalMarginScale(16),
+        }}>
+        <View>
+          <CustomText style={styles.title}>{dates[0]}</CustomText>
+          <CustomText style={styles.subtitle}>{dates[1]}</CustomText>
         </View>
+        {isShowLocation && (
+          <TouchableOpacity onPress={handleCalendarPress}>
+            <Image source={IMAGES.calendarCircle} />
+          </TouchableOpacity>
+        )}
       </View>
+
       <GradientSeprator />
+
       <View style={styles.locationContainer}>
-        <Text style={styles.title}>{locationText}</Text>
-        <Text style={styles.subtitle}>{item?.location?.city}</Text>
+        <CustomText style={styles.title}>{locationText}</CustomText>
+        {item?.location?.city ? (
+          <CustomText style={styles.subtitle}>
+            {item?.location?.city}
+          </CustomText>
+        ) : null}
       </View>
 
       <MapComponent item={item} />
-
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 2,
-    padding: 15,
-    borderRadius: 15,
+    borderWidth: 1,
+    paddingHorizontal: horizontalMarginScale(16),
+    paddingVertical: verticalMarginScale(16),
+    borderRadius: radiusScale(16),
     borderColor: COLORS.borderGray,
+    gap: verticalMarginScale(16),
   },
   contentContainer: {
     flex: 1,
     padding: 5,
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   dateContainer: {
     marginBottom: verticalMarginScale(10),
-    flex: 1
+    flex: 1,
   },
-  locationContainer: {
-    marginVertical: verticalMarginScale(12),
-  },
+  locationContainer: {},
   mapContainer: {
     borderRadius: 10,
     overflow: 'hidden',
@@ -95,15 +113,12 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
   title: {
-    color: COLORS.black2,
     fontSize: fontScale(16),
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
   subtitle: {
     color: COLORS.light_gray,
-    fontSize: fontScale(14),
-    paddingVertical: 5,
-    fontFamily: fontFamily.ABCDiatype_Regular,
+    marginTop: verticalMarginScale(4),
   },
   mapButton: {
     width: 60,
