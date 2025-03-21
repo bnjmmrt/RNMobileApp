@@ -61,7 +61,7 @@ export const EndPoint = {
 
   phone_send_verification_code: `notifications/v1/communication/send-verification-code`,
   phone_verify_code: `notifications/v1/communication/verify-code`,
-
+  notification_count:`/notifications/v1/notifications/summary`,
   get_focuses: `${API_USERS_V1_AUTH}/get-focuses`,
   interests: `${API_USERS_V1_AUTH}/interests`,
   member_signUp: `${API_USERS_V1_AUTH}/member-sign-up`,

@@ -4,12 +4,14 @@ interface AppFlowApiDataState {
   creativeFocus: any[];
   interests: any[];
   profileData: any;
+  notiCount:number
 }
 
 const initialState: AppFlowApiDataState = {
   creativeFocus: [],
   interests: [],
   profileData: {},
+  notiCount:0
 };
 
 const appFlowApiDataSlice = createSlice({
@@ -34,6 +36,9 @@ const appFlowApiDataSlice = createSlice({
       // Reset state to initial values
       Object.assign(state, initialState);
     },
+    setNotificationCount(state, action: PayloadAction<any>) {
+      state.notiCount = action.payload;
+    },
   },
 });
 
@@ -43,6 +48,7 @@ export const {
   resetAppGlobalData,
   setProfileData,
   resetProfileData,
+  setNotificationCount,
 } = appFlowApiDataSlice.actions;
 
 export default appFlowApiDataSlice.reducer;
