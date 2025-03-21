@@ -94,7 +94,6 @@ export const EventCard = ({ name, location, imageCover, dates = ['', ''] }) => {
       <FastImage
         source={{ uri: imageCover }}
         resizeMode={FastImage.resizeMode.cover}
-        defaultSource={IMAGES.eventCoverPlaceholders1}
         style={styles.image}
       />
       <View style={styles.info}>

@@ -1,8 +1,8 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import IMAGES from '../../assets/images';
-import {COLORS} from '../../utils/constants';
-import {fontFamily} from '../../utils/functions';
+import { COLORS } from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
 import FastImage from '@d11/react-native-fast-image';
 import {
   horizontalMarginScale,
@@ -16,14 +16,13 @@ interface NoResultsProps {
   loading: boolean;
 }
 
-const NoResults: React.FC<NoResultsProps> = ({loading}) => {
+const NoResults: React.FC<NoResultsProps> = ({ loading }) => {
   return (
     <View style={styles.container}>
       <View style={styles.subContainer}>
         <FastImage
           source={IMAGES.iconRumor}
           resizeMode={FastImage.resizeMode.cover}
-          defaultSource={IMAGES.eventCoverPlaceholders1}
           style={styles.icon}
         />
         {!loading && <Text style={styles.titleText}>No results</Text>}
@@ -53,6 +52,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: horizontalMarginScale(10),
+    backgroundColor: COLORS.borderGray,
   },
   text: {
     fontSize: fontScale(14),

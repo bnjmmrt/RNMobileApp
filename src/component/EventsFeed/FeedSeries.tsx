@@ -27,27 +27,16 @@ const FeedSeries: React.FC<FeedSeriesProps> = ({ item, setSeries }) => {
         <FastImage
           source={item.image}
           resizeMode={FastImage.resizeMode.cover}
-          defaultSource={IMAGES.eventCoverPlaceholders1}
           style={styles.image}
         />
         <FastImage
-          source={
-            item.events?.[0]?.image
-              ? { uri: item.events[0].image }
-              : IMAGES.eventCoverPlaceholders1
-          }
+          source={{ uri: item?.events?[0]?.image }}
           resizeMode={FastImage.resizeMode.cover}
-          defaultSource={IMAGES.eventCoverPlaceholders1}
           style={styles.image0}
         />
         <FastImage
-          source={
-            item.events?.[1]?.image
-              ? { uri: item.events[1].image }
-              : IMAGES.eventCoverPlaceholders1
-          }
+          source={{ uri: item?.events?[1]?.image }}
           resizeMode={FastImage.resizeMode.cover}
-          defaultSource={IMAGES.eventCoverPlaceholders1}
           style={styles.image1}
         />
         <View style={styles.seriesLabel}>
@@ -78,6 +67,7 @@ const styles = StyleSheet.create({
     width: Wp(41),
     borderRadius: radiusScale(10),
     zIndex: 3,
+    backgroundColor: COLORS.borderGray,
   },
   image0: {
     position: 'absolute',
@@ -86,6 +76,7 @@ const styles = StyleSheet.create({
     borderRadius: radiusScale(10),
     zIndex: 2,
     transform: [{ translateY: verticalMarginScale(8) }], // Slight shift
+    backgroundColor: COLORS.borderGray,
   },
   image1: {
     position: 'absolute',
@@ -94,6 +85,7 @@ const styles = StyleSheet.create({
     borderRadius: radiusScale(10),
     zIndex: 1,
     transform: [{ translateY: verticalMarginScale(16) }], // Further shift
+    backgroundColor: COLORS.borderGray,
   },
 
   container: {

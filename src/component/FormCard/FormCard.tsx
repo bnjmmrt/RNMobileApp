@@ -29,7 +29,6 @@ const FormCard: React.FC<FormCardProps> = ({
       <FastImage
         source={{ uri: styling }}
         style={styles.formImage}
-        defaultSource={IMAGES.eventCoverPlaceholders1}
         resizeMode="cover"
       />
       <View style={styles.formTextContainer}>
@@ -58,6 +57,7 @@ const styles = StyleSheet.create({
     height: verticalScale(300),
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
+    backgroundColor: COLORS.borderGray,
   },
   formTextContainer: {
     padding: horizontalScale(16),
