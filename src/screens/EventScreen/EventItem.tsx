@@ -68,7 +68,9 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
   };
 
   const isShowLocation =
-    role === ROLE.HOST || item?.currentGuestStatus === 'CONFIRMED' || item?.guest?.guestStatus === 'CONFIRMED';
+    role === ROLE.HOST ||
+    item?.currentGuestStatus === 'CONFIRMED' ||
+    item?.guest?.guestStatus === 'CONFIRMED';
   const locationText = isShowLocation
     ? item?.location?.city
     : 'RSVP to See Location';
@@ -82,7 +84,6 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
             removeSignature(item?.imageFlyer),
         }}
         resizeMode={FastImage.resizeMode.cover}
-        defaultSource={IMAGES.eventCoverPlaceholders1} // Your local placeholder image
         style={styles.icon}>
         {role === ROLE.HOST && (
           <View style={styles.roleContainer}>
@@ -108,13 +109,9 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
             </CustomText>
           </>
         ) : (
-
-          <CustomText
-            style={styles.subtitle}
-            textProps={{ numberOfLines: 2 }}>
+          <CustomText style={styles.subtitle} textProps={{ numberOfLines: 2 }}>
             {locationText}
           </CustomText>
-
         )}
         <ButtonSmall
           disabled={false}

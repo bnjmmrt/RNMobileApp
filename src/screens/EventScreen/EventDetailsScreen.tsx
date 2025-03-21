@@ -532,7 +532,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                     uri: removeSignature(data?.data?.imageFlyer),
                   }}
                   resizeMode={FastImage.resizeMode.cover}
-                  defaultSource={IMAGES.eventCoverPlaceholders1}
                   style={styles.blurredBackground}
                 />
                 <BlurView
@@ -815,6 +814,7 @@ const styles = StyleSheet.create({
     height: verticalScale(300),
     objectFit: 'contain',
     transform: [{ scale: 1.5 }],
+    backgroundColor: COLORS.borderGray,
   },
   errorTextContainer: {
     borderRadius: 10,

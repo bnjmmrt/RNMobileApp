@@ -322,11 +322,11 @@ const HostProfileScreen: React.FC = () => {
                   handlEventPress(item);
                 }}>
                 <FastImage
-                  defaultSource={IMAGES.eventCoverPlaceholders1}
                   style={{
                     width: Wp('42%'),
                     height: verticalScale(245),
                     borderRadius: 8,
+                    backgroundColor: COLORS.borderGray,
                   }}
                   source={{ uri: removeSignature(item?.imageFlyer) }}
                 />
@@ -361,11 +361,11 @@ const HostProfileScreen: React.FC = () => {
                   handlEventPress(item);
                 }}>
                 <FastImage
-                  defaultSource={IMAGES.eventCoverPlaceholders1}
                   style={{
                     width: Wp('42%'),
                     height: verticalScale(245),
                     borderRadius: 8,
+                    backgroundColor: COLORS.borderGray,
                   }}
                   source={{ uri: removeSignature(item.imageFlyer) }}
                 />

@@ -73,36 +73,38 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
   const profilePhoto =
     role?.toLocaleLowerCase() === 'host' ? companyLogo : profilePicture;
 
-  const toggleRole = async (role: role) => {
+  const toggleRole = async (newRole: role) => {
     if (roles.length === 1) {
       navigation.navigate(ROUTES.ProfileScreen);
       setSwitchingRole('');
     } else {
       setIsRolesExpanded(!isRolesExpanded);
       if (isRolesExpanded) {
-        try {
-          const response: any = await apiRequest(
-            'post',
-            `${EndPoint.switch_profile}/${userId}`,
-            { targetRole: role.roleName },
-          );
-
-          if (response.success) {
-            FlashMessageComponent.show(
-              `success`,
-              `Switched to ${role.roleName} Account`,
+        if (newRole.roleName !== role) {
+          try {
+            const response: any = await apiRequest(
+              'post',
+              `${EndPoint.switch_profile}/${userId}`,
+              { targetRole: newRole.roleName },
             );
-            setIsRolesExpanded(false);
-            dispatch(setRole(role.roleName));
-            dispatch(setRoleId(role.roleId));
-            dispatch(setAuthToken(response?.data?.token));
-            //  fetchUserProfile();
+
+            if (response.success) {
+              FlashMessageComponent.show(
+                `success`,
+                `Switched to ${newRole.roleName} Account`,
+              );
+              setIsRolesExpanded(false);
+              dispatch(setRole(newRole.roleName));
+              dispatch(setRoleId(newRole.roleId));
+              dispatch(setAuthToken(response?.data?.token));
+              //  fetchUserProfile();
+            }
+          } catch (error) {
+            const typedError = error as ApiErrorInterface;
+            FlashMessageComponent.show('error', getErrorMessage(typedError));
+          } finally {
+            setSwitchingRole('');
           }
-        } catch (error) {
-          const typedError = error as ApiErrorInterface;
-          FlashMessageComponent.show('error', getErrorMessage(typedError));
-        } finally {
-          setSwitchingRole('');
         }
       }
     }

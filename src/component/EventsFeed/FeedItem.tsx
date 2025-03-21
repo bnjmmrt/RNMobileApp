@@ -3,7 +3,8 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ROUTES } from 'src/navigation/Route';
-import IMAGES from '../../assets/images';
+import { formatEventDate } from 'src/utils/dateFunctions';
+import { fontFamily, removeSignature } from 'src/utils/functions';
 import { COLORS } from '../../utils/constants';
 import {
   fontScale,
@@ -14,8 +15,6 @@ import {
 } from '../../utils/dimensions';
 import { CustomText } from '../CustomText';
 import type { EventItem } from './EventsFeed';
-import { formatEventDate } from 'src/utils/dateFunctions';
-import { fontFamily, removeSignature } from 'src/utils/functions';
 
 let screenWidth: number = Dimensions.get('window').width;
 
@@ -49,9 +48,12 @@ const FeedItem: React.FC<FeedItemProps> = ({ item, from = 'AllEvents' }) => {
       onPress={() => handlEventPress()}>
       <View style={[styles.imageContainer]}>
         <FastImage
-          source={{ uri: removeSignature(item.imageCover) || removeSignature(item.imageFlyer) }}
+          source={{
+            uri:
+              removeSignature(item.imageCover) ||
+              removeSignature(item.imageFlyer),
+          }}
           resizeMode={FastImage.resizeMode.cover}
-          defaultSource={IMAGES.eventCoverPlaceholders1}
           style={styles.icon}
         />
       </View>
@@ -63,7 +65,9 @@ const FeedItem: React.FC<FeedItemProps> = ({ item, from = 'AllEvents' }) => {
             </CustomText>
           ) : null}
           {item.startDate ? (
-            <CustomText textProps={{ numberOfLines: 1 }} style={styles.subtitle}>
+            <CustomText
+              textProps={{ numberOfLines: 1 }}
+              style={styles.subtitle}>
               {formatEventDate(item.startDate, item.endDate)}
             </CustomText>
           ) : null}
@@ -94,7 +98,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: fontScale(16),
     fontFamily: fontFamily.ABCDiatype_Medium,
-    color: COLORS.black
+    color: COLORS.black,
   },
   subtitle: {
     color: COLORS.light_gray,
