@@ -4,6 +4,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Alert,
+  InteractionManager,
   Platform,
   ScrollView,
   TouchableOpacity,
@@ -403,9 +404,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     dispatch(setAuthToken(null));
     dispatch(resetAppFlowDetails());
     // navigation.dispatch(resetAction);
-    setTimeout(() => {
-      navigation.replace('AuthStack');
-    }, 500);
+    InteractionManager.runAfterInteractions(() => {
+      setTimeout(() => {
+        navigation.replace('AuthStack');
+      }, 500);
+    });
   };
 
   const getUserName = () => {
