@@ -57,7 +57,7 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
     <View
       style={{
         ...styles.container,
-        backgroundColor: isNotMember ? COLORS.black2 : COLORS.black2, // Force black background
+        backgroundColor: isNotMember ? COLORS.black2 : COLORS.white,
       }}>
       {!isNotMember ? (
         <EventsFeed />
