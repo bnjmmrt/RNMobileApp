@@ -39,7 +39,7 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({
             />
           ) : (
             <View style={styles.profilePhotoContainer}>
-              <AvatarInitials name={name} size={48} listing={false} />
+              <AvatarInitials name={name} size={45} listing={false} />
             </View>
           )}
         </FullScreenLoader>

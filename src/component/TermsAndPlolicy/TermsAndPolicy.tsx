@@ -26,7 +26,7 @@ const TermsAndPolicy: React.FC<TermsAndPolicyProps> = ({
 
   const terms = type == 'small' ? 'Terms' : 'Terms of Service';
   const privacy = type == 'small' ? 'Privacy' : 'Privacy Policy';
-  const and = type == 'small' ? '&' : 'and';
+  const and = type == 'small' ? ' & ' : ' and  ';
 
   return (
     <View style={styles.container}>
@@ -40,7 +40,7 @@ const TermsAndPolicy: React.FC<TermsAndPolicyProps> = ({
           onPress={() => handleLinkPress(LINKS.TERMS_AND_CONDITION)}>
           <CustomText style={styles.linkText}>{terms}</CustomText>
         </TouchableOpacity>
-        <CustomText style={styles.text}>{and} </CustomText>
+        <CustomText style={styles.text}>{and}</CustomText>
         <TouchableOpacity onPress={() => handleLinkPress(LINKS.PRIVACY_POLICY)}>
           <CustomText style={styles.linkText}> {privacy}</CustomText>
         </TouchableOpacity>
