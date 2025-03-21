@@ -170,6 +170,14 @@ export const usersApiAction = createBaseApi.injectEndpoints({
       providesTags: ['notificationDetail'],
     }),
 
+    // delete notification
+    deleteNotification: builder.mutation({
+      query: ({ notificationId }: { notificationId: string }) => ({
+        url: `/notifications/v1/notification/${notificationId}`,
+        method: 'DELETE',
+      }),
+    }),
+
 
   }),
 });
@@ -193,7 +201,8 @@ export const {
 
   useDeleteUserMutation,
   useFetchNotificationQuery,
-  useFetchNotificationDetailQuery
+  useFetchNotificationDetailQuery,
+  useDeleteNotificationMutation,
 } = usersApiAction;
 
 export interface UserDetailResponse {

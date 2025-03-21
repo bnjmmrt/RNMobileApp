@@ -16,6 +16,7 @@ import { SafeAreaViewWrapper } from './src/component/Wrappers/SafeAreaViewWrappe
 import {
   setCreativeFocus,
   setInterests,
+  setNotificationCount,
 } from './src/redux/slices/appGlobalDataSlice';
 import { persistor, store } from './src/redux/store';
 import RNPreventScreenshot from 'react-native-screenshot-prevent';
@@ -26,6 +27,7 @@ import { getDeviceId } from 'src/utils/functions';
 import Intercom, { Visibility } from '@intercom/intercom-react-native';
 import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import analytics from '@react-native-firebase/analytics';
+import { useFetchNotificationCountQuery } from 'src/redux/actions/usersApiAction';
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
@@ -85,6 +87,12 @@ const AppContent: React.FC = () => {
       interestResponse.data.sort((a, b) => a.name.localeCompare(b.name));
       dispatch(setInterests(interestResponse.data));
     }
+    const notificationCount: any = await apiRequest('get', EndPoint.notification_count);
+    console.log('notificationCount.data', notificationCount);
+    if (notificationCount.data) {
+      dispatch(setNotificationCount(notificationCount?.data?.totalNotifications));
+    }
+
   };
 
   useEffect(() => {

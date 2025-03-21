@@ -159,6 +159,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(24),
     fontFamily: fontFamily.RomieTrial_Bold,
     marginBottom: verticalMarginScale(10),
+    color:'black'
   },
   subtitle: {
     color: COLORS.light_gray,

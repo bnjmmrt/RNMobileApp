@@ -281,7 +281,7 @@ const PhoneNumberInput = forwardRef<
             // placeholder="Enter phone number"
             keyboardType="number-pad"
             returnKeyType="done"
-            // value={phoneNumber}
+            value={phoneNumber}
             // maxLength={maxLength}
             // onChangeText={handleChange}
             // onChangeText={(text: string) => {
@@ -291,7 +291,7 @@ const PhoneNumberInput = forwardRef<
             //     onChangeText(text);
             //   }
             // }}
-            value={formatPhoneNumber(phoneNumber)}
+            // value={formatPhoneNumber(phoneNumber)}
             maxLength={maxLength + Math.floor(phoneNumber.length / 3)}
             onChangeText={handlePhoneNumberChange}
             onBlur={() => validatePhoneNumber()}
