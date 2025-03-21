@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useMemo } from 'react';
-import { Platform, View } from 'react-native';
+import { Platform, View, StatusBar } from 'react-native';
 import { shallowEqual, useSelector } from 'react-redux';
 import AfterAppStaticComponent from '../../component/BeforeAppStaticComponent/AfterAppStaticComponent';
 import EventsFeed from '../../component/EventsFeed/EventsFeed';
@@ -32,6 +32,14 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
           showTopSafeAreaView: false,
           showBottomSafeAreaView: false,
         });
+
+        if (isNotMember && !isGuest) {
+          // Update status bar when AfterAppStaticComponent is active
+          StatusBar.setBarStyle('light-content');
+          StatusBar.setBackgroundColor('transparent');
+        } else {
+          StatusBar.setBarStyle('dark-content');
+        }
       }
     }, []),
   );
@@ -49,7 +57,7 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
     <View
       style={{
         ...styles.container,
-        backgroundColor: isNotMember ? COLORS.black2 : COLORS.white,
+        backgroundColor: isNotMember ? COLORS.black2 : COLORS.black2, // Force black background
       }}>
       {!isNotMember ? (
         <EventsFeed />

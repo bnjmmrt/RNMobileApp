@@ -527,7 +527,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    marginTop: Platform.OS === 'ios' ? verticalMarginScale(61) : 0,
+    paddingTop: Platform.OS === 'ios' ? verticalMarginScale(61) : 0,
   },
   responseSubmitted: {
     display: 'flex',
