@@ -10,7 +10,6 @@ import FastImage from '@d11/react-native-fast-image';
 import AvatarInitials from 'src/component/AvatarInitials';
 import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import { useFetchHostEventsAnnouncementQuery } from 'src/redux/actions/eventApiAction';
-import { dateFormat } from 'src/utils/functions';
 import { formatViewAnnouncementDate } from 'src/utils/dateFunctions';
 import ImagePdfViewer from 'src/component/Event/ImagePdfViewer';
 import { ROUTES } from 'src/navigation/Route';

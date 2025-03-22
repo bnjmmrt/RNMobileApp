@@ -54,6 +54,7 @@ import SelectReason from './BottomSheetView/SelectReason';
 import RenderCancelPopup from './RenderCancelPopup';
 import { styles } from './styles';
 import { SwipeableGuestList } from './SwipeableGuestList';
+import { formatDetailedEventDate } from 'src/utils/dateFunctions';
 
 const reasons = [
   { id: 1, name: 'Scheduling Conflict' },
@@ -87,7 +88,7 @@ const calculateAvailableGuestPasses = (
   return availableGuestPasses;
 };
 
-export const EventCard = ({ name, location, imageCover, dates = ['', ''] }) => {
+export const EventCard = ({ name, location, imageCover, dates }) => {
   return (
     <View style={styles.card}>
       <FastImage
@@ -98,7 +99,7 @@ export const EventCard = ({ name, location, imageCover, dates = ['', ''] }) => {
       <View style={styles.info}>
         <CustomText style={styles.title}>{name}</CustomText>
         <CustomText style={styles.details}>
-          {dates[0]} {dates[1]}
+          {dates}
         </CustomText>
         <CustomText style={styles.details}>{location}</CustomText>
       </View>
@@ -131,7 +132,7 @@ const optionList = [{ id: 1, label: 'Cancel RSVP' }];
 const RSVPInvitedUpcoming = () => {
   const { params } = useRoute();
   const scrollRef = React.useRef(null);
-  const { id, name, location, imageFlyer, startDate, endDate } = params.event;
+  const { id, name, location, imageFlyer, startDate, endDate, timeZone } = params.event;
   const [maxAdditionalGuests, setMaxAdditionalGuests] = React.useState(0);
   const status = params?.event?.currentGuestStatus;
   const { navigate, goBack } = useNavigation();
@@ -228,12 +229,10 @@ const RSVPInvitedUpcoming = () => {
   };
 
   const getSnapPoints = (): string => {
-    console.log('Sayyed activeView:', activeView);
-    console.log('Sayyed maxAdditionalGuests:', maxAdditionalGuests);
 
     switch (activeView) {
       case 'guests':
-        return '30%';
+        return maxAdditionalGuests == 0 ? '10%' : `${(maxAdditionalGuests * 8) + 10}%`;
       case 'submit':
         return '60%';
       case 'options':
@@ -508,7 +507,7 @@ const RSVPInvitedUpcoming = () => {
               name={name}
               location={location?.location}
               imageCover={removeSignature(imageFlyer)}
-              dates={formatToDeviceTimeZone(startDate, endDate)}
+              dates={formatDetailedEventDate(startDate, endDate, timeZone)}
             />
             <StatusBanner />
             <View style={[styles.card, { flexDirection: 'column' }]}>
@@ -647,7 +646,7 @@ const RSVPInvitedUpcoming = () => {
               fontSize: fontScale(14),
             }}>
             Please add your additional guests’ details by{' '}
-            {formatToDeviceTimeZone(startDate, endDate)}, or their passes will
+            {formatDetailedEventDate(startDate, endDate, timeZone)}, or their passes will
             be canceled.
           </CustomText>
         )}
@@ -701,7 +700,7 @@ const RSVPInvitedUpcoming = () => {
               name={name}
               location={location?.location}
               imageCover={removeSignature(imageFlyer)}
-              dates={formatToDeviceTimeZone(startDate, endDate)}
+              dates={formatDetailedEventDate(startDate, endDate, timeZone)}
             />
             <StatusBanner
               isGoing={true}
@@ -780,7 +779,7 @@ const RSVPInvitedUpcoming = () => {
             paddingBottom: 8,
           }}>
           Please add your additional guests’ details by{' '}
-          {formatToDeviceTimeZone(startDate, endDate)}, or their passes will be
+          {formatDetailedEventDate(startDate, endDate, timeZone)}, or their passes will be
           canceled.
         </CustomText>
         <Button

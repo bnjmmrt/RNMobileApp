@@ -38,8 +38,7 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
   const role = useSelector((state: RootState) => state.auth.role);
   const userId = useSelector((state: RootState) => state.auth.userId);
 
-  const dates = formatDetailedEventDate(item?.startDate, item?.endDate);
-
+  const dates = formatDetailedEventDate(item?.startDate, item?.endDate, item?.timeZone);
   const handlEventPress = () => {
     navigation.navigate(ROUTES.EventStack, {
       screen: ROUTES.EventDetailsScreen,
@@ -159,7 +158,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(24),
     fontFamily: fontFamily.RomieTrial_Bold,
     marginBottom: verticalMarginScale(10),
-    color:'black'
+    color: 'black'
   },
   subtitle: {
     color: COLORS.light_gray,

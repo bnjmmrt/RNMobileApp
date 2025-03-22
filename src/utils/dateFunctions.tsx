@@ -1,8 +1,12 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 
-export const formatEventDate = (startDate: string, endDate: string) => {
-  const start = moment.utc(startDate).local();
-  const end = moment.utc(endDate).local();
+export const formatEventDate = (
+  startDate: string,
+  endDate: string,
+  timeZoneId: string
+): string => {
+  const start = moment.utc(startDate).tz(timeZoneId);
+  const end = moment.utc(endDate).tz(timeZoneId);
 
   const startMonth = start.format('MMM');
   const endMonth = end.format('MMM');
@@ -20,11 +24,30 @@ export const formatEventDate = (startDate: string, endDate: string) => {
 };
 
 
-export const formatDetailedEventDate = (startDate: string, endDate: string = '') => {
-  const start = moment.utc(startDate).local();
-  const end = moment.utc(endDate).local();
-  const today = moment().startOf('day');
-  const tomorrow = moment().add(1, 'day').startOf('day');
+
+export const formatDetailedEventDate = (
+  startDate: string,
+  endDate: string = '',
+  timeZoneId: string = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+): string => {
+  const parseDate = (dateString: string): moment.Moment | null => {
+    if (!dateString) return null;
+    if (!dateString.includes('T')) {
+      dateString = dateString.replace(' ', 'T').replace('+00', 'Z');
+    }
+    const date = moment(dateString);
+    return date.isValid() ? date : null;
+  };
+
+  const start = parseDate(startDate)?.tz(timeZoneId);
+  const end = parseDate(endDate)?.tz(timeZoneId);
+  const today = moment().tz(timeZoneId).startOf('day');
+  const tomorrow = moment().tz(timeZoneId).add(1, 'day').startOf('day');
+
+  if (!start || !end) {
+    return 'Invalid date format';
+  }
 
   const startFormat = start.format('ddd, MMM D');
   const endFormat = end.format('ddd, MMM D');
@@ -42,6 +65,36 @@ export const formatDetailedEventDate = (startDate: string, endDate: string = '')
   }
 };
 
+export const formatTicketDate = (
+  dateString: string,
+  timeZone: string
+): string => {
+
+  if (!dateString) return 'Invalid date';
+  if (!dateString.includes('T')) {
+    dateString = dateString.replace(' ', 'T').replace('+00', 'Z');
+  }
+  const date = moment(dateString);
+  if (!date.isValid()) return 'Invalid date';
+
+  const dateInZone = date.tz(timeZone);
+  return dateInZone.format('dddd, MMMM Do, hh:mm A z');
+};
+
+export const convertUTCToTimeZoneFormat = (
+  dateString: string,
+  timeZone: string,
+  format: string
+): string => {
+  if (!dateString.includes('T')) {
+    dateString = dateString.replace(' ', 'T').replace('+00', 'Z');
+  }
+  const date = moment.utc(dateString).tz(timeZone);
+  if (!date.isValid()) return 'Invalid date';
+  return date.format(format);
+};
+
+
 export const formatViewAnnouncementDate = (startDate: string) => {
   const start = moment.utc(startDate).local();
   const today = moment().startOf('day');
@@ -58,19 +111,19 @@ export const formatViewAnnouncementDate = (startDate: string) => {
     return `${startFormat}, ${startTime}`;
   }
 };
-export const timeAgo = (timestamp:any) => {
-  const now:any = new Date();
-  const past:any = new Date(timestamp);
+export const timeAgo = (timestamp: any) => {
+  const now: any = new Date();
+  const past: any = new Date(timestamp);
   const diff = Math.floor((now - past) / 1000); // Difference in seconds
 
   if (diff < 60) {
-      return `${diff} sec ago`;
+    return `${diff} sec ago`;
   } else if (diff < 3600) {
-      return `${Math.floor(diff / 60)}m`;
+    return `${Math.floor(diff / 60)}m`;
   } else if (diff < 86400) {
-      return `${Math.floor(diff / 3600)}h`;
+    return `${Math.floor(diff / 3600)}h`;
   } else {
-      return `${Math.floor(diff / 86400)}d`;
+    return `${Math.floor(diff / 86400)}d`;
   }
 }
 export const formatSingleToDeviceTimeZone = (dateString) => {

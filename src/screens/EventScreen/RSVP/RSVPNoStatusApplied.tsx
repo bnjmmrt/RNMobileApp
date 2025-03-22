@@ -35,6 +35,7 @@ import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { EventCard } from '../RSVP/RSVPInvitedUpcoming';
 import { styles } from './RSVPScreenStyle';
 import RequestVouch from './RequestVouch';
+import { formatDetailedEventDate } from 'src/utils/dateFunctions';
 
 type Guest = {
   id: number;
@@ -67,6 +68,7 @@ const RSVPNoStatusApplied: React.FC = () => {
     currentGuestStatus,
     imageFlyer,
     endDate,
+    timeZone
   } = params?.event;
 
   const [eventQuestions, setEventQuestions] = useState([]);
@@ -418,7 +420,7 @@ const RSVPNoStatusApplied: React.FC = () => {
             name={name}
             location={location?.location}
             imageCover={removeSignature(imageFlyer)}
-            dates={formatToDeviceTimeZone(startDate, endDate)}
+            dates={formatDetailedEventDate(startDate, endDate, timeZone)}
           />
           {currentGuestStatus === 'APPLIED' && (
             <View style={styles.yellowBoxRightButton}>

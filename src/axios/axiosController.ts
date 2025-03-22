@@ -51,6 +51,7 @@ axiosController.interceptors.request.use(
 // Response interceptor for global error handling
 axiosController.interceptors.response.use(
   (response: AxiosResponse) => {
+    console.log('Response:', response.data);
     return response.data;
   },
   (error: AxiosError) => {
@@ -60,8 +61,7 @@ axiosController.interceptors.response.use(
       console.log('Request URL on error:', requestUrl);
     }
     const status = error.response?.status;
-    const errorMessage =
-      (error.response?.data as any)?.error?.message || error.message;
+    const errorMessage = (error.response?.data as any)?.error?.message || error.message;
     if (status === 400) {
       console.error('Bad request:', errorMessage);
       FlashMessageComponent.show(

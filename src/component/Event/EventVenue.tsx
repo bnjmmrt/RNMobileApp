@@ -36,7 +36,7 @@ const EventVenue: React.FC<EventVenueProps> = ({
   item,
   handleCalendarPress,
 }) => {
-  const dates = formatToDeviceTimeZone(item?.startDate, item?.endDate);
+  const dates = formatToDeviceTimeZone(item?.startDate, item?.endDate, item?.timeZone);
   const role = useSelector((state: RootState) => state.auth.role);
   // const dates = useMemo(() => formatToDeviceTimeZone(item?.startDate, item?.endDate));
 
