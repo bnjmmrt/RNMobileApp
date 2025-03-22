@@ -67,7 +67,7 @@ import useCalender from 'src/utils/hooks/useCalender';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: any;
@@ -88,9 +88,13 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const rspvStatus = useSelector((state: RootState) => state.rspv.rspvStatus);
   const refresh = useSelector((state: RootState) => state.rspv.refresh);
   const [showError, setshowError] = useState(false);
+  const [loading1, setLoading] = useState(false);
+  const role = useSelector((state: RootState) => state.auth.role);
   const eventId = route?.params?.id;
-  const { data: eventCount, refetch: refetchGuestStatusCount } =
-    useFetchGuestStatusCountQuery({ eventId });
+  const { data: eventCount, refetch: refetchGuestStatusCount } = useFetchGuestStatusCountQuery(
+    { eventId },
+    { skip: role !== ROLE.HOST }
+  );
   const annqueryArgs = {
     eventId: eventId,
     take: 50,
@@ -98,8 +102,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
   const { data: announcementData, refetch: refetchAnnouncement } =
     useFetchHostEventsAnnouncementQuery(annqueryArgs);
-  const [loading1, setLoading] = useState(false);
-  const role = useSelector((state: RootState) => state.auth.role);
 
   const { top } = useSafeAreaInsets();
   const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 44 : 24;
@@ -136,7 +138,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
   useFocusEffect(
     React.useCallback(() => {
-      if (eventId) {
+      if (eventId && role == ROLE.HOST) {
         refetchGuestStatusCount();
       }
     }, [eventId]),
@@ -150,9 +152,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const)
       : ({
-          userId,
-          eventId: route?.params?.id,
-        } as const);
+        userId,
+        eventId: route?.params?.id,
+      } as const);
 
   const useFetchEventDetailsHook =
     role === ROLE.HOST
@@ -200,6 +202,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       setEventDetails({
         title: data.data.name,
         subTitle: data.data.startDate,
+        timeZone: data.data.timeZone,
         name: data.data.owner.firstName + ' ' + data.data.owner.lastName,
       });
 
@@ -681,23 +684,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               ref={qrCodeBottomSheetRef}
               title={eventDetails?.title}
               subTitle={eventDetails?.subTitle}
-              imageURL={eventDetails?.qrUrl}
-              isQRShown={isQRShown}
-              name={`${userDetails?.firstName} ${userDetails?.lastName}`}
-              profilePic={profilePicture}
-            />
-
-            <CalenderEventsBottomSheet
-              ref={calenderEventsBottomSheetRef}
-              eventDetails={calendarDetails}
-            />
-            <QRCodeBottomsheet
-              ref={qrCodeBottomSheetRef}
-              title={eventDetails?.title}
-              subTitle={eventDetails?.subTitle}
               imageURL={
                 eventDetails?.qrUrl ? eventDetails?.qrUrl : IMAGES.ticket
               }
+              timeZone={eventDetails?.timeZone}
+
               isQRShown={isQRShown}
               name={`${userDetails?.firstName} ${userDetails?.lastName}`}
               profilePic={profilePicture}

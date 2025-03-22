@@ -121,8 +121,6 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
           navigation.navigate('EnterEmailPhone');
         }
       }
-    } else {
-      console.log("Sayyed else called")
     }
   };
 

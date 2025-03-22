@@ -451,6 +451,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       // Do something when the screen is focused
+
       changeSafeAreaViewConfig({
         ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
         showBottomSafeAreaView: false,

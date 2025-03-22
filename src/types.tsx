@@ -81,6 +81,7 @@ interface QuizQuestions {
 export interface Event {
     name: string;
     imageCover?: string;
+    timeZone?: string;
     imageFlyer?: string;
     startDate: string;
     endDate: string;

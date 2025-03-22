@@ -68,7 +68,7 @@ const FeedItem: React.FC<FeedItemProps> = ({ item, from = 'AllEvents' }) => {
             <CustomText
               textProps={{ numberOfLines: 1 }}
               style={styles.subtitle}>
-              {formatEventDate(item.startDate, item.endDate)}
+              {formatEventDate(item.startDate, item.endDate, item.timeZone)}
             </CustomText>
           ) : null}
           <CustomText textProps={{ numberOfLines: 1 }} style={styles.subtitle}>

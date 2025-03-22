@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import moment from 'moment';
+// import moment from 'moment';
 import { Platform, StatusBar, Text } from 'react-native';
 import settings, { EndPoint } from '../ApiManager/config';
 import {
@@ -23,8 +23,7 @@ import { axiosController } from 'src/axios/axiosController';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import DeviceInfo from 'react-native-device-info';
 import { setDeviceId } from 'src/redux/slices/authSlice';
-
-// import moment from 'moment-timezone';
+import moment from 'moment-timezone';
 
 // ErrorText component with TypeScript props
 interface ErrorTextProps {
@@ -313,55 +312,6 @@ export const ageCaluclation = (
   return age;
 };
 
-export const handleFormatDate = (
-  selectedDay: string,
-  selectedMonth: string,
-  selectedYear: string,
-  months: string[],
-) => {
-  const monthIndex = months.indexOf(selectedMonth);
-  if (monthIndex === -1) {
-    console.error('Invalid month name');
-    return;
-  }
-
-  const monthNumber = (monthIndex + 1).toString().padStart(2, '0'); // Convert to two-digit month
-  const dateString = `${selectedDay}/${monthNumber}/${selectedYear}`;
-  const formattedDate = moment(dateString, 'DD/MM/YYYY').format('DD/MM/YYYY');
-  console.log('Formatted Date:', formattedDate);
-  return formattedDate;
-};
-
-//   // Convert input strings into Date objects
-//   const start = new Date(startDate);
-//   const end = new Date(endDate);
-
-//   // Format options
-//   const optionsDate = { weekday: "short", month: "short", day: "numeric" };
-//   const optionsTime = { hour: "numeric", minute: "numeric", hour12: true };
-//   const optionsTimeZone = { timeZoneName: "short" };
-
-//   // Format components
-//   const formattedStartDate = new Intl.DateTimeFormat("en-US", optionsDate).format(start);
-//   const formattedStartTime = new Intl.DateTimeFormat("en-US", optionsTime).format(start);
-//   const formattedEndDate = new Intl.DateTimeFormat("en-US", optionsDate).format(end);
-//   const formattedEndTime = new Intl.DateTimeFormat("en-US", optionsTime).format(end);
-//   const timeZone = new Intl.DateTimeFormat("en-US", optionsTimeZone).format(start).split(" ")[1];
-
-//   // Check if start and end are on the same day
-//   if (
-//     start.getFullYear() === end.getFullYear() &&
-//     start.getMonth() === end.getMonth() &&
-//     start.getDate() === end.getDate()
-//   ) {
-//     // Same day: Include time range only
-//     return `${formattedStartDate}, ${formattedStartTime} – ${formattedEndTime} ${timeZone}`;
-//   } else {
-//     // Different days: Include full date and time range
-//     return `${formattedStartDate}, ${formattedStartTime} —\n${formattedEndDate}, ${formattedEndTime} ${timeZone}`;
-//   }
-// }
-// Platform utilities
 export const platform = Platform.OS;
 
 export const totalAllowedGb = 3;
@@ -492,10 +442,6 @@ export const getRoleRole = (role: string) => {
     default:
       return 'Non-Member';
   }
-};
-
-export const dateFormat = (date: string, format: string) => {
-  return moment(date).format(format);
 };
 
 export const getPriorityRole = (roles: role[]) => {

@@ -31,6 +31,7 @@ import {
 import ImagePdfViewer from './ImagePdfViewer';
 import { useFetchHostEventsAnnouncementQuery } from 'src/redux/actions/eventApiAction';
 import { CustomText } from '../CustomText';
+import { convertUTCToTimeZoneFormat } from 'src/utils/dateFunctions';
 
 interface EventAnnouncementProps {
   role?: string;
@@ -115,7 +116,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
       expanded || !shouldShowReadMore
         ? item?.announcement
         : `${item?.announcement.substring(0, 100)}...`;
-    const date = dateFormat(item?.createdAt, 'DD/MM/YYYY');
+    const date = convertUTCToTimeZoneFormat(item?.createdAt, 'DD/MM/YYYY', item?.timeZone);
     const imageKeyUrl = item?.user?.additionalHostInformation?.companyLogo;
     const name =
       item?.user?.additionalHostInformation?.firstName +

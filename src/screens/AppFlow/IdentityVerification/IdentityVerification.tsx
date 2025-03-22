@@ -35,7 +35,7 @@ import {
 } from '../../../utils/functions';
 import IdentityVerificationStyles from './IdentityVerificationStyles';
 
-interface IdentityVerificationProps extends NativeStackScreenProps<any, any> {}
+interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
 
 const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   navigation,
@@ -93,7 +93,6 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       fcmToken: fcmToken,
       deviceId: deviceId,
     };
-    console.log('Sayyed request :', requestParams);
     const response: any = await apiRequest(
       'post',
       EndPoint.member_signUp,
@@ -169,10 +168,6 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     Linking.openURL('https://www.instagram.com/therumor/');
   };
 
-  // const goToEmail = () => {
-  //   console.log("Sayyed mailtoURL:", mailtoURL)
-  //   Linking.openURL(mailtoURL);
-  // };
 
   const goToEmail = async () => {
     const mailtoURL = `mailto:support@therumor.com?subject=${encodeURIComponent(

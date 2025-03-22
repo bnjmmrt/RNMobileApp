@@ -1,21 +1,19 @@
-import React, { useRef, forwardRef, useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import {
   View,
   StyleSheet,
   Text,
   Image,
   Platform,
-  Alert,
   ScrollView,
   TouchableOpacity,
   ImageBackground,
-  Dimensions,
 } from 'react-native';
 import QRGenerator from 'react-native-qr-code-styling';
 
 import BottomSheetComponent from './BottomSheet';
-import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
-import { dateFormat, fontFamily } from '../../utils/functions';
+import { COLORS, LABLE } from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
 import {
   fontScale,
   horizontalMarginScale,
@@ -29,19 +27,18 @@ import {
 import IMAGES from '@images/index';
 import AvatarInitials from '../AvatarInitials';
 import TooltipComponent from '../TooltipComponent/TooltipComponent';
+import { formatTicketDate } from 'src/utils/dateFunctions';
 
 interface QRCodeBottomsheetProps {
   title: string;
   subTitle: string;
+  timeZone: string;
   imageURL: string;
   name: string;
   isQRShown: boolean;
-  profilePic?:string
+  profilePic?: string
 }
 const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
-  const cancelClick = () => {
-    ref.current?.close();
-  };
 
   const [showProfileToolitip, setShowProfileToolitip] = useState(false);
   const [showVIPToolitip, setShowVIPToolitip] = useState(false);
@@ -64,7 +61,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
           </Text>
 
           <Text style={[styles.subTitle]}>
-            {dateFormat(props?.subTitle, 'dddd, MMMM Do, hh:mm:A')}
+            {formatTicketDate(props?.subTitle, props?.timeZone)}
           </Text>
           <View style={styles.pic_Container}>
             <AvatarInitials name={props.name} size={32} imgUrl={props?.profilePic} />
@@ -100,7 +97,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                   value={props.imageURL}
                   margin={0}
                   qrOptions={{
-                    typeNumber: '20',
+                    typeNumber: '16',
                     mode: "Byte",
                     errorCorrectionLevel: 'Q',
                   }}
@@ -138,9 +135,9 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                 <Text style={styles.cardName}>{props.name}</Text>
               </ImageBackground>
             )}
-            <View style={[styles.vipContainer, {marginTop: props.isQRShown ? 25: 50}]}>
+            <View style={[styles.vipContainer, { marginTop: props.isQRShown ? 25 : 50 }]}>
               <Text style={styles.vipText}>VIP</Text>
-              <TouchableOpacity onPress={()=>{}}>
+              <TouchableOpacity onPress={() => { }}>
                 <Image source={IMAGES.info_filled} style={styles.icon} />
               </TouchableOpacity>
             </View>

@@ -1,71 +1,18 @@
-// const formatToDeviceTimeZone = (startDateString, endDateString) => {
-//     const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+import moment from 'moment-timezone';
 
-//     let startDate, endDate;
-
-//     // Helper function to parse "MM/DD/YYYY HH:mm" or standard date format
-//     const parseDate = (dateString) => {
-//         if (dateString.includes('/')) {
-//             const [month, day, yearAndTime] = dateString.split('/');
-//             const [year, time] = yearAndTime.split(' ');
-//             const [hour, minute] = time.split(':');
-//             return new Date(year, month - 1, day, hour, minute);
-//         } else {
-//             return new Date(dateString);
-//         }
-//     };
-
-//     startDate = parseDate(startDateString);
-//     endDate = parseDate(endDateString);
-
-//     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-//         return ['Invalid date format', ''];
-//     }
-
-//     const optionsDate = {
-//         timeZone: deviceTimeZone,
-//         weekday: 'short',
-//         month: 'long',
-//         day: 'numeric',
-//     };
-
-//     const optionsTime = {
-//         timeZone: deviceTimeZone,
-//         hour: 'numeric',
-//         minute: '2-digit',
-//         timeZoneName: 'short',
-//     };
-
-//     const formatterDate = new Intl.DateTimeFormat('en-US', optionsDate);
-//     const formatterTime = new Intl.DateTimeFormat('en-US', optionsTime);
-
-//     const formattedDate = formatterDate.format(startDate);
-//     const formattedStartTime = formatterTime.format(startDate);
-//     const formattedEndTime = formatterTime.format(endDate);
-
-//     // Extract just the time zone name from formatted time
-//     const timeZoneName = formattedStartTime.split(' ').pop();
-
-//     const formattedTimeRange = `${formattedStartTime.split(' ')[0]} - ${formattedEndTime.split(' ')[0]} ${timeZoneName}`;
-
-//     return [formattedDate, formattedTimeRange];
-// };
-
-// export default formatToDeviceTimeZone;
-const formatToDeviceTimeZone = (
-  startDateString,
-  endDateString,
-  isRequiredTimeZone = true,
-) => {
-  const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-  const parseDate = dateString => {
-    // Convert "YYYY-MM-DD HH:mm:ss+00" → "YYYY-MM-DDTHH:mm:ssZ" for correct parsing
-    if (!dateString?.includes('T')) {
-      dateString = dateString?.replace(' ', 'T').replace('+00', 'Z');
+const formatToTimeZone = (
+  startDateString: string,
+  endDateString: string,
+  timeZone: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
+  isRequiredTimeZone: boolean = true
+): [string, string] => {
+  const parseDate = (dateString: string): moment.Moment | null => {
+    if (!dateString) return null;
+    if (!dateString.includes('T')) {
+      dateString = dateString.replace(' ', 'T').replace('+00', 'Z');
     }
-    const date = new Date(dateString);
-    return isNaN(date.getTime()) ? null : date;
+    const date = moment(dateString);
+    return date.isValid() ? date : null;
   };
 
   const startDate = parseDate(startDateString);
@@ -75,39 +22,26 @@ const formatToDeviceTimeZone = (
     return ['Invalid date format', ''];
   }
 
-  const optionsDate = {
-    timeZone: deviceTimeZone,
-    weekday: 'short',
-    month: 'long',
-    day: 'numeric',
-  };
+  const startInZone = startDate.tz(timeZone);
+  const endInZone = endDate.tz(timeZone);
 
-  const optionsTime = {
-    timeZone: deviceTimeZone,
-    hour: 'numeric',
-    minute: '2-digit',
-    timeZoneName: 'short',
-  };
+  let formattedDate: string;
+  if (startInZone.isSame(endInZone, 'day')) {
+    formattedDate = startInZone.format('ddd, MMM D');
+  } else {
+    formattedDate = `${startInZone.format('ddd, MMM D')} – ${endInZone.format('ddd, MMM D')}`;
+  }
 
-  const formatterDate = new Intl.DateTimeFormat('en-US', optionsDate);
-  const formatterTime = new Intl.DateTimeFormat('en-US', optionsTime);
+  const formattedStartTime = startInZone.format('h:mm A');
+  const formattedEndTime = endInZone.format('h:mm A');
+  const abbreviation = startInZone.format('z'); // This gives IST, PST, etc.
 
-  const formattedDate = formatterDate.format(startDate);
-  const formattedStartTime = formatterTime.format(startDate);
-  const formattedEndTime = formatterTime.format(endDate);
-
-  // Extract the time zone abbreviation
-  const timeZoneName = formattedStartTime.split(' ').pop();
-  let formattedTimeRange = `${formattedStartTime.split(' ')[0]} - ${
-    formattedEndTime.split(' ')[0]
-  } ${timeZoneName}`;
-  if (!isRequiredTimeZone) {
-    formattedTimeRange = `${formattedStartTime.split(' ')[0]} - ${
-      formattedEndTime.split(' ')[0]
-    }`;
+  let formattedTimeRange = `${formattedStartTime} - ${formattedEndTime}`;
+  if (isRequiredTimeZone) {
+    formattedTimeRange += ` ${abbreviation}`;
   }
 
   return [formattedDate, formattedTimeRange];
 };
 
-export default formatToDeviceTimeZone;
+export default formatToTimeZone;

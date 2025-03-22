@@ -39,13 +39,8 @@ import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import moment from 'moment';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import { useNavigation } from '@react-navigation/native';
-import { dateFormat, removeSignature } from 'src/utils/functions';
+import { removeSignature } from 'src/utils/functions';
 import { openSettings } from 'react-native-permissions';
-import {
-  formatSingleDate,
-  formatSingleToDeviceTimeZone,
-} from 'src/utils/dateFunctions';
-import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 interface Location {
@@ -109,8 +104,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const [featureTalent, setFeatureTalent] = useState(item?.talents || []);
   const [image, setImage] = useState<string>(
     removeSignature(item?.imageCover) ||
-      removeSignature(item?.imageFlyer) ||
-      '',
+    removeSignature(item?.imageFlyer) ||
+    '',
   );
   const onDiscardChanges = () => {
     setSelectedStartDate(item?.startDate || '');
@@ -124,8 +119,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     setFeatureTalent(item?.talents);
     setImage(
       removeSignature(item?.imageCover) ||
-        removeSignature(item?.imageFlyer) ||
-        '',
+      removeSignature(item?.imageFlyer) ||
+      '',
     );
 
     eventNameRef.current?.setInputText(item?.name || '');
@@ -139,7 +134,6 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   };
   console.log('Feature Talent: ', featureTalent);
 
-  // console.log("Sayyed item:", item)
   const onConfirmClick = async () => {
     // Validate inputs before proceeding
     const isEventNameValid = eventNameRef.current?.validateInputs();
@@ -305,7 +299,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       });
   };
 
-  useEffect(() => {}, [eventAddress]);
+  useEffect(() => { }, [eventAddress]);
 
   return (
     <View style={styles.container}>
