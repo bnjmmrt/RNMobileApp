@@ -1,4 +1,4 @@
-import React, { useRef, forwardRef } from 'react';
+import React, { useRef, forwardRef, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   ViewStyle,
   Image,
   Platform,
+  Linking,
 } from 'react-native';
 import BottomSheetComponent from './BottomSheet';
 import { BUTTON_LABLE, COLORS, LABLE, PROFILE } from '../../utils/constants';
@@ -23,11 +24,13 @@ import {
   radiusScale,
   verticalMarginScale,
 } from '../../utils/dimensions';
-import Input from '../Input/Input';
+import Input, { InputRefMethods } from '../Input/Input';
 import { EndPoint } from 'src/ApiManager/config';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import useApi from 'src/axios/useApi';
 import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
+import { RootState } from 'src/redux/slices';
+import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
 
 interface SocialMediaBottomSheetProps {
   onPress: () => void;
@@ -39,15 +42,23 @@ interface SocialMediaBottomSheetProps {
 }
 const SocialMediaBottomSheet = forwardRef(
   (props: SocialMediaBottomSheetProps, ref) => {
+    const dispatch = useDispatch();
     const userDetails = useSelector(
       (state: any) => state.appFlowApiData.profileData,
     );
-    const userId = useSelector((state: any) => state.auth.userId);
     const { apiRequest, loading, error } = useApi();
-    const usernameRef = useRef<any>(null);
+    const usernameRef = useRef<InputRefMethods>(null);
     const cancelClick = () => {
       ref.current?.close();
     };
+
+    const { userId, profileData } = useSelector(
+      (state: RootState) => ({
+        userId: state.auth.userId,
+        profileData: state.appFlowApiData.profileData,
+      }),
+      shallowEqual,
+    );
 
     const connect = async () => {
       if (props.title === PROFILE.CONNECT_INSTAGRAM) {
@@ -70,8 +81,8 @@ const SocialMediaBottomSheet = forwardRef(
           longitude: '',
           regionCode: '',
         },
-        birthDate:  userDetails.dateOfBirth,
-        focusIds:userDetails?.focuses.map((item: any) => item.id),
+        birthDate: userDetails.dateOfBirth,
+        focusIds: userDetails?.focuses.map((item: any) => item.id),
         firstName: userDetails.firstName,
         gender: userDetails.gender,
         lastName: userDetails.lastName,
@@ -85,9 +96,25 @@ const SocialMediaBottomSheet = forwardRef(
       );
       console.log('response', response);
       if (response.success) {
-        FlashMessageComponent.show("success",LABLE.PROFILE_UPDATED_SUCCESSFULLY)
+        dispatch(
+          setProfileData({
+            ...profileData,
+            instagramUsername: usernameRef.current.inputText,
+          }),
+        );
+        FlashMessageComponent.show(
+          'success',
+          LABLE.PROFILE_UPDATED_SUCCESSFULLY,
+        );
       }
     };
+
+    useEffect(() => {
+      if (profileData?.instagramUsername) {
+        usernameRef?.current?.setInputText(profileData?.instagramUsername);
+      }
+    }, [profileData]);
+
     return (
       <BottomSheetComponent
         ref={ref}
@@ -112,7 +139,7 @@ const SocialMediaBottomSheet = forwardRef(
                 leftImage={props.logo}
                 // iconStyle={styles.iconStyle}
                 errorMessage={'Username is required'}
-                defaultValue={''}
+                defaultValue={profileData?.instagramUsername}
                 otherStyle={styles.input}
               />
 
@@ -146,8 +173,9 @@ const SocialMediaBottomSheet = forwardRef(
                   style={styles.btnSmallStyle}
                   title={BUTTON_LABLE.GO_TO_INSTAGRAM}
                   colorTheme="light"
-                  onPress={()=>{}}
-                  
+                  onPress={() => {
+                    Linking.openURL('https://www.instagram.com/therumor/');
+                  }}
                 />
               </View>
             </View>

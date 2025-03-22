@@ -65,6 +65,7 @@ export type InputRefMethods = {
   inputText: string;
   inputRef: React.RefObject<TextInput>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  setInputText: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
@@ -93,7 +94,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     hasDropdown = false,
     isBackgroundRed = false,
     hasHandler = false,
-    isName = false
+    isName = false,
   } = props;
 
   const inputRef = useRef<TextInput>(null);
@@ -121,9 +122,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     }
 
     if (!regex.test(name)) {
-      setErrorMessage(
-        ERROR_MESSAGE.INVALID_CHARACTERS,
-      );
+      setErrorMessage(ERROR_MESSAGE.INVALID_CHARACTERS);
       return false;
     }
 
@@ -138,19 +137,18 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     }
     setErrorMessage('');
     return true;
-  }
-
+  };
 
   // Validate inputs
   const validateInputs = () => {
     console.log('Updated Text:', inputText);
-    return isName ? validateName(inputText) : checkValidation(inputText)
+    return isName ? validateName(inputText) : checkValidation(inputText);
   };
 
   // Handle the "Next" button press
   const handleNextPress = () => {
-    validateInputs()
-  }
+    validateInputs();
+  };
 
   const requiredText = () =>
     isRequired && (
@@ -195,8 +193,8 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
             backgroundColor: !editable
               ? COLORS.borderGray
               : errorMessage
-                ? COLORS.bgRed
-                : COLORS.white,
+              ? COLORS.bgRed
+              : COLORS.white,
           },
           isBackgroundRed && [styles.errorInputWrapper],
         ]}>

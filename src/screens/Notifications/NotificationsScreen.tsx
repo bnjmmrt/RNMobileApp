@@ -1,18 +1,26 @@
+import { useFocusEffect } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  View,
+  FlatList,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  FlatList,
-  Image,
+  View,
 } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useFocusEffect } from '@react-navigation/native';
-import { ApiErrorInterface, changeSafeAreaViewConfig, getErrorMessage } from 'src/utils/functions';
-import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
-import { COLORS, LABLE } from 'src/utils/constants';
+import AvatarInitials from 'src/component/AvatarInitials';
+import EmptyRecordComponent from 'src/component/EmptyRecord/EmptyRecordComponent';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import Header from 'src/component/Header/Header';
+import { navigateToScreen } from 'src/component/PushNotification';
+import SwapToDeleteComponent from 'src/component/SwappableItem/SwapToDeleteComponent';
+import {
+  useDeleteNotificationMutation,
+  useFetchNotificationDetailQuery,
+  useFetchNotificationQuery,
+} from 'src/redux/actions/usersApiAction';
+import { COLORS, LABLE } from 'src/utils/constants';
+import { timeAgo } from 'src/utils/dateFunctions';
 import {
   fontScale,
   horizontalMarginScale,
@@ -20,54 +28,70 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import AvatarInitials from 'src/component/AvatarInitials';
-import SwapToDeleteComponent from 'src/component/SwappableItem/SwapToDeleteComponent';
-import EmptyRecordComponent from 'src/component/EmptyRecord/EmptyRecordComponent';
-import { useDeleteNotificationMutation, useFetchNotificationDetailQuery, useFetchNotificationQuery } from 'src/redux/actions/usersApiAction';
-import { navigateToScreen } from 'src/component/PushNotification';
-import { timeAgo } from 'src/utils/dateFunctions';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import {
+  ApiErrorInterface,
+  changeSafeAreaViewConfig,
+  getErrorMessage,
+} from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-interface NotificationsScreenProps extends NativeStackScreenProps<any, any> { }
+interface NotificationsScreenProps extends NativeStackScreenProps<any, any> {}
 
 const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
   navigation,
 }) => {
   const [notifications, setNotifications] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [refreshing, setRefreshing] = useState<boolean>(false);
-  const queryArgs = ({
+  const [selectedNotification, setSelectedNotification] = useState<any>(null);
+
+  const queryArgs = {
     take: 10,
-    skip: (currentPage - 1) * 10
-  })
+    skip: (currentPage - 1) * 10,
+  };
+
   const { data, isLoading, refetch } = useFetchNotificationQuery(queryArgs);
-  console.log("siya notifi", data)
+
   useEffect(() => {
-    if (data?.data?.result?.length > 0) {
-      setNotifications((prev) => (currentPage === 1 ? data?.data?.result : [...prev, ...data?.data?.result]));
+    if (
+      data &&
+      data?.data &&
+      data?.data?.result &&
+      data?.data?.result?.length > 0
+    ) {
+      setNotifications(prev =>
+        currentPage === 1
+          ? data?.data?.result
+          : [...prev, ...data?.data?.result],
+      );
     } else {
-      setNotifications([])
+      setNotifications([]);
     }
   }, [data]);
 
-  useEffect(() => {
-    setRefreshing(isLoading)
-  }, [isLoading])
-
   const handleRefresh = () => {
-    setCurrentPage(1)
+    setCurrentPage(1);
   };
 
-  const [selectedNotification, setSelectedNotification] = useState<any>(null);
-
-  const detailQueryArgs = selectedNotification ? { notificationId: String(selectedNotification.id) } : undefined;
-  const { data: notiDetail } = useFetchNotificationDetailQuery(detailQueryArgs as { notificationId: string }, { skip: !selectedNotification });
-  const [deleteNotification, { isLoading: deleteLoading, isError: deleteError, isSuccess: deleteSuccess }] = useDeleteNotificationMutation();
+  const detailQueryArgs = selectedNotification
+    ? { notificationId: String(selectedNotification.id) }
+    : undefined;
+  const { data: notiDetail } = useFetchNotificationDetailQuery(
+    detailQueryArgs as { notificationId: string },
+    { skip: !selectedNotification },
+  );
+  const [
+    deleteNotification,
+    {
+      isLoading: deleteLoading,
+      isError: deleteError,
+      isSuccess: deleteSuccess,
+    },
+  ] = useDeleteNotificationMutation();
 
   useEffect(() => {
-    console.log("notiDetail", notiDetail)
+    console.log('notiDetail', notiDetail);
     if (notiDetail) {
-      refetch()
+      refetch();
       navigateToScreen(notiDetail);
     }
   }, [notiDetail]);
@@ -82,10 +106,9 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
 
   const loadMore = () => {
     setCurrentPage(prev => prev + 1);
-    refetch()
+    refetch();
     // setNotifications([...notifications, ...notifications]);
   };
-
 
   useFocusEffect(
     useCallback(() => {
@@ -101,10 +124,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
         notificationId: id || '',
       }).unwrap();
       if (response.success == true) {
-        FlashMessageComponent.show(
-          'success',
-          response?.data?.message,
-        );
+        FlashMessageComponent.show('success', response?.data?.message);
         refetch();
       } else {
         const typedError = response as ApiErrorInterface;
@@ -145,7 +165,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
       {notifications?.length ? (
         <View style={styles.contentContainer}>
           <FlatList
-            data={notifications}
+            data={notifications || []}
             keyExtractor={item => item?.id}
             renderItem={({ item }) => (
               <SwapToDeleteComponent

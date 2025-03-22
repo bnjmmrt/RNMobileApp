@@ -28,6 +28,7 @@ import { fontFamily } from '../../../utils/functions';
 import SocialMediaBottomSheet from 'src/component/BottomSheet/SocialMediaBottomSheet';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 import AccountItem from './AccountItem';
+import { CustomText } from 'src/component/CustomText';
 interface ConnectedAccountsScreenProps {}
 
 const items: any = [
@@ -143,50 +144,40 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
   const onConfirm = () => {};
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header
         headerTitle={PROFILE.CONNECTED_ACCOUNTS}
         onPress={handleBackPress}
         showProgressBar={false}
       />
-      <ScrollView>
-        <View style={styles.contentContainer}>
-          <Text style={styles.subTitle}>
-            {PROFILE.CONNECTED_ACCOUNTS_SUB_TITLE}
-          </Text>
-          <View style={styles.listContainer}>
-            {items.map((item: any) => {
-              return (
-                <AccountItem
-                  key={item.id}
-                  item={item}
-                  setItem={getSelectedItem}
-                />
-              );
-            })}
-          </View>
-          <SocialMediaBottomSheet
-            ref={socialMediaBottomSheetRef}
-            logo={configData.logo}
-            title={configData.title}
-            subTitle={configData.subTitle}
-            snapPoints={configData.snapPoints}
-            connectBtnBackground={configData.connectBtnBackground}
-            onPress={() => {
-              Linking.openURL('https://www.instagram.com/therumor/');
-            }}
-          />
+      <ScrollView style={styles.contentContainer}>
+        <CustomText style={styles.subTitle}>
+          {PROFILE.CONNECTED_ACCOUNTS_SUB_TITLE}
+        </CustomText>
+        <View style={styles.listContainer}>
+          {items.map((item: any) => {
+            return (
+              <AccountItem
+                key={item.id}
+                item={item}
+                setItem={getSelectedItem}
+              />
+            );
+          })}
         </View>
-      </ScrollView>
-      {/* {!keyboardVisible ? (
-        <Button
-          style={styles.btnStyle}
-          title={BUTTON_LABLE.CONFIRM}
-          colorTheme="dark"
-          onPress={onConfirm}
+        <SocialMediaBottomSheet
+          ref={socialMediaBottomSheetRef}
+          logo={configData.logo}
+          title={configData.title}
+          subTitle={configData.subTitle}
+          snapPoints={configData.snapPoints}
+          connectBtnBackground={configData.connectBtnBackground}
+          onPress={() => {
+            Linking.openURL('https://www.instagram.com/therumor/');
+          }}
         />
-      ) : null} */}
-    </SafeAreaView>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -195,14 +186,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
   },
-
-  btnStyle: {
-    width: Wp(85),
-    borderRadius: radiusScale(100),
-  },
   contentContainer: {
     flex: 1,
-    paddingVertical: horizontalMarginScale(10),
+    paddingBottom: horizontalMarginScale(10),
     paddingHorizontal: horizontalMarginScale(20),
   },
   listContainer: {
@@ -210,9 +196,6 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     color: COLORS.light_gray,
-    fontSize: fontScale(13),
-    fontFamily: fontFamily.ABCDiatype_Regular,
-    marginVertical: Hp(1),
     textAlign: 'center',
     marginBottom: verticalMarginScale(16),
   },
