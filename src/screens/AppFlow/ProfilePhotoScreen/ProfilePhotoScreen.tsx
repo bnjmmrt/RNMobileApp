@@ -1,5 +1,12 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Alert, Image, Platform, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  Image,
+  Platform,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
@@ -26,8 +33,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { openSettings } from 'react-native-permissions';
+import { verticalMarginScale } from 'src/utils/dimensions';
 
-interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> { }
+interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> {}
 
 const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   navigation,
@@ -72,8 +80,8 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
           dispatch(
             setProfilePic(
               environment.BASE_URL +
-              EndPoint.view_image +
-              response.data.fileKeyId,
+                EndPoint.view_image +
+                response.data.fileKeyId,
             ),
           );
         } else {
@@ -107,33 +115,35 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
       height: 400,
       cropping: true,
       cropperCircleOverlay: true,
-    }).then((image: ImageOrVideo) => {
-      setImage(image.path);
-      setIsToastShown(false);
-      setIsUploadProfile(true);
-      savePhotoBottomSheetRef.current?.open();
-    }).catch(async (error) => {
-      console.log('ImagePicker Error: ', error);
+    })
+      .then((image: ImageOrVideo) => {
+        setImage(image.path);
+        setIsToastShown(false);
+        setIsUploadProfile(true);
+        savePhotoBottomSheetRef.current?.open();
+      })
+      .catch(async error => {
+        console.log('ImagePicker Error: ', error);
 
-      if (error?.message?.includes('did not grant library permission')) {
-        Alert.alert(
-          'Permission Required',
-          'We need access to your photo library to allow you to add a profile picture. Please enable photo library permissions in your device settings.',
-          [
-            {
-              text: 'Cancel',
-              style: 'cancel',
-            },
-            {
-              text: 'Open Settings',
-              onPress: async () => {
-                openSettings();
+        if (error?.message?.includes('did not grant library permission')) {
+          Alert.alert(
+            'Permission Required',
+            'We need access to your photo library to allow you to add a profile picture. Please enable photo library permissions in your device settings.',
+            [
+              {
+                text: 'Cancel',
+                style: 'cancel',
               },
-            },
-          ]
-        );
-      }
-    });
+              {
+                text: 'Open Settings',
+                onPress: async () => {
+                  openSettings();
+                },
+              },
+            ],
+          );
+        }
+      });
   };
 
   useFocusEffect(
@@ -152,7 +162,11 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
           subTitle={LABLE.ADD_A_PHOTO_SUBTITLE}
         />
 
-        <View style={[styles.profilePhotoContainer, { marginTop: 20 }]}>
+        <View
+          style={[
+            styles.profilePhotoContainer,
+            { marginTop: verticalMarginScale(24) },
+          ]}>
           <FullScreenLoader
             loading={loading}
             customStyle={styles.profilePhotoContainer}>

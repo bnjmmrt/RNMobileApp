@@ -1,23 +1,36 @@
+import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
   Image,
   Linking,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import Blocked from 'src/assets/svgs/icons/Blocked.svg';
+import useApi from 'src/axios/useApi';
 import AvatarInitials from 'src/component/AvatarInitials';
 import BottomSheetComponent from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
-import ButtonSmall from 'src/component/ButtonSmall';
+import { CustomText } from 'src/component/CustomText';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import FollowButton from 'src/component/FollowButton/FollowButton';
 import Header from 'src/component/Header/Header';
 import Title from 'src/component/Title/Title';
+import { ROUTES } from 'src/navigation/Route';
+import { useFetchProfileDetailsQuery } from 'src/redux/actions/profileListApiAction';
+import { RootState } from 'src/redux/slices';
+import { setRefresh } from 'src/redux/slices/rspvSlice';
 import { COLORS, LABLE } from 'src/utils/constants';
 import {
   fontScale,
@@ -27,27 +40,14 @@ import {
   verticalScale,
   Wp,
 } from 'src/utils/dimensions';
-import { fontFamily, removeSignature } from 'src/utils/functions';
+import {
+  changeSafeAreaViewConfig,
+  fontFamily,
+  removeSignature,
+} from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import ReportHostView from './ReportHostView';
 import ReportAndBlockHostView from './ReportandBlockView';
-import {
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from '@react-navigation/native';
-import {
-  mockProfileDetails,
-  useFetchProfileDetailsQuery,
-} from 'src/redux/actions/profileListApiAction';
-import useApi from 'src/axios/useApi';
-import FastImage from '@d11/react-native-fast-image';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import FollowButton from 'src/component/FollowButton/FollowButton';
-import { useDispatch, useSelector } from 'react-redux';
-import { setRefresh } from 'src/redux/slices/rspvSlice';
-import { RootState } from 'src/redux/slices';
-import { ROUTES } from 'src/navigation/Route';
-import Blocked from 'src/assets/svgs/icons/Blocked.svg';
 
 type ViewType =
   | 'options'
@@ -66,7 +66,7 @@ const HostProfileScreen: React.FC = () => {
   const bottomSheetRef = useRef<BottomSheetRef | null>(null);
   const { params } = useRoute();
   const [activeView, setActiveView] = useState<ViewType>(null);
-  const { goBack, setParams, navigate } = useNavigation<any>();
+  const { navigate } = useNavigation<any>();
   const dispatch = useDispatch();
   const userId = useSelector((state: RootState) => state.auth.userId);
   const roleId = useSelector((state: RootState) => state.auth.roleId);
@@ -224,8 +224,15 @@ const HostProfileScreen: React.FC = () => {
       .filter(item => item.icon && item.url !== ''),
   ];
   console.log('profill', profile?.website);
+
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    }, []),
+  );
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
       <Header
         showProgressBar={false}
         rightIcon={IMAGES.dots}
@@ -236,160 +243,187 @@ const HostProfileScreen: React.FC = () => {
         }
         showBackButton={true}
       />
-
-      <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
-        <View style={{ paddingHorizontal: horizontalMarginScale(20) }}>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginBottom: verticalMarginScale(16),
-              gap: verticalMarginScale(4),
-            }}>
-            <View style={{ marginBottom: verticalMarginScale(12) }}>
-              <AvatarInitials
-                imgUrl={removeSignature(profile?.companyLogo) || ''}
-                size={radiusScale(96)}
-              />
-              {profile?.isMemberBlockedHost && (
-                <Blocked
-                  height={32}
-                  width={32}
-                  style={{ position: 'absolute', bottom: 0, right: -5 }}
+      {isLoading ? (
+        <View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator color={COLORS.black} />
+        </View>
+      ) : (
+        <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
+          <View style={{}}>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: verticalMarginScale(16),
+                gap: verticalMarginScale(4),
+                paddingHorizontal: horizontalMarginScale(20),
+              }}>
+              <View style={{ marginBottom: verticalMarginScale(12) }}>
+                <AvatarInitials
+                  imgUrl={removeSignature(profile?.companyLogo) || ''}
+                  size={radiusScale(96)}
                 />
-              )}
+                {profile?.isMemberBlockedHost && (
+                  <Blocked
+                    height={32}
+                    width={32}
+                    style={{ position: 'absolute', bottom: 0, right: -5 }}
+                  />
+                )}
+              </View>
+              <Title
+                numberOfLinesTitle={2}
+                numberOfLinesSubtitle={4}
+                title={profile?.companyName || 'Company Name'}
+                subTitle={profile?.bio || 'Bio not available'}
+                align="center"
+              />
+              <FlatList
+                horizontal
+                contentContainerStyle={
+                  socialMediaData.length > 0
+                    ? {
+                        marginBottom: verticalMarginScale(16),
+                        marginTop: verticalMarginScale(6),
+                      }
+                    : {}
+                }
+                data={socialMediaData}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() =>
+                      item?.url
+                        ? Linking.openURL(item?.url)
+                        : FlashMessageComponent.show(
+                            'success',
+                            'Link not available',
+                          )
+                    }>
+                    <Image
+                      style={{
+                        width: 20,
+                        height: 20,
+                        marginRight: verticalMarginScale(12),
+                      }}
+                      source={item.icon}
+                    />
+                  </TouchableOpacity>
+                )}
+              />
+              <FollowButton
+                isFollowing={profile?.isMemberFollowingHost}
+                id={profile?.id}
+                handleRefresh={true}
+              />
             </View>
-            <Title
-              numberOfLinesTitle={2}
-              numberOfLinesSubtitle={4}
-              title={profile?.companyName || 'Company Name'}
-              subTitle={profile?.bio || 'Bio not available'}
-              align="center"
-            />
+            <CustomText style={styles.headerText}>Upcoming Events</CustomText>
             <FlatList
               horizontal
-              contentContainerStyle={
-                socialMediaData.length > 0
-                  ? {
-                      marginBottom: verticalMarginScale(16),
-                      marginTop: verticalMarginScale(6),
-                    }
-                  : {}
+              showsHorizontalScrollIndicator={false}
+              ListEmptyComponent={
+                <CustomText style={styles.emptyEventMessage}>
+                  No upcoming events.
+                </CustomText>
               }
-              data={socialMediaData}
+              ListHeaderComponent={<></>}
+              ListFooterComponent={<></>}
+              contentContainerStyle={{
+                gap: horizontalMarginScale(20),
+                marginVertical: verticalMarginScale(12),
+              }}
+              data={profile?.upcomingEvents || []}
               renderItem={({ item }) => (
                 <TouchableOpacity
-                  onPress={() =>
-                    item?.url
-                      ? Linking.openURL(item?.url)
-                      : FlashMessageComponent.show(
-                          'success',
-                          'Link not available',
-                        )
-                  }>
-                  <Image
+                  onPress={() => {
+                    handlEventPress(item);
+                  }}>
+                  <FastImage
                     style={{
-                      width: 20,
-                      height: 20,
-                      marginRight: verticalMarginScale(12),
+                      width: Wp('42%'),
+                      height: verticalScale(245),
+                      borderRadius: 8,
+                      backgroundColor: COLORS.borderGray,
                     }}
-                    source={item.icon}
+                    source={{ uri: removeSignature(item?.imageFlyer) }}
                   />
+                  <View style={{ width: Wp('42%') }}>
+                    <CustomText
+                      style={styles.eventNameText}
+                      textProps={{ numberOfLines: 1 }}>
+                      {item.name}
+                    </CustomText>
+                    <CustomText style={styles.dateText}>
+                      {item.startDate}
+                    </CustomText>
+                    <CustomText
+                      style={styles.dateText}
+                      textProps={{ numberOfLines: 1 }}>
+                      {item?.eventLocation?.city}
+                    </CustomText>
+                  </View>
                 </TouchableOpacity>
               )}
             />
-            <FollowButton
-              isFollowing={profile?.isMemberFollowingHost}
-              id={profile?.id}
-              handleRefresh={true}
+            <CustomText style={styles.headerText}>Past Events</CustomText>
+            <FlatList
+              horizontal
+              ListEmptyComponent={
+                <CustomText style={styles.emptyEventMessage}>
+                  No past events.
+                </CustomText>
+              }
+              ListHeaderComponent={<></>}
+              ListFooterComponent={<></>}
+              contentContainerStyle={{
+                gap: horizontalMarginScale(20),
+                marginTop: verticalMarginScale(12),
+                marginBottom: 100,
+              }}
+              data={profile?.pastEvents || []}
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    handlEventPress(item);
+                  }}>
+                  <FastImage
+                    style={{
+                      width: Wp('42%'),
+                      height: verticalScale(245),
+                      borderRadius: 8,
+                      backgroundColor: COLORS.borderGray,
+                    }}
+                    source={{ uri: removeSignature(item.imageFlyer) }}
+                  />
+                  <View style={{ width: Wp('42%') }}>
+                    <CustomText
+                      style={styles.eventNameText}
+                      textProps={{ numberOfLines: 1 }}>
+                      {item.name}
+                    </CustomText>
+                    <CustomText style={styles.dateText}>
+                      {item.startDate}
+                    </CustomText>
+                    <CustomText
+                      style={styles.dateText}
+                      textProps={{ numberOfLines: 1 }}>
+                      {item?.eventLocation?.city}
+                    </CustomText>
+                  </View>
+                </TouchableOpacity>
+              )}
             />
           </View>
-          <Text style={styles.headerText}>Upcoming Events</Text>
-          <FlatList
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            ListEmptyComponent={
-              <Text style={styles.dateText}>No upcoming events.</Text>
-            }
-            contentContainerStyle={{
-              gap: 16,
-              marginVertical: verticalMarginScale(12),
-            }}
-            data={profile?.upcomingEvents || []}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => {
-                  handlEventPress(item);
-                }}>
-                <FastImage
-                  style={{
-                    width: Wp('42%'),
-                    height: verticalScale(245),
-                    borderRadius: 8,
-                    backgroundColor: COLORS.borderGray,
-                  }}
-                  source={{ uri: removeSignature(item?.imageFlyer) }}
-                />
-                <View style={{ width: Wp('42%') }}>
-                  <Text style={styles.eventNameText} numberOfLines={1}>
-                    {item.name}
-                  </Text>
-                  <Text style={styles.dateText}>{item.startDate}</Text>
-                  <Text style={styles.dateText} numberOfLines={1}>
-                    {item?.eventLocation?.city}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )}
-          />
-          <Text style={styles.headerText}>Past Events</Text>
-          <FlatList
-            horizontal
-            ListEmptyComponent={
-              <Text style={styles.dateText}>No past events.</Text>
-            }
-            contentContainerStyle={{
-              gap: 16,
-              marginTop: verticalMarginScale(12),
-              marginBottom: 100,
-            }}
-            data={profile?.pastEvents || []}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => {
-                  handlEventPress(item);
-                }}>
-                <FastImage
-                  style={{
-                    width: Wp('42%'),
-                    height: verticalScale(245),
-                    borderRadius: 8,
-                    backgroundColor: COLORS.borderGray,
-                  }}
-                  source={{ uri: removeSignature(item.imageFlyer) }}
-                />
-                <View style={{ width: Wp('42%') }}>
-                  <Text style={styles.eventNameText} numberOfLines={1}>
-                    {item.name}
-                  </Text>
-                  <Text style={styles.dateText}>{item.startDate}</Text>
-                  <Text style={styles.dateText} numberOfLines={1}>
-                    {item?.eventLocation?.city}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )}
-          />
-        </View>
-      </ScrollView>
+        </ScrollView>
+      )}
       <BottomSheetComponent
         snapPoints={[getSnapPoints()]}
         ref={bottomSheetRef}
         onClose={() => setActiveView(null)}>
         {renderBottomSheetContent()}
       </BottomSheetComponent>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -449,15 +483,15 @@ const BlockHostView: React.FC<BlockHostViewProps> = ({
         {loading ? (
           <ActivityIndicator color={COLORS.black} />
         ) : (
-          <Text style={[styles.optionText, { color: COLORS.white }]}>
+          <CustomText style={[styles.optionText, { color: COLORS.white }]}>
             Block
-          </Text>
+          </CustomText>
         )}
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => onPress('reportAndBlock')}
         style={styles.blackStripe}>
-        <Text style={styles.optionText}>Report & Block</Text>
+        <CustomText style={styles.optionText}>Report & Block</CustomText>
       </TouchableOpacity>
     </View>
   );
@@ -518,7 +552,7 @@ const UnBlockHostView: React.FC<UnBlockHostViewProps> = ({
         onPress={handleUnblock}
       />
       <TouchableOpacity onPress={onClose} style={styles.blackStripe}>
-        <Text style={styles.optionText}>Cancel</Text>
+        <CustomText style={styles.optionText}>Cancel</CustomText>
       </TouchableOpacity>
     </View>
   );
@@ -529,12 +563,12 @@ const RenderOptions = ({ onClose, onPress }: { onClose: () => void }) => (
     <TouchableOpacity
       onPress={() => onPress('report')}
       style={styles.greyStripeButton}>
-      <Text style={styles.optionText}>Report Host</Text>
+      <CustomText style={styles.optionText}>Report Host</CustomText>
     </TouchableOpacity>
     <TouchableOpacity
       onPress={() => onPress('block')}
       style={styles.greyStripeButton}>
-      <Text style={styles.optionText}>Block Host</Text>
+      <CustomText style={styles.optionText}>Block Host</CustomText>
     </TouchableOpacity>
   </View>
 );
@@ -556,14 +590,17 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: fontScale(24),
     fontFamily: fontFamily.RomieTrial_Bold,
-    color: COLORS.black,
     marginTop: verticalMarginScale(16),
+    paddingHorizontal: horizontalMarginScale(20),
   },
   eventNameText: {
     fontSize: fontScale(16),
     fontFamily: fontFamily.ABCDiatype_Medium,
-    color: COLORS.black,
     marginTop: verticalMarginScale(12),
+  },
+  emptyEventMessage: {
+    color: COLORS.light_gray,
+    marginTop: verticalMarginScale(2),
   },
   dateText: {
     fontSize: fontScale(12),
@@ -572,9 +609,7 @@ const styles = StyleSheet.create({
     marginTop: verticalMarginScale(2),
   },
   optionText: {
-    fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Medium,
-    color: COLORS.black,
   },
   greyStripeButton: {
     paddingVertical: verticalMarginScale(12),

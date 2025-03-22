@@ -67,15 +67,10 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   const [selectedTab, setSelectedTab] = useState('01');
   const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const {
-    getContacts,
-    permissionGranted,
-    getContactNumbersOnly,
-    requestContactPermission,
-  } = useContacts();
+  const { getContacts, permissionGranted, getContactNumbersOnly } =
+    useContacts(true);
 
   useEffect(() => {
-    requestContactPermission();
     fetchContacts();
   }, [permissionGranted]);
 

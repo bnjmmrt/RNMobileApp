@@ -1,6 +1,6 @@
 import IMAGES from '@images/index';
-import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useRef, useState } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -35,10 +35,12 @@ import {
   verticalScale,
   Wp,
 } from '../../../utils/dimensions';
-import { fontFamily } from '../../../utils/functions';
+import { changeSafeAreaViewConfig, fontFamily } from '../../../utils/functions';
 import CreativeFocusComponent from './CreativeFocusComponent';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { CustomText } from 'src/component/CustomText';
 
-interface FeedbackScreenProps { }
+interface FeedbackScreenProps {}
 
 export interface Tag {
   id: number;
@@ -69,6 +71,12 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   const handleBackPress = () => {
     navigation.goBack();
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    }, []),
+  );
 
   const validateLength = () => {
     const regex = /^\s*(\S+\s*){0,500}$/;
@@ -114,9 +122,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   };
 
   return (
-
-
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header
         headerTitle={PROFILE.FEEDBACK}
         onPress={handleBackPress}
@@ -126,23 +132,25 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.contentContainer}>
-            <Text style={styles.subTitle}>{PROFILE.FEEDBACK_SUBTITLE}</Text>
+            <CustomText style={styles.subTitle}>
+              {PROFILE.FEEDBACK_SUBTITLE}
+            </CustomText>
             <Input
               ref={feedbackRef}
               placeholder={LABLE.ENTER_FEEDBACK}
               errorMessage={ERROR_MESSAGE.FEEDBACK_ERROR}
               keyboardType="ascii-capable"
               multiline={true}
-            // maxLength={500}
+              maxLength={250}
             />
-            <Text style={styles.tagText}>Tag</Text>
+            <CustomText style={styles.tagText}>Tag</CustomText>
             <CreativeFocusComponent
               list={list}
               setIsToastShown={setIsToastShown}
               getSelectedData={getSelectedData}
             />
             {isToastShown && (
-              <Text style={styles.error}>Please select tag</Text>
+              <CustomText style={styles.error}>Please select tag</CustomText>
             )}
           </View>
 
@@ -152,7 +160,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
             title={PROFILE.FEEDBACK_MESSAGE}
             subTitle={PROFILE.FEEDBACK_CONFIRMATION_MESSAGE}
             btnLabel={BUTTON_LABLE.CLOSE}
-            logoStyle={{ width: 100, height: 100 }}
+            logoStyle={{ width: verticalScale(96), height: verticalScale(96) }}
             back={handleBackPress}
           />
         </KeyboardAvoidingView>
@@ -167,8 +175,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
           loading={loading}
         />
       ) : null}
-    </SafeAreaView>
-
+    </View>
   );
 };
 
@@ -176,42 +183,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-
   },
   contentContainer: {
     flex: 1,
-    paddingVertical: verticalMarginScale(0),
     paddingHorizontal: horizontalMarginScale(20),
     height: '100%',
     paddingBottom: 100,
   },
   subTitle: {
     color: COLORS.light_gray,
-    fontSize: fontScale(14),
-    fontFamily: fontFamily.ABCDiatype_Regular,
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: verticalMarginScale(8),
   },
 
-  textareaContainer: {
-    borderWidth: 1,
-    borderColor: COLORS.borderGray,
-    borderRadius: radiusScale(10),
-    padding: verticalMarginScale(10),
-    backgroundColor: COLORS.white,
-    marginVertical: verticalMarginScale(10),
-    width: '100%',
-  },
-  textArea: {
-    textAlignVertical: 'top',
-    fontSize: fontScale(16),
-    color: '#333',
-    height: verticalScale(100),
-  },
   tagText: {
     fontFamily: fontFamily.RomieTrial_Bold,
     fontSize: fontScale(20),
-    marginTop: verticalMarginScale(20),
+    marginTop: verticalMarginScale(24),
   },
   btnStyle: {
     width: Wp(85),

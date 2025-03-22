@@ -15,8 +15,8 @@ interface AuthState {
   varifyStatus: 0 | 1;
   profilePicture: string | undefined;
   companyLogo: string | undefined;
-  fcmToken:string | undefined;
-  deviceId:string | undefined;
+  fcmToken: string | undefined;
+  deviceId: string | undefined;
 }
 
 const initialState: AuthState = {
@@ -29,8 +29,8 @@ const initialState: AuthState = {
   varifyStatus: 0,
   profilePicture: undefined,
   companyLogo: undefined,
-  fcmToken:'',
-  deviceId:''
+  fcmToken: '',
+  deviceId: '',
 };
 
 const authSlice = createSlice({
@@ -97,7 +97,7 @@ export const {
   setProfilePicture,
   setCompanyLogo,
   setFcmToken,
-  setDeviceId
+  setDeviceId,
 } = authSlice.actions;
 
 export default authSlice.reducer;

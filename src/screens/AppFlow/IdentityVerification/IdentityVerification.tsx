@@ -51,9 +51,6 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   const email = BUTTON_LABLE.SUPPORT_EMAIL_ID;
   const subject = BUTTON_LABLE.MAIL_SUBJECT;
   const body = BUTTON_LABLE.MAIL_BODY;
-  const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(
-    subject,
-  )}&body=${encodeURIComponent(body)}`;
 
   const { companyLogo, isGuest, varifyStatus } = useSelector(
     (state: RootState) => ({
@@ -170,7 +167,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
 
 
   const goToEmail = async () => {
-    const mailtoURL = `mailto:support@therumor.com?subject=${encodeURIComponent(
+    const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(
       subject,
     )}&body=${encodeURIComponent(body)}`;
     try {

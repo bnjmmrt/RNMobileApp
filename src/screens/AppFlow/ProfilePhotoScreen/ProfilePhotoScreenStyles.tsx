@@ -1,5 +1,14 @@
 import { Platform, StyleSheet } from 'react-native';
-import { Wp, Hp, radiusScale, verticalMarginScale, horizontalMarginScale, fontScale, verticalScale, horizontalScale } from '../../../utils/dimensions';
+import {
+  Wp,
+  Hp,
+  radiusScale,
+  verticalMarginScale,
+  horizontalMarginScale,
+  fontScale,
+  verticalScale,
+  horizontalScale,
+} from '../../../utils/dimensions';
 import { COLORS } from '../../../utils/constants';
 
 const ProfilePhotoScreenStyles = () => {
@@ -12,7 +21,7 @@ const ProfilePhotoScreenStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
-      bottom:Platform.OS==='android' ? 20 :0
+      bottom: Platform.OS === 'android' ? 20 : 0,
     },
     contentContainer: {
       flex: 1,
@@ -49,8 +58,8 @@ const ProfilePhotoScreenStyles = () => {
       borderRadius: 50,
       backgroundColor: COLORS.tabBorderColor,
       alignSelf: 'center',
-      justifyContent: "center",
-      alignItems: "center"
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     iconContainer: {
       justifyContent: 'center',
@@ -62,13 +71,13 @@ const ProfilePhotoScreenStyles = () => {
       position: 'absolute',
       right: 0,
       bottom: 0,
+      zIndex: 3,
     },
     ic_pencil: {
       height: verticalScale(16),
       width: horizontalScale(16),
       tintColor: COLORS.white,
     },
-
   });
 };
 

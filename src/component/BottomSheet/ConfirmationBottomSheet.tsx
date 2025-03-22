@@ -1,5 +1,13 @@
 import React, { useRef, forwardRef } from 'react';
-import { View, StyleSheet, Text, Image, Platform, ViewStyle, ImageStyle } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  Platform,
+  ViewStyle,
+  ImageStyle,
+} from 'react-native';
 import BottomSheetComponent from './AppBottomSheet';
 import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
 import Button from '../Button';
@@ -47,11 +55,7 @@ const ConfirmationBottomSheet = forwardRef(
         }
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
-          {props.logo && (
-
-            <Image source={props.logo} style={props.logoStyle} />
-
-          )}
+          {props.logo && <Image source={props.logo} style={props.logoStyle} />}
           {props.title && <Text style={styles.title}>{props.title}</Text>}
           {props.btnLabel == BUTTON_LABLE.CLOSE ? null : props.isSuccess ? (
             <View
@@ -68,7 +72,7 @@ const ConfirmationBottomSheet = forwardRef(
             </View>
           ) : (
             <>
-              {props.isAnnouncement ? null :
+              {props.isAnnouncement ? null : (
                 <View style={styles.statusBanner}>
                   <Image source={IMAGES.tickDeclined} />
                   <Text style={styles.statusText}>
@@ -76,9 +80,8 @@ const ConfirmationBottomSheet = forwardRef(
                     {EVENT_STATUS.DECLINED_BY_YOU}
                   </Text>
                 </View>
-              }
+              )}
             </>
-
           )}
           {props.subTitle && (
             <Text style={[styles.subTitle]}>{props.subTitle}</Text>
@@ -87,7 +90,13 @@ const ConfirmationBottomSheet = forwardRef(
             disabled={false}
             style={props.btnStyle ? props.btnStyle : styles.btnStyle}
             title={props.btnLabel}
-            colorTheme={props.colorTheme ? props.colorTheme : props.btnStyle ? 'white' : 'dark'}
+            colorTheme={
+              props.colorTheme
+                ? props.colorTheme
+                : props.btnStyle
+                ? 'white'
+                : 'dark'
+            }
             onPress={close}
           />
         </View>
@@ -114,21 +123,22 @@ const styles = StyleSheet.create({
   },
   btnStyle: {
     borderRadius: radiusScale(100),
+    marginTop: verticalMarginScale(8),
   },
   title: {
     fontSize: fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
     textAlign: 'center',
     color: COLORS.black,
-    paddingTop: 24
+    marginTop: verticalMarginScale(24),
   },
   subTitle: {
     color: COLORS.light_gray,
     fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Regular,
-    marginVertical: Hp(1),
+    marginTop: verticalMarginScale(8),
     textAlign: 'center',
-    paddingBottom: verticalMarginScale(16)
+    paddingBottom: verticalMarginScale(16),
   },
   statusBanner: {
     flexDirection: 'row',
