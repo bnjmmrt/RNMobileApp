@@ -103,6 +103,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const [inviteMessage, setInviteMessage] = useState('');
   const [guestNote, setGuestNote] = useState('');
   const [directlySendToConfirm, setDirectlySendToConfirm] = useState(false);
+  const [ticketTypeError, setTicketTypeError] = useState<string>('');
 
   const [isLoadingFavorite, setIsLoadingFavorite] = useState(false);
   const [isLoadingAction, setIsLoadingAction] = useState(false);
@@ -133,10 +134,22 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     }
   }, [guestProfile?.favorite]);
 
+  const validateForm = () => {
+    if (!selectedTicketType) {
+      setTicketTypeError('Ticket type required');
+      return false;
+    }
+    setTicketTypeError('');
+    return true;
+  };
+
   const handleGuestAction = async (
     action: 'CREATE' | 'UPDATE' | 'DELETE',
     newStatus?: GuestStatus,
   ) => {
+    const formValidated = validateForm();
+    if (!formValidated) return;
+
     try {
       setIsLoadingAction(true);
       const payload: ManageGuestPayload = {
@@ -263,7 +276,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         return {
           title: 'Cancel Invite',
           description:
-            'Are you sure you want to cancel selected guestProfile invites? \nThey will be notified.',
+            'Are you sure you want to cancel this invite? The user will be notified.',
           buttonText: 'Cancel Invite',
         };
       case 'declined':
@@ -281,6 +294,12 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         };
     }
   };
+
+  useEffect(() => {
+    if (selectedTicketType) {
+      setTicketTypeError('');
+    }
+  }, [selectedTicketType]);
 
   const renderFooterButtons = () => {
     switch (status) {
@@ -514,8 +533,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
           <View style={styles.inviteSection}>
             <InviteDetails
               isCollapsible
-              ticketTypeError={''}
-              ticketTypeRef={ticketTypeRef}
+              ticketTypeError={ticketTypeError}
               selectedTicketType={selectedTicketType}
               onTicketTypePress={() => actionSheetRef?.current?.open()}
               additionalGuests={additionalGuests}

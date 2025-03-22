@@ -181,6 +181,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
         : environment.appStoreLink;
     try {
       await Share.share({
+        title: `Join Rumor and Unlock Unique Experiences!`,
         message: `Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: ${rumorAppLink}`,
       });
     } catch (error) {

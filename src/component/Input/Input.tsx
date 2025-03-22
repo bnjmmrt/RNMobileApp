@@ -3,6 +3,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
   useEffect,
+  useRef,
 } from 'react';
 import {
   View,
@@ -50,7 +51,7 @@ interface InputProps {
   customLeftImageStyle?: ImageStyle;
   extraInputProps?: TextInputProps;
   labelStyle?: any;
-  placeholderTextColor?: string
+  placeholderTextColor?: string;
   maxLength?: number;
   hasDropdown?: boolean;
   isBackgroundRed?: boolean;
@@ -61,6 +62,7 @@ export type InputRefMethods = {
   handleNextPress: () => void;
   validateInputs: () => boolean;
   inputText: string;
+  inputRef: React.RefObject<TextInput>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
@@ -89,8 +91,10 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     maxLength,
     hasDropdown = false,
     isBackgroundRed = false,
-    hasHandler = false
+    hasHandler = false,
   } = props;
+
+  const inputRef = useRef<TextInput>(null);
 
   const [inputText, setInputText] = useState(defaultValue);
   const [errorMessage, setErrorMessage] = useState('');
@@ -101,6 +105,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     handleNextPress,
     validateInputs,
     inputText,
+    inputRef,
     setErrorMessage,
     setInputText,
   }));
@@ -141,7 +146,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     <View style={[styles.container, otherStyle]}>
       {/* Dynamic Label */}
       {label && (
-        <CustomText style={[styles.label, labelStyle]} >
+        <CustomText style={[styles.label, labelStyle]}>
           {label}
           {requiredText()}
         </CustomText>
@@ -149,6 +154,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
 
       {/* Input Field */}
       <InputWrapper
+        ref={inputRef}
         onPress={onPressImage}
         style={[
           styles.inputContainer,
@@ -160,7 +166,13 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
             : null,
 
           inputFieldContainerStyle,
-          !hasDropdown && { backgroundColor: !editable ? COLORS.borderGray : errorMessage ? COLORS.bgRed : COLORS.white },
+          !hasDropdown && {
+            backgroundColor: !editable
+              ? COLORS.borderGray
+              : errorMessage
+              ? COLORS.bgRed
+              : COLORS.white,
+          },
           isBackgroundRed && [styles.errorInputWrapper],
         ]}>
         {leftImage && (
@@ -170,13 +182,16 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
           />
         )}
         <InputComponent
-
           {...props}
           onPress={onPressImage}
           activeOpacity={onPressImage ? 0.7 : 1}
           blurOnSubmit={blurOnSubmit}
           editable={editable}
-          style={[styles.input, multiline ? styles.multilineInput : null, { color: editable ? COLORS.black : COLORS.neutral_disabled }]}
+          style={[
+            styles.input,
+            multiline ? styles.multilineInput : null,
+            { color: editable ? COLORS.black : COLORS.neutral_disabled },
+          ]}
           value={inputText}
           placeholder={placeholder}
           onChangeText={text => {
@@ -192,13 +207,15 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
           {...extraInputProps}
           maxLength={maxLength}
         />
-        {
-          hasHandler && (
-            <View style={styles.resizeHandle}>
-              <Image style={{ width: 10, height: 10 }} resizeMode='contain' source={IMAGES.Handler} />
-            </View>
-          )
-        }
+        {hasHandler && (
+          <View style={styles.resizeHandle}>
+            <Image
+              style={{ width: 10, height: 10 }}
+              resizeMode="contain"
+              source={IMAGES.Handler}
+            />
+          </View>
+        )}
 
         {rightImage && (
           <TouchableOpacity onPress={onPressImage}>
@@ -272,10 +289,10 @@ const styles = StyleSheet.create({
     color: COLORS.errorText,
   },
   resizeHandle: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 5,
     right: 5,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 2,
   },
 });

@@ -1,18 +1,16 @@
-import React, { useRef, forwardRef } from 'react';
-import { View, StyleSheet, Text, Image, Platform, Alert } from 'react-native';
-import BottomSheetComponent from './BottomSheet';
-import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
-import Button from '../Button';
-import { fontFamily } from '../../utils/functions';
+import React, { forwardRef } from 'react';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import {
   fontScale,
   horizontalMarginScale,
   horizontalScale,
-  radiusScale,
   verticalMarginScale,
-  verticalScale,
 } from 'src/utils/dimensions';
 import useCalender from 'src/utils/hooks/useCalender';
+import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
+import Button from '../Button';
+import BottomSheetComponent from './BottomSheet';
 
 interface CalenderEventsBottomSheetProps {
   eventDetails: any;
@@ -43,7 +41,11 @@ const CalenderEventsBottomSheet = forwardRef(
                 : LABLE.ADD_TO_GOOGLE_CALENDAR
             }
             colorTheme="dark"
-            onPress={addEventToCalendar}
+            onPress={() =>
+              addEventToCalendar().then(() => {
+                cancelClick();
+              })
+            }
           />
 
           <Button

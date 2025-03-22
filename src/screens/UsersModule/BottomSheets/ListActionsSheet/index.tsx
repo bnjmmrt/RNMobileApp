@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { InteractionManager } from 'react-native';
 import BottomSheetComponent, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
@@ -76,7 +77,7 @@ const ListActionsSheet = forwardRef<
     const getDyanamicSnapPoints = useCallback(() => {
       switch (selectedAction) {
         case 'addUsers':
-          return [`85%`];
+          return ['85%'];
         case 'createList':
           return [`45%`];
         case 'deleteList':
@@ -107,7 +108,9 @@ const ListActionsSheet = forwardRef<
 
     const onCreateListSuccess = (listId: string, listName: string) => {
       setSelectedListData({ id: listId, name: listName });
-      setSelectedAction('addUsers');
+      InteractionManager.runAfterInteractions(() => {
+        setSelectedAction('addUsers');
+      });
     };
 
     const onEditListSuccess = () => {

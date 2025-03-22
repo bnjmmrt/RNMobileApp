@@ -98,7 +98,7 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
               dispatch(setRole(newRole.roleName));
               dispatch(setRoleId(newRole.roleId));
               dispatch(setAuthToken(response?.data?.token));
-              //  fetchUserProfile();
+              fetchUserProfile();
             }
           } catch (error) {
             const typedError = error as ApiErrorInterface;

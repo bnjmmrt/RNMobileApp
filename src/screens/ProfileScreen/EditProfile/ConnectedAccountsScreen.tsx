@@ -169,14 +169,14 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
           />
         </View>
       </ScrollView>
-      {!keyboardVisible ? (
+      {/* {!keyboardVisible ? (
         <Button
           style={styles.btnStyle}
           title={BUTTON_LABLE.CONFIRM}
           colorTheme="dark"
           onPress={onConfirm}
         />
-      ) : null}
+      ) : null} */}
     </SafeAreaView>
   );
 };
