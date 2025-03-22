@@ -14,7 +14,7 @@ const AddAnnouncementStyles = () => {
     btnStyle: {
       marginTop: verticalMarginScale(35),
       borderRadius: radiusScale(100),
-      bottom: verticalMarginScale(2),
+      bottom: verticalMarginScale(10),
     },
     cancelbtnStyle: {
       marginTop: verticalMarginScale(10),

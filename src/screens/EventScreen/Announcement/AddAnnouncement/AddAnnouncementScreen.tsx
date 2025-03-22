@@ -82,6 +82,27 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const [showAnnouncementDetail, setshowAnnouncementDetail] = useState(true)
     const [showProfileToolitip, setShowProfileToolitip] = useState(false);
 
+
+    const { data: announcementDetailsData } = useFetchAnnouncementDetailQuery(
+        { eventId: eventData?.id, announcementId: announcementId },
+        { skip: !announcementId }
+    );
+
+
+    const recipientQuery = {
+        eventId: eventData?.id,
+        announcementId,
+        searchText: '',
+        take: 10,
+        skip: 0,
+    }
+
+    const { data: selectedRecipientData } = useFetchSelectedRecipientsQuery(
+        recipientQuery,
+        { skip: !announcementId }
+    );
+
+
     useEffect(() => {
         if (eventData?.collaborators) {
             let collaborator = {
@@ -117,8 +138,14 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     };
 
 
-    const detailQuery = ({ eventId: eventData?.id, announcementId: announcementId } as const)
-    const { data: announcementDetailsData, isdetailLoading } = useFetchAnnouncementDetailQuery(detailQuery);
+
+
+    // const detailQuery = ({ eventId: eventData?.id, announcementId: announcementId } as const)
+
+    // const { data: announcementDetailsData, isFetching: isDetailLoading } =
+    //     announcementId ? useFetchAnnouncementDetailQuery(detailQuery) : { data: undefined, isFetching: false };
+
+    // const { data: announcementDetailsData, isdetailLoading } = useFetchAnnouncementDetailQuery(detailQuery);
     useEffect(() => {
         if (announcementDetailsData != undefined) {
             setTicketTypeArr(announcementDetailsData?.data?.ticketType)
@@ -128,19 +155,13 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
         }
     }, [announcementDetailsData]);
 
-    const recipientQuery = ({
-        eventId: eventData?.id,
-        announcementId: announcementId,
-        searchText: '',
-        take: 10,
-        skip: 0
-    } as const)
-    const { data: selectedRecipientData } = useFetchSelectedRecipientsQuery(recipientQuery);
+
     useEffect(() => {
         if (selectedRecipientData != undefined) {
             setallRecipients(selectedRecipientData?.data?.result)
         }
     }, [selectedRecipientData]);
+
     const ticketQueryString = selectedTicketType.map((item: any) => `ticketType=${item.id}`).join('&');
     const collaboratorQueryString = selectedCollaborator.map((item: any) => `addedBy=${item.id}`).join('&');
     const queryArgs = ({
@@ -176,8 +197,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
 
 
 
-    const [createEventAnnouncement, { error: addAnnouncementError, isLoading: addAnnouncementLoading },
-    ] = useCreateEventAnnouncementMutation();
+    const [createEventAnnouncement, { error: addAnnouncementError, isLoading: addAnnouncementLoading }] = useCreateEventAnnouncementMutation();
 
     const [deleteEventAnnouncement, { isLoading: deleteLoading, isError: deleteError, isSuccess: deleteSuccess }] = useDeleteEventAnnouncementMutation();
 
@@ -241,17 +261,15 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
         }
     };
     const getSnapPoints = (): string => {
-        const ticketHeight = eventData?.ticketTypes?.length <= 1 ? 30 : eventData?.ticketTypes?.length * 18
-        const collaboratorHeight = collaborators?.length <= 1 ? 30 : collaborators?.length * 18
         switch (activeView) {
             case 'collaborator':
-                return `${collaboratorHeight}%`;
+                return collaborators.length == 1 ? `30%` : collaborators.length > 8 ? '80%' : `${(collaborators.length * 10)}%`
             case 'submit':
                 return '70%';
             case 'ticketTypeOptions':
-                return `${ticketHeight}%`;
+                return eventData?.ticketTypes.length == 1 ? `40%` : eventData?.ticketTypes.length > 8 ? '80%' : `${(eventData?.ticketTypes.length * 10)}%`
             case 'receipient':
-                return allRecipients?.length == 0 ? '50%' : '85%';
+                return '80 %';// : `${(allRecipients.length * 10 + 10)}%`
             default:
                 return '85%';
         }
