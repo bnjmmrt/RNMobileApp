@@ -45,7 +45,7 @@ import CreativeFocusComponent from './CreativeFocusComponent';
 import DatePickerComponent from './DatePickerComponent';
 import GenderComponent from './GenderComponent';
 
-interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
+interface EditProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
 const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   navigation,
@@ -329,6 +329,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
               errorMessage={ERROR_MESSAGE.FIRST_NAME}
               defaultValue={profileData?.firstName}
               maxLength={30}
+              isName={true}
             />
             <Input
               ref={lastNameRef}
@@ -336,6 +337,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
               errorMessage={ERROR_MESSAGE.LAST_NAME}
               defaultValue={profileData?.lastName}
               maxLength={30}
+              isName={true}
             />
             {profileData?.email && profileData?.email !== '' && (
               <>

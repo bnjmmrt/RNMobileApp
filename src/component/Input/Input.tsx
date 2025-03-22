@@ -17,7 +17,7 @@ import {
   ImageStyle,
   TextInputProps,
 } from 'react-native';
-import { COLORS } from '../../utils/constants';
+import { COLORS, ERROR_MESSAGE } from '../../utils/constants';
 import { useNavigation } from '@react-navigation/native';
 import { CustomText } from '../CustomText';
 import {
@@ -56,6 +56,7 @@ interface InputProps {
   hasDropdown?: boolean;
   isBackgroundRed?: boolean;
   hasHandler?: boolean;
+  isName?: boolean;
 }
 
 export type InputRefMethods = {
@@ -92,6 +93,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     hasDropdown = false,
     isBackgroundRed = false,
     hasHandler = false,
+    isName = false
   } = props;
 
   const inputRef = useRef<TextInput>(null);
@@ -110,23 +112,46 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     setInputText,
   }));
 
-  // Validate inputs
-  const validateInputs = () => {
-    console.log('Updated Text:', inputText);
+  const validateName = (name: string) => {
+    const regex = /^[A-Za-z]+$/;
+
+    if (!name) {
+      setErrorMessage(initialErrorMessage);
+      return false;
+    }
+
+    if (!regex.test(name)) {
+      setErrorMessage(
+        ERROR_MESSAGE.INVALID_CHARACTERS,
+      );
+      return false;
+    }
+
+    setErrorMessage('');
+    return true;
+  };
+
+  const checkValidation = (name: string) => {
     if (!inputText) {
       setErrorMessage(initialErrorMessage);
       return false;
     }
     setErrorMessage('');
     return true;
+  }
+
+
+  // Validate inputs
+  const validateInputs = () => {
+    console.log('Updated Text:', inputText);
+    return isName ? validateName(inputText) : checkValidation(inputText)
   };
 
   // Handle the "Next" button press
   const handleNextPress = () => {
-    if (validateInputs()) {
-      // navigation.navigate('VerifyOtpScreen', { email: inputText, isEmail: true });
-    }
-  };
+    validateInputs()
+  }
+
   const requiredText = () =>
     isRequired && (
       <CustomText style={{ color: COLORS.errorText }}> *</CustomText>
@@ -170,8 +195,8 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
             backgroundColor: !editable
               ? COLORS.borderGray
               : errorMessage
-              ? COLORS.bgRed
-              : COLORS.white,
+                ? COLORS.bgRed
+                : COLORS.white,
           },
           isBackgroundRed && [styles.errorInputWrapper],
         ]}>
@@ -197,7 +222,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
           onChangeText={text => {
             console.log('Updated Text:', text);
             setInputText(text);
-            setErrorMessage('');
+            isName ? validateName(text) : setErrorMessage('');
             if (onChangeText) {
               onChangeText(text);
             }

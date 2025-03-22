@@ -26,7 +26,7 @@ import {
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
 
-interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -39,7 +39,7 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
 
-  const validateName = (name: string) => {
+  const validateFirstName = (name: string) => {
     const regex = /^[A-Za-z]+$/;
     if (
       name === 'FirstName' &&
@@ -78,15 +78,34 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
     return true;
   };
 
-  const onNextClick = () => {
-    firstNameRef.current.validateInputs();
-    lastNameRef.current.validateInputs();
+  const validateLastName = (name: string) => {
+    const regex = /^[A-Za-z]+$/;
     if (
-      firstNameRef.current.validateInputs() &&
-      validateName('FirstName') &&
-      lastNameRef.current.validateInputs() &&
-      validateName('LastName')
+      name === 'LastName' &&
+      lastNameRef?.current?.inputText.trim().length > 30
     ) {
+      lastNameRef?.current?.setErrorMessage(
+        ERROR_MESSAGE.LAST_NAME_SIZE_EXCEED,
+      );
+      return false;
+    } else {
+      if (!regex.test(lastNameRef?.current?.inputText)) {
+        lastNameRef?.current?.setErrorMessage(
+          ERROR_MESSAGE.LAST_NAME_INVALID_CHARACTERS,
+        );
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const onNextClick = () => {
+    // firstNameRef.current.validateInputs();
+    // lastNameRef.current.validateInputs();
+    // validateFirstName('FirstName')
+    // validateLastName('LastName')
+    if (firstNameRef.current.validateInputs() && lastNameRef.current.validateInputs()) {
       dispatch(setFirstName(firstNameRef.current.inputText));
       dispatch(setLastName(lastNameRef.current.inputText));
       dispatch(setIsEmailVerified(false));
@@ -102,6 +121,8 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
           navigation.navigate('EnterEmailPhone');
         }
       }
+    } else {
+      console.log("Sayyed else called")
     }
   };
 
@@ -132,6 +153,7 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
           errorMessage={ERROR_MESSAGE.FIRST_NAME}
           defaultValue={userDetails.firstName}
           maxLength={30}
+          isName={true}
         />
         <Input
           ref={lastNameRef}
@@ -139,6 +161,7 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
           errorMessage={ERROR_MESSAGE.LAST_NAME}
           defaultValue={userDetails.lastName}
           maxLength={30}
+          isName={true}
         />
       </View>
       {!keyboardVisible ? (

@@ -376,6 +376,8 @@ export const ERROR_MESSAGE = {
     'First Name should not contain special characters or numbers',
   LAST_NAME_INVALID_CHARACTERS:
     'Last Name should not contain special characters or numbers',
+  INVALID_CHARACTERS:
+    'Field should not contain special characters, numbers and space',
   FEEDBACK_SIZE_EXCEED: 'Feedback cannot exceed 500 words',
   DESCRIPTION_SIZE_EXCEED: 'Bio cannot exceed 200 words',
   FIRST_NAME_REQUIRED: 'First name is required',

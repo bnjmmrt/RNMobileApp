@@ -48,7 +48,8 @@ const DatePickerComponent = forwardRef(
       if (!selectedDate) {
         setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_YOUR_BIRTHDAY);
         return false;
-      } else if (validateAge(selectedDate)) {
+      }
+      if (validateAge(selectedDate)) {
         setErrorMessage(ERROR_MESSAGE.AGE_REQUIREMENT_NOT_MET);
         return false;
       }

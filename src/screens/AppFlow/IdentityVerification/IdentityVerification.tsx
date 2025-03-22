@@ -1,7 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useRef } from 'react';
-import { Linking, Platform, ScrollView, Text, View } from 'react-native';
+import { Alert, Linking, Platform, ScrollView, Text, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
@@ -35,7 +35,7 @@ import {
 } from '../../../utils/functions';
 import IdentityVerificationStyles from './IdentityVerificationStyles';
 
-interface IdentityVerificationProps extends NativeStackScreenProps<any, any> {}
+interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
 
 const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   navigation,
@@ -93,6 +93,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       fcmToken: fcmToken,
       deviceId: deviceId,
     };
+    console.log("Sayyed request :", requestParams)
     const response: any = await apiRequest(
       'post',
       EndPoint.member_signUp,
@@ -168,10 +169,25 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     Linking.openURL('https://www.instagram.com/therumor/');
   };
 
-  const goToEmail = () => {
-    Linking.openURL(mailtoURL);
-  };
+  // const goToEmail = () => {
+  //   console.log("Sayyed mailtoURL:", mailtoURL)
+  //   Linking.openURL(mailtoURL);
+  // };
 
+  const goToEmail = async () => {
+    const mailtoURL = `mailto:support@therumor.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    try {
+      const supported = await Linking.canOpenURL(mailtoURL);
+      if (supported) {
+        await Linking.openURL(mailtoURL);
+      } else {
+        Alert.alert("No email client found", "Please install an email app to send emails.");
+      }
+    } catch (err) {
+      console.error("Failed to open email app:", err);
+    }
+  };
   useFocusEffect(
     useCallback(() => {
       changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
