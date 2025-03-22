@@ -120,7 +120,7 @@ const NotificationSettingsScreen: React.FC<
             <Text style={styles.label}>{PROFILE.SMS_NOTIFICATIONS}</Text>
             <Switch
               style={styles.switch}
-              trackColor={{ false: COLORS.black, true: COLORS.black }}
+              trackColor={{ false: COLORS.borderGray, true: COLORS.black }}
               thumbColor={
                 isSMSNotificationEnabled ? COLORS.white : COLORS.white
               }
@@ -132,7 +132,7 @@ const NotificationSettingsScreen: React.FC<
             <Text style={styles.label}>{PROFILE.PUSH_NOTIFICATIONS}</Text>
             <Switch
               style={styles.switch}
-              trackColor={{ false: COLORS.black, true: COLORS.black }}
+              trackColor={{ false: COLORS.borderGray, true: COLORS.black }}
               thumbColor={
                 isPushNotificationEnabled ? COLORS.white : COLORS.white
               }
@@ -144,7 +144,7 @@ const NotificationSettingsScreen: React.FC<
             <Text style={styles.label}>{PROFILE.EMAIL_NOTIFICATIONS}</Text>
             <Switch
               style={styles.switch}
-              trackColor={{ false: COLORS.black, true: COLORS.black }}
+              trackColor={{ false: COLORS.borderGray, true: COLORS.black }}
               thumbColor={
                 isEmailNotificationEnabled ? COLORS.white : COLORS.white
               }

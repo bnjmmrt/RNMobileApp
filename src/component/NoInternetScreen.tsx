@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     textAlign: 'center',
     marginTop: verticalScale(8),
-    lineHeight: 16
+    lineHeight: 16,
   },
   btnStyle: {
     // width: Wp(85),

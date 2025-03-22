@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
+  KeyboardAvoidingView,
   Linking,
   Platform,
   ScrollView,
@@ -12,11 +13,7 @@ import {
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import useApi from 'src/axios/useApi';
-import {
-  BUTTON_LABLE,
-  COLORS,
-  EVENT,
-} from 'src/utils/constants';
+import { BUTTON_LABLE, COLORS, EVENT } from 'src/utils/constants';
 import { EndPoint } from 'src/ApiManager/config';
 import Input from 'src/component/Input/Input';
 import DatePickerComponent from '../ProfileScreen/EditProfile/DatePickerComponent';
@@ -44,8 +41,12 @@ import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import { useNavigation } from '@react-navigation/native';
 import { dateFormat, removeSignature } from 'src/utils/functions';
 import { openSettings } from 'react-native-permissions';
-import { formatSingleDate, formatSingleToDeviceTimeZone } from 'src/utils/dateFunctions';
+import {
+  formatSingleDate,
+  formatSingleToDeviceTimeZone,
+} from 'src/utils/dateFunctions';
 import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 interface Location {
   location?: string;
@@ -77,6 +78,7 @@ interface EditEventDetailsProps {
 const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
+  const { keyboardVisible } = useKeyboard();
   const { goBack } = useNavigation();
   const [showAddress, setshowAddress] = useState(item?.showLocation || false);
   const [selectedStartDate, setSelectedStartDate] = useState(
@@ -107,8 +109,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const [featureTalent, setFeatureTalent] = useState(item?.talents || []);
   const [image, setImage] = useState<string>(
     removeSignature(item?.imageCover) ||
-    removeSignature(item?.imageFlyer) ||
-    '',
+      removeSignature(item?.imageFlyer) ||
+      '',
   );
   const onDiscardChanges = () => {
     setSelectedStartDate(item?.startDate || '');
@@ -120,11 +122,17 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     });
     setshowAddress(item?.showLocation || false);
     setFeatureTalent(item?.talents);
-    setImage(removeSignature(item?.imageCover) || removeSignature(item?.imageFlyer) || '');
+    setImage(
+      removeSignature(item?.imageCover) ||
+        removeSignature(item?.imageFlyer) ||
+        '',
+    );
 
     eventNameRef.current?.setInputText(item?.name || '');
     eventDescriptionRef.current?.setInputText(item?.description || '');
-    furtherInstructioneRef.current?.setInputText(item?.furtherInstructions || '');
+    furtherInstructioneRef.current?.setInputText(
+      item?.furtherInstructions || '',
+    );
     // baseCityRef.current?.resetCity(item?.location?.location || '');
     startDateRef.current?.setSelectedDate(item?.startDate || '');
     endDateRef.current?.setSelectedDate(item?.endDate || '');
@@ -138,9 +146,19 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     const isStartDateValid = startDateRef.current?.validateEventDate();
     const isEndDateValid = endDateRef.current?.validateEventDate();
     const isBaseCityValid = baseCityRef.current?.validateBaseCity();
-    const isEventDescriptionValid = eventDescriptionRef.current?.validateInputs();
-    if (!isEventNameValid || !isStartDateValid || !isEndDateValid || !isBaseCityValid || !isEventDescriptionValid) {
-      FlashMessageComponent.show("error", "Please enter details before submitting.");
+    const isEventDescriptionValid =
+      eventDescriptionRef.current?.validateInputs();
+    if (
+      !isEventNameValid ||
+      !isStartDateValid ||
+      !isEndDateValid ||
+      !isBaseCityValid ||
+      !isEventDescriptionValid
+    ) {
+      FlashMessageComponent.show(
+        'error',
+        'Please enter details before submitting.',
+      );
       return;
     }
     const formattedStartDate = moment
@@ -181,7 +199,6 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       );
       console.log(response, 'RESPONSE');
       dispatch(setRsvpStatus('UPDATE' + Date.now()));
-
 
       if (response?.success) {
         FlashMessageComponent.show('success', 'Event Updated Successfully');
@@ -250,45 +267,45 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       height: 585,
       cropping: true,
       cropperCircleOverlay: false,
-      mediaType: 'photo'
-    }).then((image: ImageOrVideo) => {
-      console.log('ImagePicker Response: ', image);
-      if (image.size && image.size <= 5 * 1024 * 1024) {
-        savePhoto(image.path);
-      } else {
-        Alert.alert(
-          'File Too Large',
-          'Please select an image smaller than 5MB.',
-          [{ text: 'OK', style: 'cancel' }]
-        );
-      }
-    }).catch(async (error) => {
-      console.log('ImagePicker Error: ', error);
+      mediaType: 'photo',
+    })
+      .then((image: ImageOrVideo) => {
+        console.log('ImagePicker Response: ', image);
+        if (image.size && image.size <= 5 * 1024 * 1024) {
+          savePhoto(image.path);
+        } else {
+          Alert.alert(
+            'File Too Large',
+            'Please select an image smaller than 5MB.',
+            [{ text: 'OK', style: 'cancel' }],
+          );
+        }
+      })
+      .catch(async error => {
+        console.log('ImagePicker Error: ', error);
 
-      if (error?.message?.includes('did not grant library permission')) {
-        Alert.alert(
-          'Permission Required',
-          'We need access to your photo library to allow you to add a picture. Please enable photo library permissions in your device settings.',
-          [
-            {
-              text: 'Cancel',
-              style: 'cancel',
-            },
-            {
-              text: 'Open Settings',
-              onPress: async () => {
-                openSettings();
+        if (error?.message?.includes('did not grant library permission')) {
+          Alert.alert(
+            'Permission Required',
+            'We need access to your photo library to allow you to add a picture. Please enable photo library permissions in your device settings.',
+            [
+              {
+                text: 'Cancel',
+                style: 'cancel',
               },
-            },
-          ]
-        );
-      }
-    });
+              {
+                text: 'Open Settings',
+                onPress: async () => {
+                  openSettings();
+                },
+              },
+            ],
+          );
+        }
+      });
   };
 
-  useEffect(() => { }, [eventAddress]);
-
-
+  useEffect(() => {}, [eventAddress]);
 
   return (
     <View style={styles.container}>
@@ -314,7 +331,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
             ref={eventNameRef}
             maxLength={50}
             label={EVENT.EVENT_NAME}
-            errorMessage={"Event name is required"}
+            errorMessage={'Event name is required'}
             defaultValue={item?.name}
           />
           <View>
@@ -369,7 +386,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
 
           <Input
             ref={furtherInstructioneRef}
-            placeholder='Provide details to help attendees find your event'
+            placeholder="Provide details to help attendees find your event"
             label={EVENT.FURTHER_INSTRUCTION}
             defaultValue={item?.furtherInstructions}
           />
@@ -380,7 +397,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
 
           <Input
             ref={eventDescriptionRef}
-            errorMessage={"Please, enter an event description"}
+            errorMessage={'Please, enter an event description'}
             label={EVENT.EVENT_DESCRIPTION}
             defaultValue={item?.description}
             multiline={true}
@@ -397,7 +414,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       <EditPictureBottomSheet
         ref={editPhotoBottomSheetRef}
         onPress={openCamera}
-        title='Image Flyer'
+        title="Image Flyer"
         submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
         cancelButtonText={BUTTON_LABLE.CANCEL}
         // snapPoints={[Platform.OS == 'android' ? '80%' : '80%']}
@@ -406,25 +423,27 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
         onPencilClick={openCamera}
         eventImage={image}
       />
-      <View style={{ gap: verticalMarginScale(8) }}>
-        <Button
-          disabled={false}
-          style={styles.btnStyle}
-          title={BUTTON_LABLE.SAVE_CHANGES}
-          colorTheme="dark"
-          onPress={onConfirmClick}
-          loading={loading}
-        />
+      {!keyboardVisible ? (
+        <View style={{ gap: verticalMarginScale(8) }}>
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={BUTTON_LABLE.SAVE_CHANGES}
+            colorTheme="dark"
+            onPress={onConfirmClick}
+            loading={loading}
+          />
 
-        <Button
-          disabled={false}
-          buttonType='stripe'
-          style={styles.btnStyle}
-          title={BUTTON_LABLE.DISCARD_CHANGES}
-          colorTheme="dark"
-          onPress={onDiscardChanges}
-        />
-      </View>
+          <Button
+            disabled={false}
+            buttonType="stripe"
+            style={styles.btnStyle}
+            title={BUTTON_LABLE.DISCARD_CHANGES}
+            colorTheme="dark"
+            onPress={onDiscardChanges}
+          />
+        </View>
+      ) : null}
     </View>
   );
 };

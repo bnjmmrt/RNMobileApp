@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Toast from 'src/component/Toast/Toast';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
@@ -10,21 +17,26 @@ import { RootState } from 'src/redux/slices';
 import useApi from 'src/axios/useApi';
 import Header from 'src/component/Header/Header';
 import { COLORS, editEventsTab, EVENT, PROFILE } from 'src/utils/constants';
-import DynamicTabBar, { TabItem } from 'src/component/ActiveTabBar/DynamicTabBar';
+import DynamicTabBar, {
+  TabItem,
+} from 'src/component/ActiveTabBar/DynamicTabBar';
 import EditEventDetails from './EditEventDetails';
 import EditEventSettings from './EditEventSettings';
 import { useRoute } from '@react-navigation/native';
 import Input from 'src/component/Input/Input';
-import { horizontalMarginScale, verticalMarginScale } from 'src/utils/dimensions';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
 
-interface EditEventScreenProps extends NativeStackScreenProps<any, any> { }
+interface EditEventScreenProps extends NativeStackScreenProps<any, any> {}
 
 const EditEventScreen: React.FC<EditEventScreenProps> = ({ navigation }) => {
-  const event = useRoute().params?.event
+  const event = useRoute().params?.event;
   const [currentTab, setCurrentTab] = useState<TabItem>(editEventsTab[0]);
 
   const handleBackPress = () => {
-    navigation.goBack()
+    navigation.goBack();
   };
 
   const handleTabChange = (tab: TabItem) => {
@@ -42,23 +54,25 @@ const EditEventScreen: React.FC<EditEventScreenProps> = ({ navigation }) => {
     }
   };
 
-
   return (
-    <View style={styles.container}>
-      <Header
-        headerTitle={EVENT.EDIT_EVENT}
-        onPress={handleBackPress}
-        showProgressBar={false}
-      />
-      <View style={{ marginTop: 12 }} />
-      <DynamicTabBar
-        onTabChange={handleTabChange}
-        tabs={editEventsTab}
-        activeTabIndex={0}
-      />
-      <View style={styles.contentContainer}>{renderTabContent()}</View>
-
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}>
+      <View style={styles.container}>
+        <Header
+          headerTitle={EVENT.EDIT_EVENT}
+          onPress={handleBackPress}
+          showProgressBar={false}
+        />
+        <View style={{ marginTop: 12 }} />
+        <DynamicTabBar
+          onTabChange={handleTabChange}
+          tabs={editEventsTab}
+          activeTabIndex={0}
+        />
+        <View style={styles.contentContainer}>{renderTabContent()}</View>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -74,7 +88,6 @@ const styles = StyleSheet.create({
     marginTop: verticalMarginScale(20),
     paddingHorizontal: horizontalMarginScale(20),
   },
-
 });
 
 export default EditEventScreen;

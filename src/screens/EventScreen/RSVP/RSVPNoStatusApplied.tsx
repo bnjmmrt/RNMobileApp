@@ -282,7 +282,7 @@ const RSVPNoStatusApplied: React.FC = () => {
   const getSnapPoints = (): string => {
     switch (activeView) {
       case 'guests':
-        return limitOnePlus == 0 ? '10%' : `${(limitOnePlus * 6) + 10} %`;
+        return limitOnePlus == 0 ? '10%' : `${limitOnePlus * 6 + 10} %`;
       case 'submit':
         return Platform.OS == 'android' ? '70%' : '65%';
       case 'options':

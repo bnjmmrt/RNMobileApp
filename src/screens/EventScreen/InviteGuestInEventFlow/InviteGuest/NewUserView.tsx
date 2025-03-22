@@ -90,7 +90,7 @@ const NewUserView: React.FC<NewUserViewProps> = ({
   const fetchUserByEmail = async () => {
     try {
       const emailResponse = await getUserWithEmail({ email: email }).unwrap();
-      if (emailResponse.status === 200) {
+      if (emailResponse.success) {
         const isExisitingUser = checkIfExistingUser(emailResponse?.data?.roles);
         if (isExisitingUser) {
           setExistingUserData(emailResponse?.data);
@@ -109,9 +109,11 @@ const NewUserView: React.FC<NewUserViewProps> = ({
   const fetchUserByPhone = async () => {
     try {
       const phoneResponse = await getUserWithPhone({
-        phoneNumber: removeSpaceFromStr(`${selectedCountry?.dial_code}${phone}`),
+        phoneNumber: removeSpaceFromStr(
+          `${selectedCountry?.dial_code}${phone}`,
+        ),
       }).unwrap();
-      if (phoneResponse.status === 200) {
+      if (phoneResponse.success) {
         const isExisitingUser = checkIfExistingUser(phoneResponse?.data?.roles);
         if (isExisitingUser) {
           setExistingUserData(phoneResponse?.data);
