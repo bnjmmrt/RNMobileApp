@@ -52,6 +52,7 @@ import TicketTypeBottomSheet, { TicketType } from '../TicketTypeBottomSheet';
 import ExistingUserView from './ExistingUserView';
 import NewUserView from './NewUserView';
 import createStyles from './styles';
+import { useLazyFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
 
 export interface existingUserType {
   email: string;
@@ -116,6 +117,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
     inviteNewGuests,
     { error: inviteNewGuestsError, isLoading: inviteNewGuestsLoading },
   ] = useInviteNewGuestsMutation();
+  const [fetchAllUsers, {}] = useLazyFetchAllUsersQuery();
 
   const onFocusInput = (type: 'inviteMessage' | 'guestNote') => {
     if (scrollRef?.current) {
@@ -185,7 +187,11 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
               }`,
             );
           }
-
+          fetchAllUsers({
+            skip: 0,
+            take: 10,
+            eventId: selectedEvent?.id,
+          });
           dispatch(setSelectedUsersToInvite(removedUsers));
           dispatch(removeSelectedUsersToInvite([]));
           navigation.goBack();
@@ -285,6 +291,11 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
           'success',
           `Guest has been invited to this event`,
         );
+        fetchAllUsers({
+          skip: 0,
+          take: 10,
+          eventId: selectedEvent?.id,
+        });
         dispatch(setSelectedUsersToInvite([]));
         navigation.goBack();
       } else {

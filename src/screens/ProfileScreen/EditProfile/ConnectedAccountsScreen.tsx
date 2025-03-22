@@ -1,6 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useRef, useState } from 'react';
-import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Linking,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 import IMAGES from '../../../assets/images';
@@ -165,7 +172,9 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
             subTitle={configData.subTitle}
             snapPoints={configData.snapPoints}
             connectBtnBackground={configData.connectBtnBackground}
-            onPress={() => {}}
+            onPress={() => {
+              Linking.openURL('https://www.instagram.com/therumor/');
+            }}
           />
         </View>
       </ScrollView>

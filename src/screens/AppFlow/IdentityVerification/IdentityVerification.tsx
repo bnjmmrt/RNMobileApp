@@ -35,7 +35,7 @@ import {
 } from '../../../utils/functions';
 import IdentityVerificationStyles from './IdentityVerificationStyles';
 
-interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
+interface IdentityVerificationProps extends NativeStackScreenProps<any, any> {}
 
 const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   navigation,
@@ -93,7 +93,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       fcmToken: fcmToken,
       deviceId: deviceId,
     };
-    console.log("Sayyed request :", requestParams)
+    console.log('Sayyed request :', requestParams);
     const response: any = await apiRequest(
       'post',
       EndPoint.member_signUp,
@@ -175,19 +175,16 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   // };
 
   const goToEmail = async () => {
-    const mailtoURL = `mailto:support@therumor.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
+    const mailtoURL = `mailto:support@therumor.com?subject=${encodeURIComponent(
+      subject,
+    )}&body=${encodeURIComponent(body)}`;
     try {
-      const supported = await Linking.canOpenURL(mailtoURL);
-      if (supported) {
-        await Linking.openURL(mailtoURL);
-      } else {
-        Alert.alert("No email client found", "Please install an email app to send emails.");
-      }
+      await Linking.openURL(mailtoURL);
     } catch (err) {
-      console.error("Failed to open email app:", err);
+      console.error('Failed to open email app:', err);
     }
   };
+
   useFocusEffect(
     useCallback(() => {
       changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
