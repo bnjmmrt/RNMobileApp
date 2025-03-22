@@ -38,7 +38,7 @@ import {
 import { fontFamily } from '../../../utils/functions';
 import CreativeFocusComponent from './CreativeFocusComponent';
 
-interface FeedbackScreenProps {}
+interface FeedbackScreenProps { }
 
 export interface Tag {
   id: number;
@@ -114,8 +114,8 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   };
 
   return (
-    
-  
+
+
     <SafeAreaView style={styles.container}>
       <Header
         headerTitle={PROFILE.FEEDBACK}
@@ -133,7 +133,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
               errorMessage={ERROR_MESSAGE.FEEDBACK_ERROR}
               keyboardType="ascii-capable"
               multiline={true}
-              // maxLength={500}
+            // maxLength={500}
             />
             <Text style={styles.tagText}>Tag</Text>
             <CreativeFocusComponent
@@ -152,6 +152,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
             title={PROFILE.FEEDBACK_MESSAGE}
             subTitle={PROFILE.FEEDBACK_CONFIRMATION_MESSAGE}
             btnLabel={BUTTON_LABLE.CLOSE}
+            logoStyle={{ width: 100, height: 100 }}
             back={handleBackPress}
           />
         </KeyboardAvoidingView>
@@ -167,7 +168,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
         />
       ) : null}
     </SafeAreaView>
-    
+
   );
 };
 
@@ -175,7 +176,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    
+
   },
   contentContainer: {
     flex: 1,

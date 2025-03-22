@@ -6,7 +6,7 @@ import React, { useEffect, useCallback } from 'react';
 import { LogBox, Platform, StyleSheet } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Provider, useDispatch } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import MainNavigation from 'src/navigation';
 import { EndPoint } from './src/ApiManager/config';
@@ -28,11 +28,13 @@ import Intercom, { Visibility } from '@intercom/intercom-react-native';
 import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import analytics from '@react-native-firebase/analytics';
 import { useFetchNotificationCountQuery } from 'src/redux/actions/usersApiAction';
+import { RootState } from 'src/redux/slices';
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
   const { apiRequest } = useApi();
   const dispatch = useDispatch();
+  const token = useSelector((state: RootState) => state.auth.token);
 
   const updateAnalyticsStatus = async (status: boolean) => {
     await analytics().setAnalyticsCollectionEnabled(status);
@@ -68,12 +70,12 @@ const AppContent: React.FC = () => {
   }
 
 
-  useEffect(() => {
-    RNPreventScreenshot?.enableSecureView();
-    return () => {
-      RNPreventScreenshot?.disableSecureView();
-    };
-  }, [RNPreventScreenshot]);
+  // useEffect(() => {
+  //   RNPreventScreenshot?.enableSecureView();
+  //   return () => {
+  //     RNPreventScreenshot?.disableSecureView();
+  //   };
+  // }, [RNPreventScreenshot]);
 
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
@@ -87,12 +89,13 @@ const AppContent: React.FC = () => {
       interestResponse.data.sort((a, b) => a.name.localeCompare(b.name));
       dispatch(setInterests(interestResponse.data));
     }
-    const notificationCount: any = await apiRequest('get', EndPoint.notification_count);
-    console.log('notificationCount.data', notificationCount);
-    if (notificationCount.data) {
-      dispatch(setNotificationCount(notificationCount?.data?.totalNotifications));
+    if (token) {
+      const notificationCount: any = await apiRequest('get', EndPoint.notification_count);
+      console.log('notificationCount.data', notificationCount);
+      if (notificationCount.data) {
+        dispatch(setNotificationCount(notificationCount?.data?.totalNotifications));
+      }
     }
-
   };
 
   useEffect(() => {

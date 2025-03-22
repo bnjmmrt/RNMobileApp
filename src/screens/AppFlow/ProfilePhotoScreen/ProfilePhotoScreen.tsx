@@ -186,7 +186,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
             onPencilClick={openPicker}
             submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
             cancelButtonText={BUTTON_LABLE.CANCEL}
-            snapPoints={[Platform.OS == 'android' ? 0.4 : 0.45]}
+            snapPoints={[Platform.OS == 'android' ? 0.45 : 0.4]}
             image={image}
           />
         </View>

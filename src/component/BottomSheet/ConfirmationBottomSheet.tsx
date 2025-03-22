@@ -1,5 +1,5 @@
 import React, { useRef, forwardRef } from 'react';
-import { View, StyleSheet, Text, Image, Platform, ViewStyle } from 'react-native';
+import { View, StyleSheet, Text, Image, Platform, ViewStyle, ImageStyle } from 'react-native';
 import BottomSheetComponent from './AppBottomSheet';
 import { BUTTON_LABLE, COLORS, EVENT_STATUS } from '../../utils/constants';
 import Button from '../Button';
@@ -28,7 +28,8 @@ interface ConfirmationBottomSheetProps {
   isSuccess?: boolean;
   back?: () => void;
   isAnnouncement?: boolean;
-  colorTheme?: string
+  colorTheme?: string;
+  logoStyle?: ImageStyle;
 }
 const ConfirmationBottomSheet = forwardRef(
   (props: ConfirmationBottomSheetProps, ref) => {
@@ -42,13 +43,13 @@ const ConfirmationBottomSheet = forwardRef(
         snapPoints={
           props.snapPoints
             ? props.snapPoints
-            : [Platform.OS === 'android' ? '0.47' : '0.47']
+            : [Platform.OS === 'android' ? '0.48' : '0.47']
         }
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
           {props.logo && (
 
-            <Image source={props.logo} />
+            <Image source={props.logo} style={props.logoStyle} />
 
           )}
           {props.title && <Text style={styles.title}>{props.title}</Text>}

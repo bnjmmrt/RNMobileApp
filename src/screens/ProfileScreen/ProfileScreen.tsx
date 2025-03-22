@@ -49,7 +49,7 @@ import ProfileScreenStyle from './ProfileScreenStyle';
 import ProfileTopView from './ProfileTopView';
 
 // Define the type for navigation props
-interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
+interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
 interface ListItem {
   id: string;
@@ -475,8 +475,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
               role?.toLocaleLowerCase() === 'host'
                 ? companyLogo
                 : profilePicture
-                ? profilePicture
-                : profileData?.profilePicture
+                  ? profilePicture
+                  : profileData?.profilePicture
             }
             name={getUserName()}
             loading={loading}
