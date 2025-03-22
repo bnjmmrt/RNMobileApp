@@ -137,8 +137,6 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
 
   const validateForm = () => {
     if (!selectedTicketType) {
-      console.log('inn');
-
       setTicketTypeError('Ticket type required');
       return false;
     }

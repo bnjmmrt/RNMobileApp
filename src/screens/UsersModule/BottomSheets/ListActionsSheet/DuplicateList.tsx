@@ -9,6 +9,7 @@ import { useDuplicateCustomListMutation } from 'src/redux/actions/listsApiAction
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { styles } from './style';
+import { Keyboard } from 'react-native';
 
 const DuplicateList = ({
   onSuccess,
@@ -37,6 +38,7 @@ const DuplicateList = ({
   };
 
   const onPressDuplicateList = async () => {
+    Keyboard.dismiss();
     if (listNameRef?.current?.validateInputs()) {
       try {
         const response = await duplicateCustomList({

@@ -38,6 +38,28 @@ const useCalender = (eventDetails: Event) => {
     }
   };
 
+  const fetchCalendarEvent = async () => {
+    const status = await RNCalendarEvents.checkPermissions();
+    if (status !== 'authorized') {
+      const newStatus = await RNCalendarEvents.requestPermissions();
+      if (newStatus !== 'authorized') {
+        Alert.alert(LABLE.PERMISSION_DENIED, LABLE.ACCESS_CALENDAR);
+        return;
+      }
+    }
+
+    try {
+      const events = await RNCalendarEvents.fetchAllEvents(
+        eventDetails.startDate,
+        eventDetails.endDate,
+      );
+      return events;
+    } catch (error) {
+      console.error('Error adding event:', error);
+      FlashMessageComponent.show(`error`, `Failed to add event.`);
+    }
+  };
+
   const addEventToCalendar = async () => {
     const status = await RNCalendarEvents.checkPermissions();
 
@@ -51,8 +73,11 @@ const useCalender = (eventDetails: Event) => {
 
     try {
       const calendars = await RNCalendarEvents.findCalendars();
+      console.log('calendars', calendars);
+
       const defaultCalendar =
-        calendars.find(cal => cal.isPrimary) || calendars[0];
+        calendars.find(cal => cal.isPrimary && cal.type !== 'LOCAL') ||
+        calendars[0];
 
       if (!defaultCalendar) {
         FlashMessageComponent.show(`error`, LABLE.NO_CALENDAR_FOUND);
@@ -68,6 +93,8 @@ const useCalender = (eventDetails: Event) => {
         calendarId: defaultCalendar.id, // REQUIRED for Android
       });
 
+      console.log('eventId', eventId);
+
       if (eventId) {
         FlashMessageComponent.show(
           `success`,
@@ -81,7 +108,12 @@ const useCalender = (eventDetails: Event) => {
     }
   };
 
-  return { permissionGranted, addEventToCalendar, checkPermission };
+  return {
+    permissionGranted,
+    addEventToCalendar,
+    checkPermission,
+    fetchCalendarEvent,
+  };
 };
 
 export default useCalender;

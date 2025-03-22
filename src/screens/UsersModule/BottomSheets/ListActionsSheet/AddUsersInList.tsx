@@ -2,7 +2,7 @@ import { BottomSheetFlatList, BottomSheetView } from '@gorhom/bottom-sheet';
 import IMAGES from '@images/index';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, TouchableOpacity, View } from 'react-native';
 import AvatarInitials from 'src/component/AvatarInitials';
 import Button from 'src/component/Button';
 import { CustomText } from 'src/component/CustomText';
@@ -197,7 +197,7 @@ const AddUsersInList = ({
           />
         }
         ListEmptyComponent={
-          <View
+          <BottomSheetView
             style={{
               height: Hp(30),
               alignItems: 'center',
@@ -208,7 +208,7 @@ const AddUsersInList = ({
               subTitle={''}
               isLoading={isLoading}
             />
-          </View>
+          </BottomSheetView>
         }
         showsVerticalScrollIndicator={false}
         onEndReached={loadMore}

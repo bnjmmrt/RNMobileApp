@@ -1,16 +1,18 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Dimensions,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import Button from '../../../component/Button';
 import Header from '../../../component/Header/Header';
-import Input from '../../../component/Input/Input';
+import Input, { InputRefMethods } from '../../../component/Input/Input';
 import {
   BUTTON_LABLE,
   COLORS,
@@ -62,8 +64,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
     shallowEqual,
   );
 
-  const firstNameRef = useRef<any>(null);
-  const lastNameRef = useRef<any>(null);
+  const firstNameRef = useRef<InputRefMethods>(null);
+  const lastNameRef = useRef<InputRefMethods>(null);
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
   const baseCityRef = useRef<any>(null);
@@ -115,69 +117,93 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
     }
   };
 
+  const scrollToInputRef = (ref?: React.RefObject<TextInput>) => {
+    if (ref?.current) {
+      ref?.current?.measureLayout(
+        scrollViewRef?.current,
+        (x: number, y: number) => {
+          console.log(y, x);
+
+          scrollViewRef.current?.scrollTo({
+            y: y, // Add some padding above
+            animated: true,
+          });
+        },
+      );
+    }
+  };
+
   const validateName = (name: string) => {
     const regex = /^[A-Za-z]+$/;
     let isFirstNameValid = false;
     let isLastNameValid = false;
-    if (
-      name === 'FirstName' &&
-      firstNameRef?.current?.inputText.trim().length > 30
-    ) {
-      firstNameRef?.current?.setErrorMessage(
-        ERROR_MESSAGE.FIRST_NAME_SIZE_EXCEED,
-      );
-      isFirstNameValid = false;
-    } else {
+    if (firstNameRef?.current?.validateInputs()) {
       if (
-        firstNameRef?.current?.inputText.trim() !== '' &&
-        !regex.test(firstNameRef?.current?.inputText)
+        name === 'FirstName' &&
+        firstNameRef?.current?.inputText &&
+        firstNameRef?.current?.inputText.trim().length > 30
       ) {
         firstNameRef?.current?.setErrorMessage(
-          ERROR_MESSAGE.FIRST_NAME_INVALID_CHARACTERS,
+          ERROR_MESSAGE.FIRST_NAME_SIZE_EXCEED,
         );
         isFirstNameValid = false;
       } else {
-        isFirstNameValid = true;
+        if (
+          firstNameRef?.current?.inputText.trim() !== '' &&
+          !regex.test(firstNameRef?.current?.inputText || '')
+        ) {
+          firstNameRef?.current?.setErrorMessage(
+            ERROR_MESSAGE.FIRST_NAME_INVALID_CHARACTERS,
+          );
+          isFirstNameValid = false;
+        } else {
+          isFirstNameValid = true;
+        }
       }
+    } else {
+      isFirstNameValid = false;
     }
 
-    if (
-      name === 'LastName' &&
-      lastNameRef?.current?.inputText.trim().length > 30
-    ) {
-      lastNameRef?.current?.setErrorMessage(
-        ERROR_MESSAGE.LAST_NAME_SIZE_EXCEED,
-      );
-      isLastNameValid = false;
-    } else {
+    if (lastNameRef?.current?.validateInputs()) {
       if (
-        lastNameRef?.current?.inputText.trim() !== '' &&
-        !regex.test(lastNameRef?.current?.inputText)
+        name === 'LastName' &&
+        lastNameRef?.current?.inputText &&
+        lastNameRef?.current?.inputText.trim().length > 30
       ) {
         lastNameRef?.current?.setErrorMessage(
-          ERROR_MESSAGE.LAST_NAME_INVALID_CHARACTERS,
+          ERROR_MESSAGE.LAST_NAME_SIZE_EXCEED,
         );
         isLastNameValid = false;
       } else {
-        isLastNameValid = true;
+        if (
+          lastNameRef?.current?.inputText.trim() !== '' &&
+          !regex.test(lastNameRef?.current?.inputText || '')
+        ) {
+          lastNameRef?.current?.setErrorMessage(
+            ERROR_MESSAGE.LAST_NAME_INVALID_CHARACTERS,
+          );
+          isLastNameValid = false;
+        } else {
+          isLastNameValid = true;
+        }
       }
+    } else {
+      isLastNameValid = false;
     }
+
+    if (!isFirstNameValid || !isLastNameValid)
+      scrollToInputRef(firstNameRef?.current?.inputRef);
 
     return isFirstNameValid && isLastNameValid;
   };
 
   const onConfirmClick = async () => {
     if (isGuest && role === ROLE.NON_MEMBER) {
-      if (
-        firstNameRef.current.validateInputs() &&
-        validateName('FirstName') &&
-        lastNameRef.current.validateInputs() &&
-        validateName('LastName')
-      ) {
+      if (validateName('FirstName') && validateName('LastName')) {
         const requestObject: any = {
           // email: profileData?.email,
-          firstName: firstNameRef.current.inputText,
-          lastName: lastNameRef.current.inputText,
+          firstName: firstNameRef?.current?.inputText,
+          lastName: lastNameRef?.current?.inputText,
         };
 
         const response: any = await apiRequest(
@@ -195,18 +221,21 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         }
       }
     } else {
-      firstNameRef.current.validateInputs();
       validateName('FirstName');
-      lastNameRef.current.validateInputs();
       validateName('LastName');
       baseCityRef.current.validateBaseCity();
+      if (!baseCityRef.current.validateBaseCity()) {
+        scrollViewRef?.current?.scrollToEnd({ animated: true });
+      }
+      if (!birthDayRef.current.validateBirthDate()) {
+        scrollViewRef?.current?.scrollToEnd({ animated: true });
+      }
       if (selectedCreativeFocus?.length === 0) {
         setIsToastShown(true);
+        scrollViewRef?.current?.scrollToEnd({ animated: true });
       }
       if (
-        firstNameRef.current.validateInputs() &&
         validateName('FirstName') &&
-        lastNameRef.current.validateInputs() &&
         validateName('LastName') &&
         birthDayRef.current.validateBirthDate() &&
         baseCityRef.current.validateBaseCity()
@@ -224,9 +253,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
             },
             birthDate: birthDayRef.current.selectedDate, //convertDateFormat(birthDayRef.current.selectedDate),
             // email: profileData?.email,
-            firstName: firstNameRef.current.inputText,
+            firstName: firstNameRef?.current?.inputText,
             gender: gender?.value,
-            lastName: lastNameRef.current.inputText,
+            lastName: lastNameRef?.current?.inputText,
             // mobilePhone: profileData?.phoneNumber,
             focusIds: selectedCreativeFocus.length
               ? selectedCreativeFocus.map((item: any) => item.id)
@@ -356,6 +385,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                 <DatePickerComponent
                   ref={birthDayRef}
                   birthDate={profileData.dateOfBirth}
+                  onDateChange={() => {
+                    birthDayRef?.current?.validateBirthDate();
+                  }}
                 />
 
                 <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>

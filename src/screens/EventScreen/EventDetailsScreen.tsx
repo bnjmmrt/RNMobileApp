@@ -9,6 +9,7 @@ import moment from 'moment';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Image,
+  Linking,
   Platform,
   ScrollView,
   StatusBar,
@@ -18,6 +19,7 @@ import {
 } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useDispatch, useSelector } from 'react-redux';
 import { EndPoint } from 'src/ApiManager/config';
@@ -61,9 +63,9 @@ import {
   fontFamily,
   removeSignature,
 } from 'src/utils/functions';
+import useCalender from 'src/utils/hooks/useCalender';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -266,8 +268,27 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       qrCodeBottomSheetRef?.current.open();
     }
   };
-  const addCalenderEvents = () => {
-    calenderEventsBottomSheetRef.current?.open();
+
+  const { fetchCalendarEvent } = useCalender(calendarDetails || {});
+  const addCalenderEvents = async () => {
+    const existingEvents = await fetchCalendarEvent();
+    const isEventExist =
+      existingEvents?.find(event => event.title === calendarDetails.title) ||
+      null;
+    if (isEventExist) {
+      const targetDate = new Date(calendarDetails.startDate); // Your desired date
+      if (Platform.OS === 'ios') {
+        let eventDateInMilisecond = Math.floor(targetDate / 1000);
+        const seconds = eventDateInMilisecond - 978307200;
+        Linking.openURL(`calshow:${seconds}`);
+      } else if (Platform.OS === 'android') {
+        Linking.openURL(
+          `content://com.android.calendar/time/${targetDate.getTime()}`,
+        );
+      }
+    } else {
+      calenderEventsBottomSheetRef.current?.open();
+    }
   };
 
   const addAnouncement = () => {
@@ -781,7 +802,7 @@ const styles = StyleSheet.create({
     fontSize: fontScale(32),
     fontFamily: fontFamily.RomieTrial_Bold,
     paddingHorizontal: 5,
-    color:'black'
+    color: 'black',
   },
   subtitle: {
     color: COLORS.black2,
