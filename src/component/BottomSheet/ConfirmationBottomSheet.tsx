@@ -94,8 +94,8 @@ const ConfirmationBottomSheet = forwardRef(
               props.colorTheme
                 ? props.colorTheme
                 : props.btnStyle
-                ? 'white'
-                : 'dark'
+                  ? 'white'
+                  : 'dark'
             }
             onPress={close}
           />

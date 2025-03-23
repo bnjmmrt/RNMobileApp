@@ -18,7 +18,7 @@ import {
   ROLE,
 } from '../../utils/constants';
 import IMAGES from '@images/index';
-import { dateFormat, fontFamily } from '../../utils/functions';
+import { fontFamily } from '../../utils/functions';
 import {
   fontScale,
   horizontalScale,
@@ -116,7 +116,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
       expanded || !shouldShowReadMore
         ? item?.announcement
         : `${item?.announcement.substring(0, 100)}...`;
-    const date = convertUTCToTimeZoneFormat(item?.createdAt, 'DD/MM/YYYY', item?.timeZone);
+    const date = convertUTCToTimeZoneFormat(item?.createdAt, item?.timeZone, 'MM/DD/YYYY',);
     const imageKeyUrl = item?.user?.additionalHostInformation?.companyLogo;
     const name =
       item?.user?.additionalHostInformation?.firstName +

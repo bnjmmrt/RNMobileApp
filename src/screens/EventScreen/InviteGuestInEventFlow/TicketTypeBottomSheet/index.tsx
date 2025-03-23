@@ -66,11 +66,11 @@ const TicketTypeBottomSheet = forwardRef<
     },
     [selectedTicketType],
   );
-
+  const snapPoint = ticketTypes.length == 1 ? `12%` : ticketTypes.length > 8 ? '50%' : `${(ticketTypes.length * 10)}%`
   return (
     <BottomSheetComponent
       ref={sheetRef}
-      snapPoints={['40%']}
+      snapPoints={[snapPoint]}
       enableDynamicSizing={false}
       onClose={closeSheet}>
       <BottomSheetFlatList

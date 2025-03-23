@@ -86,12 +86,15 @@ export const convertUTCToTimeZoneFormat = (
   timeZone: string,
   format: string
 ): string => {
-  if (!dateString.includes('T')) {
-    dateString = dateString.replace(' ', 'T').replace('+00', 'Z');
-  }
-  const date = moment.utc(dateString).tz(timeZone);
-  if (!date.isValid()) return 'Invalid date';
-  return date.format(format);
+  console.log
+  const date = moment.tz(dateString, timeZone);
+  return `${date.format(format)}`;
+  // if (!dateString.includes('T')) {
+  //   dateString = dateString.replace(' ', 'T').replace('+00', 'Z');
+  // }
+  // const date = moment.utc(dateString).tz(timeZone);
+  // if (!date?.isValid()) return 'Invalid date';
+  // return date?.format(format);
 };
 
 
