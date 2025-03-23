@@ -1,30 +1,23 @@
-import { useEffect, useState } from 'react';
-import { Keyboard } from 'react-native';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+import { updateKeyboardState } from 'src/redux/slices/keyboardSlice';
 
 const useKeyboard = () => {
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        setKeyboardVisible(true);
-      },
-    );
+  const { keyboardVisible } = useSelector(
+    (state: RootState) => ({
+      keyboardVisible: state.keyboard.keyboardVisible,
+    }),
+    shallowEqual,
+  );
 
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setKeyboardVisible(false);
-      },
-    );
+  const updateKeyboardStatus = (visible: boolean) => {
+    dispatch(updateKeyboardState({ keyboardVisible: visible }));
+  };
 
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
   return {
+    updateKeyboardStatus,
     keyboardVisible,
   };
 };

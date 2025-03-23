@@ -1,14 +1,12 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
   Image,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
   ViewStyle,
 } from 'react-native';
-import { COLORS, LABLE } from '../../utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -16,6 +14,7 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
+import { COLORS } from '../../utils/constants';
 
 interface CustomSelectableTextProps {
   label?: string;
@@ -56,7 +55,20 @@ const CustomSelectableText: React.FC<CustomSelectableTextProps> = ({
         ]}>
         {leftImage && <Image source={leftImage} style={styles.leftImage} />}
 
-        {defaultValue ? <Text style={[styles.inputText, { width: leftImage ? "90%" : '96.5%' }]}>{defaultValue}</Text> : <Text style={[styles.inputTextPlaceholder,{ width: leftImage ? "90%" : '96.5%' }]}>{placeholder}</Text>}
+        {defaultValue ? (
+          <Text
+            style={[styles.inputText, { width: leftImage ? '90%' : '96.5%' }]}>
+            {defaultValue}
+          </Text>
+        ) : (
+          <Text
+            style={[
+              styles.inputTextPlaceholder,
+              { width: leftImage ? '90%' : '96.5%' },
+            ]}>
+            {placeholder}
+          </Text>
+        )}
 
         {rightImage && <Image source={rightImage} style={styles.leftImage} />}
       </TouchableOpacity>
@@ -78,7 +90,7 @@ const styles = StyleSheet.create({
     paddingVertical: verticalMarginScale(2),
     fontSize: fontScale(14),
     color: COLORS.black,
-    fontWeight: '500'
+    fontWeight: '500',
   },
   inputContainer: {
     borderWidth: 1,

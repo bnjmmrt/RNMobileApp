@@ -286,9 +286,7 @@ const AddNewUserSheet = forwardRef<
           }}
           forBottomSheet={true}
           isBackgroundRed={errorMessage == null ? false : true}
-          extraInputProps={{
-            onBlur: validateEmailAddress,
-          }}
+          onBlur={validateEmailAddress}
           keyboardType="email-address"
         />
         <PhoneNumberInput

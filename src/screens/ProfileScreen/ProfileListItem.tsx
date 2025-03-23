@@ -1,18 +1,9 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  Alert,
-  TouchableOpacity,
-} from 'react-native';
-import { Image } from 'react-native-animatable';
-import IMAGES from '../../assets/images';
-import { COLORS, PROFILE, ROLE } from '../../utils/constants';
-import { fontFamily } from '../../utils/functions';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { ROUTES } from '../../navigation/Route';
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'react-native-animatable';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
 import {
   fontScale,
   horizontalMarginScale,
@@ -20,8 +11,10 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/redux/slices';
+import IMAGES from '../../assets/images';
+import { ROUTES } from '../../navigation/Route';
+import { COLORS, PROFILE, ROLE } from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
 
 interface ListItemProps {
   item: {

@@ -31,6 +31,7 @@ import IMAGES from '../../assets/images';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { COLORS } from 'src/utils/constants';
 import EventEmptyRecord from '../EmptyRecord/EventEmptyRecord';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 export { countryCodes } from '../../../node_modules/react-native-country-codes-picker/constants/countryCodes';
 export { CountryButton } from '../../../node_modules/react-native-country-codes-picker/components/CountryButton';
@@ -115,6 +116,8 @@ export const CountryPicker = ({
   // ToDo refactor exclude and showOnly props to objects
   let filteredCodes = countriesRemover(excludedCountries);
   const keyboardStatus = useKeyboardStatus();
+  const { updateKeyboardStatus } = useKeyboard();
+
   const animationDriver = React.useRef(new Animated.Value(0)).current;
   const animatedMargin = React.useRef(new Animated.Value(0)).current;
   const [searchValue, setSearchValue] = React.useState<string>(
@@ -371,6 +374,12 @@ export const CountryPicker = ({
                 placeholder={inputPlaceholder || 'Search location'}
                 placeholderTextColor={inputPlaceholderTextColor || '#A2A1A1'}
                 testID="countryCodesPickerSearchInput"
+                onFocus={() => {
+                  updateKeyboardStatus(true);
+                }}
+                onBlur={() => {
+                  updateKeyboardStatus(false);
+                }}
                 {...rest}
               />
             </View>

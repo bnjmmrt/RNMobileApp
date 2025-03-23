@@ -30,6 +30,7 @@ import {
 import { GuestStatus, ManageGuestPayload } from '../types';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 interface AdditionalGuest {
   addedBy: string;
@@ -60,6 +61,8 @@ const renderItemComponent = (
   toggleExpand: any,
   navigation: any,
 ) => {
+  const { updateKeyboardStatus } = useKeyboard();
+
   const getAvatar = (item: any): any => {
     return (
       item?.additionalGuest?.firstName + ' ' + item?.additionalGuest?.lastName
@@ -131,6 +134,8 @@ const renderItemComponent = (
               placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
               defaultValue={item?.additionalGuest.privateGuestNote}
               multiline
+              onFocus={() => updateKeyboardStatus(true)}
+              onBlur={() => updateKeyboardStatus(false)}
             />
           </View>
         )}
@@ -158,6 +163,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   selectedTicketType,
 }) => {
   const navigation = useNavigation();
+  const { updateKeyboardStatus } = useKeyboard();
   const { apiRequest, loading, error } = useApi();
   const [checkedIn, setCheckedIn] = useState(guestProfile?.checkIn);
   const [isShownCard, setIsShownCard] = useState(true);
@@ -233,40 +239,40 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
     validateDetails();
   };
 
-   const handleGuestAction = async () => {
-      try {
-        const payload: ManageGuestPayload = {
-          "action": "UPDATE",
-          "currentStatus": "confirmed",
-          "exclusiveIds": [],
-          "guestStatus": "CONFIRMED",
-          "inclusiveIds": [guestProfile?.guestId],
-          "inviteMessage": "",
-          "isSelectedAll": false,
-          "maxAdditionalGuests": maxAdditionalGuests,
-          "sendNotification": true,
-          "ticketTypeId": selectedTicketType?.id,
-          privateGuestNote: guestNote,
-        }
-  
-        await manageGuest({
-          payload,
-          eventId: selectedEvent?.id,
-        }).unwrap();
-  
-        FlashMessageComponent.show(
-          'success',
-          `${guestProfile?.name}'s invite has been updated`,
-        );
-  
-        // navigation.goBack();
-      } catch (error) {
-        const typedError = error as ApiErrorInterface;
-        FlashMessageComponent.show('error', getErrorMessage(typedError));
-      } finally {
-        // setIsLoadingAction(false);
-      }
-    };
+  const handleGuestAction = async () => {
+    try {
+      const payload: ManageGuestPayload = {
+        action: 'UPDATE',
+        currentStatus: 'confirmed',
+        exclusiveIds: [],
+        guestStatus: 'CONFIRMED',
+        inclusiveIds: [guestProfile?.guestId],
+        inviteMessage: '',
+        isSelectedAll: false,
+        maxAdditionalGuests: maxAdditionalGuests,
+        sendNotification: true,
+        ticketTypeId: selectedTicketType?.id,
+        privateGuestNote: guestNote,
+      };
+
+      await manageGuest({
+        payload,
+        eventId: selectedEvent?.id,
+      }).unwrap();
+
+      FlashMessageComponent.show(
+        'success',
+        `${guestProfile?.name}'s invite has been updated`,
+      );
+
+      // navigation.goBack();
+    } catch (error) {
+      const typedError = error as ApiErrorInterface;
+      FlashMessageComponent.show('error', getErrorMessage(typedError));
+    } finally {
+      // setIsLoadingAction(false);
+    }
+  };
 
   const manageGuests = async () => {
     if (status === 'CONFIRMED' && selectedEvent?.id) {
@@ -285,7 +291,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
       // );
       // if (response.success) {
       // }
-      handleGuestAction()
+      handleGuestAction();
     }
   };
   return (
@@ -362,7 +368,13 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
               defaultValue={privateGuestNote}
               multiline
               editable={status === 'CONFIRMED' ? true : false}
-              onBlur={manageGuests}
+              onFocus={() => {
+                updateKeyboardStatus(true);
+              }}
+              onBlur={() => {
+                updateKeyboardStatus(false);
+                manageGuests();
+              }}
             />
           </View>
           <Text style={styles.sectionTitle}>{LABLE.PLUS_1S}</Text>

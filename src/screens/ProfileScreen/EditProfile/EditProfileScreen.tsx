@@ -1,7 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  Dimensions,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -45,7 +44,7 @@ import CreativeFocusComponent from './CreativeFocusComponent';
 import DatePickerComponent from './DatePickerComponent';
 import GenderComponent from './GenderComponent';
 
-interface EditProfileScreenProps extends NativeStackScreenProps<any, any> { }
+interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
 const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   navigation,

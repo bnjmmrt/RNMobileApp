@@ -20,6 +20,7 @@ import {
   verticalScale,
 } from 'src/utils/dimensions';
 import { CustomText } from './CustomText';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 // Define the props for SearchInput
 interface SearchInputProps extends TextInputProps {
@@ -43,12 +44,14 @@ const SearchInput = forwardRef(
     }: SearchInputProps,
     ref,
   ) => {
+    const { updateKeyboardStatus } = useKeyboard();
+
     const [searchText, setSearchText] = useState('');
 
     // Expose handleNextPress to the parent
     useImperativeHandle(ref, () => ({
       handleNextPress,
-      searchText
+      searchText,
     }));
 
     // Handle the "Next" button press
@@ -72,6 +75,12 @@ const SearchInput = forwardRef(
             placeholder={placeholder ? placeholder : 'Search for an event...'}
             value={searchText}
             onChangeText={handleTextChange}
+            onFocus={() => {
+              updateKeyboardStatus(true);
+            }}
+            onBlur={() => {
+              updateKeyboardStatus(false);
+            }}
           />
           {searchText && (
             <TouchableOpacity

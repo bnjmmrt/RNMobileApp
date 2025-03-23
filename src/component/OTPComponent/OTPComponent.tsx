@@ -1,4 +1,9 @@
-import React, { forwardRef, useImperativeHandle, useState, useRef } from 'react';
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useState,
+  useRef,
+} from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { OtpInput } from 'react-native-otp-entry';
 import { LABLE, BUTTON_LABLE, COLORS } from '../../utils/constants';
@@ -10,16 +15,17 @@ import {
   radiusScale,
   verticalMarginScale,
 } from 'src/utils/dimensions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 type OTPComponentProps = {
   performCodeVerification: (code: string) => void;
   resendVerificationCode: (isResend: boolean) => void;
-  error?:string
+  error?: string;
 };
 
 type OTPComponentHandle = {
   handleNextPress: () => void;
-  code?:string
+  code?: string;
 };
 
 const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
@@ -27,10 +33,11 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
     const [code, setCode] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<any>('');
     const otpInput = useRef(null);
+    const { updateKeyboardStatus } = useKeyboard();
 
     const setApiError = (error: string) => {
-      setErrorMessage(error)
-    }
+      setErrorMessage(error);
+    };
 
     useImperativeHandle(ref, () => ({
       code,
@@ -38,13 +45,13 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
       validateCode,
       showInvalidCodeError,
       clearOTP,
-      setApiError
+      setApiError,
     }));
 
     const clearOTP = () => {
       otpInput.current.clear(); // Clears the OTP input
       setCode('');
-      setErrorMessage('')
+      setErrorMessage('');
     };
 
     const validateCode = (): boolean => {
@@ -88,8 +95,14 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
           type="numeric"
           secureTextEntry={false}
           focusStickBlinkingDuration={500}
-          onFocus={() => console.log('Focused')}
-          onBlur={() => console.log('Blurred')}
+          onFocus={() => {
+            updateKeyboardStatus(true);
+            console.log('Focused');
+          }}
+          onBlur={() => {
+            updateKeyboardStatus(false);
+            console.log('Blurred');
+          }}
           onTextChange={(text: string) => {
             setCode(text);
             setErrorMessage('');

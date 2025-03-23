@@ -18,6 +18,7 @@ import {
   radiusScale,
   fontScale,
 } from '../../utils/dimensions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 interface FeedSearchInputProps {
   handleChange: (text: string) => void;
@@ -34,12 +35,14 @@ const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
   handleFilter,
   filterLength,
 }) => {
+  const { updateKeyboardStatus } = useKeyboard();
+
   const [searchText, setSearchText] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
   const handleTextChange = (text: string) => {
     setSearchText(text);
-    handleChange(text)
+    handleChange(text);
   };
 
   const handleClearClick = () => {
@@ -59,8 +62,14 @@ const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
           value={searchText}
           onChangeText={handleTextChange}
           onSubmitEditing={handleSearch}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
+          onFocus={() => {
+            updateKeyboardStatus(true);
+            setIsFocused(true);
+          }}
+          onBlur={() => {
+            updateKeyboardStatus(false);
+            setIsFocused(false);
+          }}
         />
         {searchText && (
           <TouchableOpacity onPress={handleClearClick}>

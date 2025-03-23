@@ -29,6 +29,7 @@ import {
 import { fontFamily } from 'src/utils/functions';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import IMAGES from '@images/index';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 interface InputProps {
   label?: string;
@@ -57,6 +58,8 @@ interface InputProps {
   isBackgroundRed?: boolean;
   hasHandler?: boolean;
   isName?: boolean;
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 export type InputRefMethods = {
@@ -95,9 +98,12 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     isBackgroundRed = false,
     hasHandler = false,
     isName = false,
+    onBlur,
+    onFocus,
   } = props;
 
   const inputRef = useRef<TextInput>(null);
+  const { updateKeyboardStatus } = useKeyboard();
 
   const [inputText, setInputText] = useState(defaultValue);
   const [errorMessage, setErrorMessage] = useState('');
@@ -227,8 +233,16 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
           }}
           multiline={multiline}
           keyboardType={keyboardType}
-          {...extraInputProps}
           maxLength={maxLength}
+          onFocus={() => {
+            updateKeyboardStatus(true);
+            if (onFocus) onFocus();
+          }}
+          onBlur={() => {
+            updateKeyboardStatus(false);
+            if (onBlur) onBlur();
+          }}
+          {...extraInputProps}
         />
         {hasHandler && (
           <View style={styles.resizeHandle}>
