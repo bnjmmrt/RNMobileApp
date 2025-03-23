@@ -8,28 +8,19 @@ import {
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 import IMAGES from '../../../assets/images';
-import Button from '../../../component/Button';
 import Header from '../../../component/Header/Header';
 import { setPageProgress } from '../../../redux/slices/appFlowSlice';
-import { BUTTON_LABLE, COLORS, PROFILE } from '../../../utils/constants';
+import { COLORS, PROFILE } from '../../../utils/constants';
 import {
-  fontScale,
   horizontalMarginScale,
-  Hp,
-  radiusScale,
   verticalMarginScale,
-  Wp,
 } from '../../../utils/dimensions';
-import { fontFamily } from '../../../utils/functions';
-
 import SocialMediaBottomSheet from 'src/component/BottomSheet/SocialMediaBottomSheet';
-import useKeyboard from 'src/utils/hooks/useKeyboard';
 import AccountItem from './AccountItem';
 import { CustomText } from 'src/component/CustomText';
-interface ConnectedAccountsScreenProps {}
+interface ConnectedAccountsScreenProps { }
 
 const items: any = [
   { id: '1', title: PROFILE.INSTAGRAM, image: IMAGES.profileInsta },
@@ -51,7 +42,6 @@ interface ConfigData {
 
 const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
   const dispatch = useDispatch();
-  const { keyboardVisible } = useKeyboard();
   const navigation = useNavigation();
   const socialMediaBottomSheetRef = useRef<any>(null);
   //   const birthday = useSelector((state: RootState) => state.appFlow.birthday);
@@ -141,7 +131,7 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
     }
   };
 
-  const onConfirm = () => {};
+  const onConfirm = () => { };
 
   return (
     <View style={styles.container}>

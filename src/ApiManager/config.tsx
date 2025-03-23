@@ -93,6 +93,7 @@ export const EndPoint = {
   check_email: 'users/v1/auth/check-email',
   switch_profile: 'users/v1/auth/switch-profile',
   file_upload: `users/v1/files/upload`,
+  generate_upload_url: `users/v1/files/generate-upload-url`,
   user_interests: 'users/v1/auth/user-interests/',
   user_notification_preferences: `users/v1/notification-preferences`,
 

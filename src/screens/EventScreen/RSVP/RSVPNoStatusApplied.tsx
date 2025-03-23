@@ -29,13 +29,12 @@ import { RootState } from 'src/redux/slices';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import { BUTTON_LABLE, COLORS } from 'src/utils/constants';
 import { verticalScale } from 'src/utils/dimensions';
-import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
 import { fontFamily, removeSignature } from 'src/utils/functions';
-import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { EventCard } from '../RSVP/RSVPInvitedUpcoming';
 import { styles } from './RSVPScreenStyle';
 import RequestVouch from './RequestVouch';
 import { formatDetailedEventDate } from 'src/utils/dateFunctions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 type Guest = {
   id: number;
@@ -144,7 +143,7 @@ const RSVPNoStatusApplied: React.FC = () => {
   const handleSubmitApplication = async () => {
     if (!validateInputs()) return;
     try {
-      const response = await submitApplication({
+      const requestParams = {
         id: userId,
         eventId: id,
         answers: eventQuestions.map(q => ({
@@ -152,7 +151,9 @@ const RSVPNoStatusApplied: React.FC = () => {
           answer: inputRefs.current[q.questionId]?.inputText || '',
         })),
         additionalGuests: selectedGuests ? selectedGuests.id : 0,
-      }).unwrap();
+
+      }
+      const response = await submitApplication(requestParams).unwrap();
       console.log('Application submitted:', response);
       setActiveTab('submit');
       dispatch(setRsvpStatus('APPLIED'));

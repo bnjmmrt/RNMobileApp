@@ -32,8 +32,6 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({
     skip: (currentPage - 1) * 10,
   });
 
-  // const { data, isLoading } = useFetchAllEventsQuery({ userId });
-
   useEffect(() => {
     if (data) {
       setEvents(prev =>

@@ -22,7 +22,6 @@ import {
   getPriorityRole,
   loginUser,
 } from 'src/utils/functions';
-import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import BackButton from '../../component/BackButton/BackButton';
 import Button from '../../component/Button';
@@ -32,6 +31,7 @@ import { useSendOtp } from '../../redux//hooks/useSendOtp';
 import { useVerifyOtp } from '../../redux/hooks/useVerifyOtp';
 import { BUTTON_LABLE, LABLE, ROLE } from '../../utils/constants';
 import VerifyOtpStyles from './VerifyOtpStyles';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -155,9 +155,8 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         <View style={styles.contentContainer}>
           <TitleSubtitle
             title={LABLE.ENTER_YOUR_VERIFICATION_CODE}
-            subTitle={`${LABLE.SEND_TO}${
-              route.params.isEmail ? route.params.email : route.params.phone
-            }`}
+            subTitle={`${LABLE.SEND_TO}${route.params.isEmail ? route.params.email : route.params.phone
+              }`}
           />
           <OTPComponent
             error={errorMsg}

@@ -34,6 +34,7 @@ import { useDispatch } from "react-redux";
 import { setRsvpStatus } from "src/redux/slices/rspvSlice";
 import { openSettings } from "react-native-permissions";
 import Tooltip, { Placement } from 'react-native-tooltip-2';
+import { useUploadFile } from "src/utils/hooks/useUploadFile";
 interface AddAnnouncementScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
@@ -54,10 +55,8 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const postBottomSheetRef = useRef<any>(null);
     const bottomSheetRef = useRef<any>(null);
     const [activeView, setActiveTab] = useState<string>('');
-    const { goBack, navigate } = useNavigation()
     const [selectedTicketType, setSelectedTicketType] = useState<any[]>([]);
     const [selectedCollaborator, setselectedCollaborator] = useState<any>([]);
-    const { apiRequest, loading } = useApi();
     const searchInputRef = useRef<InputRefMethods>(null);
     const [searchText, setSearchText] = useState<string>('');
     const [allRecipients, setallRecipients] = useState<any[]>([]);
@@ -72,8 +71,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const [announcementText, setAnnouncementText] = React.useState('');
     const [totalCount, setTotalCount] = useState<any>(0)
     const { eventData, announcementId: ID } = route?.params || {};
-    console.log("siya eventData", eventData)
-    console.log("siya announcementId", ID)
     const [announcementId, setAnnouncementId] = React.useState(ID);
     const dispatch = useDispatch();
     const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -81,6 +78,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const [showRecipientDetail, setshowRecipientDetail] = useState(true)
     const [showAnnouncementDetail, setshowAnnouncementDetail] = useState(true)
     const [showProfileToolitip, setShowProfileToolitip] = useState(false);
+    const { uploadFileHook } = useUploadFile();
 
 
     const { data: announcementDetailsData } = useFetchAnnouncementDetailQuery(
@@ -267,7 +265,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
             case 'submit':
                 return '70%';
             case 'ticketTypeOptions':
-                return eventData?.ticketTypes.length == 1 ? `40%` : eventData?.ticketTypes.length > 8 ? '80%' : `${(eventData?.ticketTypes.length * 10)}%`
+                return eventData?.ticketTypes.length == 1 ? `30%` : eventData?.ticketTypes.length > 8 ? '80%' : `${(eventData?.ticketTypes.length * 10)}%`
             case 'receipient':
                 return '80 %';// : `${(allRecipients.length * 10 + 10)}%`
             default:
@@ -336,7 +334,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                 <Button
                     disabled={false}
                     style={styles.cancelbtnStyle}
-                    title={'cancel'}
+                    title={'Cancel'}
                     colorTheme="light"
                     onPress={cancelClick}
                     clearButtonStyle={styles.clearButton}
@@ -651,22 +649,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
         }
     };
 
-    const uploadFile = async (image: string, size: string) => {
-        const mimeType = `images/${image.split('.').pop()}`;
-        const fileName = image.split('/').pop();
-
-        const formData = new FormData();
-        formData.append('file', {
-            uri: image,
-            type: mimeType,
-            name: fileName,
-            size: size
-        });
-
-        return await apiRequest('post', EndPoint.file_upload, formData, null, {
-            'Content-Type': 'multipart/form-data',
-        });
-    };
     const onPressDelete = (uri: string) => {
         setAttachmentArr(prev => prev.filter(item => item?.media !== uri));
     };
@@ -684,7 +666,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
             {item.mediaType == 'pdf' ?
                 <TouchableOpacity onPress={() => onPressDelete(item.media)} style={styles.pdfContainer}>
                     <Image source={IMAGES.pdf} style={styles.pdfIcon} resizeMode='contain' />
-                    <Text style={styles.title} numberOfLines={2}>{item?.mediaName}</Text>
+                    <CustomText textProps={{ numberOfLines: 2 }}>{item?.mediaName}</CustomText>
                     {/* <Text style={styles.pdfSize}>{item.size}</Text> */}
                 </TouchableOpacity> :
                 <ImageBackground source={{ uri: item.media }} style={styles.attachImgWrapper} imageStyle={{ borderRadius: radiusScale(8) }}>
@@ -697,21 +679,31 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     );
 
     const savePhoto = async (image: any, type: string, name: any, size: any) => {
-        const response: any = await uploadFile(image, size);
-        console.log('savePhoto', response);
-        if (response.success == true) {
-            const imageUrl = response?.data?.pathFileUrl
-            let data = {
-                mediaType: type,
-                media: imageUrl,
-                mediaName: name,
+        try {
+            const data = await fetch(image);
+            const blob = await data.blob();
+            const fileName = image.split('/').pop();
+            const response = await uploadFileHook(fileName, size, type, blob)
+            if (response.success == true) {
+                const imageUrl = environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
+                let data = {
+                    mediaType: type,
+                    media: imageUrl,
+                    mediaName: fileName,
+                }
+                setAttachmentArr((prev: any) => [...prev, data])
+                console.log(atachmentArr, 'atachmentArr');
+            } else {
+                console.log('savePhoto else', response);
             }
-            setAttachmentArr((prev: any) => [...prev, data])
-            console.log(atachmentArr, 'atachmentArr');
-        } else {
-            console.log('savePhoto else', response);
+            // const response: any = await uploadFile(image, size, type, blob);
+            console.log('savePhoto', response);
+        } catch (error) {
+            console.error('Error uploading image:', error);
         }
     };
+
+
     return (
         <View style={styles.container}>
             <Header
@@ -1011,6 +1003,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                     onPress={checkAnnouncement}
                 />
             }
+
             <BottomSheetComponent
                 ref={bottomSheetRef}
                 onClose={() => { bottomSheetRef?.current?.close() }}
@@ -1019,6 +1012,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                     {renderBottomSheetContent()}
                 </View>
             </BottomSheetComponent>
+
             <DocumentBottomSheet
                 ref={editPhotoBottomSheetRef}
                 onPhotoClick={openCamera}

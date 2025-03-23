@@ -35,7 +35,7 @@ import {
 } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-interface NotificationsScreenProps extends NativeStackScreenProps<any, any> {}
+interface NotificationsScreenProps extends NativeStackScreenProps<any, any> { }
 
 const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
   navigation,

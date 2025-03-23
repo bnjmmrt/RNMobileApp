@@ -8,7 +8,6 @@ import {
   changeSafeAreaViewConfig,
   removeSpaceFromStr,
 } from 'src/utils/functions';
-import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { EndPoint } from '../../../ApiManager/config';
 import useApi from '../../../axios/useApi';
@@ -24,8 +23,9 @@ import {
 } from '../../../redux/slices/appFlowSlice';
 import { BUTTON_LABLE, LABLE } from '../../../utils/constants';
 import VerifyOtpStyles from './VerifyOtpStyles';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
-interface VerifyOtpScreenProps extends NativeStackScreenProps<any, any> {}
+interface VerifyOtpScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: {
