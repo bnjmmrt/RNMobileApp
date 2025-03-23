@@ -9,23 +9,30 @@ import { FlashMessageComponent } from '../component/FlashMessageComponent/FlashM
 import { store } from 'src/redux/store';
 import { getErrorMessage } from 'src/utils/functions';
 
-// Create an Axios instance with type annotations
+// Extend AxiosRequestConfig to include custom `withAuth` key
+interface CustomAxiosRequestConfig extends AxiosRequestConfig {
+  withAuth?: boolean; // Optional flag to control token inclusion
+}
+
+// Create an Axios instance
 export const axiosController: AxiosInstance = axios.create({
   baseURL: environment.BASE_URL,
-  timeout: 10000, // Timeout in ms
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 axiosController.interceptors.request.use(
-  async (config: AxiosRequestConfig) => {
-    // const token = ''; // Example: retrieve token;
-    // const token = await getItem(TagKey.IsBearerToken);
+  async (config: CustomAxiosRequestConfig) => {
     const token = store.getState().auth.token;
-    if (token) {
+
+    // Check for `withAuth` flag (default true if not specified)
+    const shouldAttachToken = config.withAuth !== false;
+
+    if (shouldAttachToken && token) {
       if (config.headers) {
-        config.headers['Authorization'] = token ? `Bearer ${token}` : '';
+        config.headers['Authorization'] = `Bearer ${token}`;
       }
     }
 
@@ -42,16 +49,15 @@ axiosController.interceptors.request.use(
     if (config.data) {
       console.log('Request Data:', config.data);
     }
+
     return config;
   },
   (error: AxiosError) => Promise.reject(error),
 );
 
-// Response interceptor (e.g., handle global errors)
-// Response interceptor for global error handling
+// Response interceptor
 axiosController.interceptors.response.use(
   (response: AxiosResponse) => {
-    console.log('Response:', response.data);
     return response.data;
   },
   (error: AxiosError) => {
@@ -60,34 +66,31 @@ axiosController.interceptors.response.use(
     if (requestUrl) {
       console.log('Request URL on error:', requestUrl);
     }
+
     const status = error.response?.status;
-    const errorMessage = (error.response?.data as any)?.error?.message || error.message;
+    const errorMessage =
+      (error.response?.data as any)?.error?.message || error.message;
+
     if (status === 400) {
-      console.error('Bad request:', errorMessage);
       FlashMessageComponent.show(
         'error',
         getErrorMessage(error?.response) || 'Something went wrong, please try again!',
       );
     } else if (status === 401) {
-      console.error('Unauthorized access - Token might be expired');
       FlashMessageComponent.show(
         'error',
         'Unauthorized access - Token might be expired',
       );
     } else if (status === 403) {
-      console.error('Forbidden access:', errorMessage);
       FlashMessageComponent.show('error', errorMessage || 'Forbidden access');
     } else if (status === 404) {
-      console.error('Resource not found:', errorMessage);
       FlashMessageComponent.show('error', 'Resource not found');
     } else if (status >= 500) {
-      console.error('Internal server error:', errorMessage);
       FlashMessageComponent.show(
         'error',
         'Internal server error. Please try again later.',
       );
     } else {
-      console.error('An error occurred:', errorMessage);
       FlashMessageComponent.show('error', errorMessage);
     }
 

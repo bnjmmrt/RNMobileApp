@@ -23,7 +23,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
 import { extractCountryCode } from 'src/utils/functions';
-import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { EndPoint } from '../../../ApiManager/config';
 import useApi from '../../../axios/useApi';
 import EmailInput from '../../../component/EmailComponent/EmailInput';
@@ -36,8 +35,9 @@ import {
   verticalMarginScale,
   verticalScale,
 } from '../../../utils/dimensions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
-interface HostEditProfileScreenProps extends NativeStackScreenProps<any, any> {}
+interface HostEditProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
 const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
   navigation,

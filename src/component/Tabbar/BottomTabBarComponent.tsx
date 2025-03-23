@@ -13,7 +13,6 @@ import * as Animatable from 'react-native-animatable';
 import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import { fontFamily } from 'src/utils/functions';
-import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { COLORS } from '../../utils/constants';
 import {
   fontScale,
@@ -24,6 +23,7 @@ import {
   Wp,
 } from '../../utils/dimensions';
 import { CustomText } from '../CustomText';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
   state,

@@ -211,14 +211,17 @@ const EventsFeed = () => {
   );
   const userId = useSelector((state: RootState) => state.auth.userId);
 
-  const { data, isLoading, error, isError, refetch } = useFetchAllEventsQuery({
-    statusName: 'UPCOMING_STATUS',
-    searchText: searchTerm,
-    queryString: filterQuery,
-    userId: userId,
-    // take: 10,
-    // skip: (currentPage - 1) * 10,
-  });
+  const { data, isLoading, error, isError, refetch } = useFetchAllEventsQuery(
+    {
+      statusName: 'UPCOMING_STATUS',
+      searchText: searchTerm,
+      queryString: filterQuery,
+      userId: userId,
+      // take: 10,
+      // skip: (currentPage - 1) * 10,
+    },
+    { skip: !userId }
+  );
 
   const debouncedSearch = useCallback(
     debounce((text: string) => setSearchTerm(text), 500),

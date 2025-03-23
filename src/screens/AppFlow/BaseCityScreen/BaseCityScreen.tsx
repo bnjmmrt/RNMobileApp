@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SelectedSingleFilter } from 'src/component/FilterSheet';
 import GooglePlacesInput from 'src/component/GooglePlacesInput/GooglePlacesInput';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
-import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import Button from '../../../component/Button';
 import Header from '../../../component/Header/Header';
@@ -19,11 +18,12 @@ import {
 } from '../../../redux/slices/appFlowSlice';
 import { BUTTON_LABLE, ERROR_MESSAGE, LABLE } from '../../../utils/constants';
 import BaseCityScreenStyles from './BaseCityScreenStyles';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 export type SelectedFilters = {
   [id: string]: SelectedSingleFilter;
 };
-interface BaseCityScreenProps extends NativeStackScreenProps<any, any> {}
+interface BaseCityScreenProps extends NativeStackScreenProps<any, any> { }
 
 const BaseCityScreen: React.FC<BaseCityScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -98,7 +98,7 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({ navigation }) => {
           defaultValue={selectedCity.address}
           errorMessage={errorMessage}
           setError={setErrorMessage}
-          submit={() => {}}
+          submit={() => { }}
           setLocation={location => {
             onChangeLocationValue({
               placeId: location.placeId,
