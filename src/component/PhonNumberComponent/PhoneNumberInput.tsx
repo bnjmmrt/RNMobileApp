@@ -37,6 +37,7 @@ import {
 } from '../../utils/dimensions';
 import { fontFamily } from '../../utils/functions';
 import { CustomText } from '../CustomText';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 type TranslatedNames = Record<string, string>;
 
@@ -249,6 +250,8 @@ const PhoneNumberInput = forwardRef<
       });
     }, []);
 
+    const { updateKeyboardStatus } = useKeyboard();
+
     return (
       <View style={[styles.container, otherStyle]}>
         {/* Dynamic Label */}
@@ -294,7 +297,13 @@ const PhoneNumberInput = forwardRef<
             // value={formatPhoneNumber(phoneNumber)}
             maxLength={maxLength + Math.floor(phoneNumber.length / 3)}
             onChangeText={handlePhoneNumberChange}
-            onBlur={() => validatePhoneNumber()}
+            onFocus={() => {
+              updateKeyboardStatus(true);
+            }}
+            onBlur={() => {
+              updateKeyboardStatus(false);
+              validatePhoneNumber();
+            }}
             editable={!disabled}
           />
         </View>

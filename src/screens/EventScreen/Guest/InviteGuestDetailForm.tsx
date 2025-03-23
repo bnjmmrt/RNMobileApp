@@ -162,9 +162,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
                 }}
                 otherStyle={{ marginTop: 0 }}
                 onChangeText={onInviteMessageChange}
-                extraInputProps={{
-                  onFocus: onFocusInviteMessage,
-                }}
+                onFocus={onFocusInviteMessage}
               />
             </View>
           </View>
@@ -179,9 +177,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
             inputFieldContainerStyle={{ borderRadius: radiusScale(16) }}
             otherStyle={{ marginTop: 0 }}
             onChangeText={onGuestNoteChange}
-            extraInputProps={{
-              onFocus: onFocusGuestNote,
-            }}
+            onFocus={onFocusGuestNote}
           />
 
           {directlySendToConfirm ? (

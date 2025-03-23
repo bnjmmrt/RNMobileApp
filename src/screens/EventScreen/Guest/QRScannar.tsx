@@ -1,48 +1,51 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useState, useRef, useEffect } from 'react';
+import IMAGES from '@images/index';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
   Alert,
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import { Image } from 'react-native-animatable';
+import { openSettings } from 'react-native-permissions';
 import {
   Camera,
   useCameraDevice,
   useCodeScanner,
 } from 'react-native-vision-camera';
+import { useSelector } from 'react-redux';
+import { EndPoint } from 'src/ApiManager/config';
+import useApi from 'src/axios/useApi';
+import BackButton from 'src/component/BackButton/BackButton';
+import Button from 'src/component/Button';
+import FullScreenLoader from 'src/component/FullScreenLoader';
+import { ROUTES } from 'src/navigation/Route';
+import { RootState } from 'src/redux/slices';
 import { COLORS } from 'src/utils/constants';
 import {
   fontScale,
-  horizontalMarginScale,
   horizontalScale,
   radiusScale,
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import IMAGES from '@images/index';
-import Button from 'src/component/Button';
-import useApi from 'src/axios/useApi';
-import { EndPoint } from 'src/ApiManager/config';
-import { ROUTES } from 'src/navigation/Route';
-import { Image } from 'react-native-animatable';
-import FullScreenLoader from 'src/component/FullScreenLoader';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import { openSettings } from 'react-native-permissions';
-import BackButton from 'src/component/BackButton/BackButton';
 
 const { width } = Dimensions.get('window');
 const SCANNER_SIZE = width * 0.6;
 
 const QRCodeScanner = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const { apiRequest, loading, error } = useApi();
   const device = useCameraDevice('back');
   const cameraRef = useRef<Camera>(null);
   const [scanned, setScanned] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
+  const eventId = useSelector((state: RootState) => state.event.id);
+
   const requestPermission = async () => {
     const status = await Camera.requestCameraPermission();
     setHasPermission(status === 'granted');
@@ -70,7 +73,7 @@ const QRCodeScanner = () => {
   }, []);
 
   const validateQR = async (token: string) => {
-    const requestObject = { ticketToken: token };
+    const requestObject = { ticketToken: token, eventId };
     const response: any = await apiRequest(
       'post',
       EndPoint.validate_qr,
@@ -104,11 +107,11 @@ const QRCodeScanner = () => {
 
   const onClose = () => navigation.goBack();
 
-  const onMenuClick = () => { };
+  const onMenuClick = () => {};
   if (!hasPermission) {
     return (
       <>
-        <BackButton />
+        <BackButton onPress={() => {}} />
         <View style={styles.btnContainer}>
           <Text>Camera permission is required</Text>
           <Button
@@ -120,14 +123,15 @@ const QRCodeScanner = () => {
           />
         </View>
       </>
-
     );
   }
 
   if (!device) return <Text>Loading Camera...</Text>;
   if (loading)
     return (
-      <FullScreenLoader loading={loading} customStyle={{ backgroundColor: COLORS.transperantBackground, }}>
+      <FullScreenLoader
+        loading={loading}
+        customStyle={{ backgroundColor: COLORS.transperantBackground }}>
         {null}
       </FullScreenLoader>
     );
@@ -138,7 +142,7 @@ const QRCodeScanner = () => {
         ref={cameraRef}
         style={styles.camera}
         device={device}
-        isActive={!scanned}
+        isActive={true}
         codeScanner={codeScanner}
       />
 
@@ -241,5 +245,5 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderTopWidth: 0,
   },
-  validationText: { flex: 1, justifyContent: 'center', alignItems: 'center' }
+  validationText: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 });

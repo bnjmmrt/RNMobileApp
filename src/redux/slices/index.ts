@@ -1,5 +1,5 @@
-import {combineReducers} from '@reduxjs/toolkit';
-import {createBaseApi} from '../../ApiManager/createBaseApi';
+import { combineReducers } from '@reduxjs/toolkit';
+import { createBaseApi } from '../../ApiManager/createBaseApi';
 import appFlowApiDataSlice from './appGlobalDataSlice';
 import appFlowSlice from './appFlowSlice';
 import authReducer from './authSlice';
@@ -9,6 +9,7 @@ import bottomTabsConfigSlice from './bottomTabsConfigSlice';
 import rspvSlice from './rspvSlice';
 import inviteGuestsFlowSlice from './inviteGuestsFlowSlice';
 import eventSlice from './eventSlice';
+import keyboardSlice from './keyboardSlice';
 
 // Combine all reducers into a single root reducer
 export const rootReducer = combineReducers({
@@ -22,6 +23,7 @@ export const rootReducer = combineReducers({
   rspv: rspvSlice,
   inviteGuestsFlow: inviteGuestsFlowSlice,
   event: eventSlice,
+  keyboard: keyboardSlice,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

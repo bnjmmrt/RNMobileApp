@@ -61,7 +61,7 @@ export const EndPoint = {
 
   phone_send_verification_code: `notifications/v1/communication/send-verification-code`,
   phone_verify_code: `notifications/v1/communication/verify-code`,
-  notification_count:`/notifications/v1/notifications/summary`,
+  notification_count: `/notifications/v1/notifications/summary`,
   get_focuses: `${API_USERS_V1_AUTH}/get-focuses`,
   interests: `${API_USERS_V1_AUTH}/interests`,
   member_signUp: `${API_USERS_V1_AUTH}/member-sign-up`,
@@ -103,11 +103,10 @@ export const EndPoint = {
   event_guest_details: 'events/v1/events/guest-details/',
 
   vouch_requests: 'events/v1/events/vouch-requests',
-  validate_qr: 'events/v1/events/guest/ticket/validate',
+  validate_qr: 'events/v1/guest/ticket/validate',
   events_events: 'events/v1/events',
   generate_ticket: 'events/v1/guest/ticket/',
   edit_event: 'events/v1/event/',
-
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

@@ -86,9 +86,7 @@ const UserInformation: React.FC<UserInformationProps> = ({
         onChangeText={text => setUserNote(text)}
         errorMessage="Please enter user note"
         otherStyle={{ marginTop: 0 }}
-        extraInputProps={{
-          onFocus: onUserNoteFocus,
-        }}
+        onFocus={onUserNoteFocus}
       />
       {userDetails?.note !== userNote ? (
         <ButtonSmall

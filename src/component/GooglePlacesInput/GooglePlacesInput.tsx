@@ -20,6 +20,7 @@ import IMAGES from '../../assets/images';
 import { Address, setBaseCity } from '../../redux/slices/appFlowSlice';
 import { COLORS } from '../../utils/constants';
 import { useDispatch } from 'react-redux';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 interface GooglePlacesInputProps {
   setLocation: (location: Address) => void;
@@ -50,6 +51,8 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
     initiateLocationFetch,
   } = useLocation(false);
   const dispatch = useDispatch();
+  const { updateKeyboardStatus } = useKeyboard();
+
   const inputTextRef = useRef<string>('');
   const [clearBtnShown, setClearBtnShown] = useState(false);
   useEffect(() => {
@@ -110,7 +113,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
             bottom: verticalMarginScale(13),
             fontSize: fontScale(14),
             fontFamily: fontFamily.ABCDiatype_Regular,
-            paddingLeft:4,
+            paddingLeft: 4,
             backgroundColor: errorMessage ? COLORS.bgRed : COLORS.white,
           },
           listView: {
@@ -163,7 +166,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
         )}
         renderRightButton={() => (
           <TouchableOpacity
-           hitSlop={{top:5,bottom:5,left:5,right:5}}
+            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
             style={styles.iconContainer}
             onPress={handleClearText}>
             {clearBtnShown && inputTextRef.current && (
@@ -176,16 +179,23 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
           clearButtonMode: 'never',
           autoCorrect: false,
           onBlur: () => {
+            updateKeyboardStatus(false);
             setClearBtnShown(false);
           },
           onFocus: () => {
+            updateKeyboardStatus(true);
             setClearBtnShown(true);
           },
           onChangeText: text => {
             if (inputTextRef.current === text) return;
             inputTextRef.current = text;
-            if(!text){
-              setLocation({ address: '', placeId: '', latitude: '', longitude: '' });
+            if (!text) {
+              setLocation({
+                address: '',
+                placeId: '',
+                latitude: '',
+                longitude: '',
+              });
               dispatch(setBaseCity({ address: '', placeId: '' }));
               googlePlacesRef?.current?.setAddressText('');
               setError && setError(null);

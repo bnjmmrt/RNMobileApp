@@ -5,12 +5,14 @@ import IMAGES from '../../assets/images';
 import { COLORS, LABLE } from '../../utils/constants';
 import { useNavigation } from '@react-navigation/native';
 import { verticalScale } from 'src/utils/dimensions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
-const EmailInput = forwardRef(({otherStyle}, ref) => {
+const EmailInput = forwardRef(({ otherStyle }, ref) => {
   const [emailAddress, setEmailAddress] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [disabled, setDisabled] = useState(false);
   const navigation = useNavigation();
+  const { updateKeyboardStatus } = useKeyboard();
 
   // Expose handleNextPress to the parent
   useImperativeHandle(ref, () => ({
@@ -25,9 +27,10 @@ const EmailInput = forwardRef(({otherStyle}, ref) => {
   // Validate email format
   const validateEmailAddress = () => {
     // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    const emailRegex =
+      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-    console.log(emailRegex.test(emailAddress))
+    console.log(emailRegex.test(emailAddress));
     if (!emailRegex.test(emailAddress)) {
       setErrorMessage(LABLE.EROOR_ENTER_EMAIL);
       return false;
@@ -47,23 +50,27 @@ const EmailInput = forwardRef(({otherStyle}, ref) => {
   };
 
   return (
-    <View style={[styles.container,otherStyle]}>
+    <View style={[styles.container, otherStyle]}>
       <View
         style={[
           styles.inputWrapper,
           errorMessage && styles.errorInputWrapper,
           disabled && styles.disabledInput,
         ]}>
-       { !errorMessage &&  <Image
-          source={errorMessage ? IMAGES.email_error : IMAGES.email}
-          style={[
-            styles.icon,
-            { tintColor: errorMessage ? COLORS.errorText : COLORS.light_gray },
-          ]}
-        /> }
+        {!errorMessage && (
+          <Image
+            source={errorMessage ? IMAGES.email_error : IMAGES.email}
+            style={[
+              styles.icon,
+              {
+                tintColor: errorMessage ? COLORS.errorText : COLORS.light_gray,
+              },
+            ]}
+          />
+        )}
         <TextInput
           style={[styles.input, disabled && { color: COLORS.light_gray }]}
-          placeholder={errorMessage ? '': "example@gmail.com"}
+          placeholder={errorMessage ? '' : 'example@gmail.com'}
           keyboardType="email-address"
           focusable={true} // Enable input focus
           autoCapitalize="none" // Disable automatic capitalization
@@ -75,8 +82,15 @@ const EmailInput = forwardRef(({otherStyle}, ref) => {
             setEmailAddress(text);
             setErrorMessage(''); // Clear error on text change
           }}
-          onBlur={validateEmailAddress}
+          // onBlur={validateEmailAddress}
           editable={!disabled}
+          onFocus={() => {
+            updateKeyboardStatus(true);
+          }}
+          onBlur={() => {
+            updateKeyboardStatus(false);
+            validateEmailAddress();
+          }}
         />
       </View>
       {errorMessage ? (

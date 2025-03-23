@@ -1,24 +1,17 @@
-import IMAGES from '@images/index';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from '@react-navigation/native';
-import React, { useState, useEffect, useCallback } from 'react';
-import {
+  ActivityIndicator,
   FlatList,
   SafeAreaView,
   StyleSheet,
-  View,
   Text,
-  TextInput,
-  ActivityIndicator,
+  View,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { EndPoint } from 'src/ApiManager/config';
 import useApi from 'src/axios/useApi';
 import AvatarInitials from 'src/component/AvatarInitials';
-import ButtonSmall from 'src/component/ButtonSmall';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import FollowButton from 'src/component/FollowButton/FollowButton';
 import Header from 'src/component/Header/Header';
