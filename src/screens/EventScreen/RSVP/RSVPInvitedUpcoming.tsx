@@ -55,6 +55,7 @@ import RenderCancelPopup from './RenderCancelPopup';
 import { styles } from './styles';
 import { SwipeableGuestList } from './SwipeableGuestList';
 import { formatDetailedEventDate } from 'src/utils/dateFunctions';
+import { InteractionManager } from 'react-native';
 
 const reasons = [
   { id: 1, name: 'Scheduling Conflict' },
@@ -98,9 +99,7 @@ export const EventCard = ({ name, location, imageCover, dates }) => {
       />
       <View style={styles.info}>
         <CustomText style={styles.title}>{name}</CustomText>
-        <CustomText style={styles.details}>
-          {dates}
-        </CustomText>
+        <CustomText style={styles.details}>{dates}</CustomText>
         <CustomText style={styles.details}>{location}</CustomText>
       </View>
     </View>
@@ -132,7 +131,8 @@ const optionList = [{ id: 1, label: 'Cancel RSVP' }];
 const RSVPInvitedUpcoming = () => {
   const { params } = useRoute();
   const scrollRef = React.useRef(null);
-  const { id, name, location, imageFlyer, startDate, endDate, timeZone } = params.event;
+  const { id, name, location, imageFlyer, startDate, endDate, timeZone } =
+    params.event;
   const [maxAdditionalGuests, setMaxAdditionalGuests] = React.useState(0);
   const status = params?.event?.currentGuestStatus;
   const { navigate, goBack } = useNavigation();
@@ -229,10 +229,11 @@ const RSVPInvitedUpcoming = () => {
   };
 
   const getSnapPoints = (): string => {
-
     switch (activeView) {
       case 'guests':
-        return maxAdditionalGuests == 0 ? '10%' : `${(maxAdditionalGuests * 8) + 10}%`;
+        return maxAdditionalGuests == 0
+          ? '10%'
+          : `${maxAdditionalGuests * 8 + 10}%`;
       case 'submit':
         return '60%';
       case 'options':
@@ -310,7 +311,9 @@ const RSVPInvitedUpcoming = () => {
             btnLabel={LABLE.DISCOVER_MORE_EVENTS}
             onClose={() => {
               bottomSheetRef?.current?.close();
-              navigate('BottomTabBar');
+              InteractionManager.runAfterInteractions(() => {
+                navigate('BottomTabBar');
+              });
             }}
             btnStyle={[
               styles.clearButton,
@@ -329,7 +332,9 @@ const RSVPInvitedUpcoming = () => {
             btnLabel={LABLE.DISCOVER_MORE_EVENTS}
             onClose={() => {
               bottomSheetRef?.current?.close();
-              navigate('BottomTabBar');
+              InteractionManager.runAfterInteractions(() => {
+                navigate('BottomTabBar');
+              });
             }}
             btnStyle={[
               styles.clearButton,
@@ -646,8 +651,8 @@ const RSVPInvitedUpcoming = () => {
               fontSize: fontScale(14),
             }}>
             Please add your additional guests’ details by{' '}
-            {formatDetailedEventDate(startDate, endDate, timeZone)}, or their passes will
-            be canceled.
+            {formatDetailedEventDate(startDate, endDate, timeZone)}, or their
+            passes will be canceled.
           </CustomText>
         )}
 
@@ -779,8 +784,8 @@ const RSVPInvitedUpcoming = () => {
             paddingBottom: 8,
           }}>
           Please add your additional guests’ details by{' '}
-          {formatDetailedEventDate(startDate, endDate, timeZone)}, or their passes will be
-          canceled.
+          {formatDetailedEventDate(startDate, endDate, timeZone)}, or their
+          passes will be canceled.
         </CustomText>
         <Button
           disabled={false}

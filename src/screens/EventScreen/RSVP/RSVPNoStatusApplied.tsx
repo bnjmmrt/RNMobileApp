@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  InteractionManager,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -67,7 +68,7 @@ const RSVPNoStatusApplied: React.FC = () => {
     currentGuestStatus,
     imageFlyer,
     endDate,
-    timeZone
+    timeZone,
   } = params?.event;
 
   const [eventQuestions, setEventQuestions] = useState([]);
@@ -151,8 +152,7 @@ const RSVPNoStatusApplied: React.FC = () => {
           answer: inputRefs.current[q.questionId]?.inputText || '',
         })),
         additionalGuests: selectedGuests ? selectedGuests.id : 0,
-
-      }
+      };
       const response = await submitApplication(requestParams).unwrap();
       console.log('Application submitted:', response);
       setActiveTab('submit');
@@ -257,7 +257,9 @@ const RSVPNoStatusApplied: React.FC = () => {
         colorTheme="dark"
         onPress={() => {
           bottomSheetRef?.current?.close();
-          navigate('BottomTabBar');
+          InteractionManager.runAfterInteractions(() => {
+            navigate('BottomTabBar');
+          });
         }}
       />
     </View>

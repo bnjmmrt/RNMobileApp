@@ -23,9 +23,15 @@ const useKeyboard = (inputRef?: React.RefObject<TextInput>) => {
   };
 
   useEffect(() => {
-    Keyboard.addListener('keyboardDidHide', keyboardDidHide);
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        keyboardDidHide();
+      },
+    );
+
     return () => {
-      Keyboard.removeAllListeners('keyboardDidHide');
+      keyboardDidHideListener.remove();
     };
   }, []);
 
