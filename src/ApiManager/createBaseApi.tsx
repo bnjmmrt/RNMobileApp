@@ -29,10 +29,10 @@ const logMiddleware = async (
 
   if (result.error) {
     console.error(`[API Error] ${method} ${url}`, result.error);
-    FlashMessageComponent.show(
-      'error',
-      result.error?.data?.message || 'Something went wrong, please try again!',
-    );
+    // FlashMessageComponent.show(
+    //   'error',
+    //   result.error?.data?.message || 'Something went wrong, please try again!',
+    // );
   } else {
     console.log(`[API Response] ${method} ${url}`, JSON.stringify(result.data));
   }

@@ -245,7 +245,7 @@ export const LABLE = {
   STANDARD: 'Standard',
   LEAD_GUEST: 'Lead Guest',
   GUEST_NOTE: 'Guest Note',
-  PLUS_1S: 'Pluse 1s',
+  PLUS_1S: 'Plus 1s',
   PENDING: 'Pending',
   PLACEHOLDER_PRIVATE_NOTE: 'Add a private note. Not visible to the guest.',
   TICKET_TYPE: 'Ticket Type',

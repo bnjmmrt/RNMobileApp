@@ -17,10 +17,11 @@ import {
   verticalScale,
 } from 'src/utils/dimensions';
 import CustomDateTimePickerBottomSheet from 'src/component/BottomSheet/CustomDateTimePickerBottomSheet';
-import { formatSingleToDeviceTimeZone } from 'src/utils/dateFunctions';
+import { convertUTCToTimeZoneFormat, formatSingleToDeviceTimeZone } from 'src/utils/dateFunctions';
 
 interface DatePickerComponentProps {
   birthDate: string;
+  timeZone: string;
 }
 
 const DatePickerComponent = forwardRef(
@@ -76,7 +77,7 @@ const DatePickerComponent = forwardRef(
           leftImage={IMAGES.calender}
           rightImage={IMAGES.downArrow}
           errorMessage={errorMessage}
-          defaultValue={selectedDate}
+          defaultValue={convertUTCToTimeZoneFormat(selectedDate, props?.timeZone, 'MM/DD/YY h:mma z')}
           onPress={openDatePicker}
           style={styles.container}
         />

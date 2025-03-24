@@ -335,6 +335,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
               ref={startDateRef}
               onDateChange={e => setSelectedStartDate(e)}
               birthDate={item?.startDate}
+              timeZone={item?.timeZone}
             />
             <CustomText style={[styles.label]}>{EVENT.END_DATE}</CustomText>
             <DatePickerComponent
@@ -342,6 +343,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
               startDate={selectedStartDate}
               ref={endDateRef}
               birthDate={item?.endDate}
+              timeZone={item?.timeZone}
             />
           </View>
 

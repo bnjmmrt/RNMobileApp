@@ -75,8 +75,8 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   maxAdditionalGuests,
   ticketTypeError,
   status,
-  onFocusGuestNote = () => {},
-  onFocusInviteMessage = () => {},
+  onFocusGuestNote = () => { },
+  onFocusInviteMessage = () => { },
 }) => {
   const inviteMessageRef = useRef<InputRefMethods>(null);
   const guestNoteRef = useRef<InputRefMethods>(null);
@@ -138,15 +138,13 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
             <CustomText style={styles.label}>{'Invite Message'}</CustomText>
             <View style={styles.inviteMessageInputContainer}>
               <CustomText style={styles.inviteMessagePrototype}>
-                {`Hi, you're invited to ${eventName || '[Event Name]'} on ${
-                  eventStartDate
+                {`Hi, you're invited to ${eventName || '[Event Name]'} on ${eventStartDate
                     ? moment(eventStartDate).utc().format('MMM DD, YYYY')
                     : '[MON DD, YYYY]'
-                } at ${
-                  eventStartDate
+                  } at ${eventStartDate
                     ? moment(eventStartDate).utc().format('hh:mm A')
                     : '[T:TT PM]'
-                }.`}
+                  }.`}
               </CustomText>
               <View style={styles.seperator} />
               <Input

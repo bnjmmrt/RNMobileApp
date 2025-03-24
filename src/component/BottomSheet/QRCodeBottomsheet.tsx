@@ -50,10 +50,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
     console.log('showTooltipshowTooltipshowTooltip');
     setShowProfileToolitip(true)
   };
-  const name = `${userDetails?.firstName} ${userDetails?.lastName}`
-
-
-
+  console.log("Sayyed userDetails", userDetails)
 
   return (
     <BottomSheetComponent
@@ -72,11 +69,11 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
           <View>
             <View style={styles.pic_Container}>
               <AvatarInitials
-                name={props.name}
+                name={userDetails?.name}
                 size={32}
                 imgUrl={props?.profilePic}
               />
-              <Text style={styles.name}>{props.name}</Text>
+              <Text style={styles.name}>{userDetails?.name}</Text>
               <Tooltip
                 contentStyle={styles.toolTipStyle}
                 isVisible={showProfileToolitip}
@@ -94,7 +91,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                     <Text
                       style={
                         styles.tooltipHeadStyle
-                      }>{`This QR code is valid for ${name} only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`}</Text>
+                      }>{`This QR code is valid for ${userDetails?.name} only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`}</Text>
                   </View>
                 }
                 placement={Placement.BOTTOM}
@@ -167,7 +164,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                 source={IMAGES.ticket}
                 style={styles.cardTicketBg}
               >
-                <Text style={styles.cardName}>{name}</Text>
+                <Text style={styles.cardName}>{userDetails?.name}</Text>
               </ImageBackground>
             )}
             <View style={[styles.vipContainer, { marginTop: props.isQRShown ? 25 : 50 }]}>
