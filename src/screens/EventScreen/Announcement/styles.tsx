@@ -15,6 +15,7 @@ const AnnouncementStyles = () => {
             height: verticalScale(128),
             borderRadius: 8,
             marginRight: 10,
+            backgroundColor: '#f0f0f0',
         },
         pdfIcon: {
             width: 30,

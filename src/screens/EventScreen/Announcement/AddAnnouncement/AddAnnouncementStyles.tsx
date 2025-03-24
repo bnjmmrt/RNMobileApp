@@ -146,9 +146,8 @@ const AddAnnouncementStyles = () => {
     pdfContainer: {
       width: horizontalScale(90),
       height: verticalScale(95),
-      marginTop: 5,
-      marginLeft: 10,
-      marginRight: 10,
+      marginVertical: verticalMarginScale(5),
+      marginHorizontal: 5,
       backgroundColor: "#f0f0f0",
       justifyContent: "center",
       alignItems: "center",

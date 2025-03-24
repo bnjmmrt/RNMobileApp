@@ -22,31 +22,10 @@ export const useUploadFile = () => {
             console.log('response', response);
             console.log('formData', formData);
             if (response.success) {
-                // const s3Response = await fetch(response?.data?.pathFileUrl, {
-                //     method: 'PUT',
-                //     headers: {
-                //         'Content-Type': 'image/jpeg',
-                //     },
-                //     body: await fetch(formData).then(res => res.blob()), // Convert file to blob
-                // });
-                // if (s3Response.ok) {
-                //     console.log('Upload success:', response);
-                //     return response;
-                // } else {
-                //     throw new Error(`Upload failed with status: ${s3Response.status}`);
-                // }
                 const pathResponse = await fetch(response?.data?.pathFileUrl, {
                     method: 'PUT',
                     body: formData,
-                    // headers: {
-                    //     'Content-Type': 'multipart/form-data',
-                    // },
-                });
-                // const pathResponse = await fetch(response?.data?.pathFileUrl, {
-                //     method: "PUT",
-                //     body: formData,
-                //   });
-                // const pathResponse = await axios.put(response?.data?.pathFileUrl, formData);
+                 });
                 console.log('pathResponse', pathResponse);
                 if (pathResponse.status == 200) {
                     setResponse(response)

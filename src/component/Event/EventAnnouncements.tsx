@@ -236,7 +236,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
           </CustomText>
         }
       />
-      {announcementListData?.length > 3 && (
+      {announcementListData?.length > 0 && (
         <View style={{ paddingBottom: verticalMarginScale(20) }}>
           <View
             style={[styles.divider, { marginBottom: verticalMarginScale(20) }]}
@@ -251,17 +251,22 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
               <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity
-              onPress={() => setviewAllLess(!viewAllLess)}
-              style={styles.toggleContainer}>
-              <CustomText style={styles.toggleText}>
-                {viewAllLess ? LABLE.VIEW_ALL : LABLE.VIEW_LESS}
-              </CustomText>
-              <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
-            </TouchableOpacity>
+            <>
+              {announcementListData?.length > 3 && (
+                <TouchableOpacity
+                  onPress={() => setviewAllLess(!viewAllLess)}
+                  style={styles.toggleContainer}>
+                  <CustomText style={styles.toggleText}>
+                    {viewAllLess ? LABLE.VIEW_ALL : LABLE.VIEW_LESS}
+                  </CustomText>
+                  <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
+                </TouchableOpacity>
+              )}
+            </>
           )}
         </View>
       )}
+
       {viewerVisible && (
         <ImagePdfViewer
           visible={viewerVisible}
@@ -359,6 +364,7 @@ const styles = StyleSheet.create({
     height: verticalScale(128),
     borderRadius: 8,
     marginRight: 10,
+    backgroundColor: '#f0f0f0',
   },
   pdfContainer: {
     width: horizontalScale(90),

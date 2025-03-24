@@ -120,7 +120,7 @@ export const timeAgo = (timestamp: any) => {
   const diff = Math.floor((now - past) / 1000); // Difference in seconds
 
   if (diff < 60) {
-    return `${diff} sec ago`;
+    return `${diff}s`;
   } else if (diff < 3600) {
     return `${Math.floor(diff / 60)}m`;
   } else if (diff < 86400) {
@@ -129,7 +129,7 @@ export const timeAgo = (timestamp: any) => {
     return `${Math.floor(diff / 86400)}d`;
   }
 }
-export const formatSingleToDeviceTimeZone = (dateString) => {
+export const formatSingleToDeviceTimeZone = (dateString:any) => {
   if (!dateString) return 'Invalid date';
 
   const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;

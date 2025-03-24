@@ -97,7 +97,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const getUserSettings = async () => {
     const response: any = await apiRequest(
       'get',
-      EndPoint.user_notification_preferences,
+      EndPoint.user_notification_preferences + userId,
     );
     if (response.success) {
       //dependiing on API response parse data and set
@@ -136,7 +136,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         dispatch(resetAppFlowDetails());
         logoutBottomSheetRef.current?.close();
         // navigation.dispatch(resetAction);
-        navigation.replace('AuthStack');
+        InteractionManager.runAfterInteractions(() => {
+          setTimeout(() => {
+            navigation.replace('AuthStack');
+          }, 500);
+        });
       } else {
         Alert.alert('Error', response?.message || 'Something went wrong');
       }
