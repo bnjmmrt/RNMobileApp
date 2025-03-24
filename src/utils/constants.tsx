@@ -193,6 +193,8 @@ export const LABLE = {
   GUEST_LIST: 'Guest List',
   FEATURE_TALENT: 'Featured Talent',
   EVENT_ANNOUNCEMENTS: 'Event Announcements',
+  INITATION_MESSAGE: 'Message from Revolve',
+  FURTHER_INSTRICTIONS: 'Further Instrictions',
   NO_EVENT_ANNOUNCEMENTS: 'You have no announcements',
   PAST_EVENT_ANNOUNCEMENTS_ERROR:
     'You can’t post event announcements for past events.',
@@ -789,11 +791,18 @@ export const ANNOUNCCEMENTS_DATA = [
   // Add more objects for additional list items
 ];
 
+// export const genderList = [
+//   { id: 0, gender: 'Male', value: 'MALE' },
+//   { id: 1, gender: 'Female', value: 'FEMALE' },
+//   { id: 2, gender: 'Non-binary', value: 'NON_BINARY' },
+//   { id: 3, gender: 'Prefer not to say', value: 'NOT_APPLICABLE' },
+// ];
+
 export const genderList = [
-  { id: 0, gender: 'Male', value: 'MALE' },
-  { id: 1, gender: 'Female', value: 'FEMALE' },
-  { id: 2, gender: 'Non-binary', value: 'NON_BINARY' },
-  { id: 3, gender: 'Prefer not to say', value: 'NOT_APPLICABLE' },
+  { id: 'MALE', gender: 'Male' },
+  { id: 'FEMALE', gender: 'Female' },
+  { id: 'NON_BINARY', gender: 'Non-binary' },
+  { id: 'UNRECOGNIZED', gender: 'Prefer not to say' },
 ];
 
 export const ticketTypeList = [

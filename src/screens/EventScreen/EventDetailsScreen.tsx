@@ -66,6 +66,7 @@ import {
 import useCalender from 'src/utils/hooks/useCalender';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
+import EventInvitation from 'src/component/Event/EventInvitation';
 
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -610,6 +611,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                   />
                 )}
 
+                {guestStatus == "INVITED" && <EventInvitation item={data?.data} />}
+
                 {role === ROLE.HOST && (
                   <EventRequests
                     eventId={data?.data?.id}
@@ -624,7 +627,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                   />
                 )}
 
-                <EventOverview item={data?.data} />
+                {guestStatus == 'CONFIRMED' && <EventOverview item={data?.data} isFurtherInstrection={true} />}
+
+                <EventOverview item={data?.data} isFurtherInstrection={false} />
 
                 {talents.length > 0 && <EventTalent talents={talents} />}
                 {role == ROLE.HOST ? (

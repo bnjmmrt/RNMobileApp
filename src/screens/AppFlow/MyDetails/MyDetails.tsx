@@ -101,8 +101,8 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   };
 
   const onNextClick = () => {
-    // firstNameRef.current.validateInputs();
-    // lastNameRef.current.validateInputs();
+    firstNameRef.current.validateInputs();
+    lastNameRef.current.validateInputs();
     // validateFirstName('FirstName')
     // validateLastName('LastName')
     if (firstNameRef.current.validateInputs() && lastNameRef.current.validateInputs()) {

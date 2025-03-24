@@ -81,10 +81,14 @@ interface QuizQuestions {
 export interface Event {
     name: string;
     imageCover?: string;
+    guestOptionalMessage?: string;
+    guestNote?: string;
+    invitationDate?: string;
     timeZone?: string;
     imageFlyer?: string;
     startDate: string;
     endDate: string;
+    furtherInstructions: string;
     location?: Location;
     currentGuestStatus?: string;
     description?: string;

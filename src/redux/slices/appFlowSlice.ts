@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface Address {
   address: string;
@@ -9,7 +9,7 @@ export interface Address {
 export interface UserDetailsState {
   firstName: string;
   lastName: string;
-  gender: number;
+  gender: string;
   baseCity: Address;
   birthday: string;
   email: string;
@@ -27,8 +27,8 @@ export interface UserDetailsState {
 const initialState: UserDetailsState = {
   firstName: '',
   lastName: '',
-  gender: -1,
-  baseCity: {address: '', placeId: ''},
+  gender: '',
+  baseCity: { address: '', placeId: '' },
   birthday: '',
   email: '',
   phone: '',
@@ -52,12 +52,12 @@ const appFlowSlice = createSlice({
     setLastName(state, action: PayloadAction<string>) {
       state.lastName = action.payload;
     },
-    setGender(state, action: PayloadAction<number>) {
+    setGender(state, action: PayloadAction<string>) {
       state.gender = action.payload;
     },
     setBaseCity(
       state,
-      action: PayloadAction<{address: string; placeId: string}>,
+      action: PayloadAction<{ address: string; placeId: string }>,
     ) {
       state.baseCity.address = action.payload.address;
       state.baseCity.placeId = action.payload.placeId;
