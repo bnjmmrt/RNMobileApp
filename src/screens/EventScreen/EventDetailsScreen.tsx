@@ -68,7 +68,7 @@ import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 import EventInvitation from 'src/component/Event/EventInvitation';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: any;
@@ -151,9 +151,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const)
       : ({
-          userId,
-          eventId: route?.params?.id,
-        } as const);
+        userId,
+        eventId: route?.params?.id,
+      } as const);
 
   const useFetchEventDetailsHook =
     role === ROLE.HOST
@@ -699,12 +699,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               ref={qrCodeBottomSheetRef}
               title={eventDetails?.title}
               subTitle={eventDetails?.subTitle}
-              imageURL={
-                eventDetails?.qrUrl ? eventDetails?.qrUrl : IMAGES.ticket
-              }
+              imageURL={eventDetails?.qrUrl ? eventDetails?.qrUrl : IMAGES.ticket}
               timeZone={eventDetails?.timeZone}
               isQRShown={isQRShown}
-              name={`${userDetails?.firstName} ${userDetails?.lastName}`}
               profilePic={profilePicture}
             />
 

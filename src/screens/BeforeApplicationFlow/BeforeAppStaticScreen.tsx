@@ -48,7 +48,7 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
       {!isFromProfile && <TouchableOpacity
         onPress={redirectToHome}
         style={{
-          top: horizontalMarginScale(0),
+          top: horizontalMarginScale(20),
           right: horizontalMarginScale(20),
           position: 'absolute',
         }}>
@@ -79,8 +79,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.black2,
   },
   iconWrapper: {
-    width: 48,
-    height: 48,
+    width: 40,
+    height: 40,
     borderRadius: 25,
     backgroundColor: COLORS.white,
     justifyContent: 'center',

@@ -1,4 +1,4 @@
-import React = require('react');
+import React from 'react';
 import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -37,7 +37,7 @@ import {
   setRsvpStatus,
   setSelectedGuest,
 } from 'src/redux/slices/rspvSlice';
-import { BUTTON_LABLE, COLORS, EVENT_STATUS, LABLE } from 'src/utils/constants';
+import { BUTTON_LABLE, COLORS, EVENT_STATUS, LABLE, ROLE } from 'src/utils/constants';
 import {
   fontScale,
   verticalMarginScale,
@@ -89,7 +89,11 @@ const calculateAvailableGuestPasses = (
   return availableGuestPasses;
 };
 
-export const EventCard = ({ name, location, imageCover, dates }) => {
+export const EventCard = ({ name, location, imageCover, dates, currentGuestStatus }) => {
+  const locationText = currentGuestStatus === 'CONFIRMED'
+    ? location?.location
+    : location?.city;
+
   return (
     <View style={styles.card}>
       <FastImage
@@ -99,8 +103,10 @@ export const EventCard = ({ name, location, imageCover, dates }) => {
       />
       <View style={styles.info}>
         <CustomText style={styles.title}>{name}</CustomText>
-        <CustomText style={styles.details}>{dates}</CustomText>
-        <CustomText style={styles.details}>{location}</CustomText>
+        <CustomText style={styles.details}>
+          {dates}
+        </CustomText>
+        <CustomText style={styles.details}>{locationText}</CustomText>
       </View>
     </View>
   );
@@ -131,8 +137,7 @@ const optionList = [{ id: 1, label: 'Cancel RSVP' }];
 const RSVPInvitedUpcoming = () => {
   const { params } = useRoute();
   const scrollRef = React.useRef(null);
-  const { id, name, location, imageFlyer, startDate, endDate, timeZone } =
-    params.event;
+  const { id, name, location, imageFlyer, startDate, endDate, timeZone, currentGuestStatus } = params.event;
   const [maxAdditionalGuests, setMaxAdditionalGuests] = React.useState(0);
   const status = params?.event?.currentGuestStatus;
   const { navigate, goBack } = useNavigation();
@@ -703,9 +708,10 @@ const RSVPInvitedUpcoming = () => {
           <View style={{ flex: 1, paddingBottom: 24 }}>
             <EventCard
               name={name}
-              location={location?.location}
+              location={location}
               imageCover={removeSignature(imageFlyer)}
               dates={formatDetailedEventDate(startDate, endDate, timeZone)}
+              currentGuestStatus={currentGuestStatus}
             />
             <StatusBanner
               isGoing={true}

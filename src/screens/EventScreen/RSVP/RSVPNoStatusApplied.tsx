@@ -421,9 +421,10 @@ const RSVPNoStatusApplied: React.FC = () => {
         <View style={styles.contentContainer}>
           <EventCard
             name={name}
-            location={location?.location}
+            location={location}
             imageCover={removeSignature(imageFlyer)}
             dates={formatDetailedEventDate(startDate, endDate, timeZone)}
+            currentGuestStatus={currentGuestStatus}
           />
           {currentGuestStatus === 'APPLIED' && (
             <View style={styles.yellowBoxRightButton}>

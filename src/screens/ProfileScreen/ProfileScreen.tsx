@@ -170,11 +170,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       case 'member':
         return 'Member';
       case 'non_member':
-        if (isGuest && role === ROLE.NON_MEMBER) {
-          return 'Invited';
-        } else {
-          return 'Non-Member';
-        }
+        return 'Non-Member';
       case 'host':
         return 'Host';
       default:

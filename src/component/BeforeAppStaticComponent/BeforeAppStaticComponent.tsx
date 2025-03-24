@@ -147,6 +147,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+    marginTop: 10
   },
   btnStyle: {
     width: Wp(85),

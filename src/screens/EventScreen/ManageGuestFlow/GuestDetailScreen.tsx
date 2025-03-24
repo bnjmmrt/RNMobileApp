@@ -85,6 +85,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 
   const guestProfile = guestDetails?.data?.guestProfile;
   const guestDetail = guestDetails?.data?.guestDetail;
+  const quizQuestions = guestDetails?.data?.quizDataList;
   const status = guestProfile?.status?.toLowerCase() || 'draft';
 
   const actionSheetRef = useRef<BottomSheetMethods>(null);
@@ -420,18 +421,16 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 
   const mapQuestionsWithAnswers = () => {
     if (
-      !selectedEvent?.quizQuestions ||
-      !guestDetails?.data?.quizDataList?.questions
+      !quizQuestions?.questions
     ) {
       return [];
     }
 
-    return selectedEvent.quizQuestions.map((question, index) => {
-      const answer = guestDetails.data.quizDataList.questions[index];
+    return quizQuestions?.questions.map((question: any) => {
 
       return {
         ...question,
-        answer: answer?.answer || '',
+        answer: question?.answer || '',
       };
     });
   };
@@ -556,7 +555,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               }}
             />
 
-            {Boolean(selectedEvent?.quizQuestions?.length) && (
+            {Boolean(quizQuestions?.questions?.length) && (
               <View style={{ marginTop: verticalMarginScale(16) }}>
                 <Questionnaire isCollapsible data={mapQuestionsWithAnswers()} />
               </View>
