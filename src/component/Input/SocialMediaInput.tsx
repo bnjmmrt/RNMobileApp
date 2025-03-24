@@ -1,5 +1,10 @@
 import IMAGES from '@images/index';
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { Image } from 'react-native-animatable';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Install using 'npm install react-native-vector-icons'
@@ -22,7 +27,8 @@ export type InputRefMethods = {
   defaultValue: string;
 };
 const SocialMediaInput = forwardRef((props: InputRefMethods, ref) => {
-  const { updateKeyboardStatus } = useKeyboard();
+  const inputRef = useRef<TextInput>(null);
+  const { updateKeyboardStatus } = useKeyboard(inputRef);
 
   const [inputText, setInputText] = useState(props.defaultValue);
   const [errorMessage, setErrorMessage] = useState(props?.errorMessage);
@@ -49,7 +55,7 @@ const SocialMediaInput = forwardRef((props: InputRefMethods, ref) => {
         <Image source={props?.image} style={styles.icon} />
         <Text style={styles.prefix}>{props?.prefix}</Text>
         <TextInput
-          ref={ref}
+          ref={inputRef}
           style={styles.input}
           placeholder="username"
           placeholderTextColor="#A0A0A0"

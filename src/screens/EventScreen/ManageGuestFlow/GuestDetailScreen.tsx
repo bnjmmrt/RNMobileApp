@@ -129,8 +129,8 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   }, [guestDetail?.ticketType, selectedEvent?.ticketTypes]);
 
   useEffect(() => {
-    if (guestProfile?.favorite !== undefined) {
-      setIsFavorite(guestProfile.favorite);
+    if (guestProfile?.isFavorite !== undefined) {
+      setIsFavorite(guestProfile.isFavorite);
     }
   }, [guestProfile?.favorite]);
 
@@ -492,7 +492,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                   (role: any) => role.roleName === 'member',
                 ),
                 status: guestProfile.status,
-                isFollowing: guestProfile.followsYou,
+                isFollowing: guestProfile.isFollow,
               }}
               showGuestStatus={true}
               status={guestProfile.status}

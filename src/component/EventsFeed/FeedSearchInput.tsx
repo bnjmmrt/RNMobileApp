@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -35,7 +35,8 @@ const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
   handleFilter,
   filterLength,
 }) => {
-  const { updateKeyboardStatus } = useKeyboard();
+  const inputRef = useRef<TextInput>(null);
+  const { updateKeyboardStatus } = useKeyboard(inputRef);
 
   const [searchText, setSearchText] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -56,6 +57,7 @@ const FeedSearchInput: React.FC<FeedSearchInputProps> = ({
         style={[styles.inputWrapper, isFocused && styles.inputWrapperFocused]}>
         <Image source={IMAGES.search} style={styles.icon} />
         <TextInput
+          ref={inputRef}
           style={styles.input}
           placeholder="Search for an event..."
           keyboardType="default"

@@ -1,4 +1,9 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, {
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+} from 'react';
 import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
 import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
@@ -8,11 +13,12 @@ import { verticalScale } from 'src/utils/dimensions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 const EmailInput = forwardRef(({ otherStyle }, ref) => {
+  const inputRef = useRef<TextInput>(null);
   const [emailAddress, setEmailAddress] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [disabled, setDisabled] = useState(false);
   const navigation = useNavigation();
-  const { updateKeyboardStatus } = useKeyboard();
+  const { updateKeyboardStatus } = useKeyboard(inputRef);
 
   // Expose handleNextPress to the parent
   useImperativeHandle(ref, () => ({
@@ -69,6 +75,7 @@ const EmailInput = forwardRef(({ otherStyle }, ref) => {
           />
         )}
         <TextInput
+          ref={inputRef}
           style={[styles.input, disabled && { color: COLORS.light_gray }]}
           placeholder={errorMessage ? '' : 'example@gmail.com'}
           keyboardType="email-address"

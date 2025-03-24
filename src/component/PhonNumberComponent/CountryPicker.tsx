@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   FlatList,
   TextInput,
@@ -114,9 +114,10 @@ export const CountryPicker = ({
   ...rest
 }: Props) => {
   // ToDo refactor exclude and showOnly props to objects
+  const inputRef = useRef<TextInput>(null);
   let filteredCodes = countriesRemover(excludedCountries);
   const keyboardStatus = useKeyboardStatus();
-  const { updateKeyboardStatus } = useKeyboard();
+  const { updateKeyboardStatus } = useKeyboard(inputRef);
 
   const animationDriver = React.useRef(new Animated.Value(0)).current;
   const animatedMargin = React.useRef(new Animated.Value(0)).current;
@@ -361,6 +362,7 @@ export const CountryPicker = ({
               <Image source={IMAGES.search} style={{ marginStart: 20 }} />
 
               <TextInput
+                ref={inputRef}
                 style={[
                   styles.searchBar,
                   {

@@ -14,6 +14,8 @@ import {
 } from 'src/utils/dimensions';
 import EventFilterSheet, { Filter } from '../../BottomSheets/EventFilterSheet';
 import FilterBar from './FilterBar';
+import { shallowEqual, useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
 
 interface UserEventsProps {
   user: string;
@@ -41,8 +43,15 @@ const UserEvents: React.FC<UserEventsProps> = ({ user }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState<Filter>(filterData[0]);
 
+  const { userId } = useSelector(
+    (state: RootState) => ({
+      userId: state.auth.userId,
+    }),
+    shallowEqual,
+  );
+
   const { data, isLoading, error, isError, refetch } = useFetchAllEventsQuery({
-    queryString: `guestEventStatus=${selectedFilter.value}`,
+    queryString: `guestEventStatus=${selectedFilter.value}&ownerId=${userId}`,
     userId: user,
     take: 10,
     skip: (currentPage - 1) * 10,

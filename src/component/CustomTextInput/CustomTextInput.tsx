@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   TextInput,
   View,
@@ -39,7 +39,8 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
   onPressEye,
   ...rest
 }) => {
-  const { updateKeyboardStatus } = useKeyboard();
+  const inputRef = useRef<TextInput>(null);
+  const { updateKeyboardStatus } = useKeyboard(inputRef);
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -78,6 +79,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
           },
         ]}>
         <TextInput
+          ref={inputRef}
           style={[styles.input, { width: secureTextEntry ? Wp(60) : Wp(66) }]}
           value={value}
           secureTextEntry={eyeVisibleValue}

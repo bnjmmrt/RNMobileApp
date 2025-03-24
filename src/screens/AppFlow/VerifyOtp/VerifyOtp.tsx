@@ -25,7 +25,7 @@ import { BUTTON_LABLE, LABLE } from '../../../utils/constants';
 import VerifyOtpStyles from './VerifyOtpStyles';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 
-interface VerifyOtpScreenProps extends NativeStackScreenProps<any, any> { }
+interface VerifyOtpScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: {
@@ -194,24 +194,23 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         />
         <View style={styles.spacer} />
       </View>
-      {!keyboardVisible ? (
-        <Button
-          disabled={false}
-          style={[
-            styles.btnStyle,
-            {
-              marginBottom: keyboardVisible
-                ? Platform.OS === 'ios'
-                  ? verticalMarginScale(60)
-                  : verticalMarginScale(10)
-                : 0,
-            },
-          ]}
-          title={BUTTON_LABLE.NEXT}
-          colorTheme="dark"
-          onPress={onNextClick}
-        />
-      ) : null}
+
+      <Button
+        disabled={false}
+        style={[
+          styles.btnStyle,
+          {
+            marginBottom: keyboardVisible
+              ? Platform.OS === 'ios'
+                ? verticalMarginScale(60)
+                : verticalMarginScale(10)
+              : 0,
+          },
+        ]}
+        title={BUTTON_LABLE.NEXT}
+        colorTheme="dark"
+        onPress={onNextClick}
+      />
     </KeyboardAvoidingView>
   );
 };

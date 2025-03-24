@@ -103,7 +103,8 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
   } = props;
 
   const inputRef = useRef<TextInput>(null);
-  const { updateKeyboardStatus } = useKeyboard();
+  const textInputRef = useRef<TextInput>(null);
+  const { updateKeyboardStatus } = useKeyboard(textInputRef);
 
   const [inputText, setInputText] = useState(defaultValue);
   const [errorMessage, setErrorMessage] = useState('');
@@ -212,6 +213,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
         )}
         <InputComponent
           {...props}
+          ref={textInputRef}
           onPress={onPressImage}
           activeOpacity={onPressImage ? 0.7 : 1}
           blurOnSubmit={blurOnSubmit}
