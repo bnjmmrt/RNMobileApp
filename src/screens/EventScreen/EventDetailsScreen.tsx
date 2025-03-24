@@ -68,7 +68,7 @@ import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 import EventInvitation from 'src/component/Event/EventInvitation';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: any;
@@ -92,10 +92,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [loading1, setLoading] = useState(false);
   const role = useSelector((state: RootState) => state.auth.role);
   const eventId = route?.params?.id;
-  const { data: eventCount, refetch: refetchGuestStatusCount } = useFetchGuestStatusCountQuery(
-    { eventId },
-    { skip: role !== ROLE.HOST }
-  );
+  const { data: eventCount, refetch: refetchGuestStatusCount } =
+    useFetchGuestStatusCountQuery({ eventId }, { skip: role !== ROLE.HOST });
   const annqueryArgs = {
     eventId: eventId,
     take: 50,
@@ -153,9 +151,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const)
       : ({
-        userId,
-        eventId: route?.params?.id,
-      } as const);
+          userId,
+          eventId: route?.params?.id,
+        } as const);
 
   const useFetchEventDetailsHook =
     role === ROLE.HOST
@@ -445,7 +443,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           onPress={onViewTicketClick}
           loading={loading}
         />
-        {isPastEvent ? (
+        {!isPastEvent ? (
           <Button
             disabled={false}
             style={styles.btnStyleLight}
@@ -538,9 +536,14 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const signupFormsBottomSheetRef = useRef<any>(null);
-  const { data: signupFormsData } = useFetchSignupFormsQuery({
-    eventId: route?.params?.id,
-  });
+  const { data: signupFormsData } = useFetchSignupFormsQuery(
+    {
+      eventId: route?.params?.id,
+    },
+    {
+      skip: role !== ROLE.HOST,
+    },
+  );
 
   return (
     <>
@@ -611,7 +614,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                   />
                 )}
 
-                {guestStatus == "INVITED" && <EventInvitation item={data?.data} />}
+                {guestStatus == 'INVITED' && (
+                  <EventInvitation item={data?.data} />
+                )}
 
                 {role === ROLE.HOST && (
                   <EventRequests
@@ -627,7 +632,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                   />
                 )}
 
-                {guestStatus == 'CONFIRMED' && <EventOverview item={data?.data} isFurtherInstrection={true} />}
+                {guestStatus == 'CONFIRMED' && (
+                  <EventOverview
+                    item={data?.data}
+                    isFurtherInstrection={true}
+                  />
+                )}
 
                 <EventOverview item={data?.data} isFurtherInstrection={false} />
 
@@ -693,7 +703,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                 eventDetails?.qrUrl ? eventDetails?.qrUrl : IMAGES.ticket
               }
               timeZone={eventDetails?.timeZone}
-
               isQRShown={isQRShown}
               name={`${userDetails?.firstName} ${userDetails?.lastName}`}
               profilePic={profilePicture}
