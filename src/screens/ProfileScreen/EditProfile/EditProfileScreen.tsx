@@ -44,7 +44,7 @@ import CreativeFocusComponent from './CreativeFocusComponent';
 import DatePickerComponent from './DatePickerComponent';
 import GenderComponent from './GenderComponent';
 
-interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
+interface EditProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
 const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   navigation,
@@ -72,7 +72,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   const scrollViewRef = useRef<ScrollView>(null);
 
   const getGender = (gender: string) => {
-    return genderList.find(item => item.value === gender);
+    const re = genderList.find(item => item.id === gender);
+    return genderList.find(item => item.id === gender);
   };
 
   const [gender, setGender] = useState<any>(
@@ -226,9 +227,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
       if (!baseCityRef.current.validateBaseCity()) {
         scrollViewRef?.current?.scrollToEnd({ animated: true });
       }
-      if (!birthDayRef.current.validateBirthDate()) {
-        scrollViewRef?.current?.scrollToEnd({ animated: true });
-      }
+      // if (!birthDayRef.current.validateBirthDate()) {
+      //   scrollViewRef?.current?.scrollToEnd({ animated: true });
+      // }
       if (selectedCreativeFocus?.length === 0) {
         setIsToastShown(true);
         scrollViewRef?.current?.scrollToEnd({ animated: true });
@@ -236,7 +237,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
       if (
         validateName('FirstName') &&
         validateName('LastName') &&
-        birthDayRef.current.validateBirthDate() &&
+        // birthDayRef.current.validateBirthDate() &&
         baseCityRef.current.validateBaseCity()
       ) {
         if (selectedCreativeFocus && selectedCreativeFocus.length) {
@@ -253,7 +254,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
             birthDate: birthDayRef.current.selectedDate, //convertDateFormat(birthDayRef.current.selectedDate),
             // email: profileData?.email,
             firstName: firstNameRef?.current?.inputText,
-            gender: gender?.value,
+            gender: gender?.id,
             lastName: lastNameRef?.current?.inputText,
             // mobilePhone: profileData?.phoneNumber,
             focusIds: selectedCreativeFocus.length
@@ -386,9 +387,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                 <DatePickerComponent
                   ref={birthDayRef}
                   birthDate={profileData.dateOfBirth}
-                  onDateChange={() => {
-                    birthDayRef?.current?.validateBirthDate();
-                  }}
+                // onDateChange={() => {
+                //   birthDayRef?.current?.validateBirthDate();
+                // }}
                 />
 
                 <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>

@@ -15,22 +15,25 @@ import { CustomText } from '../CustomText';
 
 interface EventOverviewProps {
   item: Event; // Extend this type with actual item properties for better type safety.
+  isFurtherInstrection: boolean
 }
 
 const MAX_LINES = 4;
 
-const EventOverview: React.FC<EventOverviewProps> = ({ item }) => {
+const EventOverview: React.FC<EventOverviewProps> = ({ item, isFurtherInstrection }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleToggle = () => setExpanded(prev => !prev);
+  const title = isFurtherInstrection ? LABLE.FURTHER_INSTRICTIONS : LABLE.ABOUT_THE_EVENT;
+  const subTitle = isFurtherInstrection ? item?.furtherInstructions : item?.description;
 
   // Check if "Read More" is needed
   const shouldShowReadMore =
-    item?.description && item?.description?.split(' ').length > 26;
+    subTitle && subTitle?.split(' ').length > 26;
 
   return (
     <View style={styles.container}>
-      <CustomText style={styles.title}>{LABLE.ABOUT_THE_EVENT}</CustomText>
+      <CustomText style={styles.title}>{title}</CustomText>
 
       <View style={styles.divider} />
 
@@ -39,7 +42,7 @@ const EventOverview: React.FC<EventOverviewProps> = ({ item }) => {
         textProps={{
           numberOfLines: expanded ? undefined : MAX_LINES,
         }}>
-        {item?.description}
+        {subTitle}
       </CustomText>
 
       {shouldShowReadMore && <View style={styles.divider} />}

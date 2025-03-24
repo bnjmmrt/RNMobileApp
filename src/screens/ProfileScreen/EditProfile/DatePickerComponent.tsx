@@ -1,5 +1,6 @@
 import React, {
   forwardRef,
+  useEffect,
   useImperativeHandle,
   useRef,
   useState,
@@ -31,6 +32,7 @@ const DatePickerComponent = forwardRef(
     const openDatePicker = () => {
       bottomSheetRef.current?.open();
     };
+
     useImperativeHandle(ref, () => ({
       validateBirthDate,
       selectedDate,
@@ -41,10 +43,11 @@ const DatePickerComponent = forwardRef(
     const handleDateChange = (date: string) => {
       setErrorMessage(null);
       setSelectedDate(date);
+      validateBirthDate(date)
       props?.onDateChange && props?.onDateChange(date);
     };
 
-    const validateBirthDate = () => {
+    const validateBirthDate = (selectedDate: string) => {
       if (!selectedDate) {
         setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_YOUR_BIRTHDAY);
         return false;

@@ -101,14 +101,23 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         verificationCode: otpInputRef.current && otpInputRef.current.code,
       };
     }
-    const response: any = await apiRequest('post', endPoint, params);
 
-    if (response.success) {
-      // FlashMessageComponent.show('success', LABLE.OTP_VERIFIED_SUCCESSFULLY);
-      dispatch(setPageProgress(3));
-      dispatch(setIsEmailPhoneBothVerified(true));
-      navigation.replace('GenderScreen');
-    } else {
+    handleOtpVerification(endPoint, params)
+  };
+
+  const handleOtpVerification = async (endPoint: string, params: any) => {
+    try {
+      const response: any = await apiRequest('post', endPoint, params)
+
+      if (response.success) {
+        dispatch(setPageProgress(3));
+        dispatch(setIsEmailPhoneBothVerified(true));
+        navigation.replace('GenderScreen');
+      } else {
+        otpInputRef.current?.showInvalidCodeError(LABLE.ERROR_VERIFY_CODE);
+      }
+    } catch (error) {
+      console.log("API Error:", error);
       otpInputRef.current?.showInvalidCodeError(LABLE.ERROR_VERIFY_CODE);
     }
   };
