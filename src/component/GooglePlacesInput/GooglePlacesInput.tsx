@@ -51,7 +51,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
     initiateLocationFetch,
   } = useLocation(false);
   const dispatch = useDispatch();
-  const { updateKeyboardStatus } = useKeyboard();
+  const { updateKeyboardStatus } = useKeyboard(googlePlacesRef);
 
   const inputTextRef = useRef<string>('');
   const [clearBtnShown, setClearBtnShown] = useState(false);

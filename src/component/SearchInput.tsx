@@ -1,4 +1,9 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, {
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+} from 'react';
 import {
   View,
   TextInput,
@@ -44,7 +49,8 @@ const SearchInput = forwardRef(
     }: SearchInputProps,
     ref,
   ) => {
-    const { updateKeyboardStatus } = useKeyboard();
+    const inputRef = useRef<TextInput>(null);
+    const { updateKeyboardStatus } = useKeyboard(inputRef);
 
     const [searchText, setSearchText] = useState('');
 
@@ -71,6 +77,7 @@ const SearchInput = forwardRef(
         <View style={[styles.inputWrapper]}>
           <Image source={IMAGES.search} style={styles.icon} />
           <TextInput
+            ref={inputRef}
             style={styles.input}
             placeholder={placeholder ? placeholder : 'Search for an event...'}
             value={searchText}

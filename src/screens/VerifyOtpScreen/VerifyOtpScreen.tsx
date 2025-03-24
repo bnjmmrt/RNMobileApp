@@ -32,6 +32,7 @@ import { useVerifyOtp } from '../../redux/hooks/useVerifyOtp';
 import { BUTTON_LABLE, LABLE, ROLE } from '../../utils/constants';
 import VerifyOtpStyles from './VerifyOtpStyles';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
+import { RootState } from 'src/redux/slices';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -155,8 +156,9 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         <View style={styles.contentContainer}>
           <TitleSubtitle
             title={LABLE.ENTER_YOUR_VERIFICATION_CODE}
-            subTitle={`${LABLE.SEND_TO}${route.params.isEmail ? route.params.email : route.params.phone
-              }`}
+            subTitle={`${LABLE.SEND_TO}${
+              route.params.isEmail ? route.params.email : route.params.phone
+            }`}
           />
           <OTPComponent
             error={errorMsg}
@@ -165,25 +167,23 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
             resendVerificationCode={clearOTPAndResend}
           />
           <View style={styles.spacer} />
-          {!keyboardVisible ? (
-            <Button
-              disabled={false}
-              style={[
-                styles.btnStyle,
-                {
-                  marginBottom: keyboardVisible
-                    ? Platform.OS === 'ios'
-                      ? verticalMarginScale(60)
-                      : verticalMarginScale(10)
-                    : 0,
-                },
-              ]}
-              title={BUTTON_LABLE.GET_STARTED}
-              colorTheme="dark"
-              onPress={onNextClick}
-              loading={isLoading}
-            />
-          ) : null}
+          <Button
+            disabled={false}
+            style={[
+              styles.btnStyle,
+              {
+                marginBottom: keyboardVisible
+                  ? Platform.OS === 'ios'
+                    ? verticalMarginScale(60)
+                    : verticalMarginScale(10)
+                  : 0,
+              },
+            ]}
+            title={BUTTON_LABLE.GET_STARTED}
+            colorTheme="dark"
+            onPress={onNextClick}
+            loading={isLoading}
+          />
         </View>
       </View>
       {/* </FullScreenLoader> */}

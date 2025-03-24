@@ -1,20 +1,19 @@
 import IMAGES from '@images/index';
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-  View,
+  FlatList,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  FlatList,
+  View,
 } from 'react-native';
 import { Image } from 'react-native-animatable';
 import { useSelector } from 'react-redux';
-import { EndPoint } from 'src/ApiManager/config';
 import useApi from 'src/axios/useApi';
 import AvatarInitials from 'src/component/AvatarInitials';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { ROUTES } from 'src/navigation/Route';
 import { useManageGuestMutation } from 'src/redux/actions/eventApiAction';
 import { RootState } from 'src/redux/slices';
@@ -27,10 +26,9 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import { GuestStatus, ManageGuestPayload } from '../types';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
+import { ManageGuestPayload } from '../types';
 
 interface AdditionalGuest {
   addedBy: string;
@@ -54,14 +52,26 @@ interface CheckInComponentProps {
   guestProfile?: any;
   selectedTicketType?: any;
 }
-const renderItemComponent = (
-  item: any,
-  index: number,
-  expandList: any[],
-  toggleExpand: any,
-  navigation: any,
-) => {
-  const { updateKeyboardStatus } = useKeyboard();
+const RenderItemComponent = ({
+  item,
+  index,
+  expandList = [],
+  toggleExpand,
+  navigation,
+}: {
+  item: any;
+  index: number;
+  expandList: {
+    id: number;
+    isExpand: boolean;
+    isPending: boolean;
+    additionalGuest: any;
+  }[];
+  toggleExpand: any;
+  navigation: any;
+}) => {
+  const inputRef = useRef<TextInput>(null);
+  const { updateKeyboardStatus } = useKeyboard(inputRef);
 
   const getAvatar = (item: any): any => {
     return (
@@ -130,6 +140,7 @@ const renderItemComponent = (
           <View style={{ marginTop: verticalMarginScale(16) }}>
             <Text style={styles.label}>{LABLE.GUEST_NOTE}</Text>
             <TextInput
+              ref={inputRef}
               style={styles.input}
               placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
               defaultValue={item?.additionalGuest.privateGuestNote}
@@ -382,15 +393,15 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
             data={expandlist || []}
             keyExtractor={item => item?.id?.toString()}
             nestedScrollEnabled
-            renderItem={({ item, index }) =>
-              renderItemComponent(
-                item,
-                index,
-                expandlist,
-                toggleExpand,
-                navigation,
-              )
-            }
+            renderItem={({ item, index }) => (
+              <RenderItemComponent
+                item={item}
+                index={index}
+                expandList={expandlist || []}
+                toggleExpand={toggleExpand}
+                navigation={navigation}
+              />
+            )}
             //   contentContainerStyle={styles.container}
           />
         </>

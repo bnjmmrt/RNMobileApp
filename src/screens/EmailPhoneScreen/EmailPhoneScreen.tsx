@@ -74,12 +74,8 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
       ? LABLE.RUMOR_WILL_SEND_YOU_A_TEXT_WITH_A_VERIFICATION_CODE
       : LABLE.RUMOR_WILL_SEND_YOU_A_EMAIL_WITH_A_VERIFICATION_CODE;
 
-  useEffect(() => {
-    console.log('keyboardVisiblesss', keyboardVisible);
-  }, [keyboardVisible]);
-
   return (
-    <KeyboardAvoidingView behavior="padding" style={styles.container}>
+    <View behavior="padding" style={styles.container}>
       <BackButton onPress={handleBackPress} />
       <TabBar
         onTabChange={handleTabChange}
@@ -121,7 +117,7 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
         ) : null}
       </View>
       <WebViewBottomSheet url={URL} ref={bottomSheetRef} />
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 

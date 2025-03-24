@@ -9,6 +9,7 @@ import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from 'react';
 import {
@@ -85,6 +86,9 @@ const PhoneNumberInput = forwardRef<
     },
     ref,
   ) => {
+    const inputRef = useRef<TextInput>(null);
+    const { updateKeyboardStatus } = useKeyboard(inputRef);
+
     const [phoneNumber, setPhoneNumber] = useState('');
     const [callingCode, setCallingCode] = useState('+1');
     const [code, setCode] = useState<CountryCode>('US');
@@ -250,8 +254,6 @@ const PhoneNumberInput = forwardRef<
       });
     }, []);
 
-    const { updateKeyboardStatus } = useKeyboard();
-
     return (
       <View style={[styles.container, otherStyle]}>
         {/* Dynamic Label */}
@@ -279,6 +281,7 @@ const PhoneNumberInput = forwardRef<
           </TouchableOpacity>
 
           <InputComponent
+            ref={inputRef}
             // style={styles.input}
             style={[styles.input, disabled && { color: COLORS.light_gray }]}
             // placeholder="Enter phone number"

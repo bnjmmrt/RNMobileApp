@@ -5,7 +5,7 @@ import React, {
   useRef,
 } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { OtpInput } from 'react-native-otp-entry';
+import { OtpInput, OtpInputRef } from 'react-native-otp-entry';
 import { LABLE, BUTTON_LABLE, COLORS } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
 import { CustomText } from '../CustomText';
@@ -32,8 +32,9 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
   (props, ref) => {
     const [code, setCode] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<any>('');
-    const otpInput = useRef(null);
-    const { updateKeyboardStatus } = useKeyboard();
+    const otpInput = useRef<OtpInputRef>(null);
+
+    // const { updateKeyboardStatus } = useKeyboard();
 
     const setApiError = (error: string) => {
       setErrorMessage(error);
@@ -49,7 +50,7 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
     }));
 
     const clearOTP = () => {
-      otpInput.current.clear(); // Clears the OTP input
+      otpInput?.current?.clear(); // Clears the OTP input
       setCode('');
       setErrorMessage('');
     };
@@ -96,11 +97,11 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
           secureTextEntry={false}
           focusStickBlinkingDuration={500}
           onFocus={() => {
-            updateKeyboardStatus(true);
+            // updateKeyboardStatus(true);
             console.log('Focused');
           }}
           onBlur={() => {
-            updateKeyboardStatus(false);
+            // updateKeyboardStatus(false);
             console.log('Blurred');
           }}
           onTextChange={(text: string) => {
