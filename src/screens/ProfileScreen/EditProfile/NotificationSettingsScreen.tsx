@@ -19,7 +19,7 @@ import { EndPoint } from 'src/ApiManager/config';
 import { setNotificationSettings } from 'src/redux/slices/appSettingsSlice';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
-interface NotificationSettingsScreenProps {}
+interface NotificationSettingsScreenProps { }
 
 interface ConfigData {
   logo: string;
@@ -87,7 +87,7 @@ const NotificationSettingsScreen: React.FC<
   ) => {
     const response: any = await apiRequest(
       'put',
-      EndPoint.user_notification_preferences,
+      EndPoint.user_notification_preferences + userId,
       { ...requestData, muteDuration: '24h' },
     );
 

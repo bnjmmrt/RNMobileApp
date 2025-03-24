@@ -18,7 +18,6 @@ export const useUploadFile = () => {
                 'Content-Type': 'application/json',
             });
             if (response.success) {
-
                 const pathResponse = await fetch(response?.data?.pathFileUrl, {
                     method: 'PUT',
                     body: formData,

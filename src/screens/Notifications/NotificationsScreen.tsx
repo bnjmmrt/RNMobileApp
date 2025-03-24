@@ -63,7 +63,8 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
           ? data?.data?.result
           : [...prev, ...data?.data?.result],
       );
-    } else {
+    }
+    else {
       setNotifications([]);
     }
   }, [data]);
@@ -92,22 +93,17 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
     console.log('notiDetail', notiDetail);
     if (notiDetail) {
       refetch();
-      navigateToScreen(notiDetail);
+      navigateToScreen(notiDetail, 'in-app');
     }
   }, [notiDetail]);
 
   const markAsRead = (noti: any) => {
-    // if (!noti.isSeen) {
     setSelectedNotification(noti);
-    // } else {
-    //   navigateToScreen(noti);
-    // }
   };
-
   const loadMore = () => {
-    setCurrentPage(prev => prev + 1);
-    refetch();
-    // setNotifications([...notifications, ...notifications]);
+    if (notifications?.length < data?.data?.totalCount && !isLoading) {
+      setCurrentPage(prev => prev + 1);
+    }
   };
 
   useFocusEffect(

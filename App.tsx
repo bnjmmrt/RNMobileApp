@@ -69,14 +69,6 @@ const AppContent: React.FC = () => {
     NotificationsListener()
   }
 
-
-  // useEffect(() => {
-  //   RNPreventScreenshot?.enableSecureView();
-  //   return () => {
-  //     RNPreventScreenshot?.disableSecureView();
-  //   };
-  // }, [RNPreventScreenshot]);
-
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
     console.log('focusResponse.data', focusResponse.data);
@@ -88,13 +80,6 @@ const AppContent: React.FC = () => {
     if (interestResponse.data) {
       interestResponse.data.sort((a, b) => a.name.localeCompare(b.name));
       dispatch(setInterests(interestResponse.data));
-    }
-    if (token) {
-      const notificationCount: any = await apiRequest('get', EndPoint.notification_count);
-      console.log('notificationCount.data', notificationCount);
-      if (notificationCount.data) {
-        dispatch(setNotificationCount(notificationCount?.data?.totalNotifications));
-      }
     }
   };
 

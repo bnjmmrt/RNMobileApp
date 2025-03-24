@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Image,
   ImageStyle,
@@ -8,15 +8,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import { fontFamily } from 'src/utils/functions';
 import IMAGES from '../assets/images';
 import { COLORS } from '../utils/constants';
 import { fontScale, Wp } from '../utils/dimensions';
 import HeaderProfileSwitcher from './HeaderProfileSwitcher';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { ROUTES } from 'src/navigation/Route';
+import useApi from 'src/axios/useApi';
+import { setNotificationCount } from 'src/redux/slices/appGlobalDataSlice';
+import { EndPoint } from 'src/ApiManager/config';
 
 interface HeaderComponentProps {
   rightImageStyle?: StyleProp<ImageStyle>;
@@ -34,14 +37,15 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
   const backgroundColorNotification = isDarkTheme
     ? COLORS.dark_gray
     : COLORS.tabBorderColor;
-
   const { role } = useSelector(
     (state: RootState) => ({
       role: state.auth.role,
     }),
     shallowEqual,
   );
-
+  const { apiRequest } = useApi();
+  const dispatch = useDispatch();
+  const token = useSelector((state: RootState) => state.auth.token);
   const navigation = useNavigation();
 
   const handleNotificationPress = () =>
@@ -50,7 +54,20 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
   const notiCount = useSelector(
     (state: RootState) => state.appFlowApiData.notiCount,
   );
-  console.log("notiCount", notiCount)
+
+  useFocusEffect(
+    useCallback(() => {
+      getNotificationCount();
+    }, []),
+  );
+
+  const getNotificationCount = async () => {
+    const notificationCount: any = await apiRequest('get', EndPoint.notification_count);
+    console.log('notificationCount.data', notificationCount);
+    if (notificationCount.data) {
+      dispatch(setNotificationCount(notificationCount?.data?.totalNotifications));
+    }
+  }
   return (
     <View
       style={[

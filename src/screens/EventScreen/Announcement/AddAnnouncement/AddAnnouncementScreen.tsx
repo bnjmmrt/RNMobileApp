@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FlatList, Image, ImageBackground, BackHandler, RefreshControl, ScrollView, Text, TouchableOpacity, View, Alert, Platform } from "react-native";
+import { FlatList, Image, ImageBackground, BackHandler, RefreshControl, ScrollView, Text, TouchableOpacity, View, Alert, Platform, KeyboardAvoidingView, ActivityIndicator } from "react-native";
 import Header from "src/component/Header/Header";
 import { ANNOUNCEMENT, collaboratorList, COLORS, ERROR_MESSAGE, ticketTypeList } from "src/utils/constants";
 import Input, { InputRefMethods } from "src/component/Input/Input";
@@ -79,7 +79,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const [showAnnouncementDetail, setshowAnnouncementDetail] = useState(true)
     const [showProfileToolitip, setShowProfileToolitip] = useState(false);
     const { uploadFileHook } = useUploadFile();
-
+    const { apiRequest } = useApi();
 
     const { data: announcementDetailsData } = useFetchAnnouncementDetailQuery(
         { eventId: eventData?.id, announcementId: announcementId },
@@ -135,15 +135,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
         leaveAnnouncement()
     };
 
-
-
-
-    // const detailQuery = ({ eventId: eventData?.id, announcementId: announcementId } as const)
-
-    // const { data: announcementDetailsData, isFetching: isDetailLoading } =
-    //     announcementId ? useFetchAnnouncementDetailQuery(detailQuery) : { data: undefined, isFetching: false };
-
-    // const { data: announcementDetailsData, isdetailLoading } = useFetchAnnouncementDetailQuery(detailQuery);
     useEffect(() => {
         if (announcementDetailsData != undefined) {
             setTicketTypeArr(announcementDetailsData?.data?.ticketType)
@@ -160,37 +151,42 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
         }
     }, [selectedRecipientData]);
 
-    const ticketQueryString = selectedTicketType.map((item: any) => `ticketType=${item.id}`).join('&');
-    const collaboratorQueryString = selectedCollaborator.map((item: any) => `addedBy=${item.id}`).join('&');
-    const queryArgs = ({
-        eventId: eventData?.id,
-        ticketType: ticketQueryString,
-        addedBy: collaboratorQueryString,
-        searchText: searchText,
-        take: 10,
-        skip: (currentPage - 1) * 10,
-    } as const)
-    const { data: announcementRecipientsData, isLoading } = useFetchAnnouncementRecipientsQuery(queryArgs);
+    const getRecipients = async () => {
+        console.log('ticketTypeArr', ticketTypeArr)
+        setRefreshing(true)
+        const ticketQueryString = ticketTypeArr.map((item: any) => `ticketType=${item.id}`).join('&');
+        const collaboratorQueryString = selectedCollaborator.map((item: any) => `&addedBy=${item.id}`).join('&');
+        const queryArgs = ({
+            eventId: eventData?.id,
+            ticketType: ticketQueryString,
+            addedBy: collaboratorQueryString,
+            searchText: searchText,
+            take: 10,
+            skip: (currentPage - 1) * 10,
+        } as const)
 
-    useEffect(() => {
-        if (announcementRecipientsData) {
+        const announcementRecipientsData: any = await apiRequest('get', `/events/v1/event/${queryArgs.eventId}/event-announcement-guest?${queryArgs.ticketType}${queryArgs.addedBy}&findByName=${searchText}&take=${queryArgs.take}&skip=${queryArgs.skip}`);
+        console.log('notificationCount.data', announcementRecipientsData);
+        if (announcementRecipientsData.data) {
             setTotalCount(announcementRecipientsData?.data?.totalCount)
             setallRecipients((prev) => (currentPage === 1 ? announcementRecipientsData?.data?.result : [...prev, ...announcementRecipientsData?.data?.result]));
-        }
-    }, [announcementRecipientsData]);
+            setRefreshing(false)
 
-    useEffect(() => {
-        setRefreshing(isLoading)
-    }, [isLoading])
+        }
+    }
+
+    // useEffect(() => {
+    //     setRefreshing(isLoading)
+    // }, [isLoading])
 
     const handleRefresh = () => {
         setCurrentPage(1)
     };
 
     const loadMore = () => {
-        if (announcementRecipientsData?.currentPage < announcementRecipientsData?.totalPages && !isLoading) {
-            setCurrentPage((prev) => prev + 1);
-        }
+        // if (allRecipients?.currentPage < announcementRecipientsData?.totalPages && !isLoading) {
+        //     setCurrentPage((prev) => prev + 1);
+        // }
     };
 
 
@@ -261,11 +257,11 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const getSnapPoints = (): string => {
         switch (activeView) {
             case 'collaborator':
-                return collaborators.length == 1 ? `30%` : collaborators.length > 8 ? '80%' : `${(collaborators.length * 10)}%`
+                return collaborators.length == 1 ? `30%` : collaborators.length > 8 ? '80%' : `${(collaborators.length * 7 + 20)}%`
             case 'submit':
                 return '70%';
             case 'ticketTypeOptions':
-                return eventData?.ticketTypes.length == 1 ? `30%` : eventData?.ticketTypes.length > 8 ? '80%' : `${(eventData?.ticketTypes.length * 10)}%`
+                return eventData?.ticketTypes.length == 1 ? `30%` : eventData?.ticketTypes.length > 8 ? '80%' : `${(eventData?.ticketTypes.length * 7 + 20)}%`
             case 'receipient':
                 return '80 %';// : `${(allRecipients.length * 10 + 10)}%`
             default:
@@ -283,6 +279,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
             setTicketTypeArr(selectedTicketType)
         }
         bottomSheetRef.current?.close()
+        // getRecipients()
     }
     const removeTicketType = (item: any) => {
         if (ticketTypeArr?.includes(item)) {
@@ -308,6 +305,17 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
         }
         // }
     }
+
+    useEffect(() => {
+        console.log('ticketTypeArr', ticketTypeArr)
+        if (ticketTypeArr.length > 0 && collaboratorArr.length > 0) {
+            getRecipients()
+        }
+        else {
+            setallRecipients([])
+        }
+    }, [ticketTypeArr, collaboratorArr])
+
     const renderTicketTypeOptions = () => {
         return (
             <View>
@@ -353,6 +361,8 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
             setCollaboratorArr(selectedCollaborator)
         }
         bottomSheetRef.current?.close()
+        // getRecipients()
+
     }
     const removeCollaborator = (item: any) => {
         if (collaboratorArr?.includes(item)) {
@@ -365,6 +375,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
         } else {
             setselectedCollaborator([...selectedCollaborator, item]);
         }
+        // getRecipients()
     }
     const toggleCollaborator = (item: any, index: number) => {
         // if (index == 0) {
@@ -667,7 +678,9 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                 <TouchableOpacity onPress={() => onPressDelete(item.media)} style={styles.pdfContainer}>
                     <Image source={IMAGES.pdf} style={styles.pdfIcon} resizeMode='contain' />
                     <CustomText textProps={{ numberOfLines: 2 }}>{item?.mediaName}</CustomText>
-                    {/* <Text style={styles.pdfSize}>{item.size}</Text> */}
+                    <TouchableOpacity style={{ marginTop: -50 }} onPress={() => onPressDelete(item.media)}>
+                        <Image source={IMAGES.delete} resizeMode="contain" />
+                    </TouchableOpacity>
                 </TouchableOpacity> :
                 <ImageBackground source={{ uri: item.media }} style={styles.attachImgWrapper} imageStyle={{ borderRadius: radiusScale(8) }}>
                     <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center' }} onPress={() => onPressDelete(item.media)}>
@@ -679,6 +692,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     );
 
     const savePhoto = async (image: any, type: string, name: any, size: any) => {
+        setRefreshing(true)
         try {
             const data = await fetch(image);
             const blob = await data.blob();
@@ -691,6 +705,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                     media: imageUrl,
                     mediaName: fileName,
                 }
+                setRefreshing(false)
                 setAttachmentArr((prev: any) => [...prev, data])
                 console.log(atachmentArr, 'atachmentArr');
             } else {
@@ -699,13 +714,15 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
             // const response: any = await uploadFile(image, size, type, blob);
             console.log('savePhoto', response);
         } catch (error) {
+            setRefreshing(false)
             console.error('Error uploading image:', error);
         }
     };
 
 
     return (
-        <View style={styles.container}>
+        <KeyboardAvoidingView style={styles.container}>
+
             <Header
                 headerTitle={announcementId != null ? ANNOUNCEMENT.Edit_Announcement : ANNOUNCEMENT.New_Announcement}
                 onPress={handleBackPress}
@@ -742,13 +759,15 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                 <View style={ticketerrorMessage ? styles.errorContainer : [styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
                                     <View ref={ticketTypeRef} style={styles.userInfoContainer}>
                                         {ticketTypeArr?.length == 0 ?
-                                            <Text onPress={() => {
-                                                if (announcementId == null) {
-                                                    setActiveTab('ticketTypeOptions');
-                                                    setSelectedTicketType(ticketTypeArr)
-                                                    bottomSheetRef?.current?.open();
-                                                }
-                                            }} style={[styles.inputStyle, { left: 0 }]}>Please select...</Text>
+                                            <Text
+                                                // onPress={() => {
+                                                //     if (announcementId == null) {
+                                                //         setActiveTab('ticketTypeOptions');
+                                                //         setSelectedTicketType(ticketTypeArr)
+                                                //         bottomSheetRef?.current?.open();
+                                                //     }
+                                                // }} 
+                                                style={[styles.inputStyle, { left: 0 }]}>Please select...</Text>
                                             :
                                             <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ marginVertical: verticalMarginScale(10), width: '100%' }}>
                                                 {ticketTypeArr?.map((item: any) => {
@@ -769,7 +788,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                             </ScrollView>
                                         }
                                     </View>
-                                    <TouchableOpacity style={{ width: '8%', alignItems: 'flex-end', justifyContent: 'flex-end', paddingVertical: '5%' }} onPress={() => {
+                                    <TouchableOpacity style={{ width: '20%', alignItems: 'center', paddingVertical: '10%', marginRight: -20 }} onPress={() => {
                                         if (announcementId == null) {
                                             setActiveTab('ticketTypeOptions');
                                             setSelectedTicketType(ticketTypeArr)
@@ -823,13 +842,15 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                 <View style={addedByerrorMessage ? styles.errorContainer : [styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
                                     <View ref={addedRef} style={styles.userInfoContainer}>
                                         {collaboratorArr?.length == 0 ?
-                                            <Text onPress={() => {
-                                                if (announcementId == null) {
-                                                    setActiveTab('collaborator');
-                                                    setselectedCollaborator(collaboratorArr)
-                                                    bottomSheetRef?.current?.open();
-                                                }
-                                            }} style={[styles.inputStyle, { left: 0 }]}>Please select...</Text>
+                                            <Text
+                                                // onPress={() => {
+                                                //     if (announcementId == null) {
+                                                //         setActiveTab('collaborator');
+                                                //         setselectedCollaborator(collaboratorArr)
+                                                //         bottomSheetRef?.current?.open();
+                                                //     }
+                                                // }} 
+                                                style={[styles.inputStyle, { left: 0 }]}>Please select...</Text>
                                             :
                                             <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ marginVertical: verticalMarginScale(10) }}>
                                                 {collaboratorArr?.map((item: any) => {
@@ -851,7 +872,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                             </ScrollView>
                                         }
                                     </View>
-                                    <TouchableOpacity style={{ width: '8%', alignItems: 'flex-end', justifyContent: 'flex-end', paddingVertical: '5%' }} onPress={() => {
+                                    <TouchableOpacity style={{ width: '20%', alignItems: 'center', paddingVertical: '10%', marginRight: -20 }} onPress={() => {
                                         if (announcementId == null) {
                                             setActiveTab('collaborator');
                                             setselectedCollaborator(collaboratorArr)
@@ -945,6 +966,11 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.lineView} />
+                            {refreshing &&
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                    <ActivityIndicator color={COLORS.black} />
+                                </View>
+                            }
                             <Input
                                 editable={true}
                                 isRequired={true}
@@ -969,6 +995,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                     showsHorizontalScrollIndicator={false}
                                     renderItem={renderAttchmentItem}
                                 />
+
                             </View>
                             <Text style={styles.attachDescription}>{ANNOUNCEMENT.Attachments_Descripiton}</Text>
 
@@ -1062,7 +1089,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                 btnLabel={ANNOUNCEMENT.Post_Announcement}
                 back={() => postAnnouncement()}
             />
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 
