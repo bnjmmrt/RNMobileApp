@@ -16,7 +16,6 @@ import { SafeAreaViewWrapper } from './src/component/Wrappers/SafeAreaViewWrappe
 import {
   setCreativeFocus,
   setInterests,
-  setNotificationCount,
 } from './src/redux/slices/appGlobalDataSlice';
 import { persistor, store } from './src/redux/store';
 import RNPreventScreenshot from 'react-native-screenshot-prevent';
@@ -27,18 +26,23 @@ import { getDeviceId } from 'src/utils/functions';
 import Intercom, { Visibility } from '@intercom/intercom-react-native';
 import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import analytics from '@react-native-firebase/analytics';
-import { useFetchNotificationCountQuery } from 'src/redux/actions/usersApiAction';
-import { RootState } from 'src/redux/slices';
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
   const { apiRequest } = useApi();
   const dispatch = useDispatch();
-  const token = useSelector((state: RootState) => state.auth.token);
-
   const updateAnalyticsStatus = async (status: boolean) => {
     await analytics().setAnalyticsCollectionEnabled(status);
   };
+
+
+  //useEffect(() => {
+  // RNPreventScreenshot?.enableSecureView();
+  // return () => {
+  //   RNPreventScreenshot?.disableSecureView();
+  // };
+  //}, []);
+
 
   useEffect(() => {
     NotificationSetup()
