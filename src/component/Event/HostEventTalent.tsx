@@ -110,7 +110,7 @@ const HostEventTalent: React.FC<HostEventTalentProps> = ({ talents: initialTalen
                 deleteRef?.current?.open();
               }}
               customStyle={{ position: 'relative', marginLeft: 6 }}
-              imageSource={IMAGES.trash}
+              imageSource={IMAGES.tras}
               size={30}
             />
           </Pressable>

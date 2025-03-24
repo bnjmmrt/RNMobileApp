@@ -28,26 +28,32 @@ import IMAGES from '@images/index';
 import AvatarInitials from '../AvatarInitials';
 import TooltipComponent from '../TooltipComponent/TooltipComponent';
 import { formatTicketDate } from 'src/utils/dateFunctions';
+import { useSelector } from 'react-redux';
+import Tooltip, { Placement } from 'react-native-tooltip-2';
 
 interface QRCodeBottomsheetProps {
   title: string;
   subTitle: string;
   timeZone: string;
   imageURL: string;
-  name: string;
   isQRShown: boolean;
   profilePic?: string
 }
 const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
-
+  const userDetails = useSelector(
+    (state: any) => state.appFlowApiData.profileData,
+  );
   const [showProfileToolitip, setShowProfileToolitip] = useState(false);
   const [showVIPToolitip, setShowVIPToolitip] = useState(false);
   const [vipTooltipShown, setVipTooltipShown] = useState(false);
-
   const showTooltip = () => {
     console.log('showTooltipshowTooltipshowTooltip');
     setShowProfileToolitip(true)
   };
+  const name = `${userDetails?.firstName} ${userDetails?.lastName}`
+
+
+
 
   return (
     <BottomSheetComponent
@@ -63,13 +69,42 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
           <Text style={[styles.subTitle]}>
             {formatTicketDate(props?.subTitle, props?.timeZone)}
           </Text>
-          <View style={styles.pic_Container}>
-            <AvatarInitials name={props.name} size={32} imgUrl={props?.profilePic} />
-            <Text style={styles.name}>{props.name}</Text>
-            <TouchableOpacity
-              onPress={() => setShowProfileToolitip(!showProfileToolitip)}>
-              <Image source={IMAGES.info_filled} />
-            </TouchableOpacity>
+          <View>
+            <View style={styles.pic_Container}>
+              <AvatarInitials
+                name={props.name}
+                size={32}
+                imgUrl={props?.profilePic}
+              />
+              <Text style={styles.name}>{props.name}</Text>
+              <Tooltip
+                contentStyle={styles.toolTipStyle}
+                isVisible={showProfileToolitip}
+                displayInsets={{
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                }}
+                arrowStyle={{ top: -10 }}
+                backgroundColor="transparent"
+                topAdjustment={verticalScale(0)}
+                content={
+                  <View>
+                    <Text
+                      style={
+                        styles.tooltipHeadStyle
+                      }>{`This QR code is valid for ${name} only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`}</Text>
+                  </View>
+                }
+                placement={Placement.BOTTOM}
+                onClose={() => setShowProfileToolitip(false)}>
+                <TouchableOpacity
+                  onPress={() => setShowProfileToolitip(!showProfileToolitip)}>
+                  <Image source={IMAGES.info_filled} />
+                </TouchableOpacity>
+              </Tooltip>
+            </View>
           </View>
           {/* <Image
             source={{ uri: props.imageURL }}
@@ -132,14 +167,37 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                 source={IMAGES.ticket}
                 style={styles.cardTicketBg}
               >
-                <Text style={styles.cardName}>{props.name}</Text>
+                <Text style={styles.cardName}>{name}</Text>
               </ImageBackground>
             )}
             <View style={[styles.vipContainer, { marginTop: props.isQRShown ? 25 : 50 }]}>
               <Text style={styles.vipText}>VIP</Text>
-              <TouchableOpacity onPress={() => { }}>
-                <Image source={IMAGES.info_filled} style={styles.icon} />
-              </TouchableOpacity>
+              <Tooltip
+                contentStyle={styles.toolTipStyle}
+                isVisible={showVIPToolitip}
+                displayInsets={{
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                }}
+                arrowStyle={{ bottom: 10 }}
+                backgroundColor="transparent"
+                topAdjustment={verticalScale(0)}
+                content={
+                  <View>
+                    <Text
+                      style={
+                        styles.tooltipHeadStyle
+                      }>{`Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.`}</Text>
+                  </View>
+                }
+                placement={Placement.TOP}
+                onClose={() => setShowVIPToolitip(false)}>
+                <TouchableOpacity onPress={() => setShowVIPToolitip(true)}>
+                  <Image source={IMAGES.info_filled} style={styles.icon} />
+                </TouchableOpacity>
+              </Tooltip>
             </View>
             <Text style={styles.infoText}>{props.isQRShown ? LABLE.SHOW_QR_CHECKIN_MESSAGE : 'Show this Ticket Confirmation at event check-in'}</Text>
 
@@ -206,6 +264,7 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.RomieTrial_Bold,
     textAlign: 'center',
   },
+
   subTitle: {
     color: COLORS.black,
     fontSize: fontScale(18),
@@ -298,6 +357,17 @@ const styles = StyleSheet.create({
     color: 'gray',
     marginTop: verticalMarginScale(50),
     zIndex: 10,
+  },
+
+  toolTipStyle: {
+    backgroundColor: COLORS.dark_gray,
+    paddingHorizontal: verticalMarginScale(16),
+    width: '80%',
+  },
+  tooltipHeadStyle: {
+    fontSize: fontScale(12),
+    fontFamily: fontFamily.ABCDiatype_Regular,
+    color: COLORS.white,
   },
 });
 

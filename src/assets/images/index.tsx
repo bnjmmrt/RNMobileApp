@@ -144,6 +144,7 @@ const IMAGES = {
   check_gray: require('./check-gray.png'),
   tiktok_rounded: require('./tiktok_rounded.png'),
   link03: require('./link-03.png'),
+  tras: require('./deleteFeature.png'),
 };
 
 export default IMAGES;

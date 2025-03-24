@@ -45,6 +45,20 @@ const EmailInput = forwardRef(({ otherStyle }, ref) => {
     return true;
   };
 
+  // Validate email format
+  const onchangeValidate = (email: string) => {
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex =
+      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+    console.log(emailRegex.test(email));
+    if (!emailRegex.test(email)) {
+      setErrorMessage(LABLE.EROOR_ENTER_EMAIL);
+    } else {
+      setErrorMessage('');
+    }
+  };
+
   // Handle the "Next" button press
   const handleNextPress = () => {
     if (validateEmailAddress()) {
@@ -63,17 +77,16 @@ const EmailInput = forwardRef(({ otherStyle }, ref) => {
           errorMessage && styles.errorInputWrapper,
           disabled && styles.disabledInput,
         ]}>
-        {!errorMessage && (
-          <Image
-            source={errorMessage ? IMAGES.email_error : IMAGES.email}
-            style={[
-              styles.icon,
-              {
-                tintColor: errorMessage ? COLORS.errorText : COLORS.light_gray,
-              },
-            ]}
-          />
-        )}
+        <Image
+          source={errorMessage ? IMAGES.email_error : IMAGES.email}
+          style={[
+            styles.icon,
+            {
+              tintColor: errorMessage ? COLORS.errorText : COLORS.light_gray,
+            },
+          ]}
+        />
+
         <TextInput
           ref={inputRef}
           style={[styles.input, disabled && { color: COLORS.light_gray }]}
@@ -87,7 +100,7 @@ const EmailInput = forwardRef(({ otherStyle }, ref) => {
           value={emailAddress}
           onChangeText={text => {
             setEmailAddress(text);
-            setErrorMessage(''); // Clear error on text change
+            onchangeValidate(text); // Clear error on text change
           }}
           // onBlur={validateEmailAddress}
           editable={!disabled}

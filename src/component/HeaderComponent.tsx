@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   Image,
   ImageStyle,
@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
-import { fontFamily } from 'src/utils/functions';
+import { fetchUserProfile, fontFamily } from 'src/utils/functions';
 import IMAGES from '../assets/images';
 import { COLORS } from '../utils/constants';
 import { fontScale, Wp } from '../utils/dimensions';
@@ -54,6 +54,11 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
   const notiCount = useSelector(
     (state: RootState) => state.appFlowApiData.notiCount,
   );
+
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, [])
 
   useFocusEffect(
     useCallback(() => {
