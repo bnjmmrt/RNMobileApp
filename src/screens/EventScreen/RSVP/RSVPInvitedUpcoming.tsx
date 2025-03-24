@@ -515,7 +515,7 @@ const RSVPInvitedUpcoming = () => {
           <View style={{ flex: 1, paddingBottom: 24 }}>
             <EventCard
               name={name}
-              location={location?.location}
+              location={location}
               imageCover={removeSignature(imageFlyer)}
               dates={formatDetailedEventDate(startDate, endDate, timeZone)}
             />

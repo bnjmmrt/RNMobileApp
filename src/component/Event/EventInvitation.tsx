@@ -112,7 +112,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: radiusScale(16),
-    paddingVertical: verticalMarginScale(0),
+    paddingTop: verticalMarginScale(20),
+    paddingBottom: verticalMarginScale(10),
     backgroundColor: COLORS.white,
   },
   title: {

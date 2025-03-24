@@ -50,11 +50,7 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
   );
 
   if (isGuest) {
-    return (
-      // <View style={{ marginTop: 50 }}>
-      <BeforeAppStaticComponent isChatScreen={false} />
-      // </View>
-    )
+    return <BeforeAppStaticComponent isChatScreen={false} />;
   }
 
   return (
