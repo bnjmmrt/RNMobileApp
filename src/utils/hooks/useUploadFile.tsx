@@ -2,7 +2,6 @@ import { FlashMessageComponent } from '../../component/FlashMessageComponent/Fla
 import useApi from 'src/axios/useApi';
 import { EndPoint } from 'src/ApiManager/config';
 import React from 'react';
-import axios from 'axios';
 
 export const useUploadFile = () => {
     const { apiRequest, loading } = useApi();
@@ -15,17 +14,14 @@ export const useUploadFile = () => {
                 "path": `announcement`,
                 "size": size
             }
-            console.log("Sayyed useUploadFile:", params)
             const response: any = await apiRequest('post', EndPoint.generate_upload_url, params, null, {
                 'Content-Type': 'application/json',
             });
-            console.log('response', response);
-            console.log('formData', formData);
             if (response.success) {
                 const pathResponse = await fetch(response?.data?.pathFileUrl, {
                     method: 'PUT',
                     body: formData,
-                 });
+                });
                 console.log('pathResponse', pathResponse);
                 if (pathResponse.status == 200) {
                     setResponse(response)

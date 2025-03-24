@@ -1,32 +1,32 @@
-import React, {useCallback, useState} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {LABLE, BUTTON_LABLE} from '../../../utils/constants';
+import React, { useCallback, useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { LABLE, BUTTON_LABLE, genderList } from '../../../utils/constants';
 import GenderScreenStyles from './GenderScreenStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../redux/slices';
-import {setGender, setPageProgress} from '../../../redux/slices/appFlowSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/slices';
+import { setGender, setPageProgress } from '../../../redux/slices/appFlowSlice';
 import Toast from '../../../component/Toast/Toast';
-import {useFocusEffect} from '@react-navigation/native';
-import {changeSafeAreaViewConfig} from 'src/utils/functions';
-import {SAFEWAREAVIEW_CONFIG} from 'src/utils/safeAreaViewConfig';
+import { useFocusEffect } from '@react-navigation/native';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-const genderList = [
-  {id: 0, gender: 'Male'},
-  {id: 1, gender: 'Female'},
-  {id: 2, gender: 'Non-binary'},
-  {id: 3, gender: 'Prefer not to say'},
-];
-interface GenderScreenProps extends NativeStackScreenProps<any, any> {}
+// const genderList = [
+//   { id: 'MALE', gender: 'Male'},
+//   { id: 'FEMALE', gender: 'Female'},
+//   { id: 'NON_BINARY', gender: 'Non-binary'},
+//   { id: 'UNRECOGNIZED', gender: 'Prefer not to say'},
+// ];
+interface GenderScreenProps extends NativeStackScreenProps<any, any> { }
 
-const GenderScreen: React.FC<GenderScreenProps> = ({navigation}) => {
+const GenderScreen: React.FC<GenderScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
   const gender = useSelector((state: RootState) => state.appFlow.gender);
   const styles = GenderScreenStyles();
-  const [selectedGender, setSelectedGender] = useState<number>(gender);
+  const [selectedGender, setSelectedGender] = useState<string>(gender);
   const [isToastShown, setIsToastShown] = useState(false);
 
   const handleGenderSelect = (gender: number) => {
@@ -35,7 +35,7 @@ const GenderScreen: React.FC<GenderScreenProps> = ({navigation}) => {
   };
 
   const onNextClick = () => {
-    if (selectedGender >= 0) {
+    if (selectedGender) {
       setIsToastShown(false);
       dispatch(setGender(selectedGender));
       dispatch(setPageProgress(4));
@@ -70,7 +70,7 @@ const GenderScreen: React.FC<GenderScreenProps> = ({navigation}) => {
         <View style={styles.genderContainer}>
           {genderList.map(gender => (
             <TouchableOpacity
-            activeOpacity={0.7}
+              activeOpacity={0.7}
               key={gender.id}
               style={[
                 styles.genderButton,

@@ -26,7 +26,7 @@ export interface ListUserItemInterface {
   categories: string[];
   city: string;
   followerCount: string;
-  gender: number;
+  gender: string;
   id: string;
   interests: string[];
   isFavourite: boolean;
@@ -46,9 +46,9 @@ export interface ListInterface {
   totalCount: number;
   result: ListItemInterface[];
 }
-interface ListsProps {}
+interface ListsProps { }
 
-const Lists: React.FC<ListsProps> = ({}) => {
+const Lists: React.FC<ListsProps> = ({ }) => {
   const styles = createStyle();
   const actionSheetRef = useRef<BottomSheetMethods>(null);
   const scrollToTopRef = useRef(null);
