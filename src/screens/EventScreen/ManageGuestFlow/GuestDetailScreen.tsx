@@ -27,6 +27,7 @@ import {
 import {
   useMarkUserFavMutation,
   useUnmarkUserFavMutation,
+  useUserSpamToggleMutation,
 } from 'src/redux/actions/usersApiAction';
 import { RootState } from 'src/redux/slices';
 import { BUTTON_LABLE, COLORS, LABLE } from 'src/utils/constants';
@@ -96,6 +97,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const [manageGuest] = useManageGuestMutation();
   const [markUserFav] = useMarkUserFavMutation();
   const [unmarkUserFav] = useUnmarkUserFavMutation();
+  const [userSpamToggle, { error, isLoading }] = useUserSpamToggleMutation();
 
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -221,10 +223,60 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     }
   };
 
+  const handleSpam = async () => {
+    setIsLoadingDecline(true);
+    try {
+      const response = await userSpamToggle({
+        isSpam: !guestProfile?.isSpammedByHost,
+        user: guestDetail?.userId,
+      }).unwrap();
+      if (response.success) {
+        FlashMessageComponent.show(
+          'success',
+          `${guestProfile.name} ${
+            guestProfile?.isSpammedByHost ? 'unmarked' : 'marked'
+          } as spam`,
+        );
+      } else {
+        const typedError = response as ApiErrorInterface;
+        FlashMessageComponent.show('error', getErrorMessage(typedError));
+      }
+    } catch (error) {
+      const typedError = error as ApiErrorInterface;
+      FlashMessageComponent.show('error', getErrorMessage(typedError));
+    }
+    setIsLoadingDecline(false);
+  };
+
   const handleDeclineAction = async () => {
     try {
-      setIsLoadingDecline(true);
-      await handleGuestAction('DELETE', GuestStatus.INVITED);
+      let action: 'UPDATE' | 'DELETE' | '' = '';
+      let newGuestStatus: GuestStatus | '' = '';
+      switch (status) {
+        case GuestStatus.CONFIRMED.toLowerCase():
+          action = 'UPDATE';
+          newGuestStatus = GuestStatus.DECLINED;
+          break;
+        case GuestStatus.INVITED.toLowerCase():
+          action = 'DELETE';
+          newGuestStatus = GuestStatus.INVITED;
+          break;
+        case GuestStatus.DRAFT.toLowerCase():
+          action = 'DELETE';
+          newGuestStatus = GuestStatus.DRAFT;
+          break;
+        case GuestStatus.APPLIED.toLowerCase():
+          action = 'UPDATE';
+          newGuestStatus = GuestStatus.DECLINED;
+          break;
+        case GuestStatus.DECLINED.toLowerCase():
+          handleSpam();
+          break;
+      }
+      if (action && newGuestStatus) {
+        setIsLoadingDecline(true);
+        await handleGuestAction(action, newGuestStatus);
+      }
     } finally {
       setIsLoadingDecline(false);
     }
@@ -282,10 +334,18 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         };
       case 'declined':
         return {
-          title: 'Mark as Spam',
-          description:
-            'Are you sure you want to mark the selected user(s) as spam? \n If they request access to your events in the future, they will automatically be moved to the declined tab. You can manage spam settings at any time from the "Users" tab.',
-          buttonText: 'Mark as Spam',
+          title: guestProfile?.isSpammedByHost
+            ? 'Unmark as Spam'
+            : 'Mark as Spam',
+          description: guestProfile?.isSpammedByHost
+            ? 'Are you sure you want to unmark this user as spam? Future requests from this user will no longer be moved to the declined tab automatically.'
+            : 'Are you sure you want to mark the selected user(s) as spam? \n If they request access to your events in the future, they will automatically be moved to the declined tab. You can manage spam settings at any time from the "Users" tab.',
+          buttonText: guestProfile?.isSpammedByHost
+            ? 'Unmark as Spam'
+            : 'Mark as Spam',
+          buttonColor: guestProfile?.isSpammedByHost
+            ? COLORS.black
+            : COLORS.errorText,
         };
       default:
         return {
@@ -375,13 +435,23 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       case 'declined':
         return (
           <>
-            <Button
-              style={[styles.sendButton, styles.spamButton]}
-              title={BUTTON_LABLE.MARK_AS_SPAM}
-              colorTheme="dark"
-              onPress={() => declineSheetRef.current?.open()}
-              loading={isLoadingAction}
-            />
+            {guestProfile?.isSpammedByHost ? (
+              <Button
+                style={[styles.sendButton]}
+                title={BUTTON_LABLE.UNMARK_AS_SPAM}
+                colorTheme="dark"
+                onPress={() => declineSheetRef.current?.open()}
+                loading={isLoadingAction}
+              />
+            ) : (
+              <Button
+                style={[styles.sendButton, styles.spamButton]}
+                title={BUTTON_LABLE.MARK_AS_SPAM}
+                colorTheme="dark"
+                onPress={() => declineSheetRef.current?.open()}
+                loading={isLoadingAction}
+              />
+            )}
           </>
         );
       case 'confirmed':
@@ -405,7 +475,11 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
             </TouchableOpacity>
             <Button
               style={[styles.sendButton]}
-              title={BUTTON_LABLE.UPDATE_INVITE}
+              title={
+                directlySendToConfirm
+                  ? BUTTON_LABLE.ADD_TO_CONFIRM
+                  : BUTTON_LABLE.UPDATE_INVITE
+              }
               colorTheme="dark"
               onPress={() =>
                 handleGuestAction('UPDATE', guestProfile?.status as GuestStatus)
@@ -420,14 +494,11 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   };
 
   const mapQuestionsWithAnswers = () => {
-    if (
-      !quizQuestions?.questions
-    ) {
+    if (!quizQuestions?.questions) {
       return [];
     }
 
     return quizQuestions?.questions.map((question: any) => {
-
       return {
         ...question,
         answer: question?.answer || '',
@@ -492,6 +563,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                 ),
                 status: guestProfile.status,
                 isFollowing: guestProfile.isFollow,
+                isSpam: guestProfile.isSpammedByHost,
               }}
               showGuestStatus={true}
               status={guestProfile.status}

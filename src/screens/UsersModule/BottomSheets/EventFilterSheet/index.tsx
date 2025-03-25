@@ -16,12 +16,12 @@ import { verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import { styles } from './style';
 
 export type FilterTypes =
-  | 'CONFIRMED'
+  | 'UPCOMING'
   | 'INVITED'
   | 'APPLIED'
   | 'PAST'
   | 'DECLINED'
-  | 'CONFIRMED,INVITED,APPLIED,PAST,DECLINED';
+  | 'UPCOMING,INVITED,APPLIED,PAST,DECLINED';
 export type Filter = {
   label: string;
   value: FilterTypes;

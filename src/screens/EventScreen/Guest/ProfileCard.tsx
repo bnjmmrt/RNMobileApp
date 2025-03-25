@@ -36,6 +36,7 @@ interface User {
   status?: string;
   interests?: string[];
   isFollowing?: boolean;
+  isSpam?: boolean;
 }
 
 interface ActionButton {
@@ -80,6 +81,14 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             {showGuestStatus ? <StatusLabel status={status} /> : null}
           </View>
 
+          {user?.isSpam ? (
+            <View style={styles.followIndicator}>
+              <Image
+                source={IMAGES.alert_triangle_filled}
+                style={styles.followIcon}
+              />
+            </View>
+          ) : null}
           {user?.isFollowing ? (
             <View style={styles.followIndicator}>
               <Image source={IMAGES.user_check} style={styles.followIcon} />
