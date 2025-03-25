@@ -36,6 +36,7 @@ import { styles } from './RSVPScreenStyle';
 import RequestVouch from './RequestVouch';
 import { formatDetailedEventDate } from 'src/utils/dateFunctions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
+import RnDeviceInfo from 'react-native-device-info';
 
 type Guest = {
   id: number;
@@ -52,10 +53,12 @@ const RSVPNoStatusApplied: React.FC = () => {
   const { keyboardVisible } = useKeyboard();
   const { params } = useRoute();
   const inputRefs = useRef<{ [key: number]: any }>({});
-  const { goBack, navigate } = useNavigation();
+  const { goBack, navigate, reset } = useNavigation();
   const userId = useSelector((state: RootState) => state.auth.userId);
   const { apiRequest, loading } = useApi();
   const dispatch = useDispatch();
+
+  console.log('RnDeviceInfo?.getDeviceType()', RnDeviceInfo?.isTabletMode());
 
   const {
     name,
@@ -82,6 +85,8 @@ const RSVPNoStatusApplied: React.FC = () => {
     useUpdateApplicationMutation();
   const [deleteApplication, { isLoading: isDeleting }] =
     useDeleteApplicationMutation();
+
+  const [doResetStack, setDoResetStack] = useState<boolean>();
 
   useEffect(() => {
     getQuestions();
@@ -256,10 +261,8 @@ const RSVPNoStatusApplied: React.FC = () => {
         title={'Discover More Events'}
         colorTheme="dark"
         onPress={() => {
+          setDoResetStack(true);
           bottomSheetRef?.current?.close();
-          InteractionManager.runAfterInteractions(() => {
-            navigate('BottomTabBar');
-          });
         }}
       />
     </View>
@@ -486,11 +489,19 @@ const RSVPNoStatusApplied: React.FC = () => {
         <BottomSheetComponent
           ref={bottomSheetRef}
           onClose={() => {
-            activeView !== 'cancel' &&
-              activeView !== 'guests' &&
-              activeView !== 'leave' &&
-              activeView !== 'options' &&
-              goBack();
+            if (doResetStack) {
+              reset({
+                index: 0,
+                routes: [{ name: 'BottomTabBar' }],
+              });
+            } else {
+              activeView !== 'cancel' &&
+                activeView !== 'guests' &&
+                activeView !== 'leave' &&
+                activeView !== 'options' &&
+                goBack();
+            }
+            setDoResetStack(false);
           }}
           snapPoints={[getSnapPoints(), '95%']}>
           <View style={styles.bottomSheetContent}>
