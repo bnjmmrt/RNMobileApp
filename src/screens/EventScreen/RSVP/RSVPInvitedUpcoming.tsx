@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -37,7 +37,13 @@ import {
   setRsvpStatus,
   setSelectedGuest,
 } from 'src/redux/slices/rspvSlice';
-import { BUTTON_LABLE, COLORS, EVENT_STATUS, LABLE, ROLE } from 'src/utils/constants';
+import {
+  BUTTON_LABLE,
+  COLORS,
+  EVENT_STATUS,
+  LABLE,
+  ROLE,
+} from 'src/utils/constants';
 import {
   fontScale,
   verticalMarginScale,
@@ -56,6 +62,7 @@ import { styles } from './styles';
 import { SwipeableGuestList } from './SwipeableGuestList';
 import { formatDetailedEventDate } from 'src/utils/dateFunctions';
 import { InteractionManager } from 'react-native';
+import { Alert } from 'react-native';
 
 const reasons = [
   { id: 1, name: 'Scheduling Conflict' },
@@ -89,10 +96,15 @@ const calculateAvailableGuestPasses = (
   return availableGuestPasses;
 };
 
-export const EventCard = ({ name, location, imageCover, dates, currentGuestStatus }) => {
-  const locationText = currentGuestStatus === 'CONFIRMED'
-    ? location?.location
-    : location?.city;
+export const EventCard = ({
+  name,
+  location,
+  imageCover,
+  dates,
+  currentGuestStatus,
+}) => {
+  const locationText =
+    currentGuestStatus === 'CONFIRMED' ? location?.location : location?.city;
 
   return (
     <View style={styles.card}>
@@ -103,9 +115,7 @@ export const EventCard = ({ name, location, imageCover, dates, currentGuestStatu
       />
       <View style={styles.info}>
         <CustomText style={styles.title}>{name}</CustomText>
-        <CustomText style={styles.details}>
-          {dates}
-        </CustomText>
+        <CustomText style={styles.details}>{dates}</CustomText>
         <CustomText style={styles.details}>{locationText}</CustomText>
       </View>
     </View>
@@ -137,10 +147,19 @@ const optionList = [{ id: 1, label: 'Cancel RSVP' }];
 const RSVPInvitedUpcoming = () => {
   const { params } = useRoute();
   const scrollRef = React.useRef(null);
-  const { id, name, location, imageFlyer, startDate, endDate, timeZone, currentGuestStatus } = params.event;
+  const {
+    id,
+    name,
+    location,
+    imageFlyer,
+    startDate,
+    endDate,
+    timeZone,
+    currentGuestStatus,
+  } = params.event;
   const [maxAdditionalGuests, setMaxAdditionalGuests] = React.useState(0);
   const status = params?.event?.currentGuestStatus;
-  const { navigate, goBack } = useNavigation();
+  const { navigate, goBack, reset } = useNavigation();
   const [activeView, setActiveTab] = React.useState<string>('');
   const bottomSheetRef = React.useRef<any>(null);
   const dispatch = useDispatch();
@@ -149,6 +168,8 @@ const RSVPInvitedUpcoming = () => {
   const [showInfo, setShowInfo] = React.useState<boolean | null>(false);
   const [isToastShown, setIsToastShown] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+  const [doResetStack, setDoResetStack] = useState<boolean>();
+
   const [
     declineApplication,
     { isLoading: declineLoading, isError: declineError },
@@ -315,10 +336,8 @@ const RSVPInvitedUpcoming = () => {
             status={LABLE.YOU_DECLINED_THIS_INVITATION}
             btnLabel={LABLE.DISCOVER_MORE_EVENTS}
             onClose={() => {
+              setDoResetStack(true);
               bottomSheetRef?.current?.close();
-              InteractionManager.runAfterInteractions(() => {
-                navigate('BottomTabBar');
-              });
             }}
             btnStyle={[
               styles.clearButton,
@@ -336,10 +355,8 @@ const RSVPInvitedUpcoming = () => {
             isSuccess={true}
             btnLabel={LABLE.DISCOVER_MORE_EVENTS}
             onClose={() => {
+              setDoResetStack(true);
               bottomSheetRef?.current?.close();
-              InteractionManager.runAfterInteractions(() => {
-                navigate('BottomTabBar');
-              });
             }}
             btnStyle={[
               styles.clearButton,
@@ -825,7 +842,16 @@ const RSVPInvitedUpcoming = () => {
         <BottomSheetComponent
           ref={bottomSheetRef}
           onClose={() => {
-            (activeView == 'success' || activeView == 'failed') && goBack();
+            if (doResetStack) {
+              // bottomSheetRef?.current?.close();
+              reset({
+                index: 0,
+                routes: [{ name: 'BottomTabBar' }],
+              });
+            } else {
+              (activeView == 'success' || activeView == 'failed') && goBack();
+            }
+            setDoResetStack(false);
           }}
           snapPoints={[getSnapPoints(), '90%']}>
           <View style={styles.bottomSheetContent}>
