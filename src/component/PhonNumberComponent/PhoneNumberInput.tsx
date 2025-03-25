@@ -22,8 +22,8 @@ import {
 } from 'react-native';
 import { Image } from 'react-native-animatable';
 import { useDispatch } from 'react-redux';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 import IMAGES from '../../assets/images';
-import { CountryPicker } from '../../component/PhonNumberComponent/CountryPicker';
 import {
   setCountryCallingCode,
   setCountryCodeFlag,
@@ -32,13 +32,13 @@ import { COLORS, LABLE } from '../../utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
-  Hp,
   verticalMarginScale,
   verticalScale,
 } from '../../utils/dimensions';
 import { fontFamily } from '../../utils/functions';
+import { BottomSheetMethods } from '../BottomSheet/BottomSheet';
 import { CustomText } from '../CustomText';
-import useKeyboard from 'src/utils/hooks/useKeyboard';
+import CountryPickerBottomSheet from './CountryPickerBottomSheet';
 
 type TranslatedNames = Record<string, string>;
 
@@ -87,6 +87,7 @@ const PhoneNumberInput = forwardRef<
     ref,
   ) => {
     const inputRef = useRef<TextInput>(null);
+    const countryPickerRef = useRef<BottomSheetMethods>(null);
     const { updateKeyboardStatus } = useKeyboard(inputRef);
 
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -102,23 +103,24 @@ const PhoneNumberInput = forwardRef<
     const [maxLength, setMaxLength] = useState(12);
 
     const handleCountrySelect = (selectedCountry: any) => {
-      setPhoneNumber('');
-      console.log(selectedCountry);
-      dispatch(setCountryCallingCode(selectedCountry.callingCode));
-      dispatch(setCountryCodeFlag(selectedCountry.flag));
       setFlag(selectedCountry.flag);
       setCode(selectedCountry.code);
       setCallingCode(selectedCountry.dial_code);
-      setCountryPickerVisible(false);
       setSelectedCountry(selectedCountry);
+
+      setPhoneNumber('');
+      dispatch(setCountryCallingCode(selectedCountry.callingCode));
+      dispatch(setCountryCodeFlag(selectedCountry.flag));
       setMaxLength(getMaxPhoneNumberLength(selectedCountry.dial_code));
       if (onSelectCountry) {
         onSelectCountry(selectedCountry);
       }
+
+      closeCountryModal();
     };
 
     const closeCountryModal = () => {
-      setCountryPickerVisible(false);
+      countryPickerRef?.current?.close();
     };
 
     useImperativeHandle(ref, () => ({
@@ -268,7 +270,7 @@ const PhoneNumberInput = forwardRef<
           ]}>
           <TouchableOpacity
             style={[styles.flagContainer]}
-            onPress={() => setCountryPickerVisible(true)}
+            onPress={() => countryPickerRef?.current?.open()}
             disabled={disabled}>
             <Text style={styles.flag}>{flag}</Text>
             {!disabled && (
@@ -315,11 +317,10 @@ const PhoneNumberInput = forwardRef<
           <CustomText style={styles.errorText}>{errorMessage}</CustomText>
         ) : null}
 
-        <CountryPicker
-          style={styles.countryPicker}
+        <CountryPickerBottomSheet
+          ref={countryPickerRef}
           pickerButtonOnPress={handleCountrySelect}
           closeCountryModal={closeCountryModal}
-          show={isCountryPickerVisible}
           selectedCountry={selectedCountry}
           lang="en"
         />
@@ -391,21 +392,6 @@ const styles = StyleSheet.create({
   },
   disabledInput: {
     backgroundColor: COLORS.lighter_gray,
-  },
-  countryPicker: {
-    modal: {
-      height: Hp(80),
-      backgroundColor: COLORS.white,
-      borderTopLeftRadius: 30,
-      borderTopRightRadius: 30,
-    },
-    textInput: {
-      backgroundColor: 'white',
-      borderColor: COLORS.borderGray,
-      borderWidth: 1,
-      borderRadius: 10,
-      height: 50,
-    },
   },
 });
 
