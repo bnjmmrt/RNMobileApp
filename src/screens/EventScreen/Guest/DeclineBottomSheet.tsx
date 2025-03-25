@@ -1,32 +1,35 @@
 import React, { forwardRef } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { COLORS } from 'src/utils/constants';
-import { fontFamily } from 'src/utils/functions';
-import {
-  fontScale,
-  radiusScale,
-  verticalMarginScale,
-  horizontalMarginScale,
-  verticalScale,
-} from 'src/utils/dimensions';
+import { StyleSheet, Text, View } from 'react-native';
 import BottomSheet, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
+import { COLORS } from 'src/utils/constants';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
+import { fontFamily } from 'src/utils/functions';
 
 interface DeclineBottomSheetProps {
   title: string;
   description: string;
   buttonText: string;
+  buttonColor: string;
   onConfirm: () => void;
 }
 
 const DeclineBottomSheet = forwardRef<
   BottomSheetMethods,
   DeclineBottomSheetProps
->(({ title, description, buttonText, onConfirm }, ref) => {
+>(({ title, description, buttonText, onConfirm, buttonColor }, ref) => {
   return (
-    <BottomSheet ref={ref} snapPoints={['30%', '40%']}>
+    <BottomSheet
+      ref={ref}
+      snapPoints={['35%', '40%', '45%']}
+      enableDynamicSizing={false}>
       <View style={styles.container}>
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{title}</Text>
@@ -34,7 +37,10 @@ const DeclineBottomSheet = forwardRef<
         </View>
         <View style={styles.buttonContainer}>
           <Button
-            style={styles.confirmButton}
+            style={[
+              styles.confirmButton,
+              buttonColor && { backgroundColor: buttonColor },
+            ]}
             title={buttonText}
             colorTheme="dark"
             onPress={() => {

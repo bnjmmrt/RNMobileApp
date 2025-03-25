@@ -22,8 +22,8 @@ interface UserEventsProps {
 }
 
 const filterData: Filter[] = [
-  { label: 'All', value: 'CONFIRMED,INVITED,APPLIED,PAST,DECLINED' },
-  { label: 'Upcoming', value: 'CONFIRMED' },
+  { label: 'All', value: 'UPCOMING,INVITED,APPLIED,PAST,DECLINED' },
+  { label: 'Upcoming', value: 'UPCOMING' },
   { label: 'Past', value: 'PAST' },
   { label: 'Invited', value: 'INVITED' },
   { label: 'Requested', value: 'APPLIED' },
