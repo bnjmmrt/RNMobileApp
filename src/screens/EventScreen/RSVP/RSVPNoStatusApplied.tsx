@@ -6,8 +6,9 @@ import {
   FlatList,
   Image,
   InteractionManager,
+  Keyboard,
+  KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -29,14 +30,17 @@ import {
 import { RootState } from 'src/redux/slices';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import { BUTTON_LABLE, COLORS } from 'src/utils/constants';
-import { verticalScale } from 'src/utils/dimensions';
+import { formatDetailedEventDate } from 'src/utils/dateFunctions';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+  verticalScale,
+} from 'src/utils/dimensions';
 import { fontFamily, removeSignature } from 'src/utils/functions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { EventCard } from '../RSVP/RSVPInvitedUpcoming';
 import { styles } from './RSVPScreenStyle';
 import RequestVouch from './RequestVouch';
-import { formatDetailedEventDate } from 'src/utils/dateFunctions';
-import useKeyboard from 'src/utils/hooks/useKeyboard';
-import RnDeviceInfo from 'react-native-device-info';
 
 type Guest = {
   id: number;
@@ -57,8 +61,6 @@ const RSVPNoStatusApplied: React.FC = () => {
   const userId = useSelector((state: RootState) => state.auth.userId);
   const { apiRequest, loading } = useApi();
   const dispatch = useDispatch();
-
-  console.log('RnDeviceInfo?.getDeviceType()', RnDeviceInfo?.isTabletMode());
 
   const {
     name,
@@ -298,7 +300,7 @@ const RSVPNoStatusApplied: React.FC = () => {
       case 'cancel':
         return '33%';
       case 'leave':
-        return '42%';
+        return '40%';
       default:
         return '85%';
     }
@@ -407,7 +409,7 @@ const RSVPNoStatusApplied: React.FC = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header
         headerTitle="RSVP"
         showProgressBar={false}
@@ -420,95 +422,107 @@ const RSVPNoStatusApplied: React.FC = () => {
           }
         }}
       />
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.contentContainer}>
-          <EventCard
-            name={name}
-            location={location}
-            imageCover={removeSignature(imageFlyer)}
-            dates={formatDetailedEventDate(startDate, endDate, timeZone)}
-            currentGuestStatus={currentGuestStatus}
-          />
-          {currentGuestStatus === 'APPLIED' && (
-            <View style={styles.yellowBoxRightButton}>
-              <View style={styles.waitingResponseContainer}>
-                <Image source={IMAGES.loader} style={styles.loaderIcon} />
-                <CustomText style={styles.waitingText}>
-                  Awaiting response from host
-                </CustomText>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={50}>
+        <ScrollView style={styles.scrollView}>
+          <View style={styles.contentContainer}>
+            <EventCard
+              name={name}
+              location={location}
+              imageCover={removeSignature(imageFlyer)}
+              dates={formatDetailedEventDate(startDate, endDate, timeZone)}
+              currentGuestStatus={currentGuestStatus}
+            />
+            {currentGuestStatus === 'APPLIED' && (
+              <View style={styles.yellowBoxRightButton}>
+                <View style={styles.waitingResponseContainer}>
+                  <Image source={IMAGES.loader} style={styles.loaderIcon} />
+                  <CustomText style={styles.waitingText}>
+                    Awaiting response from host
+                  </CustomText>
+                </View>
+                <TouchableOpacity
+                  style={{
+                    paddingLeft: horizontalMarginScale(15),
+                    paddingVertical: verticalMarginScale(12),
+                  }}
+                  onPress={() => {
+                    setActiveTab('options');
+                    bottomSheetRef?.current?.open();
+                  }}>
+                  <Image
+                    source={IMAGES.downArrow}
+                    style={styles.downArrowIcon}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                onPress={() => {
-                  setActiveTab('options');
-                  bottomSheetRef?.current?.open();
-                }}>
-                <Image
-                  source={IMAGES.downArrow}
-                  style={styles.downArrowIcon}
-                  resizeMode="contain"
+            )}
+            {eventQuestions &&
+              eventQuestions.map(q => (
+                <Input
+                  key={q.questionId}
+                  labelStyle={{
+                    fontFamily: fontFamily.ABCDiatype_Medium,
+                  }}
+                  defaultValue={q?.answer}
+                  inputFieldContainerStyle={{ height: verticalScale(48) }}
+                  isRequired={q.required}
+                  ref={ref => (inputRefs.current[q.questionId] = ref)}
+                  label={q.question}
                 />
-              </TouchableOpacity>
-            </View>
-          )}
-          {eventQuestions &&
-            eventQuestions.map(q => (
+              ))}
+            {limitOnePlus > 0 && (
               <Input
-                key={q.questionId}
+                inputFieldContainerStyle={{ height: verticalScale(48) }}
+                editable={false}
                 labelStyle={{
                   fontFamily: fontFamily.ABCDiatype_Medium,
                 }}
-                defaultValue={q?.answer}
-                inputFieldContainerStyle={{ height: verticalScale(48) }}
-                isRequired={q.required}
-                ref={ref => (inputRefs.current[q.questionId] = ref)}
-                label={q.question}
+                hasDropdown={true}
+                isRequired={true}
+                ref={guestInputRef}
+                rightImage={IMAGES.downArrow}
+                defaultValue={selectedGuests?.label}
+                label="Request access for additional guests?"
+                onPressImage={() => {
+                  Keyboard.dismiss();
+                  InteractionManager.runAfterInteractions(() => {
+                    setActiveTab('guests');
+                    bottomSheetRef?.current?.open();
+                    guestInputRef.current?.setErrorMessage('');
+                  });
+                }}
               />
-            ))}
-          {limitOnePlus > 0 && (
-            <Input
-              inputFieldContainerStyle={{ height: verticalScale(48) }}
-              editable={false}
-              labelStyle={{
-                fontFamily: fontFamily.ABCDiatype_Medium,
-              }}
-              hasDropdown={true}
-              isRequired={true}
-              ref={guestInputRef}
-              rightImage={IMAGES.downArrow}
-              defaultValue={selectedGuests?.label}
-              label="Request access for additional guests?"
-              onPressImage={() => {
-                setActiveTab('guests');
-                bottomSheetRef?.current?.open();
-                guestInputRef.current?.setErrorMessage('');
-              }}
-            />
-          )}
-        </View>
-
-        <BottomSheetComponent
-          ref={bottomSheetRef}
-          onClose={() => {
-            if (doResetStack) {
-              reset({
-                index: 0,
-                routes: [{ name: 'BottomTabBar' }],
-              });
-            } else {
-              activeView !== 'cancel' &&
-                activeView !== 'guests' &&
-                activeView !== 'leave' &&
-                activeView !== 'options' &&
-                goBack();
-            }
-            setDoResetStack(false);
-          }}
-          snapPoints={[getSnapPoints(), '95%']}>
-          <View style={styles.bottomSheetContent}>
-            {renderBottomSheetContent()}
+            )}
           </View>
-        </BottomSheetComponent>
-      </ScrollView>
+
+          <BottomSheetComponent
+            ref={bottomSheetRef}
+            onClose={() => {
+              if (doResetStack) {
+                reset({
+                  index: 0,
+                  routes: [{ name: 'BottomTabBar' }],
+                });
+              } else {
+                activeView !== 'cancel' &&
+                  activeView !== 'guests' &&
+                  activeView !== 'leave' &&
+                  activeView !== 'options' &&
+                  goBack();
+              }
+              setDoResetStack(false);
+            }}
+            snapPoints={[getSnapPoints(), '95%']}>
+            <View style={styles.bottomSheetContent}>
+              {renderBottomSheetContent()}
+            </View>
+          </BottomSheetComponent>
+        </ScrollView>
+      </KeyboardAvoidingView>
       {!keyboardVisible ? (
         <Button
           disabled={false}
@@ -527,7 +541,7 @@ const RSVPNoStatusApplied: React.FC = () => {
           }
         />
       ) : null}
-    </SafeAreaView>
+    </View>
   );
 };
 

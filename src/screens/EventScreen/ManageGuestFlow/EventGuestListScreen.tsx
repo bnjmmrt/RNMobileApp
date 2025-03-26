@@ -1,5 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState, useRef, useMemo, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  useRef,
+  useMemo,
+  useEffect,
+  useCallback,
+} from 'react';
 import {
   View,
   Text,
@@ -14,7 +20,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { COLORS, LABLE } from '../../../utils/constants';
-import { fontFamily } from 'src/utils/functions';
+import { changeSafeAreaViewConfig, fontFamily } from 'src/utils/functions';
 import {
   fontScale,
   horizontalMarginScale,
@@ -22,6 +28,7 @@ import {
   horizontalScale,
   verticalScale,
   radiusScale,
+  Hp,
 } from 'src/utils/dimensions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { EventGuest } from '../types';
@@ -38,7 +45,10 @@ import GuestEmptyRecord from 'src/component/EmptyRecord/GuestEmptyRecord';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
 import { ROUTES } from 'src/navigation/Route';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useGetGuestsQuery } from 'src/redux/actions/eventApiAction';
+import {
+  useGetGuestsQuery,
+  useLazyGetGuestsQuery,
+} from 'src/redux/actions/eventApiAction';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { RootState } from 'src/redux/slices';
 import { useDispatch, useSelector } from 'react-redux';
@@ -46,6 +56,7 @@ import { setEventId } from 'src/redux/slices/eventSlice';
 import FiltersSheet from 'src/component/FilterSheet';
 import AvatarInitials from 'src/component/AvatarInitials';
 import { useFocusEffect } from '@react-navigation/native';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
 interface EventGuestListProps extends NativeStackScreenProps<any, any> {
   eventId?: string;
@@ -80,18 +91,38 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     (state: RootState) => state.inviteGuestsFlow.selectedEvent,
   );
 
-  const {
-    data: guestsData,
-    error: guestsError,
-    isLoading: isLoadingGuests,
-    isFetching: isFetchingGuests,
-    refetch: refetchGuests,
-  } = useGetGuestsQuery({ eventId, queryString: filterQuery });
+  // const {
+  //   data: guestsData,
+  //   error: guestsError,
+  //   isLoading: isLoadingGuests,
+  //   isFetching: isFetchingGuests,
+  //   refetch: refetchGuests,
+  // } = useGetGuestsQuery({ eventId, queryString: filterQuery });
+  const [
+    fetchGuests,
+    {
+      data: guestsData,
+      error: guestsError,
+      isLoading: isLoadingGuests,
+      isFetching: isFetchingGuests,
+    },
+  ] = useLazyGetGuestsQuery();
+
+  const fetchEventGuests = () => {
+    fetchGuests({
+      eventId,
+      queryString: filterQuery,
+    });
+  };
 
   useFocusEffect(
     useCallback(() => {
-      guestsData && refetchGuests()
-    }, [guestsData]),
+      fetchEventGuests();
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+        showBottomSafeAreaView: false,
+      });
+    }, []),
   );
 
   const guests: EventGuest[] = useMemo(() => {
@@ -99,9 +130,6 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
 
     return apiGuests;
   }, [guestsData?.data?.result]);
-
-
-
 
   useEffect(() => {
     if (guestsError) {
@@ -332,27 +360,27 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   );
 
   const renderContent = () => {
-    if (isLoadingGuests || isFetchingGuests) {
-      return (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator color={COLORS.black} />
-        </View>
-      );
-    }
+    // if (isLoadingGuests || isFetchingGuests) {
+    //   return (
+    //     <View style={styles.loadingContainer}>
+    //       <ActivityIndicator color={COLORS.black} />
+    //     </View>
+    //   );
+    // }
 
-    if (filteredAndSortedGuests.length === 0) {
-      return (
-        <View style={{ flex: 1 }}>
-          <GuestEmptyRecord
-            onAddGuest={handleAddGuest}
-            isSearchResult={Boolean(searchText.trim())}
-            onResetFilters={handleResetFilters}
-            filterApplied={Boolean(filterNumber)}
-            statusFilter={selectedFilter}
-          />
-        </View>
-      );
-    }
+    // if (filteredAndSortedGuests.length === 0) {
+    //   return (
+    //     <View style={{ flex: 1 }}>
+    //       <GuestEmptyRecord
+    //         onAddGuest={handleAddGuest}
+    //         isSearchResult={Boolean(searchText.trim())}
+    //         onResetFilters={handleResetFilters}
+    //         filterApplied={Boolean(filterNumber)}
+    //         statusFilter={selectedFilter}
+    //       />
+    //     </View>
+    //   );
+    // }
 
     return (
       <FlatList
@@ -361,8 +389,31 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
         keyExtractor={item => item.id}
         contentContainerStyle={[styles.listContainer, { paddingBottom: 60 }]}
         showsVerticalScrollIndicator={false}
-        refreshing={isLoadingGuests}
-        onRefresh={refetchGuests}
+        refreshing={false}
+        onRefresh={fetchEventGuests}
+        ListEmptyComponent={
+          <View
+            style={{
+              height: Hp(67),
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            {filteredAndSortedGuests.length === 0 &&
+            (isLoadingGuests || isFetchingGuests) ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator color={COLORS.black} />
+              </View>
+            ) : (
+              <GuestEmptyRecord
+                onAddGuest={handleAddGuest}
+                isSearchResult={Boolean(searchText.trim())}
+                onResetFilters={handleResetFilters}
+                filterApplied={Boolean(filterNumber)}
+                statusFilter={selectedFilter}
+              />
+            )}
+          </View>
+        }
       />
     );
   };
@@ -373,7 +424,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.headerTop}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -455,7 +506,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
         onApplyFilter={onApplyFilter}
         onClearFilter={onClearFilter}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
