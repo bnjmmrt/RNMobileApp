@@ -138,24 +138,24 @@ export const LABLE = {
     "Select topics of interests so we can curate experiences\nyou'll want to attend.",
   ADD_A_PHOTO: 'Add a photo',
   ADD_A_PHOTO_SUBTITLE: 'Upload a profile photo to complete your profile.',
-  CHAT_WITH_HOST: 'Chat\nwith hosts.',
+  CHAT_WITH_HOST: 'Connect directly\nwith hosts.',
   SEARCH_FOR_EVENT: 'Search for an event...',
-  ACCESS_THE_MOST_VALUABLE_CALENDAR: 'Access the most \n valuable calendar.',
+  ACCESS_THE_MOST_VALUABLE_CALENDAR:
+    'Access culture’s most \n coveted moments.',
   TWO_MINUTES_TO_COMPLETE: '~2 min to Complete',
-  STREAMLINE_YOUR_LIFESTYLE: 'Streamline\nyour lifestyle.',
-  MANAGE_YOUR_EVENTS:
-    'Manage your events, chats, and passes—all in one\nplace.',
+  STREAMLINE_YOUR_LIFESTYLE: 'Never miss\na moment.',
+  MANAGE_YOUR_EVENTS: 'All your invites, events, and passes—in one place.\n',
   CONNECT_WITH_WORLD:
-    "Connect with the world's top event organizers. Get\ndiscovered and invited to events that matter.",
+    'Get discovered by hosts and invited to coveted \n moments in art, fashion, music, and beyond.',
   CONNECT_DIRECTLY_WITH_PEOPLE:
-    'Connect directly with the people behind the events.\nRequest invites and confirm details seamlessly.',
-  UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS: 'Unlock access\nto exclusive events.',
+    'Build relationships and secure invites from those \n who run the show. No more barriers.',
+  UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS: 'Let invites \n come to you.',
   GET_DISCOVERY_BY_THE_WORLD:
     "Get discovered by the world's top event organizers and receive invites to events that matter.",
   DISCOVER_EXPERIENCES_ACROSS_ART:
     'Discover experiences across art, fashion, music, and more — listed by renowned hosts.',
   DISCOVER_EXPERIENCES_IN_ART:
-    'Discover experiences in art, fashion, music, and more \n—curated by renowned hosts.',
+    'Leverage your network to unlock off-market \n experiences from renowned hosts.',
   COMPLETE_VERIFICATION: 'Complete Verification',
   SEND_DIRECT_MSG_CODE: 'Send a direct message with the code:',
   WE_WILL_REVIEW_APP:
