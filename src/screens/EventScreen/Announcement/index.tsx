@@ -165,11 +165,12 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
                     })
                     }
                     {item?.addedBy.map((item: any) => {
+                        let selectedName = item?.firstName == 'NA' ? ' -- ' : item?.firstName + ' ' + item?.lastName
                         return (
                             <View style={[styles.countWrapper, {
                                 marginHorizontal: 3, backgroundColor: 'transparant', paddingVertical: verticalScale(5),
                             }]}>
-                                <Text style={styles.label}>{item?.firstName} {item?.lastName} </Text>
+                                <Text style={styles.label}>{selectedName} </Text>
                             </View>
                         )
                     })

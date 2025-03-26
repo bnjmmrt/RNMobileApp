@@ -76,7 +76,10 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     sendTo && sendOtp(false);
   }, [route.params]);
 
-  const onNextClick = () => otpInputRef.current?.handleNextPress();
+  const onNextClick = () => {
+    Keyboard.dismiss();
+    otpInputRef.current?.handleNextPress();
+  };
   const handleBackPress = () => navigation.goBack();
 
   const redirectToHome = (data: any) => {
@@ -142,6 +145,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   };
 
   const clearOTPAndResend = () => {
+    Keyboard.dismiss();
     otpInputRef?.current?.clearOTP();
     setErrorMsg('');
     sendOtp(true);
@@ -149,6 +153,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={50}
       style={styles.container}>
       {/* <FullScreenLoader loading={isLoading}> */}
       <View style={styles.container}>

@@ -229,7 +229,7 @@ const AddAnnouncementStyles = () => {
     recipientHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
     toolTipStyle: {
       backgroundColor: COLORS.dark_gray,
-      width: horizontalScale(200),
+      width: horizontalScale(220),
       paddingHorizontal: 15,
       height: Platform.OS === 'ios' ? verticalScale(20) : verticalScale(20),
     },

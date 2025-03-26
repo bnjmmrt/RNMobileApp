@@ -87,6 +87,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       platform: Platform.OS,
       socialUrl: '',
       profilePicture: userDetails.profilePic,
+      imageUrl: userDetails.profilePic,
       fcmToken: fcmToken,
       deviceId: deviceId,
     };
