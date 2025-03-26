@@ -1,19 +1,25 @@
-import React, { forwardRef, useState } from 'react';
+import IMAGES from '@images/index';
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import {
-  View,
-  StyleSheet,
-  Text,
   Image,
+  ImageBackground,
   Platform,
   ScrollView,
+  StyleSheet,
+  Text,
   TouchableOpacity,
-  ImageBackground,
+  View,
+  ViewStyle,
 } from 'react-native';
 import QRGenerator from 'react-native-qr-code-styling';
-
-import BottomSheetComponent from './BottomSheet';
-import { base64RumorLogo, COLORS, LABLE } from '../../utils/constants';
-import { fontFamily } from '../../utils/functions';
+import Tooltip, { Placement } from 'react-native-tooltip-2';
+import { useSelector } from 'react-redux';
+import { formatTicketDate } from 'src/utils/dateFunctions';
 import {
   fontScale,
   horizontalMarginScale,
@@ -24,12 +30,10 @@ import {
   verticalScale,
   Wp,
 } from 'src/utils/dimensions';
-import IMAGES from '@images/index';
+import { base64RumorLogo, COLORS, LABLE } from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
 import AvatarInitials from '../AvatarInitials';
-import TooltipComponent from '../TooltipComponent/TooltipComponent';
-import { formatTicketDate } from 'src/utils/dateFunctions';
-import { useSelector } from 'react-redux';
-import Tooltip, { Placement } from 'react-native-tooltip-2';
+import BottomSheetComponent, { BottomSheetMethods } from './BottomSheet';
 
 interface QRCodeBottomsheetProps {
   title: string;
@@ -37,57 +41,114 @@ interface QRCodeBottomsheetProps {
   timeZone: string;
   imageURL: string;
   isQRShown: boolean;
-  profilePic?: string
+  profilePic?: string;
 }
-const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
-  const userDetails = useSelector(
-    (state: any) => state.appFlowApiData.profileData,
+
+const RenderQrCode = React.memo(({ imageURL }: { imageURL: string }) => {
+  return (
+    <QRGenerator
+      width={horizontalScale(250)}
+      height={verticalScale(250)}
+      type={'svg'}
+      value={imageURL}
+      margin={0}
+      qrOptions={{
+        typeNumber: '16',
+        mode: 'Byte',
+        errorCorrectionLevel: 'Q',
+      }}
+      dotOptions={{
+        type: 'dots',
+        color: COLORS.black,
+      }}
+      cornerSquareOptions={{
+        type: 'extra-rounded',
+      }}
+      cornerDotOptions={{
+        type: 'extra-rounded',
+        color: COLORS.black,
+      }}
+      backgroundOptions={{
+        round: 0,
+        color: '#ffffff',
+      }}
+      image={base64RumorLogo}
+      imageOptions={{
+        saveAsBlob: true,
+        hideBackgroundDots: true,
+        imageSize: 0.4,
+        margin: 0,
+      }}
+    />
   );
-  const [showProfileToolitip, setShowProfileToolitip] = useState(false);
-  const [showVIPToolitip, setShowVIPToolitip] = useState(false);
-  const [vipTooltipShown, setVipTooltipShown] = useState(false);
-  const showTooltip = () => {
-    console.log('showTooltipshowTooltipshowTooltip');
-    setShowProfileToolitip(true)
-  };
-  const name = `${userDetails?.firstName} ${userDetails?.lastName}`
-  const renderTooltip = ({
+});
+
+const RenderToolTip = React.memo(
+  ({
     isVisible,
     setIsVisible,
     contentText,
     placement,
     arrowStyle,
-  }) => (
-    <Tooltip
-      contentStyle={styles.toolTipStyle}
-      isVisible={isVisible}
-      displayInsets={{ left: 0, right: 0, top: 0, bottom: 0 }}
-      arrowStyle={arrowStyle}
-      backgroundColor="transparent"
-      topAdjustment={verticalScale(0)}
-      content={
-        <View>
-          <Text style={styles.tooltipHeadStyle}>{contentText}</Text>
-        </View>
-      }
-      placement={placement}
-      onClose={() => setIsVisible(false)}
-    >
-      <TouchableOpacity onPress={() => setIsVisible(true)}>
-        <Image source={IMAGES.info_filled} style={styles.icon} />
-      </TouchableOpacity>
-    </Tooltip>
+  }: {
+    isVisible: boolean;
+    setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+    contentText: string;
+    placement: Placement | undefined;
+    arrowStyle: ViewStyle;
+  }) => {
+    return (
+      <Tooltip
+        contentStyle={styles.toolTipStyle}
+        isVisible={isVisible}
+        displayInsets={{ left: 0, right: 0, top: 0, bottom: 0 }}
+        arrowStyle={arrowStyle}
+        backgroundColor="transparent"
+        topAdjustment={verticalScale(0)}
+        content={
+          <View>
+            <Text style={styles.tooltipHeadStyle}>{contentText}</Text>
+          </View>
+        }
+        placement={placement}
+        onClose={() => setIsVisible(false)}>
+        <TouchableOpacity onPress={() => setIsVisible(true)}>
+          <Image source={IMAGES.info_filled} style={styles.icon} />
+        </TouchableOpacity>
+      </Tooltip>
+    );
+  },
+);
+
+const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
+  const sheetRef = useRef<BottomSheetMethods>(null);
+  useImperativeHandle(ref, () => ({
+    open: () => sheetRef.current?.open(),
+    close: () => sheetRef.current?.close(),
+  }));
+
+  const userDetails = useSelector(
+    (state: any) => state.appFlowApiData.profileData,
   );
+
+  const [showProfileToolitip, setShowProfileToolitip] = useState(false);
+  const [showVIPToolitip, setShowVIPToolitip] = useState(false);
   const [numLines, setNumLines] = useState(0);
-  const snap = numLines > 0 ? `${(numLines * 5) + 70}%` : `75%`
+
+  const name = `${userDetails?.firstName} ${userDetails?.lastName}`;
+  const snap = numLines > 0 ? `${numLines * 5 + 70}%` : `75%`;
+
   return (
     <BottomSheetComponent
-      ref={ref}
+      ref={sheetRef}
       snapPoints={[props.isQRShown ? snap : '65%']}
-      onClose={() => console.log(ref)}>
+      onClose={() => {}}>
       <ScrollView>
         <View style={styles.container}>
-          <Text numberOfLines={3} style={styles.title} onTextLayout={(e) => setNumLines(e.nativeEvent.lines.length)} >
+          <Text
+            numberOfLines={3}
+            style={styles.title}
+            onTextLayout={e => setNumLines(e.nativeEvent.lines.length)}>
             {`${props.title}`}
           </Text>
 
@@ -102,14 +163,15 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                 imgUrl={props?.profilePic}
               />
               <Text style={styles.name}>{userDetails?.name || name}</Text>
-              {renderTooltip({
-                isVisible: showProfileToolitip,
-                setIsVisible: setShowProfileToolitip,
-                contentText: `This QR code is valid for ${userDetails?.name || name} only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`,
-                placement: Placement.BOTTOM,
-                arrowStyle: { top: -10 },
-              })}
-
+              <RenderToolTip
+                isVisible={showProfileToolitip}
+                setIsVisible={setShowProfileToolitip}
+                contentText={`This QR code is valid for ${
+                  userDetails?.name || name
+                } only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`}
+                placement={Placement.BOTTOM}
+                arrowStyle={{ top: -10 }}
+              />
             </View>
           </View>
           {/* <Image
@@ -125,71 +187,50 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
               width: props.isQRShown ? Wp(85) : 340,
               height: props.isQRShown ? Hp(55) : 340,
               marginTop: props.isQRShown ? 10 : 0,
-              alignItems: 'center'
-            }}
-          >
-
+              alignItems: 'center',
+            }}>
             {props.isQRShown ? (
-              <View style={{ height: verticalScale(290), paddingTop: verticalMarginScale(40) }}>
-                <QRGenerator
-                  width={horizontalScale(250)}
-                  height={verticalScale(250)}
-                  type={'svg'}
-                  value={props.imageURL}
-                  margin={0}
-                  qrOptions={{
-                    typeNumber: '16',
-                    mode: "Byte",
-                    errorCorrectionLevel: 'Q',
-                  }}
-                  dotOptions={{
-                    type: "dots",
-                    color: COLORS.black,
-                  }}
-                  cornerSquareOptions={{
-                    type: "extra-rounded",
-
-                  }}
-                  cornerDotOptions={{
-                    type: "extra-rounded",
-                    color: COLORS.black,
-                  }}
-                  backgroundOptions={{
-                    round: 0,
-                    color: '#ffffff',
-                  }}
-                  image={base64RumorLogo}
-                  imageOptions={{
-                    saveAsBlob: true,
-                    hideBackgroundDots: true,
-                    imageSize: 0.4,
-                    margin: 0,
-                  }}
-                />
+              <View
+                style={{
+                  height: verticalScale(290),
+                  paddingTop: verticalMarginScale(40),
+                }}>
+                <RenderQrCode imageURL={props.imageURL} />
               </View>
             ) : (
               <ImageBackground
-                resizeMode='contain'
+                resizeMode="contain"
                 source={IMAGES.ticket}
-                style={styles.cardTicketBg}
-              >
+                style={styles.cardTicketBg}>
                 <Text style={styles.cardName}>{userDetails?.name || name}</Text>
               </ImageBackground>
             )}
-            <View style={[styles.vipContainer, { position: 'absolute', width: Wp('80%'), height: Wp('80%'), alignItems: 'flex-end', justifyContent: 'center' }]}>
+            <View
+              style={[
+                styles.vipContainer,
+                {
+                  // position: 'absolute',
+                  // width: Wp('80%'),
+                  // height: Wp('80%'),
+                  // alignItems: 'flex-end',
+                  // justifyContent: 'center',
+                },
+              ]}>
               <Text style={styles.vipText}>VIP</Text>
-              {renderTooltip({
-                isVisible: showVIPToolitip,
-                setIsVisible: setShowVIPToolitip,
-                contentText: `Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.`,
-                placement: Placement.TOP,
-                arrowStyle: { bottom: 10 },
-              })}
+              <RenderToolTip
+                isVisible={showVIPToolitip}
+                setIsVisible={setShowVIPToolitip}
+                contentText={`Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.`}
+                placement={Placement.TOP}
+                arrowStyle={{ bottom: 10 }}
+              />
             </View>
-            <Text style={styles.infoText}>{props.isQRShown ? LABLE.SHOW_QR_CHECKIN_MESSAGE : 'Show this Ticket Confirmation at event check-in'}</Text>
-
+            <Text style={styles.infoText}>
+              {props.isQRShown
+                ? LABLE.SHOW_QR_CHECKIN_MESSAGE
+                : 'Show this Ticket Confirmation at event check-in'}
+            </Text>
           </ImageBackground>
-
         </View>
       </ScrollView>
     </BottomSheetComponent>
@@ -247,7 +288,7 @@ const styles = StyleSheet.create({
     height: 148,
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
-    padding: 20
+    padding: 20,
   },
   cardName: {
     fontSize: 14,
@@ -293,7 +334,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'center',
-    marginTop: 25
+    marginTop: 25,
   },
   vipText: {
     fontSize: fontScale(20),

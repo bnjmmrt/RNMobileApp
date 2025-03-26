@@ -321,6 +321,7 @@ export const {
   useFetchDashboardUpcomingEventsQuery,
   useFetchHostEventDetailsQuery,
   useGetGuestsQuery,
+  useLazyGetGuestsQuery,
   useManageGuestMutation,
   useFetchPublicEventDetailsQuery,
   useLazyFetchEventDetailsQuery,
