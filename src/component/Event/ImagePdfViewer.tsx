@@ -55,7 +55,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(index);
   const bottomSheetRef = useRef(null);
-    console.log(index,'indexindexindex')
+  console.log(index, 'indexindexindex')
   const requestStoragePermission = async () => {
     if (Platform.OS === 'android') {
       try {
@@ -262,6 +262,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginTop: 40,
+    marginHorizontal: 50,
     flex: 1,
   },
   mediaContainer: {

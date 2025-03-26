@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
@@ -24,14 +24,17 @@ interface EditEventSettingsProps {
 
 const EditEventSettings: React.FC<EditEventSettingsProps> = ({ event }) => {
   const userId = useSelector((state: RootState) => state.auth.userId);
-
   const collabrators = useMemo(() => {
     const owner = {
       ...event?.owner,
       name: event?.owner?.companyName,
       role: { id: event?.owner?.id, name: 'host' },
     };
-    return [owner, ...(event?.collaborators || [])];
+
+    const approvedCollaborators = event?.collaborators?.filter(
+      (col: any) => col.isApproved,
+    );
+    return [owner, ...(approvedCollaborators || [])];
   }, [event]);
 
   const onConfirmClick = useCallback(async () => {
@@ -83,6 +86,7 @@ const EditEventSettings: React.FC<EditEventSettingsProps> = ({ event }) => {
     ),
     [getUserRole],
   );
+
 
   return (
     <View style={styles.container}>

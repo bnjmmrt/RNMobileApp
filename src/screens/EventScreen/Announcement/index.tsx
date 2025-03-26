@@ -34,6 +34,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
     const [companyName, setCompanyName] = useState('');
     const [companyLogo, setCompanyLogo] = useState('');
     const role = useSelector((state: RootState) => state.auth.role);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     const queryArgs = ({
         eventId: eventData?.id,
@@ -71,13 +72,14 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
         }, [data])
     );
 
-    const MediaItem = ({ item, media, name, image }: { item: any, media: any, name: any, image: any }) => (
+    const MediaItem = ({ item, media, name, image, index }: { item: any, media: any, name: any, image: any, index: number }) => (
         item.mediaType === "image" ? (
             <TouchableOpacity onPress={() => {
                 setMedia(media)
                 setCompanyName(name)
                 setCompanyLogo(image)
                 setViewerVisible(true)
+                setCurrentIndex(index);
             }}>
                 <FastImage source={{ uri: item?.media }} style={styles.mediaImage} />
             </TouchableOpacity>
@@ -87,6 +89,8 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
                 setCompanyName(name)
                 setCompanyLogo(image)
                 setViewerVisible(true)
+                setCurrentIndex(index);
+
             }} style={styles.pdfContainer}>
                 <Image source={IMAGES.pdf} style={styles.pdfIcon} resizeMode='contain' />
                 <Text style={styles.title} numberOfLines={2}>{item?.mediaName}</Text>
@@ -104,7 +108,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
         return (
             <View style={styles.Detailcontainer}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, marginStart: -10 }}>
                         <AvatarInitials
                             name={name}
                             imgUrl={imageKeyUrl}
@@ -112,16 +116,18 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
                             textColor="white"
                         />
                         <Text style={styles.headerTitle}>{name}</Text>
+                        <Text style={styles.subtitle}>{date}</Text>
+
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={styles.subtitle}>{date}</Text>
+                        {/* <Text style={styles.subtitle}>{date}</Text> */}
                         {role === ROLE.HOST &&
                             <TouchableOpacity onPress={() => {
                                 navigation.navigate('EventStack', {
                                     screen: 'AddAnnouncementScreen',
                                     params: { eventData, announcementId: item?.id } // Wrap in params
                                 });
-                            }} style={styles.iconWrapper}>
+                            }} style={[styles.iconWrapper]}>
                                 <Image source={IMAGES.pencil} style={styles.icon} />
                             </TouchableOpacity>
                         }
@@ -132,7 +138,14 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
                     <Text numberOfLines={expanded ? undefined : 3} style={styles.name}>{displayedText}</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                         {item?.attachments?.map((mediaItem: string, index: number) => (
-                            <MediaItem key={index} item={mediaItem} media={item.attachments} name={name} image={imageKeyUrl} />
+                            <MediaItem
+                                key={index}
+                                index={index}
+                                item={mediaItem}
+                                media={item.attachments}
+                                name={name}
+                                image={imageKeyUrl}
+                            />
                         ))}
                     </ScrollView>
                     {!expanded && shouldShowReadMore ? (
@@ -180,7 +193,6 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
         );
     };
     const onClose = () => {
-        console.log("c")
         setViewerVisible(false)
     }
     return (
@@ -226,9 +238,10 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
                 </View>
             </ScrollView>
             {viewerVisible && <ImagePdfViewer
-                visible={viewerVisible}
-                onClose={onClose}
+                visible={true}
+                onClose={() => onClose()}
                 mediaItems={media}
+                index={currentIndex}
                 name={companyName}
                 logo={companyLogo}
             />}

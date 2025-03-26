@@ -249,7 +249,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     if (response.success) {
       console.log("Sayed generate ticket:", response)
       if (response.data.eventQr) {
-        setEventDetails({ ...eventDetails, qrUrl: response.data.jwtToken });
+        setEventDetails({
+          ...eventDetails,
+          qrUrl: response.data.jwtToken,
+          ticketType: response.data.ticketType || null,
+          ticketDescription: response.data.ticketDescription || null
+        });
         qrCodeBottomSheetRef?.current.open();
       } else {
         FlashMessageComponent.show('error', 'QR not genetaed');
@@ -693,10 +698,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
             />
             <QRCodeBottomsheet
               ref={qrCodeBottomSheetRef}
-              title={eventDetails?.title}
-              subTitle={eventDetails?.subTitle}
-              imageURL={eventDetails?.qrUrl ? eventDetails?.qrUrl : IMAGES.ticket}
-              timeZone={eventDetails?.timeZone}
+              data={eventDetails}
               isQRShown={isQRShown}
               profilePic={profilePicture}
             />

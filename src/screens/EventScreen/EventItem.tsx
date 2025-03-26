@@ -22,7 +22,7 @@ import {
   verticalMarginScale,
   verticalScale,
 } from '../../utils/dimensions';
-import { fontFamily, getDisplayLocation, removeSignature } from '../../utils/functions';
+import { fontFamily, getDisplayLocation, isCityInLocation, removeSignature } from '../../utils/functions';
 import { formatDetailedEventDate } from 'src/utils/dateFunctions';
 import { Event } from 'src/types';
 import { useSelector } from 'react-redux';
@@ -66,8 +66,9 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
     return ''; // Default return if no match is found
   };
 
-  const locationText = getDisplayLocation(item?.location?.city, item?.guest?.guestStatus, item.showLocation, role)
 
+  const locationText = getDisplayLocation(item?.location?.location, item?.guest?.guestStatus, item.showLocation, role)
+  const isHideCity = isCityInLocation(locationText, item?.location?.city || '')
   // const isShowLocation =
   //   role === ROLE.HOST ||
   //   item?.currentGuestStatus === 'CONFIRMED' ||
@@ -111,12 +112,13 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
           </>
         ) : (
           <View>
-            <CustomText style={styles.subtitle} textProps={{ numberOfLines: 2 }}>
+            <CustomText style={styles.subtitle} textProps={{ numberOfLines: 3 }}>
               {locationText}
             </CustomText>
-            <CustomText style={styles.subtitle} textProps={{ numberOfLines: 1 }}>
+            {!isHideCity && <CustomText style={styles.subtitle} textProps={{ numberOfLines: 2 }}>
               {item?.location?.city}
             </CustomText>
+            }
           </View>
 
         )}

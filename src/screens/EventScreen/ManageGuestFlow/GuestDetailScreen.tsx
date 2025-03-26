@@ -611,6 +611,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               onInviteMessageChange={setInviteMessage}
               guestNote={guestNote}
               onGuestNoteChange={setGuestNote}
+              timeZone={selectedEvent?.timeZone}
               maxAdditionalGuests={guestDetail.maxAdditionalGuests || 0}
               eventName={selectedEvent?.name}
               eventStartDate={selectedEvent?.startDate}

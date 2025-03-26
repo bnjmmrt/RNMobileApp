@@ -253,7 +253,7 @@ const NewUserView: React.FC<NewUserViewProps> = ({
                   },
                 ]),
               );
-              navigation.navigate(ROUTES.InviteGuestScreen, {
+              navigation.replace(ROUTES.InviteGuestScreen, {
                 isManual: false,
                 type: 'existing',
               });

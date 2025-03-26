@@ -36,10 +36,7 @@ import AvatarInitials from '../AvatarInitials';
 import BottomSheetComponent, { BottomSheetMethods } from './BottomSheet';
 
 interface QRCodeBottomsheetProps {
-  title: string;
-  subTitle: string;
-  timeZone: string;
-  imageURL: string;
+  data: any;
   isQRShown: boolean;
   profilePic?: string;
 }
@@ -76,7 +73,7 @@ const RenderQrCode = React.memo(({ imageURL }: { imageURL: string }) => {
       imageOptions={{
         saveAsBlob: true,
         hideBackgroundDots: true,
-        imageSize: 0.4,
+        imageSize: 0.3,
         margin: 0,
       }}
     />
@@ -137,23 +134,22 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
 
   const name = `${userDetails?.firstName} ${userDetails?.lastName}`;
   const snap = numLines > 0 ? `${numLines * 5 + 70}%` : `75%`;
-
   return (
     <BottomSheetComponent
       ref={sheetRef}
       snapPoints={[props.isQRShown ? snap : '65%']}
-      onClose={() => {}}>
+      onClose={() => { }}>
       <ScrollView>
         <View style={styles.container}>
           <Text
             numberOfLines={3}
             style={styles.title}
             onTextLayout={e => setNumLines(e.nativeEvent.lines.length)}>
-            {`${props.title}`}
+            {`${props?.data?.title}`}
           </Text>
 
           <Text style={[styles.subTitle]}>
-            {formatTicketDate(props?.subTitle, props?.timeZone)}
+            {formatTicketDate(props?.data?.subTitle, props?.data?.timeZone)}
           </Text>
           <View>
             <View style={styles.pic_Container}>
@@ -166,9 +162,8 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
               <RenderToolTip
                 isVisible={showProfileToolitip}
                 setIsVisible={setShowProfileToolitip}
-                contentText={`This QR code is valid for ${
-                  userDetails?.name || name
-                } only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`}
+                contentText={`This QR code is valid for ${userDetails?.name || name
+                  } only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`}
                 placement={Placement.BOTTOM}
                 arrowStyle={{ top: -10 }}
               />
@@ -193,9 +188,9 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
               <View
                 style={{
                   height: verticalScale(290),
-                  paddingTop: verticalMarginScale(40),
+                  paddingTop: verticalMarginScale(30),
                 }}>
-                <RenderQrCode imageURL={props.imageURL} />
+                <RenderQrCode imageURL={props?.data?.qrUrl} />
               </View>
             ) : (
               <ImageBackground
@@ -216,14 +211,16 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                   // justifyContent: 'center',
                 },
               ]}>
-              <Text style={styles.vipText}>VIP</Text>
-              <RenderToolTip
-                isVisible={showVIPToolitip}
-                setIsVisible={setShowVIPToolitip}
-                contentText={`Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.`}
-                placement={Placement.TOP}
-                arrowStyle={{ bottom: 10 }}
-              />
+              <Text style={styles.vipText}>{props?.data?.ticketType}</Text>
+              {props?.data?.ticketDescription &&
+                <RenderToolTip
+                  isVisible={showVIPToolitip}
+                  setIsVisible={setShowVIPToolitip}
+                  contentText={props?.data?.ticketDescription}
+                  placement={Placement.TOP}
+                  arrowStyle={{ bottom: 10 }}
+                />
+              }
             </View>
             <Text style={styles.infoText}>
               {props.isQRShown
@@ -334,7 +331,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'center',
-    marginTop: 25,
+    marginTop: 20,
   },
   vipText: {
     fontSize: fontScale(20),
@@ -349,7 +346,8 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: fontScale(14),
     color: 'gray',
-    marginTop: verticalMarginScale(100),
+    position: 'absolute',
+    bottom: 50,
     zIndex: 10,
   },
 

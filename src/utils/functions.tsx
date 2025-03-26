@@ -534,6 +534,31 @@ export const fetchUserProfile = async () => {
   }
 };
 
+export const removeCityFromLocation = (locationText: string, city: string) => {
+  if (locationText.includes(city)) {
+    const addressWithoutCity = locationText.replace(city, "").trim().replace(/,\s*$/, "");
+    return { address: addressWithoutCity, city };
+  }
+  return { address: locationText, city };
+};
+
+export const extractCityFromLocation = (locationText: string, city: string) => {
+  const cityIndex = locationText?.indexOf(city);
+
+  if (cityIndex !== -1) {
+    const address = locationText.substring(0, cityIndex).trim().replace(/,\s*$/, "");
+    const cityDetails = locationText.substring(cityIndex).trim();
+    return { address, city: cityDetails };
+  }
+
+  return { address: locationText, city: "" };
+};
+
+export const isCityInLocation = (locationText: string, city: string) => {
+  return locationText.includes(city);
+};
+
+
 export const getDisplayLocation = (location: string = '', guestStatus: String = '', showLocation: boolean = false, role: string) => {
 
   if (role === ROLE.HOST) {

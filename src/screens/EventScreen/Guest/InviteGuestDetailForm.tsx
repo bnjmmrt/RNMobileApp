@@ -83,6 +83,8 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
 }) => {
   const inviteMessageRef = useRef<InputRefMethods>(null);
   const guestNoteRef = useRef<InputRefMethods>(null);
+
+
   const formatedDate = convertUTCToTimeZoneFormat(eventStartDate, timeZone, `MMM DD, yyyy [at] h:mm A`)
 
   const renderContent = () => (

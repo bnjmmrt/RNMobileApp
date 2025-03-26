@@ -86,19 +86,26 @@ export const convertUTCToTimeZoneFormat = (
   timeZone?: string,
   format?: string
 ): string => {
+
   if (timeZone) {
     const date = moment.tz(dateString, timeZone);
     return `${date.format(format)}`;
   } else {
-    return dateString || '';
+    const date = moment(dateString);
+    return `${date.format(format)}`;
   }
 };
-
 
 export const formatViewAnnouncementDate = (startDate: string) => {
   const start = moment.utc(startDate).local();
   const today = moment().startOf('day');
   const tomorrow = moment().add(1, 'day').startOf('day');
+
+  console.log("Converted Start Date (Local):", start.format("YYYY-MM-DD HH:mm:ss"));
+  console.log("Today Start (Local):", today.format("YYYY-MM-DD HH:mm:ss"));
+  console.log("Tomorrow Start (Local):", tomorrow.format("YYYY-MM-DD HH:mm:ss"));
+  console.log("Is Same as Today?", start.isSame(today, 'day'));
+  console.log("Is Same as Tomorrow?", start.isSame(tomorrow, 'day'));
 
   const startFormat = start.format('ddd, MMM D');
   const startTime = start.format('h:mm A');
@@ -111,6 +118,7 @@ export const formatViewAnnouncementDate = (startDate: string) => {
     return `${startFormat}, ${startTime}`;
   }
 };
+
 export const timeAgo = (timestamp: any) => {
   const now: any = new Date();
   const past: any = new Date(timestamp);

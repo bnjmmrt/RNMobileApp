@@ -94,6 +94,6 @@ axiosController.interceptors.response.use(
     //   FlashMessageComponent.show('error', errorMessage);
     // }
 
-    return Promise.reject(error);
+    return error.response;
   },
 );

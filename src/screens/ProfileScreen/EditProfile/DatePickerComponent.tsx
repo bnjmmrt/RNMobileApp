@@ -23,6 +23,7 @@ interface DatePickerComponentProps {
   birthDate?: string;
   timeZone?: string;
   dateFormat?: string;
+  isDOB?: boolean;
 }
 
 const DatePickerComponent = forwardRef(
@@ -70,6 +71,8 @@ const DatePickerComponent = forwardRef(
       return true;
     };
 
+    const displayDate = props?.isDOB ? selectedDate : convertUTCToTimeZoneFormat(selectedDate, props?.timeZone, props.dateFormat)
+
     return (
       <>
         <CustomSelectableText
@@ -77,7 +80,7 @@ const DatePickerComponent = forwardRef(
           leftImage={IMAGES.calender}
           rightImage={IMAGES.downArrow}
           errorMessage={errorMessage}
-          defaultValue={convertUTCToTimeZoneFormat(selectedDate, props?.timeZone, props.dateFormat)}
+          defaultValue={displayDate}
           onPress={openDatePicker}
           style={styles.container}
         />

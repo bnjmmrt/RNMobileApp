@@ -28,7 +28,7 @@ const useApi = <T>(): UseApiReturn<T> => {
       data: Record<string, unknown> | FormData | null = null,
       params: Record<string, unknown> | null = null,
       headers: Record<string, string> = {},
-      withAuth: boolean = true // default true
+      withAuth: boolean = true, // default true
     ): Promise<any> => {
       setLoading(true);
       setError(null);
@@ -38,13 +38,21 @@ const useApi = <T>(): UseApiReturn<T> => {
           params,
           headers,
           ...(method === 'delete' && data ? { data } : {}),
-          withAuth// Ensure DELETE supports a body
+          withAuth, // Ensure DELETE supports a body
         };
 
-        const response = await axiosController[method](url, method === 'delete' ? config : data, config);
-        console.log("useAPI response", response);
-        return response;
-
+        const response = await axiosController[method](
+          url,
+          method === 'delete' ? config : data,
+          config,
+        );
+        console.log('useAPI response', response);
+        if (response && response.success) {
+          return response;
+        } else {
+          setError(response);
+          throw response;
+        }
       } catch (err) {
         setError(err as AxiosError);
         throw err;
