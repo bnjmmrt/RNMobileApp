@@ -81,7 +81,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
     media: any;
     name: any;
     image: any;
-    index:number
+    index: number
   }) =>
     item.mediaType === 'image' ? (
       <TouchableOpacity
@@ -281,8 +281,8 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
 
       {viewerVisible && (
         <ImagePdfViewer
-          visible={viewerVisible}
-          onClose={viewerClose}
+          visible={true}
+          onClose={() => viewerClose()}
           index={currentIndex}
           mediaItems={media}
           name={companyName}

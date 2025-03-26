@@ -70,7 +70,7 @@ const AnnouncementStyles = () => {
         },
         subtitle: {
             color: COLORS.black,
-            fontSize: fontScale(14),
+            fontSize: fontScale(12),
             fontFamily: fontFamily.ABCDiatype_Regular,
         },
 
@@ -151,7 +151,8 @@ const AnnouncementStyles = () => {
             backgroundColor: COLORS.tabBorderColor,
             justifyContent: 'center',
             alignItems: 'center',
-            left: 10
+            left: 10,
+            right: 10,
         },
         recipintWrapper: {
             width: verticalScale(40),
@@ -196,11 +197,10 @@ const AnnouncementStyles = () => {
             tintColor: COLORS.black
         },
         headerTitle: {
-            width: verticalScale(120),
-            fontSize: fontScale(16),
+            fontSize: fontScale(18),
             color: COLORS.black,
+            flex: 1,
             fontFamily: fontFamily.ABCDiatype_Regular,
-            fontWeight: '500',
             left: 10
         },
         headerDes: {

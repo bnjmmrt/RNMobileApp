@@ -33,6 +33,7 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
+import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 
 const { width } = Dimensions.get('window');
 const SCANNER_SIZE = width * 0.6;
@@ -89,15 +90,15 @@ const QRCodeScanner = () => {
           });
         }
       } else {
-        FlashMessageComponent.show("error", "User is already checkedin")
+        const typedError = response as ApiErrorInterface;
+        FlashMessageComponent.show('error', getErrorMessage(typedError));
         navigation.goBack();
       }
     } catch (error) {
-      FlashMessageComponent.show("error", "User is already checkedin")
+      const typedError = error as ApiErrorInterface;
+      FlashMessageComponent.show('error', getErrorMessage(typedError));
       navigation.goBack();
     }
-
-
   };
 
   const codeScanner = useCodeScanner({

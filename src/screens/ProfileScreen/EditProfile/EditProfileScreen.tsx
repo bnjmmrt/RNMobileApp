@@ -389,6 +389,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                   birthDate={profileData.dateOfBirth}
                   timeZone={profileData?.timeZone}
                   dateFormat='MM/DD/YYYY'
+                  isDOB={true}
                 />
 
                 <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>

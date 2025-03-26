@@ -50,7 +50,7 @@ const EventInvitation: React.FC<EventInvitationProps> = ({ item }) => {
 
   return (
     <View style={styles.container}>
-      <CustomText style={styles.title}>{LABLE.INITATION_MESSAGE}</CustomText>
+      <CustomText style={styles.title}>{`Message from ${host?.companyName}`}</CustomText>
 
       <View style={styles.divider} />
 

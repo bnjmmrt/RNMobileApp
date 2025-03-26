@@ -373,8 +373,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
               <Image
                 source={
                   showAddress
-                    ? IMAGES.checkbox_active
-                    : IMAGES.checkbox_inactive
+                    ? IMAGES.checkbox_inactive
+                    : IMAGES.checkbox_active
                 }
               />
             </TouchableOpacity>

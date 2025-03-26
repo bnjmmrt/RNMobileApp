@@ -41,6 +41,19 @@ const WebViewBottomSheet = forwardRef((props, ref) => {
                 source={{ uri: props.url }}
                 style={styles.webView}
                 startInLoadingState={true}
+                javaScriptEnabled={true}
+                domStorageEnabled={true}
+                onError={(syntheticEvent) => {
+                    const { nativeEvent } = syntheticEvent;
+                    console.warn("WebView error: ", nativeEvent);
+                }}
+                onHttpError={(syntheticEvent) => {
+                    const { nativeEvent } = syntheticEvent;
+                    console.warn("HTTP error: ", nativeEvent);
+                }}
+                onLoadProgress={({ nativeEvent }) =>
+                    console.log("WebView load progress:", nativeEvent.progress)
+                }
             />
         </BottomSheetComponent>
     );

@@ -189,7 +189,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         eventId: string;
         payload: addAnnouncementRequestInterface;
       }) => ({
-        url: `/events/v1/event/${eventId}/event-announcement`,
+        url: `events/v1/event/${eventId}/event-announcement`,
         method: 'POST',
         body: payload,
       }),
@@ -206,7 +206,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take: number;
         skip: number;
       }) => ({
-        url: `/events/v1/event/${eventId}/event-announcements?take=${take}&skip=${skip}`,
+        url: `events/v1/event/${eventId}/event-announcements?take=${take}&skip=${skip}`,
         method: 'GET',
       }),
       providesTags: ['HostEventsAnnouncment'],
@@ -229,7 +229,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take: number;
         skip: number;
       }) => ({
-        url: `/events/v1/event/${eventId}/event-announcement-guest?${ticketType}&${addedBy}&findByName=${searchText}&take=${take}&skip=${skip}`,
+        url: `events/v1/event/${eventId}/event-announcement-guest?${ticketType}&${addedBy}&findByName=${searchText}&take=${take}&skip=${skip}`,
         method: 'GET',
       }),
       providesTags: ['AnnouncmentRecipient'],
@@ -250,7 +250,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take: number;
         skip: number;
       }) => ({
-        url: `/events/v1/event/${eventId}/event-announcement-guest/${announcementId}?findByName=${searchText}&take=${take}&skip=${skip}`,
+        url: `events/v1/event/${eventId}/event-announcement-guest/${announcementId}?findByName=${searchText}&take=${take}&skip=${skip}`,
         method: 'GET',
       }),
       providesTags: ['SelectedRecipient'],
@@ -265,7 +265,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         eventId: string;
         announcementId: string;
       }) => ({
-        url: `/events/v1/event/${eventId}/event-announcement/${announcementId}`,
+        url: `events/v1/event/${eventId}/event-announcement/${announcementId}`,
         method: 'DELETE',
       }),
     }),
@@ -281,7 +281,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         announcementId: string;
         payload: addAnnouncementRequestInterface;
       }) => ({
-        url: `/events/v1/event/${eventId}/event-announcement/${announcementId}`,
+        url: `events/v1/event/${eventId}/event-announcement/${announcementId}`,
         method: 'PATCH',
         body: payload,
       }),
@@ -295,7 +295,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         eventId: string;
         announcementId: string;
       }) => ({
-        url: `/events/v1/event/${eventId}/event-announcement/${announcementId}`,
+        url: `events/v1/event/${eventId}/event-announcement/${announcementId}`,
         method: 'GET',
       }),
       providesTags: ['AnnouncmentDetail'],
