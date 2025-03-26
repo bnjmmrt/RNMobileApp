@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import MapView from 'react-native-maps';
-import { fontFamily } from '../../utils/functions';
+import { fontFamily, getDisplayLocation } from '../../utils/functions';
 import { COLORS, ROLE } from '../../utils/constants';
 import IMAGES from '@images/index';
 import {
@@ -40,11 +40,7 @@ const EventVenue: React.FC<EventVenueProps> = ({
   const role = useSelector((state: RootState) => state.auth.role);
   // const dates = useMemo(() => formatToDeviceTimeZone(item?.startDate, item?.endDate));
 
-  const isShowLocation =
-    role === ROLE.HOST || item?.currentGuestStatus === 'CONFIRMED';
-  const locationText = isShowLocation
-    ? item?.location?.location
-    : 'RSVP to See Location';
+  const locationText = getDisplayLocation(item?.location?.location, item?.currentGuestStatus, item.showLocation, role)
 
   return (
     <View style={[styles.container]}>
@@ -58,7 +54,7 @@ const EventVenue: React.FC<EventVenueProps> = ({
           <CustomText style={styles.title}>{dates[0]}</CustomText>
           <CustomText style={styles.subtitle}>{dates[1]}</CustomText>
         </View>
-        {isShowLocation && (
+        {item.currentGuestStatus === 'CONFIRMED' && (
           <TouchableOpacity onPress={handleCalendarPress}>
             <Image source={IMAGES.calendarCircle} />
           </TouchableOpacity>

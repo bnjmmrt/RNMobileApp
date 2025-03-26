@@ -58,6 +58,8 @@ interface InputProps {
   isBackgroundRed?: boolean;
   hasHandler?: boolean;
   isName?: boolean;
+  isEmail?: boolean;
+  isUrl?: boolean;
   onFocus?: () => void;
   onBlur?: () => void;
 }
@@ -98,6 +100,8 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     isBackgroundRed = false,
     hasHandler = false,
     isName = false,
+    isEmail = false,
+    isUrl = false,
     onBlur,
     onFocus,
   } = props;
@@ -137,6 +141,40 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     return true;
   };
 
+  const validateEmail = (email: string) => {
+    const regex =
+      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+    if (!email) {
+      setErrorMessage(initialErrorMessage);
+      return false;
+    }
+
+    if (!regex.test(email)) {
+      setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_A_VALID_EMAIL_ADDRESS);
+      return false;
+    }
+
+    setErrorMessage('');
+    return true;
+  };
+
+  const validateWebUrl = (webUrl: string) => {
+    const urlRegex = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(:\d+)?(\/[^\s]*)?$/;
+
+    if (!webUrl) {
+      setErrorMessage(initialErrorMessage);
+      return false;
+    }
+
+    if (!urlRegex.test(webUrl)) {
+      setErrorMessage(ERROR_MESSAGE.WEBSITE_ERROR);
+      return false;
+    }
+
+    setErrorMessage('');
+    return true;
+  };
   const checkValidation = (name: string) => {
     if (!inputText) {
       setErrorMessage(initialErrorMessage);
@@ -149,7 +187,10 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
   // Validate inputs
   const validateInputs = () => {
     console.log('Updated Text:', inputText);
-    return isName ? validateName(inputText) : checkValidation(inputText);
+    return isName ? validateName(inputText) :
+      isEmail ? validateEmail(inputText) :
+        isUrl ? validateWebUrl(inputText) :
+          checkValidation(inputText);
   };
 
   // Handle the "Next" button press
@@ -200,8 +241,8 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
             backgroundColor: !editable
               ? COLORS.borderGray
               : errorMessage
-              ? COLORS.bgRed
-              : COLORS.white,
+                ? COLORS.bgRed
+                : COLORS.white,
           },
           isBackgroundRed && [styles.errorInputWrapper],
         ]}>
@@ -226,9 +267,8 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
           value={inputText}
           placeholder={placeholder}
           onChangeText={text => {
-            console.log('Updated Text:', text);
             setInputText(text);
-            isName ? validateName(text) : setErrorMessage('');
+            isName ? validateName(text) : isEmail ? validateEmail(text) : isUrl ? validateWebUrl(text) : setErrorMessage('');
             if (onChangeText) {
               onChangeText(text);
             }

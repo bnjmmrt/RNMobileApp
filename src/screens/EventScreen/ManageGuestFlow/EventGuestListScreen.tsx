@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState, useRef, useMemo, useEffect } from 'react';
+import React, { useState, useRef, useMemo, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -45,6 +45,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setEventId } from 'src/redux/slices/eventSlice';
 import FiltersSheet from 'src/component/FilterSheet';
 import AvatarInitials from 'src/component/AvatarInitials';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface EventGuestListProps extends NativeStackScreenProps<any, any> {
   eventId?: string;
@@ -87,11 +88,20 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     refetch: refetchGuests,
   } = useGetGuestsQuery({ eventId, queryString: filterQuery });
 
+  useFocusEffect(
+    useCallback(() => {
+      guestsData && refetchGuests()
+    }, [guestsData]),
+  );
+
   const guests: EventGuest[] = useMemo(() => {
     const apiGuests = guestsData?.data?.result || [];
 
     return apiGuests;
   }, [guestsData?.data?.result]);
+
+
+
 
   useEffect(() => {
     if (guestsError) {

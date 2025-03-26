@@ -53,6 +53,7 @@ interface Location {
 
 interface EventItem {
   startDate?: string;
+  timeZone?: string;
   id?: string;
   endDate?: string;
   imageCover?: string;
@@ -336,6 +337,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
               onDateChange={e => setSelectedStartDate(e)}
               birthDate={item?.startDate}
               timeZone={item?.timeZone}
+              dateFormat='MM/DD/YY h:mm A z'
             />
             <CustomText style={[styles.label]}>{EVENT.END_DATE}</CustomText>
             <DatePickerComponent
@@ -344,6 +346,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
               ref={endDateRef}
               birthDate={item?.endDate}
               timeZone={item?.timeZone}
+              dateFormat='MM/DD/YY h:mm A z'
             />
           </View>
 

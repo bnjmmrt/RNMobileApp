@@ -534,6 +534,26 @@ export const fetchUserProfile = async () => {
   }
 };
 
+export const getDisplayLocation = (location: string = '', guestStatus: String = '', showLocation: boolean = false, role: string) => {
+
+  if (role === ROLE.HOST) {
+    return location
+  }
+
+  if (guestStatus === 'CONFIRMED') {
+    if (showLocation) {
+      return location
+    } else {
+      return "Exact Location to Be Announced"
+    }
+  } else if (guestStatus === 'APPLIED') {
+    return "Location Shared Upon Confirmation"
+  } else {
+    return "RSVP to See Location"
+  }
+
+}
+
 export const switchProfile = () => {
   // api call
   // loginUser();

@@ -21,6 +21,7 @@ import { verticalMarginScale } from 'src/utils/dimensions';
 import { existingUserType } from '.';
 import createStyles from './styles';
 import { removeSpaceFromStr } from 'src/utils/functions';
+import { ERROR_MESSAGE, LABLE } from 'src/utils/constants';
 
 interface NewUserViewProps {
   firstNameRef: React.RefObject<InputRefMethods>;
@@ -87,6 +88,14 @@ const NewUserView: React.FC<NewUserViewProps> = ({
     }
   };
 
+  const validateEmail = (email: string) => {
+    const regex =
+      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+    return regex.test(email)
+  };
+
+
   const fetchUserByEmail = async () => {
     try {
       const emailResponse = await getUserWithEmail({ email: email }).unwrap();
@@ -132,9 +141,10 @@ const NewUserView: React.FC<NewUserViewProps> = ({
   useEffect(() => {
     if (type === 'email') {
       if (email) {
-        setTimeout(() => {
-          fetchUserByEmail();
-        }, 1000);
+        validateEmail(email) &&
+          setTimeout(() => {
+            fetchUserByEmail();
+          }, 1000);
       } else {
         setExistingUserData(null);
       }
@@ -175,23 +185,26 @@ const NewUserView: React.FC<NewUserViewProps> = ({
             </CustomText>
           </View>
         ) : null}
+
         <Input
           ref={firstNameRef}
           defaultValue={firstName}
-          label="First Name"
-          errorMessage="First name is required"
-          placeholder=""
+          label={LABLE.FIRST_NAME}
+          errorMessage={ERROR_MESSAGE.FIRST_NAME}
           onChangeText={setFirstName}
+          isName={true}
+          maxLength={30}
           otherStyle={{ marginTop: 0 }}
           inputFieldContainerStyle={styles.inputStyle}
         />
         <Input
           ref={lastNameRef}
           defaultValue={lastName}
-          label="Last Name"
-          errorMessage="Last name is required"
-          placeholder=""
+          label={LABLE.LAST_NAME}
+          errorMessage={ERROR_MESSAGE.LAST_NAME}
           onChangeText={setLastName}
+          isName={true}
+          maxLength={30}
           otherStyle={{ marginTop: 0 }}
           inputFieldContainerStyle={styles.inputStyle}
         />
@@ -209,7 +222,8 @@ const NewUserView: React.FC<NewUserViewProps> = ({
             ref={emailRef}
             defaultValue={email}
             label="Email"
-            errorMessage="Please enter an email address in the correct format to continue"
+            isEmail={true}
+            errorMessage={ERROR_MESSAGE.PLEASE_ENTER_A_VALID_EMAIL_ADDRESS}
             placeholder=""
             onChangeText={setEmail}
             otherStyle={{ marginTop: 0 }}

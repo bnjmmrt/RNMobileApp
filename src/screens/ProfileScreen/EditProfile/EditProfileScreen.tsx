@@ -387,9 +387,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                 <DatePickerComponent
                   ref={birthDayRef}
                   birthDate={profileData.dateOfBirth}
-                // onDateChange={() => {
-                //   birthDayRef?.current?.validateBirthDate();
-                // }}
+                  timeZone={profileData?.timeZone}
+                  dateFormat='MM/DD/YYYY'
                 />
 
                 <Text style={[styles.label]}>{LABLE.BASE_CITY}</Text>

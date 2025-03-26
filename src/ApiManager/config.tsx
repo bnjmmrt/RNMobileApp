@@ -61,7 +61,7 @@ export const EndPoint = {
 
   phone_send_verification_code: `notifications/v1/communication/send-verification-code`,
   phone_verify_code: `notifications/v1/communication/verify-code`,
-  notification_count: `/notifications/v1/notifications/summary`,
+  notification_count: `notifications/v1/notifications/summary`,
   get_focuses: `${API_USERS_V1_AUTH}/get-focuses`,
   interests: `${API_USERS_V1_AUTH}/interests`,
   member_signUp: `${API_USERS_V1_AUTH}/member-sign-up`,
@@ -92,7 +92,7 @@ export const EndPoint = {
   check_phone: 'users/v1/auth/check-phone-number',
   check_email: 'users/v1/auth/check-email',
   switch_profile: 'users/v1/auth/switch-profile',
-  noti_detail:'/notifications/v1/notification',
+  noti_detail: '/notifications/v1/notification',
   file_upload: `users/v1/files/upload`,
   generate_upload_url: `users/v1/files/generate-upload-url`,
   user_interests: 'users/v1/auth/user-interests/',

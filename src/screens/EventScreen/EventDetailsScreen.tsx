@@ -170,18 +170,13 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
   const qrCodeBottomSheetRef = useRef<any>(null);
   const calenderEventsBottomSheetRef = useRef<any>(null);
-  const userDetails = useSelector(
-    (state: any) => state.appFlowApiData.profileData,
-  );
   const profilePicture = useSelector((state: any) => state.auth.profilePicture);
-
   const [isQRShown, setIsQRShown] = useState(true);
   const [eventDetails, setEventDetails] = useState<any>({});
   const [calendarDetails, setCalendarDetails] = useState<any>({});
-  const [showInviteGuestAlert, setShowInviteGuestAlert] =
-    useState<boolean>(false);
-
+  const [showInviteGuestAlert, setShowInviteGuestAlert] = useState<boolean>(false);
   const [useQr, setUseQr] = useState<boolean>(false);
+
   useEffect(() => {
     if (guestStatus === 'DECLINED') {
       setIsDeclinedByMe(data?.data?.invitationDeclinedBy === userId);
@@ -252,6 +247,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       EndPoint.generate_ticket + data?.data?.guestId,
     );
     if (response.success) {
+      console.log("Sayed generate ticket:", response)
       if (response.data.eventQr) {
         setEventDetails({ ...eventDetails, qrUrl: response.data.jwtToken });
         qrCodeBottomSheetRef?.current.open();
