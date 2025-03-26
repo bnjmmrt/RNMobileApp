@@ -279,38 +279,41 @@ const HostProfileScreen: React.FC = () => {
                 subTitle={profile?.bio || 'Bio not available'}
                 align="center"
               />
-              <FlatList
-                horizontal
-                contentContainerStyle={
-                  socialMediaData.length > 0
-                    ? {
-                        marginBottom: verticalMarginScale(16),
-                        marginTop: verticalMarginScale(6),
-                      }
-                    : {}
-                }
-                data={socialMediaData}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    onPress={() =>
-                      item?.url
-                        ? Linking.openURL(item?.url)
-                        : FlashMessageComponent.show(
-                            'success',
-                            'Link not available',
-                          )
-                    }>
-                    <Image
-                      style={{
-                        width: 20,
-                        height: 20,
-                        marginRight: verticalMarginScale(12),
-                      }}
-                      source={item.icon}
-                    />
-                  </TouchableOpacity>
-                )}
-              />
+              {socialMediaData.length > 0 ? (
+                <FlatList
+                  horizontal
+                  contentContainerStyle={
+                    socialMediaData.length > 0
+                      ? {
+                          marginBottom: verticalMarginScale(16),
+                          marginTop: verticalMarginScale(6),
+                        }
+                      : {}
+                  }
+                  data={socialMediaData}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      onPress={() =>
+                        item?.url
+                          ? Linking.openURL(item?.url)
+                          : FlashMessageComponent.show(
+                              'success',
+                              'Link not available',
+                            )
+                      }>
+                      <Image
+                        style={{
+                          width: 20,
+                          height: 20,
+                          marginRight: verticalMarginScale(12),
+                        }}
+                        source={item.icon}
+                      />
+                    </TouchableOpacity>
+                  )}
+                />
+              ) : null}
+
               <FollowButton
                 isFollowing={profile?.isMemberFollowingHost}
                 id={profile?.id}

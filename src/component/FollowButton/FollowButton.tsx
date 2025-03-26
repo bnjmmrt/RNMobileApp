@@ -1,79 +1,103 @@
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
-import ButtonSmall from '../ButtonSmall';
 import IMAGES from '@images/index';
-import useApi from 'src/axios/useApi';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import { EndPoint } from 'src/ApiManager/config';
+import useApi from 'src/axios/useApi';
 import { RootState } from 'src/redux/slices';
 import { setRefresh } from 'src/redux/slices/rspvSlice';
-import { EndPoint } from 'src/ApiManager/config';
+import {
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
+import ButtonSmall from '../ButtonSmall';
 
 interface FollowButtonProps {
-    id: string;
-    isFollowing: boolean;
-    handleRefresh?: any;
+  id: string;
+  isFollowing: boolean;
+  handleRefresh?: any;
 }
 
-const FollowButton: React.FC<FollowButtonProps> = ({ id, isFollowing, handleRefresh }) => {
-    const [following, setFollowing] = useState(isFollowing);
-    const [loading, setLoading] = useState(false);
-    useEffect(() => {
-        setFollowing(isFollowing);
-    }, [isFollowing]);
+const FollowButton: React.FC<FollowButtonProps> = ({
+  id,
+  isFollowing,
+  handleRefresh,
+}) => {
+  const [following, setFollowing] = useState(isFollowing);
+  const [loading, setLoading] = useState(false);
 
-    const userId = useSelector((state: RootState) => state.auth.userId);
-    const dispatch = useDispatch();
-    const { apiRequest } = useApi();
+  useEffect(() => {
+    setFollowing(isFollowing);
+  }, [isFollowing]);
 
-    const handleFollow = async () => {
-        if (loading) return;
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  const dispatch = useDispatch();
+  const { apiRequest } = useApi();
 
-        setLoading(true);
-        setFollowing(!following);
-        await followUnfollow(id, following);
-        setLoading(false);
+  const handleFollow = async () => {
+    if (loading) return;
 
-        handleRefresh && dispatch(setRefresh(true));
-    };
+    setLoading(true);
+    setFollowing(!following);
+    await followUnfollow(id, following);
+    setLoading(false);
 
-    const followUnfollow = async (hostId: string, is_following: boolean) => {
-        return is_following ? unFollowApi(hostId) : followApi(hostId);
-    };
+    handleRefresh && dispatch(setRefresh(true));
+  };
 
-    const unFollowApi = async (hostId: string) => {
-        const response: any = await apiRequest('delete', `${EndPoint.host}/${hostId}/follow`, { userId });
-        return response?.status;
-    };
+  const followUnfollow = async (hostId: string, is_following: boolean) => {
+    return is_following ? unFollowApi(hostId) : followApi(hostId);
+  };
 
-    const followApi = async (hostId: string) => {
-        const response: any = await apiRequest('post', `${EndPoint.host}/${hostId}/follow`, { userId, hostId, follow: true });
-        return response?.status;
-    };
-
-    return (
-        <ButtonSmall
-            style={following ? styles.smallBtnStyle : styles.smallFollowBtnStyle}
-            title={loading ? '' : following ? 'Following' : 'Follow'}
-            colorTheme={following ? 'dark' : 'dark'}
-            leftIcon={following ? IMAGES.check : null}
-            borderType={following ? 'STRIPE' : 'SOLID'}
-            onPress={handleFollow}
-            loading={loading}
-            disabled={loading}
-        />
+  const unFollowApi = async (hostId: string) => {
+    const response: any = await apiRequest(
+      'delete',
+      `${EndPoint.host}/${hostId}/follow`,
+      { userId },
     );
+    return response?.status;
+  };
+
+  const followApi = async (hostId: string) => {
+    const response: any = await apiRequest(
+      'post',
+      `${EndPoint.host}/${hostId}/follow`,
+      { userId, hostId, follow: true },
+    );
+    return response?.status;
+  };
+
+  return (
+    <ButtonSmall
+      style={[
+        styles.baseButtonStyle,
+        loading
+          ? styles.smallFollowBtnLoadingStyle
+          : following
+          ? styles.smallBtnStyle
+          : styles.smallFollowBtnStyle,
+      ]}
+      title={following ? 'Following' : 'Follow'}
+      colorTheme={following ? 'dark' : 'dark'}
+      leftIcon={following ? IMAGES.check : null}
+      borderType={loading ? 'SOLID' : following ? 'STRIPE' : 'SOLID'}
+      onPress={handleFollow}
+      loading={loading}
+      disabled={loading}
+    />
+  );
 };
 
 const styles = StyleSheet.create({
-    smallBtnStyle: {
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: 100,
-    },
-    smallFollowBtnStyle: {
-        paddingVertical: 6,
-        borderRadius: 100,
-    },
+  baseButtonStyle: {
+    paddingHorizontal: horizontalMarginScale(12),
+    paddingVertical: verticalMarginScale(8),
+    borderRadius: radiusScale(100),
+  },
+  smallBtnStyle: {},
+  smallFollowBtnLoadingStyle: { borderWidth: 2, borderColor: 'transparent' },
+  smallFollowBtnStyle: { borderWidth: 2 },
 });
 
 export default FollowButton;
