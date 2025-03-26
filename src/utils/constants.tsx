@@ -364,7 +364,7 @@ export const ERROR_MESSAGE = {
   WEBSITE_ERROR: 'Please enter a valid URL.',
   COMPANY_NAME_ERROR: 'Company Name is required',
   TICKET_TYPE_ERROR: 'Select at least one ticket type',
-  RECIPIENTS_ERROR: 'Select at least one recipient',
+  RECIPIENTS_ERROR: 'Choose at least 1 user',
   COLLABORATOR_ERROR: 'Choose a collaborator',
   ANNOUNCEMENT_DETAIL_ERROR: 'Enter announcement details',
   FILE_SIZE_EXCEED:
@@ -842,6 +842,7 @@ export const ANNOUNCEMENT = {
   Choose_from_file: 'Choose from file',
   Choose_photo_or_video: 'Choose photo',
   ADD_ATTACHMENT: 'ADD ATTACHMENT',
+  ANNOUNCEMENT_TICKET_TOOLTIP:'Include only confirmed guests with the selected ticket types.',
   ANNOUNCEMENT_TOOLTIP:
     'Your selection will filter recipients by the host or event collaborator that added them to the guest list.',
   POSTED_BY: 'Posted by',

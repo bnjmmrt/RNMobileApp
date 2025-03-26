@@ -34,8 +34,9 @@ import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { openSettings } from 'react-native-permissions';
 import { verticalMarginScale } from 'src/utils/dimensions';
+import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 
-interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> {}
+interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> { }
 
 const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   navigation,
@@ -48,51 +49,77 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   const styles = ProfilePhotoScreenStyles();
 
   const [image, setImage] = useState<string>(profilePic);
+  const [imageSize, setImageSize] = useState<number>(0);
+
   const [isToastShown, setIsToastShown] = useState(false);
   const [isUplaodProfile, setIsUploadProfile] = useState(false);
   const userDetails = useSelector((state: any) => state.appFlow);
   const savePhotoBottomSheetRef = useRef<any>(null);
+  const { uploadFileHook } = useUploadFile();
 
-  const uploadFile = async () => {
-    const mimeType = `images/${image.split('.').pop()}`;
-    const fileName = image.split('/').pop();
+  // const uploadFile = async () => {
+  //   const mimeType = `images/${image.split('.').pop()}`;
+  //   const fileName = image.split('/').pop();
 
-    const formData = new FormData();
-    formData.append('file', {
-      uri: image,
-      type: mimeType,
-      name: fileName,
-    });
+  //   const formData = new FormData();
+  //   formData.append('file', {
+  //     uri: image,
+  //     type: mimeType,
+  //     name: fileName,
+  //   });
 
-    return await apiRequest('post', EndPoint.file_upload, formData, null, {
-      'Content-Type': 'multipart/form-data',
-    });
-  };
+  //   return await apiRequest('post', EndPoint.file_upload, formData, null, {
+  //     'Content-Type': 'multipart/form-data',
+  //   });
+  // };
 
   const savePhoto = async () => {
-    if (image) {
-      if (isUplaodProfile) {
-        // setIsToastShown(false);
+    try {
+      const data = await fetch(image);
+      const blob = await data.blob();
+      const fileName = image.split('/').pop();
+      const pathType = 'profile'
+      const response = await uploadFileHook(fileName, imageSize, 'image', blob, pathType)
+      if (response.success == true) {
         savePhotoBottomSheetRef.current?.close();
-        const response: any = await uploadFile();
-        if (response.data) {
-          // setIsToastShown(false);
-          dispatch(
-            setProfilePic(
-              environment.BASE_URL +
-                EndPoint.view_image +
-                response.data.fileKeyId,
-            ),
-          );
-        } else {
-          //display error
-        }
+        const imageUrl = environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
+        dispatch(
+          setProfilePic(imageUrl),
+        );
       } else {
-        dispatch(setPageProgress(9));
-        navigation.navigate('IdentityVerification');
+        console.log('savePhoto else', response);
       }
+      // const response: any = await uploadFile(image, size, type, blob);
+      console.log('savePhoto', response);
+    } catch (error) {
+      console.error('Error uploading image:', error);
     }
   };
+
+  // const savePhoto = async () => {
+  //   if (image) {
+  //     if (isUplaodProfile) {
+  //       // setIsToastShown(false);
+  //       savePhotoBottomSheetRef.current?.close();
+  //       const response: any = await uploadFile();
+  //       if (response.data) {
+  //         // setIsToastShown(false);
+  //         dispatch(
+  //           setProfilePic(
+  //             environment.BASE_URL +
+  //               EndPoint.view_image +
+  //               response.data.fileKeyId,
+  //           ),
+  //         );
+  //       } else {
+  //         //display error
+  //       }
+  //     } else {
+  //       dispatch(setPageProgress(9));
+  //       navigation.navigate('IdentityVerification');
+  //     }
+  //   }
+  // };
   const onNextClick = async () => {
     if (image) {
       dispatch(setPageProgress(9));
@@ -118,6 +145,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
     })
       .then((image: ImageOrVideo) => {
         setImage(image.path);
+        setImageSize(image.size)
         setIsToastShown(false);
         setIsUploadProfile(true);
         savePhotoBottomSheetRef.current?.open();
@@ -226,3 +254,4 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
 };
 
 export default ProfilePhotoScreen;
+

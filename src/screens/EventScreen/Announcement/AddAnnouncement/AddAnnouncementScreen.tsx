@@ -77,7 +77,9 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
     const [collaborators, setCollaborators] = useState([]);
     const [showRecipientDetail, setshowRecipientDetail] = useState(true)
     const [showAnnouncementDetail, setshowAnnouncementDetail] = useState(true)
-    const [showProfileToolitip, setShowProfileToolitip] = useState(false);
+    const [showAddedTooltip, setshowAddedTooltip] = useState(false);
+    const [showTicketTooltip, setshowTicketTooltip] = useState(false);
+
     const { uploadFileHook } = useUploadFile();
     const { apiRequest } = useApi();
 
@@ -314,7 +316,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
         else {
             setallRecipients([])
         }
-    }, [ticketTypeArr, collaboratorArr])
+    }, [ticketTypeArr, collaboratorArr, searchText])
 
     const renderTicketTypeOptions = () => {
         return (
@@ -398,13 +400,14 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
             <View>
                 {collaborators.map((item: any, index: number) => {
                     let isSelected = selectedCollaborator.includes(item)
+                    let myName =  item.name == 'NA NA' ? ' - ' : item.name
                     return (
                         <TouchableOpacity
                             key={item.id.toString()}
                             style={[styles.guestButton, isSelected && { borderWidth: 2, borderColor: COLORS.black, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 12 }]}
                             onPress={() => toggleCollaborator(item, index)}>
                             {isSelected && <Image source={IMAGES.check} style={{ width: 16, height: 16 }} />}
-                            <Text style={styles.guestButtonText}>{item?.name + ' (' + item?.role?.name + ')'}</Text>
+                            <Text style={styles.guestButtonText}>{myName + ' (' + item?.role?.name + ')'}</Text>
                             {isSelected && <View />}
                         </TouchableOpacity>
                     )
@@ -515,19 +518,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                 //     ) : undefined
                 // }
                 />
-                {/* {selectedUsers.length != 0 ? (
-                    <Button
-                        title="Add to List"
-                        onPress={() => {
-                            setSelectedRecipients(selectedUsers);
-                            setrecipienterrorMessage(false)
-                            cancelClick()
-                        }}
-                        colorTheme="dark"
-                        style={{ position: 'absolute', bottom: verticalScale(0) }}
-                    />
-                ) : null} */}
-
             </View>
         )
     }
@@ -695,9 +685,11 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
         setRefreshing(true)
         try {
             const data = await fetch(image);
+            console.log(image, 'image')
             const blob = await data.blob();
             const fileName = image.split('/').pop();
-            const response = await uploadFileHook(fileName, size, type, blob)
+            const pathType = 'announcement'
+            const response = await uploadFileHook(fileName, size, type, blob, pathType)
             if (response.success == true) {
                 const imageUrl = environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
                 let data = {
@@ -755,19 +747,39 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                 <CustomText style={[styles.label]} >
                                     {ANNOUNCEMENT.Ticket_Type}
                                     <CustomText style={{ color: COLORS.errorText }}> *</CustomText>
+                                    <TouchableOpacity
+                                        onPress={() => setshowTicketTooltip(!showTicketTooltip)}>
+                                        <Image style={{ marginTop: 25, left: 5 }} tintColor={COLORS.light_gray} source={IMAGES.info_filled} />
+                                    </TouchableOpacity>
                                 </CustomText>
+                                <Tooltip
+                                    contentStyle={[styles.toolTipStyle, {
+                                        height: verticalScale(60),
+                                    }]}
+                                    isVisible={showTicketTooltip}
+                                    displayInsets={{
+                                        left: 0,
+                                        right: 260,
+                                        top: 0,
+                                        bottom: 0
+                                    }}
+                                    arrowStyle={{ left: -10 }}
+                                    backgroundColor='transparent'
+                                    topAdjustment={verticalScale(-10)}
+                                    content={
+                                        <View>
+                                            <Text style={styles.tooltipHeadStyle}>{ANNOUNCEMENT.ANNOUNCEMENT_TICKET_TOOLTIP}</Text>
+                                        </View>
+                                    }
+                                    placement={Placement.RIGHT}
+                                    onClose={() => setshowTicketTooltip(false)}
+                                >
+                                    <View />
+                                </Tooltip>
                                 <View style={ticketerrorMessage ? styles.errorContainer : [styles.inputContainer, { backgroundColor: announcementId != null ? COLORS.lighter_gray : '' }]}>
                                     <View ref={ticketTypeRef} style={styles.userInfoContainer}>
                                         {ticketTypeArr?.length == 0 ?
-                                            <Text
-                                                // onPress={() => {
-                                                //     if (announcementId == null) {
-                                                //         setActiveTab('ticketTypeOptions');
-                                                //         setSelectedTicketType(ticketTypeArr)
-                                                //         bottomSheetRef?.current?.open();
-                                                //     }
-                                                // }} 
-                                                style={[styles.inputStyle, { left: 0 }]}>Please select...</Text>
+                                            <Text style={[styles.inputStyle, { left: 0 }]}>Please select...</Text>
                                             :
                                             <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ marginVertical: verticalMarginScale(10), width: '100%' }}>
                                                 {ticketTypeArr?.map((item: any) => {
@@ -811,7 +823,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                     {ANNOUNCEMENT.Added_by}
                                     <CustomText style={{ color: COLORS.errorText }}> *</CustomText>
                                     <TouchableOpacity
-                                        onPress={() => setShowProfileToolitip(!showProfileToolitip)}>
+                                        onPress={() => setshowAddedTooltip(!showAddedTooltip)}>
                                         <Image style={{ marginTop: 25, left: 5 }} tintColor={COLORS.light_gray} source={IMAGES.info_filled} />
                                     </TouchableOpacity>
                                 </CustomText>
@@ -819,7 +831,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                     contentStyle={[styles.toolTipStyle, {
                                         height: verticalScale(90),
                                     }]}
-                                    isVisible={showProfileToolitip}
+                                    isVisible={showAddedTooltip}
                                     displayInsets={{
                                         left: 0,
                                         right: 270,
@@ -835,7 +847,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                                         </View>
                                     }
                                     placement={Placement.RIGHT}
-                                    onClose={() => setShowProfileToolitip(false)}
+                                    onClose={() => setshowAddedTooltip(false)}
                                 >
                                     <View />
                                 </Tooltip>

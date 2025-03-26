@@ -89,16 +89,23 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
     },
   ] = useDeleteNotificationMutation();
 
-  useEffect(() => {
-    console.log('notiDetail', notiDetail);
-    if (notiDetail) {
-      refetch();
-      navigateToScreen(notiDetail, 'in-app');
-    }
-  }, [notiDetail]);
+  // useEffect(() => {
+  //   console.log('notiDetail', notiDetail);
+  //   if (notiDetail) {
+  //     navigateToScreen(notiDetail?.data, 'in-app');
+  //     refetch();
+  //   }
+  // }, [notiDetail]);
 
   const markAsRead = (noti: any) => {
-    setSelectedNotification(noti);
+    console.log('Mark as read:', noti);
+    if (selectedNotification?.id === noti?.id) {
+      navigateToScreen(noti, 'in-app');
+    }
+    else {
+      navigateToScreen(noti, 'in-app');
+      setSelectedNotification(noti);
+    }
   };
   const loadMore = () => {
     if (notifications?.length < data?.data?.totalCount && !isLoading) {
@@ -158,7 +165,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
         onPress={handleBackPress}
         showProgressBar={false}
       />
-      {notifications?.length ? (
+      {!notifications?.length ? (
         <View style={styles.contentContainer}>
           <FlatList
             data={notifications || []}
