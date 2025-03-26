@@ -25,6 +25,7 @@ import Counter from '../../../component/Counter';
 import { CustomText } from '../../../component/CustomText';
 import Input, { InputRefMethods } from '../../../component/Input/Input';
 import CollapseWrap from './CollapseWrap';
+import { convertUTCToTimeZoneFormat } from 'src/utils/dateFunctions';
 
 export interface TicketType {
   id: string;
@@ -48,6 +49,7 @@ interface InviteDetailsProps {
   maxAdditionalGuests?: number;
   ticketTypeError: string;
   status?: string;
+  timeZone?: string;
   onFocusGuestNote?: () => void;
   onFocusInviteMessage?: () => void;
 }
@@ -75,11 +77,13 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   maxAdditionalGuests,
   ticketTypeError,
   status,
+  timeZone,
   onFocusGuestNote = () => { },
   onFocusInviteMessage = () => { },
 }) => {
   const inviteMessageRef = useRef<InputRefMethods>(null);
   const guestNoteRef = useRef<InputRefMethods>(null);
+  const formatedDate = convertUTCToTimeZoneFormat(eventStartDate, timeZone, `MMM DD, yyyy [at] h:mm A`)
 
   const renderContent = () => (
     <View style={{ gap: verticalMarginScale(24) }}>
@@ -132,19 +136,14 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
         </View>
       </View>
 
+
       {status !== 'CONFIRMED' && (
         <>
           <View>
             <CustomText style={styles.label}>{'Invite Message'}</CustomText>
             <View style={styles.inviteMessageInputContainer}>
               <CustomText style={styles.inviteMessagePrototype}>
-                {`Hi, you're invited to ${eventName || '[Event Name]'} on ${eventStartDate
-                    ? moment(eventStartDate).utc().format('MMM DD, YYYY')
-                    : '[MON DD, YYYY]'
-                  } at ${eventStartDate
-                    ? moment(eventStartDate).utc().format('hh:mm A')
-                    : '[T:TT PM]'
-                  }.`}
+                {`Hi, you're invited to ${eventName || '[Event Name]'} on ${formatedDate}`}
               </CustomText>
               <View style={styles.seperator} />
               <Input

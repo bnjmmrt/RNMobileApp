@@ -82,12 +82,16 @@ export const formatTicketDate = (
 };
 
 export const convertUTCToTimeZoneFormat = (
-  dateString: string,
-  timeZone: string,
-  format: string
+  dateString?: string,
+  timeZone?: string,
+  format?: string
 ): string => {
-  const date = moment.tz(dateString, timeZone);
-  return `${date.format(format)}`;
+  if (timeZone) {
+    const date = moment.tz(dateString, timeZone);
+    return `${date.format(format)}`;
+  } else {
+    return dateString || '';
+  }
 };
 
 
@@ -122,7 +126,7 @@ export const timeAgo = (timestamp: any) => {
     return `${Math.floor(diff / 86400)}d`;
   }
 }
-export const formatSingleToDeviceTimeZone = (dateString:any) => {
+export const formatSingleToDeviceTimeZone = (dateString: any) => {
   if (!dateString) return 'Invalid date';
 
   const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;

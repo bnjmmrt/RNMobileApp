@@ -20,16 +20,16 @@ import CustomDateTimePickerBottomSheet from 'src/component/BottomSheet/CustomDat
 import { convertUTCToTimeZoneFormat, formatSingleToDeviceTimeZone } from 'src/utils/dateFunctions';
 
 interface DatePickerComponentProps {
-  birthDate: string;
-  timeZone: string;
+  birthDate?: string;
+  timeZone?: string;
+  dateFormat?: string;
 }
 
 const DatePickerComponent = forwardRef(
   (props: DatePickerComponentProps, ref) => {
     const bottomSheetRef = useRef<any>(null);
-    const [selectedDate, setSelectedDate] = useState<string>(props.birthDate); // Initialize with birthday from Redux
+    const [selectedDate, setSelectedDate] = useState<string>(props.birthDate || ''); // Initialize with birthday from Redux
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
     const openDatePicker = () => {
       bottomSheetRef.current?.open();
     };
@@ -77,7 +77,7 @@ const DatePickerComponent = forwardRef(
           leftImage={IMAGES.calender}
           rightImage={IMAGES.downArrow}
           errorMessage={errorMessage}
-          defaultValue={convertUTCToTimeZoneFormat(selectedDate, props?.timeZone, 'MM/DD/YY h:mma z')}
+          defaultValue={convertUTCToTimeZoneFormat(selectedDate, props?.timeZone, props.dateFormat)}
           onPress={openDatePicker}
           style={styles.container}
         />

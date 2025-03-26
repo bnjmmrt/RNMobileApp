@@ -34,7 +34,7 @@ const EventInvitation: React.FC<EventInvitationProps> = ({ item }) => {
 
   const handleToggle = () => setExpanded(prev => !prev);
 
-  const formatedDate = convertUTCToTimeZoneFormat(item?.startDate, item?.timeZone, "MMM DD, yyyy h:mm a")
+  const formatedDate = convertUTCToTimeZoneFormat(item?.startDate, item?.timeZone, "MMM DD, yyyy [at] h:mm A")
 
   const invitationDate = convertUTCToTimeZoneFormat(item?.invitationDate ? item.invitationDate : item?.startDate, item?.timeZone, "MM/DD/yyyy")
 

@@ -163,6 +163,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
               label={LABLE.WEBSITE}
               errorMessage={ERROR_MESSAGE.WEBSITE_ERROR}
               defaultValue={profileData?.website}
+              isUrl={true}
             />
           </View>
         </ScrollView>

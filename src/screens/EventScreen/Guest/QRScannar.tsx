@@ -21,6 +21,7 @@ import { EndPoint } from 'src/ApiManager/config';
 import useApi from 'src/axios/useApi';
 import BackButton from 'src/component/BackButton/BackButton';
 import Button from 'src/component/Button';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import FullScreenLoader from 'src/component/FullScreenLoader';
 import { ROUTES } from 'src/navigation/Route';
 import { RootState } from 'src/redux/slices';
@@ -74,18 +75,29 @@ const QRCodeScanner = () => {
 
   const validateQR = async (token: string) => {
     const requestObject = { ticketToken: token, eventId };
-    const response: any = await apiRequest(
-      'post',
-      EndPoint.validate_qr,
-      requestObject,
-    );
-    if (response.success) {
-      if (response.data.eventQr) {
-        navigation.replace(ROUTES.GuestCheckInScreen, {
-          guestId: response.data.guestId,
-        });
+
+    try {
+      const response: any = await apiRequest(
+        'post',
+        EndPoint.validate_qr,
+        requestObject,
+      );
+      if (response.success) {
+        if (response.data.eventQr) {
+          navigation.replace(ROUTES.GuestCheckInScreen, {
+            guestId: response.data.guestId,
+          });
+        }
+      } else {
+        FlashMessageComponent.show("error", "User is already checkedin")
+        navigation.goBack();
       }
+    } catch (error) {
+      FlashMessageComponent.show("error", "User is already checkedin")
+      navigation.goBack();
     }
+
+
   };
 
   const codeScanner = useCodeScanner({
@@ -107,11 +119,11 @@ const QRCodeScanner = () => {
 
   const onClose = () => navigation.goBack();
 
-  const onMenuClick = () => {};
+  const onMenuClick = () => { };
   if (!hasPermission) {
     return (
       <>
-        <BackButton onPress={() => {}} />
+        <BackButton onPress={() => { }} />
         <View style={styles.btnContainer}>
           <Text>Camera permission is required</Text>
           <Button

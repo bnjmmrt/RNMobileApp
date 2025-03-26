@@ -174,7 +174,6 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       if (guestProfile?.status === 'CONFIRMED') {
         delete payload.privateGuestNote;
       }
-
       await manageGuest({
         payload,
         eventId: route?.params?.eventId,
@@ -233,8 +232,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       if (response.success) {
         FlashMessageComponent.show(
           'success',
-          `${guestProfile.name} ${
-            guestProfile?.isSpammedByHost ? 'unmarked' : 'marked'
+          `${guestProfile.name} ${guestProfile?.isSpammedByHost ? 'unmarked' : 'marked'
           } as spam`,
         );
       } else {
@@ -712,7 +710,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: horizontalMarginScale(8),
-    paddingTop: verticalMarginScale(8),
+    paddingVertical: verticalMarginScale(10),
     backgroundColor: COLORS.white,
     gap: horizontalMarginScale(4),
     borderTopLeftRadius: radiusScale(32),

@@ -121,10 +121,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         `users/v1/auth/users/${userId}`,
       );
       if (response?.success) {
-        FlashMessageComponent.show(
-          'success',
-          response?.message || 'User account deactivated successfully.',
-        );
+        // FlashMessageComponent.show(
+        //   'success',
+        //   response?.message || 'User account deactivated successfully.',
+        // );
         deleteAccountBottomSheetRef.current?.close();
         const resetAction = CommonActions.reset({
           index: 0,

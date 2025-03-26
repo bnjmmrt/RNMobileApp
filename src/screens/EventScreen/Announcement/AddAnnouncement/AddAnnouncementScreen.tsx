@@ -419,7 +419,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                 <Button
                     disabled={false}
                     style={styles.cancelbtnStyle}
-                    title={'cancel'}
+                    title={'Cancel'}
                     colorTheme="light"
                     onPress={cancelClick}
                     clearButtonStyle={styles.clearButton}
@@ -509,11 +509,11 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({ navigatio
                     onEndReached={loadMore}
                     onEndReachedThreshold={0.4}
                     showsVerticalScrollIndicator={false}
-                    refreshControl={
-                        allRecipients?.length > 0 ? (
-                            <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
-                        ) : undefined
-                    }
+                // refreshControl={
+                //     allRecipients?.length > 0 ? (
+                //         <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
+                //     ) : undefined
+                // }
                 />
                 {/* {selectedUsers.length != 0 ? (
                     <Button

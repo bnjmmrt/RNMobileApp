@@ -99,13 +99,14 @@ const calculateAvailableGuestPasses = (
 export const EventCard = ({
   name,
   location,
+  showLocation,
   imageCover,
   dates,
   currentGuestStatus,
 }) => {
-  const locationText =
-    currentGuestStatus === 'CONFIRMED' ? location?.location : location?.city;
-
+  const locationText = currentGuestStatus === 'CONFIRMED' && showLocation
+    ? location?.location
+    : location?.city;
   return (
     <View style={styles.card}>
       <FastImage
@@ -156,6 +157,7 @@ const RSVPInvitedUpcoming = () => {
     endDate,
     timeZone,
     currentGuestStatus,
+    showLocation
   } = params.event;
   const [maxAdditionalGuests, setMaxAdditionalGuests] = React.useState(0);
   const status = params?.event?.currentGuestStatus;
@@ -300,7 +302,7 @@ const RSVPInvitedUpcoming = () => {
             onClose={() => {
               dispatch(setRsvpStatus('CANCELED'));
               bottomSheetRef?.current?.close();
-              goBack();
+              setTimeout(() => { goBack() }, 500)
             }}
             setReasonSelected={setReasonSelected}
             reasonSelected={reasonSelected}
@@ -461,6 +463,8 @@ const RSVPInvitedUpcoming = () => {
   const onUpdate = () => {
     if (rspv?.guests.length > 0) {
       handleInviteGuests('update');
+    } else {
+      goBack()
     }
   };
   const handleInviteGuests = async value => {
@@ -533,6 +537,7 @@ const RSVPInvitedUpcoming = () => {
             <EventCard
               name={name}
               location={location}
+              showLocation={showLocation}
               imageCover={removeSignature(imageFlyer)}
               dates={formatDetailedEventDate(startDate, endDate, timeZone)}
             />
@@ -726,6 +731,7 @@ const RSVPInvitedUpcoming = () => {
             <EventCard
               name={name}
               location={location}
+              showLocation={showLocation}
               imageCover={removeSignature(imageFlyer)}
               dates={formatDetailedEventDate(startDate, endDate, timeZone)}
               currentGuestStatus={currentGuestStatus}

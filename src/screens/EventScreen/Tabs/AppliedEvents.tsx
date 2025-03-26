@@ -24,7 +24,7 @@ const AppliedEvents: React.FC<AppliedEventsProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [events, setEvents] = useState<any[]>([]);
-  const { data, isLoading } = useFetchEventsQuery({
+  const { data, isLoading, refetch } = useFetchEventsQuery({
     userId,
     guestEventStatus: 'APPLIED',
     searchText: searchText,
@@ -46,7 +46,13 @@ const AppliedEvents: React.FC<AppliedEventsProps> = ({
 
   const handleRefresh = () => {
     setCurrentPage(1);
+    refetch();
   };
+
+  useEffect(() => {
+    refetch();
+  }, [currentPage]);
+
 
   const loadMore = () => {
     if (events?.length < data?.data?.totalCount && !isLoading) {

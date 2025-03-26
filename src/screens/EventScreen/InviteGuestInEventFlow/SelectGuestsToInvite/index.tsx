@@ -42,11 +42,11 @@ interface SelectGuestsToInviteProps
   extends NativeStackScreenProps<
     EventStackParamList,
     'SelectGuestsToInviteScreen'
-  > {}
+  > { }
 
 const SelectGuestsToInviteScreen: React.FC<
   SelectGuestsToInviteProps
-> = ({}) => {
+> = ({ }) => {
   const styles = createStyles();
   const navigation = useNavigation<NavigationProp<EventStackParamList>>();
   const dispatch = useDispatch();
@@ -78,6 +78,13 @@ const SelectGuestsToInviteScreen: React.FC<
     queryString: filterQuery,
     eventId: selectedEvent?.id,
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      data && refetch()
+    }, [data]),
+  );
+
 
   const onRefreshPage = () => {
     setCurrentPage(1);
@@ -295,9 +302,8 @@ const SelectGuestsToInviteScreen: React.FC<
       />
 
       <Button
-        title={`${
-          selectedUsers.length > 0 ? `${selectedUsers.length} Selected - ` : ''
-        }Next`}
+        title={`${selectedUsers.length > 0 ? `${selectedUsers.length} Selected - ` : ''
+          }Next`}
         onPress={onPressNext}
         colorTheme="dark"
         style={{ position: 'absolute', bottom: verticalScale(8) }}

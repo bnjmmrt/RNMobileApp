@@ -56,7 +56,7 @@ const GuestForm: React.FC<GuestFormProps> = ({ hasPhone, data, onSubmit }) => {
 
         const emailValid = !hasPhone && /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(emailInputRef.current.inputText);
 
-        if (firstNameValid && lastNameValid && phoneOrEmailValid ) {
+        if (firstNameValid && lastNameValid && phoneOrEmailValid) {
             const filledValues = {
                 firstName: firstNameRef.current.inputText,
                 lastName: lastNameRef.current.inputText,
@@ -80,12 +80,15 @@ const GuestForm: React.FC<GuestFormProps> = ({ hasPhone, data, onSubmit }) => {
                     label={LABLE.FIRST_NAME}
                     errorMessage={ERROR_MESSAGE.FIRST_NAME}
                     labelStyle={{ fontFamily: fontFamily.ABCDiatype_Medium }}
+                    isName={true}
                 />
                 <Input
                     ref={lastNameRef}
                     label={LABLE.LAST_NAME}
                     errorMessage={ERROR_MESSAGE.LAST_NAME}
                     labelStyle={{ fontFamily: fontFamily.ABCDiatype_Medium }}
+                    isName={true}
+
                 />
                 {hasPhone ? (
                     <>
@@ -96,6 +99,7 @@ const GuestForm: React.FC<GuestFormProps> = ({ hasPhone, data, onSubmit }) => {
                     <Input
                         ref={emailInputRef}
                         label={LABLE.EMAIL}
+                        isEmail={true}
                         labelStyle={{ fontFamily: fontFamily.ABCDiatype_Medium }}
                         errorMessage={'Please enter an email address in the correct format to continue'}
                     />
