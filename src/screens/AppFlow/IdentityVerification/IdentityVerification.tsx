@@ -1,7 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useRef } from 'react';
-import { Alert, Linking, Platform, ScrollView, Text, View } from 'react-native';
+import { Platform, ScrollView, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
@@ -15,7 +16,6 @@ import { FlashMessageComponent } from '../../../component/FlashMessageComponent/
 import Header from '../../../component/Header/Header';
 import Input from '../../../component/Input/Input';
 import Title from '../../../component/Title/Title';
-import { useMemberSignUp } from '../../../redux/hooks/useMemberSignUp';
 import {
   resetAppFlowDetails,
   setPageProgress,
@@ -35,22 +35,18 @@ import {
 } from '../../../utils/functions';
 import IdentityVerificationStyles from './IdentityVerificationStyles';
 
-interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
+interface IdentityVerificationProps extends NativeStackScreenProps<any, any> {}
 
 const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   navigation,
 }) => {
   const { keyboardVisible } = useKeyboard();
-  const { signUp } = useMemberSignUp();
-  const { apiRequest, loading, error } = useApi();
+  const { apiRequest, loading } = useApi();
   const userDetails = useSelector((state: any) => state.appFlow);
   const loginData = useSelector((state: any) => state.auth.loginData);
   const styles = IdentityVerificationStyles();
   const dispatch = useDispatch();
   const usernameRef = useRef<any>(null);
-  const email = BUTTON_LABLE.SUPPORT_EMAIL_ID;
-  const subject = BUTTON_LABLE.MAIL_SUBJECT;
-  const body = BUTTON_LABLE.MAIL_BODY;
 
   const { companyLogo, isGuest, varifyStatus } = useSelector(
     (state: RootState) => ({
@@ -61,10 +57,14 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     shallowEqual,
   );
 
-  console.log('userDetails', userDetails);
   const fcmToken = useSelector((state: RootState) => state.auth.fcmToken);
   const deviceId = useSelector((state: RootState) => state.auth.deviceId);
   const onNextClick = async () => {
+    // Validate username first
+    if (!usernameRef.current?.validateInputs()) {
+      return;
+    }
+
     const requestParams: any = {
       address: {
         address: userDetails.baseCity.address,
@@ -96,7 +96,6 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       EndPoint.member_signUp,
       requestParams,
     );
-    console.log('response', response);
     if (response.success) {
       loginUser({
         id: response?.data?.id,
@@ -162,22 +161,6 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     navigation.goBack();
   };
 
-  const goToInstagram = () => {
-    Linking.openURL('https://www.instagram.com/therumor/');
-  };
-
-
-  const goToEmail = async () => {
-    const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(body)}`;
-    try {
-      await Linking.openURL(mailtoURL);
-    } catch (err) {
-      console.error('Failed to open email app:', err);
-    }
-  };
-
   useFocusEffect(
     useCallback(() => {
       changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
@@ -202,66 +185,13 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
           otherStyle={{ marginTop: 15 }}
           inputFieldContainerStyle={{ height: 60 }}
           ref={usernameRef}
+          isRequired
           placeholder={'@Username'}
           placeholderTextColor={COLORS.placeHodler}
           leftImage={IMAGES.instagramLogo}
           errorMessage={'Please enter username'}
           defaultValue={''}
         />
-        <View style={styles.mainContainer}>
-          <Text style={styles.title}>{LABLE.COMPLETE_VERIFICATION}:</Text>
-          <View style={styles.numberContainer}>
-            <Text style={styles.numberText}>1</Text>
-          </View>
-          <Text style={styles.subTitle}>{LABLE.SEND_DIRECT_MSG_CODE}</Text>
-          <View style={[styles.rumorTextContainer, { marginTop: -5 }]}>
-            <View style={styles.btnRumorContainer}>
-              <Text style={styles.btnRumor}>{LABLE.RUMORAPP}</Text>
-            </View>
-
-            <Text style={[styles.subTitle, { paddingHorizontal: 0 }]}>
-              {' to '}
-            </Text>
-            <Text style={styles.emailStyle}>@therumor</Text>
-          </View>
-
-          <View style={styles.numberContainer}>
-            <Text style={styles.numberText}>2</Text>
-          </View>
-          <Text style={styles.subTitle}>{LABLE.WE_WILL_REVIEW_APP}</Text>
-
-          <Button
-            disabled={false}
-            style={styles.btnSmallStyle}
-            title={BUTTON_LABLE.GO_TO_INSTAGRAM}
-            colorTheme="light"
-            onPress={goToInstagram}
-          />
-          <View style={styles.divider} />
-          <Text style={[styles.title, { marginVertical: 15 }]}>
-            {LABLE.DONT_USE_INSTAGRAM}
-          </Text>
-          <Text style={styles.subTitle}>{LABLE.EMAIL_THE_CODE}</Text>
-          <View style={styles.rumorTextContainer}>
-            <View style={styles.btnRumorContainer}>
-              <Text style={styles.btnRumor}>{LABLE.RUMORAPP}</Text>
-            </View>
-
-            <Text style={[styles.subTitle, { paddingHorizontal: 0 }]}>
-              {' to '}
-            </Text>
-            <Text style={styles.emailStyle}>
-              {BUTTON_LABLE.SUPPORT_EMAIL_ID}
-            </Text>
-          </View>
-          <Button
-            disabled={false}
-            style={styles.btnSmallStyle}
-            title={BUTTON_LABLE.SEND_EMAIL}
-            colorTheme="light"
-            onPress={goToEmail}
-          />
-        </View>
       </ScrollView>
       {!keyboardVisible ? (
         <Button
