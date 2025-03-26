@@ -40,6 +40,7 @@ interface ImagePdfViewerProps {
   mediaItems: MediaItem[];
   name: string;
   logo: string;
+  index: number;
 }
 
 const { width, height } = Dimensions.get('window');
@@ -50,10 +51,11 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
   mediaItems,
   name,
   logo,
+  index
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(index);
   const bottomSheetRef = useRef(null);
-
+    console.log(index,'indexindexindex')
   const requestStoragePermission = async () => {
     if (Platform.OS === 'android') {
       try {

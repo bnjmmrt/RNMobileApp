@@ -55,6 +55,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
   const [companyName, setCompanyName] = useState('');
   const [companyLogo, setCompanyLogo] = useState('');
   const [viewAllLess, setviewAllLess] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // const queryArgs = ({ eventId: eventId, take: 50, skip: 0 })
   // console.log("queryArgs", queryArgs)
@@ -68,15 +69,19 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
   }, [announcementData]);
 
   const MediaItem = ({
+    key,
     item,
     media,
     name,
     image,
+    index
   }: {
+    key: number;
     item: any;
     media: any;
     name: any;
     image: any;
+    index:number
   }) =>
     item.mediaType === 'image' ? (
       <TouchableOpacity
@@ -85,6 +90,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
           setViewerVisible(true);
           setCompanyName(name);
           setCompanyLogo(image);
+          setCurrentIndex(index);
         }}>
         <FastImage source={{ uri: item?.media }} style={styles.mediaImage} />
       </TouchableOpacity>
@@ -95,6 +101,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
           setViewerVisible(true);
           setCompanyName(name);
           setCompanyLogo(image);
+          setCurrentIndex(index);
         }}
         style={styles.pdfContainer}>
         <Image
@@ -144,15 +151,20 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
             horizontal
             showsHorizontalScrollIndicator={false}
             style={{ marginTop: 5 }}>
-            {item?.attachments?.map((mediaItem: string, index: number) => (
-              <MediaItem
-                key={index}
-                item={mediaItem}
-                media={item.attachments}
-                name={companyName}
-                image={imageKeyUrl}
-              />
-            ))}
+            {item?.attachments?.map((mediaItem: string, index: number) => {
+              // console.log("Index:", index, "MediaItem:", mediaItem);
+              return (
+                <MediaItem
+                  key={index}
+                  index={index}
+                  item={mediaItem}
+                  media={item.attachments}
+                  name={companyName}
+                  image={imageKeyUrl}
+                />
+              );
+            })}
+
           </ScrollView>
           {/* {!expanded && shouldShowReadMore && (
             <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.toggleContainer}>
@@ -271,6 +283,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
         <ImagePdfViewer
           visible={viewerVisible}
           onClose={viewerClose}
+          index={currentIndex}
           mediaItems={media}
           name={companyName}
           logo={companyLogo}

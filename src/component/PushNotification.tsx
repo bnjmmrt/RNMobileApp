@@ -109,32 +109,41 @@ const markeAsRead = async (data: any) => {
 
 export const navigateToScreen = (data: any, type: string = 'in-app') => {
     console.log("navigateToScreen data:", data);
-    let notifee = data?.data;
-
-    setTimeout(() => {
-        const eventTypes = [
-            'eventReminder',
-            'eventInvitation',
-            'eventPosted',
-            'eventPostedCity',
-            'eventRequestApproved',
-            'eventRequestDenied',
-            'signUpFormApproved',
-            'eventSubmissionApproved',
-            'eventAnnouncement',
-            'eventApproved'
-        ];
-        let notifiType = type === 'push' ? notifee?.notificationType : notifee?.type;
-        if (eventTypes.includes(notifiType)) {
-            let eventData = {
-                id: type == 'push' ? notifee?.eventId : notifee?.body?.eventId
-            };
-            console.log("navigateToScreen eventData:", eventData)
-            navigateToNestedStack(ROUTES.EventStack, ROUTES.EventDetailsScreen, eventData);
-        } else if (notifee?.type === 'eventVouch') {
-            // Handle eventVouch case separately
-        } else {
-        }
-    }, 1000);
+    const eventTypes = [
+        'eventReminder',
+        'eventCancelled',
+        'eventInvitation',
+        'eventPosted',
+        'eventPostedCity',
+        'eventRequestApproved',
+        'eventRequestDenied',
+        'eventVouch',
+        'signUpFormApproved',
+        'signUpFormRejected',
+        'eventInvitationNonMember',
+        'eventSubmissionApproved',
+        'eventAnnouncement',
+        'newGuestRequest',
+        'eventApproved',
+        'eventSubmitted',
+        'eventEdited',
+    ];
+    let notifiType = type === 'push' ? data?.data?.notificationType : data?.type;
+    if (eventTypes.includes(notifiType)) {
+        let eventData = {
+            id: type == 'push' ? data?.data?.eventId : data?.body?.eventId
+        };
+        navigateToNestedStack(ROUTES.EventStack, ROUTES.EventDetailsScreen, eventData);
+    } else if (notifiType === 'hostApplication') {
+        let userData = {
+            hostId: type == 'push' ? data?.data?.userId : data?.body?.userId
+        };
+        navigateToNestedStack('ProfileStack', ROUTES.HostProfileScreen, userData);
+    } else if (notifiType === 'userApplication' || notifiType === 'profileReferrals') {
+        let userData = {
+            user: type == 'push' ? data?.data?.userId : data?.body?.userId
+        };
+        navigate(ROUTES.UserDetail, userData);
+    } else { }
 };
 

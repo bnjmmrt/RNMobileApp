@@ -47,6 +47,7 @@ import { BUTTON_LABLE, COLORS, PROFILE, ROLE } from '../../utils/constants';
 import ProfileListItem from './ProfileListItem';
 import ProfileScreenStyle from './ProfileScreenStyle';
 import ProfileTopView from './ProfileTopView';
+import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
@@ -72,6 +73,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const [URL, setURL] = useState('');
   const [listItems, setListItems] = useState<ListItem[]>([]);
   const [image, setImage] = useState<string>('');
+  const [imageSize, setImageSize] = useState<number>(0);
+  const { uploadFileHook } = useUploadFile();
 
   const {
     userId,
@@ -281,21 +284,21 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     editPhotoBottomSheetRef.current?.open();
   };
 
-  const uploadFile = async () => {
-    const mimeType = `images/${image.split('.').pop()}`;
-    const fileName = image.split('/').pop();
+  // const uploadFile = async () => {
+  //   const mimeType = `images/${image.split('.').pop()}`;
+  //   const fileName = image.split('/').pop();
 
-    const formData = new FormData();
-    formData.append('file', {
-      uri: image,
-      type: mimeType,
-      name: fileName,
-    });
+  //   const formData = new FormData();
+  //   formData.append('file', {
+  //     uri: image,
+  //     type: mimeType,
+  //     name: fileName,
+  //   });
 
-    return await apiRequest('post', EndPoint.file_upload, formData, null, {
-      'Content-Type': 'multipart/form-data',
-    });
-  };
+  //   return await apiRequest('post', EndPoint.file_upload, formData, null, {
+  //     'Content-Type': 'multipart/form-data',
+  //   });
+  // };
 
   const updateProfilePhoto = async (url: string) => {
     const fileUploadResponse: any = await apiRequest(
@@ -337,25 +340,52 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     }
   };
 
-  const savePhoto = async () => {
-    if (image) {
-      // setIsToastShown(false);
-      savePhotoBottomSheetRef.current?.close();
-      const response: any = await uploadFile();
-      if (response.success) {
-        // setIsToastShown(false);
-        const imageUrl =
-          environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
-        if (role?.toLocaleLowerCase() === 'host') {
-          await updateHostProfilePhoto(imageUrl);
+
+    const savePhoto = async () => {
+      try {
+        const data = await fetch(image);
+        const blob = await data.blob();
+        const fileName = image.split('/').pop();
+        const pathType = 'profile'
+        const response = await uploadFileHook(fileName, imageSize, 'image', blob, pathType)
+        if (response.success == true) {
+          savePhotoBottomSheetRef.current?.close();
+          const imageUrl = environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
+          if (role?.toLocaleLowerCase() === 'host') {
+            await updateHostProfilePhoto(imageUrl);
+          } else {
+            await updateProfilePhoto(imageUrl);
+          }
         } else {
-          await updateProfilePhoto(imageUrl);
+          console.log('savePhoto else', response);
         }
-      } else {
-        //display error
+        // const response: any = await uploadFile(image, size, type, blob);
+        console.log('savePhoto', response);
+      } catch (error) {
+        console.error('Error uploading image:', error);
       }
-    }
-  };
+    };
+  
+
+  // const savePhoto = async () => {
+  //   if (image) {
+  //     // setIsToastShown(false);
+  //     savePhotoBottomSheetRef.current?.close();
+  //     const response: any = await uploadFile();
+  //     if (response.success) {
+  //       // setIsToastShown(false);
+  //       const imageUrl =
+  //         environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
+  //       if (role?.toLocaleLowerCase() === 'host') {
+  //         await updateHostProfilePhoto(imageUrl);
+  //       } else {
+  //         await updateProfilePhoto(imageUrl);
+  //       }
+  //     } else {
+  //       //display error
+  //     }
+  //   }
+  // };
 
   const openCamera = async () => {
     ImagePicker.openPicker({
@@ -366,6 +396,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     })
       .then((image: ImageOrVideo) => {
         setImage(image.path);
+        setImageSize(image.size)
+
         // editPhotoBottomSheetRef.current?.close();
         savePhotoBottomSheetRef.current?.open();
       })
@@ -525,7 +557,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
         <EditPictureBottomSheet
           ref={logoutBottomSheetRef}
-          title="Are you sure you want to log out?"
+          title={"Are you sure you want to log\nout?"}
           onPress={logOut}
           submitButtonText={BUTTON_LABLE.CONFIRM}
           cancelButtonText={BUTTON_LABLE.CANCEL}

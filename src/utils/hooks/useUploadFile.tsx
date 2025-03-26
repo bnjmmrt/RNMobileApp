@@ -6,12 +6,12 @@ import React from 'react';
 export const useUploadFile = () => {
     const { apiRequest, loading } = useApi();
     const [response, setResponse] = React.useState<any>(null);
-    const uploadFileHook = async (fileName: string, size: string, type: string, formData: any) => {
+    const uploadFileHook = async (fileName: any, size: any, type: any, formData: any,pathType:any) => {
         try {
             const params = {
                 "contentType": type == 'pdf' ? 'application/pdf' : 'image/jpeg',
                 "extension": fileName,
-                "path": `announcement`,
+                "path": pathType,
                 "size": size
             }
             const response: any = await apiRequest('post', EndPoint.generate_upload_url, params, null, {
