@@ -166,7 +166,7 @@ const AddAnnouncementStyles = () => {
     pdfIcon: {
       width: 30,
       height: 30,
-      marginBottom: 10,
+      marginTop: -10
     },
     headerTitle: {
       fontSize: fontScale(18),

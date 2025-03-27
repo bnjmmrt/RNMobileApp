@@ -564,7 +564,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
         <EditPictureBottomSheet
           ref={logoutBottomSheetRef}
-          title={"Are you sure you want to log\nout?"}
+          title={"Are you sure you want to log out?"}
           onPress={logOut}
           loadding={loader}
           submitButtonText={BUTTON_LABLE.CONFIRM}

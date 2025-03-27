@@ -83,7 +83,7 @@ const ContactSupportBottomSheet: React.FC<ContactSupportBottomSheetProps> = ({
             <Text style={styles.greeting}>
               Hi Sarah <Text style={styles.wave}>👋</Text>
             </Text>
-            <Text style={styles.helpText}>How can we help?</Text>
+            {/* <Text style={styles.helpText}>How can we help?</Text> */}
           </View>
 
           {/* Buttons */}

@@ -3,6 +3,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   FlatList,
+  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -71,6 +72,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
 
   const handleRefresh = () => {
     setCurrentPage(1);
+    refetch();
   };
 
   const detailQueryArgs = selectedNotification
@@ -88,14 +90,6 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
       isSuccess: deleteSuccess,
     },
   ] = useDeleteNotificationMutation();
-
-  // useEffect(() => {
-  //   console.log('notiDetail', notiDetail);
-  //   if (notiDetail) {
-  //     navigateToScreen(notiDetail?.data, 'in-app');
-  //     refetch();
-  //   }
-  // }, [notiDetail]);
 
   const markAsRead = (noti: any) => {
     console.log('Mark as read:', noti);
@@ -116,6 +110,8 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
   useFocusEffect(
     useCallback(() => {
       changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      refetch();
+
     }, []),
   );
   const handleBackPress = () => navigation.goBack();
@@ -165,9 +161,10 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
         onPress={handleBackPress}
         showProgressBar={false}
       />
-      {!notifications?.length ? (
+      {notifications?.length ? (
         <View style={styles.contentContainer}>
           <FlatList
+            showsVerticalScrollIndicator={false}
             data={notifications || []}
             keyExtractor={item => item?.id}
             renderItem={({ item }) => (
@@ -179,6 +176,11 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
             )}
             onEndReached={loadMore}
             onEndReachedThreshold={0.5}
+            refreshControl={
+              notifications?.length > 0 ? (
+                <RefreshControl refreshing={isLoading} onRefresh={handleRefresh} />
+              ) : undefined
+            }
           />
         </View>
       ) : (

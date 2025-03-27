@@ -137,7 +137,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
     if (eventData?.collaborators) {
       let collaborator = {
         ...eventData?.owner,
-        name: eventData?.owner?.firstName + ' ' + eventData?.owner?.lastName,
+        email: eventData?.owner?.firstName + ' ' + eventData?.owner?.lastName,
         // id: eventData?.owner?.id,
         role: {
           name: 'Host',
@@ -365,11 +365,13 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
   };
 
   useEffect(() => {
-    console.log('ticketTypeArr', ticketTypeArr);
-    if (ticketTypeArr.length > 0 && collaboratorArr.length > 0) {
-      getRecipients();
-    } else {
-      setallRecipients([]);
+    if (announcementId == null) {
+      console.log('ticketTypeArrww', ticketTypeArr);
+      if (ticketTypeArr.length > 0 && collaboratorArr.length > 0) {
+        getRecipients();
+      } else {
+        setallRecipients([]);
+      }
     }
   }, [ticketTypeArr, collaboratorArr, searchText]);
 
@@ -471,8 +473,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
       <View>
         {collaborators.map((item: any, index: number) => {
           let isSelected = selectedCollaborator.includes(item);
-          let myName = item.name == 'NA NA' ? ' - ' : item.name
-
           return (
             <TouchableOpacity
               key={item.id.toString()}
@@ -494,7 +494,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                 />
               )}
               <Text style={styles.guestButtonText}>
-                {myName + ' (' + item?.role?.name + ')'}
+                {item?.email + ' (' + item?.role?.name + ')'}
               </Text>
               {isSelected && <View />}
             </TouchableOpacity>
@@ -768,7 +768,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
             style={styles.pdfIcon}
             resizeMode="contain"
           />
-          <CustomText textProps={{ numberOfLines: 2 }}>
+          <CustomText style={{width:'80%'}} textProps={{ numberOfLines: 2 }}>
             {item?.mediaName}
           </CustomText>
           <TouchableOpacity
@@ -1077,8 +1077,8 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                         horizontal={true}
                         style={{ marginVertical: verticalMarginScale(10) }}>
                         {collaboratorArr?.map((item: any) => {
-                                    let myName = item?.name == 'NA NA' ? ' -- ' : item?.name
-                                    let selectedName = item?.firstName == 'NA' ? ' -- ' : item?.firstName + ' ' + item?.lastName
+                          // let myName = item?.name == 'NA NA' ? ' -- ' : item?.name
+                          // let selectedName = item?.firstName == 'NA' ? ' -- ' : item?.firstName + ' ' + item?.lastName
                           return (
                             <View
                               style={[
@@ -1091,9 +1091,9 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                               ]}>
                               <Text style={[styles.label, { paddingTop: 0 }]}>
                                 {announcementId == null
-                                  ?  myName + ' (' + item?.role?.name + ')'
-                                  : selectedName 
-                                  }
+                                  ? item?.email + ' (' + item?.role?.name + ')'
+                                  : item?.email
+                                }
                               </Text>
                               {announcementId == null && (
                                 <TouchableOpacity
@@ -1172,7 +1172,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                           const profilePicture =
                             announcementId == null
                               ? item?.user?.profilePicture
-                              : item?.profilePicture;
+                              : item?.profileImage;
                           return (
                             <View>
                               {index < 3 ? (

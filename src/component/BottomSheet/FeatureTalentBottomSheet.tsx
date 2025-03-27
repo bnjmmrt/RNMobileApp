@@ -30,6 +30,8 @@ import { EndPoint } from 'src/ApiManager/config';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import useApi from 'src/axios/useApi';
 import { openSettings } from 'react-native-permissions';
+import { useUploadFile } from 'src/utils/hooks/useUploadFile';
+import { environment } from 'environments/environment';
 
 interface FeatureTalentBottomSheetProps {
   onPress: (data: {
@@ -58,6 +60,8 @@ const FeatureTalentBottomSheet = forwardRef<
   }, [props]);
 
   const { apiRequest, loading } = useApi();
+  const { uploadFileHook } = useUploadFile();
+  const [imageSize, setImageSize] = useState<number>(0);
 
   const openCamera = async () => {
     ImagePicker.openPicker({
@@ -94,31 +98,52 @@ const FeatureTalentBottomSheet = forwardRef<
       });
   };
 
-  const uploadFile = async (image: string) => {
-    const mimeType = `image/${image.split('.').pop()}`;
-    const fileName = image.split('/').pop();
+  // const uploadFile = async (image: string) => {
+  //   const mimeType = `image/${image.split('.').pop()}`;
+  //   const fileName = image.split('/').pop();
 
-    const formData = new FormData();
-    formData.append('file', {
-      uri: image,
-      type: mimeType,
-      name: fileName,
-    });
+  //   const formData = new FormData();
+  //   formData.append('file', {
+  //     uri: image,
+  //     type: mimeType,
+  //     name: fileName,
+  //   });
 
-    return await apiRequest('post', EndPoint.file_upload, formData, null, {
-      'Content-Type': 'multipart/form-data',
-    });
-  };
+  //   return await apiRequest('post', EndPoint.file_upload, formData, null, {
+  //     'Content-Type': 'multipart/form-data',
+  //   });
+  // };
 
-  const savePhoto = async (image: string) => {
-    if (image) {
-      const response: any = await uploadFile(image);
-      console.log('savePhoto', response);
-      setImage(response?.data?.pathFileUrl);
+  // const savePhoto = async (image: string) => {
+  //   if (image) {
+  //     const response: any = await uploadFile(image);
+  //     console.log('savePhoto', response);
+  //     setImage(response?.data?.pathFileUrl);
 
-      if (response.statusCode !== 200) {
+  //     if (response.statusCode !== 200) {
+  //       setImageError(true);
+  //     }
+  //   }
+  // };
+
+  const savePhoto = async (image: any) => {
+    try {
+      const data = await fetch(image);
+      const blob = await data.blob();
+      const fileName = image.split('/').pop();
+      const pathType = 'event'
+      const response = await uploadFileHook(fileName, imageSize, 'image', blob, pathType)
+      if (response.success) {
+        const imageUrl = environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
+        setImage(imageUrl);
+      } else {
         setImageError(true);
+        console.log('savePhoto else', response);
       }
+      // const response: any = await uploadFile(image, size, type, blob);
+      console.log('savePhoto', response);
+    } catch (error) {
+      console.error('Error uploading image:', error);
     }
   };
 
