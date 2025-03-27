@@ -2,7 +2,7 @@ import IMAGES from '@images/index';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { environment } from 'environments/environment';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -133,20 +133,22 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
     { skip: !announcementId },
   );
 
-  useEffect(() => {
-    if (eventData?.collaborators) {
-      let collaborator = {
-        ...eventData?.owner,
-        email: eventData?.owner?.firstName + ' ' + eventData?.owner?.lastName,
-        // id: eventData?.owner?.id,
-        role: {
-          name: 'Host',
-        },
-      };
 
-      // Merge the owner as a collaborator with existing collaborators
-      setCollaborators([collaborator, ...eventData?.collaborators]);
-    }
+
+
+  useEffect(() => {
+    const owner = {
+      ...eventData?.owner,
+      name: eventData?.owner?.companyName,
+      role: { id: eventData?.owner?.id, name: 'host' },
+    };
+    console.log('owner', owner);
+
+    const approvedCollaborators = eventData?.collaborators?.filter(
+      (col: any) => col.isApproved,
+    );
+    setCollaborators([owner, ...(approvedCollaborators || [])])
+
   }, [eventData]);
 
   useEffect(() => {
@@ -168,6 +170,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
 
   useEffect(() => {
     if (announcementDetailsData != undefined) {
+      console.log('announcementDetailsData', announcementDetailsData);
       setTicketTypeArr(announcementDetailsData?.data?.ticketType);
       setCollaboratorArr(announcementDetailsData?.data?.addedBy);
       setAnnouncementText(announcementDetailsData.data?.announcement);
@@ -473,6 +476,8 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
       <View>
         {collaborators.map((item: any, index: number) => {
           let isSelected = selectedCollaborator.includes(item);
+          const collabratorName = `${item?.companyName || item?.email} (${item?.role?.name})`;
+
           return (
             <TouchableOpacity
               key={item.id.toString()}
@@ -494,7 +499,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                 />
               )}
               <Text style={styles.guestButtonText}>
-                {item?.email + ' (' + item?.role?.name + ')'}
+                {collabratorName}
               </Text>
               {isSelected && <View />}
             </TouchableOpacity>
@@ -768,7 +773,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
             style={styles.pdfIcon}
             resizeMode="contain"
           />
-          <CustomText style={{width:'80%'}} textProps={{ numberOfLines: 2 }}>
+          <CustomText style={{ width: '80%' }} textProps={{ numberOfLines: 2 }}>
             {item?.mediaName}
           </CustomText>
           <TouchableOpacity

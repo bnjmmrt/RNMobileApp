@@ -157,6 +157,8 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
             ]}>
             <HeaderComponent isDarkTheme={true} hasGradient={true} />
 
+            <View style={{ height: 30, width: '100%' }} />
+
             <TitleSubtitle
               style={{
                 paddingHorizontal: 20,
@@ -214,6 +216,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
+
   },
   btnStyle: {
     width: Wp(85),

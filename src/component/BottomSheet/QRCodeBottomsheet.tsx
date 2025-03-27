@@ -29,6 +29,7 @@ import {
   radiusScale,
   verticalMarginScale,
   verticalScale,
+  Wp,
 } from 'src/utils/dimensions';
 import TicketBottom from '../../assets/svgs/icons/ticketBottom.svg';
 import { base64RumorLogo, COLORS, LABLE } from '../../utils/constants';
@@ -46,8 +47,8 @@ interface QRCodeBottomsheetProps {
 const RenderQrCode = React.memo(({ imageURL }: { imageURL: string }) => {
   return (
     <QRGenerator
-      width={horizontalScale(232)}
-      height={verticalScale(232)}
+      width={Wp(70)}
+      height={Wp(70)}
       type={'svg'}
       value={imageURL}
       margin={0}
@@ -89,8 +90,10 @@ const RenderToolTip = React.memo(
     contentText,
     placement,
     arrowStyle,
+    isFromBottom,
   }: {
     isVisible: boolean;
+    isFromBottom: boolean;
     setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
     contentText: string;
     placement: Placement | undefined;
@@ -103,10 +106,12 @@ const RenderToolTip = React.memo(
         displayInsets={{ left: 0, right: 0, top: 0, bottom: 0 }}
         arrowStyle={arrowStyle}
         backgroundColor="transparent"
+        showChildInTooltip={false}
         topAdjustment={verticalScale(0)}
+        childContentSpacing={Platform.OS === 'android' ? (!isFromBottom ? -verticalMarginScale(20) : verticalMarginScale(30)) : 0}
         content={
           <View>
-            <Text style={styles.tooltipHeadStyle}>{contentText}</Text>
+            <CustomText textProps={{ numberOfLines: 3 }} style={styles.tooltipHeadStyle}>{contentText}</CustomText>
           </View>
         }
         placement={placement}
@@ -119,7 +124,7 @@ const RenderToolTip = React.memo(
   },
 );
 
-const RenderDashedLine = React.memo(({}: {}) => {
+const RenderDashedLine = React.memo(({ }: {}) => {
   return (
     <View
       style={{
@@ -154,12 +159,12 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
   const [numLines, setNumLines] = useState(0);
 
   const name = `${userDetails?.firstName} ${userDetails?.lastName}`;
-  const snap = numLines > 0 ? `${numLines * 5 + 70}%` : `75%`;
+  const snap = numLines > 0 ? `${numLines * 8 + 70}%` : `75%`;
   return (
     <BottomSheetComponent
       ref={sheetRef}
       snapPoints={[props.isQRShown ? snap : '65%']}
-      onClose={() => {}}>
+      onClose={() => { }}>
       <ScrollView>
         <View style={styles.container}>
           <CustomText
@@ -187,9 +192,8 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
             <RenderToolTip
               isVisible={showProfileToolitip}
               setIsVisible={setShowProfileToolitip}
-              contentText={`This QR code is valid for ${
-                userDetails?.name || name
-              } only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`}
+              contentText={`This QR code is valid for ${userDetails?.name || name
+                } only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`}
               placement={Placement.BOTTOM}
               arrowStyle={{ top: -10 }}
             />
@@ -213,11 +217,13 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                       setIsVisible={setShowVIPToolitip}
                       contentText={props?.data?.ticketDescription}
                       placement={Placement.TOP}
+                      isFromBottom={true}
                       arrowStyle={{ bottom: 10 }}
                     />
                   )}
                 </BottomSheetView>
               </BottomSheetView>
+              {/* 
               <BottomSheetView style={styles.halfCircleContainer}>
                 <View
                   style={{
@@ -234,7 +240,8 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                     borderBottomRightRadius: radiusScale(4),
                   }}
                 />
-              </BottomSheetView>
+              </BottomSheetView> */}
+
             </BottomSheetView>
           ) : (
             // <ImageBackground
@@ -299,7 +306,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                   )}
                 </BottomSheetView>
               </BottomSheetView>
-              <BottomSheetView style={styles.halfCircleContainer}>
+              {/* <BottomSheetView style={styles.halfCircleContainer}>
                 <View
                   style={{
                     flex: 1,
@@ -315,14 +322,16 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                     borderBottomRightRadius: radiusScale(4),
                   }}
                 />
-              </BottomSheetView>
+              </BottomSheetView> */}
             </BottomSheetView>
           )}
-          <CustomText style={styles.infoText}>
-            {props.isQRShown
-              ? LABLE.SHOW_QR_CHECKIN_MESSAGE
-              : 'Show this Ticket Confirmation at event check-in'}
-          </CustomText>
+          <View style={{ marginBottom: verticalMarginScale(20) }} >
+            <CustomText style={styles.infoText}>
+              {props.isQRShown
+                ? LABLE.SHOW_QR_CHECKIN_MESSAGE
+                : 'Show this Ticket Confirmation at event check-in'}
+            </CustomText>
+          </View>
         </View>
       </ScrollView>
     </BottomSheetComponent>
@@ -332,7 +341,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: horizontalMarginScale(20),
-    // paddingVertical: verticalMarginScale(16),
+    // paddingBottom: verticalMarginScale(20),
     gap: 8,
     // justifyContent:"center",
     alignItems: 'center',
@@ -433,7 +442,7 @@ const styles = StyleSheet.create({
   },
   infoText: {
     color: COLORS.light_gray,
-    marginTop: verticalMarginScale(32),
+    marginTop: verticalMarginScale(10),
   },
 
   toolTipStyle: {
@@ -456,8 +465,8 @@ const styles = StyleSheet.create({
     elevation: 5,
     borderTopLeftRadius: radiusScale(4),
     borderTopRightRadius: radiusScale(4),
-    borderBottomLeftRadius: radiusScale(0.1),
-    borderBottomRightRadius: radiusScale(0.1),
+    borderBottomLeftRadius: radiusScale(10),
+    borderBottomRightRadius: radiusScale(10),
     backgroundColor: COLORS.white,
     marginTop: verticalMarginScale(16),
   },
@@ -465,8 +474,9 @@ const styles = StyleSheet.create({
   halfCircleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    bottom: -verticalScale(10),
+    bottom: 0,
     position: 'absolute',
+    marginTop: -10,
     left: 0,
     right: 0,
   },

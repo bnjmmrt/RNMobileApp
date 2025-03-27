@@ -87,6 +87,8 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
   return (
     <View style={styles.container}>
       <ScrollView style={styles.contentContainer}>
+        <View style={{ height: 20, width: '100%' }}></View>
+
         <View style={styles.logoContainer}>
           <Image source={IMAGES.rumorLogo} style={styles.logoImgStyle} />
         </View>

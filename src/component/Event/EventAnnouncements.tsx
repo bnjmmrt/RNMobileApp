@@ -362,6 +362,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginRight: 5,
+    marginTop: 5
   },
   toggleIcon: {
     width: 10,

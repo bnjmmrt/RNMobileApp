@@ -25,7 +25,7 @@ import { formatViewAnnouncementDate } from 'src/utils/dateFunctions';
 import { Hp, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import AnnouncementStyles from './styles';
 
-interface AnnouncementProps extends NativeStackScreenProps<any, any> {}
+interface AnnouncementProps extends NativeStackScreenProps<any, any> { }
 type RouteParams = {
   params: any;
 };
@@ -142,13 +142,12 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
 
     return (
       <View style={styles.Detailcontainer}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               flex: 1,
-              marginStart: -10,
             }}>
             <AvatarInitials
               name={name}
@@ -156,11 +155,12 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
               size={36}
               textColor="white"
             />
-            <Text style={styles.headerTitle}>{name}</Text>
-            <Text style={styles.subtitle}>{date}</Text>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {/* <Text style={styles.subtitle}>{date}</Text> */}
+
+            <View style={{ flex: 1, paddingHorizontal: 10 }}>
+              <Text style={styles.headerTitle}>{name}</Text>
+              <Text style={styles.subtitle}>{date}</Text>
+            </View>
+
             {role === ROLE.HOST && (
               <TouchableOpacity
                 onPress={() => {
@@ -174,6 +174,21 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
               </TouchableOpacity>
             )}
           </View>
+
+          {/* <View style={{ flexDirection: 'row', alignItems: 'center' }}> */}
+          {/* {role === ROLE.HOST && (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('EventStack', {
+                  screen: 'AddAnnouncementScreen',
+                  params: { eventData, announcementId: item?.id }, // Wrap in params
+                });
+              }}
+              style={[styles.iconWrapper]}>
+              <Image source={IMAGES.pencil} style={styles.icon} />
+            </TouchableOpacity>
+          )} */}
+          {/* </View> */}
         </View>
         <View style={styles.lineView} />
         <View style={styles.textContainer}>
