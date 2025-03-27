@@ -15,6 +15,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
@@ -677,10 +678,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
                 {showError && (
                   <View style={styles.errorTextContainer}>
-                    <Image
-                      style={{ width: 18, height: 18, right: 5 }}
-                      source={IMAGES.x_circle}
-                    />
+                    <TouchableOpacity onPress={() => { setshowError(false) }}>
+                      <Image
+                        style={{ width: 18, height: 18, right: 5 }}
+                        source={IMAGES.x_circle}
+                      />
+                    </TouchableOpacity>
                     <Text style={styles.name}>
                       {LABLE.ADD_EVENT_ANNOUNCEMENTS_ERROR}
                     </Text>
