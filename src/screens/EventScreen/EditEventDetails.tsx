@@ -42,6 +42,8 @@ import { useNavigation } from '@react-navigation/native';
 import { removeSignature } from 'src/utils/functions';
 import { openSettings } from 'react-native-permissions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
+import { useUploadFile } from 'src/utils/hooks/useUploadFile';
+import { environment } from 'environments/environment';
 
 interface Location {
   location?: string;
@@ -94,6 +96,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const startDateRef = useRef<any>(null);
   const endDateRef = useRef<any>(null);
   const editPhotoBottomSheetRef = useRef<any>(null);
+  const { uploadFileHook } = useUploadFile();
 
   useEffect(() => {
     const formattedStartDate = moment
@@ -108,6 +111,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     removeSignature(item?.imageFlyer) ||
     '',
   );
+  const [imageSize, setImageSize] = useState<number>(0);
+
   const onDiscardChanges = () => {
     setSelectedStartDate(item?.startDate || '');
     setEventAddress({
@@ -218,40 +223,60 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     //navigation.goBack()
   };
 
-  const uploadFile = async (image: string) => {
-    const mimeType = `images/${image.split('.').pop()}`;
-    const fileName = image.split('/').pop();
+  // const uploadFile = async (image: string) => {
+  //   const mimeType = `images/${image.split('.').pop()}`;
+  //   const fileName = image.split('/').pop();
 
-    const formData = new FormData();
-    formData.append('file', {
-      uri: image,
-      type: mimeType,
-      name: fileName,
-    });
+  //   const formData = new FormData();
+  //   formData.append('file', {
+  //     uri: image,
+  //     type: mimeType,
+  //     name: fileName,
+  //   });
 
-    return await apiRequest('post', EndPoint.file_upload, formData, null, {
-      'Content-Type': 'multipart/form-data',
-    });
-  };
+  //   return await apiRequest('post', EndPoint.file_upload, formData, null, {
+  //     'Content-Type': 'multipart/form-data',
+  //   });
+  // };
 
-  const savePhoto = async (image: string) => {
-    if (image) {
-      // setIsToastShown(false);
-      const response: any = await uploadFile(image);
-      console.log('savePhoto', response);
-      setImage(response?.data?.pathFileUrl);
+  // const savePhotow = async (image: string) => {
+  //   if (image) {
+  //     // setIsToastShown(false);
+  //     const response: any = await uploadFile(image);
+  //     console.log('savePhoto', response);
+  //     setImage(response?.data?.pathFileUrl);
 
-      if (response.status === 200) {
-        // setIsToastShown(false);
-        // const imageUrl =environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
-        // if (role.toLocaleLowerCase() === 'host') {
-        //   await updateHostProfilePhoto(imageUrl)
-        // } else {
-        //   await updateProfilePhoto(imageUrl)
-        // }
+  //     if (response.status === 200) {
+  //       // setIsToastShown(false);
+  //       // const imageUrl =environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
+  //       // if (role.toLocaleLowerCase() === 'host') {
+  //       //   await updateHostProfilePhoto(imageUrl)
+  //       // } else {
+  //       //   await updateProfilePhoto(imageUrl)
+  //       // }
+  //     } else {
+  //       //display error
+  //     }
+  //   }
+  // };
+
+  const savePhoto = async (image: any) => {
+    try {
+      const data = await fetch(image);
+      const blob = await data.blob();
+      const fileName = image.split('/').pop();
+      const pathType = 'event'
+      const response = await uploadFileHook(fileName, imageSize, 'image', blob, pathType)
+      if (response.success) {
+        const imageUrl = environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
+        setImage(imageUrl);
       } else {
-        //display error
+        console.log('savePhoto else', response);
       }
+      // const response: any = await uploadFile(image, size, type, blob);
+      console.log('savePhoto', response);
+    } catch (error) {
+      console.error('Error uploading image:', error);
     }
   };
 

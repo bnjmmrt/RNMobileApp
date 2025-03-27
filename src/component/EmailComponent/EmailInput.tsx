@@ -99,7 +99,7 @@ const EmailInput = forwardRef(({ otherStyle }, ref) => {
           autoFocus={true}
           value={emailAddress}
           onChangeText={text => {
-            setEmailAddress(text);
+            setEmailAddress(text.toLowerCase());
             onchangeValidate(text); // Clear error on text change
           }}
           // onBlur={validateEmailAddress}

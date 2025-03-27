@@ -65,6 +65,40 @@ export const formatDetailedEventDate = (
   }
 };
 
+export const formatEventRSVPDate = (
+  startDate: string,
+  timeZoneId: string = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+): string => {
+  const parseDate = (dateString: string): moment.Moment | null => {
+    if (!dateString) return null;
+    if (!dateString.includes('T')) {
+      dateString = dateString.replace(' ', 'T').replace('+00', 'Z');
+    }
+    const date = moment(dateString);
+    return date.isValid() ? date : null;
+  };
+
+  const start = parseDate(startDate)?.tz(timeZoneId);
+  const today = moment().tz(timeZoneId).startOf('day');
+  const tomorrow = moment().tz(timeZoneId).add(1, 'day').startOf('day');
+
+  if (!start) {
+    return 'Invalid date format';
+  }
+
+  const startFormat = start.format('ddd, MMM D');
+  const startTime = start.format('h:mm A');
+
+  if (start.isSame(today, 'day')) {
+    return `Today, ${startTime}`;
+  } else if (start.isSame(tomorrow, 'day')) {
+    return `Tomorrow, ${startTime}}`;
+  }else {
+    return `${startFormat}, ${startTime}`;
+  }
+};
+
 export const formatTicketDate = (
   dateString: string,
   timeZone: string
