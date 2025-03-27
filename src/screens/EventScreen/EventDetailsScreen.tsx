@@ -69,7 +69,7 @@ import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 import EventInvitation from 'src/component/Event/EventInvitation';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: any;
@@ -152,9 +152,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const)
       : ({
-        userId,
-        eventId: route?.params?.id,
-      } as const);
+          userId,
+          eventId: route?.params?.id,
+        } as const);
 
   const useFetchEventDetailsHook =
     role === ROLE.HOST
@@ -175,7 +175,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const [isQRShown, setIsQRShown] = useState(true);
   const [eventDetails, setEventDetails] = useState<any>({});
   const [calendarDetails, setCalendarDetails] = useState<any>({});
-  const [showInviteGuestAlert, setShowInviteGuestAlert] = useState<boolean>(false);
+  const [showInviteGuestAlert, setShowInviteGuestAlert] =
+    useState<boolean>(false);
   const [useQr, setUseQr] = useState<boolean>(false);
 
   useEffect(() => {
@@ -248,18 +249,18 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       EndPoint.generate_ticket + data?.data?.guestId,
     );
     if (response.success) {
-      console.log("Sayed generate ticket:", response)
-      if (response.data.eventQr) {
-        setEventDetails({
-          ...eventDetails,
-          qrUrl: response.data.jwtToken,
-          ticketType: response.data.ticketType || null,
-          ticketDescription: response.data.ticketDescription || null
-        });
-        qrCodeBottomSheetRef?.current.open();
-      } else {
-        FlashMessageComponent.show('error', 'QR not genetaed');
-      }
+      console.log('Sayed generate ticket:', response);
+      setEventDetails({
+        ...eventDetails,
+        qrUrl: response.data.jwtToken,
+        ticketType: response.data.ticketType || null,
+        ticketDescription: response.data.ticketDescription || null,
+      });
+      qrCodeBottomSheetRef?.current.open();
+      // if (response.data.eventQr) {
+      // } else {
+      //   FlashMessageComponent.show('error', 'QR not generated');
+      // }
     }
   };
 
@@ -268,6 +269,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     if (useQr) {
       generateTicket();
     } else {
+      generateTicket();
       setIsQRShown(false);
       qrCodeBottomSheetRef?.current.open();
     }
@@ -678,7 +680,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
                 {showError && (
                   <View style={styles.errorTextContainer}>
-                    <TouchableOpacity onPress={() => { setshowError(false) }}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setshowError(false);
+                      }}>
                       <Image
                         style={{ width: 18, height: 18, right: 5 }}
                         source={IMAGES.x_circle}
