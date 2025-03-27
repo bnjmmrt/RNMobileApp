@@ -37,7 +37,7 @@ import { verticalMarginScale } from 'src/utils/dimensions';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
-interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> {}
+interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> { }
 
 const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   navigation,
@@ -240,9 +240,10 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
             ref={savePhotoBottomSheetRef}
             onPress={savePhoto}
             onPencilClick={openPicker}
+            loadding={loader}
             submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
             cancelButtonText={BUTTON_LABLE.CANCEL}
-            snapPoints={[Platform.OS == 'android' ? 0.51 : 0.4]}
+            snapPoints={[Platform.OS == 'android' ? 0.45 : 0.4]}
             image={image}
           />
         </View>

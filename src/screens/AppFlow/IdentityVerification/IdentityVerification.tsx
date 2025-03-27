@@ -129,6 +129,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
 
         id: response?.data?.id,
         imageUrl: userDetails.profilePic,
+        profilePicture: userDetails.profilePic,
         interest: '',
         lastName: userDetails.lastName,
 

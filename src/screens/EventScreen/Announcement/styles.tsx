@@ -72,6 +72,7 @@ const AnnouncementStyles = () => {
             color: COLORS.black,
             fontSize: fontScale(12),
             fontFamily: fontFamily.ABCDiatype_Regular,
+            marginTop: 5,
         },
 
 
@@ -151,6 +152,7 @@ const AnnouncementStyles = () => {
             backgroundColor: COLORS.tabBorderColor,
             justifyContent: 'center',
             alignItems: 'center',
+            marginRight: 10,
             left: 10,
             right: 10,
         },
@@ -199,9 +201,7 @@ const AnnouncementStyles = () => {
         headerTitle: {
             fontSize: fontScale(18),
             color: COLORS.black,
-            flex: 1,
             fontFamily: fontFamily.ABCDiatype_Regular,
-            left: 10
         },
         headerDes: {
             fontSize: fontScale(14),
