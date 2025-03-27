@@ -35,6 +35,7 @@ import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { openSettings } from 'react-native-permissions';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -42,6 +43,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   navigation,
 }) => {
   const { apiRequest, loading, error } = useApi();
+  const [loader, setLoading] = useState(false);
   const dispatch = useDispatch();
   const profilePic = useSelector(
     (state: RootState) => state.appFlow.profilePic,
@@ -75,13 +77,14 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
 
   const savePhoto = async () => {
     try {
+      setLoading(true)
       const data = await fetch(image);
       const blob = await data.blob();
       const fileName = image.split('/').pop();
       const pathType = 'profile'
+      savePhotoBottomSheetRef.current?.close();
       const response = await uploadFileHook(fileName, imageSize, 'image', blob, pathType)
       if (response.success == true) {
-        savePhotoBottomSheetRef.current?.close();
         const imageUrl = environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
         dispatch(
           setProfilePic(imageUrl),
@@ -91,7 +94,9 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
       }
       // const response: any = await uploadFile(image, size, type, blob);
       console.log('savePhoto', response);
+      setLoading(false)
     } catch (error) {
+      setLoading(false)
       console.error('Error uploading image:', error);
     }
   };
@@ -121,14 +126,15 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   //   }
   // };
   const onNextClick = async () => {
-    if (image) {
+    if (loader == true) {
+      FlashMessageComponent.show('info', 'Please wait for the upload to complete')
+    } else if (image) {
       dispatch(setPageProgress(9));
       navigation.navigate('IdentityVerification');
-    }
-    {
+    } else {
       setIsToastShown(true);
     }
-  };
+  }
 
   const handleBackPress = () => {
     dispatch(setPageProgress(7));
@@ -196,7 +202,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
             { marginTop: verticalMarginScale(24) },
           ]}>
           <FullScreenLoader
-            loading={loading}
+            loading={loading || loader}
             customStyle={styles.profilePhotoContainer}>
             {image ? (
               <Image

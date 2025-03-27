@@ -64,6 +64,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
   const editPhotoBottomSheetRef = useRef<any>(null);
   const savePhotoBottomSheetRef = useRef<any>(null);
+  const [loader, setLoader] = useState<boolean>(false);
   const logoutBottomSheetRef = useRef<any>(null);
   const deleteAccountBottomSheetRef = useRef<any>(null);
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
@@ -80,14 +81,17 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     userId,
     isGuest,
     role,
+    token,
     roles,
     profileData,
     companyLogo,
     profilePicture,
+
   } = useSelector(
     (state: RootState) => ({
       isGuest: state.auth.isGuest,
       role: state.auth.role,
+      token: state.auth.token,
       roles: state.auth.roles,
       userId: state.auth.userId,
       profileData: state.appFlowApiData.profileData,
@@ -341,31 +345,33 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   };
 
 
-    const savePhoto = async () => {
-      try {
-        const data = await fetch(image);
-        const blob = await data.blob();
-        const fileName = image.split('/').pop();
-        const pathType = 'profile'
-        const response = await uploadFileHook(fileName, imageSize, 'image', blob, pathType)
-        if (response.success == true) {
-          savePhotoBottomSheetRef.current?.close();
-          const imageUrl = environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
-          if (role?.toLocaleLowerCase() === 'host') {
-            await updateHostProfilePhoto(imageUrl);
-          } else {
-            await updateProfilePhoto(imageUrl);
-          }
+  const savePhoto = async () => {
+    try {
+      setLoader(true)
+      const data = await fetch(image);
+      const blob = await data.blob();
+      const fileName = image.split('/').pop();
+      const pathType = 'profile'
+      const response = await uploadFileHook(fileName, imageSize, 'image', blob, pathType)
+      if (response.success == true) {
+        savePhotoBottomSheetRef.current?.close();
+        const imageUrl = environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
+        if (role?.toLocaleLowerCase() === 'host') {
+          await updateHostProfilePhoto(imageUrl);
         } else {
-          console.log('savePhoto else', response);
+          await updateProfilePhoto(imageUrl);
         }
-        // const response: any = await uploadFile(image, size, type, blob);
-        console.log('savePhoto', response);
-      } catch (error) {
-        console.error('Error uploading image:', error);
+      } else {
+        console.log('savePhoto else', response);
       }
-    };
-  
+      setLoader(true)
+      console.log('savePhoto', response);
+    } catch (error) {
+      setLoader(true)
+      console.error('Error uploading image:', error);
+    }
+  };
+
 
   // const savePhoto = async () => {
   //   if (image) {
@@ -460,7 +466,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
   useEffect(() => {
     let listItems = itemsExtras;
-    if (role?.toLocaleLowerCase() === 'non_member' && isGuest) {
+    if (role?.toLocaleLowerCase() === ROLE.NON_MEMBER && isGuest && !token) {
       listItems = items;
     } else if (role?.toLocaleLowerCase() === 'host') {
       if (roles && roles.length > 1) {
@@ -478,7 +484,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     //     ? hostItems
     //     : items;
     setListItems(listItems);
-  }, [roles, role]);
+  }, [roles, role, token]);
 
   useFocusEffect(
     useCallback(() => {
@@ -549,6 +555,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           ref={savePhotoBottomSheetRef}
           onPress={savePhoto}
           onPencilClick={openCamera}
+          loadding={loader}
           submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
           cancelButtonText={BUTTON_LABLE.CANCEL}
           snapPoints={[Platform.OS === 'android' ? 0.51 : 0.41]}
@@ -559,6 +566,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           ref={logoutBottomSheetRef}
           title={"Are you sure you want to log out?"}
           onPress={logOut}
+          loadding={loader}
           submitButtonText={BUTTON_LABLE.CONFIRM}
           cancelButtonText={BUTTON_LABLE.CANCEL}
           snapPoints={[Platform.OS === 'android' ? '0.29' : '0.30']}

@@ -493,6 +493,7 @@ export const fetchUserProfile = async () => {
   const authState = store.store.getState().auth;
   const currentRole = authState.role;
   const userId = authState.userId;
+  const token = authState.token;
 
   let apiUrl = '';
   let apiMethod: 'get' | 'post' | 'put' | 'delete' = 'get';
@@ -505,7 +506,7 @@ export const fetchUserProfile = async () => {
       apiMethod = 'get';
       apiPayload = {};
     } else {
-      if (authState.isGuest && currentRole === ROLE.NON_MEMBER) {
+      if (!token && currentRole === ROLE.NON_MEMBER) {
         apiUrl = EndPoint.get_user_with_role_by_id;
         apiMethod = 'post';
         apiPayload = { id: userId };

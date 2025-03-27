@@ -9,7 +9,8 @@ import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { View } from 'react-native-animatable';
 import { RootState } from 'src/redux/slices';
-interface ChatScreenProps extends NativeStackScreenProps<any, any> {}
+import { ROLE } from 'src/utils/constants';
+interface ChatScreenProps extends NativeStackScreenProps<any, any> { }
 
 const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
   const styles = ChatScreenStyle();
@@ -22,11 +23,10 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
     shallowEqual,
   );
 
-  const hasFullAccess = token?.length > 0;
 
   useFocusEffect(
     useCallback(() => {
-      if (!hasFullAccess && role !== 'non_member') {
+      if (!token && role !== ROLE.NON_MEMBER) {
         changeSafeAreaViewConfig({
           ...SAFEWAREAVIEW_CONFIG.STATIC_GRADIENT_SCHEME,
           showBottomSafeAreaView: false,
@@ -35,12 +35,14 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
     }, []),
   );
 
-  console.log(hasFullAccess, role !== 'non_member');
+  if (token && role == ROLE.NON_MEMBER) {
+    return <AfterAppStaticComponent />;
+  }
 
   return (
     <View style={styles.container}>
-      {hasFullAccess ? (
-        role !== 'non_member' ? (
+      {token ? (
+        role !== ROLE.NON_MEMBER ? (
           <BeforeAppStaticComponent isChatScreen={true} />
         ) : (
           <AfterAppStaticComponent />

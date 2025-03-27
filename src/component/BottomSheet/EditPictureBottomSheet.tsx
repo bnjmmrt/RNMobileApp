@@ -25,6 +25,7 @@ interface EditPictureBottomSheetProps {
   snapPoints: any;
   image: any | null;
   eventImage?: string;
+  loadding?: boolean;
 }
 const EditPictureBottomSheet = forwardRef<
   BottomSheetMethods,
@@ -82,6 +83,7 @@ const EditPictureBottomSheet = forwardRef<
         <Button
           disabled={false}
           style={styles.btnStyle}
+          loading={props.loadding}
           title={props.submitButtonText}
           colorTheme="dark"
           onPress={props.onPress}
