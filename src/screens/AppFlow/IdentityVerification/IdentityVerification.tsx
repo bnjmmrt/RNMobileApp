@@ -35,7 +35,7 @@ import {
 } from '../../../utils/functions';
 import IdentityVerificationStyles from './IdentityVerificationStyles';
 
-interface IdentityVerificationProps extends NativeStackScreenProps<any, any> {}
+interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
 
 const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   navigation,
@@ -61,9 +61,9 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   const deviceId = useSelector((state: RootState) => state.auth.deviceId);
   const onNextClick = async () => {
     // Validate username first
-    if (!usernameRef.current?.validateInputs()) {
-      return;
-    }
+    // if (!usernameRef.current?.validateInputs()) {
+    //   return;
+    // }
 
     const requestParams: any = {
       address: {
@@ -81,7 +81,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         ? removeSpaceFromStr(userDetails.phone)
         : removeSpaceFromStr(loginData.phone),
       instagramAccessToken: '',
-      instagramUserName: usernameRef.current.inputText,
+      instagramUserName: usernameRef?.current?.inputText || '',
       linkedInAccessToken: '',
       facebookAccessToken: '',
       platform: Platform.OS,
@@ -91,6 +91,8 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       fcmToken: fcmToken,
       deviceId: deviceId,
     };
+
+    console.log('requestParams', requestParams);
     const response: any = await apiRequest(
       'post',
       EndPoint.member_signUp,

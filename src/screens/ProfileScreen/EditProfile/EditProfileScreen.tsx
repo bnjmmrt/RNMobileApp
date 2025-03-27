@@ -53,10 +53,11 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   const dispatch = useDispatch();
   const { keyboardVisible } = useKeyboard();
 
-  const { userId, isGuest, profileData, role } = useSelector(
+  const { userId, isGuest, profileData, role, token } = useSelector(
     (state: RootState) => ({
       isGuest: state.auth.isGuest,
       role: state.auth.role,
+      token: state.auth.token,
       userId: state.auth.userId,
       profileData: state.appFlowApiData.profileData,
     }),
@@ -72,16 +73,15 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   const scrollViewRef = useRef<ScrollView>(null);
 
   const getGender = (gender: string) => {
-    const re = genderList.find(item => item.id === gender);
     return genderList.find(item => item.id === gender);
   };
 
   const [gender, setGender] = useState<any>(
-    !isGuest && getGender(profileData.gender),
+    token && getGender(profileData.gender),
   );
   const [isToastShown, setIsToastShown] = useState(false);
   const [selectedCreativeFocus, getSelectedCreativeFocus] = useState<any[]>(
-    !isGuest && profileData?.focuses,
+    token && profileData?.focuses,
   );
   const [selectedCity, setSelectedCity] = useState({
     address: profileData?.city,
@@ -374,7 +374,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
             </>
           )} */}
 
-            {!isGuest && (
+            {token && (
               <View>
                 <Text style={[styles.label]}>{LABLE.GENDER}</Text>
                 <GenderComponent
