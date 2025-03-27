@@ -26,6 +26,8 @@ import { CustomText } from '../../../component/CustomText';
 import Input, { InputRefMethods } from '../../../component/Input/Input';
 import CollapseWrap from './CollapseWrap';
 import { convertUTCToTimeZoneFormat } from 'src/utils/dateFunctions';
+import { shallowEqual, useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
 
 export interface TicketType {
   id: string;
@@ -52,6 +54,9 @@ interface InviteDetailsProps {
   timeZone?: string;
   onFocusGuestNote?: () => void;
   onFocusInviteMessage?: () => void;
+  declinedBy?: string;
+  declinedReason?: string;
+  spammedByHost?: boolean;
 }
 
 if (Platform.OS === 'android') {
@@ -78,14 +83,56 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   ticketTypeError,
   status,
   timeZone,
-  onFocusGuestNote = () => { },
-  onFocusInviteMessage = () => { },
+  onFocusGuestNote = () => {},
+  onFocusInviteMessage = () => {},
+  declinedBy,
+  declinedReason,
+  spammedByHost,
 }) => {
   const inviteMessageRef = useRef<InputRefMethods>(null);
   const guestNoteRef = useRef<InputRefMethods>(null);
 
+  const { userId } = useSelector(
+    (state: RootState) => ({
+      userId: state.auth.userId,
+    }),
+    shallowEqual,
+  );
 
-  const formatedDate = convertUTCToTimeZoneFormat(eventStartDate, timeZone, `MMM DD, yyyy [at] h:mm A`)
+  const formatedDate = convertUTCToTimeZoneFormat(
+    eventStartDate,
+    timeZone,
+    `MMM DD, yyyy [at] h:mm A`,
+  );
+
+  const isDeclinedByHost = userId == declinedBy;
+  let disableTicketType = false;
+  let disableAdditionalguest = false;
+  let disableGuestNote = false;
+  let disableInviteMessage = false;
+  let showInviteMessage = true;
+  let showBypassRegistration = true;
+
+  if (declinedBy) {
+    if (isDeclinedByHost) {
+      disableTicketType = false;
+      disableAdditionalguest = false;
+      disableGuestNote = false;
+      disableInviteMessage = false;
+      showInviteMessage = true;
+      showBypassRegistration = true;
+    } else {
+      disableTicketType = true;
+      disableAdditionalguest = true;
+      disableGuestNote = true;
+      disableInviteMessage = true;
+      showInviteMessage = false;
+      showBypassRegistration = false;
+    }
+  }
+  if (status === 'INVITED') {
+    disableInviteMessage = true;
+  }
 
   const renderContent = () => (
     <View style={{ gap: verticalMarginScale(24) }}>
@@ -103,18 +150,26 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
             </CustomText>
           </CustomText>
           <TouchableOpacity
-            style={styles.selectTicketTypeContainer}
-            onPress={onTicketTypePress}>
-            <CustomText>
+            style={[
+              styles.selectTicketTypeContainer,
+              disableTicketType && styles.disabledSelectTicketTypeContainer,
+            ]}
+            onPress={onTicketTypePress}
+            disabled={disableTicketType}>
+            <CustomText
+              style={disableTicketType && { color: COLORS.neutral_disabled }}>
               {selectedTicketType?.name || 'Select Ticket Type'}
             </CustomText>
             <Image
               source={IMAGES.arrowRight}
-              style={{
-                height: verticalScale(16),
-                width: horizontalScale(16),
-                transform: [{ rotate: '90deg' }],
-              }}
+              style={[
+                {
+                  height: verticalScale(16),
+                  width: horizontalScale(16),
+                  transform: [{ rotate: '90deg' }],
+                },
+                disableTicketType && { tintColor: COLORS.neutral_disabled },
+              ]}
             />
           </TouchableOpacity>
           {ticketTypeError ? (
@@ -129,42 +184,57 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
             onPressMinus={() =>
               onAdditionalGuestsChange(Math.max(0, additionalGuests - 1))
             }
-            onPressPlus={() =>
-              onAdditionalGuestsChange(
-                Math.min(maxAdditionalGuests || 0, additionalGuests + 1),
-              )
-            }
+            onPressPlus={() => onAdditionalGuestsChange(additionalGuests + 1)}
+            disabled={disableAdditionalguest}
           />
         </View>
       </View>
 
-
       {status !== 'CONFIRMED' && (
         <>
-          <View>
-            <CustomText style={styles.label}>{'Invite Message'}</CustomText>
-            <View style={styles.inviteMessageInputContainer}>
-              <CustomText style={styles.inviteMessagePrototype}>
-                {`Hi, you're invited to ${eventName || '[Event Name]'} on ${formatedDate}`}
-              </CustomText>
-              <View style={styles.seperator} />
-              <Input
-                ref={inviteMessageRef}
-                defaultValue={inviteMessage}
-                errorMessage=""
-                placeholder="Add your optional message..."
-                multiline
-                inputFieldContainerStyle={{
-                  borderWidth: 0,
-                  borderRadius: radiusScale(16),
-                  marginBottom: 1,
-                }}
-                otherStyle={{ marginTop: 0 }}
-                onChangeText={onInviteMessageChange}
-                onFocus={onFocusInviteMessage}
-              />
+          {showInviteMessage ? (
+            <View>
+              <CustomText style={styles.label}>{'Invite Message'}</CustomText>
+              <View
+                style={[
+                  styles.inviteMessageInputContainer,
+                  disableInviteMessage && {
+                    backgroundColor: COLORS.bgGray,
+                  },
+                ]}>
+                <CustomText
+                  style={[
+                    styles.inviteMessagePrototype,
+                    disableInviteMessage && {
+                      color: COLORS.neutral_disabled,
+                    },
+                  ]}>
+                  {`Hi, you're invited to ${
+                    eventName || '[Event Name]'
+                  } on ${formatedDate}`}
+                </CustomText>
+                <View style={styles.seperator} />
+                <Input
+                  ref={inviteMessageRef}
+                  defaultValue={inviteMessage}
+                  errorMessage=""
+                  placeholder="Add your optional message..."
+                  multiline
+                  inputFieldContainerStyle={{
+                    borderWidth: 0,
+                    borderBottomLeftRadius: radiusScale(16),
+                    borderBottomRightRadius: radiusScale(16),
+                    borderTopLeftRadius: 0,
+                    borderTopRightRadius: 0,
+                  }}
+                  otherStyle={{ marginTop: 0 }}
+                  editable={!disableInviteMessage}
+                  onChangeText={onInviteMessageChange}
+                  onFocus={onFocusInviteMessage}
+                />
+              </View>
             </View>
-          </View>
+          ) : null}
 
           <Input
             ref={guestNoteRef}
@@ -173,60 +243,80 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
             errorMessage=""
             placeholder="Add a private note. Not visible to the guest."
             multiline
-            inputFieldContainerStyle={{ borderRadius: radiusScale(16) }}
+            inputFieldContainerStyle={{ borderRadius: radiusScale(8) }}
             otherStyle={{ marginTop: 0 }}
             onChangeText={onGuestNoteChange}
             onFocus={onFocusGuestNote}
+            editable={!disableGuestNote}
           />
 
-          {directlySendToConfirm ? (
-            <View
-              style={[
-                styles.bypassTextContainer,
-                {
-                  paddingVertical: verticalMarginScale(8),
-                  paddingHorizontal: horizontalMarginScale(8),
-                  borderRadius: radiusScale(8),
-                },
-              ]}>
-              <Image
-                source={IMAGES.info}
-                style={styles.bypassInfo}
-                resizeMode="contain"
-              />
-              <CustomText style={{ flex: 1, fontSize: fontScale(14) }}>
-                {'This guest will be added directly to the confirmed tab'}
-              </CustomText>
-              <Button
-                onPress={() =>
-                  onDirectlySendToConfirmChange(!directlySendToConfirm)
-                }
-                title="Undo"
-                imageSource={IMAGES.corner_up_left}
-                leftImageStyle={{
-                  height: verticalScale(16),
-                  width: horizontalScale(16),
-                }}
-                buttonType="stripe"
-                style={styles.undoCta}
-              />
-            </View>
-          ) : (
+          {showBypassRegistration ? (
+            <>
+              {directlySendToConfirm ? (
+                <View
+                  style={[
+                    styles.bypassTextContainer,
+                    {
+                      paddingVertical: verticalMarginScale(8),
+                      paddingHorizontal: horizontalMarginScale(8),
+                      borderRadius: radiusScale(8),
+                    },
+                  ]}>
+                  <Image
+                    source={IMAGES.info}
+                    style={styles.bypassInfo}
+                    resizeMode="contain"
+                  />
+                  <CustomText style={{ flex: 1, fontSize: fontScale(14) }}>
+                    {'This guest will be added directly to the confirmed tab'}
+                  </CustomText>
+                  <Button
+                    onPress={() =>
+                      onDirectlySendToConfirmChange(!directlySendToConfirm)
+                    }
+                    title="Undo"
+                    imageSource={IMAGES.corner_up_left}
+                    leftImageStyle={{
+                      height: verticalScale(16),
+                      width: horizontalScale(16),
+                    }}
+                    buttonType="stripe"
+                    style={styles.undoCta}
+                  />
+                </View>
+              ) : (
+                <View>
+                  <CustomText style={styles.bypassLabel}>
+                    Want users to bypass registration?
+                  </CustomText>
+                  <TouchableOpacity
+                    style={styles.bypassTextContainer}
+                    onPress={() =>
+                      onDirectlySendToConfirmChange(!directlySendToConfirm)
+                    }>
+                    <CustomText style={styles.bypassText}>
+                      Add guests directly to the confirmed tab
+                    </CustomText>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </>
+          ) : null}
+
+          {declinedReason ? (
             <View>
-              <CustomText style={styles.bypassLabel}>
-                Want users to bypass registration?
-              </CustomText>
-              <TouchableOpacity
-                style={styles.bypassTextContainer}
-                onPress={() =>
-                  onDirectlySendToConfirmChange(!directlySendToConfirm)
-                }>
-                <CustomText style={styles.bypassText}>
-                  Add guests directly to the confirmed tab
+              <CustomText style={styles.label}>{'Decline Reason'}</CustomText>
+              <View style={styles.inviteMessageInputContainer}>
+                <CustomText
+                  style={[
+                    styles.inviteMessagePrototype,
+                    { color: COLORS.placeHodler },
+                  ]}>
+                  {declinedReason}
                 </CustomText>
-              </TouchableOpacity>
+              </View>
             </View>
-          )}
+          ) : null}
         </>
       )}
     </View>
@@ -246,7 +336,7 @@ const styles = StyleSheet.create({
   },
   inviteMessageInputContainer: {
     borderColor: COLORS.borderGray,
-    borderRadius: radiusScale(16),
+    borderRadius: radiusScale(8),
     borderWidth: verticalScale(1),
   },
   inviteMessagePrototype: {
@@ -293,10 +383,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: verticalScale(1),
     borderColor: COLORS.borderGray,
-    borderRadius: radiusScale(12),
+    borderRadius: radiusScale(8),
     paddingHorizontal: horizontalMarginScale(12),
     height: verticalScale(40),
     justifyContent: 'space-between',
+  },
+  disabledSelectTicketTypeContainer: {
+    backgroundColor: COLORS.bgGray,
   },
   errorText: {
     fontSize: fontScale(12),

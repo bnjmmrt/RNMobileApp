@@ -309,6 +309,14 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       }),
       providesTags: ['EventSignupForms'],
     }),
+
+    fetchEventTypes: builder.query({
+      query: ({}: {}) => ({
+        url: `/events/v1/event-types`,
+        method: 'GET',
+      }),
+      providesTags: ['EventTypes'],
+    }),
   }),
 });
 
@@ -335,4 +343,5 @@ export const {
   useEditEventAnnouncementMutation,
   useFetchAnnouncementDetailQuery,
   useFetchSignupFormsQuery,
+  useFetchEventTypesQuery,
 } = eventApiAction;

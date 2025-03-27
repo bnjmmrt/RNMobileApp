@@ -102,12 +102,12 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
       };
     }
 
-    handleOtpVerification(endPoint, params)
+    handleOtpVerification(endPoint, params);
   };
 
   const handleOtpVerification = async (endPoint: string, params: any) => {
     try {
-      const response: any = await apiRequest('post', endPoint, params)
+      const response: any = await apiRequest('post', endPoint, params);
 
       if (response.success) {
         dispatch(setPageProgress(3));
@@ -117,7 +117,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         otpInputRef.current?.showInvalidCodeError(LABLE.ERROR_VERIFY_CODE);
       }
     } catch (error) {
-      console.log("API Error:", error);
+      console.log('API Error:', error);
       otpInputRef.current?.showInvalidCodeError(LABLE.ERROR_VERIFY_CODE);
     }
   };
@@ -171,6 +171,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      enabled={Platform.OS === 'ios'}
       style={styles.container}>
       <Header
         headerTitle={
@@ -192,8 +193,8 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
           resendVerificationCode={resendVerificationCode}
           error={errorMsg}
         />
-        <View style={styles.spacer} />
       </View>
+      <View style={styles.spacer} />
 
       <Button
         disabled={false}

@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
@@ -55,6 +55,7 @@ import TicketTypeBottomSheet, {
   TicketType,
 } from '../InviteGuestInEventFlow/TicketTypeBottomSheet';
 import { EventGuest, ManageGuestPayload } from '../types';
+import DeclinedBySection from '../Guest/DeclinedBySection';
 
 enum GuestStatus {
   DRAFT = 'DRAFT',
@@ -75,14 +76,21 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 }): JSX.Element => {
   const guestId = route.params?.guestId as string;
   const loggedInUserId = useSelector((state: RootState) => state.auth.userId);
-  const selectedEvent = useSelector(
-    (state: RootState) => state.inviteGuestsFlow.selectedEvent,
-  );
 
-  const { data: guestDetails, isLoading: isLoadingGuestDetails } =
-    useFetchGuestDetailsQuery(guestId || '', {
-      skip: !guestId,
-    });
+  const { userId, selectedEvent } = useSelector(
+    (state: RootState) => ({
+      userId: state.auth.userId,
+      selectedEvent: state.inviteGuestsFlow.selectedEvent,
+    }),
+    shallowEqual,
+  );
+  const {
+    data: guestDetails,
+    isLoading: isLoadingGuestDetails,
+    refetch: refreshGuestDetails,
+  } = useFetchGuestDetailsQuery(guestId || '', {
+    skip: !guestId,
+  });
 
   const guestProfile = guestDetails?.data?.guestProfile;
   const guestDetail = guestDetails?.data?.guestDetail;
@@ -174,17 +182,19 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       if (guestProfile?.status === 'CONFIRMED') {
         delete payload.privateGuestNote;
       }
-      await manageGuest({
+      const response = await manageGuest({
         payload,
         eventId: route?.params?.eventId,
       }).unwrap();
 
-      FlashMessageComponent.show(
-        'success',
-        `${guestProfile?.name}'s invite has been updated`,
-      );
-
-      navigation.goBack();
+      if (response.success) {
+        // navigation.goBack();
+        refreshGuestDetails();
+        FlashMessageComponent.show(
+          'success',
+          `${guestProfile?.name}'s invite has been updated`,
+        );
+      }
     } catch (error) {
       const typedError = error as ApiErrorInterface;
       FlashMessageComponent.show('error', getErrorMessage(typedError));
@@ -232,9 +242,11 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       if (response.success) {
         FlashMessageComponent.show(
           'success',
-          `${guestProfile.name} ${guestProfile?.isSpammedByHost ? 'unmarked' : 'marked'
+          `${guestProfile.name} ${
+            guestProfile?.isSpammedByHost ? 'unmarked' : 'marked'
           } as spam`,
         );
+        refreshGuestDetails();
       } else {
         const typedError = response as ApiErrorInterface;
         FlashMessageComponent.show('error', getErrorMessage(typedError));
@@ -431,24 +443,56 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
           </>
         );
       case 'declined':
+        const isDeclinedByHost = userId == guestProfile?.declinedById;
         return (
           <>
-            {guestProfile?.isSpammedByHost ? (
-              <Button
-                style={[styles.sendButton]}
-                title={BUTTON_LABLE.UNMARK_AS_SPAM}
-                colorTheme="dark"
-                onPress={() => declineSheetRef.current?.open()}
-                loading={isLoadingAction}
-              />
+            {isDeclinedByHost && !guestProfile?.isSpammedByHost ? (
+              <>
+                <TouchableOpacity
+                  style={[
+                    styles.deleteButton,
+                    isLoadingDecline && styles.disabledButton,
+                  ]}
+                  onPress={() => declineSheetRef.current?.open()}
+                  disabled={isLoadingDecline}>
+                  <Image
+                    source={IMAGES.alertTriangle}
+                    style={[
+                      styles.trashIcon,
+                      isLoadingDecline && styles.disabledIcon,
+                    ]}
+                  />
+                </TouchableOpacity>
+                <Button
+                  style={[styles.sendButton]}
+                  title={BUTTON_LABLE.SEND_INVITE}
+                  colorTheme="dark"
+                  onPress={() =>
+                    handleGuestAction('UPDATE', GuestStatus.INVITED)
+                  }
+                  loading={isLoadingAction}
+                />
+              </>
             ) : (
-              <Button
-                style={[styles.sendButton, styles.spamButton]}
-                title={BUTTON_LABLE.MARK_AS_SPAM}
-                colorTheme="dark"
-                onPress={() => declineSheetRef.current?.open()}
-                loading={isLoadingAction}
-              />
+              <>
+                {guestProfile?.isSpammedByHost ? (
+                  <Button
+                    style={[styles.sendButton]}
+                    title={BUTTON_LABLE.UNMARK_AS_SPAM}
+                    colorTheme="dark"
+                    onPress={() => declineSheetRef.current?.open()}
+                    loading={isLoadingAction}
+                  />
+                ) : (
+                  <Button
+                    style={[styles.sendButton, styles.spamButton]}
+                    title={BUTTON_LABLE.MARK_AS_SPAM}
+                    colorTheme="dark"
+                    onPress={() => declineSheetRef.current?.open()}
+                    loading={isLoadingAction}
+                  />
+                )}
+              </>
             )}
           </>
         );
@@ -591,6 +635,10 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               />
             )}
 
+            {guestProfile.declinedById && (
+              <DeclinedBySection name={guestProfile?.declinedBy} />
+            )}
+
             {Boolean(guestDetails?.data.vouches.length > 0) && (
               <GuestVouches
                 requestSource="In-App"
@@ -624,6 +672,9 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               onFocusInviteMessage={() => {
                 onFocusInput('inviteMessage');
               }}
+              spammedByHost={guestProfile.isSpammedByHost}
+              declinedBy={guestProfile?.declinedById}
+              declinedReason={guestProfile?.rejectedReason}
             />
 
             {Boolean(quizQuestions?.questions?.length) && (

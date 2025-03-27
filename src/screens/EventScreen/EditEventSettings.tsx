@@ -74,7 +74,7 @@ const EditEventSettings: React.FC<EditEventSettingsProps> = ({ event }) => {
       <View style={styles.talentItem} key={item.id}>
         <FastImage
           source={{ uri: item.companyLogo }}
-          resizeMode={FastImage.resizeMode.center}
+          resizeMode={FastImage.resizeMode.cover}
           defaultSource={IMAGES.revolve}
           style={styles.icon}
         />
@@ -86,7 +86,6 @@ const EditEventSettings: React.FC<EditEventSettingsProps> = ({ event }) => {
     ),
     [getUserRole],
   );
-
 
   return (
     <View style={styles.container}>

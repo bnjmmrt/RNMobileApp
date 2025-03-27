@@ -6,7 +6,7 @@ import {
   Image,
   TouchableOpacity,
   Platform,
-  Linking
+  Linking,
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import MapView from 'react-native-maps';
@@ -17,14 +17,15 @@ import { FlashMessageComponent } from './FlashMessageComponent/FlashMessageCompo
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { Event } from 'src/types';
 
-
 interface MapComponentProps {
   item: Event;
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({ item }) => {
   const role = useSelector((state: RootState) => state.auth.role);
-  const isShowLocation = role === ROLE.HOST || item?.currentGuestStatus === 'CONFIRMED';
+  const isShowLocation =
+    role === ROLE.HOST ||
+    (item?.currentGuestStatus === 'CONFIRMED' && item.showLocation);
 
   const latitude = item?.location?.latitude ?? 37.78825;
   const longitude = item?.location?.longitude ?? -122.4324;
@@ -36,13 +37,13 @@ const MapComponent: React.FC<MapComponentProps> = ({ item }) => {
     });
 
     if (url) {
-      Linking.openURL(url).catch(() => FlashMessageComponent.show('error', 'Failed to open maps'));
+      Linking.openURL(url).catch(() =>
+        FlashMessageComponent.show('error', 'Failed to open maps'),
+      );
     }
   };
 
-
   return (
-
     <View style={styles.mapContainer}>
       <MapView
         style={styles.map}
@@ -66,7 +67,11 @@ const MapComponent: React.FC<MapComponentProps> = ({ item }) => {
 
       {isShowLocation && (
         <TouchableOpacity onPress={openMap} style={styles.mapButton}>
-          <Image source={IMAGES.location} resizeMode="contain" style={styles.mapIcon} />
+          <Image
+            source={IMAGES.location}
+            resizeMode="contain"
+            style={styles.mapIcon}
+          />
         </TouchableOpacity>
       )}
     </View>

@@ -1,37 +1,30 @@
+import FastImage from '@d11/react-native-fast-image';
+import IMAGES from '@images/index';
 import React, { useEffect, useState } from 'react';
 import {
-  Text,
-  StyleSheet,
-  View,
   FlatList,
-  TouchableOpacity,
-  ScrollView,
   Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import FastImage from '@d11/react-native-fast-image';
-import AvatarInitials from '../AvatarInitials';
-import {
-  ANNOUNCCEMENTS_DATA,
-  ANNOUNCEMENT,
-  COLORS,
-  LABLE,
-  ROLE,
-} from '../../utils/constants';
-import IMAGES from '@images/index';
-import { fontFamily } from '../../utils/functions';
+import { convertUTCToTimeZoneFormat } from 'src/utils/dateFunctions';
 import {
   fontScale,
-  horizontalScale,
-  verticalScale,
-  verticalMarginScale,
   horizontalMarginScale,
-  Wp,
+  horizontalScale,
   radiusScale,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
 } from 'src/utils/dimensions';
-import ImagePdfViewer from './ImagePdfViewer';
-import { useFetchHostEventsAnnouncementQuery } from 'src/redux/actions/eventApiAction';
+import { ANNOUNCEMENT, COLORS, LABLE, ROLE } from '../../utils/constants';
+import { fontFamily } from '../../utils/functions';
+import AvatarInitials from '../AvatarInitials';
 import { CustomText } from '../CustomText';
-import { convertUTCToTimeZoneFormat } from 'src/utils/dateFunctions';
+import ImagePdfViewer from './ImagePdfViewer';
 
 interface EventAnnouncementProps {
   role?: string;
@@ -74,14 +67,14 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
     media,
     name,
     image,
-    index
+    index,
   }: {
     key: number;
     item: any;
     media: any;
     name: any;
     image: any;
-    index: number
+    index: number;
   }) =>
     item.mediaType === 'image' ? (
       <TouchableOpacity
@@ -123,7 +116,11 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
       expanded || !shouldShowReadMore
         ? item?.announcement
         : `${item?.announcement.substring(0, 100)}...`;
-    const date = convertUTCToTimeZoneFormat(item?.createdAt, item?.timeZone, 'MM/DD/YYYY',);
+    const date = convertUTCToTimeZoneFormat(
+      item?.createdAt,
+      item?.timeZone,
+      'MM/DD/YYYY',
+    );
     const imageKeyUrl = item?.user?.additionalHostInformation?.companyLogo;
     const name =
       item?.user?.additionalHostInformation?.firstName +
@@ -164,7 +161,6 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
                 />
               );
             })}
-
           </ScrollView>
           {/* {!expanded && shouldShowReadMore && (
             <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.toggleContainer}>

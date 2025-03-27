@@ -15,30 +15,58 @@ interface CounterProps {
   onPressMinus: () => void;
   onPressPlus: () => void;
   counterValue: number;
+  disabled: boolean;
 }
 
 const Counter: React.FC<CounterProps> = ({
   counterValue,
   onPressMinus,
   onPressPlus,
+  disabled,
 }) => {
   return (
     <View style={styles.counterContainer}>
       <TouchableOpacity
-        style={[styles.leftCounterButton, styles.counterButton]}
-        onPress={onPressMinus}>
+        style={[
+          styles.leftCounterButton,
+          styles.counterButton,
+          disabled && styles.disabledCounter,
+        ]}
+        onPress={onPressMinus}
+        disabled={disabled}>
         <View style={styles.counterButtonIconWrapper}>
-          <Image source={IMAGES.minus} />
+          <Image
+            source={IMAGES.minus}
+            style={disabled && { tintColor: COLORS.neutral_disabled }}
+          />
         </View>
       </TouchableOpacity>
-      <View style={styles.counterTextContainer}>
-        <CustomText style={styles.counterText}>{counterValue}</CustomText>
+      <View
+        style={[
+          styles.counterTextContainer,
+          disabled && styles.disabledCounter,
+        ]}>
+        <CustomText
+          style={[
+            styles.counterText,
+            disabled && { color: COLORS.neutral_disabled },
+          ]}>
+          {counterValue}
+        </CustomText>
       </View>
       <TouchableOpacity
-        style={[styles.rightCounterButton, styles.counterButton]}
-        onPress={onPressPlus}>
+        style={[
+          styles.rightCounterButton,
+          styles.counterButton,
+          disabled && styles.disabledCounter,
+        ]}
+        onPress={onPressPlus}
+        disabled={disabled}>
         <View style={styles.counterButtonIconWrapper}>
-          <Image source={IMAGES.plus_black} />
+          <Image
+            source={IMAGES.plus_black}
+            style={disabled && { tintColor: COLORS.neutral_disabled }}
+          />
         </View>
       </TouchableOpacity>
     </View>
@@ -67,8 +95,8 @@ const styles = StyleSheet.create({
   },
   leftCounterButton: {
     backgroundColor: COLORS.tabBorderColor,
-    borderTopLeftRadius: radiusScale(12),
-    borderBottomLeftRadius: radiusScale(12),
+    borderTopLeftRadius: radiusScale(8),
+    borderBottomLeftRadius: radiusScale(8),
     borderWidth: verticalScale(1),
     borderColor: COLORS.tabBorderColor,
   },
@@ -84,10 +112,13 @@ const styles = StyleSheet.create({
   },
   rightCounterButton: {
     backgroundColor: COLORS.tabBorderColor,
-    borderTopRightRadius: radiusScale(12),
-    borderBottomRightRadius: radiusScale(12),
+    borderTopRightRadius: radiusScale(8),
+    borderBottomRightRadius: radiusScale(8),
     borderWidth: verticalScale(1),
     borderColor: COLORS.tabBorderColor,
+  },
+  disabledCounter: {
+    backgroundColor: COLORS.bgGray,
   },
 });
 

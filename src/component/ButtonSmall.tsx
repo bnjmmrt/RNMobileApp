@@ -65,7 +65,9 @@ const ButtonSmall: React.FC<ButtonSmallProps> = ({
       style={[styles.button, buttonBackground, borderStyle, style]}
       onPress={onPress}>
       {loading ? (
-        <ActivityIndicator color={COLORS.black} />
+        <ActivityIndicator
+          color={borderType === 'STRIPE' ? colorbackground : textColor}
+        />
       ) : (
         <>
           {leftIcon && (

@@ -4,7 +4,7 @@ const formatToTimeZone = (
   startDateString: string,
   endDateString: string,
   timeZone: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
-  isRequiredTimeZone: boolean = true
+  isRequiredTimeZone: boolean = true,
 ): [string, string] => {
   const parseDate = (dateString: string): moment.Moment | null => {
     if (!dateString) return null;
@@ -29,12 +29,14 @@ const formatToTimeZone = (
   if (startInZone.isSame(endInZone, 'day')) {
     formattedDate = startInZone.format('ddd, MMM D');
   } else {
-    formattedDate = `${startInZone.format('ddd, MMM D')} – ${endInZone.format('ddd, MMM D')}`;
+    formattedDate = `${startInZone.format('ddd, MMM D')} – ${endInZone.format(
+      'ddd, MMM D',
+    )}`;
   }
 
   const formattedStartTime = startInZone.format('h:mm A');
   const formattedEndTime = endInZone.format('h:mm A');
-  const abbreviation = startInZone.format('z'); // This gives IST, PST, etc.
+  const abbreviation = startDate.format('z'); // This gives IST, PST, etc.
 
   let formattedTimeRange = `${formattedStartTime} - ${formattedEndTime}`;
   if (isRequiredTimeZone) {

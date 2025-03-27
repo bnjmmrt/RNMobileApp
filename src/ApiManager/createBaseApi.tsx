@@ -46,24 +46,24 @@ export const customBaseQuery: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = (args, api, extraOptions) =>
-    logMiddleware(
-      args,
-      api,
-      extraOptions,
-      fetchBaseQuery({
-        baseUrl: environment.BASE_URL,
-        prepareHeaders: (headers, { getState }) => {
-          const token = (getState() as any).auth?.token; // Replace with your token logic
-          console.log('Token:', token);
-          if (token) {
-            headers.set('Authorization', `Bearer ${token}`);
-          }
-          headers.set('Content-Type', 'application/json');
-          headers.set('Accept', 'application/json');
-          return headers;
-        },
-      }),
-    );
+  logMiddleware(
+    args,
+    api,
+    extraOptions,
+    fetchBaseQuery({
+      baseUrl: environment.BASE_URL,
+      prepareHeaders: (headers, { getState }) => {
+        const token = (getState() as any).auth?.token; // Replace with your token logic
+        console.log('Token:', token);
+        if (token) {
+          headers.set('Authorization', `Bearer ${token}`);
+        }
+        headers.set('Content-Type', 'application/json');
+        headers.set('Accept', 'application/json');
+        return headers;
+      },
+    }),
+  );
 
 // Create API with custom base query
 export const createBaseApi = createApi({
@@ -94,6 +94,7 @@ export const createBaseApi = createApi({
     'fetchNotification',
     'notificationDetail',
     'EventSignupForms',
+    'EventTypes',
   ], // Accept tagTypes as a parameter
   endpoints: () => ({}),
   keepUnusedDataFor: 0, // Optional: Adjust cache duration

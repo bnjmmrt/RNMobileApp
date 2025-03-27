@@ -7,7 +7,7 @@ import React, { useCallback, useRef } from 'react';
 import { InteractionManager } from 'react-native';
 import { DateType } from 'react-native-ui-datepicker';
 import GradientSeprator from 'src/component/GradientSeprator';
-import { feedList } from 'src/utils/constants';
+import { useFetchEventTypesQuery } from 'src/redux/actions/eventApiAction';
 import { horizontalMarginScale } from 'src/utils/dimensions';
 import { SelectedFilters } from '.';
 import FilterAccordian from './FilterAccordian';
@@ -33,6 +33,13 @@ const DiscoverEventsFilters = ({
   setDisableApplyCta: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const filtersListRef = useRef<BottomSheetFlatListMethods>(null);
+
+  const {
+    data: eventTypes,
+    isLoading,
+    error,
+    isError,
+  } = useFetchEventTypesQuery({});
 
   const onChangeFilterOptionValue = (
     id: string,
@@ -184,13 +191,24 @@ const DiscoverEventsFilters = ({
     return <GradientSeprator />;
   }, []);
 
-  const categories: FilterOption[] = feedList.map((item: string) => {
-    return { id: item, name: item } as FilterOption;
-  });
+  const eventTpeData = eventTypes?.data?.items || [];
+  const categories: FilterOption[] = eventTpeData?.map(
+    (item: {
+      id: string;
+      createdAt: string;
+      updatedAt: string;
+      deletedAt: string;
+      name: string;
+      description: string;
+      enabled: boolean;
+    }) => {
+      return { id: item.id, name: item.name } as FilterOption;
+    },
+  );
 
   const filterData: FilterType[] = [
     {
-      id: 'eventTypeName',
+      id: 'eventTypeId',
       label: 'Categories',
       options: categories,
       type: 'checkbox',
