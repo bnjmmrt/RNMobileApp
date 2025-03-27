@@ -145,6 +145,7 @@ const IMAGES = {
   tiktok_rounded: require('./tiktok_rounded.png'),
   link03: require('./link-03.png'),
   tras: require('./deleteFeature.png'),
+  user_x: require('./user-x.png'),
 };
 
 export default IMAGES;

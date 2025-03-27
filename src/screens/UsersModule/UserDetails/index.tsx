@@ -111,7 +111,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ route }) => {
               <View
                 style={{
                   gap: verticalMarginScale(16),
-                  marginBottom: verticalMarginScale(10),
+                  marginBottom: verticalMarginScale(100),
                 }}>
                 <UserOverview user={user} />
                 <UserInterests user={user} />

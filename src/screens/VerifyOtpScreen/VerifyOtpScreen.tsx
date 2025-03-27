@@ -154,6 +154,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={50}
+      enabled={Platform.OS === 'ios'}
       style={styles.container}>
       {/* <FullScreenLoader loading={isLoading}> */}
       <View style={styles.container}>

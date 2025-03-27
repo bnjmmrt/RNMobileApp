@@ -37,7 +37,7 @@ import { verticalMarginScale } from 'src/utils/dimensions';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
-interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> { }
+interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> {}
 
 const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   navigation,
@@ -77,26 +77,31 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
 
   const savePhoto = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const data = await fetch(image);
       const blob = await data.blob();
       const fileName = image.split('/').pop();
-      const pathType = 'profile'
-      savePhotoBottomSheetRef.current?.close();
-      const response = await uploadFileHook(fileName, imageSize, 'image', blob, pathType)
+      const pathType = 'profile';
+      const response = await uploadFileHook(
+        fileName,
+        imageSize,
+        'image',
+        blob,
+        pathType,
+      );
       if (response.success == true) {
-        const imageUrl = environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
-        dispatch(
-          setProfilePic(imageUrl),
-        );
+        savePhotoBottomSheetRef.current?.close();
+        const imageUrl =
+          environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
+        dispatch(setProfilePic(imageUrl));
       } else {
         console.log('savePhoto else', response);
       }
       // const response: any = await uploadFile(image, size, type, blob);
       console.log('savePhoto', response);
-      setLoading(false)
+      setLoading(false);
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       console.error('Error uploading image:', error);
     }
   };
@@ -127,14 +132,17 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   // };
   const onNextClick = async () => {
     if (loader == true) {
-      FlashMessageComponent.show('info', 'Please wait for the upload to complete')
+      FlashMessageComponent.show(
+        'info',
+        'Please wait for the upload to complete',
+      );
     } else if (image) {
       dispatch(setPageProgress(9));
       navigation.navigate('IdentityVerification');
     } else {
       setIsToastShown(true);
     }
-  }
+  };
 
   const handleBackPress = () => {
     dispatch(setPageProgress(7));
@@ -151,7 +159,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
     })
       .then((image: ImageOrVideo) => {
         setImage(image.path);
-        setImageSize(image.size)
+        setImageSize(image.size);
         setIsToastShown(false);
         setIsUploadProfile(true);
         savePhotoBottomSheetRef.current?.open();
@@ -234,7 +242,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
             onPencilClick={openPicker}
             submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
             cancelButtonText={BUTTON_LABLE.CANCEL}
-            snapPoints={[Platform.OS == 'android' ? 0.45 : 0.4]}
+            snapPoints={[Platform.OS == 'android' ? 0.51 : 0.4]}
             image={image}
           />
         </View>
@@ -260,4 +268,3 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
 };
 
 export default ProfilePhotoScreen;
-

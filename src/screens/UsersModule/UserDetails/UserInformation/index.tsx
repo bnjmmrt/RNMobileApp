@@ -88,22 +88,21 @@ const UserInformation: React.FC<UserInformationProps> = ({
         otherStyle={{ marginTop: 0 }}
         onFocus={onUserNoteFocus}
       />
-      {userDetails?.note !== userNote ? (
-        <ButtonSmall
-          colorTheme="dark"
-          style={{
-            padding: horizontalMarginScale(12),
-            borderRadius: radiusScale(99),
-            alignSelf: 'flex-start',
-            marginTop: verticalMarginScale(8),
-          }}
-          title="Save"
-          onPress={onSaveNote}
-          leftIcon={IMAGES.check}
-          leftIconStyle={{ tintColor: 'white' }}
-          loading={isLoading}
-        />
-      ) : null}
+      <ButtonSmall
+        colorTheme="dark"
+        style={{
+          padding: horizontalMarginScale(12),
+          borderRadius: radiusScale(99),
+          alignSelf: 'flex-start',
+          marginTop: verticalMarginScale(8),
+        }}
+        title="Save"
+        onPress={onSaveNote}
+        leftIcon={IMAGES.check}
+        leftIconStyle={{ tintColor: 'white' }}
+        loading={isLoading}
+        disabled={userDetails?.note === userNote}
+      />
     </UserDetailCard>
   );
 };

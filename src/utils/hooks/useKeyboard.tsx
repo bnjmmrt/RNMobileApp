@@ -31,6 +31,8 @@ const useKeyboard = (inputRef?: React.RefObject<TextInput>) => {
     );
 
     return () => {
+      keyboardDidHide();
+      updateKeyboardStatus(false);
       keyboardDidHideListener.remove();
     };
   }, []);

@@ -16,7 +16,13 @@ import { role, setRole, setRoles } from 'src/redux/slices/authSlice';
 import GradientOverlay from 'src/screens/BeforeApplicationFlow/GradientOverlay';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
-import { Hp, verticalScale, Wp } from '../../utils/dimensions';
+import {
+  fontScale,
+  Hp,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+} from '../../utils/dimensions';
 import { changeSafeAreaViewConfig, fontFamily } from '../../utils/functions';
 import { BottomSheetMethods } from '../BottomSheet/BottomSheet';
 import Button from '../Button';
@@ -151,38 +157,43 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
             ]}>
             <HeaderComponent isDarkTheme={true} hasGradient={true} />
 
-            <View style={{ height: Hp(5) }} />
-
             <TitleSubtitle
-              style={{ paddingHorizontal: 20, marginTop: 20 }}
+              style={{
+                paddingHorizontal: 20,
+                marginTop: verticalMarginScale(12),
+              }}
               title={LABLE.YOU_ARE_ON_WAITLIST}
               subTitle={LABLE.FULL_ACCESS_UNLOCK}
               centerTextAlign={true}
               isDarkTheme={true}
-              titleFontSize={36}
+              titleFontSize={fontScale(40)}
               subTitleTextstyle={{ color: COLORS.light_text }}
             />
 
-            <MiddleStaticComponent style={{ marginTop: 20 }} />
-
-            <View style={{ height: Hp(4) }} />
-
-            <Button
-              disabled={false}
-              style={styles.btnStyle}
-              title={BUTTON_LABLE.ACCESS_MY_CONTACTS}
-              colorTheme={'light'}
-              onPress={() => onAccessContactClick()}
+            <MiddleStaticComponent
+              style={{ marginTop: verticalMarginScale(16) }}
             />
-            <View style={{ height: Hp(1) }} />
 
-            <Button
-              disabled={false}
-              style={styles.btnStyle}
-              title={BUTTON_LABLE.ENTER_REFERRAL_CODE}
-              colorTheme={'light'}
-              onPress={onEnterReferralClick}
-            />
+            <View
+              style={{
+                marginTop: verticalMarginScale(24),
+                gap: verticalMarginScale(8),
+              }}>
+              <Button
+                disabled={false}
+                style={styles.btnStyle}
+                title={BUTTON_LABLE.ACCESS_MY_CONTACTS}
+                colorTheme={'light'}
+                onPress={() => onAccessContactClick()}
+              />
+              <Button
+                disabled={false}
+                style={styles.btnStyle}
+                title={BUTTON_LABLE.ENTER_REFERRAL_CODE}
+                colorTheme={'light'}
+                onPress={onEnterReferralClick}
+              />
+            </View>
           </View>
         </ScrollView>
       </View>

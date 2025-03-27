@@ -10,7 +10,12 @@ import {
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import MapView from 'react-native-maps';
-import { fontFamily, getDisplayLocation, isCityInLocation, removeCityFromLocation } from '../../utils/functions';
+import {
+  fontFamily,
+  getDisplayLocation,
+  isCityInLocation,
+  removeCityFromLocation,
+} from '../../utils/functions';
 import { COLORS, ROLE } from '../../utils/constants';
 import IMAGES from '@images/index';
 import {
@@ -36,18 +41,25 @@ const EventVenue: React.FC<EventVenueProps> = ({
   item,
   handleCalendarPress,
 }) => {
-  const dates = formatToDeviceTimeZone(item?.startDate, item?.endDate, item?.timeZone);
+  console.log('item?.timeZone', item?.startDate, item.endDate, item.timeZone);
+
+  const dates = formatToDeviceTimeZone(
+    item?.startDate,
+    item?.endDate,
+    item?.timeZone,
+  );
   const role = useSelector((state: RootState) => state.auth.role);
   // const dates = useMemo(() => formatToDeviceTimeZone(item?.startDate, item?.endDate));
-  console.log("Sayyed full address:", item?.location?.location)
-  console.log("Sayyed full city:", item?.location?.city)
 
-  const locationText = getDisplayLocation(item?.location?.location, item?.currentGuestStatus, item.showLocation, role)
-  const isHideCity = isCityInLocation(locationText, item?.location?.city || '')
+  const locationText = getDisplayLocation(
+    item?.location?.location,
+    item?.currentGuestStatus,
+    item.showLocation,
+    role,
+  );
+  const isHideCity = isCityInLocation(locationText, item?.location?.city || '');
 
   // const result = removeCityFromLocation(locationText, item?.location?.city || '')
-  // console.log("Sayyed locationText:", result.address)
-  // console.log("Sayyed city:", result.city)
   return (
     <View style={[styles.container]}>
       <View
@@ -72,7 +84,7 @@ const EventVenue: React.FC<EventVenueProps> = ({
       <View style={styles.locationContainer}>
         <CustomText style={styles.title}>{locationText}</CustomText>
         {!isHideCity && (
-          <CustomText style={styles.subtitle} >
+          <CustomText style={styles.subtitle}>
             {item?.location?.city}
           </CustomText>
         )}
