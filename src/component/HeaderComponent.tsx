@@ -37,9 +37,10 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
   const backgroundColorNotification = isDarkTheme
     ? COLORS.dark_gray
     : COLORS.tabBorderColor;
-  const { role } = useSelector(
+  const { role, userId } = useSelector(
     (state: RootState) => ({
       role: state.auth.role,
+      userId: state.auth.userId,
     }),
     shallowEqual,
   );
@@ -67,7 +68,7 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
   );
 
   const getNotificationCount = async () => {
-    const notificationCount: any = await apiRequest('get', EndPoint.notification_count);
+    const notificationCount: any = await apiRequest('get', `${EndPoint.notification_count}?id=${userId}`);
     console.log('notificationCount.data', notificationCount);
     if (notificationCount.data) {
       dispatch(setNotificationCount(notificationCount?.data?.totalNotifications));

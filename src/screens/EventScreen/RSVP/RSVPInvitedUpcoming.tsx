@@ -63,6 +63,7 @@ import { SwipeableGuestList } from './SwipeableGuestList';
 import { formatDetailedEventDate, formatEventRSVPDate } from 'src/utils/dateFunctions';
 import { InteractionManager } from 'react-native';
 import { Alert } from 'react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 const reasons = [
   { id: 1, name: 'Scheduling Conflict' },
@@ -324,14 +325,15 @@ const RSVPInvitedUpcoming = () => {
         );
       case 'noofguests':
         return (
-          <SelectReason
-            list={generateGuestList(maxAdditionalGuests)}
-            handleSelect={item => {
-              console.log(item);
-              dispatch(setSelectedGuest(item));
-              bottomSheetRef?.current?.close();
-            }}
-          />
+          <BottomSheetScrollView style={{ flexGrow: 1 }}>
+            <SelectReason
+              list={generateGuestList(maxAdditionalGuests)}
+              handleSelect={item => {
+                dispatch(setSelectedGuest(item));
+                bottomSheetRef?.current?.close();
+              }}
+            />
+          </BottomSheetScrollView>
         );
       case 'failed':
         return (
