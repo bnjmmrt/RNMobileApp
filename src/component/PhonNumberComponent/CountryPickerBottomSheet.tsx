@@ -172,45 +172,45 @@ const CountryPickerBottomSheet = forwardRef<
             defaultValue={searchValue}
           />
 
-          <View style={{ marginTop: verticalMarginScale(16) }}>
-            <BottomSheetFlatList
-              showsVerticalScrollIndicator={false}
-              data={resultCountries || codes}
-              keyExtractor={(item, index) => '' + item + index}
-              initialNumToRender={10}
-              maxToRenderPerBatch={10}
-              contentContainerStyle={{ gap: verticalMarginScale(4) }}
-              keyboardShouldPersistTaps={'handled'}
-              renderItem={renderItem}
-              testID="countryCodesPickerFlatList"
-              ListHeaderComponent={
-                selectedCountry ? (
-                  <BottomSheetView>
-                    {renderItem({ item: selectedCountry, index: 9999999999 })}
-                    <GradientSeprator
-                      style={{
-                        marginTop: verticalMarginScale(16),
-                        marginBottom: verticalMarginScale(12),
-                      }}
-                    />
-                  </BottomSheetView>
-                ) : null
-              }
-              ListEmptyComponent={
-                <View
-                  style={{
-                    height: Hp(50),
-                    justifyContent: 'center',
-                  }}>
-                  <EventEmptyRecord
-                    title={'No Results'}
-                    subTitle={'Please refine your search.'}
-                    isLoading={false}
+          <BottomSheetFlatList
+            showsVerticalScrollIndicator={false}
+            data={resultCountries || codes}
+            keyExtractor={(item, index) => '' + item + index}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            keyboardDismissMode={'on-drag'}
+            style={{ marginTop: verticalMarginScale(16), flex: 1 }}
+            contentContainerStyle={{ gap: verticalMarginScale(4) }}
+            keyboardShouldPersistTaps={'handled'}
+            renderItem={renderItem}
+            testID="countryCodesPickerFlatList"
+            ListHeaderComponent={
+              selectedCountry ? (
+                <BottomSheetView>
+                  {renderItem({ item: selectedCountry, index: 9999999999 })}
+                  <GradientSeprator
+                    style={{
+                      marginTop: verticalMarginScale(16),
+                      marginBottom: verticalMarginScale(12),
+                    }}
                   />
-                </View>
-              }
-            />
-          </View>
+                </BottomSheetView>
+              ) : null
+            }
+            ListEmptyComponent={
+              <View
+                style={{
+                  height: Hp(50),
+                  justifyContent: 'center',
+                }}>
+                <EventEmptyRecord
+                  title={'No Results'}
+                  subTitle={'Please refine your search.'}
+                  isLoading={false}
+                />
+              </View>
+            }
+          />
         </BottomSheetView>
       </BottomSheetComponent>
     );

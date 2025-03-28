@@ -1,13 +1,8 @@
-import React, { forwardRef} from 'react';
-import {
-  View,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
-import GooglePlacesInput from '../GooglePlacesInput/GooglePlacesInput';
-import { verticalMarginScale } from '../../utils/dimensions';
+import React, { forwardRef } from 'react';
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { Address } from '../../redux/slices/appFlowSlice';
+import { verticalMarginScale } from '../../utils/dimensions';
+import GooglePlacesInput from '../GooglePlacesInput/GooglePlacesInput';
 import BottomSheetComponent from './BottomSheet';
 
 interface LocationPickerBottomSheetProps {
@@ -15,6 +10,8 @@ interface LocationPickerBottomSheetProps {
   setIsShown: (ishown: boolean) => void;
   handleSubmit?: (ishown: boolean) => void;
   submitVisible?: boolean;
+  allowFullAddres?: boolean;
+  fetchTimezone?: boolean;
 }
 
 const LocationPickerBottomSheet = forwardRef(
@@ -28,7 +25,7 @@ const LocationPickerBottomSheet = forwardRef(
     return (
       <BottomSheetComponent
         ref={ref}
-        snapPoints={[ '95%' ]}
+        snapPoints={['95%']}
         onClose={() => console.log(ref)}>
         <View style={styles.container}>
           <KeyboardAvoidingView
@@ -38,6 +35,8 @@ const LocationPickerBottomSheet = forwardRef(
               submit={submit}
               setLocation={props.setLocation}
               toggleLocationPicker={closePicker}
+              allowFullAddres={props.allowFullAddres}
+              fetchTimezone={props.fetchTimezone}
             />
           </KeyboardAvoidingView>
         </View>

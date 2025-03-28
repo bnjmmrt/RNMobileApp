@@ -1,15 +1,16 @@
 import React, {
   forwardRef,
-  useImperativeHandle,
-  useState,
   useEffect,
+  useImperativeHandle,
   useRef,
+  useState,
 } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { Address } from '../../../redux/slices/appFlowSlice';
-import { LABLE, ERROR_MESSAGE, COLORS } from '../../../utils/constants';
+import LocationPickerBottomSheet from 'src/component/BottomSheet/LocationPickerBottomSheet';
 import IMAGES from '../../../assets/images';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
+import { Address } from '../../../redux/slices/appFlowSlice';
+import { COLORS, ERROR_MESSAGE, LABLE } from '../../../utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -17,15 +18,24 @@ import {
   verticalScale,
   Wp,
 } from '../../../utils/dimensions';
-import LocationPickerBottomSheet from 'src/component/BottomSheet/LocationPickerBottomSheet';
 
 interface BaseCityComponentProps {
   location?: Address;
-  onLocationSelect?: (value: any) => void
+  onLocationSelect?: (value: any) => void;
+  allowFullAddres?: boolean;
+  fetchTimezone?: boolean;
 }
 
 const BaseCityComponent = forwardRef(
-  ({ location, onLocationSelect }: BaseCityComponentProps, ref) => {
+  (
+    {
+      location,
+      onLocationSelect,
+      allowFullAddres,
+      fetchTimezone,
+    }: BaseCityComponentProps,
+    ref,
+  ) => {
     const defaultAddress: Address = {
       placeId: 'ChIJkbeSa_BfYzARphNChaFPjNc',
       address: 'India',
@@ -35,7 +45,10 @@ const BaseCityComponent = forwardRef(
     const [selectedCity, setSelectedCity] = useState<Address>(
       location || defaultAddress,
     );
-    console.log("selectedCityselectedCityselectedCityselectedCityselectedCity", selectedCity)
+    // console.log(
+    //   'selectedCityselectedCityselectedCityselectedCityselectedCity',
+    //   selectedCity,
+    // );
     const [isShown, setIsShown] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const locationRef = useRef<any>(null);
@@ -47,7 +60,7 @@ const BaseCityComponent = forwardRef(
     }, [location]);
 
     useEffect(() => {
-      onLocationSelect && onLocationSelect(selectedCity)
+      onLocationSelect && onLocationSelect(selectedCity);
       setErrorMessage(null);
     }, [selectedCity]);
 
@@ -85,7 +98,9 @@ const BaseCityComponent = forwardRef(
           ref={locationRef}
           setLocation={setSelectedCity}
           setIsShown={setIsShown}
-        // toggleLocationPicker={toggleLocationPicker}
+          allowFullAddres={allowFullAddres}
+          fetchTimezone={fetchTimezone}
+          // toggleLocationPicker={toggleLocationPicker}
         />
       </>
     );
