@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type {
@@ -6,21 +7,20 @@ import type {
   GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { useDispatch } from 'react-redux';
 import {
   fontScale,
   horizontalMarginScale,
   radiusScale,
   verticalMarginScale,
-  verticalScale,
 } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 import useLocation from 'src/utils/hooks/useLocation';
 import { environment } from '../../../environments/environment';
 import IMAGES from '../../assets/images';
 import { Address, setBaseCity } from '../../redux/slices/appFlowSlice';
 import { COLORS } from '../../utils/constants';
-import { useDispatch } from 'react-redux';
-import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 interface GooglePlacesInputProps {
   setLocation: (location: Address) => void;
@@ -31,6 +31,7 @@ interface GooglePlacesInputProps {
   toggleLocationPicker?: () => void;
   allowFullAddres?: boolean;
   autoFetchCurrentLocation?: boolean;
+  fetchTimezone?: boolean;
 }
 const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
   setLocation,
@@ -41,6 +42,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
   toggleLocationPicker,
   allowFullAddres,
   autoFetchCurrentLocation,
+  fetchTimezone,
 }) => {
   const googlePlacesRef = useRef<GooglePlacesAutocompleteRef>(null);
   const {
@@ -128,15 +130,39 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
         minLength={3}
         enablePoweredByContainer={false}
         placeholder="Search for a Location..."
-        onPress={(data: GooglePlaceData, detail: GooglePlaceDetail | null) => {
-          // 'details' is provided when fetchDetails = true
-          // console.log('data.placeId', detail);
+        onPress={async (
+          data: GooglePlaceData,
+          detail: GooglePlaceDetail | null,
+        ) => {
+          // console.log('data.placeId', JSON.stringify(detail));
+          // console.log('data.placeeeeeee', JSON.stringify(data));
           const address: Address = {
             address: data.description,
             placeId: data.place_id,
             latitude: detail ? String(detail?.geometry?.location?.lat) : '',
             longitude: detail ? String(detail?.geometry?.location?.lng) : '',
           };
+          if (fetchTimezone) {
+            const timestamp = Math.floor(Date.now() / 1000);
+            const timeZoneResponse = await axios.get(
+              `https://maps.googleapis.com/maps/api/timezone/json`,
+              {
+                params: {
+                  location: `${address?.latitude},${address?.longitude}`,
+                  timestamp: timestamp,
+                  key: environment.PLACES_API_KEY,
+                },
+              },
+            );
+
+            if (timeZoneResponse.data.status == 'OK') {
+              const timeZoneData = {
+                timeZoneId: timeZoneResponse.data.timeZoneId,
+                timeZoneName: timeZoneResponse.data.timeZoneName,
+              };
+              address.timeZone = timeZoneData;
+            }
+          }
           setLocation(address);
           setError && setError(null);
           toggleLocationPicker && toggleLocationPicker();

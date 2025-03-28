@@ -1,23 +1,34 @@
+import FastImage from '@d11/react-native-fast-image';
+import IMAGES from '@images/index';
+import { useNavigation } from '@react-navigation/native';
+import { environment } from 'environments/environment';
+import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
-  KeyboardAvoidingView,
-  Linking,
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import { useDispatch, useSelector } from 'react-redux';
-import useApi from 'src/axios/useApi';
-import { BUTTON_LABLE, COLORS, EVENT } from 'src/utils/constants';
+import { Image } from 'react-native-animatable';
+import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
+import { openSettings } from 'react-native-permissions';
+import { useDispatch } from 'react-redux';
 import { EndPoint } from 'src/ApiManager/config';
-import Input from 'src/component/Input/Input';
-import DatePickerComponent from '../ProfileScreen/EditProfile/DatePickerComponent';
+import useApi from 'src/axios/useApi';
+import CircleButtonOverlay from 'src/component/BackButton/CircleButtonOverlay';
+import EditPictureBottomSheet from 'src/component/BottomSheet/EditPictureBottomSheet';
 import Button from 'src/component/Button';
+import { CustomText } from 'src/component/CustomText';
+import HostEventTalent from 'src/component/Event/HostEventTalent';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import Input from 'src/component/Input/Input';
+import MapComponent from 'src/component/MapComponent';
+import { Address } from 'src/redux/slices/appFlowSlice';
+import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
+import { BUTTON_LABLE, COLORS, EVENT } from 'src/utils/constants';
 import {
   fontScale,
   horizontalScale,
@@ -25,25 +36,11 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import BaseCityComponent from '../ProfileScreen/EditProfile/BaseCityComponent';
-import FastImage from '@d11/react-native-fast-image';
-import IMAGES from '@images/index';
-import { Image } from 'react-native-animatable';
-import CircleButtonOverlay from 'src/component/BackButton/CircleButtonOverlay';
-import { CustomText } from 'src/component/CustomText';
-import { Address } from 'src/redux/slices/appFlowSlice';
-import MapComponent from 'src/component/MapComponent';
-import HostEventTalent from 'src/component/Event/HostEventTalent';
-import EditPictureBottomSheet from 'src/component/BottomSheet/EditPictureBottomSheet';
-import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
-import moment from 'moment';
-import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
-import { useNavigation } from '@react-navigation/native';
 import { removeSignature } from 'src/utils/functions';
-import { openSettings } from 'react-native-permissions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
-import { environment } from 'environments/environment';
+import BaseCityComponent from '../ProfileScreen/EditProfile/BaseCityComponent';
+import DatePickerComponent from '../ProfileScreen/EditProfile/DatePickerComponent';
 
 interface Location {
   location?: string;
@@ -108,10 +105,11 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const [featureTalent, setFeatureTalent] = useState(item?.talents || []);
   const [image, setImage] = useState<string>(
     removeSignature(item?.imageCover) ||
-    removeSignature(item?.imageFlyer) ||
-    '',
+      removeSignature(item?.imageFlyer) ||
+      '',
   );
   const [imageSize, setImageSize] = useState<number>(0);
+  const [timeZone, setTimeZone] = useState<string>();
 
   const onDiscardChanges = () => {
     setSelectedStartDate(item?.startDate || '');
@@ -125,8 +123,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     setFeatureTalent(item?.talents);
     setImage(
       removeSignature(item?.imageCover) ||
-      removeSignature(item?.imageFlyer) ||
-      '',
+        removeSignature(item?.imageFlyer) ||
+        '',
     );
 
     eventNameRef.current?.setInputText(item?.name || '');
@@ -138,7 +136,6 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     startDateRef.current?.setSelectedDate(item?.startDate || '');
     endDateRef.current?.setSelectedDate(item?.endDate || '');
   };
-  console.log('Feature Talent: ', featureTalent);
 
   const onConfirmClick = async () => {
     // Validate inputs before proceeding
@@ -265,10 +262,17 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       const data = await fetch(image);
       const blob = await data.blob();
       const fileName = image.split('/').pop();
-      const pathType = 'event'
-      const response = await uploadFileHook(fileName, imageSize, 'image', blob, pathType)
+      const pathType = 'event';
+      const response = await uploadFileHook(
+        fileName,
+        imageSize,
+        'image',
+        blob,
+        pathType,
+      );
       if (response.success) {
-        const imageUrl = environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
+        const imageUrl =
+          environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
         setImage(imageUrl);
       } else {
         console.log('savePhoto else', response);
@@ -325,7 +329,9 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       });
   };
 
-  useEffect(() => { }, [eventAddress]);
+  useEffect(() => {
+    setTimeZone(item?.timeZone);
+  }, [item]);
 
   return (
     <View style={styles.container}>
@@ -361,8 +367,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
               ref={startDateRef}
               onDateChange={e => setSelectedStartDate(e)}
               birthDate={item?.startDate}
-              timeZone={item?.timeZone}
-              dateFormat='MM/DD/YY h:mm A z'
+              timeZone={timeZone}
+              dateFormat="MM/DD/YY h:mm A z"
             />
             <CustomText style={[styles.label]}>{EVENT.END_DATE}</CustomText>
             <DatePickerComponent
@@ -370,8 +376,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
               startDate={selectedStartDate}
               ref={endDateRef}
               birthDate={item?.endDate}
-              timeZone={item?.timeZone}
-              dateFormat='MM/DD/YY h:mm A z'
+              timeZone={timeZone}
+              dateFormat="MM/DD/YY h:mm A z"
             />
           </View>
 
@@ -382,7 +388,10 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
               location={eventAddress}
               onLocationSelect={e => {
                 setEventAddress(e);
+                setTimeZone(e?.timeZone?.timeZoneId);
               }}
+              allowFullAddres={true}
+              fetchTimezone={true}
             />
           </View>
 

@@ -5,6 +5,10 @@ export interface Address {
   placeId: string;
   latitude?: string;
   longitude?: string;
+  timeZone?: {
+    timeZoneId: string;
+    timeZoneName: string;
+  };
 }
 export interface UserDetailsState {
   firstName: string;
