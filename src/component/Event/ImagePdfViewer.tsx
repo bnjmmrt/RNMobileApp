@@ -77,7 +77,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
   };
 
   const saveFile = async () => {
-    const fileName = 'deepa';
+    const fileName = mediaItems[currentIndex]?.mediaName;
     const filePath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
     console.log('File saved at:', filePath);
 

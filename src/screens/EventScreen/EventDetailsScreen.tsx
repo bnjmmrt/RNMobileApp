@@ -8,6 +8,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import moment from 'moment';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
   Image,
   Linking,
   Platform,
@@ -69,7 +70,7 @@ import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 import EventInvitation from 'src/component/Event/EventInvitation';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: any;
@@ -100,7 +101,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     take: 50,
     skip: 0,
   };
-  const { data: announcementData, refetch: refetchAnnouncement } =
+  const { data: announcementData, refetch: refetchAnnouncement, isLoading: announcementLoading } =
     useFetchHostEventsAnnouncementQuery(annqueryArgs);
 
   const { top } = useSafeAreaInsets();
@@ -152,9 +153,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const)
       : ({
-          userId,
-          eventId: route?.params?.id,
-        } as const);
+        userId,
+        eventId: route?.params?.id,
+      } as const);
 
   const useFetchEventDetailsHook =
     role === ROLE.HOST
@@ -646,6 +647,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                 <EventOverview item={data?.data} isFurtherInstrection={false} />
 
                 {talents.length > 0 && <EventTalent talents={talents} />}
+                {announcementLoading && <ActivityIndicator color={COLORS.black} /> }
                 {role == ROLE.HOST ? (
                   <EventAnnouncements
                     role={role}

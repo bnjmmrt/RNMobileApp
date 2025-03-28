@@ -131,7 +131,7 @@ const FeatureTalentBottomSheet = forwardRef<
       const data = await fetch(image);
       const blob = await data.blob();
       const fileName = image.split('/').pop();
-      const pathType = 'event'
+      const pathType = 'feature-talent'
       const response = await uploadFileHook(fileName, imageSize, 'image', blob, pathType)
       if (response.success) {
         const imageUrl = environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;

@@ -1,13 +1,13 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Linking} from 'react-native';
-import {fontFamily, LINKS} from '../../utils/functions';
-import {COLORS} from '../../utils/constants';
+import { View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
+import { fontFamily, LINKS } from '../../utils/functions';
+import { COLORS } from '../../utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import {CustomText} from '../CustomText';
+import { CustomText } from '../CustomText';
 
 interface TermsAndPolicyProps {
   setUrl: (url: string) => void;
@@ -26,7 +26,7 @@ const TermsAndPolicy: React.FC<TermsAndPolicyProps> = ({
 
   const terms = type == 'small' ? 'Terms' : 'Terms of Service';
   const privacy = type == 'small' ? 'Privacy' : 'Privacy Policy';
-  const and = type == 'small' ? ' & ' : ' and  ';
+  const and = type == 'small' ? ' & ' : ' and ';
 
   return (
     <View style={styles.container}>
