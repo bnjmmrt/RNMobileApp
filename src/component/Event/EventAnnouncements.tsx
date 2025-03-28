@@ -252,7 +252,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
           {role == ROLE.HOST ? (
             <TouchableOpacity
               onPress={handleViewAll}
-              style={styles.toggleContainer}>
+              style={[styles.toggleContainer]}>
               <CustomText style={styles.toggleText}>
                 {LABLE.VIEW_ALL}
               </CustomText>
@@ -263,7 +263,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
               {announcementListData?.length > 3 && (
                 <TouchableOpacity
                   onPress={() => setviewAllLess(!viewAllLess)}
-                  style={styles.toggleContainer}>
+                  style={[styles.toggleContainer]}>
                   <CustomText style={styles.toggleText}>
                     {viewAllLess ? LABLE.VIEW_ALL : LABLE.VIEW_LESS}
                   </CustomText>
@@ -366,8 +366,9 @@ const styles = StyleSheet.create({
   },
   toggleIcon: {
     width: 10,
-    height: 7,
+    height: 5,
     tintColor: COLORS.tabBorderColor,
+    marginTop: 5
   },
   mediaImage: {
     width: horizontalScale(90),

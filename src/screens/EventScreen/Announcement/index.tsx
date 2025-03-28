@@ -4,6 +4,7 @@ import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   RefreshControl,
@@ -297,6 +298,8 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
         showProgressBar={false}
         rightIconWrapperStyle={{ backgroundColor: COLORS.black }}
       />
+      {/* {isLoading && <ActivityIndicator color={COLORS.black} />} */}
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContainer}>
