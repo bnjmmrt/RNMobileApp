@@ -96,7 +96,7 @@ export const EndPoint = {
   file_upload: `users/v1/files/upload`,
   generate_upload_url: `users/v1/files/generate-upload-url`,
   user_interests: 'users/v1/auth/user-interests/',
-  user_notification_preferences: `users/v1/notification-preferences?id=`,
+  user_notification_preferences: `users/v1/notification-preferences`,
 
   get_user_with_role_by_email: 'users/v1/auth/get-user-with-roles-by-email',
   get_user_with_role_by_phone: 'users/v1/auth/get-user-with-roles-by-phone',

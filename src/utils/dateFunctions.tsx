@@ -24,46 +24,108 @@ export const formatEventDate = (
 };
 
 
-
 export const formatDetailedEventDate = (
   startDate: string,
   endDate: string = '',
   timeZoneId: string = Intl.DateTimeFormat().resolvedOptions().timeZone
-
 ): string => {
+  console.log("Parsing startDate: ", startDate);
+  console.log("Parsing endDate: ", endDate);
+  console.log("Parsing TimeZone: ", timeZoneId);
+
   const parseDate = (dateString: string): moment.Moment | null => {
     if (!dateString) return null;
     if (!dateString.includes('T')) {
       dateString = dateString.replace(' ', 'T').replace('+00', 'Z');
     }
-    const date = moment(dateString);
-    return date.isValid() ? date : null;
+    return moment(dateString).tz(timeZoneId);
   };
 
-  const start = parseDate(startDate)?.tz(timeZoneId);
-  const end = parseDate(endDate)?.tz(timeZoneId);
-  const today = moment().tz(timeZoneId).startOf('day');
-  const tomorrow = moment().tz(timeZoneId).add(1, 'day').startOf('day');
+  const start = parseDate(startDate);
+  const end = parseDate(endDate);
 
   if (!start || !end) {
     return 'Invalid date format';
   }
+
+  const today = moment().tz(timeZoneId).startOf('day');
+  const tomorrow = moment().tz(timeZoneId).add(1, 'day').startOf('day');
 
   const startFormat = start.format('ddd, MMM D');
   const endFormat = end.format('ddd, MMM D');
   const startTime = start.format('h:mm A');
   const endTime = end.format('h:mm A');
 
-  if (start.isSame(today, 'day')) {
-    return `Today, ${startTime} – ${endTime}`;
+  let date = '';
+
+  if (start.isSame(end, 'day')) {
+    // ✅ Case 6: Start and end date are the same (show only time)
+    date = `${startFormat}, ${startTime} – ${endTime}`;
+  } else if (start.isSame(today, 'day')) {
+    // ✅ Case 3: Start today, ends on a different day
+    date = `Today, ${startTime} – ${endFormat}, ${endTime}`;
   } else if (start.isSame(tomorrow, 'day')) {
-    return `Tomorrow, ${startTime} – ${endTime}`;
-  } else if (!start.isSame(end, 'day')) {
-    return `${startFormat}, ${startTime} – ${endFormat}, ${endTime}`;
+    // ✅ Case 4: Start tomorrow, ends on a different day
+    date = `Tomorrow, ${startTime} – ${endFormat}, ${endTime}`;
   } else {
-    return `${startFormat}, ${startTime} – ${endTime}`;
+    // ✅ Case 5: Start and end dates are different
+    date = `${startFormat}, ${startTime} – ${endFormat}, ${endTime}`;
   }
+
+  console.log("Final Formatted Date: ", date);
+
+  return date;
 };
+
+
+// export const formatDetailedEventDate = (
+//   startDate: string,
+//   endDate: string = '',
+//   timeZoneId: string = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+// ): string => {
+//   console.log("Parsing startDate: ", startDate);
+//   console.log("Parsing endDate: ", endDate);
+//   console.log("Parsing Date: ", timeZoneId);
+//   const parseDate = (dateString: string): moment.Moment | null => {
+
+//     if (!dateString) return null;
+//     if (!dateString.includes('T')) {
+//       dateString = dateString.replace(' ', 'T').replace('+00', 'Z');
+//     }
+//     const date = moment(dateString);
+//     return date.isValid() ? date : null;
+//   };
+
+//   const start = parseDate(startDate)?.tz(timeZoneId);
+//   const end = parseDate(endDate)?.tz(timeZoneId);
+//   const today = moment().tz(timeZoneId).startOf('day');
+//   const tomorrow = moment().tz(timeZoneId).add(1, 'day').startOf('day');
+
+//   if (!start || !end) {
+//     return 'Invalid date format';
+//   }
+
+//   const startFormat = start.format('ddd, MMM D');
+//   const endFormat = end.format('ddd, MMM D');
+//   const startTime = start.format('h:mm A');
+//   const endTime = end.format('h:mm A');
+
+//   let date = '';
+//   if (start.isSame(today, 'day')) {
+//     date = `Today, ${startTime} – ${endTime}`;
+//   } else if (start.isSame(tomorrow, 'day')) {
+//     date = `Tomorrow, ${startTime} – ${endTime}`;
+//   } else if (!start.isSame(end, 'day')) {
+//     date = `${startFormat}, ${startTime} – ${endFormat}, ${endTime}`;
+//   } else {
+//     date = `${startFormat}, ${startTime} – ${endTime}`;
+//   }
+
+//   console.log("Parsing Date: ", date);
+
+//   return date;
+// };
 
 export const formatEventRSVPDate = (
   startDate: string,
@@ -94,7 +156,7 @@ export const formatEventRSVPDate = (
     return `Today, ${startTime}`;
   } else if (start.isSame(tomorrow, 'day')) {
     return `Tomorrow, ${startTime}}`;
-  }else {
+  } else {
     return `${startFormat}, ${startTime}`;
   }
 };

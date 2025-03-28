@@ -87,7 +87,7 @@ const NotificationSettingsScreen: React.FC<
   ) => {
     const response: any = await apiRequest(
       'put',
-      EndPoint.user_notification_preferences + userId,
+      `${EndPoint.user_notification_preferences}?id=${userId}`,
       { ...requestData, muteDuration: '24h' },
     );
 

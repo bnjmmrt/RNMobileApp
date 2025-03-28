@@ -104,7 +104,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const getUserSettings = async () => {
     const response: any = await apiRequest(
       'get',
-      EndPoint.user_notification_preferences + userId,
+      `${EndPoint.user_notification_preferences}?id=${userId}`
     );
     if (response.success) {
       //dependiing on API response parse data and set
