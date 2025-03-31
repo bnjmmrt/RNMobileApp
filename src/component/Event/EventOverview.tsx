@@ -58,7 +58,7 @@ const EventOverview: React.FC<EventOverviewProps> = ({ item, isFurtherInstrectio
           <Image
             source={expanded ? IMAGES.upArrow : IMAGES.downArrow}
             tintColor={COLORS.light_gray}
-            style={styles.toggleIcon}
+            style={expanded ? styles.toggleupIcon : styles.toggleIcon }
           />
         </TouchableOpacity>
       )}
@@ -102,6 +102,12 @@ const styles = StyleSheet.create({
   toggleIcon: {
     width: verticalScale(10),
     height: verticalScale(10),
+    tintColor: COLORS.light_gray,
+    resizeMode: 'contain',
+  },
+  toggleupIcon: {
+    width: verticalScale(17),
+    height: verticalScale(17),
     tintColor: COLORS.light_gray,
     resizeMode: 'contain',
   },

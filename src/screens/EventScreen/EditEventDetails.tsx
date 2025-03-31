@@ -5,6 +5,7 @@ import { environment } from 'environments/environment';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Platform,
   ScrollView,
@@ -94,6 +95,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const endDateRef = useRef<any>(null);
   const editPhotoBottomSheetRef = useRef<any>(null);
   const { uploadFileHook } = useUploadFile();
+  const [loader, setLoader] = useState<boolean>(false);
 
   useEffect(() => {
     const formattedStartDate = moment
@@ -105,8 +107,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const [featureTalent, setFeatureTalent] = useState(item?.talents || []);
   const [image, setImage] = useState<string>(
     removeSignature(item?.imageCover) ||
-      removeSignature(item?.imageFlyer) ||
-      '',
+    removeSignature(item?.imageFlyer) ||
+    '',
   );
   const [imageSize, setImageSize] = useState<number>(0);
   const [timeZone, setTimeZone] = useState<string>();
@@ -123,8 +125,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     setFeatureTalent(item?.talents);
     setImage(
       removeSignature(item?.imageCover) ||
-        removeSignature(item?.imageFlyer) ||
-        '',
+      removeSignature(item?.imageFlyer) ||
+      '',
     );
 
     eventNameRef.current?.setInputText(item?.name || '');
@@ -258,6 +260,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   // };
 
   const savePhoto = async (image: any) => {
+    setLoader(true)
     try {
       const data = await fetch(image);
       const blob = await data.blob();
@@ -277,9 +280,10 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       } else {
         console.log('savePhoto else', response);
       }
-      // const response: any = await uploadFile(image, size, type, blob);
+      setLoader(false)
       console.log('savePhoto', response);
     } catch (error) {
+      setLoader(false)
       console.error('Error uploading image:', error);
     }
   };
@@ -296,6 +300,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       .then((image: ImageOrVideo) => {
         console.log('ImagePicker Response: ', image);
         if (image.size && image.size <= 5 * 1024 * 1024) {
+          setImage('')
           savePhoto(image.path);
         } else {
           Alert.alert(
@@ -347,11 +352,25 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
               resizeMode={FastImage.resizeMode.cover}
               style={styles.coverImageStyle}
             />
-            <CircleButtonOverlay
-              onPress={() => {
-                editPhotoBottomSheetRef.current?.open();
-              }}
-            />
+            {loader ?
+              <TouchableOpacity style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'absolute',
+                top: 0, left: 0, right: 0, bottom: 0
+              }}>
+                {/* <View style={[styles.iconWrapper, { width: size, height: size, backgroundColor: theme == COLORS.LIGHT ? COLORS.tabBorderColor : COLORS.black }]}> */}
+                <ActivityIndicator />
+                {/* </View> */}
+              </TouchableOpacity>
+              :
+              <CircleButtonOverlay
+                onPress={() => {
+                  editPhotoBottomSheetRef.current?.open();
+                }}
+              />
+            }
+
           </View>
           <Input
             ref={eventNameRef}
@@ -448,6 +467,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
         ref={editPhotoBottomSheetRef}
         onPress={openCamera}
         title="Image Flyer"
+        loadding={loader}
         submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
         cancelButtonText={BUTTON_LABLE.CANCEL}
         // snapPoints={[Platform.OS == 'android' ? '80%' : '80%']}

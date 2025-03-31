@@ -34,8 +34,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizontalMarginScale(16),
     borderRadius: radiusScale(99),
     borderWidth: verticalScale(1),
-    borderColor: COLORS.lighter_gray,
-    backgroundColor: COLORS.borderGray,
+    borderColor: COLORS.borderGray,
+    backgroundColor: COLORS.lighter_gray,
   },
   selectedContainer: {
     backgroundColor: COLORS.black,

@@ -32,6 +32,7 @@ import useApi from 'src/axios/useApi';
 import { openSettings } from 'react-native-permissions';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 import { environment } from 'environments/environment';
+import { TextInput } from 'react-native-gesture-handler';
 
 interface FeatureTalentBottomSheetProps {
   onPress: (data: {
@@ -62,6 +63,7 @@ const FeatureTalentBottomSheet = forwardRef<
   const { apiRequest, loading } = useApi();
   const { uploadFileHook } = useUploadFile();
   const [imageSize, setImageSize] = useState<number>(0);
+  const [loader, setLoader] = useState<boolean>(false);
 
   const openCamera = async () => {
     ImagePicker.openPicker({
@@ -71,6 +73,7 @@ const FeatureTalentBottomSheet = forwardRef<
       cropperCircleOverlay: true,
     })
       .then((image: ImageOrVideo) => {
+        setImage('')
         setImageError(false); // Clear error on selection
         savePhoto(image.path);
       })
@@ -98,35 +101,8 @@ const FeatureTalentBottomSheet = forwardRef<
       });
   };
 
-  // const uploadFile = async (image: string) => {
-  //   const mimeType = `image/${image.split('.').pop()}`;
-  //   const fileName = image.split('/').pop();
-
-  //   const formData = new FormData();
-  //   formData.append('file', {
-  //     uri: image,
-  //     type: mimeType,
-  //     name: fileName,
-  //   });
-
-  //   return await apiRequest('post', EndPoint.file_upload, formData, null, {
-  //     'Content-Type': 'multipart/form-data',
-  //   });
-  // };
-
-  // const savePhoto = async (image: string) => {
-  //   if (image) {
-  //     const response: any = await uploadFile(image);
-  //     console.log('savePhoto', response);
-  //     setImage(response?.data?.pathFileUrl);
-
-  //     if (response.statusCode !== 200) {
-  //       setImageError(true);
-  //     }
-  //   }
-  // };
-
   const savePhoto = async (image: any) => {
+    setLoader(true)
     try {
       const data = await fetch(image);
       const blob = await data.blob();
@@ -140,9 +116,10 @@ const FeatureTalentBottomSheet = forwardRef<
         setImageError(true);
         console.log('savePhoto else', response);
       }
-      // const response: any = await uploadFile(image, size, type, blob);
+      setLoader(false)
       console.log('savePhoto', response);
     } catch (error) {
+      setLoader(false)
       console.error('Error uploading image:', error);
     }
   };
@@ -206,7 +183,7 @@ const FeatureTalentBottomSheet = forwardRef<
         </View>
 
         <View style={styles.profilePhotoContainer}>
-          {loading ? (
+          {loader ? (
             <ActivityIndicator color={COLORS.black} />
           ) : image ? (
             <Image
@@ -232,7 +209,10 @@ const FeatureTalentBottomSheet = forwardRef<
             Upload an image of your talent{'\n'}Only JPG or PNG, Under 5 MB
           </Text>
         )}
-
+        {/* <TextInput
+          placeholder='Gejhejkrhh'
+          defaultValue={props?.talent?.name || ''}
+        /> */}
         <Input
           ref={inputRef}
           forBottomSheet

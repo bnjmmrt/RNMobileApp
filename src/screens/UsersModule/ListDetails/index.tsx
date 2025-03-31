@@ -73,7 +73,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
         setAllUsers(prev => ({
           ...prev,
           totalCount: data.data.totalCount,
-          users: [...prev?.result, ...data?.data?.result],
+          result: [...prev?.result, ...data?.data?.result],
         }));
       }
     }

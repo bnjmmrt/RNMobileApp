@@ -13,6 +13,8 @@ import React, {
   useState,
 } from 'react';
 import {
+  Keyboard,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -270,13 +272,16 @@ const PhoneNumberInput = forwardRef<
           ]}>
           <TouchableOpacity
             style={[styles.flagContainer]}
-            onPress={() => countryPickerRef?.current?.open()}
+            onPress={() => {
+              Keyboard.dismiss()
+              countryPickerRef?.current?.open()
+            }}
             disabled={disabled}>
             <Text style={styles.flag}>{flag}</Text>
             {!disabled && (
               <Image
                 source={IMAGES.upDownArrow}
-                style={[styles.arrowIcon, disabled && { opacity: 0.5 }]}
+                style={[styles.arrowIcon, disabled && { opacity: 0.5,resizeMode:'contain' }]}
               />
             )}
             <Text style={styles.callingCode}>{callingCode}</Text>
@@ -369,6 +374,7 @@ const styles = StyleSheet.create({
     width: 25,
     textAlign: 'center',
     height: 25,
+    marginTop: Platform.OS == 'ios' ? 3 : 0
   },
   arrowIcon: {
     marginRight: 5,
