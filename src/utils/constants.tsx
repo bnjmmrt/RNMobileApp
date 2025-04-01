@@ -278,6 +278,7 @@ export const LABLE = {
   SELECT_UPTO_3: 'Select up to 3',
   HOST_UNBLOCK_MESSAGE:
     'Are you sure you want to unblock this host?\nUnblocking this host will allow them to send you new event invites and chat messages.',
+  I_DONT_HAVE_INSTAGRAM: " I don't have an instagram account",
 };
 export const EVENT = {
   EDIT_EVENT: 'Edit Event',

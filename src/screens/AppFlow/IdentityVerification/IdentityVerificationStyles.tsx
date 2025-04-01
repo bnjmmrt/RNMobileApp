@@ -1,9 +1,18 @@
 import { Platform, StyleSheet } from 'react-native';
-import { Wp, Hp, radiusScale, verticalScale, verticalMarginScale, horizontalMarginScale, fontScale, horizontalScale } from '../../../utils/dimensions';
+import {
+  Wp,
+  Hp,
+  radiusScale,
+  verticalScale,
+  verticalMarginScale,
+  horizontalMarginScale,
+  fontScale,
+  horizontalScale,
+} from '../../../utils/dimensions';
 import { COLORS } from '../../../utils/constants';
 import { fontFamily } from '../../../utils/functions';
 
-const ProfilePhotoScreenStyles = () => {
+const IdentityVerificationStyles = () => {
   return StyleSheet.create({
     container: {
       flex: 1,
@@ -13,7 +22,7 @@ const ProfilePhotoScreenStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
-      bottom: Platform.OS === 'android' ? 20 : -10
+      bottom: Platform.OS === 'android' ? 20 : -10,
     },
     btnSmallStyle: {
       width: 'auto',
@@ -23,41 +32,17 @@ const ProfilePhotoScreenStyles = () => {
       alignSelf: 'center',
       backgroundColor: COLORS.tabBorderColor,
       marginTop: Hp(2),
-      paddingHorizontal: 5
+      paddingHorizontal: 5,
     },
     contentContainer: {
       flex: 1,
       paddingVertical: verticalMarginScale(10),
       paddingHorizontal: horizontalMarginScale(20),
     },
-    genderContainer: {
-      marginTop: verticalMarginScale(10),
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-    },
-    genderButton: {
-      paddingVertical: Hp(1.5),
-      paddingHorizontal: Wp(5),
-      borderRadius: radiusScale(20),
-      backgroundColor: COLORS.lighter_gray,
-      marginVertical: Hp(1),
-      marginHorizontal: Wp(1),
-      alignItems: 'center',
-    },
-    selectedGenderButton: {
-      backgroundColor: COLORS.black,
-    },
-    genderText: {
-      fontSize: fontScale(16),
-      color: COLORS.black,
-    },
-    selectedGenderText: {
-      color: COLORS.white,
-    },
     mainContainer: {
       borderWidth: 1,
       borderColor: COLORS.borderGray,
-      borderRadius: radiusScale(8),
+      borderRadius: radiusScale(16),
       alignItems: 'center',
       padding: verticalMarginScale(15),
       marginTop: verticalMarginScale(25),
@@ -73,7 +58,7 @@ const ProfilePhotoScreenStyles = () => {
       fontFamily: fontFamily.ABCDiatype_Regular,
       marginVertical: Hp(0.5),
       textAlign: 'center',
-      paddingHorizontal: horizontalMarginScale(10)
+      paddingHorizontal: horizontalMarginScale(10),
     },
     numberContainer: {
       height: verticalScale(20),
@@ -84,7 +69,7 @@ const ProfilePhotoScreenStyles = () => {
       marginTop: Hp(1.5),
       alignItems: 'center',
       justifyContent: 'center',
-      alignSelf: 'center'
+      alignSelf: 'center',
     },
     numberText: {
       color: COLORS.black,
@@ -95,8 +80,7 @@ const ProfilePhotoScreenStyles = () => {
     btnRumor: {
       color: COLORS.black,
       fontSize: fontScale(11),
-      fontWeight:'500',
-      // fontFamily: fontFamily.RomieTrial
+      fontWeight: '500',
     },
     iconStyle: {
       height: verticalMarginScale(20),
@@ -105,13 +89,13 @@ const ProfilePhotoScreenStyles = () => {
     },
     emailStyle: {
       color: COLORS.black,
-      fontFamily: fontFamily.ABCDiatype_Bold
+      fontFamily: fontFamily.ABCDiatype_Bold,
     },
     divider: {
       height: 0.5,
       backgroundColor: COLORS.tabBorderColor,
       width: horizontalScale(200),
-      marginTop: verticalMarginScale(20)
+      marginTop: verticalMarginScale(20),
     },
     btnRumorContainer: {
       backgroundColor: COLORS.lighter_gray,
@@ -124,8 +108,54 @@ const ProfilePhotoScreenStyles = () => {
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
-    }
+    },
+    noInstagramContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: verticalMarginScale(14),
+      borderWidth: 1,
+      borderRadius: radiusScale(16),
+      paddingHorizontal: horizontalMarginScale(16),
+      paddingVertical: verticalMarginScale(12),
+      borderColor: COLORS.borderGray,
+    },
+    noInstagramText: {
+      marginLeft: 8,
+      fontSize: fontScale(14),
+      color: COLORS.DARK,
+      fontWeight: '400',
+      fontFamily: fontFamily.ABCDiatype_Regular,
+    },
+    errorContainer: {
+      backgroundColor: COLORS.bgRed,
+      padding: verticalMarginScale(16),
+      marginTop: verticalMarginScale(16),
+      borderRadius: radiusScale(8),
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    errorText: {
+      color: COLORS.DARK,
+      fontSize: fontScale(14),
+      marginLeft: horizontalMarginScale(8),
+      fontFamily: fontFamily.ABCDiatype_Regular,
+    },
+    rumorTextContainerAdjusted: {
+      marginTop: -5,
+    },
+    subTitleNoPadding: {
+      paddingHorizontal: 0,
+    },
+    scrollViewContent: {
+      paddingBottom: 50,
+    },
+    inputMarginTop: {
+      marginTop: 15,
+    },
+    inputFieldHeight: {
+      height: 60,
+    },
   });
 };
 
-export default ProfilePhotoScreenStyles;
+export default IdentityVerificationStyles;
