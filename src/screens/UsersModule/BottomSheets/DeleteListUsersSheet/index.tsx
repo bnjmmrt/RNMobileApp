@@ -9,11 +9,12 @@ import { FlashMessageComponent } from 'src/component/FlashMessageComponent/Flash
 import { useRemoveUsersFromCustomListMutation } from 'src/redux/actions/listsApiAction';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { styles } from './style';
+import { UserItemInterface } from '../../UsersListItem';
 
 interface DeleteListUsersPropsInterface {
   listName: string;
   listId: string;
-  selectedUsers: string[];
+  selectedUsers: UserItemInterface[];
   onSuccess: () => void;
 }
 
@@ -45,18 +46,25 @@ const DeleteListUsersSheet = forwardRef<
 
     const payload = {
       customName: listName,
-      userIds: selectedUsers || [],
+      userIds: selectedUsers.map(user => user.listMappingId) || [],
       listId: listId,
     };
     try {
       const response = await removeUsersFromList(payload).unwrap();
       if (response.success) {
-        FlashMessageComponent.show(
-          'success',
-          `${selectedUsers.length} ${
-            selectedUsers.length > 1 ? 'users' : 'user'
-          } has been removed from list`,
-        );
+        if (selectedUsers.length === 1) {
+          FlashMessageComponent.show(
+            'success',
+            `${selectedUsers[0].name} has been removed from list`,
+          );
+        } else {
+          FlashMessageComponent.show(
+            'success',
+            `${selectedUsers.length} ${
+              selectedUsers.length > 1 ? 'users' : 'user'
+            } has been removed from list`,
+          );
+        }
         onSuccess();
         sheetRef.current?.close();
       } else {
@@ -68,6 +76,15 @@ const DeleteListUsersSheet = forwardRef<
     }
   };
 
+  let message = `Are you sure you want to remove ${
+    selectedUsers.length > 1
+      ? `${selectedUsers.length} users`
+      : `${selectedUsers.length} user`
+  } from this list?`;
+  if (selectedUsers.length === 1) {
+    message = `Are you sure you want to remove ${selectedUsers[0].name} from this list?`;
+  }
+
   return (
     <BottomSheetComponent
       ref={sheetRef}
@@ -75,14 +92,12 @@ const DeleteListUsersSheet = forwardRef<
       enableDynamicSizing
       onClose={() => {}}>
       <BottomSheetView style={styles.actionContentWrapper}>
-        <CustomText style={styles.title}>{'Remove user from list?'}</CustomText>
-        <CustomText style={styles.message}>
-          {`Are you sure you want to remove ${
-            selectedUsers.length > 1
-              ? `${selectedUsers.length} users`
-              : `${selectedUsers.length} user`
-          } from this list?`}
+        <CustomText style={styles.title}>
+          {selectedUsers?.length > 1
+            ? 'Remove users from list?'
+            : 'Remove user from list?'}
         </CustomText>
+        <CustomText style={styles.message}>{message}</CustomText>
 
         <Button
           title="Remove"

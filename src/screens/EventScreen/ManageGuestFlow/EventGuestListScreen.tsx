@@ -236,14 +236,14 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     setFilterNumber(0);
   };
 
-  const renderInvitee = (item: EventGuest) => (
+  const renderInvitee = (item: EventGuest, leadId: string) => (
     <TouchableOpacity
       style={styles.inviteeItem}
       onPress={() => {
         navigation.navigate(ROUTES.EventStack, {
           screen: ROUTES.GuestDetailScreen,
           params: {
-            guestId: item.id,
+            guestId: leadId,
             eventId,
           },
         });
@@ -353,7 +353,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
             userId: guest.id,
             profilePicture: undefined,
           };
-          return renderInvitee(inviteeGuest);
+          return renderInvitee(inviteeGuest, item.id);
         })}
       </Animated.View>
     </View>

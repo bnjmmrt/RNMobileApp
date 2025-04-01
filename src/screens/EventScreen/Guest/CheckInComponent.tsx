@@ -26,7 +26,11 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
+import {
+  ApiErrorInterface,
+  fontFamily,
+  getErrorMessage,
+} from 'src/utils/functions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { ManageGuestPayload } from '../types';
 
@@ -58,6 +62,7 @@ const RenderItemComponent = ({
   expandList = [],
   toggleExpand,
   navigation,
+  onChangeGuestNote,
 }: {
   item: any;
   index: number;
@@ -69,6 +74,7 @@ const RenderItemComponent = ({
   }[];
   toggleExpand: any;
   navigation: any;
+  onChangeGuestNote: (guestNote: string) => void;
 }) => {
   const inputRef = useRef<TextInput>(null);
   const { updateKeyboardStatus } = useKeyboard(inputRef);
@@ -85,7 +91,16 @@ const RenderItemComponent = ({
   };
   return (
     <View style={[styles.card, { padding: 0 }]}>
-      <View style={[styles.guestCard, true && styles.bottomRadius]}>
+      <View
+        style={[
+          styles.guestCard,
+          expandList[index]?.isExpand
+            ? styles.bottomRadius
+            : {
+                borderBottomStartRadius: radiusScale(16),
+                borderBottomRightRadius: radiusScale(16),
+              },
+        ]}>
         <View style={styles.guestHeader}>
           {item?.isPending ? (
             <Image source={IMAGES.user_gray} />
@@ -141,12 +156,23 @@ const RenderItemComponent = ({
             <Text style={styles.label}>{LABLE.GUEST_NOTE}</Text>
             <TextInput
               ref={inputRef}
-              style={styles.input}
+              style={[
+                styles.input,
+                {
+                  backgroundColor: !item?.additionalGuest?.checkIn
+                    ? COLORS.white
+                    : COLORS.bgGray,
+                },
+              ]}
+              editable={!item?.additionalGuest?.checkIn ? true : false}
               placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
               defaultValue={item?.additionalGuest.privateGuestNote}
               multiline
               onFocus={() => updateKeyboardStatus(true)}
               onBlur={() => updateKeyboardStatus(false)}
+              onChangeText={text => {
+                onChangeGuestNote(text);
+              }}
             />
           </View>
         )}
@@ -196,6 +222,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   const guestString = pendingGuestCount > 1 ? ' Guests' : ' Guest';
 
   // const [manageGuest] = useManageGuestMutation();
+  console.log('additionalGuests', JSON.stringify(additionalGuests));
 
   useEffect(() => {
     let expandIndex = additionalGuests.map((guest, index) => ({
@@ -250,61 +277,43 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
     validateDetails();
   };
 
-  const handleGuestAction = async () => {
-    try {
-      const payload: ManageGuestPayload = {
-        action: 'UPDATE',
-        currentStatus: 'confirmed',
-        exclusiveIds: [],
-        guestStatus: 'CONFIRMED',
-        inclusiveIds: [guestProfile?.guestId],
-        inviteMessage: '',
-        isSelectedAll: false,
-        maxAdditionalGuests: maxAdditionalGuests,
-        sendNotification: true,
-        ticketTypeId: selectedTicketType?.id,
-        privateGuestNote: guestNote,
-      };
-
-      await manageGuest({
-        payload,
-        eventId: selectedEvent?.id,
-      }).unwrap();
-
-      FlashMessageComponent.show(
-        'success',
-        `${guestProfile?.name}'s invite has been updated`,
-      );
-
-      // navigation.goBack();
-    } catch (error) {
-      const typedError = error as ApiErrorInterface;
-      FlashMessageComponent.show('error', getErrorMessage(typedError));
-    } finally {
-      // setIsLoadingAction(false);
-    }
-  };
-
-  const manageGuests = async () => {
+  const handleGuestAction = async (newGuestNote: string, guestId: string) => {
     if (status === 'CONFIRMED' && selectedEvent?.id) {
-      // const response: any = await apiRequest(
-      //   'put',
-      //   EndPoint.event_manage_guests + '?eventId=' + selectedEvent?.id,
-      //   {
-      //     action: 'UPDATE',
-      //     bulkUploadStatus: false,
-      //     exclusiveIds: [],
-      //     guestStatus: 'CONFIRMED',
-      //     inclusiveIds: additionalGuests.map(guest => guest.id),
-      //     isSelectedAll: false,
-      //     privateGuestNote: guestNote,
-      //   },
-      // );
-      // if (response.success) {
-      // }
-      handleGuestAction();
+      try {
+        const payload: ManageGuestPayload = {
+          action: 'UPDATE',
+          currentStatus: 'CONFIRMED',
+          exclusiveIds: [],
+          guestStatus: 'CONFIRMED',
+          inclusiveIds: [guestId],
+          inviteMessage: '',
+          isSelectedAll: false,
+          maxAdditionalGuests: maxAdditionalGuests,
+          sendNotification: true,
+          ticketTypeId: selectedTicketType?.id,
+          privateGuestNote: newGuestNote,
+        };
+
+        await manageGuest({
+          payload,
+          eventId: selectedEvent?.id,
+        }).unwrap();
+
+        // FlashMessageComponent.show(
+        //   'success',
+        //   `${guestProfile?.name}'s invite has been updated`,
+        // );
+
+        // navigation.goBack();
+      } catch (error) {
+        const typedError = error as ApiErrorInterface;
+        FlashMessageComponent.show('error', getErrorMessage(typedError));
+      } finally {
+        // setIsLoadingAction(false);
+      }
     }
   };
+
   return (
     <View style={styles.card}>
       <View
@@ -367,7 +376,10 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
           <View style={styles.section}>
             <Text style={styles.label}>{LABLE.GUEST_NOTE}</Text>
             <TextInput
-              onChangeText={text => setGuestNote(text)}
+              onChangeText={text => {
+                handleGuestAction(text, guestProfile?.guestId);
+                setGuestNote(text);
+              }}
               style={[
                 styles.input,
                 {
@@ -384,7 +396,6 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
               }}
               onBlur={() => {
                 updateKeyboardStatus(false);
-                manageGuests();
               }}
             />
           </View>
@@ -400,6 +411,9 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
                 expandList={expandlist || []}
                 toggleExpand={toggleExpand}
                 navigation={navigation}
+                onChangeGuestNote={newGuestNote => {
+                  handleGuestAction(newGuestNote, item.additionalGuest.guestId);
+                }}
               />
             )}
             //   contentContainerStyle={styles.container}
@@ -479,6 +493,7 @@ const styles = StyleSheet.create({
     marginTop: verticalMarginScale(5),
     minHeight: verticalScale(120),
     textAlignVertical: 'top',
+    fontFamily: fontFamily.ABCDiatype_Regular,
   },
   guestCard: {
     backgroundColor: COLORS.lighter_gray,
@@ -487,8 +502,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: radiusScale(16),
   },
   bottomRadius: {
-    borderBottomStartRadius: radiusScale(16),
-    borderBottomRightRadius: radiusScale(16),
+    borderBottomStartRadius: radiusScale(1),
+    borderBottomRightRadius: radiusScale(1),
   },
   guestHeader: {
     flexDirection: 'row',

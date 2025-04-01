@@ -119,6 +119,9 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const [isLoadingFavorite, setIsLoadingFavorite] = useState(false);
   const [isLoadingAction, setIsLoadingAction] = useState(false);
   const [isLoadingDecline, setIsLoadingDecline] = useState(false);
+  const [clickedAction, setClickedAction] = useState<
+    'save_draft' | 'send_invite' | 'approve_request' | 'update_invite' | ''
+  >('');
 
   useEffect(() => {
     if (guestDetail) {
@@ -157,6 +160,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const handleGuestAction = async (
     action: 'CREATE' | 'UPDATE' | 'DELETE',
     newStatus?: GuestStatus,
+    successMessage?: string,
   ) => {
     const formValidated = validateForm();
     if (!formValidated) return;
@@ -190,10 +194,11 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       if (response.success) {
         // navigation.goBack();
         refreshGuestDetails();
-        FlashMessageComponent.show(
-          'success',
-          `${guestProfile?.name}'s invite has been updated`,
-        );
+        let message = `${guestProfile?.name}'s invite has been updated`;
+        if (successMessage) {
+          message = successMessage;
+        }
+        FlashMessageComponent.show('success', message);
       }
     } catch (error) {
       const typedError = error as ApiErrorInterface;
@@ -262,22 +267,27 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     try {
       let action: 'UPDATE' | 'DELETE' | '' = '';
       let newGuestStatus: GuestStatus | '' = '';
+      let message = `${guestProfile?.name}'s invite has been updated`;
       switch (status) {
         case GuestStatus.CONFIRMED.toLowerCase():
           action = 'UPDATE';
           newGuestStatus = GuestStatus.DECLINED;
+          message = `${guestProfile?.name}'s invite has been canceled`;
           break;
         case GuestStatus.INVITED.toLowerCase():
           action = 'DELETE';
           newGuestStatus = GuestStatus.INVITED;
+          message = `${guestProfile?.name}'s invite has been withdrawn`;
           break;
         case GuestStatus.DRAFT.toLowerCase():
           action = 'DELETE';
           newGuestStatus = GuestStatus.DRAFT;
+          message = `${guestProfile?.name}'s invite has been removed from Drafts`;
           break;
         case GuestStatus.APPLIED.toLowerCase():
           action = 'UPDATE';
           newGuestStatus = GuestStatus.DECLINED;
+          message = `${guestProfile?.name}'s invite has been declined`;
           break;
         case GuestStatus.DECLINED.toLowerCase():
           handleSpam();
@@ -285,7 +295,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       }
       if (action && newGuestStatus) {
         setIsLoadingDecline(true);
-        await handleGuestAction(action, newGuestStatus);
+        await handleGuestAction(action, newGuestStatus, message);
       }
     } finally {
       setIsLoadingDecline(false);
@@ -397,20 +407,29 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                 style={styles.draftButton}
                 title={BUTTON_LABLE.SAVE_DRAFT}
                 colorTheme="light"
-                onPress={() => handleGuestAction('UPDATE', GuestStatus.DRAFT)}
-                loading={isLoadingAction}
+                onPress={() => {
+                  setClickedAction('save_draft');
+                  handleGuestAction(
+                    'UPDATE',
+                    GuestStatus.DRAFT,
+                    `${guestProfile?.name}'s invite has been saved to Drafts`,
+                  );
+                }}
+                loading={clickedAction === 'save_draft' && isLoadingAction}
               />
               <Button
                 style={styles.sendButton}
                 title={BUTTON_LABLE.SEND_INVITE}
                 colorTheme="dark"
-                onPress={() =>
+                onPress={() => {
+                  setClickedAction('send_invite');
                   handleGuestAction(
                     guestProfile?.id ? 'UPDATE' : 'CREATE',
                     GuestStatus.INVITED,
-                  )
-                }
-                loading={isLoadingAction}
+                    'Invite sent successfully!',
+                  );
+                }}
+                loading={clickedAction === 'send_invite' && isLoadingAction}
               />
             </View>
           </>
@@ -437,8 +456,15 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               style={[styles.sendButton]}
               title={BUTTON_LABLE.APPROVE_REQUEST}
               colorTheme="dark"
-              onPress={() => handleGuestAction('UPDATE', GuestStatus.CONFIRMED)}
-              loading={isLoadingAction}
+              onPress={() => {
+                setClickedAction('approve_request');
+                handleGuestAction(
+                  'UPDATE',
+                  GuestStatus.CONFIRMED,
+                  `${guestProfile?.name}'s request has been approved`,
+                );
+              }}
+              loading={clickedAction === 'approve_request' && isLoadingAction}
             />
           </>
         );
@@ -467,10 +493,15 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                   style={[styles.sendButton]}
                   title={BUTTON_LABLE.SEND_INVITE}
                   colorTheme="dark"
-                  onPress={() =>
-                    handleGuestAction('UPDATE', GuestStatus.INVITED)
-                  }
-                  loading={isLoadingAction}
+                  onPress={() => {
+                    setClickedAction('send_invite');
+                    handleGuestAction(
+                      'UPDATE',
+                      GuestStatus.INVITED,
+                      'Invite sent successfully!',
+                    );
+                  }}
+                  loading={clickedAction === 'send_invite' && isLoadingAction}
                 />
               </>
             ) : (
@@ -523,10 +554,15 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
                   : BUTTON_LABLE.UPDATE_INVITE
               }
               colorTheme="dark"
-              onPress={() =>
-                handleGuestAction('UPDATE', guestProfile?.status as GuestStatus)
-              }
-              loading={isLoadingAction}
+              onPress={() => {
+                setClickedAction('update_invite');
+                handleGuestAction(
+                  'UPDATE',
+                  guestProfile?.status as GuestStatus,
+                  `${guestProfile?.name}'s invite has been updated`,
+                );
+              }}
+              loading={clickedAction === 'update_invite' && isLoadingAction}
             />
           </>
         );

@@ -1,11 +1,11 @@
-import {StyleSheet} from 'react-native';
-import {COLORS} from 'src/utils/constants';
+import { StyleSheet } from 'react-native';
+import { COLORS } from 'src/utils/constants';
 import {
   horizontalMarginScale,
   horizontalScale,
   verticalMarginScale,
 } from 'src/utils/dimensions';
-import {fontFamily} from 'src/utils/functions';
+import { fontFamily } from 'src/utils/functions';
 
 export const styles = StyleSheet.create({
   actionButtonContainer: {
@@ -31,7 +31,8 @@ export const styles = StyleSheet.create({
   reportMessage: {
     textAlign: 'center',
     color: COLORS.light_gray,
-    marginBottom: 32,
+    marginBottom: verticalMarginScale(32),
+    marginHorizontal: horizontalMarginScale(8),
   },
   reportInputLabel: {
     color: COLORS.black,

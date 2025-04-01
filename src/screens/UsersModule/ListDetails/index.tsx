@@ -43,7 +43,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
 
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
     useState<listActionCurrentPageType>('');
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<UserItemInterface[]>([]);
   const [searchText, setSearchText] = useState<string>('');
   const [allUsers, setAllUsers] = useState<{
     result: UserItemInterface[];
@@ -87,13 +87,15 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
 
   const onSelectUser = (user: UserItemInterface) => {
     const isSelected = selectedUsers.some(
-      selectedUser => selectedUser === user.listMappingId,
+      selectedUser => selectedUser.listMappingId === user.listMappingId,
     );
     if (isSelected) {
-      const newArray = selectedUsers.filter(u => u !== user.listMappingId);
+      const newArray = selectedUsers.filter(
+        u => u.listMappingId !== user.listMappingId,
+      );
       setSelectedUsers(newArray);
     } else {
-      const newArray = [...selectedUsers, user.listMappingId];
+      const newArray = [...selectedUsers, user];
       setSelectedUsers(newArray);
     }
   };
@@ -170,7 +172,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
   const renderItem = useCallback(
     ({ item }: { item: UserItemInterface }) => {
       const isSelected = selectedUsers.some(
-        user => user === item.listMappingId,
+        user => user.listMappingId === item.listMappingId,
       );
       return (
         <UserListItem

@@ -11,6 +11,7 @@ import { COLORS, LABLE } from '../../utils/constants';
 import { useNavigation } from '@react-navigation/native';
 import { verticalScale } from 'src/utils/dimensions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
+import { fontFamily } from 'src/utils/functions';
 
 const EmailInput = forwardRef(({ otherStyle }, ref) => {
   const inputRef = useRef<TextInput>(null);
@@ -145,6 +146,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: COLORS.black,
+    fontFamily: fontFamily.ABCDiatype_Regular,
   },
   errorText: {
     fontSize: 12,

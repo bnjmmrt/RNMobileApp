@@ -1,33 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import Toast from 'src/component/Toast/Toast';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import { extractCountryCode } from 'src/utils/functions';
-import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'src/redux/slices';
-import useApi from 'src/axios/useApi';
-import Header from 'src/component/Header/Header';
-import { COLORS, editEventsTab, EVENT, PROFILE } from 'src/utils/constants';
+import React, { useState } from 'react';
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import DynamicTabBar, {
   TabItem,
 } from 'src/component/ActiveTabBar/DynamicTabBar';
-import EditEventDetails from './EditEventDetails';
-import EditEventSettings from './EditEventSettings';
-import { useRoute } from '@react-navigation/native';
-import Input from 'src/component/Input/Input';
+import Header from 'src/component/Header/Header';
+import { COLORS, editEventsTab, EVENT } from 'src/utils/constants';
 import {
   horizontalMarginScale,
   verticalMarginScale,
 } from 'src/utils/dimensions';
+import EditEventDetails from './EditEventDetails';
+import EditEventSettings from './EditEventSettings';
 
 interface EditEventScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -70,7 +55,15 @@ const EditEventScreen: React.FC<EditEventScreenProps> = ({ navigation }) => {
           tabs={editEventsTab}
           activeTabIndex={0}
         />
-        <View style={styles.contentContainer}>{renderTabContent()}</View>
+        <View style={styles.contentContainer}>
+          {currentTab.label === EVENT.DETAILS ? (
+            <EditEventDetails item={event} />
+          ) : null}
+          {currentTab.label === EVENT.SETTINGS ? (
+            <EditEventSettings event={event} />
+          ) : null}
+        </View>
+        {/* <View style={styles.contentContainer}>{renderTabContent()}</View> */}
       </View>
     </KeyboardAvoidingView>
   );

@@ -374,7 +374,9 @@ export const CountryPicker = ({
                 value={searchValue}
                 onChangeText={setSearchValue}
                 placeholder={inputPlaceholder || 'Search location'}
-                placeholderTextColor={inputPlaceholderTextColor || '#A2A1A1'}
+                placeholderTextColor={
+                  inputPlaceholderTextColor || COLORS.placeHodler
+                }
                 testID="countryCodesPickerSearchInput"
                 onFocus={() => {
                   updateKeyboardStatus(true);

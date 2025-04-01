@@ -86,9 +86,12 @@ const AddNewUserSheet = forwardRef<
     if (!emailRegex.test(email)) {
       emailRef?.current?.setErrorMessage(LABLE.EROOR_ENTER_EMAIL);
       return false;
+    } else {
+      console.log('VALIDDDD');
+
+      emailRef?.current?.setErrorMessage('');
+      return true;
     }
-    emailRef?.current?.setErrorMessage('');
-    return true;
   };
 
   const resetForm = () => {
@@ -288,6 +291,7 @@ const AddNewUserSheet = forwardRef<
           isBackgroundRed={errorMessage == null ? false : true}
           onBlur={validateEmailAddress}
           keyboardType="email-address"
+          isEmail
         />
         <PhoneNumberInput
           ref={phoneNumberRef}

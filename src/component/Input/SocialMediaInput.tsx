@@ -16,6 +16,7 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
+import { fontFamily } from 'src/utils/functions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 export type InputRefMethods = {
@@ -58,7 +59,7 @@ const SocialMediaInput = forwardRef((props: InputRefMethods, ref) => {
           ref={inputRef}
           style={styles.input}
           placeholder="username"
-          placeholderTextColor="#A0A0A0"
+          placeholderTextColor={COLORS.placeHodler}
           value={inputText}
           onChangeText={setInputText}
           defaultValue={props?.defaultValue}
@@ -110,6 +111,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: fontScale(14),
     color: COLORS.black,
+    fontFamily: fontFamily.ABCDiatype_Regular,
   },
 });
 

@@ -104,6 +104,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
     isUrl = false,
     onBlur,
     onFocus,
+    placeholderTextColor,
   } = props;
 
   const inputRef = useRef<TextInput>(null);
@@ -294,6 +295,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
             updateKeyboardStatus(false);
             if (onBlur) onBlur();
           }}
+          placeholderTextColor={placeholderTextColor || COLORS.placeHodler}
           {...extraInputProps}
         />
         {hasHandler && (
@@ -360,8 +362,7 @@ const styles = StyleSheet.create({
     left: 10,
     fontSize: fontScale(14),
     color: COLORS.black,
-    fontWeight: '500',
-    fontFamily: fontFamily.ABCDiatype_Bold,
+    fontFamily: fontFamily.ABCDiatype_Regular,
   },
   multilineInput: {
     height: '100%',

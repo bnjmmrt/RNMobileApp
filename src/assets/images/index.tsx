@@ -146,6 +146,14 @@ const IMAGES = {
   link03: require('./link-03.png'),
   tras: require('./deleteFeature.png'),
   user_x: require('./user-x.png'),
+  ticketBottom: require('./ticketBottom.png'),
+  // facebook_black: require('./facebook_black.png'),
+  instagram_black: require('./instagram_black.png'),
+  tiktok_black: require('./tiktok_black.png'),
+  x_black: require('./x_black.png'),
+  youtube_black: require('./youtube_black.png'),
+  website_black: require('./website_black.png'),
+  linkedin_black: require('./linkedin_black.png'),
 };
 
 export default IMAGES;
