@@ -48,6 +48,7 @@ import {
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import ReportHostView from './ReportHostView';
 import ReportAndBlockHostView from './ReportandBlockView';
+import moment from 'moment';
 
 type ViewType =
   | 'options'
@@ -293,14 +294,34 @@ const HostProfileScreen: React.FC = () => {
                   data={socialMediaData}
                   renderItem={({ item }) => (
                     <TouchableOpacity
-                      onPress={() =>
-                        item?.url
-                          ? Linking.openURL(item?.url)
-                          : FlashMessageComponent.show(
-                              'success',
-                              'Link not available',
-                            )
-                      }>
+                      onPress={() => {
+                        if (item?.url) {
+                          let url = item.url;
+                          if (
+                            item?.url.includes('https://') ||
+                            item?.url.includes('http://')
+                          ) {
+                            url = item?.url;
+                          } else {
+                            url = 'https://' + item?.url;
+                          }
+                          Linking.canOpenURL(url)
+                            .then(() => {
+                              Linking.openURL(url);
+                            })
+                            .catch(err => {
+                              FlashMessageComponent.show(
+                                'error',
+                                'Could not able to load the url',
+                              );
+                            });
+                        } else {
+                          FlashMessageComponent.show(
+                            'success',
+                            'Link not available',
+                          );
+                        }
+                      }}>
                       <Image
                         style={{
                           width: 20,
@@ -357,7 +378,9 @@ const HostProfileScreen: React.FC = () => {
                       {item.name}
                     </CustomText>
                     <CustomText style={styles.dateText}>
-                      {item.startDate}
+                      {moment('03/28/2025 18:30', 'MM/DD/YYYY HH:mm').format(
+                        'MMM DD, hh:mm A',
+                      )}
                     </CustomText>
                     <CustomText
                       style={styles.dateText}

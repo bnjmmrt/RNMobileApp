@@ -193,25 +193,24 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
           resendVerificationCode={resendVerificationCode}
           error={errorMsg}
         />
+        <View style={styles.spacer} />
+        <Button
+          disabled={false}
+          style={[
+            styles.btnStyle,
+            {
+              marginBottom: keyboardVisible
+                ? Platform.OS === 'ios'
+                  ? verticalMarginScale(60)
+                  : verticalMarginScale(10)
+                : 0,
+            },
+          ]}
+          title={BUTTON_LABLE.NEXT}
+          colorTheme="dark"
+          onPress={onNextClick}
+        />
       </View>
-      <View style={styles.spacer} />
-
-      <Button
-        disabled={false}
-        style={[
-          styles.btnStyle,
-          {
-            marginBottom: keyboardVisible
-              ? Platform.OS === 'ios'
-                ? verticalMarginScale(60)
-                : verticalMarginScale(10)
-              : 0,
-          },
-        ]}
-        title={BUTTON_LABLE.NEXT}
-        colorTheme="dark"
-        onPress={onNextClick}
-      />
     </KeyboardAvoidingView>
   );
 };

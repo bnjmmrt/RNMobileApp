@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import {
   Alert,
   InteractionManager,
+  Linking,
   PermissionsAndroid,
   Platform,
 } from 'react-native';
@@ -41,6 +42,7 @@ const useContacts = (autoRequestForPermision?: boolean, timout?: number) => {
         {
           text: 'Open Settings',
           onPress: async () => {
+            Linking.openSettings();
             navigation.goBack();
           },
         },

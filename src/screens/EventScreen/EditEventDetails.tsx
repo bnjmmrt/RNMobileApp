@@ -42,6 +42,7 @@ import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 import BaseCityComponent from '../ProfileScreen/EditProfile/BaseCityComponent';
 import DatePickerComponent from '../ProfileScreen/EditProfile/DatePickerComponent';
+import { navigate } from 'src/component/NavigationService';
 
 interface Location {
   location?: string;
@@ -107,8 +108,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const [featureTalent, setFeatureTalent] = useState(item?.talents || []);
   const [image, setImage] = useState<string>(
     removeSignature(item?.imageCover) ||
-    removeSignature(item?.imageFlyer) ||
-    '',
+      removeSignature(item?.imageFlyer) ||
+      '',
   );
   const [imageSize, setImageSize] = useState<number>(0);
   const [timeZone, setTimeZone] = useState<string>();
@@ -125,8 +126,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     setFeatureTalent(item?.talents);
     setImage(
       removeSignature(item?.imageCover) ||
-      removeSignature(item?.imageFlyer) ||
-      '',
+        removeSignature(item?.imageFlyer) ||
+        '',
     );
 
     eventNameRef.current?.setInputText(item?.name || '');
@@ -137,6 +138,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     // baseCityRef.current?.resetCity(item?.location?.location || '');
     startDateRef.current?.setSelectedDate(item?.startDate || '');
     endDateRef.current?.setSelectedDate(item?.endDate || '');
+    goBack();
   };
 
   const onConfirmClick = async () => {
@@ -260,7 +262,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   // };
 
   const savePhoto = async (image: any) => {
-    setLoader(true)
+    setLoader(true);
     try {
       const data = await fetch(image);
       const blob = await data.blob();
@@ -280,10 +282,10 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       } else {
         console.log('savePhoto else', response);
       }
-      setLoader(false)
+      setLoader(false);
       console.log('savePhoto', response);
     } catch (error) {
-      setLoader(false)
+      setLoader(false);
       console.error('Error uploading image:', error);
     }
   };
@@ -300,7 +302,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       .then((image: ImageOrVideo) => {
         console.log('ImagePicker Response: ', image);
         if (image.size && image.size <= 5 * 1024 * 1024) {
-          setImage('')
+          setImage('');
           savePhoto(image.path);
         } else {
           Alert.alert(
@@ -352,25 +354,28 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
               resizeMode={FastImage.resizeMode.cover}
               style={styles.coverImageStyle}
             />
-            {loader ?
-              <TouchableOpacity style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'absolute',
-                top: 0, left: 0, right: 0, bottom: 0
-              }}>
+            {loader ? (
+              <TouchableOpacity
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                }}>
                 {/* <View style={[styles.iconWrapper, { width: size, height: size, backgroundColor: theme == COLORS.LIGHT ? COLORS.tabBorderColor : COLORS.black }]}> */}
                 <ActivityIndicator />
                 {/* </View> */}
               </TouchableOpacity>
-              :
+            ) : (
               <CircleButtonOverlay
                 onPress={() => {
                   editPhotoBottomSheetRef.current?.open();
                 }}
               />
-            }
-
+            )}
           </View>
           <Input
             ref={eventNameRef}
@@ -441,6 +446,10 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
             placeholder="Provide details to help attendees find your event"
             label={EVENT.FURTHER_INSTRUCTION}
             defaultValue={item?.furtherInstructions}
+            errorMessage=""
+            maxLength={500}
+            multiline={true}
+            hasHandler={true}
           />
 
           <View style={styles.mapContainer}>

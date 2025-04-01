@@ -175,7 +175,10 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
               <CustomText style={styles.toggleText}>
                 {ANNOUNCEMENT.READ_MORE}
               </CustomText>
-              <FastImage source={IMAGES.downArrow} style={styles.toggleIcon} />
+              <FastImage
+                source={IMAGES.downArrow}
+                style={[styles.toggleIcon]}
+              />
             </TouchableOpacity>
           ) : (
             shouldShowReadMore && (
@@ -187,7 +190,10 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
                 </CustomText>
                 <FastImage
                   source={IMAGES.downArrow}
-                  style={styles.toggleIcon}
+                  style={[
+                    styles.toggleIcon,
+                    { transform: [{ rotate: '180deg' }] },
+                  ]}
                 />
               </TouchableOpacity>
             )
@@ -362,13 +368,13 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     fontFamily: fontFamily.ABCDiatype_Regular,
     marginRight: 5,
-    marginTop: 5
+    marginTop: 5,
   },
   toggleIcon: {
     width: 10,
     height: 5,
     tintColor: COLORS.tabBorderColor,
-    marginTop: 5
+    marginTop: 5,
   },
   mediaImage: {
     width: horizontalScale(90),

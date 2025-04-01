@@ -93,6 +93,7 @@ const ReportUser = ({
         <Input
           ref={messageRef}
           multiline={true}
+          hasHandler={true}
           placeholder="What would you like to report?"
           label="Report Message"
           defaultValue=""
