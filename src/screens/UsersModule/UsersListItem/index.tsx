@@ -34,13 +34,14 @@ interface UserListItemProps {
 const UserListItem: React.FC<UserListItemProps> = ({
   item,
   isSelected = false,
-  onSelectUser = () => {},
+  onSelectUser = () => { },
   showCheckbox = true,
 }) => {
   const styles = UserListItemStyle();
   const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
   const onPressUser = () => {
+    console.log(item.id)
     navigation.navigate(ROUTES.UserDetail, { user: item.id });
   };
 
@@ -48,6 +49,7 @@ const UserListItem: React.FC<UserListItemProps> = ({
     <TouchableOpacity style={styles.container} onPress={onPressUser}>
       <View style={styles.userInfoContainer}>
         <AvatarInitials
+          onPress={onPressUser}
           name={item.name}
           imgUrl={item.profilePicture}
           size={40}

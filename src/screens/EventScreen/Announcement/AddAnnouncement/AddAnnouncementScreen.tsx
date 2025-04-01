@@ -208,6 +208,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
     );
     console.log('notificationCount.data', announcementRecipientsData);
     if (announcementRecipientsData.data) {
+      setrecipienterrorMessage(false)
       setTotalCount(announcementRecipientsData?.data?.totalCount);
       setallRecipients(prev =>
         currentPage === 1
@@ -941,7 +942,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                         styles.inputContainer,
                         {
                           backgroundColor:
-                            announcementId != null ? COLORS.lighter_gray : '',
+                            announcementId != null ? COLORS.lighter_gray : 'white',
                         },
                       ]
                   }>
@@ -1066,7 +1067,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                         styles.inputContainer,
                         {
                           backgroundColor:
-                            announcementId != null ? COLORS.lighter_gray : '',
+                          announcementId != null ? COLORS.lighter_gray : 'white',
                         },
                       ]
                   }>
@@ -1155,7 +1156,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                         styles.inputContainer,
                         {
                           backgroundColor:
-                            announcementId != null ? COLORS.lighter_gray : '',
+                          announcementId != null ? COLORS.lighter_gray : 'white',
                         },
                       ]
                   }>
