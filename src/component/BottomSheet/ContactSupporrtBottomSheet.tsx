@@ -94,6 +94,7 @@ const ContactSupportBottomSheet: React.FC<ContactSupportBottomSheetProps> = ({
                 style={{
                   width: 16,
                   height: 16,
+                  resizeMode:'contain'
                 }}
                 source={IMAGES.message}
               />

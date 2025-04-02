@@ -36,6 +36,7 @@ const Counter: React.FC<CounterProps> = ({
         disabled={disabled}>
         <View style={styles.counterButtonIconWrapper}>
           <Image
+            resizeMode='contain'
             source={IMAGES.minus}
             style={disabled && { tintColor: COLORS.neutral_disabled }}
           />
@@ -64,6 +65,7 @@ const Counter: React.FC<CounterProps> = ({
         disabled={disabled}>
         <View style={styles.counterButtonIconWrapper}>
           <Image
+            resizeMode='contain'
             source={IMAGES.plus_black}
             style={disabled && { tintColor: COLORS.neutral_disabled }}
           />

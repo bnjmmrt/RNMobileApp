@@ -67,6 +67,7 @@ const AnnouncementStyles = () => {
             width: 8,
             height: 8,
             tintColor: COLORS.borderGray,
+            resizeMode:'contain'
         },
         subtitle: {
             color: COLORS.black,
@@ -196,7 +197,8 @@ const AnnouncementStyles = () => {
         icon: {
             width: verticalScale(16),
             height: verticalScale(16),
-            tintColor: COLORS.black
+            tintColor: COLORS.black,
+            resizeMode:'contain'
         },
         headerTitle: {
             fontSize: fontScale(18),

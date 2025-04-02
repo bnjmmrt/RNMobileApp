@@ -167,10 +167,10 @@ const QRCodeScanner = () => {
           <View style={[styles.corner, styles.bottomRight]} />
         </View>
         <TouchableOpacity style={styles.closeIcon} onPress={onClose}>
-          <Image source={IMAGES.close_gray} />
+          <Image resizeMode='contain' source={IMAGES.close_gray} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuIcon} onPress={onMenuClick}>
-          <Image source={IMAGES.menu_gray} />
+          <Image resizeMode='contain' source={IMAGES.menu_gray} />
         </TouchableOpacity>
       </View>
     </View>
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.transperantBackground,
   },
   btnContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  btn: { width: '60%', marginVertical: verticalMarginScale(20) },
+  btn: { width: '60%', marginVertical: verticalMarginScale(20),resizeMode:'contain' },
   camera: {
     width: '100%',
     height: '100%',

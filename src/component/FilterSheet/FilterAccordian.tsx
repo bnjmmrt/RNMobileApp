@@ -37,6 +37,7 @@ const FilterAccordian = ({
         <View style={styles.accordianArrowContainer}>
           <Image
             source={IMAGES.arrowRight}
+            resizeMode='contain'
             style={{transform: [{rotate: isOpen ? '270deg' : '90deg'}]}}
           />
         </View>

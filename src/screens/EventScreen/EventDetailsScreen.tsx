@@ -203,8 +203,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         name: data.data.owner.firstName + ' ' + data.data.owner.lastName,
       });
 
-      const startDate = moment.utc(data.data.startDate).toISOString();
-      const endDate = moment.utc(data.data.endDate).toISOString();
+      const startDate = moment.utc(data.data?.startDate).toISOString();
+      const endDate = moment.utc(data.data?.endDate).toISOString();
       setCalendarDetails({
         title: data.data.name,
         startDate: startDate,
@@ -687,7 +687,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                         setshowError(false);
                       }}>
                       <Image
-                        style={{ width: 18, height: 18, right: 5 }}
+                        style={{ width: 18, height: 18, right: 5,resizeMode:'contain'
+                        }}
                         source={IMAGES.x_circle}
                       />
                     </TouchableOpacity>

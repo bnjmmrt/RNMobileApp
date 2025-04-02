@@ -167,6 +167,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
                   height: verticalScale(16),
                   width: horizontalScale(16),
                   transform: [{ rotate: '90deg' }],
+                  resizeMode:'contain'
                 },
                 disableTicketType && { tintColor: COLORS.neutral_disabled },
               ]}

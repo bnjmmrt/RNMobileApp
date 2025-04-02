@@ -402,7 +402,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
               {isSelected && (
                 <Image
                   source={IMAGES.check}
-                  style={{ width: 16, height: 16 }}
+                  style={{ width: 16, height: 16,resizeMode:'contain'                  }}
                 />
               )}
               <Text style={styles.guestButtonText}>{item.name}</Text>
@@ -499,6 +499,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
               {isSelected && (
                 <Image
                   source={IMAGES.check}
+                  resizeMode='contain'
                   style={{ width: 16, height: 16 }}
                 />
               )}
@@ -914,7 +915,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                   <TouchableOpacity
                     onPress={() => setshowTicketTooltip(!showTicketTooltip)}>
                     <Image
-                      style={{ marginTop: 25, left: 5 }}
+                      style={{ marginTop: 25, left: 5,resizeMode:'contain'}}
                       tintColor={COLORS.light_gray}
                       source={IMAGES.info_filled}
                     />
@@ -994,7 +995,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                                   onPress={() => removeTicketType(item)}>
                                   <Image
                                     source={IMAGES.cross}
-                                    style={{ left: 5 }}
+                                    style={{ left: 5,resizeMode:'contain'}}
                                   />
                                 </TouchableOpacity>
                               )}
@@ -1040,7 +1041,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                       setShowProfileToolitip(!showProfileToolitip)
                     }>
                     <Image
-                      style={{ marginTop: 25, left: 5 }}
+                      style={{ marginTop: 25, left: 5 ,resizeMode:'contain'}}
                       tintColor={COLORS.light_gray}
                       source={IMAGES.info_filled}
                     />
@@ -1121,7 +1122,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                                   onPress={() => removeCollaborator(item)}>
                                   <Image
                                     source={IMAGES.cross}
-                                    style={{ left: 5 }}
+                                    style={{ left: 5,resizeMode:'contain' }}
                                   />
                                 </TouchableOpacity>
                               )}
@@ -1245,7 +1246,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                         bottomSheetRef?.current?.open();
                       }
                     }}>
-                    <Image source={IMAGES.arrowRight} />
+                    <Image source={IMAGES.arrowRight} resizeMode='contain' />
                   </TouchableOpacity>
                 </TouchableOpacity>
                 {recipienterrorMessage ? (

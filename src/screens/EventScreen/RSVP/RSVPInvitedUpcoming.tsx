@@ -130,7 +130,7 @@ const StatusBanner = ({ isGoing, onPress }) => {
       onPress={onPress}
       style={[styles.statusBanner, { backgroundColor: COLORS.bgGreen }]}>
       <View style={{ alignItems: 'center', flexDirection: 'row', flex: 1 }}>
-        <Image source={IMAGES.tickGoing} />
+        <Image resizeMode='contain' source={IMAGES.tickGoing} />
         <CustomText style={styles.statusText}> {'You are going'}</CustomText>
       </View>
       <Image
@@ -140,7 +140,7 @@ const StatusBanner = ({ isGoing, onPress }) => {
     </TouchableOpacity>
   ) : (
     <View style={styles.statusBanner}>
-      <Image source={IMAGES.tickInvited} />
+      <Image resizeMode='contain' source={IMAGES.tickInvited} />
       <CustomText style={styles.statusText}> {EVENT_STATUS.INVITED}</CustomText>
     </View>
   );
@@ -798,7 +798,7 @@ const RSVPInvitedUpcoming = () => {
                 ) === 0 && (
                   <View style={styles.toastNoGuest}>
                     <TouchableOpacity onPress={() => setIsToastShown(false)}>
-                      <Image source={IMAGES.close} />
+                      <Image resizeMode='contain' source={IMAGES.close} />
                     </TouchableOpacity>
                     <CustomText
                       style={{ color: COLORS.black, fontSize: fontScale(14) }}>

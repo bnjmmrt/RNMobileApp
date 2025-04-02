@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: horizontalMarginScale(15),
   },
-  leftImage: { marginRight: verticalMarginScale(6) },
+  leftImage: { marginRight: verticalMarginScale(6),resizeMode:'contain' },
   inputText: {
     width: '90%',
     fontSize: fontScale(14),

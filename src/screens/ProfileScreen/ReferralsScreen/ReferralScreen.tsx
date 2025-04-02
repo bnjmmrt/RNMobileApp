@@ -35,7 +35,6 @@ const ReferralScreen: React.FC = () => {
 
   const [vouchRequests, setVouchRequests] = useState<any[]>([]);
   const [isShown, setIsShown] = useState<boolean>(false);
-
   const getReferredRequest = async () => {
     const response: any = await apiRequest('get', EndPoint.referral_requests);
 
@@ -90,11 +89,14 @@ const ReferralScreen: React.FC = () => {
   };
 
   const handleApproveDeclineClick = async (flag: boolean, id: string) => {
+    // setLoading(true)
     if (activeTab === 'referrals') {
       await updateReferrel(id, flag);
     } else {
       await updateVouch(id, flag);
     }
+    // setLoading(true)
+
   };
 
   const onInvite = async () => {
@@ -142,6 +144,7 @@ const ReferralScreen: React.FC = () => {
               }
               onApproveApi={() => handleApproveDeclineClick(true, item?.id)}
               onDeclineApi={() => handleApproveDeclineClick(false, item?.id)}
+              loading={loading}
             />
           )}
           keyExtractor={item => item?.id.toString()}

@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   imgStyle: {
     resizeMode: 'contain',
   },
-  badge: { position: 'absolute', top: -4, right: -3 },
+  badge: { position: 'absolute', top: -4, right: -3,resizeMode:'contain'},
 });
 
 export default HeaderComponent;

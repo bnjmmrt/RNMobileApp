@@ -74,7 +74,7 @@ const EventVenue: React.FC<EventVenueProps> = ({
         </View>
         {item.currentGuestStatus === 'CONFIRMED' && (
           <TouchableOpacity onPress={handleCalendarPress}>
-            <Image source={IMAGES.calendarCircle} />
+            <Image resizeMode='contain' source={IMAGES.calendarCircle} />
           </TouchableOpacity>
         )}
       </View>

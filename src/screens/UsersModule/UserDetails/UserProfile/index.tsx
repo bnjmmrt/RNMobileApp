@@ -107,7 +107,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
               },
             ]}>
             {userDetails?.role === 'member' ? (
-              <Image source={IMAGES.check_verified} />
+              <Image resizeMode='contain' source={IMAGES.check_verified} />
             ) : null}
             <CustomText
               style={[
@@ -155,7 +155,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
                   'You marked this user as spam',
                 );
               }}>
-              <Image source={IMAGES.alert_triangle_filled} />
+              <Image resizeMode='contain' source={IMAGES.alert_triangle_filled} />
             </TouchableOpacity>
           ) : null}
           {userDetails?.isFollow ? (
@@ -164,7 +164,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
               onPress={() => {
                 FlashMessageComponent.show('info', 'User is following you');
               }}>
-              <Image source={IMAGES.user_check} />
+              <Image resizeMode='contain' source={IMAGES.user_check} />
             </TouchableOpacity>
           ) : null}
         </View>

@@ -83,7 +83,7 @@ const EmailInput = forwardRef(({ otherStyle }, ref) => {
           style={[
             styles.icon,
             {
-              tintColor: errorMessage ? COLORS.errorText : COLORS.light_gray,
+              tintColor: errorMessage ? COLORS.errorText : COLORS.light_gray,resizeMode:'contain'
             },
           ]}
         />
@@ -100,7 +100,7 @@ const EmailInput = forwardRef(({ otherStyle }, ref) => {
           autoFocus={true}
           value={emailAddress}
           onChangeText={text => {
-            setEmailAddress(text.toLowerCase());
+            setEmailAddress(text.trim().toLowerCase());
             onchangeValidate(text); // Clear error on text change
           }}
           // onBlur={validateEmailAddress}

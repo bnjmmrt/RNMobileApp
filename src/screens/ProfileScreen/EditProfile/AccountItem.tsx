@@ -39,7 +39,7 @@ const AccountItem: React.FC<AccountItemProps> = ({ item, setItem }) => {
           ]}>
           {item.title}
         </Text>
-        {item.image && <Image source={IMAGES.arrowRight} />}
+        {item.image && <Image resizeMode='contain' source={IMAGES.arrowRight} />}
       </TouchableOpacity>
     </View>
   );

@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     icon: {
-        marginRight: 5
+        marginRight: 5,
+        resizeMode:'contain'
     },
     subtitle: {
         color: COLORS.light_text,

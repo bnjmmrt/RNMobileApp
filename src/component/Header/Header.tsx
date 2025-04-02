@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
   icon: {
     width: verticalScale(16),
     height: verticalScale(16),
+    resizeMode:'contain'
   },
   emptyWrapper: {
     width: verticalScale(40),

@@ -21,7 +21,7 @@ const ShowInfoComponent: React.FC<ShowInfoComponentProps> = ({
 
   return (
     <View style={{ flexDirection: 'row', borderRadius: 5, backgroundColor: COLORS.bgYellow, padding: 10 }}>
-      <Image source={IMAGES.help} style={{ marginRight: 10 }} />
+      <Image source={IMAGES.help} style={{ marginRight: 10,resizeMode:'contain' }} />
       <CustomText>{title}</CustomText>
     </View>
   );

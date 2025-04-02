@@ -157,7 +157,8 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
             activeOpacity={0.7}
             onPress={onClose}
             style={styles.closeButton}>
-            <Image source={IMAGES.cross} />
+            <Image resizeMode='contain'
+              source={IMAGES.cross} />
           </TouchableOpacity>
           <Text style={styles.mediaInfo}>
             {currentIndex + 1} of {mediaItems.length}
@@ -252,6 +253,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     left: 10,
+    resizeMode: 'contain'
+
   },
   icon: {
     width: 10,

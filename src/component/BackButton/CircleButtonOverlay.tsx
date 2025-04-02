@@ -9,7 +9,7 @@ const CircleButtonOverlay = ({ onPress, customStyle, imageSource, size = 40, the
   return (
     <TouchableOpacity style={containerStyle} onPress={onPress}>
       <View style={[styles.iconWrapper, { width: size, height: size, backgroundColor: theme == COLORS.LIGHT ? COLORS.tabBorderColor : COLORS.black }]}>
-        <Image source={imageSource || IMAGES.edit} tintColor={theme == COLORS.LIGHT ? COLORS.black : COLORS.white} resizeMode='center' />
+        <Image source={imageSource || IMAGES.edit} tintColor={theme == COLORS.LIGHT ? COLORS.black : COLORS.white} resizeMode='contain' />
       </View>
     </TouchableOpacity>
   );

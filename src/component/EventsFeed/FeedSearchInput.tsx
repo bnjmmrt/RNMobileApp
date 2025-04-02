@@ -110,10 +110,12 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: horizontalMarginScale(10),
+    resizeMode:'contain'
   },
   clearIcon: {
     width: 16,
     height: 16,
+    resizeMode:'contain'
   },
   filter: {
     flexDirection: 'row',
@@ -133,6 +135,7 @@ const styles = StyleSheet.create({
   filterIcon: {
     width: horizontalScale(16),
     height: verticalScale(16),
+    resizeMode:'contain'
   },
   input: {
     flex: 1,

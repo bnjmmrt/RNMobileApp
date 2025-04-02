@@ -143,6 +143,7 @@ const RenderItemComponent = ({
           {!item?.isPending && (
             <TouchableOpacity onPress={() => toggleExpand(item)}>
               <Image
+                  resizeMode='contain'
                 source={
                   item?.isExpand ? IMAGES.arrowupCircle : IMAGES.arrowDownCircle
                 }
@@ -182,7 +183,7 @@ const RenderItemComponent = ({
         <TouchableOpacity
           style={styles.profileButton}
           onPress={handleProfilePress}>
-          <Image source={IMAGES.arrow_up_right} />
+          <Image resizeMode='contain' source={IMAGES.arrow_up_right} />
           <Text style={styles.profileText}>{BUTTON_LABLE.PROFILE}</Text>
         </TouchableOpacity>
       )}
@@ -321,6 +322,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
         <Text style={styles.headerText}>{LABLE.GUEST_CHICKED_IN}</Text>
         <TouchableOpacity style={styles.iconButton} onPress={handleCardShown}>
           <Image
+            resizeMode='contain'
             source={isShownCard ? IMAGES.arrowUpgray : IMAGES.arrowDowngray}
           />
         </TouchableOpacity>
@@ -335,7 +337,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
               </Text>
               <View style={styles.dropdown}>
                 <Text style={styles.dropdownText}>{ticketType}</Text>
-                <Image source={IMAGES.downArrow} />
+                <Image resizeMode='contain' source={IMAGES.downArrow} />
               </View>
             </View>
           ) : (
@@ -359,6 +361,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
                 ]}
                 onPress={handleCheckIn}>
                 <Image
+                resizeMode='contain'
                   source={
                     checkedIn ? IMAGES.checkedinCurved : IMAGES.checkinCurved
                   }

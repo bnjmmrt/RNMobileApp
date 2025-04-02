@@ -316,6 +316,7 @@ const styles = StyleSheet.create({
   addicon: {
     width: verticalScale(16),
     height: verticalScale(16),
+    resizeMode:'contain'
   },
   iconWrapper: {
     width: verticalScale(32),
@@ -371,10 +372,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   toggleIcon: {
-    width: 10,
-    height: 5,
+    width: 12,
+    height: 12,
     tintColor: COLORS.tabBorderColor,
     marginTop: 5,
+    resizeMode:'contain'
   },
   mediaImage: {
     width: horizontalScale(90),

@@ -67,11 +67,11 @@ const CustomDateTimePickerBottomSheet = forwardRef((props: Props, ref) => {
                                 selectedItemColor={COLORS.black}
                                 selectedRangeBackgroundColor="lightgray"
                                 dayContainerStyle={styles.dayContainerStyle}
-                                buttonNextIcon={<Image source={IMAGES.arrowRight} />}
+                                buttonNextIcon={<Image resizeMode='contain' source={IMAGES.arrowRight} />}
                                 buttonPrevIcon={
                                     <Image
                                         source={IMAGES.arrowRight}
-                                        style={{ transform: [{ rotate: '180deg' }] }}
+                                        style={{ transform: [{ rotate: '180deg' }],resizeMode:'contain' }}
                                     />
                                 }
                                 onChange={({ date }) => {

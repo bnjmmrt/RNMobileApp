@@ -3,7 +3,7 @@ import { useCheckMemberLoginMutation } from '../../redux/actions/loginApiAction'
 import { FlashMessageComponent } from '../../component/FlashMessageComponent/FlashMessageComponent';
 import { useDispatch } from 'react-redux';
 import { setIsGuest } from '../slices/authSlice';
-import { removeSpaceFromStr } from 'src/utils/functions';
+import { normalizeEmail, removeSpaceFromStr } from 'src/utils/functions';
 
 export const useSendOtp = (email?: string, phone?: string) => {
     const [checkMemberLogin] = useCheckMemberLoginMutation();
@@ -12,7 +12,7 @@ export const useSendOtp = (email?: string, phone?: string) => {
     const dispatch = useDispatch()
     const sendOtp = async (isResend: boolean) => {
         try {
-            const requestParam = { email, phoneNumber: removeSpaceFromStr(phone) };
+            const requestParam = { email:normalizeEmail(email), phoneNumber: removeSpaceFromStr(phone) };
             const response = await checkMemberLogin(requestParam).unwrap();
 
             if (response.success) {

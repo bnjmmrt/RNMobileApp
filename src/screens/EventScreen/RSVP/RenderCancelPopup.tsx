@@ -77,7 +77,7 @@ const RenderCancelPopup = ({
             ]}
             onPress={() => setReasonSelected(item)}>
             {reasonSelected == item && (
-              <Image source={IMAGES.check} style={{ width: 16, height: 16 }} />
+              <Image source={IMAGES.check} style={{ width: 16, height: 16 ,resizeMode:'contain'}} />
             )}
             <Text style={styles.guestButtonText}>{item.name}</Text>
             {reasonSelected == item && <View />}

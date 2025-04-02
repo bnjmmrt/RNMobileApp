@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import { RenderMemberList } from 'src/component/InviteReferralBottomSheet/RenderMemberList';
 import SearchInput from 'src/component/SearchInput';
@@ -26,7 +26,7 @@ const RequestVouch = ({
   const { getContactNumbersOnly, permissionGranted } = useContacts(true, 2000);
   const [members, setMembers] = useState<ContactItem[]>([]);
 
-  const [getConfirmedMembers] = useGetConfirmedMembersMutation();
+  const [getConfirmedMembers, { isLoading }] = useGetConfirmedMembersMutation();
 
   const [filteredMembers, setFilteredMembers] = useState<ContactItem[]>([]);
   const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -114,28 +114,32 @@ const RequestVouch = ({
           }
         </Text>
       </View>
-      <FlatList
-        data={filteredMembers}
-        scrollEnabled={false}
-        ListEmptyComponent={
-          <View
-            style={{
-              height: Hp(40),
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <EventEmptyRecord
-              title="No Results"
-              subTitle="No Contacts are members at this time"
-            />
-          </View>
-        }
-        contentContainerStyle={{ gap: 4 }}
-        keyExtractor={(item, index) => '' + item.phoneNumber + index}
-        renderItem={({ item }) => (
-          <RenderMemberList item={item} eventId={eventId} />
-        )}
-      />
+      {isLoading ? (
+        <ActivityIndicator size='small' color="red" />
+      ) :
+        <FlatList
+          data={filteredMembers}
+          scrollEnabled={false}
+          ListEmptyComponent={
+            <View
+              style={{
+                height: Hp(40),
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <EventEmptyRecord
+                title="No Results"
+                subTitle="No Contacts are members at this time"
+              />
+            </View>
+          }
+          contentContainerStyle={{ gap: 4 }}
+          keyExtractor={(item, index) => '' + item.phoneNumber + index}
+          renderItem={({ item }) => (
+            <RenderMemberList item={item} eventId={eventId} />
+          )}
+        />
+      }
     </View>
   );
 };

@@ -266,7 +266,7 @@ const NewUserView: React.FC<NewUserViewProps> = ({
             <View style={{ flex: 1 }}>
               <CustomText style={styles.userName}>
                 {existingUserData?.name}
-                <Image source={IMAGES.arrow_up_right} />
+                <Image resizeMode='contain' source={IMAGES.arrow_up_right} />
               </CustomText>
               <CustomText style={styles.alreadyPresent}>
                 {'This user is already a part of our database'}

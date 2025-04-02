@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: horizontalMarginScale(8),
+    resizeMode:'contain'
   },
   prefix: {
     fontSize: fontScale(14),

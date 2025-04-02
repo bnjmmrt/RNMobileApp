@@ -44,6 +44,7 @@ import {
   ApiErrorInterface,
   changeSafeAreaViewConfig,
   getErrorMessage,
+  normalizeEmail,
   removeSpaceFromStr,
 } from 'src/utils/functions';
 import useContacts from 'src/utils/hooks/useContactPermission';
@@ -267,7 +268,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         ticketTypeId: selectedTicketType?.id || '',
         inviteMessage: inviteMessage,
         privateGuestNote: guestNote,
-        email: email,
+        email: normalizeEmail(email),
         phoneNumber: removeSpaceFromStr(
           `${selectedCountry?.dial_code}${phone}`,
         ),

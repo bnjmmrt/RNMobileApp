@@ -456,7 +456,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
               }
               isFilter={true}
             />
-            <Image source={IMAGES.downArrow} />
+            <Image resizeMode='contain' source={IMAGES.downArrow} />
           </View>
           <TouchableOpacity
             style={styles.filterButton}
@@ -538,6 +538,7 @@ const styles = StyleSheet.create({
   icon: {
     width: horizontalScale(16),
     height: verticalScale(16),
+    resizeMode:'contain'
   },
   title: {
     fontSize: fontScale(24),
@@ -625,14 +626,17 @@ const styles = StyleSheet.create({
   },
   arrowIcon: {
     tintColor: COLORS.black,
+    resizeMode:'contain'
   },
   confirmedBadge: {
     width: horizontalScale(18),
     height: verticalScale(18),
     marginRight: horizontalMarginScale(4),
+    resizeMode:'contain'
   },
   nestedIcon: {
     marginRight: horizontalMarginScale(8),
+    resizeMode:'contain'
   },
   inviteesContainer: {
     marginTop: verticalMarginScale(4),
@@ -671,6 +675,7 @@ const styles = StyleSheet.create({
     width: horizontalScale(16),
     height: verticalScale(16),
     tintColor: COLORS.black,
+    resizeMode:'contain'
   },
   content: {
     flex: 1,

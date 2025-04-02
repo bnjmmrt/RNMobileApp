@@ -7,6 +7,7 @@ import { EndPoint } from 'src/ApiManager/config';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import {
   changeSafeAreaViewConfig,
+  normalizeEmail,
   removeSpaceFromStr,
 } from 'src/utils/functions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
@@ -87,14 +88,14 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
       if (emailInputRef.current.validateEmailAddress()) {
         endPoint = EndPoint.check_email;
         params = {
-          email: emailInputRef.current.emailAddress,
+          email:normalizeEmail(emailInputRef.current.emailAddress) ,
         };
         try {
           const response: any = await apiRequest('post', endPoint, params);
           if (response?.data.isValid) {
-            dispatch(setEmail(emailInputRef.current.emailAddress));
+            dispatch(setEmail(normalizeEmail(emailInputRef.current.emailAddress)));
             navigation.navigate('VerifyEmail', {
-              email: emailInputRef.current.emailAddress,
+              email: normalizeEmail(emailInputRef.current.emailAddress),
               isEmail: true,
             });
           } else {
