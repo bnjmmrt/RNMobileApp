@@ -37,12 +37,75 @@ import { fontFamily } from '../../utils/functions';
 import AvatarInitials from '../AvatarInitials';
 import { CustomText } from '../CustomText';
 import BottomSheetComponent, { BottomSheetMethods } from './BottomSheet';
+import Svg, { Path } from 'react-native-svg';
 
 interface QRCodeBottomsheetProps {
   data: any;
   isQRShown: boolean;
   profilePic?: string;
 }
+
+const TicketWrapper = ({
+  ticketType,
+  ticketDescription,
+  showVIPToolitip,
+  setShowVIPToolitip,
+  children,
+  isQr,
+}: {
+  children: React.ReactNode;
+  ticketType: string;
+  ticketDescription: string;
+  showVIPToolitip: boolean;
+  setShowVIPToolitip: React.Dispatch<React.SetStateAction<boolean>>;
+  isQr: boolean;
+}) => {
+  const ticketBottomWidth = isQr
+    ? '100%'
+    : Dimensions.get('screen').width - horizontalMarginScale(120);
+  return (
+    <BottomSheetView style={styles.ticketWrapper}>
+      <BottomSheetView style={{ flex: 1, padding: horizontalMarginScale(20) }}>
+        {children}
+      </BottomSheetView>
+      <RenderDashedLine />
+      <BottomSheetView style={{ padding: horizontalMarginScale(20) }}>
+        <BottomSheetView style={styles.vipContainer}>
+          <CustomText style={styles.vipText}>{ticketType}</CustomText>
+          {ticketDescription && (
+            <RenderToolTip
+              isVisible={showVIPToolitip}
+              setIsVisible={setShowVIPToolitip}
+              contentText={ticketDescription}
+              placement={Placement.TOP}
+              isFromBottom={true}
+              arrowStyle={{ bottom: 10 }}
+            />
+          )}
+        </BottomSheetView>
+      </BottomSheetView>
+
+      <View
+        style={{
+          borderBottomLeftRadius: radiusScale(4),
+          borderBottomRightRadius: radiusScale(4),
+          bottom: -verticalScale(11),
+          height: verticalScale(12),
+        }}>
+        <Image
+          source={IMAGES.ticketBottom}
+          style={{
+            height: '100%',
+            width: ticketBottomWidth,
+            borderBottomLeftRadius: radiusScale(4),
+            borderBottomRightRadius: radiusScale(4),
+          }}
+          resizeMode="stretch"
+        />
+      </View>
+    </BottomSheetView>
+  );
+};
 
 const RenderQrCode = React.memo(({ imageURL }: { imageURL: string }) => {
   return (
@@ -108,10 +171,20 @@ const RenderToolTip = React.memo(
         backgroundColor="transparent"
         showChildInTooltip={false}
         topAdjustment={verticalScale(0)}
-        childContentSpacing={Platform.OS === 'android' ? (!isFromBottom ? -verticalMarginScale(20) : verticalMarginScale(30)) : 0}
+        childContentSpacing={
+          Platform.OS === 'android'
+            ? !isFromBottom
+              ? -verticalMarginScale(20)
+              : verticalMarginScale(30)
+            : 0
+        }
         content={
           <View>
-            <CustomText textProps={{ numberOfLines: 3 }} style={styles.tooltipHeadStyle}>{contentText}</CustomText>
+            <CustomText
+              textProps={{ numberOfLines: 3 }}
+              style={styles.tooltipHeadStyle}>
+              {contentText}
+            </CustomText>
           </View>
         }
         placement={placement}
@@ -124,7 +197,7 @@ const RenderToolTip = React.memo(
   },
 );
 
-const RenderDashedLine = React.memo(({ }: {}) => {
+const RenderDashedLine = React.memo(({}: {}) => {
   return (
     <View
       style={{
@@ -164,7 +237,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
     <BottomSheetComponent
       ref={sheetRef}
       snapPoints={[props.isQRShown ? snap : '65%']}
-      onClose={() => { }}>
+      onClose={() => {}}>
       <ScrollView>
         <View style={styles.container}>
           <CustomText
@@ -192,92 +265,31 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
             <RenderToolTip
               isVisible={showProfileToolitip}
               setIsVisible={setShowProfileToolitip}
-              contentText={`This QR code is valid for ${userDetails?.name || name
-                } only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`}
+              contentText={`This QR code is valid for ${
+                userDetails?.name || name
+              } only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`}
               placement={Placement.BOTTOM}
               arrowStyle={{ top: -10 }}
             />
           </View>
 
           {props.isQRShown ? (
-            <BottomSheetView style={styles.ticketWrapper}>
-              <BottomSheetView
-                style={{ flex: 1, padding: horizontalMarginScale(20) }}>
-                <RenderQrCode imageURL={props?.data?.qrUrl} />
-              </BottomSheetView>
-              <RenderDashedLine />
-              <BottomSheetView style={{ padding: horizontalMarginScale(20) }}>
-                <BottomSheetView style={styles.vipContainer}>
-                  <CustomText style={styles.vipText}>
-                    {props?.data?.ticketType}
-                  </CustomText>
-                  {props?.data?.ticketDescription && (
-                    <RenderToolTip
-                      isVisible={showVIPToolitip}
-                      setIsVisible={setShowVIPToolitip}
-                      contentText={props?.data?.ticketDescription}
-                      placement={Placement.TOP}
-                      isFromBottom={true}
-                      arrowStyle={{ bottom: 10 }}
-                    />
-                  )}
-                </BottomSheetView>
-              </BottomSheetView>
-              {/* 
-              <BottomSheetView style={styles.halfCircleContainer}>
-                <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: COLORS.white,
-                    borderBottomLeftRadius: radiusScale(4),
-                  }}
-                />
-                <TicketBottom />
-                <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: COLORS.white,
-                    borderBottomRightRadius: radiusScale(4),
-                  }}
-                />
-              </BottomSheetView> */}
-
-            </BottomSheetView>
+            <TicketWrapper
+              ticketType={props?.data?.ticketType}
+              ticketDescription={props?.data?.ticketDescription}
+              setShowVIPToolitip={setShowVIPToolitip}
+              showVIPToolitip={showVIPToolitip}
+              isQr={true}
+              children={<RenderQrCode imageURL={props?.data?.qrUrl} />}
+            />
           ) : (
-            // <ImageBackground
-            //   source={IMAGES.ticketBg}
-            //   style={{
-            //     width: '100%',
-            //     height: verticalScale(346),
-            //     marginTop: 10,
-            //     alignItems: 'center',
-            //   }}
-            //   resizeMode="cover">
-            //   <View
-            //     style={{
-            //       height: verticalScale(346),
-            //       width: '100%',
-            //       paddingTop: verticalMarginScale(30),
-            //     }}>
-            //     <RenderQrCode imageURL={props?.data?.qrUrl} />
-            //   </View>
-
-            //   <View style={styles.vipContainer}>
-            //     <Text style={styles.vipText}>{props?.data?.ticketType}</Text>
-            //     {props?.data?.ticketDescription && (
-            //       <RenderToolTip
-            //         isVisible={showVIPToolitip}
-            //         setIsVisible={setShowVIPToolitip}
-            //         contentText={props?.data?.ticketDescription}
-            //         placement={Placement.TOP}
-            //         arrowStyle={{ bottom: 10 }}
-            //       />
-            //     )}
-            //   </View>
-            // </ImageBackground>
-            <BottomSheetView style={styles.ticketWrapper}>
-              <BottomSheetView
-                style={{ flex: 1, padding: horizontalMarginScale(20) }}>
+            <TicketWrapper
+              ticketType={props?.data?.ticketType}
+              ticketDescription={props?.data?.ticketDescription}
+              setShowVIPToolitip={setShowVIPToolitip}
+              showVIPToolitip={showVIPToolitip}
+              isQr={false}
+              children={
                 <ImageBackground
                   resizeMode="contain"
                   source={IMAGES.ticket}
@@ -286,46 +298,14 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
                     {userDetails?.name || name}
                   </Text>
                 </ImageBackground>
-              </BottomSheetView>
-
-              <RenderDashedLine />
-
-              <BottomSheetView style={{ padding: horizontalMarginScale(20) }}>
-                <BottomSheetView style={styles.vipContainer}>
-                  <CustomText style={styles.vipText}>
-                    {props?.data?.ticketType}
-                  </CustomText>
-                  {props?.data?.ticketDescription && (
-                    <RenderToolTip
-                      isVisible={showVIPToolitip}
-                      setIsVisible={setShowVIPToolitip}
-                      contentText={props?.data?.ticketDescription}
-                      placement={Placement.TOP}
-                      arrowStyle={{ bottom: 10 }}
-                    />
-                  )}
-                </BottomSheetView>
-              </BottomSheetView>
-              {/* <BottomSheetView style={styles.halfCircleContainer}>
-                <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: COLORS.white,
-                    borderBottomLeftRadius: radiusScale(4),
-                  }}
-                />
-                <TicketBottom />
-                <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: COLORS.white,
-                    borderBottomRightRadius: radiusScale(4),
-                  }}
-                />
-              </BottomSheetView> */}
-            </BottomSheetView>
+              }
+            />
           )}
-          <View style={{ marginBottom: verticalMarginScale(20) }} >
+          <View
+            style={{
+              marginBottom: verticalMarginScale(20),
+              marginTop: verticalMarginScale(20),
+            }}>
             <CustomText style={styles.infoText}>
               {props.isQRShown
                 ? LABLE.SHOW_QR_CHECKIN_MESSAGE
@@ -341,7 +321,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: horizontalMarginScale(20),
-    // paddingBottom: verticalMarginScale(20),
+    // marginBottom: verticalMarginScale(20),
     gap: 8,
     // justifyContent:"center",
     alignItems: 'center',
@@ -442,7 +422,6 @@ const styles = StyleSheet.create({
   },
   infoText: {
     color: COLORS.light_gray,
-    marginTop: verticalMarginScale(10),
   },
 
   toolTipStyle: {
@@ -462,23 +441,21 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.15,
     shadowRadius: 20,
-    elevation: 5,
+    elevation: 10,
     borderTopLeftRadius: radiusScale(4),
     borderTopRightRadius: radiusScale(4),
-    borderBottomLeftRadius: radiusScale(10),
-    borderBottomRightRadius: radiusScale(10),
-    backgroundColor: COLORS.white,
+    borderBottomLeftRadius: radiusScale(1),
+    borderBottomRightRadius: radiusScale(1),
     marginTop: verticalMarginScale(16),
+    marginBottom: verticalMarginScale(16),
+    backgroundColor: COLORS.white,
   },
 
   halfCircleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    bottom: 0,
-    position: 'absolute',
-    marginTop: -10,
-    left: 0,
-    right: 0,
+    bottom: -verticalScale(12),
+    // position: 'absolute',
+    // left: 0,
+    // right: 0,
   },
 
   dash: {

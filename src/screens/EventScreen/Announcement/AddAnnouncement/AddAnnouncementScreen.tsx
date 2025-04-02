@@ -2,7 +2,13 @@ import IMAGES from '@images/index';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { environment } from 'environments/environment';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -62,7 +68,7 @@ import {
 import AddAnnouncementStyles from './AddAnnouncementStyles';
 import RecipientListItem from './RecipientListItem';
 
-interface AddAnnouncementScreenProps extends NativeStackScreenProps<any, any> { }
+interface AddAnnouncementScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: any;
@@ -111,7 +117,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
   const [showProfileToolitip, setShowProfileToolitip] = useState(false);
   const [showTicketTooltip, setshowTicketTooltip] = useState(false);
 
-
   const { uploadFileHook } = useUploadFile();
   const { apiRequest } = useApi();
 
@@ -133,9 +138,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
     { skip: !announcementId },
   );
 
-
-
-
   useEffect(() => {
     const owner = {
       ...eventData?.owner,
@@ -147,8 +149,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
     const approvedCollaborators = eventData?.collaborators?.filter(
       (col: any) => col.isApproved,
     );
-    setCollaborators([owner, ...(approvedCollaborators || [])])
-
+    setCollaborators([owner, ...(approvedCollaborators || [])]);
   }, [eventData]);
 
   useEffect(() => {
@@ -208,7 +209,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
     );
     console.log('notificationCount.data', announcementRecipientsData);
     if (announcementRecipientsData.data) {
-      setrecipienterrorMessage(false)
+      setrecipienterrorMessage(false);
       setTotalCount(announcementRecipientsData?.data?.totalCount);
       setallRecipients(prev =>
         currentPage === 1
@@ -315,16 +316,16 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
         return collaborators.length == 1
           ? `30%`
           : collaborators.length > 8
-            ? '80%'
-            : `${collaborators.length * 7 + 20}%`;
+          ? '80%'
+          : `${collaborators.length * 7 + 20}%`;
       case 'submit':
         return '70%';
       case 'ticketTypeOptions':
         return eventData?.ticketTypes.length == 1
           ? `30%`
           : eventData?.ticketTypes.length > 8
-            ? '80%'
-            : `${eventData?.ticketTypes.length * 7 + 20}%`;
+          ? '80%'
+          : `${eventData?.ticketTypes.length * 7 + 20}%`;
       case 'receipient':
         return '80 %'; // : `${(allRecipients.length * 10 + 10)}%`
       default:
@@ -477,7 +478,9 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
       <View>
         {collaborators.map((item: any, index: number) => {
           let isSelected = selectedCollaborator.includes(item);
-          const collabratorName = `${item?.companyName || item?.email} (${item?.role?.name})`;
+          const collabratorName = `${item?.companyName || item?.email} (${
+            item?.role?.name
+          })`;
 
           return (
             <TouchableOpacity
@@ -499,9 +502,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                   style={{ width: 16, height: 16 }}
                 />
               )}
-              <Text style={styles.guestButtonText}>
-                {collabratorName}
-              </Text>
+              <Text style={styles.guestButtonText}>{collabratorName}</Text>
               {isSelected && <View />}
             </TouchableOpacity>
           );
@@ -605,18 +606,18 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                 subTitle={
                   searchText != '' ? ANNOUNCEMENT.Please_refine_your_search : ''
                 }
-              // isLoading={isLoading}
+                // isLoading={isLoading}
               />
             </View>
           }
           onEndReached={loadMore}
           onEndReachedThreshold={0.4}
           showsVerticalScrollIndicator={false}
-        // refreshControl={
-        //     allRecipients?.length > 0 ? (
-        //         <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
-        //     ) : undefined
-        // }
+          // refreshControl={
+          //     allRecipients?.length > 0 ? (
+          //         <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
+          //     ) : undefined
+          // }
         />
         {/* {selectedUsers.length != 0 ? (
                     <Button
@@ -817,8 +818,14 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
       const data = await fetch(imagePath);
       const blob = await data.blob();
       const fileName = name || image.split('/').pop();
-      const pathType = 'announcement'
-      const response = await uploadFileHook(fileName, size, type, blob, pathType);
+      const pathType = 'announcement';
+      const response = await uploadFileHook(
+        fileName,
+        size,
+        type,
+        blob,
+        pathType,
+      );
       if (response.success == true) {
         const imageUrl =
           environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
@@ -898,40 +905,47 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
               </Text>
               <View style={styles.lineView} />
               <View>
-
-
-
-
-                <CustomText style={[styles.label]} >
+                <CustomText style={[styles.label]}>
                   {ANNOUNCEMENT.Ticket_Type}
-                  <CustomText style={{ color: COLORS.errorText }}> *</CustomText>
+                  <CustomText style={{ color: COLORS.errorText }}>
+                    {' '}
+                    *
+                  </CustomText>
                   <TouchableOpacity
                     onPress={() => setshowTicketTooltip(!showTicketTooltip)}>
-                    <Image style={{ marginTop: 25, left: 5 }} tintColor={COLORS.light_gray} source={IMAGES.info_filled} />
+                    <Image
+                      style={{ marginTop: 25, left: 5 }}
+                      tintColor={COLORS.light_gray}
+                      source={IMAGES.info_filled}
+                    />
                   </TouchableOpacity>
                 </CustomText>
                 <Tooltip
-                  contentStyle={[styles.toolTipStyle, {
-                    height: verticalScale(60),
-                  }]}
+                  contentStyle={[
+                    styles.toolTipStyle,
+                    {
+                      height: verticalScale(60),
+                    },
+                  ]}
                   isVisible={showTicketTooltip}
                   displayInsets={{
                     left: 0,
                     right: 260,
                     top: 0,
-                    bottom: 0
+                    bottom: 0,
                   }}
                   arrowStyle={{ left: -10 }}
-                  backgroundColor='transparent'
+                  backgroundColor="transparent"
                   topAdjustment={verticalScale(-10)}
                   content={
                     <View>
-                      <Text style={styles.tooltipHeadStyle}>{ANNOUNCEMENT.ANNOUNCEMENT_TICKET_TOOLTIP}</Text>
+                      <Text style={styles.tooltipHeadStyle}>
+                        {ANNOUNCEMENT.ANNOUNCEMENT_TICKET_TOOLTIP}
+                      </Text>
                     </View>
                   }
                   placement={Placement.RIGHT}
-                  onClose={() => setshowTicketTooltip(false)}
-                >
+                  onClose={() => setshowTicketTooltip(false)}>
                   <View />
                 </Tooltip>
                 <View
@@ -939,17 +953,18 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                     ticketerrorMessage
                       ? styles.errorContainer
                       : [
-                        styles.inputContainer,
-                        {
-                          backgroundColor:
-                            announcementId != null ? COLORS.lighter_gray : 'white',
-                        },
-                      ]
+                          styles.inputContainer,
+                          {
+                            backgroundColor:
+                              announcementId != null
+                                ? COLORS.lighter_gray
+                                : 'white',
+                          },
+                        ]
                   }>
                   <View ref={ticketTypeRef} style={styles.userInfoContainer}>
                     {ticketTypeArr?.length == 0 ? (
-                      <Text
-                        style={[styles.inputStyle, { left: 0 }]}>
+                      <Text style={[styles.inputStyle, { left: 0 }]}>
                         Please select...
                       </Text>
                     ) : (
@@ -1064,17 +1079,18 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                     addedByerrorMessage
                       ? styles.errorContainer
                       : [
-                        styles.inputContainer,
-                        {
-                          backgroundColor:
-                          announcementId != null ? COLORS.lighter_gray : 'white',
-                        },
-                      ]
+                          styles.inputContainer,
+                          {
+                            backgroundColor:
+                              announcementId != null
+                                ? COLORS.lighter_gray
+                                : 'white',
+                          },
+                        ]
                   }>
                   <View ref={addedRef} style={styles.userInfoContainer}>
                     {collaboratorArr?.length == 0 ? (
-                      <Text
-                        style={[styles.inputStyle, { left: 0 }]}>
+                      <Text style={[styles.inputStyle, { left: 0 }]}>
                         Please select...
                       </Text>
                     ) : (
@@ -1098,8 +1114,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                               <Text style={[styles.label, { paddingTop: 0 }]}>
                                 {announcementId == null
                                   ? item?.email + ' (' + item?.role?.name + ')'
-                                  : item?.email
-                                }
+                                  : item?.email}
                               </Text>
                               {announcementId == null && (
                                 <TouchableOpacity
@@ -1153,12 +1168,14 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                     recipienterrorMessage
                       ? styles.errorContainer
                       : [
-                        styles.inputContainer,
-                        {
-                          backgroundColor:
-                          announcementId != null ? COLORS.lighter_gray : 'white',
-                        },
-                      ]
+                          styles.inputContainer,
+                          {
+                            backgroundColor:
+                              announcementId != null
+                                ? COLORS.lighter_gray
+                                : 'white',
+                          },
+                        ]
                   }>
                   <View style={styles.userInfoContainer}>
                     {allRecipients?.length == 0 ? (
@@ -1172,8 +1189,8 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                           const name =
                             announcementId == null
                               ? item?.user?.firstName +
-                              ' ' +
-                              item?.user?.lastName
+                                ' ' +
+                                item?.user?.lastName
                               : item?.firstName + ' ' + item?.lastName;
                           const profilePicture =
                             announcementId == null
@@ -1208,10 +1225,10 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                           allRecipients.length == 1
                             ? horizontalScale(-160)
                             : allRecipients.length == 2
-                              ? horizontalScale(-140)
-                              : allRecipients.length >= 3
-                                ? horizontalScale(-120)
-                                : horizontalScale(10),
+                            ? horizontalScale(-140)
+                            : allRecipients.length >= 3
+                            ? horizontalScale(-120)
+                            : horizontalScale(10),
                       }}>
                       <Text style={[styles.label, { paddingTop: 0 }]}>
                         {ANNOUNCEMENT.Recipients}
@@ -1297,6 +1314,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
                 onChangeText={setAnnouncementText}
                 label={ANNOUNCEMENT.Announcement}
                 errorMessage={ERROR_MESSAGE.ANNOUNCEMENT_DETAIL_ERROR}
+                hasHandler={true}
               />
               <Text style={styles.label}>{ANNOUNCEMENT.Attachments}</Text>
 

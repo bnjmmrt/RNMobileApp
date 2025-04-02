@@ -164,7 +164,7 @@ const CountryPickerBottomSheet = forwardRef<
             ref={searchInputRef}
             onSearchTextChange={setSearchValue}
             placeholder={'Search location'}
-            placeholderTextColor={'#A2A1A1'}
+            placeholderTextColor={COLORS.placeHodler}
             mainContainerStyle={{
               marginHorizontal: horizontalMarginScale(12),
               marginTop: verticalMarginScale(32),

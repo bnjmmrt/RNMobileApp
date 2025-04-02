@@ -37,7 +37,7 @@ import {
 } from '../../../utils/dimensions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 
-interface HostEditProfileScreenProps extends NativeStackScreenProps<any, any> { }
+interface HostEditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
 const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
   navigation,
@@ -152,6 +152,7 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
               errorMessage={''}
               defaultValue={profileData?.bio}
               multiline={true}
+              hasHandler={true}
             />
             <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
             <EmailInput ref={emailInputRef} />

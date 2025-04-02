@@ -12,6 +12,8 @@ import {
 import { Hp, Wp } from '../../utils/dimensions';
 import { Images } from '../../utils/Images';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
+import { fontFamily } from 'src/utils/functions';
+import { COLORS } from 'src/utils/constants';
 
 interface CustomTextInputProps extends TextInputProps {
   value: string;
@@ -32,7 +34,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
   onChangeText,
   showInfo,
   onPress,
-  placeholderTextColor,
+  placeholderTextColor = COLORS.placeHodler,
   isError,
   secureTextEntry,
   eyeVisibleValue,
@@ -135,7 +137,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#000',
     height: Hp(5),
-    fontWeight: '500',
+    fontFamily: fontFamily.ABCDiatype_Regular,
   },
 });
 

@@ -142,6 +142,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
               keyboardType="ascii-capable"
               multiline={true}
               maxLength={250}
+              hasHandler={true}
             />
             <CustomText style={styles.tagText}>Tag</CustomText>
             <CreativeFocusComponent

@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: fontScale(14),
     color: COLORS.black,
-    fontFamily: fontFamily.ABCDiatype_Medium,
+    fontFamily: fontFamily.ABCDiatype_Regular,
   },
   rightIconWrapper: {
     backgroundColor: COLORS.neutral_surface,
