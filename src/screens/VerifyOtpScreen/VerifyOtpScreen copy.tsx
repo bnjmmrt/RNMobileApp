@@ -14,6 +14,7 @@ import FullScreenLoader from '../../component/FullScreenLoader';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
 import { setLoginData } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
+import { normalizeEmail } from 'src/utils/functions';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -53,7 +54,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     const sendOtp = async (isResend: boolean) => {
         try {
             const requestParam = {
-                email: route.params.email,
+                email: normalizeEmail(route.params.email),
                 phoneNumber: route.params.phone
             }
             const response = await checkMemberLogin(requestParam).unwrap();
@@ -72,7 +73,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         try {
 
             const requestParam = {
-                email: route.params.email,
+                email: normalizeEmail(route.params.email),
                 phoneNumber: route.params.phone,
                 code: code,
                 isExist: isMemberExist

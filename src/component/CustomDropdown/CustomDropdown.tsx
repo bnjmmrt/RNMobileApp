@@ -56,7 +56,9 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                         </Text>
                     </View>
                     <View style={defaultStyle.justifyCenter}>
-                        <Image source={languageImage || Images.downArrowImg} style={[downArrowStyle]} />
+                        <Image 
+                        resizeMode='contain'
+                        source={languageImage || Images.downArrowImg} style={[downArrowStyle]} />
                     </View>
                 </View>
             </ModalDropdown>

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import {
   changeSafeAreaViewConfig,
+  normalizeEmail,
   removeSpaceFromStr,
 } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
@@ -62,7 +63,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     if (route.params.isEmail) {
       endPoint = EndPoint.email_send_verification_code;
       params = {
-        email: route.params.email,
+        email: normalizeEmail(route.params.email),
       };
     } else {
       endPoint = EndPoint.phone_send_verification_code;
@@ -91,7 +92,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     if (route.params.isEmail) {
       endPoint = EndPoint.email_verify_code;
       params = {
-        email: route.params.email,
+        email: normalizeEmail(route.params.email),
         verificationCode: otpInputRef.current && otpInputRef.current.code,
       };
     } else {

@@ -86,7 +86,7 @@ const AddGuestOptionScreen: React.FC<EmailPhoneScreenProps> = ({
         <TabBar
           onTabChange={handleTabChange}
           tabOneLabel="Add from Contacts"
-          tabTwoLabel="Add Manualy"
+          tabTwoLabel="Add Manually"
         />
         {currentTab == '01' ? <AddFromContacts /> : <GuestForm onSubmit={(e) => {
           dispatch(addGuest(e))

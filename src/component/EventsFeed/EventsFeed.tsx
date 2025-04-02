@@ -479,7 +479,8 @@ const EventsFeed = () => {
 
       {responseSubmitted && (
         <View style={styles.responseSubmitted}>
-          <Image source={IMAGES.check1} style={styles.check1} />
+          <Image resizeMode='contain'
+            source={IMAGES.check1} style={styles.check1} />
           <Text style={styles.responseSubmittedText}>Response Submitted</Text>
         </View>
       )}

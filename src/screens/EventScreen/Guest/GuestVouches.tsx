@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
     width: horizontalScale(16),
     height: verticalScale(16),
     tintColor: COLORS.black,
+    resizeMode:'contain'
   },
 
   textContainer: {

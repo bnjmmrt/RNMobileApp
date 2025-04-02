@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
   confirmedBadge: {
     width: 22,
     height: 22,
+    resizeMode:'contain'
   },
   progressContainer: {
     height: 4,

@@ -220,6 +220,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
           onPressRightIcon={() => {
             filtersSheetRef?.current?.open();
           }}
+          rightIconText={String(filterNumber || '') || ''}
           mainContainerStyle={{ marginHorizontal: 0 }}
         />
 

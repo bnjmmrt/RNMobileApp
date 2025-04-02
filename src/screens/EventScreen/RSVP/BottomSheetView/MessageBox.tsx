@@ -38,12 +38,12 @@ const MessageBox = (props: ConfirmationBottomSheetProps) => {
                             width: Wp('35%'),
                         },
                     ]}>
-                    <Image source={IMAGES.tickGoing} />
+                    <Image resizeMode='contain' source={IMAGES.tickGoing} />
                     <Text style={styles.statusText}> {'You are going'}</Text>
                 </View>
             ) : (
                 <View style={styles.statusBanner}>
-                    <Image source={IMAGES.tickDeclined} />
+                    <Image resizeMode='contain' source={IMAGES.tickDeclined} />
                     <Text style={styles.statusText}>
                         {' '}
                         {EVENT_STATUS.DECLINED_BY_YOU}

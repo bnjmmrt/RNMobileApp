@@ -56,7 +56,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
       <TouchableOpacity
         style={styles.filterBarRightIconWrapper}
         onPress={onPressFilter}>
-        <Image source={IMAGES.paragraph_spacing} />
+        <Image resizeMode='contain' source={IMAGES.paragraph_spacing} />
       </TouchableOpacity>
     </View>
   );

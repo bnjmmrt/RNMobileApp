@@ -2,7 +2,7 @@ import IMAGES from '@images/index';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useRef, useState } from 'react';
-import { View } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import DynamicTabBar, {
   TabItem,
 } from 'src/component/ActiveTabBar/DynamicTabBar';
@@ -73,6 +73,7 @@ const UserModule: React.FC<UserModuleProps> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
       <Header
         headerTitle="Users"
         showProgressBar={false}

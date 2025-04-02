@@ -66,7 +66,8 @@ const FeedSeriesDetail: React.FC<FeedSeriesDetailProps> = ({
               <TouchableOpacity
                 style={styles.leftArrowBtn}
                 onPress={() => setSeries(null)}>
-                <Image source={IMAGES.leftArrow} alt="left arrow" />
+                <Image resizeMode='contain'
+                  source={IMAGES.leftArrow} alt="left arrow" />
               </TouchableOpacity>
             </View>
             <View style={styles.contentContainer}>
@@ -154,7 +155,8 @@ const EventItem: React.FC<EventItemProps> = ({ event, setDetail }) => {
         <Text style={styles.content}>{formatEventDate(event.startDate)}</Text>
         <Text style={styles.content}>{event.location}</Text>
       </View>
-      <Image source={IMAGES.arrowRight} alt="arrow-right" />
+      <Image resizeMode='contain'
+        source={IMAGES.arrowRight} alt="arrow-right" />
     </TouchableOpacity>
   );
 };
@@ -292,6 +294,7 @@ const styles = StyleSheet.create({
     height: verticalScale(16),
     width: horizontalScale(16),
     marginLeft: horizontalMarginScale(8),
+    resizeMode: 'contain'
   },
   eventContainer: {
     flexDirection: 'row',
@@ -340,6 +343,7 @@ const styles = StyleSheet.create({
   check1: {
     width: horizontalScale(16),
     height: verticalScale(16),
+    resizeMode: 'contain'
   },
 });
 

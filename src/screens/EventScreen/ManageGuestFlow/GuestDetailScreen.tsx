@@ -776,6 +776,7 @@ const styles = StyleSheet.create({
   icon: {
     width: horizontalScale(16),
     height: verticalScale(16),
+    resizeMode:'contain'
   },
   title: {
     fontSize: fontScale(24),
@@ -826,6 +827,7 @@ const styles = StyleSheet.create({
     width: horizontalScale(16),
     height: verticalScale(16),
     tintColor: COLORS.white,
+    resizeMode:'contain'
   },
   footerButtons: {
     flex: 1,

@@ -13,9 +13,10 @@ interface ReferralRequestItemProps {
     image: string;
     onApproveApi: () => Promise<void>;
     onDeclineApi: () => Promise<void>;
+    loading?:boolean
 }
 
-const ReferralRequestItem: React.FC<ReferralRequestItemProps> = ({ name, image, message, onApproveApi, onDeclineApi }) => {
+const ReferralRequestItem: React.FC<ReferralRequestItemProps> = ({ name, image, message, onApproveApi, onDeclineApi,loading }) => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [status, setStatus] = useState<'approve' | 'reject' | null>(null);
 
@@ -54,7 +55,7 @@ const ReferralRequestItem: React.FC<ReferralRequestItemProps> = ({ name, image, 
                 {!isSubmitted ? (
                     <View style={styles.actions}>
                         <StatusButton text="Decline" type="stripe" onPress={handleDecline} />
-                        <StatusButton text="Approve" type="solid" onPress={handleApprove} />
+                        <StatusButton loading={loading}  text="Approve" type="solid" onPress={handleApprove} />
                     </View>
                 ) : (
                     <StatusButton

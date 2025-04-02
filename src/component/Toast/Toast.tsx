@@ -75,5 +75,6 @@ const styles = StyleSheet.create({
     fontSize: fontScale(14),
     fontWeight: 'bold',
     margin: verticalMarginScale(10),
+    resizeMode:'contain'
   },
 });

@@ -112,6 +112,10 @@ export function printLog(msg: string, value: any = ''): void {
   }
 }
 
+export function normalizeEmail(email: any): any {
+  return email?.trim().toLowerCase();
+}
+
 export const capitalizeFirstLetter = (text: string): string => {
   if (typeof text !== 'string' || text.trim() === '') {
     console.warn('Input is not a valid string');

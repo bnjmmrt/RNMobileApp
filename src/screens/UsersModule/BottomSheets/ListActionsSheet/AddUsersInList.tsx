@@ -131,6 +131,7 @@ const AddUsersInList = ({
           disabled={item.isInCustomList}>
           <View style={styles.userInfoContainer}>
             <Image
+            resizeMode='contain'
               source={
                 isSelected ? IMAGES.checkbox_active : IMAGES.checkbox_inactive
               }
@@ -149,7 +150,7 @@ const AddUsersInList = ({
               closeSheet();
               navigation.navigate(ROUTES.UserDetail, { user: item.id });
             }}>
-            <Image source={IMAGES.arrowRight} />
+            <Image resizeMode='contain' source={IMAGES.arrowRight} />
           </TouchableOpacity>
         </TouchableOpacity>
       );

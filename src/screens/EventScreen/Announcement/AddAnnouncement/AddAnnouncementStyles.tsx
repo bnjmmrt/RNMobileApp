@@ -134,14 +134,17 @@ const AddAnnouncementStyles = () => {
     icon: {
       width: verticalScale(16),
       height: verticalScale(16),
+      resizeMode:'contain'
     },
     downicon: {
       width: verticalScale(11),
       height: verticalScale(5.5),
+      resizeMode:'contain'
     },
     arrowicon: {
       width: verticalScale(10),
       height: verticalScale(7),
+      resizeMode:'contain'
     },
     pdfContainer: {
       width: horizontalScale(90),

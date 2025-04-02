@@ -31,6 +31,7 @@ const RecipientListItem: React.FC<RecipientListItemProps> = ({
       {showCheckbox ? (
         <TouchableOpacity onPress={() => onSelectUser(item)}>
           <Image
+            resizeMode='contain'
             source={
               isSelected ? IMAGES.checkbox_active : IMAGES.checkbox_inactive
             }

@@ -15,7 +15,7 @@ import {
   horizontalMarginScale,
   verticalMarginScale,
 } from 'src/utils/dimensions';
-import { fontFamily } from 'src/utils/functions';
+import { fontFamily, normalizeEmail } from 'src/utils/functions';
 import useContacts from 'src/utils/hooks/useContactPermission';
 
 interface GuestFormProps {
@@ -82,7 +82,7 @@ const GuestForm: React.FC<GuestFormProps> = ({ hasPhone, data, onSubmit }) => {
             getPhoneNumber(data?.phoneNumber).countryCode +
             phoneNumberInputRef.current.phoneNumber
           : '',
-        email: hasPhone ? '' : emailInputRef?.current?.inputText,
+        email: hasPhone ? '' : normalizeEmail(emailInputRef?.current?.inputText),
       };
       onSubmit(filledValues);
     } else {

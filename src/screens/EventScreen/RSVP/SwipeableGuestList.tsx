@@ -80,14 +80,14 @@ export const SwipeableGuestList = ({ guest, onDelete, onInfoClick }) => {
                 guest?.guestStatus === "DECLINED" ?
                     <TouchableOpacity style={styles.deleteButton} onPress={handleInfoClick}>
                         <View style={styles.iconBox}>
-                            <Image source={IMAGES.info} style={{ width: 15, height: 15 }} />
+                            <Image source={IMAGES.info} style={{ width: 15, height: 15,resizeMode:'contain' }} />
                         </View>
                         <Text style={styles.deleteText}>Information</Text>
                     </TouchableOpacity>
                     :
                     <TouchableOpacity style={styles.deleteButton} onPress={() => guest?.guestStatus ? handleDelete('server') : handleDelete('local')}>
                         <View style={styles.iconBox}>
-                            <Image source={IMAGES.trash} style={{ width: 15, height: 15 }} />
+                            <Image source={IMAGES.trash} style={{ width: 15, height: 15,resizeMode:'contain' }} />
                         </View>
                         <Text style={styles.deleteText}>Delete</Text>
                     </TouchableOpacity>

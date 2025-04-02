@@ -1,6 +1,6 @@
 import IMAGES from '@images/index';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { COLORS } from 'src/utils/constants';
 import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
@@ -10,9 +10,10 @@ interface StatusButtonProps {
   type: 'solid' | 'stripe' | 'circular';
   status?: 'approve' | 'reject';
   onPress?: () => void;
+  loading?: boolean
 }
 
-const StatusButton: React.FC<StatusButtonProps> = ({ text, type, status, onPress }) => {
+const StatusButton: React.FC<StatusButtonProps> = ({ text, type, status, onPress, loading }) => {
   if (type === 'circular' && status) {
     const icon = status === 'approve' ? IMAGES.tick : IMAGES.cancel;
     const bgColor = status === 'approve' ? COLORS.successLight : COLORS.bgRed;
@@ -29,7 +30,11 @@ const StatusButton: React.FC<StatusButtonProps> = ({ text, type, status, onPress
 
   return (
     <TouchableOpacity style={[styles.baseButton, buttonStyle]} onPress={onPress}>
-      <Text style={textStyle}>{text}</Text>
+      {loading ?
+        <ActivityIndicator color={COLORS.white} />
+        :
+        <Text style={textStyle}>{text}ww</Text>
+      }
     </TouchableOpacity>
   );
 };

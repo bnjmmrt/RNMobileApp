@@ -387,6 +387,7 @@ export const ERROR_MESSAGE = {
   DESCRIPTION_SIZE_EXCEED: 'Bio cannot exceed 200 words',
   FIRST_NAME_REQUIRED: 'First name is required',
   LAST_NAME_REQUIRED: 'Last name is required',
+  EMAIL_REQUIRED: 'Email is required',
   PLEASE_PROVIDE_EMAIL_OR_PHONE:
     'Please provide at least one contact method: email or phone number.',
 };

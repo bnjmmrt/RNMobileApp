@@ -73,7 +73,8 @@ const SwapToDeleteComponent: React.FC<SwappableItemProps> = ({
       {toggled && (
         <View style={styles.actions}>
           <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-            <Image source={IMAGES.deleteGray} />
+            <Image resizeMode='contain'
+              source={IMAGES.deleteGray} />
             <Text style={styles.actionText}>{BUTTON_LABLE.DELETE}</Text>
           </TouchableOpacity>
         </View>

@@ -9,7 +9,7 @@ const BackButtonOverlay = ({ onPress, customStyle, imageSource }: { onPress: () 
   return (
     <TouchableOpacity style={containerStyle} onPress={onPress}>
       <View style={styles.iconWrapper}>
-        <Image source={imageSource || IMAGES.leftArrow} />
+        <Image style={{resizeMode:'contain'}} source={imageSource || IMAGES.leftArrow} />
       </View>
     </TouchableOpacity>
   );

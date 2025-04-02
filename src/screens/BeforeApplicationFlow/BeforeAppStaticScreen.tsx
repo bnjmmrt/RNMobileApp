@@ -53,7 +53,8 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
           position: 'absolute',
         }}>
         <View style={styles.iconWrapper}>
-          <Image source={IMAGES.cross} />
+          <Image resizeMode='contain'
+ source={IMAGES.cross} />
         </View>
       </TouchableOpacity>}
 

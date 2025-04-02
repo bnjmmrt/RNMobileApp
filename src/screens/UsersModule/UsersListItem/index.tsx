@@ -67,6 +67,7 @@ const UserListItem: React.FC<UserListItemProps> = ({
             justifyContent: 'center',
           }}>
           <Image
+            resizeMode='contain'
             source={
               isSelected ? IMAGES.checkbox_active : IMAGES.checkbox_inactive
             }

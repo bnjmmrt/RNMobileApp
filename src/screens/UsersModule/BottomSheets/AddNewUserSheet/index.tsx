@@ -29,6 +29,7 @@ import { verticalMarginScale } from 'src/utils/dimensions';
 import {
   ApiErrorInterface,
   getErrorMessage,
+  normalizeEmail,
   removeSpaceFromStr,
 } from 'src/utils/functions';
 import { styles } from './style';
@@ -165,27 +166,28 @@ const AddNewUserSheet = forwardRef<
   const onPressAddUser = async () => {
     firstNameRef?.current?.setErrorMessage('');
     lastNameRef?.current?.setErrorMessage('');
-    phoneNumberRef?.current?.setErrorMessage('');
+    // phoneNumberRef?.current?.setErrorMessage('');
     emailRef?.current?.setErrorMessage('');
 
     firstNameRef?.current?.validateInputs();
     lastNameRef?.current?.validateInputs();
 
-    if (!email && !phone) {
-      emailRef.current?.setErrorMessage('');
-      phoneNumberRef?.current?.validatePhoneNumber(
-        ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
-      );
-      setError(ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE);
-    } else {
-      emailRef.current?.setErrorMessage('');
-      setError(null);
+    if (!email) {
+      emailRef.current?.setErrorMessage(ERROR_MESSAGE.EMAIL_REQUIRED);
+      // phoneNumberRef?.current?.validatePhoneNumber(
+      //   ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
+      // );
+      setError(ERROR_MESSAGE.EMAIL_REQUIRED);
     }
-    if (phone) {
-      phoneNumberRef?.current?.validatePhoneNumber(
-        ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
-      );
-    }
+    //  else {
+    //   emailRef.current?.setErrorMessage('');
+    //   setError(null);
+    // }
+    // if (phone) {
+    //   phoneNumberRef?.current?.validatePhoneNumber(
+    //     ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
+    //   );
+    // }
     if (email) {
       validateEmailAddress();
     }
@@ -195,9 +197,10 @@ const AddNewUserSheet = forwardRef<
       validateName('FirstName') &&
       lastNameRef?.current?.validateInputs() &&
       validateName('LastName') &&
-      (phoneNumberRef?.current?.validatePhoneNumber(
-        ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
-      ) ||
+      (
+      //   phoneNumberRef?.current?.validatePhoneNumber(
+      //   ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
+      // ) ||
         emailRef?.current?.validateInputs())
     ) {
       let validEmail = validateEmailAddress();
@@ -207,7 +210,7 @@ const AddNewUserSheet = forwardRef<
       try {
         // const requestParam = { email, phoneNumber: phone };
         const response = await addNewUser({
-          email: email,
+          email: normalizeEmail(email),
           firstName: firstName,
           lastName: lastName,
           phoneNumber: removeSpaceFromStr(
@@ -220,12 +223,12 @@ const AddNewUserSheet = forwardRef<
             setExistingUser(response.data);
             if (response.data?.hasEmail) {
               emailRef?.current?.setErrorMessage(
-                'This user is already in database, enter a new email',
+                'This user is already in database, enter a new email or select the user profile card below.',
               );
             }
             if (response.data?.hasPhone) {
               phoneNumberRef?.current?.setErrorMessage(
-                'This user is already in database, enter a new phone number',
+                'This user is already in database, enter a new phone number or select the user profile card below.',
               );
             }
           } else {
@@ -280,7 +283,7 @@ const AddNewUserSheet = forwardRef<
         />
         <Input
           ref={emailRef}
-          errorMessage={''}
+          errorMessage={ERROR_MESSAGE.EMAIL_REQUIRED}
           label="Email *"
           placeholder="example@gmail.com"
           defaultValue={email}
@@ -288,14 +291,14 @@ const AddNewUserSheet = forwardRef<
             setEmail(text);
           }}
           forBottomSheet={true}
-          isBackgroundRed={errorMessage == null ? false : true}
+          // isBackgroundRed={errorMessage == null ? false : true}
           onBlur={validateEmailAddress}
           keyboardType="email-address"
           isEmail
         />
         <PhoneNumberInput
           ref={phoneNumberRef}
-          label="Phone Number *"
+          label="Phone Number"
           otherStyle={{ marginTop: 24 }}
           onChangeText={text => setPhone(text)}
           onSelectCountry={setSelectedCountry}
@@ -317,7 +320,7 @@ const AddNewUserSheet = forwardRef<
             <View style={{ flex: 1 }}>
               <CustomText style={styles.userName}>
                 {`${existingUser?.user?.firstName} ${existingUser?.user?.lastName}`}
-                <Image source={IMAGES.arrow_up_right} />
+                <Image resizeMode='contain' source={IMAGES.arrow_up_right} />
               </CustomText>
               <CustomText style={styles.alreadyPresent}>
                 {'This user is already a part of our database'}

@@ -20,7 +20,7 @@ const DeclinedBySection: React.FC<DeclinedBySectionProps> = ({ name }) => {
   return (
     <View style={styles.addedByContainer}>
       <View style={styles.addedByAvatarPlaceholder}>
-        <Image source={IMAGES.user_x} />
+        <Image resizeMode='contain' source={IMAGES.user_x} />
       </View>
       <View style={styles.addedByUser}>
         <Text style={styles.addedByText}>Declined by</Text>

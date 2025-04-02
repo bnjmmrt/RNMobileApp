@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
   followIcon: {
     width: horizontalScale(16),
     height: verticalScale(16),
+    resizeMode:'contain'
   },
   guestCard: {
     backgroundColor: COLORS.white,
@@ -239,6 +240,7 @@ const styles = StyleSheet.create({
     height: verticalScale(12),
     marginRight: horizontalMarginScale(4),
     tintColor: COLORS.surfaceSecondary,
+    resizeMode:'contain'
   },
   memberBadgeText: {
     color: COLORS.white,

@@ -359,7 +359,8 @@ export const CountryPicker = ({
                   alignItems: 'center',
                 },
               ]}>
-              <Image source={IMAGES.search} style={{ marginStart: 20 }} />
+              <Image source={IMAGES.search} style={{ marginStart: 20,resizeMode:'contain'
+ }} />
 
               <TextInput
                 ref={inputRef}
