@@ -1,8 +1,17 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable react-native/no-inline-styles */
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useCallback, useRef } from 'react';
-import { Platform, ScrollView, View } from 'react-native';
+import React, { useCallback, useRef, useState } from 'react';
+import {
+  Platform,
+  ScrollView,
+  View,
+  Text,
+  TouchableOpacity,
+  Linking,
+  Image,
+} from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
@@ -30,12 +39,19 @@ import {
 import {
   changeSafeAreaViewConfig,
   convertDateFormat,
+  fontFamily,
   loginUser,
   removeSpaceFromStr,
 } from '../../../utils/functions';
 import IdentityVerificationStyles from './IdentityVerificationStyles';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
 
-interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
+interface IdentityVerificationProps extends NativeStackScreenProps<any, any> {}
 
 const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   navigation,
@@ -47,6 +63,8 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   const styles = IdentityVerificationStyles();
   const dispatch = useDispatch();
   const usernameRef = useRef<any>(null);
+  const [noInstagram, setNoInstagram] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   const { companyLogo, isGuest, varifyStatus } = useSelector(
     (state: RootState) => ({
@@ -59,11 +77,36 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
 
   const fcmToken = useSelector((state: RootState) => state.auth.fcmToken);
   const deviceId = useSelector((state: RootState) => state.auth.deviceId);
+
+  const handleInstagramInput = (text: string) => {
+    if (text) {
+      setNoInstagram(false);
+    }
+    if (showError) {
+      setShowError(false);
+    }
+    usernameRef.current?.setInputText(text);
+  };
+
+  const handleNoInstagramToggle = () => {
+    if (usernameRef.current?.inputText) {
+      return; // Don't allow checking if there's text in the input
+    }
+    setNoInstagram(!noInstagram);
+    if (showError) {
+      setShowError(false);
+    }
+    if (!noInstagram) {
+      // If we're enabling noInstagram, clear the input
+      usernameRef.current?.setInputText('');
+    }
+  };
+
   const onNextClick = async () => {
-    // Validate username first
-    // if (!usernameRef.current?.validateInputs()) {
-    //   return;
-    // }
+    if (!usernameRef.current?.inputText && !noInstagram) {
+      setShowError(true);
+      return;
+    }
 
     const requestParams: any = {
       address: {
@@ -92,7 +135,6 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       deviceId: deviceId,
     };
 
-    console.log('requestParams', requestParams);
     const response: any = await apiRequest(
       'post',
       EndPoint.member_signUp,
@@ -125,7 +167,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
         email: userDetails.email,
         firstName: userDetails.firstName,
         focuses: [],
-        gender: genderList.find(item => item.id === userDetails.gender)?.value,
+        gender: genderList.find(item => item.id === userDetails.gender)?.gender,
 
         id: response?.data?.id,
         imageUrl: userDetails.profilePic,
@@ -164,6 +206,10 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     navigation.goBack();
   };
 
+  const goToInstagram = () => {
+    Linking.openURL('instagram://');
+  };
+
   useFocusEffect(
     useCallback(() => {
       changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
@@ -178,24 +224,80 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       />
 
       <ScrollView
-        contentContainerStyle={{ paddingBottom: 50 }}
+        contentContainerStyle={styles.scrollViewContent}
         style={styles.contentContainer}>
         <Title
           title={LABLE.IDENTITY_VERIFICATION_TITLE}
           subTitle={LABLE.IDENTITY_VERIFICATION_SUBTITLE}
         />
+
         <Input
-          otherStyle={{ marginTop: 15 }}
-          inputFieldContainerStyle={{ height: 60 }}
+          otherStyle={styles.inputMarginTop}
+          inputFieldContainerStyle={styles.inputFieldHeight}
           ref={usernameRef}
-          isRequired
+          isRequired={!noInstagram}
           placeholder={'@Username'}
           placeholderTextColor={COLORS.placeHodler}
           leftImage={IMAGES.instagramLogo}
           errorMessage={'Please enter username'}
           defaultValue={''}
+          onChangeText={handleInstagramInput}
+          editable={!noInstagram}
         />
+
+        <View style={styles.mainContainer}>
+          <Text style={styles.title}>{LABLE.COMPLETE_VERIFICATION}:</Text>
+          <View style={styles.numberContainer}>
+            <Text style={styles.numberText}>1</Text>
+          </View>
+          <Text style={styles.subTitle}>{LABLE.SEND_DIRECT_MSG_CODE}</Text>
+          <View style={[styles.rumorTextContainer, { marginTop: -5 }]}>
+            <View style={styles.btnRumorContainer}>
+              <Text style={styles.btnRumor}>{LABLE.RUMORAPP}</Text>
+            </View>
+
+            <Text style={[styles.subTitle, { paddingHorizontal: 0 }]}>
+              {' to '}
+            </Text>
+            <Text style={styles.emailStyle}>@therumor</Text>
+          </View>
+
+          <View style={styles.numberContainer}>
+            <Text style={styles.numberText}>2</Text>
+          </View>
+          <Text style={styles.subTitle}>{LABLE.WE_WILL_REVIEW_APP}</Text>
+
+          <Button
+            disabled={false}
+            style={styles.btnSmallStyle}
+            title={BUTTON_LABLE.GO_TO_INSTAGRAM}
+            colorTheme="light"
+            onPress={goToInstagram}
+          />
+        </View>
+
+        <TouchableOpacity
+          style={styles.noInstagramContainer}
+          onPress={handleNoInstagramToggle}
+          disabled={!!usernameRef.current?.inputText}>
+          <Image
+            source={
+              noInstagram ? IMAGES.checkbox_active : IMAGES.checkbox_inactive
+            }
+          />
+          <Text style={styles.noInstagramText}>
+            {LABLE.I_DONT_HAVE_INSTAGRAM}
+          </Text>
+        </TouchableOpacity>
+
+        {showError && (
+          <View style={styles.errorContainer}>
+            <Image source={IMAGES.close} />
+            <Text style={styles.errorText}>Please select at least one</Text>
+          </View>
+        )}
       </ScrollView>
+
       {!keyboardVisible ? (
         <Button
           disabled={false}
