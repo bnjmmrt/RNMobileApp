@@ -70,7 +70,7 @@ import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 import EventInvitation from 'src/component/Event/EventInvitation';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: any;
@@ -101,8 +101,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     take: 50,
     skip: 0,
   };
-  const { data: announcementData, refetch: refetchAnnouncement, isLoading: announcementLoading } =
-    useFetchHostEventsAnnouncementQuery(annqueryArgs);
+  const {
+    data: announcementData,
+    refetch: refetchAnnouncement,
+    isLoading: announcementLoading,
+  } = useFetchHostEventsAnnouncementQuery(annqueryArgs);
 
   const { top } = useSafeAreaInsets();
   const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 44 : 24;
@@ -153,9 +156,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const)
       : ({
-        userId,
-        eventId: route?.params?.id,
-      } as const);
+          userId,
+          eventId: route?.params?.id,
+        } as const);
 
   const useFetchEventDetailsHook =
     role === ROLE.HOST
@@ -647,7 +650,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                 <EventOverview item={data?.data} isFurtherInstrection={false} />
 
                 {talents.length > 0 && <EventTalent talents={talents} />}
-                {announcementLoading && <ActivityIndicator color={COLORS.black} /> }
+                {announcementLoading && (
+                  <ActivityIndicator color={COLORS.black} />
+                )}
                 {role == ROLE.HOST ? (
                   <EventAnnouncements
                     role={role}

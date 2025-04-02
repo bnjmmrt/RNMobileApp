@@ -41,7 +41,6 @@ interface FeatureTalentBottomSheetProps {
     imageKeyUrl: string;
     action: string;
   }) => void;
-  onPencilClick: () => void;
   title?: string;
   submitButtonText: string;
   cancelButtonText: string;
@@ -56,11 +55,13 @@ const FeatureTalentBottomSheet = forwardRef<
   const inputRef = useRef<any>(null);
   const [image, setImage] = useState(props.talent?.imageKeyUrl || '');
   const [imageError, setImageError] = useState(false);
+
   useEffect(() => {
-    setImage(props.talent?.imageKeyUrl || '');
+    if (props?.talent?.imageKeyUrl) {
+      setImage(props.talent?.imageKeyUrl || '');
+    }
   }, [props]);
 
-  const { apiRequest, loading } = useApi();
   const { uploadFileHook } = useUploadFile();
   const [imageSize, setImageSize] = useState<number>(0);
   const [loader, setLoader] = useState<boolean>(false);
@@ -73,7 +74,7 @@ const FeatureTalentBottomSheet = forwardRef<
       cropperCircleOverlay: true,
     })
       .then((image: ImageOrVideo) => {
-        setImage('')
+        setImage('');
         setImageError(false); // Clear error on selection
         savePhoto(image.path);
       })
@@ -102,24 +103,31 @@ const FeatureTalentBottomSheet = forwardRef<
   };
 
   const savePhoto = async (image: any) => {
-    setLoader(true)
+    setLoader(true);
     try {
       const data = await fetch(image);
       const blob = await data.blob();
       const fileName = image.split('/').pop();
-      const pathType = 'feature-talent'
-      const response = await uploadFileHook(fileName, imageSize, 'image', blob, pathType)
+      const pathType = 'feature-talent';
+      const response = await uploadFileHook(
+        fileName,
+        imageSize,
+        'image',
+        blob,
+        pathType,
+      );
       if (response.success) {
-        const imageUrl = environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
+        const imageUrl =
+          environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
         setImage(imageUrl);
       } else {
         setImageError(true);
         console.log('savePhoto else', response);
       }
-      setLoader(false)
+      setLoader(false);
       console.log('savePhoto', response);
     } catch (error) {
-      setLoader(false)
+      setLoader(false);
       console.error('Error uploading image:', error);
     }
   };

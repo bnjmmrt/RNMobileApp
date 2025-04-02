@@ -1,5 +1,9 @@
 import IMAGES from '@images/index';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import {
+  NavigationProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
@@ -23,6 +27,7 @@ import BackButton from 'src/component/BackButton/BackButton';
 import Button from 'src/component/Button';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import FullScreenLoader from 'src/component/FullScreenLoader';
+import { EventStackParamList } from 'src/navigation/EventStack';
 import { ROUTES } from 'src/navigation/Route';
 import { RootState } from 'src/redux/slices';
 import { COLORS } from 'src/utils/constants';
@@ -40,6 +45,8 @@ const SCANNER_SIZE = width * 0.6;
 
 const QRCodeScanner = () => {
   const navigation = useNavigation();
+  const eventStackNavigation =
+    useNavigation<NavigationProp<EventStackParamList>>();
   const route = useRoute();
   const { apiRequest, loading, error } = useApi();
   const device = useCameraDevice('back');
@@ -120,11 +127,17 @@ const QRCodeScanner = () => {
 
   const onClose = () => navigation.goBack();
 
-  const onMenuClick = () => { };
+  const onMenuClick = () => {
+    eventStackNavigation.navigate(ROUTES.EventGuestList, {
+      eventId: eventId,
+      listFilter: { id: 'confirmed', label: 'Confirmed' },
+    });
+  };
+
   if (!hasPermission) {
     return (
       <>
-        <BackButton onPress={() => { }} />
+        <BackButton onPress={() => {}} />
         <View style={styles.btnContainer}>
           <Text>Camera permission is required</Text>
           <Button
@@ -132,7 +145,7 @@ const QRCodeScanner = () => {
             style={styles.btn}
             colorTheme="dark"
             title="Give Access"
-            onPress={() => requestPermission()}
+            onPress={() => onMenuClick()}
           />
         </View>
       </>

@@ -282,12 +282,14 @@ const FilterOptions = ({
                 : selectedFilters['longitude']?.value[0]?.name || ''
             }
             setLocation={location => {
-              onChangeOptionValue(id, optionType, {
-                id: location.placeId,
-                name: location.address,
-                lat: location.latitude,
-                long: location.longitude,
-              });
+              if (location.placeId) {
+                onChangeOptionValue(id, optionType, {
+                  id: location.placeId,
+                  name: location.address,
+                  lat: location.latitude,
+                  long: location.longitude,
+                });
+              }
             }}
           />
           {showSelectedLocationChip &&
@@ -327,6 +329,7 @@ const FilterOptions = ({
                         });
                       }}
                       id={String(item.id)}
+                      showCross={true}
                     />
                   );
                 },

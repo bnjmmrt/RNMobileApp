@@ -715,7 +715,15 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 
             {Boolean(quizQuestions?.questions?.length) && (
               <View style={{ marginTop: verticalMarginScale(16) }}>
-                <Questionnaire isCollapsible data={mapQuestionsWithAnswers()} />
+                <Questionnaire
+                  title={
+                    guestProfile?.invitationSource === 'SIGN_UP_FORM'
+                      ? 'Form Response'
+                      : 'Questionnaire'
+                  }
+                  isCollapsible
+                  data={mapQuestionsWithAnswers()}
+                />
               </View>
             )}
           </View>

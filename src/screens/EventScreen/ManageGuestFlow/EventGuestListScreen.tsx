@@ -57,8 +57,10 @@ import FiltersSheet from 'src/component/FilterSheet';
 import AvatarInitials from 'src/component/AvatarInitials';
 import { useFocusEffect } from '@react-navigation/native';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { EventStackParamList } from 'src/navigation/EventStack';
 
-interface EventGuestListProps extends NativeStackScreenProps<any, any> {
+interface EventGuestListProps
+  extends NativeStackScreenProps<EventStackParamList, 'EventGuestList'> {
   eventId?: string;
 }
 
@@ -73,6 +75,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   route,
 }) => {
   const eventId = route?.params?.eventId;
+  const listFilter = route?.params?.listFilter;
 
   const [searchText, setSearchText] = useState('');
   const [expandedGuests, setExpandedGuests] = useState<{
@@ -133,10 +136,15 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
 
   useEffect(() => {
     if (guestsError) {
-      console.error('Error fetching guests:', guestsError);
       FlashMessageComponent.show('error', 'Failed to load guests');
     }
   }, [guestsError]);
+
+  useEffect(() => {
+    if (listFilter) {
+      handleFilterSelect(listFilter?.id);
+    }
+  }, [listFilter]);
 
   // Calculate total confirmed guests from entire list
   const totalConfirmedGuests = guests.filter(guest => guest.checkIn).length;
@@ -240,12 +248,9 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     <TouchableOpacity
       style={styles.inviteeItem}
       onPress={() => {
-        navigation.navigate(ROUTES.EventStack, {
-          screen: ROUTES.GuestDetailScreen,
-          params: {
-            guestId: leadId,
-            eventId,
-          },
+        navigation.navigate(ROUTES.GuestDetailScreen, {
+          guestId: leadId,
+          eventId,
         });
       }}>
       <View style={styles.inviteeLeftContainer}>
@@ -275,12 +280,9 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
       <TouchableOpacity
         style={styles.guestItem}
         onPress={() => {
-          navigation.navigate(ROUTES.EventStack, {
-            screen: ROUTES.GuestDetailScreen,
-            params: {
-              guestId: item.id,
-              eventId,
-            },
+          navigation.navigate(ROUTES.GuestDetailScreen, {
+            guestId: item.id,
+            eventId,
           });
         }}>
         <View style={styles.leftContainer}>

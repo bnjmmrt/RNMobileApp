@@ -1,29 +1,50 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
-import {COLORS} from '../../utils/constants';
+import { Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { COLORS } from '../../utils/constants';
 import {
   horizontalMarginScale,
   radiusScale,
   verticalMarginScale,
   verticalScale,
 } from '../../utils/dimensions';
-import {CustomText} from '../CustomText';
+import { CustomText } from '../CustomText';
+import IMAGES from '@images/index';
 
 interface ChipProps {
   id: string;
   title: string;
   isSelected: boolean;
+  showCross?: boolean;
   onPress: (id: string) => void;
 }
 
-const Chip: React.FC<ChipProps> = ({id, title, onPress, isSelected}) => {
+const Chip: React.FC<ChipProps> = ({
+  id,
+  title,
+  onPress,
+  isSelected,
+  showCross,
+}) => {
   return (
     <TouchableOpacity
       style={[styles.container, isSelected && styles.selectedContainer]}
-      onPress={() => onPress(id)}>
+      activeOpacity={showCross ? 1 : 0}
+      onPress={() => {
+        if (!showCross) {
+          onPress(id);
+        }
+      }}>
       <CustomText style={isSelected ? styles.selectedTitle : {}}>
         {title}
       </CustomText>
+      {showCross ? (
+        <TouchableOpacity onPress={() => onPress(id)}>
+          <Image
+            source={IMAGES.filterClose}
+            style={{ tintColor: COLORS.white }}
+          />
+        </TouchableOpacity>
+      ) : null}
     </TouchableOpacity>
   );
 };
@@ -36,11 +57,14 @@ const styles = StyleSheet.create({
     borderWidth: verticalScale(1),
     borderColor: COLORS.borderGray,
     backgroundColor: COLORS.lighter_gray,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: horizontalMarginScale(6),
   },
   selectedContainer: {
     backgroundColor: COLORS.black,
   },
-  selectedTitle: {color: COLORS.white},
+  selectedTitle: { color: COLORS.white },
 });
 
 export default Chip;
