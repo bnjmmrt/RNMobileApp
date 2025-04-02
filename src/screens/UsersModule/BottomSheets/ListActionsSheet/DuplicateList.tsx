@@ -60,7 +60,9 @@ const DuplicateList = ({
         }
       } catch (error) {
         const typedError = error as ApiErrorInterface;
-        showError(getErrorMessage(typedError));
+        if (typedError?.data?.message !== `customName exists`) {
+          showError(getErrorMessage(typedError));
+        }
       }
     }
   };
@@ -70,6 +72,15 @@ const DuplicateList = ({
       setCustomName(listName);
     }
   }, [listName]);
+
+  useEffect(() => {
+    if (
+      duplicateCustomListError &&
+      duplicateCustomListError?.data?.message === `customName exists`
+    ) {
+      listNameRef?.current?.setErrorMessage('List name already exists');
+    }
+  }, [duplicateCustomListError]);
 
   return (
     <BottomSheetView style={styles.actionContentWrapper}>

@@ -60,7 +60,10 @@ import SelectReason from './BottomSheetView/SelectReason';
 import RenderCancelPopup from './RenderCancelPopup';
 import { styles } from './styles';
 import { SwipeableGuestList } from './SwipeableGuestList';
-import { formatDetailedEventDate, formatEventRSVPDate } from 'src/utils/dateFunctions';
+import {
+  formatDetailedEventDate,
+  formatEventRSVPDate,
+} from 'src/utils/dateFunctions';
 import { InteractionManager } from 'react-native';
 import { Alert } from 'react-native';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
@@ -683,8 +686,8 @@ const RSVPInvitedUpcoming = () => {
               fontSize: fontScale(14),
             }}>
             Please add your additional guests’ details by{' '}
-            {formatEventRSVPDate(startDate, timeZone)}, or their
-            passes will be canceled.
+            {formatEventRSVPDate(startDate, timeZone)}, or their passes will be
+            canceled.
           </CustomText>
         )}
 
@@ -818,8 +821,8 @@ const RSVPInvitedUpcoming = () => {
             paddingBottom: 8,
           }}>
           Please add your additional guests’ details by{' '}
-          {formatEventRSVPDate(startDate, timeZone)}, or their
-          passes will be canceled.
+          {formatEventRSVPDate(startDate, timeZone)}, or their passes will be
+          canceled.
         </CustomText>
         <Button
           disabled={false}

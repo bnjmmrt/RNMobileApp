@@ -46,7 +46,7 @@ const StatusLabel: React.FC<StatusLabelProps> = ({
             lineHeight: isFilter ? fontScale(16) : fontScale(14),
           },
         ]}>
-        {status}
+        {status === 'APPLIED' ? 'Requested' : status}
       </Text>
     </View>
   );

@@ -197,7 +197,7 @@ export const LABLE = {
   EVENT_ANNOUNCEMENTS: 'Event Announcements',
   INITATION_MESSAGE: 'Message from Revolve',
   FURTHER_INSTRICTIONS: 'Further Instrictions',
-  NO_EVENT_ANNOUNCEMENTS: 'You have no announcements',
+  NO_EVENT_ANNOUNCEMENTS: 'No Event Announcements',
   PAST_EVENT_ANNOUNCEMENTS_ERROR:
     'You can’t post event announcements for past events.',
   PUBLISH_EVENT_ANNOUNCEMENTS_ERROR: 'Event is not published yet.',

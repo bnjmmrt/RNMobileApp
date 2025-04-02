@@ -29,10 +29,16 @@ export type EventStackParamList = {
   RSVPInvitedUpcoming: { event: any };
   AddGuestOptionScreen: undefined;
   AddGuestScreen: undefined;
-  EventGuestList: { guests: Array<{ name: string; status: string }> };
+  EventGuestList: {
+    eventId: string;
+    listFilter?: {
+      id: string;
+      label: string;
+    };
+  };
   GuestCheckInScreen: undefined;
   QRCodeScanner: undefined;
-  GuestDetailScreen: { guest: any };
+  GuestDetailScreen: { guestId: string; eventId: string };
   [ROUTES.SelectGuestsToInviteScreen]: undefined;
   [ROUTES.SelectedGuestsToInviteScreen]: {
     users: UserItemInterface[];

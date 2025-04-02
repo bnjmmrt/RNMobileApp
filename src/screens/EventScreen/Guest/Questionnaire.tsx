@@ -8,6 +8,7 @@ import { fontFamily } from 'src/utils/functions';
 
 interface QuestionnaireProps {
   isCollapsible?: boolean;
+  title: string;
   data: {
     question: string;
     answer: string;
@@ -17,6 +18,7 @@ interface QuestionnaireProps {
 const Questionnaire: React.FC<QuestionnaireProps> = ({
   isCollapsible = false,
   data,
+  title,
 }) => {
   const renderQuestionAnswer = (question: string, answer: string) => {
     return (
@@ -35,7 +37,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({
   };
 
   return (
-    <CollapseWrap title="Questionnaire" isCollapsible={isCollapsible}>
+    <CollapseWrap title={title} isCollapsible={isCollapsible}>
       <View style={styles.content}>
         {data.map((item, index) => (
           <View key={index}>

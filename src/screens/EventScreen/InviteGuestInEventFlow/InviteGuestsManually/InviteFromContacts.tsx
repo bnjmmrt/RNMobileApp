@@ -55,8 +55,33 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
     try {
       setContactsFetching(true);
       const formattedContacts = await getContacts();
-      setContacts(formattedContacts);
-      setFilteredContacts(formattedContacts);
+
+      if (formattedContacts) {
+        let nonInvitedUsers: ContactItem[] = [];
+        formattedContacts.map((item, index) => {
+          const userPhone = getPhoneNumber(item.phoneNumber);
+
+          const isInvited = guestsData?.data?.result.some(
+            (user: EventGuest) => {
+              const hasPlus = user.phoneNumber?.includes('+');
+              const phoneWithoutPlus = hasPlus
+                ? user.phoneNumber?.split('+')[1]
+                : user.phoneNumber;
+              return (
+                phoneWithoutPlus ===
+                `${userPhone.countryCode}${userPhone.phoneNumber}`
+              );
+            },
+          );
+          if (!isInvited) {
+            nonInvitedUsers.push(item);
+          }
+        });
+        setContacts(nonInvitedUsers);
+        setFilteredContacts(nonInvitedUsers);
+      }
+      // setContacts(formattedContacts);
+      // setFilteredContacts(formattedContacts);
       setContactsFetching(false);
     } catch (error) {
       setContactsFetching(false);
@@ -87,17 +112,7 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
 
   const renderItem = useCallback(
     ({ item }: { item: ContactItem }) => {
-      const userPhone = getPhoneNumber(item.phoneNumber).phoneNumber;
-
-      const isInvited = guestsData?.data?.result.some((user: EventGuest) => {
-        const hasPlus = user.phoneNumber?.includes('+');
-        const phoneWithoutPlus = hasPlus
-          ? user.phoneNumber?.split('+')[1]
-          : user.phoneNumber;
-
-        return phoneWithoutPlus === `${userPhone}`;
-      });
-
+      const userPhone = getPhoneNumber(item.phoneNumber);
       return (
         <View style={styles.listItem}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -109,22 +124,19 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
           </View>
           <ButtonSmall
             style={styles.smallBtnStyle}
-            title={!isInvited ? 'Invite' : 'Invited'}
+            title={'Invite'}
             colorTheme={'dark'}
-            disabled={isInvited}
             onPress={() => {
-              if (!isInvited) {
-                dispatch(
-                  setSelectedManualUser({
-                    ...item,
-                    phoneNumber: userPhone,
-                  }),
-                );
-                navigation.navigate(ROUTES.InviteGuestScreen, {
-                  isManual: true,
-                  type: 'contact',
-                });
-              }
+              dispatch(
+                setSelectedManualUser({
+                  ...item,
+                  phoneNumber: userPhone.phoneNumber,
+                }),
+              );
+              navigation.navigate(ROUTES.InviteGuestScreen, {
+                isManual: true,
+                type: 'contact',
+              });
             }}
           />
         </View>
@@ -134,16 +146,17 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
   );
 
   useEffect(() => {
-    fetchContacts();
-  }, [permissionGranted]);
+    if (guestsData?.data?.result) {
+      fetchContacts();
+    }
+  }, [permissionGranted, guestsData]);
 
-  console.log(
-    '!contactsFetching && !permissionGranted',
-    !contactsFetching && !permissionGranted,
-    permissionGranted,
-  );
-
-  if (!permissionGranted) {
+  if (
+    !permissionGranted &&
+    !isFetchingGuests &&
+    !isLoadingGuests &&
+    !contactsFetching
+  ) {
     return (
       <View
         style={{
@@ -190,8 +203,12 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
             }}>
             <EventEmptyRecord
               title="User not found"
-              subTitle="This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest"
-              isLoading={contactsFetching}
+              subTitle={
+                'This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest'
+              }
+              isLoading={
+                contactsFetching || isLoadingGuests || isFetchingGuests
+              }
             />
           </View>
         }

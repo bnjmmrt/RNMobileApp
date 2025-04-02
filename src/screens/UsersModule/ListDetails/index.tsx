@@ -222,6 +222,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
           }}
           rightIconText={String(filterNumber || '') || ''}
           mainContainerStyle={{ marginHorizontal: 0 }}
+          defaultValue={searchText}
         />
 
         <FlatList
