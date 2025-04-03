@@ -13,7 +13,7 @@ import {
 const EventItemSkeleton = () => {
   return (
     <View style={styles.container}>
-      <SkeletonPlaceholder>
+      <SkeletonPlaceholder backgroundColor={COLORS.lighter_gray}>
         <SkeletonPlaceholder.Item
           width={verticalScale(120)}
           height={horizontalScale(175)}
@@ -21,7 +21,7 @@ const EventItemSkeleton = () => {
         />
       </SkeletonPlaceholder>
       <View style={styles.contentContainer}>
-        <SkeletonPlaceholder>
+        <SkeletonPlaceholder backgroundColor={COLORS.lighter_gray}>
           <SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item
               width="80%"

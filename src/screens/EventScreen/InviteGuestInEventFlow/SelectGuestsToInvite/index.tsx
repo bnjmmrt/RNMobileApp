@@ -185,7 +185,7 @@ const SelectGuestsToInviteScreen: React.FC<
 
   const renderUserSkeletonItem = () => {
     return (
-      <SkeletonPlaceholder>
+      <SkeletonPlaceholder backgroundColor={COLORS.lighter_gray}>
         <SkeletonPlaceholder.Item
           flexDirection="row"
           alignItems="center"

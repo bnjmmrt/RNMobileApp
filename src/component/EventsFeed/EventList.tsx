@@ -94,7 +94,7 @@ const EventList = ({
 
   const renderEventSkeletonItem = () => {
     return (
-      <SkeletonPlaceholder>
+      <SkeletonPlaceholder backgroundColor={COLORS.lighter_gray}>
         <View style={{ width: (Wp(100) - horizontalMarginScale(60)) / 2 }}>
           <SkeletonPlaceholder.Item
             width="100%"

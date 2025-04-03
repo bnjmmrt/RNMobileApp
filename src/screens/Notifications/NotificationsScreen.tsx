@@ -2,7 +2,6 @@ import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
   FlatList,
   RefreshControl,
   StyleSheet,
@@ -10,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AvatarInitials from 'src/component/AvatarInitials';
 import EmptyRecordComponent from 'src/component/EmptyRecord/EmptyRecordComponent';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
@@ -51,13 +51,34 @@ interface Notification {
 
 const NotificationItemSkeleton = () => {
   return (
-    <View style={[styles.notification, styles.skeletonContainer]}>
-      <View style={styles.skeletonAvatar} />
-      <View style={styles.skeletonTextContainer}>
-        <View style={styles.skeletonTitle} />
-        <View style={styles.skeletonMessage} />
-      </View>
-      <View style={styles.skeletonTime} />
+    <View style={skeletonStyles.container}>
+      <SkeletonPlaceholder
+        backgroundColor={COLORS.lighter_gray}
+        highlightColor={COLORS.white}
+        speed={1200}
+        borderRadius={radiusScale(16)}>
+        <View style={skeletonStyles.content}>
+          <SkeletonPlaceholder.Item width={48} height={48} borderRadius={24} />
+          <View style={skeletonStyles.textContainer}>
+            <SkeletonPlaceholder.Item
+              width="80%"
+              height={fontScale(14)}
+              borderRadius={radiusScale(4)}
+              marginBottom={verticalMarginScale(4)}
+            />
+            <SkeletonPlaceholder.Item
+              width="60%"
+              height={fontScale(14)}
+              borderRadius={radiusScale(4)}
+            />
+          </View>
+          <SkeletonPlaceholder.Item
+            width="20%"
+            height={fontScale(11)}
+            borderRadius={radiusScale(4)}
+          />
+        </View>
+      </SkeletonPlaceholder>
     </View>
   );
 };
@@ -273,40 +294,25 @@ const styles = StyleSheet.create({
     fontSize: fontScale(11),
     color: COLORS.light_gray,
   },
-  // Skeleton styles
-  skeletonContainer: {
-    // borderColor: 'transparent',
+});
+
+const skeletonStyles = StyleSheet.create({
+  container: {
+    height: verticalScale(80),
+    marginBottom: verticalMarginScale(4),
+    borderRadius: radiusScale(16),
     borderWidth: 1,
-    // marginHorizontal: 16,
+    borderColor: COLORS.borderGray,
+    overflow: 'hidden',
   },
-  skeletonAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: COLORS.lighter_gray,
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: verticalMarginScale(16),
   },
-  skeletonTextContainer: {
+  textContainer: {
     flex: 1,
     paddingHorizontal: horizontalMarginScale(12),
-  },
-  skeletonTitle: {
-    height: fontScale(14),
-    width: '80%',
-    backgroundColor: COLORS.lighter_gray,
-    borderRadius: radiusScale(4),
-    marginBottom: verticalMarginScale(4),
-  },
-  skeletonMessage: {
-    height: fontScale(14),
-    width: '60%',
-    backgroundColor: COLORS.lighter_gray,
-    borderRadius: radiusScale(4),
-  },
-  skeletonTime: {
-    height: fontScale(11),
-    width: '20%',
-    backgroundColor: COLORS.lighter_gray,
-    borderRadius: radiusScale(4),
   },
 });
 

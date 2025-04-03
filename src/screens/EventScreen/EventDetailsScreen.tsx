@@ -479,7 +479,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           marginTop: verticalScale(20) + STATUS_BAR_HEIGHT,
         }}>
         <View style={styles.contentContainer}>
-          <SkeletonPlaceholder>
+          <SkeletonPlaceholder backgroundColor={COLORS.lighter_gray}>
             <SkeletonPlaceholder.Item>
               {/* Cover Image Skeleton */}
               <SkeletonPlaceholder.Item
