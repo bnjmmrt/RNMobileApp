@@ -8,6 +8,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, RefreshControl, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import { CustomText } from 'src/component/CustomText';
@@ -33,6 +34,7 @@ import {
   Hp,
   verticalMarginScale,
   verticalScale,
+  Wp,
 } from 'src/utils/dimensions';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
@@ -62,6 +64,8 @@ const SelectGuestsToInviteScreen: React.FC<
   const [filterQuery, setFilterQuery] = useState<string>('');
   const [filterNumber, setFilterNumber] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [isDataLoading, setIsDataLoading] = useState(true);
 
   const { selectedUsers, selectedEvent } = useSelector(
     (state: RootState) => ({
@@ -147,9 +151,9 @@ const SelectGuestsToInviteScreen: React.FC<
     } else if (filterNumber > 0) {
       return 'Remove filters to expand your search';
     } else if (searchText) {
-      return 'This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest';
+      return 'This users is not in our system or already has a status on the guest list. Tap "+" to add a new guest';
     } else {
-      return 'This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest';
+      return 'This users is not in our system or already has a status on the guest list. Tap "+" to add a new guest';
     }
   };
 
@@ -179,15 +183,58 @@ const SelectGuestsToInviteScreen: React.FC<
     [selectedUsers],
   );
 
+  const renderUserSkeletonItem = () => {
+    return (
+      <SkeletonPlaceholder backgroundColor={COLORS.lighter_gray}>
+        <SkeletonPlaceholder.Item
+          flexDirection="row"
+          alignItems="center"
+          justifyContent="space-between"
+          paddingVertical={verticalMarginScale(8)}>
+          <SkeletonPlaceholder.Item flexDirection="row" alignItems="center">
+            <SkeletonPlaceholder.Item
+              width={40}
+              height={40}
+              borderRadius={20}
+            />
+            <SkeletonPlaceholder.Item
+              marginLeft={horizontalMarginScale(12)}
+              width={Wp(50)}
+              height={18}
+              borderRadius={4}
+            />
+          </SkeletonPlaceholder.Item>
+          <SkeletonPlaceholder.Item width={24} height={24} borderRadius={4} />
+        </SkeletonPlaceholder.Item>
+      </SkeletonPlaceholder>
+    );
+  };
+
+  const renderUserSkeletonList = () => {
+    return (
+      <View style={styles.skeletonListContainer}>
+        {Array(10)
+          .fill(0)
+          .map((_, index) => (
+            <View key={index} style={styles.skeletonItemContainer}>
+              {renderUserSkeletonItem()}
+            </View>
+          ))}
+      </View>
+    );
+  };
+
   useEffect(() => {
     if (data && data.data) {
       if (currentPage === 1) {
         setAllUsers(data.data);
+        setIsDataLoading(false);
       } else {
         setAllUsers(prev => ({
           totalCount: data.data.totalCount,
           result: [...prev.result, ...data.data.result],
         }));
+        setIsDataLoading(false);
       }
     }
   }, [data]);
@@ -195,6 +242,7 @@ const SelectGuestsToInviteScreen: React.FC<
   useEffect(() => {
     if (isError) {
       setAllUsers({ totalCount: 0, result: [] });
+      setIsDataLoading(false);
     }
   }, [isError]);
 
@@ -237,68 +285,55 @@ const SelectGuestsToInviteScreen: React.FC<
           filtersSheetRef?.current?.open();
         }}
         rightIconText={String(filterNumber || '') || ''}
-        mainContainerStyle={{ marginHorizontal: horizontalMarginScale(20) }}
+        mainContainerStyle={styles.searchInputContainer}
         defaultValue={searchText}
       />
-      <FlatList
-        data={allUsers?.result || []}
-        style={{
-          marginHorizontal: horizontalMarginScale(20),
-          marginTop: verticalMarginScale(16),
-        }}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{ gap: verticalMarginScale(16) }}
-        ListFooterComponent={
-          <View style={{ marginBottom: verticalMarginScale(150) }} />
-        }
-        ListEmptyComponent={
-          <View
-            style={{
-              height: Hp(55),
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <EventEmptyRecord
-              title={getEmptyStateTitle()}
-              subTitle={getEmptyStateMessage()}
-              isLoading={isLoading}
-              footerContent={
-                !isLoading && filterNumber > 0 ? (
-                  <Button
-                    title={'Reset Filters'}
-                    imageSource={IMAGES.refresh}
-                    leftImageStyle={{
-                      height: verticalScale(16),
-                      width: verticalScale(16),
-                    }}
-                    onPress={onClearFilter}
-                    colorTheme="dark"
-                    textStyle={{ marginHorizontal: 0 }}
-                    style={{
-                      alignSelf: 'center',
-                      width: undefined,
-                      height: undefined,
-                      paddingHorizontal: horizontalMarginScale(12),
-                      paddingVertical: verticalMarginScale(12),
-                      gap: horizontalMarginScale(6),
-                      marginTop: verticalMarginScale(30),
-                    }}
-                  />
-                ) : null
-              }
-            />
-          </View>
-        }
-        onEndReached={loadMore}
-        onEndReachedThreshold={0.4}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          allUsers?.result?.length > 0 ? (
-            <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
-          ) : undefined
-        }
-      />
+
+      {isDataLoading && currentPage === 1 ? (
+        renderUserSkeletonList()
+      ) : (
+        <FlatList
+          data={allUsers?.result}
+          style={styles.flatListContainer}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={styles.flatListContentContainer}
+          ListFooterComponent={<View style={styles.flatListFooter} />}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <EventEmptyRecord
+                title={getEmptyStateTitle()}
+                subTitle={getEmptyStateMessage()}
+                isLoading={isLoading}
+                footerContent={
+                  !isLoading && filterNumber > 0 ? (
+                    <Button
+                      title={'Reset Filters'}
+                      imageSource={IMAGES.refresh}
+                      leftImageStyle={styles.resetFiltersButtonImage}
+                      onPress={onClearFilter}
+                      colorTheme="dark"
+                      textStyle={{ marginHorizontal: 0 }}
+                      style={styles.resetFiltersButton}
+                    />
+                  ) : null
+                }
+              />
+            </View>
+          }
+          onEndReached={loadMore}
+          onEndReachedThreshold={0.4}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            allUsers?.result?.length > 0 ? (
+              <RefreshControl
+                refreshing={isLoading}
+                onRefresh={onRefreshPage}
+              />
+            ) : undefined
+          }
+        />
+      )}
 
       <Button
         title={`${
@@ -306,7 +341,7 @@ const SelectGuestsToInviteScreen: React.FC<
         }Next`}
         onPress={onPressNext}
         colorTheme="dark"
-        style={{ position: 'absolute', bottom: verticalScale(8) }}
+        style={styles.nextButton}
         disabled={selectedUsers.length === 0}
       />
 

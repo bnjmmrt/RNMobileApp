@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux';
 import AvatarInitials from 'src/component/AvatarInitials';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import ImagePdfViewer from 'src/component/Event/ImagePdfViewer';
+import AnnouncementItemSkeleton from 'src/component/Event/AnnouncementItemSkeleton';
 import Header from 'src/component/Header/Header';
 import { ROUTES } from 'src/navigation/Route';
 import { useFetchHostEventsAnnouncementQuery } from 'src/redux/actions/eventApiAction';
@@ -26,9 +27,180 @@ import { formatViewAnnouncementDate } from 'src/utils/dateFunctions';
 import { Hp, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import AnnouncementStyles from './styles';
 
-interface AnnouncementProps extends NativeStackScreenProps<any, any> { }
+interface AnnouncementProps extends NativeStackScreenProps<any, any> {}
 type RouteParams = {
   params: any;
+};
+
+// Move MediaItem component outside of Announcement
+const MediaItem = ({
+  item,
+  media,
+  name,
+  image,
+  index,
+  onPress,
+}: {
+  item: any;
+  media: any;
+  name: any;
+  image: any;
+  index: number;
+  onPress: (media: any, name: string, image: string, index: number) => void;
+}) =>
+  item.mediaType === 'image' ? (
+    <TouchableOpacity onPress={() => onPress(media, name, image, index)}>
+      <FastImage
+        source={{ uri: item?.media }}
+        style={AnnouncementStyles().mediaImage}
+      />
+    </TouchableOpacity>
+  ) : (
+    <TouchableOpacity
+      onPress={() => onPress(media, name, image, index)}
+      style={AnnouncementStyles().pdfContainer}>
+      <Image
+        source={IMAGES.pdf}
+        style={AnnouncementStyles().pdfIcon}
+        resizeMode="contain"
+      />
+      <Text style={AnnouncementStyles().title} numberOfLines={2}>
+        {item?.mediaName}
+      </Text>
+    </TouchableOpacity>
+  );
+
+// Move AnnouncementItem component outside of Announcement
+const AnnouncementItem = ({
+  item,
+  navigation,
+  eventData,
+  role,
+}: {
+  item: any;
+  navigation: any;
+  eventData: any;
+  role: string;
+}) => {
+  const [expanded, setExpanded] = useState(false);
+  const styles = AnnouncementStyles();
+  const shouldShowReadMore = item?.announcement?.split(' ')?.length > 25;
+  const displayedText =
+    expanded || !shouldShowReadMore
+      ? item?.announcement
+      : `${item?.announcement.substring(0, 100)}...`;
+  const date = formatViewAnnouncementDate(item?.createdAt);
+  const imageKeyUrl = item?.user?.additionalHostInformation?.companyLogo;
+  const name = item?.user?.firstName + ' ' + item?.user?.lastName;
+
+  return (
+    <View style={styles.Detailcontainer}>
+      <View
+        style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
+        <View style={styles.userInfoRow}>
+          <AvatarInitials
+            name={name}
+            imgUrl={imageKeyUrl}
+            size={36}
+            textColor="white"
+          />
+
+          <View style={styles.userInfoContent}>
+            <Text style={styles.headerTitle}>{name}</Text>
+            <Text style={styles.subtitle}>{date}</Text>
+          </View>
+
+          {role === ROLE.HOST && (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('EventStack', {
+                  screen: 'AddAnnouncementScreen',
+                  params: { eventData, announcementId: item?.id },
+                });
+              }}
+              style={[styles.iconWrapper]}>
+              <Image source={IMAGES.pencil} style={styles.icon} />
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
+      <View style={styles.lineView} />
+      <View style={styles.textContainer}>
+        <Text numberOfLines={expanded ? undefined : 3} style={styles.name}>
+          {displayedText}
+        </Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {item?.attachments?.map((mediaItem: string, index: number) => (
+            <MediaItem
+              key={index}
+              index={index}
+              item={mediaItem}
+              media={item.attachments}
+              name={name}
+              image={imageKeyUrl}
+              onPress={(media, name, image, index) => {
+                console.log('Media item pressed', {
+                  media,
+                  name,
+                  image,
+                  index,
+                });
+              }}
+            />
+          ))}
+        </ScrollView>
+        {!expanded && shouldShowReadMore ? (
+          <TouchableOpacity
+            onPress={() => setExpanded(!expanded)}
+            style={styles.toggleContainer}>
+            <Text style={styles.toggleText}>{ANNOUNCEMENT.READ_MORE}</Text>
+            <FastImage source={IMAGES.downArrow} style={styles.toggleIcon} />
+          </TouchableOpacity>
+        ) : (
+          shouldShowReadMore && (
+            <TouchableOpacity
+              onPress={() => setExpanded(!expanded)}
+              style={styles.toggleContainer}>
+              <Text style={styles.toggleText}>{ANNOUNCEMENT.READ_LESS}</Text>
+              <FastImage source={IMAGES.downArrow} style={styles.toggleIcon} />
+            </TouchableOpacity>
+          )
+        )}
+      </View>
+      <View style={styles.lineView} />
+      <View style={styles.recipientHeader}>
+        <Text style={styles.headerDes}>{ANNOUNCEMENT.Send_to}</Text>
+        <View style={styles.countWrapper}>
+          <Text style={styles.label}>
+            {item?.recipientCount} {ANNOUNCEMENT.Recipients}
+          </Text>
+        </View>
+      </View>
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
+        horizontal={true}
+        style={{ marginVertical: verticalMarginScale(10) }}>
+        {item?.ticketType.map((item: any) => {
+          return (
+            <View style={[styles.countWrapper, styles.recipientItem]}>
+              <Text style={styles.label}>{item?.name}</Text>
+            </View>
+          );
+        })}
+        {item?.addedBy.map((item: any) => {
+          let selectedName =
+            item?.firstName == 'NA'
+              ? ' -- '
+              : item?.firstName + ' ' + item?.lastName;
+          return (
+            <View style={[styles.countWrapper, styles.recipientItem]}>
+              <Text style={styles.label}>{selectedName} </Text>
+            </View>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
 };
 
 const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
@@ -38,6 +210,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
   const [announcementData, setannouncementData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
   const [viewerVisible, setViewerVisible] = useState(false);
   const [media, setMedia] = useState([]);
   const [companyName, setCompanyName] = useState('');
@@ -59,6 +232,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
           ? data?.data?.result
           : [...prev, ...data?.data?.result],
       );
+      setIsDataLoading(false);
     }
   }, [data]);
 
@@ -76,7 +250,6 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
     }
   };
 
-  console.log('announcementData index', data?.data);
   const handleBackPress = () => {
     navigation.goBack();
   };
@@ -262,6 +435,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
       </View>
     );
   };
+
   const onClose = () => {
     setViewerVisible(false);
   };
@@ -280,47 +454,56 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
         showProgressBar={false}
         rightIconWrapperStyle={{ backgroundColor: COLORS.black }}
       />
-      {/* {isLoading && <ActivityIndicator color={COLORS.black} />} */}
 
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContainer}>
         <View style={styles.contentContainer}>
-          <FlatList
-            data={announcementData}
-            style={{
-              marginBottom: verticalMarginScale(90),
-              marginTop: verticalMarginScale(5),
-            }}
-            renderItem={({ item }) => <AnnouncementItem item={item} />}
-            keyExtractor={(item, index) => index.toString()}
-            contentContainerStyle={{ gap: verticalMarginScale(16) }}
-            ListEmptyComponent={
-              <View
-                style={{
-                  height: Hp(40),
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <EventEmptyRecord
-                  title={LABLE.NO_EVENT_ANNOUNCEMENTS}
-                  subTitle=""
-                  isLoading={isLoading}
+          {isDataLoading && (
+            <FlatList
+              data={[1, 2, 3]} // Show 3 skeleton items
+              style={styles.flatListContainer}
+              keyExtractor={item => `skeleton-${item}`}
+              renderItem={() => <AnnouncementItemSkeleton />}
+            />
+          )}
+
+          {!isDataLoading && (
+            <FlatList
+              data={announcementData}
+              style={styles.flatListContainer}
+              renderItem={({ item }) => (
+                <AnnouncementItem
+                  item={item}
+                  navigation={navigation}
+                  eventData={eventData}
+                  role={role}
                 />
-              </View>
-            }
-            onEndReached={loadMore}
-            onEndReachedThreshold={0.5}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              announcementData?.length > 0 ? (
-                <RefreshControl
-                  refreshing={isLoading}
-                  onRefresh={handleRefresh}
-                />
-              ) : undefined
-            }
-          />
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              contentContainerStyle={styles.flatListContent}
+              ListEmptyComponent={
+                <View style={styles.emptyContainer}>
+                  <EventEmptyRecord
+                    title={LABLE.NO_EVENT_ANNOUNCEMENTS}
+                    subTitle=""
+                    isLoading={isLoading}
+                  />
+                </View>
+              }
+              onEndReached={loadMore}
+              onEndReachedThreshold={0.5}
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                announcementData?.length > 0 ? (
+                  <RefreshControl
+                    refreshing={isLoading}
+                    onRefresh={handleRefresh}
+                  />
+                ) : undefined
+              }
+            />
+          )}
         </View>
       </ScrollView>
       {viewerVisible && (

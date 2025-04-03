@@ -130,7 +130,7 @@ const Lists: React.FC<ListsProps> = ({ }) => {
 
   const renderListSkeletonItem = (index: number) => {
     return (
-      <SkeletonPlaceholder>
+      <SkeletonPlaceholder backgroundColor={COLORS.lighter_gray}>
         <SkeletonPlaceholder.Item
           flexDirection="row"
           alignItems="center"

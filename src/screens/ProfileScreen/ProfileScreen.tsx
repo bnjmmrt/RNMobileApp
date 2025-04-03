@@ -156,17 +156,28 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     }
   };
 
+  
   useEffect(() => {
     if (profileData?.email) {
       Intercom.loginUserWithUserAttributes({
-        email: profileData?.email,
-        userId,
+        email: profileData.email,
+        userId: role + profileData?.id,
         name: `${profileData?.firstName} ${profileData?.lastName}`,
       });
     }
     Intercom.setLauncherVisibility(Visibility.GONE);
+
+    return () => {
+      Intercom.logout();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileData?.email, profileData?.firstName, profileData?.lastName]);
+  }, [
+    profileData?.email,
+    profileData?.firstName,
+    profileData?.lastName,
+    userId,
+    role,
+  ]);
 
   const contactSupportModal = () => {
     Intercom.present();
