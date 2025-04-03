@@ -23,6 +23,7 @@ import UserActionsSheet, {
   UserActionCurrentPageType,
 } from '../BottomSheets/UserActionsSheet';
 import UserListItem, { UserItemInterface } from '../UsersListItem';
+import { COLORS } from 'src/utils/constants'
 
 interface AllUserProps {}
 
@@ -149,7 +150,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
 
   const renderUserSkeletonItem = () => {
     return (
-      <SkeletonPlaceholder>
+      <SkeletonPlaceholder backgroundColor={COLORS.lighter_gray}>
         <SkeletonPlaceholder.Item
           flexDirection="row"
           alignItems="center"

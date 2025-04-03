@@ -2,7 +2,6 @@ import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
   FlatList,
   RefreshControl,
   StyleSheet,
@@ -10,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AvatarInitials from 'src/component/AvatarInitials';
 import EmptyRecordComponent from 'src/component/EmptyRecord/EmptyRecordComponent';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
@@ -37,14 +37,60 @@ import {
 } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-interface NotificationsScreenProps extends NativeStackScreenProps<any, any> { }
+interface NotificationsScreenProps extends NativeStackScreenProps<any, any> {}
+
+// Define the notification type to fix the linter error
+interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  image?: string;
+  isSeen: boolean;
+  createdDate: string;
+}
+
+const NotificationItemSkeleton = () => {
+  return (
+    <View style={skeletonStyles.container}>
+      <SkeletonPlaceholder
+        backgroundColor={COLORS.lighter_gray}
+        highlightColor={COLORS.white}
+        speed={1200}
+        borderRadius={radiusScale(16)}>
+        <View style={skeletonStyles.content}>
+          <SkeletonPlaceholder.Item width={48} height={48} borderRadius={24} />
+          <View style={skeletonStyles.textContainer}>
+            <SkeletonPlaceholder.Item
+              width="80%"
+              height={fontScale(14)}
+              borderRadius={radiusScale(4)}
+              marginBottom={verticalMarginScale(4)}
+            />
+            <SkeletonPlaceholder.Item
+              width="60%"
+              height={fontScale(14)}
+              borderRadius={radiusScale(4)}
+            />
+          </View>
+          <SkeletonPlaceholder.Item
+            width="20%"
+            height={fontScale(11)}
+            borderRadius={radiusScale(4)}
+          />
+        </View>
+      </SkeletonPlaceholder>
+    </View>
+  );
+};
 
 const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
   navigation,
 }) => {
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [isDataLoading, setIsDataLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedNotification, setSelectedNotification] = useState<any>(null);
+  const [selectedNotification, setSelectedNotification] =
+    useState<Notification | null>(null);
 
   const queryArgs = {
     take: 10,
@@ -65,9 +111,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
           ? data?.data?.result
           : [...prev, ...data?.data?.result],
       );
-    }
-    else {
-      setNotifications([]);
+      setIsDataLoading(false);
     }
   }, [data]);
 
@@ -83,21 +127,13 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
     detailQueryArgs as { notificationId: string },
     { skip: !selectedNotification },
   );
-  const [
-    deleteNotification,
-    {
-      isLoading: deleteLoading,
-      isError: deleteError,
-      isSuccess: deleteSuccess,
-    },
-  ] = useDeleteNotificationMutation();
+  const [deleteNotification] = useDeleteNotificationMutation();
 
-  const markAsRead = (noti: any) => {
+  const markAsRead = (noti: Notification) => {
     console.log('Mark as read:', noti);
     if (selectedNotification?.id === noti?.id) {
       navigateToScreen(noti, 'in-app');
-    }
-    else {
+    } else {
       navigateToScreen(noti, 'in-app');
       setSelectedNotification(noti);
     }
@@ -112,7 +148,6 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
     useCallback(() => {
       changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
       refetch();
-
     }, []),
   );
   const handleBackPress = () => navigation.goBack();
@@ -136,7 +171,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
     }
   };
 
-  const renderItem = (item: any) => {
+  const renderItem = (item: Notification) => {
     return (
       <TouchableOpacity
         style={[styles.notification, !item.isSeen && styles.unread]}
@@ -162,7 +197,21 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
         onPress={handleBackPress}
         showProgressBar={false}
       />
-      {notifications?.length ? (
+
+      {isLoading && !notifications?.length && isDataLoading && (
+        <View style={styles.contentContainer}>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={[1, 2, 3, 4, 5]} // Show 5 skeleton items
+            keyExtractor={item => `skeleton-${item}`}
+            renderItem={() => <NotificationItemSkeleton />}
+          />
+        </View>
+      )}
+
+      {Boolean(
+        !(isLoading && !notifications?.length) && notifications?.length,
+      ) && (
         <View style={styles.contentContainer}>
           <FlatList
             showsVerticalScrollIndicator={false}
@@ -179,12 +228,17 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
             onEndReachedThreshold={0.5}
             refreshControl={
               notifications?.length > 0 ? (
-                <RefreshControl refreshing={isLoading} onRefresh={handleRefresh} />
+                <RefreshControl
+                  refreshing={isLoading}
+                  onRefresh={handleRefresh}
+                />
               ) : undefined
             }
           />
         </View>
-      ) : (
+      )}
+
+      {!isLoading && !notifications?.length && !isDataLoading && (
         <EmptyRecordComponent
           title={LABLE.NO_NOTIFICATIONS_YET}
           subTitle={LABLE.NOTIFICATIONS_SUB_TITLE}
@@ -239,6 +293,26 @@ const styles = StyleSheet.create({
   time: {
     fontSize: fontScale(11),
     color: COLORS.light_gray,
+  },
+});
+
+const skeletonStyles = StyleSheet.create({
+  container: {
+    height: verticalScale(80),
+    marginBottom: verticalMarginScale(4),
+    borderRadius: radiusScale(16),
+    borderWidth: 1,
+    borderColor: COLORS.borderGray,
+    overflow: 'hidden',
+  },
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: verticalMarginScale(16),
+  },
+  textContainer: {
+    flex: 1,
+    paddingHorizontal: horizontalMarginScale(12),
   },
 });
 

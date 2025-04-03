@@ -1,11 +1,12 @@
 import { useScrollToTop } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, FlatList, View } from 'react-native';
+import { ActivityIndicator, FlatList, View, StyleSheet } from 'react-native';
 import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
 import { useFetchEventsQuery } from '../../../redux/actions/eventApiAction';
 import { Hp, verticalMarginScale } from '../../../utils/dimensions';
 import EventItem from '../EventItem';
 import { COLORS } from 'src/utils/constants';
+import EventItemSkeleton from '../../../component/EventItemSkeleton';
 
 interface InvitedEventsProps {
   userId: string;
@@ -56,12 +57,19 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
-      {events?.length > 0 ? (
+    <View style={styles.container}>
+      {isLoading && !events?.length ? (
+        <FlatList
+          data={[1, 2, 3]} // Show 3 skeleton items
+          style={styles.list}
+          keyExtractor={item => `skeleton-${item}`}
+          renderItem={() => <EventItemSkeleton />}
+        />
+      ) : events?.length > 0 ? (
         <FlatList
           ref={scrollToTopRef}
           data={events}
-          style={{ paddingBottom: 10, paddingHorizontal: 15 }}
+          style={styles.list}
           keyExtractor={(item, index) => `${item.id}-${index}`}
           renderItem={({ item }) => <EventItem item={item} />}
           refreshing={refreshing}
@@ -69,18 +77,13 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
           ListFooterComponent={
-            <View style={{ marginBottom: verticalMarginScale(100) }}>
+            <View style={styles.footer}>
               {isLoading ? <ActivityIndicator color={COLORS.black} /> : null}
             </View>
           }
         />
       ) : (
-        <View
-          style={{
-            height: Hp(55),
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
+        <View style={styles.emptyContainer}>
           <EventEmptyRecord
             title={tab.title}
             subTitle={tab.subTitle}
@@ -91,5 +94,25 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  list: {
+    paddingBottom: 10,
+    paddingHorizontal: 15,
+  },
+  footer: {
+    marginBottom: verticalMarginScale(100),
+  },
+  emptyContainer: {
+    height: Hp(55),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 export default InvitedEvents;
