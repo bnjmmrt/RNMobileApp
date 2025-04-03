@@ -22,6 +22,7 @@ import { existingUserType } from '.';
 import createStyles from './styles';
 import { removeSpaceFromStr } from 'src/utils/functions';
 import { ERROR_MESSAGE, LABLE } from 'src/utils/constants';
+import useApi from 'src/axios/useApi';
 
 interface NewUserViewProps {
   firstNameRef: React.RefObject<InputRefMethods>;
@@ -67,6 +68,7 @@ const NewUserView: React.FC<NewUserViewProps> = ({
   const styles = createStyles();
   const navigation = useNavigation<NavigationProp<EventStackParamList>>();
   const dispatch = useDispatch();
+  console.log('phone', phone);
 
   const [
     getUserWithEmail,
@@ -92,9 +94,8 @@ const NewUserView: React.FC<NewUserViewProps> = ({
     const regex =
       /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-    return regex.test(email)
+    return regex.test(email);
   };
-
 
   const fetchUserByEmail = async () => {
     try {
@@ -250,12 +251,14 @@ const NewUserView: React.FC<NewUserViewProps> = ({
                     profilePicture: '',
                     type: '',
                     listMappingId: '',
+                    isInCustomList: false,
                   },
                 ]),
               );
-              navigation.replace(ROUTES.InviteGuestScreen, {
+              navigation.navigate(ROUTES.InviteGuestScreen, {
                 isManual: false,
                 type: 'existing',
+                isUserInDb: true,
               });
             }}>
             <AvatarInitials
@@ -266,7 +269,7 @@ const NewUserView: React.FC<NewUserViewProps> = ({
             <View style={{ flex: 1 }}>
               <CustomText style={styles.userName}>
                 {existingUserData?.name}
-                <Image resizeMode='contain' source={IMAGES.arrow_up_right} />
+                <Image resizeMode="contain" source={IMAGES.arrow_up_right} />
               </CustomText>
               <CustomText style={styles.alreadyPresent}>
                 {'This user is already a part of our database'}

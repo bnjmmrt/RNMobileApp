@@ -53,13 +53,19 @@ import TicketTypeBottomSheet, { TicketType } from '../TicketTypeBottomSheet';
 import ExistingUserView from './ExistingUserView';
 import NewUserView from './NewUserView';
 import createStyles from './styles';
-import { useLazyFetchAllUsersQuery } from 'src/redux/actions/usersApiAction';
+import {
+  useLazyFetchAllUsersQuery,
+  UserDetailResponse,
+} from 'src/redux/actions/usersApiAction';
 
 export interface existingUserType {
   email: string;
   id: string;
   name: string;
   profilePicture: string;
+  phoneNumber: string;
+  firstName: string;
+  lastName: string;
 }
 interface InviteGuestProps
   extends NativeStackScreenProps<EventStackParamList, 'InviteGuestScreen'> {}
@@ -70,7 +76,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
   const dispatch = useDispatch();
   const { getPhoneNumber } = useContacts();
 
-  const { isManual, type } = route.params;
+  const { isManual, type, isUserInDb = false } = route.params;
 
   const firstNameRef = useRef<InputRefMethods>(null);
   const lastNameRef = useRef<InputRefMethods>(null);
@@ -109,6 +115,20 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
       }),
       shallowEqual,
     );
+
+  const { singleUserDetail } = useSelector((state: RootState) => {
+    const queryResult =
+      selectedUsers &&
+      (state.api.queries[
+        `fetchUserDetails(${JSON.stringify({
+          user: selectedUsers[0]?.id || '',
+        })})`
+      ] as { data: UserDetailResponse } | undefined);
+
+    return {
+      singleUserDetail: queryResult?.data?.data ?? undefined,
+    };
+  }, shallowEqual);
 
   const [
     inviteGuest,
@@ -207,7 +227,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
     }
   };
 
-  const onPressSendManualInvite = async () => {
+  const onPressSendManualInvite = async (sendInvite: boolean) => {
     firstNameRef?.current?.validateInputs();
     lastNameRef?.current?.validateInputs();
 
@@ -248,8 +268,19 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
     if (!formValidated) {
       return;
     }
-
+    setIsDraftInvite(!sendInvite);
     try {
+      let payloadEmail = normalizeEmail(
+        isUserInDb ? singleUserDetail?.email : email,
+      );
+      let payloadPhoneNumber = isUserInDb
+        ? singleUserDetail?.phoneNumber
+        : removeSpaceFromStr(`${selectedCountry?.dial_code}${phone}`);
+      let payloadFirstName = isUserInDb
+        ? singleUserDetail?.firstName
+        : firstName;
+      let payloadLastName = isUserInDb ? singleUserDetail?.lastName : lastName;
+
       const newUserInvitePayload: {
         guestStatus: string;
         inviteMessage: string;
@@ -262,19 +293,23 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         email?: string;
         phoneNumber?: string;
       } = {
-        guestStatus: directlySendToConfirm ? 'CONFIRMED' : 'INVITED',
+        guestStatus: directlySendToConfirm
+          ? 'CONFIRMED'
+          : sendInvite
+          ? 'INVITED'
+          : 'DRAFT',
+        // guestStatus: directlySendToConfirm ? 'CONFIRMED' : 'INVITED',
         maxAdditionalGuests: additionalGuests || 0,
         sendInvite: true,
         ticketTypeId: selectedTicketType?.id || '',
         inviteMessage: inviteMessage,
         privateGuestNote: guestNote,
-        email: normalizeEmail(email),
-        phoneNumber: removeSpaceFromStr(
-          `${selectedCountry?.dial_code}${phone}`,
-        ),
-        firstName: firstName,
-        lastName: lastName,
+        email: payloadEmail,
+        phoneNumber: payloadPhoneNumber,
+        firstName: payloadFirstName || '',
+        lastName: payloadLastName || '',
       };
+
       if (type === 'email') {
         delete newUserInvitePayload.phoneNumber;
       }
@@ -322,13 +357,13 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
       // phoneRef?.current?.setPhoneNumber(selectedManualUser?.phoneNumber || '');
       if (selectedManualUser?.phoneNumber) {
         const phoneData = getPhoneNumber(selectedManualUser?.phoneNumber);
-        console.log('phoneData', phoneData);
+        console.log(phoneData);
 
         phoneRef?.current?.setPhoneNumber(phoneData.phoneNumber);
         phoneRef?.current?.setFlag(phoneData.flag);
-        phoneRef?.current?.setCallingCode(phoneData.countryCode);
+        phoneRef?.current?.setCallingCode('+' + phoneData.countryCode);
         phoneRef?.current?.setCode(phoneData.currentCountry as CountryCode);
-        setPhone(selectedManualUser?.phoneNumber || '');
+        setPhone(phoneData?.phoneNumber || '');
         setSelectedCountry({
           code: phoneData.currentCountry || '',
           dial_code: phoneData.countryCode,
@@ -427,9 +462,17 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         {!isManual && !directlySendToConfirm ? (
           <Button
             title={'Add to Drafts'}
-            onPress={() => onPressCta(false)}
+            onPress={() => {
+              if (isUserInDb) {
+                onPressSendManualInvite(false);
+              } else {
+                onPressCta(false);
+              }
+            }}
             style={[styles.actionCta, styles.borderActionCta]}
-            loading={isDraftInvite && inviteGuestsLoading}
+            loading={
+              isDraftInvite && (inviteGuestsLoading || inviteNewGuestsLoading)
+            }
           />
         ) : null}
         <Button
@@ -443,8 +486,8 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
                 }`
           }
           onPress={() => {
-            if (isManual) {
-              onPressSendManualInvite();
+            if (isManual || isUserInDb) {
+              onPressSendManualInvite(true);
             } else {
               onPressCta(true);
             }

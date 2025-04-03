@@ -40,8 +40,6 @@ const ExistingUserView: React.FC<ExistingUserViewProps> = ({}) => {
   const [fetchUserDetails, { data: singleUserDetail, isLoading }] =
     useLazyFetchUserDetailsQuery();
 
-  console.log(selectedUsers);
-
   const [
     markUserFav,
     { error: markUserFavError, isLoading: markUserFavLoading },
