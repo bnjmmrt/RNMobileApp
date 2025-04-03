@@ -37,14 +37,39 @@ import {
 } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-interface NotificationsScreenProps extends NativeStackScreenProps<any, any> { }
+interface NotificationsScreenProps extends NativeStackScreenProps<any, any> {}
+
+// Define the notification type to fix the linter error
+interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  image?: string;
+  isSeen: boolean;
+  createdDate: string;
+}
+
+const NotificationItemSkeleton = () => {
+  return (
+    <View style={[styles.notification, styles.skeletonContainer]}>
+      <View style={styles.skeletonAvatar} />
+      <View style={styles.skeletonTextContainer}>
+        <View style={styles.skeletonTitle} />
+        <View style={styles.skeletonMessage} />
+      </View>
+      <View style={styles.skeletonTime} />
+    </View>
+  );
+};
 
 const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
   navigation,
 }) => {
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [isDataLoading, setIsDataLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedNotification, setSelectedNotification] = useState<any>(null);
+  const [selectedNotification, setSelectedNotification] =
+    useState<Notification | null>(null);
 
   const queryArgs = {
     take: 10,
@@ -65,9 +90,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
           ? data?.data?.result
           : [...prev, ...data?.data?.result],
       );
-    }
-    else {
-      setNotifications([]);
+      setIsDataLoading(false);
     }
   }, [data]);
 
@@ -83,21 +106,13 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
     detailQueryArgs as { notificationId: string },
     { skip: !selectedNotification },
   );
-  const [
-    deleteNotification,
-    {
-      isLoading: deleteLoading,
-      isError: deleteError,
-      isSuccess: deleteSuccess,
-    },
-  ] = useDeleteNotificationMutation();
+  const [deleteNotification] = useDeleteNotificationMutation();
 
-  const markAsRead = (noti: any) => {
+  const markAsRead = (noti: Notification) => {
     console.log('Mark as read:', noti);
     if (selectedNotification?.id === noti?.id) {
       navigateToScreen(noti, 'in-app');
-    }
-    else {
+    } else {
       navigateToScreen(noti, 'in-app');
       setSelectedNotification(noti);
     }
@@ -112,7 +127,6 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
     useCallback(() => {
       changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
       refetch();
-
     }, []),
   );
   const handleBackPress = () => navigation.goBack();
@@ -136,7 +150,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
     }
   };
 
-  const renderItem = (item: any) => {
+  const renderItem = (item: Notification) => {
     return (
       <TouchableOpacity
         style={[styles.notification, !item.isSeen && styles.unread]}
@@ -162,7 +176,21 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
         onPress={handleBackPress}
         showProgressBar={false}
       />
-      {notifications?.length ? (
+
+      {isLoading && !notifications?.length && isDataLoading && (
+        <View style={styles.contentContainer}>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={[1, 2, 3, 4, 5]} // Show 5 skeleton items
+            keyExtractor={item => `skeleton-${item}`}
+            renderItem={() => <NotificationItemSkeleton />}
+          />
+        </View>
+      )}
+
+      {Boolean(
+        !(isLoading && !notifications?.length) && notifications?.length,
+      ) && (
         <View style={styles.contentContainer}>
           <FlatList
             showsVerticalScrollIndicator={false}
@@ -179,12 +207,17 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
             onEndReachedThreshold={0.5}
             refreshControl={
               notifications?.length > 0 ? (
-                <RefreshControl refreshing={isLoading} onRefresh={handleRefresh} />
+                <RefreshControl
+                  refreshing={isLoading}
+                  onRefresh={handleRefresh}
+                />
               ) : undefined
             }
           />
         </View>
-      ) : (
+      )}
+
+      {!isLoading && !notifications?.length && !isDataLoading && (
         <EmptyRecordComponent
           title={LABLE.NO_NOTIFICATIONS_YET}
           subTitle={LABLE.NOTIFICATIONS_SUB_TITLE}
@@ -239,6 +272,41 @@ const styles = StyleSheet.create({
   time: {
     fontSize: fontScale(11),
     color: COLORS.light_gray,
+  },
+  // Skeleton styles
+  skeletonContainer: {
+    // borderColor: 'transparent',
+    borderWidth: 1,
+    // marginHorizontal: 16,
+  },
+  skeletonAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: COLORS.lighter_gray,
+  },
+  skeletonTextContainer: {
+    flex: 1,
+    paddingHorizontal: horizontalMarginScale(12),
+  },
+  skeletonTitle: {
+    height: fontScale(14),
+    width: '80%',
+    backgroundColor: COLORS.lighter_gray,
+    borderRadius: radiusScale(4),
+    marginBottom: verticalMarginScale(4),
+  },
+  skeletonMessage: {
+    height: fontScale(14),
+    width: '60%',
+    backgroundColor: COLORS.lighter_gray,
+    borderRadius: radiusScale(4),
+  },
+  skeletonTime: {
+    height: fontScale(11),
+    width: '20%',
+    backgroundColor: COLORS.lighter_gray,
+    borderRadius: radiusScale(4),
   },
 });
 
