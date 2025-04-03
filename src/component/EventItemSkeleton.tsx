@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { COLORS } from '../utils/constants';
 import {
@@ -12,17 +12,7 @@ import {
 
 const EventItemSkeleton = () => {
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        paddingHorizontal: horizontalMarginScale(16),
-        paddingVertical: verticalMarginScale(16),
-        borderColor: COLORS.borderGray,
-        borderRadius: 16,
-        borderWidth: 1,
-        marginBottom: 10,
-        gap: horizontalMarginScale(16),
-      }}>
+    <View style={styles.container}>
       <SkeletonPlaceholder>
         <SkeletonPlaceholder.Item
           width={verticalScale(120)}
@@ -30,7 +20,7 @@ const EventItemSkeleton = () => {
           borderRadius={8}
         />
       </SkeletonPlaceholder>
-      <View style={{ flex: 1, paddingTop: verticalMarginScale(18) }}>
+      <View style={styles.contentContainer}>
         <SkeletonPlaceholder>
           <SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item
@@ -68,5 +58,22 @@ const EventItemSkeleton = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    paddingHorizontal: horizontalMarginScale(16),
+    paddingVertical: verticalMarginScale(16),
+    borderColor: COLORS.borderGray,
+    borderRadius: 16,
+    borderWidth: 1,
+    marginBottom: 10,
+    gap: horizontalMarginScale(16),
+  },
+  contentContainer: {
+    flex: 1,
+    paddingTop: verticalMarginScale(18),
+  },
+});
 
 export default EventItemSkeleton;

@@ -39,6 +39,8 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
   const [events, setEvents] = useState<any[]>([]);
   const role = useSelector((state: RootState) => state.auth.role);
 
+  const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
+
   const useFetchEvents =
     role === ROLE.HOST ? useFetchHostEventsQuery : useFetchEventsQuery;
 
@@ -67,12 +69,15 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
         setEvents(prev =>
           currentPage === 1 ? data.data.result : [...prev, ...data.data.result],
         );
+        setIsDataLoading(false);
       } else {
         setEvents(prev =>
           currentPage === 1 ? data.data.result : [...prev, ...data.data.result],
         );
+        setIsDataLoading(false);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.data, currentPage, role]);
 
   useEffect(() => {
@@ -86,6 +91,7 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
 
   useEffect(() => {
     refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
   const loadMore = () => {
@@ -96,14 +102,16 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
 
   return (
     <View style={styles.container}>
-      {isLoading && !events?.length ? (
+      {isDataLoading && (
         <FlatList
           data={[1, 2, 3]} // Show 3 skeleton items
           style={styles.list}
           keyExtractor={item => `skeleton-${item}`}
           renderItem={() => <EventItemSkeleton />}
         />
-      ) : events?.length > 0 ? (
+      )}
+
+      {events?.length > 0 && !isDataLoading && (
         <FlatList
           ref={scrollToTopRef}
           data={events}
@@ -120,7 +128,9 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
             </View>
           }
         />
-      ) : (
+      )}
+
+      {!isDataLoading && !events?.length && (
         <View style={styles.emptyContainer}>
           {searchText == '' ? (
             <EventEmptyRecord
