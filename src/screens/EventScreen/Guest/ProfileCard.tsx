@@ -144,7 +144,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                     resizeMode="contain"
                   />
                   <CustomText style={styles.statText}>
-                    {user?.location || 'N/A'}
+                    {user?.location || 'N/wwwA'}
                   </CustomText>
                 </View>
               </View>

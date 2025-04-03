@@ -198,9 +198,9 @@ const AddNewUserSheet = forwardRef<
       lastNameRef?.current?.validateInputs() &&
       validateName('LastName') &&
       (
-      //   phoneNumberRef?.current?.validatePhoneNumber(
-      //   ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
-      // ) ||
+        //   phoneNumberRef?.current?.validatePhoneNumber(
+        //   ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
+        // ) ||
         emailRef?.current?.validateInputs())
     ) {
       let validEmail = validateEmailAddress();
@@ -213,9 +213,9 @@ const AddNewUserSheet = forwardRef<
           email: normalizeEmail(email),
           firstName: firstName,
           lastName: lastName,
-          phoneNumber: removeSpaceFromStr(
+          phoneNumber: phone != '' ? removeSpaceFromStr(
             `${selectedCountry?.dial_code}${phone}`,
-          ),
+          ) : phone,
         }).unwrap();
 
         if (response.success) {
@@ -303,7 +303,7 @@ const AddNewUserSheet = forwardRef<
           onChangeText={text => setPhone(text)}
           onSelectCountry={setSelectedCountry}
           forBottomSheet={true}
-          // errorMsg={errorMessage}
+        // errorMsg={errorMessage}
         />
 
         {existingUser ? (
@@ -311,9 +311,8 @@ const AddNewUserSheet = forwardRef<
             style={styles.userPreviewContainer}
             onPress={onPressExsitingUser}>
             <AvatarInitials
-              name={`${existingUser?.user?.firstName || ''} ${
-                existingUser?.user?.lastName || ''
-              }`}
+              name={`${existingUser?.user?.firstName || ''} ${existingUser?.user?.lastName || ''
+                }`}
               size={48}
               imgUrl={existingUser?.user?.imageUrl}
             />

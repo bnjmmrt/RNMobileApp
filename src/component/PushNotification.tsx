@@ -111,7 +111,7 @@ export const navigateToScreen = (data: any, type: string = 'in-app') => {
     console.log("navigateToScreen data:", data);
     const eventTypes = [
         'eventReminder',
-        'eventCancelled',
+        // 'eventCancelled',
         'eventInvitation',
         'eventPosted',
         'eventPostedCity',

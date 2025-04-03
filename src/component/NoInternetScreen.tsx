@@ -14,6 +14,8 @@ import { changeSafeAreaViewConfig, fontFamily } from 'src/utils/functions';
 import { useFocusEffect } from '@react-navigation/native';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import NetInfo from '@react-native-community/netinfo';
+// import { DevSettings } from 'react-native';
+import MainNavigation from 'src/navigation';
 
 const NoInternetScreen: React.FC = () => {
   useFocusEffect(
@@ -33,9 +35,9 @@ const NoInternetScreen: React.FC = () => {
     NetInfo.fetch().then(state => {
       if (state?.isInternetReachable) {
         console.log('Internet Available', 'You are connected to the internet.');
-        // Proceed with your action
-      } else {
-        console.log('No Internet', 'Please check your internet connection.');
+        return <MainNavigation />;
+        // DevSettings.reload(); 
+        // RNRestart.restart(); 
       }
     });
   };

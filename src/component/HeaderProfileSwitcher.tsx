@@ -88,11 +88,11 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
               `${EndPoint.switch_profile}/${userId}`,
               { targetRole: newRole.roleName },
             );
-
+            const myRole = newRole.roleName === 'non_member' ? ' Non-Member' : newRole.roleName
             if (response.success) {
               FlashMessageComponent.show(
                 `success`,
-                `Switched to ${newRole.roleName} Account`,
+                `Switched to ${myRole} Account`,
               );
               setIsRolesExpanded(false);
               dispatch(setRole(newRole.roleName));

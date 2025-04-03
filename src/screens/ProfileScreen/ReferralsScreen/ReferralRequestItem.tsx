@@ -13,29 +13,37 @@ interface ReferralRequestItemProps {
     image: string;
     onApproveApi: () => Promise<void>;
     onDeclineApi: () => Promise<void>;
-    loading?:boolean
+    loading?: boolean
 }
 
-const ReferralRequestItem: React.FC<ReferralRequestItemProps> = ({ name, image, message, onApproveApi, onDeclineApi,loading }) => {
+const ReferralRequestItem: React.FC<ReferralRequestItemProps> = ({ name, image, message, onApproveApi, onDeclineApi, loading }) => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [status, setStatus] = useState<'approve' | 'reject' | null>(null);
+    const [approveLoader, setApproveLoader] = useState(false);
+    const [declineLoader, setdeclineLoader] = useState(false);
 
     const handleApprove = async () => {
+        setApproveLoader(true)
         try {
             await onApproveApi();
             setStatus('approve');
             setIsSubmitted(true);
+            setApproveLoader(false)
         } catch (error) {
             console.error('Error during approve:', error);
+            setApproveLoader(false)
         }
     };
 
     const handleDecline = async () => {
+        setdeclineLoader(true)
         try {
             await onDeclineApi();
             setStatus('reject');
             setIsSubmitted(true);
+            setdeclineLoader(false)
         } catch (error) {
+            setdeclineLoader(false)
             console.error('Error during decline:', error);
         }
     };
@@ -54,8 +62,8 @@ const ReferralRequestItem: React.FC<ReferralRequestItemProps> = ({ name, image, 
                 </View>}
                 {!isSubmitted ? (
                     <View style={styles.actions}>
-                        <StatusButton text="Decline" type="stripe" onPress={handleDecline} />
-                        <StatusButton loading={loading}  text="Approve" type="solid" onPress={handleApprove} />
+                        <StatusButton declineLoading={declineLoader} text="Decline" type="stripe" onPress={handleDecline} />
+                        <StatusButton loading={approveLoader} text="Approve" type="solid" onPress={handleApprove} />
                     </View>
                 ) : (
                     <StatusButton

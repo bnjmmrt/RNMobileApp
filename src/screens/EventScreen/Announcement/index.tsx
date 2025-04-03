@@ -259,17 +259,181 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
     }, [data]),
   );
 
-  const handleMediaPress = (
-    media: any,
-    name: string,
-    image: string,
-    index: number,
-  ) => {
-    setMedia(media);
-    setCompanyName(name);
-    setCompanyLogo(image);
-    setViewerVisible(true);
-    setCurrentIndex(index);
+  const MediaItem = ({
+    item,
+    media,
+    name,
+    image,
+    index,
+  }: {
+    item: any;
+    media: any;
+    name: any;
+    image: any;
+    index: number;
+  }) =>
+    item.mediaType === 'image' ? (
+      <TouchableOpacity
+        onPress={() => {
+          setMedia(media);
+          setCompanyName(name);
+          setCompanyLogo(image);
+          setViewerVisible(true);
+          setCurrentIndex(index);
+        }}>
+        <FastImage source={{ uri: item?.media }} style={styles.mediaImage} />
+      </TouchableOpacity>
+    ) : (
+      <TouchableOpacity
+        onPress={() => {
+          setMedia(media);
+          setCompanyName(name);
+          setCompanyLogo(image);
+          setViewerVisible(true);
+          setCurrentIndex(index);
+        }}
+        style={styles.pdfContainer}>
+        <Image
+          source={IMAGES.pdf}
+          style={styles.pdfIcon}
+          resizeMode="contain"
+        />
+        <Text style={styles.title} numberOfLines={2}>
+          {item?.mediaName}
+        </Text>
+      </TouchableOpacity>
+    );
+  const AnnouncementItem = ({ item }: { item: any }) => {
+    const [expanded, setExpanded] = useState(false);
+    const shouldShowReadMore = item?.announcement?.split(' ')?.length > 25;
+    const displayedText =
+      expanded || !shouldShowReadMore
+        ? item?.announcement
+        : `${item?.announcement.substring(0, 100)}...`;
+    const date = formatViewAnnouncementDate(item?.createdAt);
+    const imageKeyUrl = item?.user?.additionalHostInformation?.companyLogo;
+    const name = item?.user?.firstName + ' ' + item?.user?.lastName;
+
+    return (
+      <View style={styles.Detailcontainer}>
+        <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              flex: 1,
+            }}>
+            <AvatarInitials
+              name={name}
+              imgUrl={imageKeyUrl}
+              size={36}
+              textColor="white"
+            />
+
+            <View style={{ flex: 1, paddingHorizontal: 10 }}>
+              <Text style={styles.headerTitle}>{name}</Text>
+              <Text style={styles.subtitle}>{date}</Text>
+            </View>
+
+            {role === ROLE.HOST && (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('EventStack', {
+                    screen: 'AddAnnouncementScreen',
+                    params: { eventData, announcementId: item?.id }, // Wrap in params
+                  });
+                }}
+                style={[styles.iconWrapper]}>
+                <Image source={IMAGES.pencil} style={styles.icon} />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+        <View style={styles.lineView} />
+        <View style={styles.textContainer}>
+          <Text numberOfLines={expanded ? undefined : 3} style={styles.name}>
+            {displayedText}
+          </Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {item?.attachments?.map((mediaItem: string, index: number) => (
+              <MediaItem
+                key={index}
+                index={index}
+                item={mediaItem}
+                media={item.attachments}
+                name={name}
+                image={imageKeyUrl}
+              />
+            ))}
+          </ScrollView>
+          {!expanded && shouldShowReadMore ? (
+            <TouchableOpacity
+              onPress={() => setExpanded(!expanded)}
+              style={styles.toggleContainer}>
+              <Text style={styles.toggleText}>{ANNOUNCEMENT.READ_MORE}</Text>
+              <FastImage source={IMAGES.downArrow} style={styles.toggleIcon} />
+            </TouchableOpacity>
+          ) : (
+            shouldShowReadMore && (
+              <TouchableOpacity
+                onPress={() => setExpanded(!expanded)}
+                style={styles.toggleContainer}>
+                <Text style={styles.toggleText}>{ANNOUNCEMENT.READ_LESS}</Text>
+                <FastImage
+                  source={IMAGES.downArrow}
+                  style={styles.toggleIcon}
+                />
+              </TouchableOpacity>
+            )
+          )}
+        </View>
+        <View style={styles.lineView} />
+        <View style={styles.recipientHeader}>
+          <Text style={styles.headerDes}>{ANNOUNCEMENT.Send_to}</Text>
+          <View style={styles.countWrapper}>
+            <Text style={styles.label}>
+              {item?.recipientCount} {ANNOUNCEMENT.Recipients}
+            </Text>
+          </View>
+        </View>
+        <ScrollView
+          showsHorizontalScrollIndicator={false}
+          horizontal={true}
+          style={{ marginVertical: verticalMarginScale(10) }}>
+          {item?.ticketType.map((item: any) => {
+            return (
+              <View
+                style={[
+                  styles.countWrapper,
+                  {
+                    marginHorizontal: 3,
+                    backgroundColor: 'transparant',
+                    paddingVertical: verticalScale(5),
+                  },
+                ]}>
+                <Text style={styles.label}>{item?.name}</Text>
+              </View>
+            );
+          })}
+          {item?.addedBy.map((item: any) => {
+            let selectedName = item?.additionalHostInformation?.companyName == 'NA'? ' -- ': item?.additionalHostInformation?.companyName
+            return (
+              <View
+                style={[
+                  styles.countWrapper,
+                  {
+                    marginHorizontal: 3,
+                    backgroundColor: 'transparant',
+                    paddingVertical: verticalScale(5),
+                  },
+                ]}>
+                <Text style={styles.label}>{selectedName} </Text>
+              </View>
+            );
+          })}
+        </ScrollView>
+      </View>
+    );
   };
 
   const onClose = () => {
