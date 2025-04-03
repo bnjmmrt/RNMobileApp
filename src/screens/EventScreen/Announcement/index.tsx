@@ -175,21 +175,6 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
               </TouchableOpacity>
             )}
           </View>
-
-          {/* <View style={{ flexDirection: 'row', alignItems: 'center' }}> */}
-          {/* {role === ROLE.HOST && (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('EventStack', {
-                  screen: 'AddAnnouncementScreen',
-                  params: { eventData, announcementId: item?.id }, // Wrap in params
-                });
-              }}
-              style={[styles.iconWrapper]}>
-              <Image source={IMAGES.pencil} style={styles.icon} />
-            </TouchableOpacity>
-          )} */}
-          {/* </View> */}
         </View>
         <View style={styles.lineView} />
         <View style={styles.textContainer}>
@@ -258,10 +243,7 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
             );
           })}
           {item?.addedBy.map((item: any) => {
-            let selectedName =
-              item?.firstName == 'NA'
-                ? ' -- '
-                : item?.firstName + ' ' + item?.lastName;
+            let selectedName = item?.additionalHostInformation?.companyName == 'NA'? ' -- ': item?.additionalHostInformation?.companyName
             return (
               <View
                 style={[

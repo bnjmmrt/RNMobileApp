@@ -19,6 +19,7 @@ export interface Vouch {
   isApproved: boolean;
   name: string;
   picture: string;
+  isVouched:boolean
 }
 
 export interface EventGuest {

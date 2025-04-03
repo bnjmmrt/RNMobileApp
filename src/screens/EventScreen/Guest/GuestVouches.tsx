@@ -40,9 +40,8 @@ const GuestVouches: React.FC<GuestVouchesProps> = ({
           </View>
         </View>
       )}
-
-      <View style={styles.vouchContainer}>
-        {vouches.map(vouch => (
+      {vouches.filter(vouch => vouch.isVouched)
+        .map(vouch => (
           <View key={vouch.email} style={styles.vouchSection}>
             <AvatarInitials
               name={vouch.name}
@@ -57,7 +56,6 @@ const GuestVouches: React.FC<GuestVouchesProps> = ({
             </View>
           </View>
         ))}
-      </View>
     </View>
   );
 };
@@ -99,7 +97,7 @@ const styles = StyleSheet.create({
     width: horizontalScale(16),
     height: verticalScale(16),
     tintColor: COLORS.black,
-    resizeMode:'contain'
+    resizeMode: 'contain'
   },
 
   textContainer: {

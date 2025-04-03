@@ -114,7 +114,7 @@ const UserOverview: React.FC<UserOverviewProps> = ({ user }) => {
       <CustomText style={[styles.sectionTitle, { marginTop: 0 }]}>
         {'Information'}
       </CustomText>
-      {userDetails?.gender ? (
+      {userDetails?.gender &&  userDetails?.gender != 'N/A' ? (
         <InfoRow title={userDetails?.gender} icon={IMAGES.profileTab} />
       ) : null}
       {userDetails?.age ? (
@@ -123,7 +123,7 @@ const UserOverview: React.FC<UserOverviewProps> = ({ user }) => {
           icon={IMAGES.hourglass}
         />
       ) : null}
-      {userDetails?.city ? (
+      {userDetails?.city &&  userDetails?.city != 'N/A' ? (
         <InfoRow title={userDetails?.city} icon={IMAGES.location} />
       ) : null}
       {userDetails?.dateOfBirth ? (

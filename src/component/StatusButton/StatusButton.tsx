@@ -10,10 +10,11 @@ interface StatusButtonProps {
   type: 'solid' | 'stripe' | 'circular';
   status?: 'approve' | 'reject';
   onPress?: () => void;
-  loading?: boolean
+  loading?: boolean;
+  declineLoading?: boolean;
 }
 
-const StatusButton: React.FC<StatusButtonProps> = ({ text, type, status, onPress, loading }) => {
+const StatusButton: React.FC<StatusButtonProps> = ({ text, type, status, onPress, loading = false, declineLoading = false }) => {
   if (type === 'circular' && status) {
     const icon = status === 'approve' ? IMAGES.tick : IMAGES.cancel;
     const bgColor = status === 'approve' ? COLORS.successLight : COLORS.bgRed;
@@ -29,13 +30,26 @@ const StatusButton: React.FC<StatusButtonProps> = ({ text, type, status, onPress
   const textStyle = type === 'solid' ? styles.solidText : styles.stripeText;
 
   return (
-    <TouchableOpacity style={[styles.baseButton, buttonStyle]} onPress={onPress}>
-      {loading ?
-        <ActivityIndicator color={COLORS.white} />
-        :
-        <Text style={textStyle}>{text}ww</Text>
+    <>
+      {text == 'Approve' ?
+        <TouchableOpacity style={[styles.baseButton, buttonStyle]} onPress={onPress}>
+          {loading ?
+            <ActivityIndicator color={COLORS.white} />
+            :
+            <Text style={textStyle}>{text}</Text>
+          }
+        </TouchableOpacity> :
+        <TouchableOpacity style={[styles.baseButton, buttonStyle]} onPress={onPress}>
+          {declineLoading ?
+            <ActivityIndicator color={COLORS.black} />
+            :
+            <Text style={textStyle}>{text}</Text>
+          }
+        </TouchableOpacity>
+
       }
-    </TouchableOpacity>
+    </>
+
   );
 };
 

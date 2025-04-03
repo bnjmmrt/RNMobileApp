@@ -115,8 +115,18 @@ const RequestVouch = ({
         </Text>
       </View>
       {isLoading ? (
-        <ActivityIndicator size='small' color="red" />
-      ) :
+        <View
+          style={{
+            height: Hp(40),
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <EventEmptyRecord
+            isLoading={isLoading}
+            title="No Results"
+            subTitle="No Contacts are members at this time"
+          />
+        </View>) :
         <FlatList
           data={filteredMembers}
           scrollEnabled={false}
@@ -127,10 +137,7 @@ const RequestVouch = ({
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <EventEmptyRecord
-                title="No Results"
-                subTitle="No Contacts are members at this time"
-              />
+              <ActivityIndicator color={COLORS.black} />
             </View>
           }
           contentContainerStyle={{ gap: 4 }}
