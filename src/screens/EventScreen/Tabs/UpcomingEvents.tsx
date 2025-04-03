@@ -1,6 +1,6 @@
 import { useScrollToTop } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, FlatList, View } from 'react-native';
+import { ActivityIndicator, FlatList, View, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import EventEmptyRecord from '../../../component/EmptyRecord/EventEmptyRecord';
@@ -9,8 +9,16 @@ import {
   useFetchHostEventsQuery,
 } from '../../../redux/actions/eventApiAction';
 import { COLORS, ROLE } from '../../../utils/constants';
-import { Hp, verticalMarginScale } from '../../../utils/dimensions';
+import {
+  Hp,
+  horizontalMarginScale,
+  verticalMarginScale,
+  horizontalScale,
+  verticalScale,
+  fontScale,
+} from '../../../utils/dimensions';
 import EventItem from '../EventItem';
+import EventItemSkeleton from '../../../component/EventItemSkeleton';
 
 interface UpcomingEventsProps {
   userId: string;
@@ -33,35 +41,31 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
 
   const useFetchEvents =
     role === ROLE.HOST ? useFetchHostEventsQuery : useFetchEventsQuery;
-  // role === ROLE.HOST ? useFetchDashboardUpcomingEventsQuery : useFetchEventsQuery;
 
   // Ensure argument structure remains consistent
   const queryArgs =
     role === ROLE.HOST
       ? ({
-        status: 'UPCOMING_STATUS',
-        searchText,
-        take: 10,
-        skip: (currentPage - 1) * 10,
-      } as const) // Type assertion to prevent union mismatch
+          status: 'UPCOMING_STATUS',
+          searchText,
+          take: 10,
+          skip: (currentPage - 1) * 10,
+        } as const)
       : ({
-        userId,
-        guestEventStatus: 'UPCOMING',
-        searchText,
-        take: 10,
-        skip: (currentPage - 1) * 10,
-      } as const); // Type assertion
+          userId,
+          guestEventStatus: 'UPCOMING',
+          searchText,
+          take: 10,
+          skip: (currentPage - 1) * 10,
+        } as const);
 
-  const { data, isLoading, refetch } = useFetchEvents(queryArgs);
+  const { data, isLoading, refetch } = useFetchEvents(queryArgs as any);
 
   useEffect(() => {
     if (data) {
       if (role === ROLE.HOST) {
         setEvents(prev =>
-          currentPage === 1
-            ? data.data.result
-            : // ? data.data
-            [...prev, ...data.data.result],
+          currentPage === 1 ? data.data.result : [...prev, ...data.data.result],
         );
       } else {
         setEvents(prev =>
@@ -69,8 +73,7 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
         );
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.data]);
+  }, [data?.data, currentPage, role]);
 
   useEffect(() => {
     setRefreshing(isLoading);
@@ -92,12 +95,19 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
-      {events?.length > 0 ? (
+    <View style={styles.container}>
+      {isLoading && !events?.length ? (
+        <FlatList
+          data={[1, 2, 3]} // Show 3 skeleton items
+          style={styles.list}
+          keyExtractor={item => `skeleton-${item}`}
+          renderItem={() => <EventItemSkeleton />}
+        />
+      ) : events?.length > 0 ? (
         <FlatList
           ref={scrollToTopRef}
           data={events}
-          style={{ paddingBottom: 10, paddingHorizontal: 15 }}
+          style={styles.list}
           keyExtractor={(item, index) => `${item.id}-${index}`}
           renderItem={({ item }) => <EventItem item={item} />}
           refreshing={refreshing}
@@ -105,18 +115,13 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
           ListFooterComponent={
-            <View style={{ marginBottom: verticalMarginScale(100) }}>
+            <View style={styles.footer}>
               {isLoading ? <ActivityIndicator color={COLORS.black} /> : null}
             </View>
           }
         />
       ) : (
-        <View
-          style={{
-            height: Hp(55),
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
+        <View style={styles.emptyContainer}>
           {searchText == '' ? (
             <EventEmptyRecord
               title={tab.title}
@@ -135,5 +140,25 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  list: {
+    paddingBottom: 10,
+    paddingHorizontal: 15,
+  },
+  footer: {
+    marginBottom: verticalMarginScale(100),
+  },
+  emptyContainer: {
+    height: Hp(55),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 export default UpcomingEvents;
