@@ -70,7 +70,7 @@ const FilterOptions = ({
 
   const [minAge, setMinAge] = useState<string>(
     ((selectedFilters && selectedFilters?.ageFrom?.value[0].id) as string) ||
-    '',
+      '',
   );
   const [maxAge, setMaxAge] = useState<string>(
     ((selectedFilters && selectedFilters?.ageTo?.value[0].id) as string) || '',
@@ -105,13 +105,11 @@ const FilterOptions = ({
   const maxEndDate = selectedFilters['maxEndDate']?.value[0]?.id;
 
   const formattedMinDate = dayjs(minStartDate).isValid()
-    ? dayjs(minStartDate).format('DD/MM/YY')
+    ? dayjs(minStartDate).format('MM/DD/YY')
     : '';
   const formattedMaxDate = dayjs(maxEndDate).isValid()
-    ? dayjs(maxEndDate).format('DD/MM/YY')
+    ? dayjs(maxEndDate).format('MM/DD/YY')
     : 'No max date';
-
-  console.log('selectedFilters', JSON.stringify(selectedFilters));
 
   return (
     <BottomSheetView>
@@ -130,8 +128,8 @@ const FilterOptions = ({
                 isSelected={
                   selectedFilters
                     ? selectedFilters[id]?.value?.some(
-                      innerItem => innerItem.id === item.id,
-                    )
+                        innerItem => innerItem.id === item.id,
+                      )
                     : false || false
                 }
                 onPress={optionId => {
@@ -179,7 +177,7 @@ const FilterOptions = ({
                 startDate={
                   selectedFilters['minStartDate']?.value[0]
                     ? selectedFilters['minStartDate']?.value[0]?.date ||
-                    undefined
+                      undefined
                     : undefined
                 }
                 endDate={
@@ -205,12 +203,13 @@ const FilterOptions = ({
                 selectedItemColor={COLORS.black}
                 selectedRangeBackgroundColor="lightgray"
                 dayContainerStyle={styles.dayContainerStyle}
-                buttonNextIcon={<Image resizeMode='contain'
-                  source={IMAGES.arrowRight} />}
+                buttonNextIcon={
+                  <Image resizeMode="contain" source={IMAGES.arrowRight} />
+                }
                 buttonPrevIcon={
                   <Image
                     source={IMAGES.arrowRight}
-                    resizeMode='contain'
+                    resizeMode="contain"
                     style={{ transform: [{ rotate: '180deg' }] }}
                   />
                 }
@@ -271,14 +270,14 @@ const FilterOptions = ({
       {optionType === 'baseCityFilter' || optionType === 'location' ? (
         <BottomSheetView>
           <GooglePlacesInput
-            submit={() => { }}
+            submit={() => {}}
             autoFetchCurrentLocation={true}
             allowFullAddres={false}
             defaultValue={
               optionType === 'baseCityFilter'
                 ? selectedFilters &&
-                selectedFilters[id] &&
-                selectedFilters[id].value[0]?.name
+                  selectedFilters[id] &&
+                  selectedFilters[id].value[0]?.name
                 : selectedFilters['longitude']?.value[0]?.name || ''
             }
             setLocation={location => {
@@ -293,9 +292,9 @@ const FilterOptions = ({
             }}
           />
           {showSelectedLocationChip &&
-            selectedFilters &&
-            selectedFilters[id] &&
-            selectedFilters[id].value ? (
+          selectedFilters &&
+          selectedFilters[id] &&
+          selectedFilters[id].value ? (
             <BottomSheetScrollView
               contentContainerStyle={{
                 gap: horizontalMarginScale(4),

@@ -34,6 +34,7 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
   const [contacts, setContacts] = useState<ContactItem[]>([]);
   const [filteredContacts, setFilteredContacts] = useState<ContactItem[]>([]);
   const [contactsFetching, setContactsFetching] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const { selectedEvent } = useSelector(
     (state: RootState) => ({
@@ -90,6 +91,7 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
   };
 
   const handleSearch = (query: string) => {
+    setSearchQuery(query);
     if (debounceTimeoutRef.current) {
       clearTimeout(debounceTimeoutRef.current);
     }
@@ -130,7 +132,7 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
               dispatch(
                 setSelectedManualUser({
                   ...item,
-                  phoneNumber: userPhone.phoneNumber,
+                  phoneNumber: item.phoneNumber,
                 }),
               );
               navigation.navigate(ROUTES.InviteGuestScreen, {
@@ -171,16 +173,18 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
 
   return (
     <View style={styles.container}>
-      <SearchInput
-        placeholder={'Search...'}
-        onSearchTextChange={query => {
-          handleSearch(query);
-        }}
-        mainContainerStyle={{
-          marginHorizontal: horizontalMarginScale(20),
-          marginTop: verticalMarginScale(8),
-        }}
-      />
+      {filteredContacts.length > 0 ? (
+        <SearchInput
+          placeholder={'Search...'}
+          onSearchTextChange={query => {
+            handleSearch(query);
+          }}
+          mainContainerStyle={{
+            marginHorizontal: horizontalMarginScale(20),
+            marginTop: verticalMarginScale(8),
+          }}
+        />
+      ) : null}
       <FlatList
         data={filteredContacts || []}
         style={{
@@ -202,9 +206,11 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
               justifyContent: 'center',
             }}>
             <EventEmptyRecord
-              title="User not found"
+              title={searchQuery ? 'User not found' : 'No users found!'}
               subTitle={
-                'This users is not in our system or already has a status on the guest list. Tap “+” to add a new guest'
+                searchQuery
+                  ? 'This user is not in our system or already has a status on the guest list. Please refine your search.'
+                  : ''
               }
               isLoading={
                 contactsFetching || isLoadingGuests || isFetchingGuests

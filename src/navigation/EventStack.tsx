@@ -46,6 +46,7 @@ export type EventStackParamList = {
   [ROUTES.InviteGuestScreen]: {
     isManual: boolean;
     type: 'contact' | 'email' | 'existing';
+    isUserInDb?: boolean;
   };
   [ROUTES.InviteGuestsManuallyScreen]: undefined;
 };

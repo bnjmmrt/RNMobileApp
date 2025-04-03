@@ -59,7 +59,7 @@ export const inviteGuestsApiAction = createBaseApi.injectEndpoints({
         method: 'POST',
         body: payload,
       }),
-      invalidatesTags: ['Users'],
+      invalidatesTags: ['Users', 'EventGuestList'],
     }),
     getUserWithRolesByEmail: builder.mutation({
       query: (requestParam: { email: string }) => ({
