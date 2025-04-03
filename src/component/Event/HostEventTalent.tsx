@@ -81,7 +81,7 @@ const HostEventTalent: React.FC<HostEventTalentProps> = ({ talents: initialTalen
         ItemSeparatorComponent={GradientSeprator}
         contentContainerStyle={styles.itemContainer}
         renderItem={({ item }) => (
-          <Pressable style={styles.talentItem} onPress={() => Alert.alert('In Progress')}>
+          <View style={styles.talentItem}>
             {item.imageKeyUrl && item.imageKeyUrl.includes('http') ? (
               <FastImage
                 source={{ uri: removeSignature(item.imageKeyUrl) }}
@@ -113,7 +113,7 @@ const HostEventTalent: React.FC<HostEventTalentProps> = ({ talents: initialTalen
               imageSource={IMAGES.tras}
               size={30}
             />
-          </Pressable>
+          </View>
         )}
       />
 

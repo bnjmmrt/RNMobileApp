@@ -209,6 +209,7 @@ export interface UserDetailResponse {
   data: {
     age: number;
     category: string;
+    eventCount: number;
     city: string;
     customLists: any[]; // Can refine based on custom list structure
     dateOfBirth: string;
