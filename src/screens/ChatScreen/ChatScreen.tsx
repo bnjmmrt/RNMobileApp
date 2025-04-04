@@ -39,11 +39,12 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
     return <AfterAppStaticComponent />;
   }
 
+
   return (
     <View style={styles.container}>
       {token ? (
         role !== ROLE.NON_MEMBER ? (
-          <BeforeAppStaticComponent isChatScreen={true} role={role} />
+          <BeforeAppStaticComponent isChatScreen={true} />
         ) : (
           <AfterAppStaticComponent />
         )
