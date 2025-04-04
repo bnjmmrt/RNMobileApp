@@ -19,7 +19,10 @@ import {
 } from './src/redux/slices/appGlobalDataSlice';
 import { persistor, store } from './src/redux/store';
 import RNPreventScreenshot from 'react-native-screenshot-prevent';
-import { NotificationsListener, requestUserPermission } from 'src/component/PushNotification';
+import {
+  NotificationsListener,
+  requestUserPermission,
+} from 'src/component/PushNotification';
 import { navigationRef } from 'src/component/NavigationService';
 import ScreenshotDetectedDialog from 'src/component/ScreenshotDetectedDialog';
 import { getDeviceId } from 'src/utils/functions';
@@ -35,7 +38,6 @@ const AppContent: React.FC = () => {
     await analytics().setAnalyticsCollectionEnabled(status);
   };
 
-
   //useEffect(() => {
   // RNPreventScreenshot?.enableSecureView();
   // return () => {
@@ -43,9 +45,8 @@ const AppContent: React.FC = () => {
   // };
   //}, []);
 
-
   useEffect(() => {
-    NotificationSetup()
+    NotificationSetup();
     Intercom.setLauncherVisibility(Visibility.GONE);
     if (Platform.OS === 'ios') {
       request(PERMISSIONS.IOS.APP_TRACKING_TRANSPARENCY).then(status => {
@@ -65,13 +66,11 @@ const AppContent: React.FC = () => {
     }
   }, []);
 
-
-
   const NotificationSetup = async () => {
-    getDeviceId()
-    requestUserPermission()
-    NotificationsListener()
-  }
+    getDeviceId();
+    requestUserPermission();
+    NotificationsListener();
+  };
 
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
@@ -88,16 +87,20 @@ const AppContent: React.FC = () => {
   };
 
   useEffect(() => {
-    fetch();
-  }, []);
+    if (isConnected) {
+      fetch();
+    }
+  }, [isConnected]);
 
   LogBox.ignoreAllLogs();
 
-  if (!isConnected && isConnected !== null) {
+  if (isConnected === null) {
+    return <></>;
+  }
+  if (!isConnected) {
     return <NoInternetScreen />;
   }
   return <MainNavigation />;
-  return null;
 };
 
 const App: React.FC = () => {
@@ -130,9 +133,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});

@@ -310,11 +310,15 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         lastName: payloadLastName || '',
       };
 
-      if (type === 'email') {
+      if (isUserInDb) {
         delete newUserInvitePayload.phoneNumber;
-      }
-      if (type === 'contact') {
-        delete newUserInvitePayload.email;
+      } else {
+        if (type === 'email') {
+          delete newUserInvitePayload.phoneNumber;
+        }
+        if (type === 'contact') {
+          delete newUserInvitePayload.email;
+        }
       }
 
       const response = await inviteNewGuests({

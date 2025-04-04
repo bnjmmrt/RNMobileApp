@@ -67,8 +67,8 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
       const address: Address = {
         address: currentAddress,
         placeId: currentPlaceId,
-        latitude: String(currentLocation) || '',
-        longitude: String(currentLocation) || '',
+        latitude: String(currentLocation.latitude) || '',
+        longitude: String(currentLocation.longitude) || '',
       };
       setLocation(address);
       setError && setError(null);
