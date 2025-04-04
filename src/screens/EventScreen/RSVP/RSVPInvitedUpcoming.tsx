@@ -133,7 +133,7 @@ const StatusBanner = ({ isGoing, onPress }) => {
       onPress={onPress}
       style={[styles.statusBanner, { backgroundColor: COLORS.bgGreen }]}>
       <View style={{ alignItems: 'center', flexDirection: 'row', flex: 1 }}>
-        <Image resizeMode='contain' source={IMAGES.tickGoing} />
+        <Image resizeMode="contain" source={IMAGES.tickGoing} />
         <CustomText style={styles.statusText}> {'You are going'}</CustomText>
       </View>
       <Image
@@ -143,7 +143,7 @@ const StatusBanner = ({ isGoing, onPress }) => {
     </TouchableOpacity>
   ) : (
     <View style={styles.statusBanner}>
-      <Image resizeMode='contain' source={IMAGES.tickInvited} />
+      <Image resizeMode="contain" source={IMAGES.tickInvited} />
       <CustomText style={styles.statusText}> {EVENT_STATUS.INVITED}</CustomText>
     </View>
   );
@@ -685,9 +685,10 @@ const RSVPInvitedUpcoming = () => {
               paddingBottom: 8,
               fontSize: fontScale(14),
             }}>
-            Please add your additional guests’ details by{' '}
-            {formatEventRSVPDate(startDate, timeZone)}, or their passes will be
-            canceled.
+            {`Please add your additional guests’ details by ${formatEventRSVPDate(
+              startDate,
+              timeZone,
+            )}, or their passes will be canceled.`}
           </CustomText>
         )}
 
@@ -801,7 +802,7 @@ const RSVPInvitedUpcoming = () => {
                 ) === 0 && (
                   <View style={styles.toastNoGuest}>
                     <TouchableOpacity onPress={() => setIsToastShown(false)}>
-                      <Image resizeMode='contain' source={IMAGES.close} />
+                      <Image resizeMode="contain" source={IMAGES.close} />
                     </TouchableOpacity>
                     <CustomText
                       style={{ color: COLORS.black, fontSize: fontScale(14) }}>
@@ -820,9 +821,10 @@ const RSVPInvitedUpcoming = () => {
             paddingTop: 12,
             paddingBottom: 8,
           }}>
-          Please add your additional guests’ details by{' '}
-          {formatEventRSVPDate(startDate, timeZone)}, or their passes will be
-          canceled.
+          {`Please add your additional guests’ details by ${formatEventRSVPDate(
+            startDate,
+            timeZone,
+          )}, or their passes will be canceled.`}
         </CustomText>
         <Button
           disabled={false}

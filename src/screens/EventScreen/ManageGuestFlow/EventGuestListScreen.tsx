@@ -94,33 +94,30 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     (state: RootState) => state.inviteGuestsFlow.selectedEvent,
   );
 
-  // const {
-  //   data: guestsData,
-  //   error: guestsError,
-  //   isLoading: isLoadingGuests,
-  //   isFetching: isFetchingGuests,
-  //   refetch: refetchGuests,
-  // } = useGetGuestsQuery({ eventId, queryString: filterQuery });
-  const [
-    fetchGuests,
-    {
-      data: guestsData,
-      error: guestsError,
-      isLoading: isLoadingGuests,
-      isFetching: isFetchingGuests,
-    },
-  ] = useLazyGetGuestsQuery();
+  const {
+    data: guestsData,
+    error: guestsError,
+    isLoading: isLoadingGuests,
+    isFetching: isFetchingGuests,
+    refetch: refetchGuests,
+  } = useGetGuestsQuery({ eventId, queryString: filterQuery });
+  // const [
+  //   fetchGuests,
+  //   {
+  //     data: guestsData,
+  //     error: guestsError,
+  //     isLoading: isLoadingGuests,
+  //     isFetching: isFetchingGuests,
+  //   },
+  // ] = useLazyGetGuestsQuery();
 
   const fetchEventGuests = () => {
-    fetchGuests({
-      eventId,
-      queryString: filterQuery,
-    });
+    refetchGuests();
   };
 
   useFocusEffect(
     useCallback(() => {
-      fetchEventGuests();
+      // fetchEventGuests();
       changeSafeAreaViewConfig({
         ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
         showBottomSafeAreaView: false,
@@ -458,7 +455,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
               }
               isFilter={true}
             />
-            <Image resizeMode='contain' source={IMAGES.downArrow} />
+            <Image resizeMode="contain" source={IMAGES.downArrow} />
           </View>
           <TouchableOpacity
             style={styles.filterButton}
@@ -540,7 +537,7 @@ const styles = StyleSheet.create({
   icon: {
     width: horizontalScale(16),
     height: verticalScale(16),
-    resizeMode:'contain'
+    resizeMode: 'contain',
   },
   title: {
     fontSize: fontScale(24),
@@ -628,17 +625,17 @@ const styles = StyleSheet.create({
   },
   arrowIcon: {
     tintColor: COLORS.black,
-    resizeMode:'contain'
+    resizeMode: 'contain',
   },
   confirmedBadge: {
     width: horizontalScale(18),
     height: verticalScale(18),
     marginRight: horizontalMarginScale(4),
-    resizeMode:'contain'
+    resizeMode: 'contain',
   },
   nestedIcon: {
     marginRight: horizontalMarginScale(8),
-    resizeMode:'contain'
+    resizeMode: 'contain',
   },
   inviteesContainer: {
     marginTop: verticalMarginScale(4),
@@ -677,7 +674,7 @@ const styles = StyleSheet.create({
     width: horizontalScale(16),
     height: verticalScale(16),
     tintColor: COLORS.black,
-    resizeMode:'contain'
+    resizeMode: 'contain',
   },
   content: {
     flex: 1,
