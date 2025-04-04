@@ -1,4 +1,6 @@
-import React, { useCallback, useState } from 'react';
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/self-closing-comp */
+import React, { useCallback, useState, useMemo } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import {
   fontScale,
@@ -18,54 +20,98 @@ import { CustomText } from '../CustomText';
 import CustomCarousel from '../Carousel/CarouselComponent';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import FastImage from '@d11/react-native-fast-image';
+import { RootState } from 'src/redux/slices';
+import { useSelector } from 'react-redux';
 
 interface BeforeAppStaticComponentProps {
   isChatScreen: boolean;
-  role?: string;
 }
 
-const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
-  isChatScreen = false,
+const ListContent = ({
   role,
+  isChatScreen,
+}: {
+  role: string | undefined;
+  isChatScreen: boolean;
 }) => {
-  const navigation = useNavigation();
-
-  const listData = [
-    {
-      id: 0,
-      uri: IMAGES.frame1,
-      title: LABLE.ACCESS_THE_MOST_VALUABLE_CALENDAR,
-      subTitle: LABLE.DISCOVER_EXPERIENCES_IN_ART,
-    },
-    {
-      id: 1,
-      uri: IMAGES.frame2,
-      title: LABLE.UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS,
-      subTitle: LABLE.CONNECT_WITH_WORLD,
-    },
-    {
-      id: 2,
-      uri: IMAGES.frame3,
-      title:
-        role?.toLowerCase() === ROLE.HOST
-          ? LABLE.CHAT_WITH_GUEST
-          : LABLE.CHAT_WITH_HOST,
-      subTitle:
-        role?.toLowerCase() === ROLE.HOST
-          ? LABLE.ENGAGE_WITH_GUESTS
-          : LABLE.CONNECT_DIRECTLY_WITH_PEOPLE,
-    },
-    {
-      id: 3,
-      uri: IMAGES.frame4,
-      title: LABLE.STREAMLINE_YOUR_LIFESTYLE,
-      subTitle: LABLE.MANAGE_YOUR_EVENTS,
-    },
-  ];
+  const listData = useMemo(() => {
+    return [
+      {
+        id: 0,
+        uri: IMAGES.frame1,
+        title: LABLE.ACCESS_THE_MOST_VALUABLE_CALENDAR,
+        subTitle: LABLE.DISCOVER_EXPERIENCES_IN_ART,
+      },
+      {
+        id: 1,
+        uri: IMAGES.frame2,
+        title: LABLE.UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS,
+        subTitle: LABLE.CONNECT_WITH_WORLD,
+      },
+      {
+        id: 2,
+        uri: IMAGES.frame3,
+        title:
+          role?.toLowerCase() === ROLE.HOST
+            ? LABLE.CHAT_WITH_GUEST
+            : LABLE.CHAT_WITH_HOST,
+        subTitle:
+          role?.toLowerCase() === ROLE.HOST
+            ? LABLE.ENGAGE_WITH_GUESTS
+            : LABLE.CONNECT_DIRECTLY_WITH_PEOPLE,
+      },
+      {
+        id: 3,
+        uri: IMAGES.frame4,
+        title: LABLE.STREAMLINE_YOUR_LIFESTYLE,
+        subTitle: LABLE.MANAGE_YOUR_EVENTS,
+      },
+    ];
+  }, [role]);
 
   const [current, setCurrent] = useState(
     isChatScreen ? listData[2] : listData[0],
   );
+
+  const handleImageClick = (index: number) => {
+    if (isChatScreen) {
+      setCurrent(listData[2]);
+    } else {
+      setCurrent(listData[index]);
+    }
+  };
+
+  return (
+    <>
+      {!isChatScreen && (
+        <CustomCarousel list={listData} onScroll={handleImageClick} />
+      )}
+      {isChatScreen && (
+        <FastImage source={listData[2].uri} style={styles.chatImage} />
+      )}
+
+      <TitleSubtitle
+        style={styles.titleSubtitle}
+        title={current.title}
+        subTitle={current.subTitle}
+        titleFontSize={fontScale(32)}
+        subTitleMargin={verticalMarginScale(8)}
+        centerTextAlign={true}
+        isDarkTheme={true}
+      />
+    </>
+  );
+};
+
+const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
+  isChatScreen = false,
+}) => {
+  const navigation = useNavigation();
+
+  const { role } = useSelector((state: RootState) => ({
+    token: state.auth.token,
+    role: state.auth.role,
+  }));
 
   useFocusEffect(
     useCallback(() => {
@@ -76,27 +122,9 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
     }, []),
   );
 
-  const handleImageClick = (index: number) => {
-    console.log('index', index);
-    if (isChatScreen) {
-      setCurrent(listData[2]);
-    } else {
-      // const nextIndex = (current.id + 1) % listData.length;
-      setCurrent(listData[index]);
-    }
-  };
-
   const onButtonClick = () => {
-    navigation.navigate('AppFlowStack');
+    navigation.navigate('AppFlowStack' as never);
   };
-
-  // const renderImageItem = ({item}:{item:any}) => {
-  //   return (
-  //     <Pressable onPress={handleImageClick}>
-  //       <Image source={item.uri} style={styles.image} />
-  //     </Pressable>
-  //   )
-  // }
 
   return (
     <View style={styles.container}>
@@ -107,22 +135,7 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           <Image source={IMAGES.rumorLogo} style={styles.logoImgStyle} />
         </View>
 
-        {!isChatScreen && (
-          <CustomCarousel list={listData} onScroll={handleImageClick} />
-        )}
-        {isChatScreen && (
-          <FastImage source={listData[2].uri} style={styles.chatImage} />
-        )}
-
-        <TitleSubtitle
-          style={styles.titleSubtitle}
-          title={current.title}
-          subTitle={current.subTitle}
-          titleFontSize={fontScale(32)}
-          subTitleMargin={verticalMarginScale(8)}
-          centerTextAlign={true}
-          isDarkTheme={true}
-        />
+        <ListContent key={role} role={role} isChatScreen={isChatScreen} />
 
         <View style={{ height: Hp(5) }} />
 
