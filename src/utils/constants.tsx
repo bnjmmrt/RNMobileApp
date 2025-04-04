@@ -177,6 +177,7 @@ export const LABLE = {
     'Full access will be unlocked once your application is\napproved.',
   FASTRACK_YOUR_APPLICATION: 'Want to boost your application?',
   REQUEST_REFERRAL_FROM_RUMOR: 'Request referrals from Rumor members.',
+  VERIFY_YOUR_INSTAGRAM: 'Verify your Instagram.',
   INVITE_YOUR_FRIEND: 'Invite your friends to join Rumor.',
   SELECT_YOUR_BIRTHDAY_BELOW: 'Select your birthday below',
   WELCOME_NOTE_LINE_1:
