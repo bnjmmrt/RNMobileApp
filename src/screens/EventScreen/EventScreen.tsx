@@ -28,7 +28,7 @@ import InvitedEvents from './Tabs/InvitedEvents';
 import PastEvents from './Tabs/PastEvents';
 import UpcomingEvents from './Tabs/UpcomingEvents';
 
-interface EventScreenProps extends NativeStackScreenProps<any, any> {}
+interface EventScreenProps extends NativeStackScreenProps<any, any> { }
 
 interface TabItem {
   id: string;
@@ -124,11 +124,11 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
       style={{
         ...styles.container,
         backgroundColor: showEvents ? COLORS.white : COLORS.black2,
-        marginTop:
-          Platform.OS === 'ios' && showEvents ? verticalMarginScale(20) : 0,
       }}>
       {showEvents ? (
-        <>
+        <View style={{
+          paddingTop: Platform.OS === 'ios' ? verticalMarginScale(61) : 0,
+        }}>
           <SafeAreaView />
           <View
             style={{
@@ -151,7 +151,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
             />
             <View style={styles.contentContainer}>{renderTabContent()}</View>
           </View>
-        </>
+        </View>
       ) : (
         <AfterAppStaticComponent />
       )}

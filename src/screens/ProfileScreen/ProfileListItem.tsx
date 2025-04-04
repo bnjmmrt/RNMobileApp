@@ -57,7 +57,7 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
 
       case PROFILE.REFERRALS:
         console.log('Redirecting to Referrals...');
-        redirectToProfileStack(ROUTES.ReferralScreen);
+        redirectToProfileStack(ROUTES.ReferralScreen,{activeTab :'referrals'});
         // Example: navigate('/referrals');
         break;
 

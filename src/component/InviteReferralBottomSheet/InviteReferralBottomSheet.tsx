@@ -185,8 +185,12 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   };
 
   const handleInvite = (contact: ContactItem) => {
+    const rumorAppLink =
+      Platform.OS === 'android'
+        ? environment.playstoreLink
+        : environment.appStoreLink;
     const message =
-      "Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world's top event organizers. Click here to join and start exploring unique opportunities: [Rumor App Link]";
+      `Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world's top event organizers. Click here to join and start exploring unique opportunities: Andorid: ${environment.playstoreLink} | iOS: ${environment.appStoreLink}`;
 
     const url = `sms:${contact.phoneNumber}?body=${encodeURIComponent(
       message,
@@ -258,6 +262,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
           marginTop: verticalMarginScale(12),
         }}>
         <TabBar
+          tab={'01'}
           onTabChange={tab => {
             setSelectedTab(tab);
             handleSearch('');
@@ -266,6 +271,27 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
           tabTwoLabel="Invite Contacts"
           width="100%"
         />
+
+        {!permissionGranted && (
+          <View
+            style={{
+              height: Hp(65),
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <EventEmptyRecord
+              title="Access your contacts"
+              subTitle="Easily sync your phone contacts to request referrals from members and invite friends to join you on Rumor"
+            />
+            <ButtonSmall
+              colorTheme="dark"
+              leftIcon={IMAGES.settings}
+              style={styles.settingsButton}
+              title="Sync Contacts in Settings"
+              onPress={() => Linking.openURL('app-settings:')}
+            />
+          </View>
+        )}
 
         {selectedTab === '01' && (
           <View style={{ flex: 1, gap: 8, marginTop: verticalMarginScale(12) }}>

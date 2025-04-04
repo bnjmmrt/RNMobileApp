@@ -8,7 +8,7 @@ export function navigate(name, params) {
   }
 }
 
-export function navigateToNestedStack(stackName, screenName, params) {
+export function navigateToNestedStack(stackName, screenName, params={}) {
   if (navigationRef.isReady()) {
     navigationRef.navigate(stackName, {
       screen: screenName,

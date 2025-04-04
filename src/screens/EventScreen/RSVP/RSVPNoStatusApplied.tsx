@@ -77,7 +77,7 @@ const RSVPNoStatusApplied: React.FC = () => {
   } = params?.event;
 
   const [eventQuestions, setEventQuestions] = useState([]);
-  const [selectedGuests, setSelectedGuests] = useState<any>(null);
+  const [selectedGuests, setSelectedGuests] = useState<any>({ id: 0, label: 'No Guests' });
   const [vouchData, setVouchData] = useState<any>([]);
   const [activeView, setActiveTab] = useState<string>('');
   const guestInputRef = useRef(null);
@@ -482,7 +482,7 @@ const RSVPNoStatusApplied: React.FC = () => {
                   fontFamily: fontFamily.ABCDiatype_Medium,
                 }}
                 hasDropdown={true}
-                isRequired={true}
+                isRequired={false}
                 ref={guestInputRef}
                 rightImage={IMAGES.downArrow}
                 defaultValue={selectedGuests?.label}

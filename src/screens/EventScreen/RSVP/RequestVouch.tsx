@@ -25,19 +25,21 @@ const RequestVouch = ({
 }) => {
   const { getContactNumbersOnly, permissionGranted } = useContacts(true, 2000);
   const [members, setMembers] = useState<ContactItem[]>([]);
-
+  const [loader, setLaoder] = useState(false);
   const [getConfirmedMembers, { isLoading }] = useGetConfirmedMembersMutation();
 
   const [filteredMembers, setFilteredMembers] = useState<ContactItem[]>([]);
   const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    setLaoder(true);
     if (permissionGranted) {
       fetchContacts();
     }
   }, [permissionGranted]);
 
   const fetchContacts = async () => {
+    setLaoder(true);
     try {
       const contacts = await getContactNumbersOnly();
       if (contacts.length === 0) {
@@ -57,6 +59,7 @@ const RequestVouch = ({
     } catch (error) {
       console.error('Error fetching contacts:', error);
     }
+    setLaoder(false);
   };
   useEffect(() => {
     return () => {
@@ -114,18 +117,14 @@ const RequestVouch = ({
           }
         </Text>
       </View>
-      {isLoading ? (
+      {loader ? (
         <View
           style={{
             height: Hp(40),
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <EventEmptyRecord
-            isLoading={isLoading}
-            title="No Results"
-            subTitle="No Contacts are members at this time"
-          />
+          <ActivityIndicator color={COLORS.black} />
         </View>) :
         <FlatList
           data={filteredMembers}
@@ -137,7 +136,11 @@ const RequestVouch = ({
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <ActivityIndicator color={COLORS.black} />
+              <EventEmptyRecord
+                // isLoading={isLoading}
+                title="No Results"
+                subTitle="No Contacts are members at this time"
+              />
             </View>
           }
           contentContainerStyle={{ gap: 4 }}

@@ -22,12 +22,21 @@ import {
 import { fontFamily } from 'src/utils/functions';
 import InviteFriendsSheet from './InviteFriendsSheet';
 import ReferralRequestItem from './ReferralRequestItem';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useRoute, RouteProp } from '@react-navigation/native';
 
-const ReferralScreen: React.FC = () => {
+type ReferralScreenProps = NativeStackScreenProps<any, any>;
+type RouteParams = {
+  params: {
+    activeTab?: string;
+  };
+};
+const ReferralScreen: React.FC<ReferralScreenProps> = ({ navigation }) => {
+  const route = useRoute<RouteProp<RouteParams>>();
+  console.log('referrelRequests route.params.activeTabroute.params.activeTab ', route.params?.activeTab)
   const { apiRequest, loading } = useApi();
-  const [activeTab, setActiveTab] = useState<'referrals' | 'vouches'>(
-    'referrals',
-  );
+  let routetab = route.params?.activeTab ? route.params?.activeTab : 'referrals';
+  const [activeTab, setActiveTab] = useState<any>(routetab);
   const inviteFriendSheetRef = useRef<any>(null);
   const { goBack } = useNavigation();
   const userId = useSelector((state: RootState) => state.auth.userId);
@@ -80,7 +89,9 @@ const ReferralScreen: React.FC = () => {
   };
 
   useEffect(() => {
-    getReferredRequest();
+    setActiveTab(routetab);
+    handleTabChange(routetab == 'referrals' ? '01' : '02');
+    // getReferredRequest();
   }, []);
 
   const handleTabChange = (tab: string) => {
@@ -161,6 +172,7 @@ const ReferralScreen: React.FC = () => {
         onPress={goBack}
       />
       <TabBar
+        tab={activeTab === 'referrals' ? '01' : '02'}
         onTabChange={handleTabChange}
         tabOneLabel="Referral Requests"
         tabTwoLabel="Vouch Requests"
