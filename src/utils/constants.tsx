@@ -196,7 +196,7 @@ export const LABLE = {
   FEATURE_TALENT: 'Featured Talent',
   EVENT_ANNOUNCEMENTS: 'Event Announcements',
   INITATION_MESSAGE: 'Message from Revolve',
-  FURTHER_INSTRICTIONS: 'Further Instrictions',
+  FURTHER_INSTRICTIONS: 'Further Instructions',
   NO_EVENT_ANNOUNCEMENTS: 'No Event Announcements',
   PAST_EVENT_ANNOUNCEMENTS_ERROR:
     'You can’t post event announcements for past events.',

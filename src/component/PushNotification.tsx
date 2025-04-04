@@ -117,7 +117,7 @@ export const navigateToScreen = (data: any, type: string = 'in-app') => {
         'eventPostedCity',
         'eventRequestApproved',
         'eventRequestDenied',
-        'eventVouch',
+        // 'eventVouch',
         'signUpFormApproved',
         'signUpFormRejected',
         'eventInvitationNonMember',
@@ -134,6 +134,10 @@ export const navigateToScreen = (data: any, type: string = 'in-app') => {
             id: type == 'push' ? data?.data?.eventId : data?.body?.eventId
         };
         navigateToNestedStack(ROUTES.EventStack, ROUTES.EventDetailsScreen, eventData);
+    }
+    else if (notifiType === 'eventVouch') {
+        let userData = { activeTab: 'vouches' };
+        navigateToNestedStack(ROUTES.ProfileStack, ROUTES.ReferralScreen, userData);
     } else if (notifiType === 'hostApplication') {
         let userData = {
             hostId: type == 'push' ? data?.data?.userId : data?.body?.userId

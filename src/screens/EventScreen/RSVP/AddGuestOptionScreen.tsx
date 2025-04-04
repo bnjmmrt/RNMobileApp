@@ -84,6 +84,7 @@ const AddGuestOptionScreen: React.FC<EmailPhoneScreenProps> = ({
       <View style={styles.contentContainer}>
         <CustomText style={styles.descriptionText}>Provide details to add your additional guest.</CustomText>
         <TabBar
+        tab={'01'}
           onTabChange={handleTabChange}
           tabOneLabel="Add from Contacts"
           tabTwoLabel="Add Manually"

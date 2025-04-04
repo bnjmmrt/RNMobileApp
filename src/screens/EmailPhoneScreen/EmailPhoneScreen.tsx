@@ -78,6 +78,7 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
     <View behavior="padding" style={styles.container}>
       <BackButton onPress={handleBackPress} />
       <TabBar
+      tab={'01'}
         onTabChange={handleTabChange}
         tabOneLabel="Phone"
         tabTwoLabel="Email"

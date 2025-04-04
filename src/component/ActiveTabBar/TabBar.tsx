@@ -11,6 +11,7 @@ type TabBarProps = {
     width?: string;
     countOne?: number;
     countTwo?: number;
+    tab?: string;
 };
 
 const TabBar: React.FC<TabBarProps> = ({
@@ -20,8 +21,9 @@ const TabBar: React.FC<TabBarProps> = ({
     width = '90%',
     countOne,
     countTwo,
+    tab
 }) => {
-    const [activeTab, setActiveTab] = useState('01');
+    const [activeTab, setActiveTab] = useState(tab);
 
     const handleTabPress = (tab: string) => {
         setActiveTab(tab);
