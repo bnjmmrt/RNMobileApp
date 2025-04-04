@@ -190,7 +190,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
         </View>
         {isToastShown && (
           <Toast
-            toastStyle={{bottom: 25}}
+            toastStyle={{ bottom: 25 }}
             message={'Please select at least one'}
             onClose={() => setIsToastShown(false)}
           />

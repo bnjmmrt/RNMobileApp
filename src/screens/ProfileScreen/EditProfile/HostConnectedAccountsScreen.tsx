@@ -67,8 +67,6 @@ const HostConnectedAccountsScreen: React.FC<
       },
     };
 
-    console.log('requestObject', requestObject);
-
     const response: any = await apiRequest(
       'put',
       `${EndPoint.host_ep}`,
@@ -116,7 +114,7 @@ const HostConnectedAccountsScreen: React.FC<
               image={IMAGES.profileInsta}
               ref={instagramRef}
               label={PROFILE.INSTAGRAM}
-              prefix={hostProfileData?.socialMedia?.instagram ? '' : "instagram.com/"}
+              prefix={"instagram.com/"}
               isIconShown={false}
               defaultValue={
                 hostProfileData?.socialMedia?.instagram
@@ -128,7 +126,7 @@ const HostConnectedAccountsScreen: React.FC<
               image={IMAGES.host_tiktok}
               ref={tiktokRef}
               label={PROFILE.TIKTOK}
-              prefix={hostProfileData?.socialMedia?.tiktok ? '' : "tiktok.com/@"}
+              prefix={"tiktok.com/@"}
               isIconShown={false}
               defaultValue={
                 hostProfileData?.socialMedia?.tiktok
@@ -140,7 +138,7 @@ const HostConnectedAccountsScreen: React.FC<
               image={IMAGES.fb}
               ref={facebookRef}
               label={PROFILE.FACEBOOK}
-              prefix={hostProfileData?.socialMedia?.facebook ? '' : "facebook.com/"}
+              prefix={"facebook.com/"}
               isIconShown={false}
               defaultValue={
                 hostProfileData?.socialMedia?.facebook
@@ -152,7 +150,7 @@ const HostConnectedAccountsScreen: React.FC<
               image={IMAGES.linkdn}
               ref={linkedinRef}
               label={PROFILE.LINKEDIN}
-              prefix={hostProfileData?.socialMedia?.linkedin ? '' : "linkedin.com/in/"}
+              prefix={"linkedin.com/in/"}
               isIconShown={false}
               defaultValue={
                 hostProfileData?.socialMedia?.linkedin
@@ -164,7 +162,7 @@ const HostConnectedAccountsScreen: React.FC<
               image={IMAGES.host_x}
               ref={xRef}
               label={PROFILE.X}
-              prefix={hostProfileData?.socialMedia?.x ? '' : "x.com/"}
+              prefix={"x.com/"}
               isIconShown={false}
               defaultValue={
                 hostProfileData?.socialMedia?.x
@@ -176,7 +174,7 @@ const HostConnectedAccountsScreen: React.FC<
               image={IMAGES.yt}
               ref={youtubeRef}
               label={PROFILE.YOUTUBE}
-              prefix={hostProfileData?.socialMedia?.youtube ? '' : "youtube.com/@"}
+              prefix={"youtube.com/@"}
               isIconShown={false}
               defaultValue={
                 hostProfileData?.socialMedia?.youtube

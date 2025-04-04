@@ -37,7 +37,7 @@ import {
 } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-interface NotificationsScreenProps extends NativeStackScreenProps<any, any> {}
+interface NotificationsScreenProps extends NativeStackScreenProps<any, any> { }
 
 // Define the notification type to fix the linter error
 interface Notification {
@@ -99,6 +99,25 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
 
   const { data, isLoading, refetch } = useFetchNotificationQuery(queryArgs);
 
+  const [isRendering, setRendring] = useState(false);
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (isLoading) {
+      setRendring(true); // immediately show skeleton loader
+    } else {
+      // Delay turning off the rendering state to avoid flicker
+      timeoutId = setTimeout(() => {
+        setRendring(false);
+      }, 300); // you can tweak this delay
+    }
+
+    return () => {
+      clearTimeout(timeoutId); // clean up if component unmounts or re-runs
+    };
+  }, [isLoading]);
+
+
   useEffect(() => {
     if (
       data &&
@@ -112,7 +131,11 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
           : [...prev, ...data?.data?.result],
       );
       setIsDataLoading(false);
+    } else {
+      setIsDataLoading(false);
     }
+
+
   }, [data]);
 
   const handleRefresh = () => {
@@ -198,7 +221,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
         showProgressBar={false}
       />
 
-      {isLoading && !notifications?.length && isDataLoading && (
+      {isRendering && !notifications?.length && isDataLoading && (
         <View style={styles.contentContainer}>
           <FlatList
             showsVerticalScrollIndicator={false}
@@ -210,35 +233,35 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
       )}
 
       {Boolean(
-        !(isLoading && !notifications?.length) && notifications?.length,
+        !(isRendering && !notifications?.length) && notifications?.length,
       ) && (
-        <View style={styles.contentContainer}>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={notifications || []}
-            keyExtractor={item => item?.id}
-            renderItem={({ item }) => (
-              <SwapToDeleteComponent
-                item={item}
-                renderItem={item => renderItem(item)}
-                onDelete={handleDelete}
-              />
-            )}
-            onEndReached={loadMore}
-            onEndReachedThreshold={0.5}
-            refreshControl={
-              notifications?.length > 0 ? (
-                <RefreshControl
-                  refreshing={isLoading}
-                  onRefresh={handleRefresh}
+          <View style={styles.contentContainer}>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={notifications || []}
+              keyExtractor={item => item?.id}
+              renderItem={({ item }) => (
+                <SwapToDeleteComponent
+                  item={item}
+                  renderItem={item => renderItem(item)}
+                  onDelete={handleDelete}
                 />
-              ) : undefined
-            }
-          />
-        </View>
-      )}
+              )}
+              onEndReached={loadMore}
+              onEndReachedThreshold={0.5}
+              refreshControl={
+                notifications?.length > 0 ? (
+                  <RefreshControl
+                    refreshing={isLoading}
+                    onRefresh={handleRefresh}
+                  />
+                ) : undefined
+              }
+            />
+          </View>
+        )}
 
-      {!isLoading && !notifications?.length && !isDataLoading && (
+      {!isRendering && !notifications?.length && !isDataLoading && (
         <EmptyRecordComponent
           title={LABLE.NO_NOTIFICATIONS_YET}
           subTitle={LABLE.NOTIFICATIONS_SUB_TITLE}

@@ -69,6 +69,25 @@ const Lists: React.FC<ListsProps> = ({ }) => {
     skip: (currentPage - 1) * 10,
   });
 
+  const [isRendering, setRendring] = useState(false);
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    console.log('isRendering.............', isLoading);
+    if (isLoading) {
+      setRendring(true); // immediately show skeleton loader
+    } else {
+      // Delay turning off the rendering state to avoid flicker
+      timeoutId = setTimeout(() => {
+        setRendring(false);
+      }, 300); // you can tweak this delay
+    }
+
+    return () => {
+      clearTimeout(timeoutId); // clean up if component unmounts or re-runs
+    };
+  }, [isLoading]);
+
+
   useEffect(() => {
     if (data) {
       if (currentPage === 1) {
@@ -190,7 +209,7 @@ const Lists: React.FC<ListsProps> = ({ }) => {
 
   return (
     <View style={styles.container}>
-      {isLoading && currentPage === 1 ? (
+      {isRendering && currentPage === 1 ? (
         renderListSkeletonList()
       ) : (
         <FlatList

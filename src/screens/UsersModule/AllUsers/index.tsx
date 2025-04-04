@@ -24,10 +24,11 @@ import UserActionsSheet, {
 } from '../BottomSheets/UserActionsSheet';
 import UserListItem, { UserItemInterface } from '../UsersListItem';
 import { COLORS } from 'src/utils/constants'
+import { set } from 'lodash';
 
-interface AllUserProps {}
+interface AllUserProps { }
 
-const AllUsers: React.FC<AllUserProps> = ({}) => {
+const AllUsers: React.FC<AllUserProps> = ({ }) => {
   const dispatch = useDispatch();
   const searchInputRef = useRef<InputRefMethods>(null);
   const actionSheetRef = useRef<BottomSheetMethods>(null);
@@ -110,6 +111,24 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
     setFilterNumber(0);
     setSelectedFilters({});
   };
+
+  const [isRendering, setRendring] = useState(false);
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (isLoading) {
+      setRendring(true); // immediately show skeleton loader
+    } else {
+      // Delay turning off the rendering state to avoid flicker
+      timeoutId = setTimeout(() => {
+        setRendring(false);
+      }, 300); // you can tweak this delay
+    }
+
+    return () => {
+      clearTimeout(timeoutId); // clean up if component unmounts or re-runs
+    };
+  }, [isLoading]);
 
   const getEmptyStateMessage = () => {
     if (filterNumber > 0 && searchText) {
@@ -227,7 +246,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
       dispatch(changeBottomTabsVisibility({ showBottomTabs: true }));
     };
   }, []);
-
+  const isInitialLoading = isRendering && currentPage === 1
   return (
     <View style={{ marginTop: verticalMarginScale(8), flex: 1 }}>
       <SearchInput
@@ -243,7 +262,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
         defaultValue={searchText}
       />
 
-      {isLoading && currentPage === 1 ? (
+      {isInitialLoading ? (
         renderUserSkeletonList()
       ) : (
         <FlatList
@@ -259,6 +278,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
           ListFooterComponent={
             <View style={{ marginBottom: verticalMarginScale(150) }} />
           }
+
           ListEmptyComponent={
             <View
               style={{

@@ -70,7 +70,7 @@ import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 import EventInvitation from 'src/component/Event/EventInvitation';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: any;
@@ -156,9 +156,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const)
       : ({
-          userId,
-          eventId: route?.params?.id,
-        } as const);
+        userId,
+        eventId: route?.params?.id,
+      } as const);
 
   const useFetchEventDetailsHook =
     role === ROLE.HOST
@@ -605,22 +605,21 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                   isDeclinedByMe={isDeclinedByMe}
                 />
 
-                {role !== ROLE.NON_MEMBER && (
-                  <FlatList
-                    data={collaborators}
-                    horizontal
-                    pagingEnabled={false}
-                    // style={{ marginVertical: 20 }}
-                    showsHorizontalScrollIndicator={false}
-                    keyExtractor={(item: any, index) => `${item.id}-${index}`}
-                    renderItem={({ item }) => (
-                      <EventHostItem
-                        item={item}
-                        length={collaborators.length}
-                      />
-                    )}
-                  />
-                )}
+                <FlatList
+                  data={collaborators}
+                  horizontal
+                  pagingEnabled={false}
+                  // style={{ marginVertical: 20 }}
+                  showsHorizontalScrollIndicator={false}
+                  keyExtractor={(item: any, index) => `${item.id}-${index}`}
+                  renderItem={({ item }) => (
+                    <EventHostItem
+                      item={item}
+                      length={collaborators.length}
+                    />
+                  )}
+                />
+
 
                 {guestStatus == 'INVITED' && (
                   <EventInvitation item={data?.data} />
@@ -692,7 +691,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                         setshowError(false);
                       }}>
                       <Image
-                        style={{ width: 18, height: 18, right: 5,resizeMode:'contain'
+                        style={{
+                          width: 18, height: 18, right: 5, resizeMode: 'contain'
                         }}
                         source={IMAGES.x_circle}
                       />
