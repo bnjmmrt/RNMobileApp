@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
-import { SafeAreaView, View } from 'react-native';
+import { Platform, SafeAreaView, StatusBar, View } from 'react-native';
 import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
+import { verticalMarginScale } from 'src/utils/dimensions';
 
 export const SafeAreaViewWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -21,6 +22,12 @@ export const SafeAreaViewWrapper: React.FC<{ children: React.ReactNode }> = ({
     }),
     shallowEqual,
   );
+
+  // const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 44 : 24;
+  // const TOP_SPACING =
+  //   Platform.OS === 'ios'
+  //     ? STATUS_BAR_HEIGHT + verticalMarginScale(16)
+  //     : (StatusBar.currentHeight || 0) + verticalMarginScale(16);
 
   return (
     <View style={{ flex: 1 }}>

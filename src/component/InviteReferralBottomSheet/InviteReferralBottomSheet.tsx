@@ -27,7 +27,7 @@ import {
   Hp,
   verticalMarginScale,
 } from 'src/utils/dimensions';
-import useContacts from 'src/utils/hooks/useContactPermission';
+import useContacts, { ContactItem } from 'src/utils/hooks/useContactPermission';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import IMAGES from '../../assets/images';
 import { useGetConfirmedMembersMutation } from '../../redux/actions/referralApiAction';
@@ -56,36 +56,24 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   const [selectedTab, setSelectedTab] = useState('01');
   const [requestSent, setRequestSent] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [getConfirmedMembers, { data, isLoading }] = useGetConfirmedMembersMutation();
+  const [getConfirmedMembers, { data, isLoading }] =
+    useGetConfirmedMembersMutation();
   const { apiRequest } = useApi();
-  const { getContacts, permissionGranted, getContactNumbersOnly } = useContacts(true);
+  const {
+    getContacts,
+    permissionGranted,
+    getContactNumbersOnly,
+    permissionLoading,
+  } = useContacts(true);
   const searchRef = useRef(null);
   const debounceTimeoutRef = useRef(null);
 
   const [isRendering, setRendring] = useState(false);
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-
-    if (isLoading) {
-      setRendring(true); // immediately show skeleton loader
-    } else {
-      // Delay turning off the rendering state to avoid flicker
-      timeoutId = setTimeout(() => {
-        setRendring(false);
-      }, 300); // you can tweak this delay
-    }
-
-    return () => {
-      clearTimeout(timeoutId); // clean up if component unmounts or re-runs
-    };
-  }, [isLoading]);
-
-
 
   useFocusEffect(
     useCallback(() => {
       changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
-    }, [])
+    }, []),
   );
 
   useEffect(() => {
@@ -94,10 +82,14 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
 
   const fetchContacts = async () => {
     try {
+      setRendring(true);
       const formattedContacts = await getContacts();
       const contactNumbers = await getContactNumbersOnly();
       const response = await getConfirmedMembers({ contacts: contactNumbers });
-      const referralRequests = await apiRequest('get', 'users/v1/auth/list-referral-requests/');
+      const referralRequests = await apiRequest(
+        'get',
+        'users/v1/auth/list-referral-requests/',
+      );
       const referralUserIds = referralRequests?.data?.data?.map(r => r.userId);
 
       if (response?.data?.data) {
@@ -111,7 +103,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
 
         const memberPhoneNumbers = membersWithSentFlag.map(m => m.phoneNumber);
         const nonMembers = formattedContacts.filter(
-          contact => !memberPhoneNumbers.includes(contact.phoneNumber)
+          contact => !memberPhoneNumbers.includes(contact.phoneNumber),
         );
 
         setContacts(nonMembers);
@@ -122,6 +114,8 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       }
     } catch (err) {
       console.error('Error loading contacts:', err);
+    } finally {
+      setRendring(false);
     }
   };
 
@@ -144,12 +138,12 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       }
 
       setFilteredMembers(
-        members.filter(m => m?.name?.toLowerCase().includes(lower))
+        members.filter(m => m?.name?.toLowerCase().includes(lower)),
       );
       setFilteredContacts(
         contacts
           .filter(c => c?.name?.toLowerCase().includes(lower))
-          .slice(0, PAGE_SIZE)
+          .slice(0, PAGE_SIZE),
       );
     }, 500);
   };
@@ -166,7 +160,10 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   };
 
   const handleInviteLink = async () => {
-    const link = Platform.OS === 'android' ? environment.playstoreLink : environment.appStoreLink;
+    const link =
+      Platform.OS === 'android'
+        ? environment.playstoreLink
+        : environment.appStoreLink;
     try {
       await Share.share({
         title: 'Join Rumor and Unlock Unique Experiences!',
@@ -182,8 +179,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       Platform.OS === 'android'
         ? environment.playstoreLink
         : environment.appStoreLink;
-    const message =
-      `Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world's top event organizers. Click here to join and start exploring unique opportunities: Andorid: ${environment.playstoreLink} | iOS: ${environment.appStoreLink}`;
+    const message = `Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world's top event organizers. Click here to join and start exploring unique opportunities: Andorid: ${environment.playstoreLink} | iOS: ${environment.appStoreLink}`;
 
     const url = `sms:${contact.phoneNumber}?body=${encodeURIComponent(
       message,
@@ -199,16 +195,18 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       return (
         <View style={styles.emptyContainer}>
           <EventEmptyRecord
-            isLoading={isRendering}
+            isLoading={isRendering || permissionLoading}
             title="Access your contacts"
             subTitle="Sync your phone contacts to invite friends"
-          />
-          <ButtonSmall
-            colorTheme="dark"
-            leftIcon={IMAGES.settings}
-            style={styles.settingsButton}
-            title="Sync Contacts in Settings"
-            onPress={() => Linking.openURL('app-settings:')}
+            footerContent={
+              <ButtonSmall
+                colorTheme="dark"
+                leftIcon={IMAGES.settings}
+                style={styles.settingsButton}
+                title="Sync Contacts in Settings"
+                onPress={() => Linking.openURL('app-settings:')}
+              />
+            }
           />
         </View>
       );
@@ -223,6 +221,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
               ? 'No Contacts are members at this time'
               : 'Please refine your search.'
           }
+          isLoading={isRendering || permissionLoading}
         />
       </View>
     );
@@ -231,11 +230,15 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <Header headerTitle="Referrals & Invites" showProgressBar={false} />
-      <View style={{ paddingHorizontal: 20, flex: 1, marginTop: verticalMarginScale(12) }}>
+      <View
+        style={{
+          paddingHorizontal: 20,
+          flex: 1,
+          marginTop: verticalMarginScale(12),
+        }}>
         <TabBar
           tab={'01'}
           onTabChange={tab => {
-
             setSelectedTab(tab);
             handleSearch('');
           }}
@@ -283,17 +286,17 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
                 </Text>
               </View>
             )}
-            {!isRendering &&
-              <FlatList
-                data={filteredMembers}
-                scrollEnabled={false}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ gap: 4 }}
-                keyExtractor={(item, index) => item.phoneNumber + index}
-                ListEmptyComponent={renderEmptyComponent()}
-                renderItem={({ item }) => <RenderMemberList item={item} />}
-              />
-            }
+            <FlatList
+              data={filteredContacts}
+              scrollEnabled={true}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ gap: 4 }}
+              keyExtractor={(item, index) => item.phoneNumber + index}
+              ListEmptyComponent={renderEmptyComponent()}
+              renderItem={({ item }) => <RenderMemberList item={item} />}
+            />
+            {/* {!isRendering && (
+            )} */}
           </View>
         )}
 
@@ -327,27 +330,49 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
                 keyExtractor={(item, index) => item.phoneNumber + index}
                 renderItem={({ item }) => (
                   <View style={styles.listItem}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, gap: 12 }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        flex: 1,
+                        gap: 12,
+                      }}>
                       <AvatarInitials name={item.name} size={48} />
                       <View style={{ width: horizontalScale(206) }}>
-                        <Text numberOfLines={1} style={styles.name}>{item.name}</Text>
-                        <Text style={styles.phone}>{numberSpacing(item.phoneNumber, item.countryCode)}</Text>
+                        <Text numberOfLines={1} style={styles.name}>
+                          {item.name}
+                        </Text>
+                        <Text style={styles.phone}>
+                          {numberSpacing(item.phoneNumber, item.countryCode)}
+                        </Text>
                       </View>
                     </View>
                     <ButtonSmall
                       disabled={requestSent.includes(item.phoneNumber)}
-                      title={requestSent.includes(item.phoneNumber) ? 'Sent' : 'Invite'}
+                      title={
+                        requestSent.includes(item.phoneNumber)
+                          ? 'Sent'
+                          : 'Invite'
+                      }
                       style={styles.smallBtnStyle}
                       colorTheme="dark"
-                      borderType={requestSent.includes(item.phoneNumber) ? 'STRIPE' : 'SOLID'}
-                      leftIcon={requestSent.includes(item.phoneNumber) ? IMAGES.check : null}
+                      borderType={
+                        requestSent.includes(item.phoneNumber)
+                          ? 'STRIPE'
+                          : 'SOLID'
+                      }
+                      leftIcon={
+                        requestSent.includes(item.phoneNumber)
+                          ? IMAGES.check
+                          : null
+                      }
                       onPress={() => handleInvite(item)}
                     />
                   </View>
                 )}
                 onEndReached={handleLoadMore}
                 onEndReachedThreshold={0.5}
-              // ListEmptyComponent={renderEmptyComponent()}
+                // ListEmptyComponent={renderEmptyComponent()}
               />
             )}
           </View>

@@ -1,5 +1,5 @@
-import {StyleSheet} from 'react-native';
-import {COLORS} from 'src/utils/constants';
+import { StyleSheet } from 'react-native';
+import { COLORS } from 'src/utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -7,7 +7,7 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import {fontFamily} from 'src/utils/functions';
+import { fontFamily } from 'src/utils/functions';
 
 export const styles = StyleSheet.create({
   actionButtonContainer: {
@@ -83,7 +83,6 @@ export const styles = StyleSheet.create({
     gap: horizontalMarginScale(8),
   },
   username: {
-    textAlign: 'center',
     color: COLORS.black,
     fontFamily: fontFamily.ABCDiatype_Medium,
   },

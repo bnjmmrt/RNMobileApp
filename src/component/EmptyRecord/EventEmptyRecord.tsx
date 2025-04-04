@@ -26,6 +26,8 @@ const EventEmptyRecord: React.FC<EventEmptyRecordProps> = ({
   isLoading,
   footerContent,
 }) => {
+  console.log('isLoading', isLoading);
+
   return !isLoading ? (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
