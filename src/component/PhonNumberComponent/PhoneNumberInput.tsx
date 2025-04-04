@@ -273,15 +273,18 @@ const PhoneNumberInput = forwardRef<
           <TouchableOpacity
             style={[styles.flagContainer]}
             onPress={() => {
-              Keyboard.dismiss()
-              countryPickerRef?.current?.open()
+              Keyboard.dismiss();
+              countryPickerRef?.current?.open();
             }}
             disabled={disabled}>
             <Text style={styles.flag}>{flag}</Text>
             {!disabled && (
               <Image
                 source={IMAGES.upDownArrow}
-                style={[styles.arrowIcon, disabled && { opacity: 0.5,resizeMode:'contain' }]}
+                style={[
+                  styles.arrowIcon,
+                  disabled && { opacity: 0.5, resizeMode: 'contain' },
+                ]}
               />
             )}
             <Text style={styles.callingCode}>{callingCode}</Text>
@@ -315,6 +318,7 @@ const PhoneNumberInput = forwardRef<
               validatePhoneNumber();
             }}
             editable={!disabled}
+            selection={{ start: phoneNumber.length, end: phoneNumber.length }}
           />
         </View>
 
@@ -374,7 +378,7 @@ const styles = StyleSheet.create({
     width: 25,
     textAlign: 'center',
     height: 25,
-    marginTop: Platform.OS == 'ios' ? 3 : 0
+    marginTop: Platform.OS == 'ios' ? 3 : 0,
   },
   arrowIcon: {
     marginRight: 5,

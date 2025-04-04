@@ -271,7 +271,7 @@ const FilterOptions = ({
         <BottomSheetView>
           <GooglePlacesInput
             submit={() => {}}
-            autoFetchCurrentLocation={true}
+            autoFetchCurrentLocation={optionType === 'location'}
             allowFullAddres={false}
             defaultValue={
               optionType === 'baseCityFilter'

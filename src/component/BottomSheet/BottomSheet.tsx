@@ -54,8 +54,8 @@ export type BottomSheetMethods = {
 
 const BottomSheetComponent = forwardRef<
   BottomSheetMethods,
-  BottomSheetComponentProps>
-(
+  BottomSheetComponentProps
+>(
   (
     {
       children,

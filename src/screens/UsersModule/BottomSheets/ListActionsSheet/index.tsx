@@ -2,6 +2,7 @@ import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, {
   forwardRef,
   useCallback,
+  useEffect,
   useImperativeHandle,
   useRef,
   useState,
@@ -108,8 +109,12 @@ const ListActionsSheet = forwardRef<
 
     const onCreateListSuccess = (listId: string, listName: string) => {
       setSelectedListData({ id: listId, name: listName });
+      closeSheet();
       InteractionManager.runAfterInteractions(() => {
-        setSelectedAction('addUsers');
+        setTimeout(() => {
+          setSelectedAction('addUsers');
+          sheetRef?.current?.open();
+        }, 1000);
       });
     };
 

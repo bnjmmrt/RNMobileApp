@@ -28,6 +28,9 @@ const useContacts = (autoRequestForPermision?: boolean, timout?: number) => {
   const navigation = useNavigation();
   const [permissionGranted, setPermissionGranted] =
     useState<PermissionStatus>(null);
+  const [permissionLoading, setPermissionLoading] = useState<boolean>(
+    autoRequestForPermision ? true : false,
+  );
   const currentCountry = getCountry();
 
   const showAllowPermissionFromSettingAlert = () => {
@@ -110,6 +113,7 @@ const useContacts = (autoRequestForPermision?: boolean, timout?: number) => {
   };
 
   const requestAndroidPermission = async (): Promise<void> => {
+    setPermissionLoading(true);
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
@@ -132,10 +136,13 @@ const useContacts = (autoRequestForPermision?: boolean, timout?: number) => {
       showAllowPermissionFromSettingAlert();
       console.error('Android permission error: ', error);
       setPermissionGranted(false);
+    } finally {
+      setPermissionLoading(false);
     }
   };
 
   const requestIOSPermission = async (): Promise<void> => {
+    setPermissionLoading(true);
     try {
       const permission = await Contacts.requestPermission();
       if (permission === 'authorized') {
@@ -151,6 +158,8 @@ const useContacts = (autoRequestForPermision?: boolean, timout?: number) => {
       showAllowPermissionFromSettingAlert();
       console.error('iOS permission error: ', error);
       setPermissionGranted(false);
+    } finally {
+      setPermissionLoading(false);
     }
   };
 
@@ -178,6 +187,7 @@ const useContacts = (autoRequestForPermision?: boolean, timout?: number) => {
     getContacts,
     getContactNumbersOnly,
     getPhoneNumber,
+    permissionLoading,
   };
 };
 
