@@ -139,6 +139,7 @@ export const LABLE = {
   ADD_A_PHOTO: 'Add a photo',
   ADD_A_PHOTO_SUBTITLE: 'Upload a profile photo to complete your profile.',
   CHAT_WITH_HOST: 'Connect directly\nwith hosts.',
+  CHAT_WITH_GUEST: 'Connect \nwith guests.',
   SEARCH_FOR_EVENT: 'Search for an event...',
   ACCESS_THE_MOST_VALUABLE_CALENDAR:
     'Access culture’s most \n coveted moments.',
@@ -149,6 +150,8 @@ export const LABLE = {
     'Get discovered by hosts and invited to coveted \n moments in art, fashion, music, and beyond.',
   CONNECT_DIRECTLY_WITH_PEOPLE:
     'Build relationships and secure invites from those \n who run the show. No more barriers.',
+  ENGAGE_WITH_GUESTS:
+    'Engage directly with your guests. Send event details, confirm attendance, and share updates effortlessly.',
   UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS: 'Let invites \n come to you.',
   GET_DISCOVERY_BY_THE_WORLD:
     "Get discovered by the world's top event organizers and receive invites to events that matter.",

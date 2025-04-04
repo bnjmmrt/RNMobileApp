@@ -1,7 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
-import { fontScale, Hp, verticalMarginScale, verticalScale, Wp } from '../../utils/dimensions';
-import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
+import {
+  fontScale,
+  Hp,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+} from '../../utils/dimensions';
+import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 import IMAGES from '../../assets/images/index';
 import Button from '../Button';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
@@ -15,10 +21,12 @@ import FastImage from '@d11/react-native-fast-image';
 
 interface BeforeAppStaticComponentProps {
   isChatScreen: boolean;
+  role?: string;
 }
 
 const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
   isChatScreen = false,
+  role,
 }) => {
   const navigation = useNavigation();
 
@@ -38,8 +46,14 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
     {
       id: 2,
       uri: IMAGES.frame3,
-      title: LABLE.CHAT_WITH_HOST,
-      subTitle: LABLE.CONNECT_DIRECTLY_WITH_PEOPLE,
+      title:
+        role?.toLowerCase() === ROLE.HOST
+          ? LABLE.CHAT_WITH_GUEST
+          : LABLE.CHAT_WITH_HOST,
+      subTitle:
+        role?.toLowerCase() === ROLE.HOST
+          ? LABLE.ENGAGE_WITH_GUESTS
+          : LABLE.CONNECT_DIRECTLY_WITH_PEOPLE,
     },
     {
       id: 3,
@@ -93,16 +107,12 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
           <Image source={IMAGES.rumorLogo} style={styles.logoImgStyle} />
         </View>
 
-        {!isChatScreen &&
-          <CustomCarousel
-            list={listData}
-            onScroll={handleImageClick}
-          />}
-        {isChatScreen &&
-          <FastImage
-            source={listData[2].uri}
-            style={styles.chatImage}
-          />}
+        {!isChatScreen && (
+          <CustomCarousel list={listData} onScroll={handleImageClick} />
+        )}
+        {isChatScreen && (
+          <FastImage source={listData[2].uri} style={styles.chatImage} />
+        )}
 
         <TitleSubtitle
           style={styles.titleSubtitle}
@@ -193,6 +203,6 @@ const styles = StyleSheet.create({
   chatImage: {
     height: 329,
     width: 329,
-    alignSelf: 'center'
-  }
+    alignSelf: 'center',
+  },
 });
