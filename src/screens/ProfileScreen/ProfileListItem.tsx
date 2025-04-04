@@ -1,6 +1,12 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  InteractionManager,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Image } from 'react-native-animatable';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
@@ -120,7 +126,8 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
     <View style={styles.container}>
       <TouchableOpacity
         style={[styles.inputWrapper]}
-        onPress={() => handleItemClick(item)}>
+        onPress={() => handleItemClick(item)}
+        activeOpacity={item.title === PROFILE.CONTACT_SUPPORT ? 1 : 0}>
         {item.image && <Image source={item.image} style={styles.icon} />}
         <Text
           style={[
@@ -129,7 +136,9 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
           ]}>
           {item.title}
         </Text>
-        {item.image && <Image resizeMode='contain' source={IMAGES.arrowRight} />}
+        {item.image && (
+          <Image resizeMode="contain" source={IMAGES.arrowRight} />
+        )}
       </TouchableOpacity>
     </View>
   );

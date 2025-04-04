@@ -39,7 +39,6 @@ const FollowButton: React.FC<FollowButtonProps> = ({
     if (loading) return;
 
     setLoading(true);
-    setFollowing(!following);
     await followUnfollow(id, following);
     setLoading(false);
 
@@ -51,21 +50,34 @@ const FollowButton: React.FC<FollowButtonProps> = ({
   };
 
   const unFollowApi = async (hostId: string) => {
-    const response: any = await apiRequest(
-      'delete',
-      `${EndPoint.host}/${hostId}/follow`,
-      { userId },
-    );
-    return response?.status;
+    try {
+      const response: any = await apiRequest(
+        'delete',
+        `${EndPoint.host}/${hostId}/follow`,
+        { userId },
+      );
+      console.log('responseresponse', response);
+
+      setFollowing(!following);
+      return response?.status;
+    } catch (error) {
+      console.log('responseresponse11', error);
+    }
   };
 
   const followApi = async (hostId: string) => {
-    const response: any = await apiRequest(
-      'post',
-      `${EndPoint.host}/${hostId}/follow`,
-      { userId, hostId, follow: true },
-    );
-    return response?.status;
+    try {
+      const response: any = await apiRequest(
+        'post',
+        `${EndPoint.host}/${hostId}/follow`,
+        { userId, hostId, follow: true },
+      );
+      console.log('responseresponse', response);
+      setFollowing(!following);
+      return response?.status;
+    } catch (error) {
+      console.log('responseresponse22', error);
+    }
   };
 
   return (

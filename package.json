@@ -9,6 +9,7 @@
     "start": "react-native start",
     "test": "jest",
     "env-dev": "node set-environment.js environment.dev",
+    "env-uat": "node set-environment.js environment.uat",
     "env-stage": "node set-environment.js environment.stage",
     "env-prod": "node set-environment.js environment.prod",
     "ios-bundle": "react-native bundle --entry-file ./index.js --platform ios --bundle-output ios/main.jsbundle --assets-dest ios --dev false"

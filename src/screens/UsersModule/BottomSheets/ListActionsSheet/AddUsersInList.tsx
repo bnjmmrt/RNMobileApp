@@ -63,6 +63,26 @@ const AddUsersInList = ({
     }
   };
 
+  const [isRendering, setRendring] = useState(false);
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (isLoading) {
+      setRendring(true); // immediately show skeleton loader
+    } else {
+      // Delay turning off the rendering state to avoid flicker
+      timeoutId = setTimeout(() => {
+        setRendring(false);
+      }, 300); // you can tweak this delay
+    }
+
+    return () => {
+      clearTimeout(timeoutId); // clean up if component unmounts or re-runs
+    };
+  }, [isLoading]);
+
+
+
   const onSelectUser = (user: UserItemInterface) => {
     const isSelected = selectedUsers.some(
       selectedUser => selectedUser === user.id,
@@ -101,10 +121,9 @@ const AddUsersInList = ({
       if (response.success) {
         FlashMessageComponent.show(
           'success',
-          `${
-            selectedUsers && selectedUsers?.length > 1
-              ? `${selectedUsers?.length} Users`
-              : 'User'
+          `${selectedUsers && selectedUsers?.length > 1
+            ? `${selectedUsers?.length} Users`
+            : 'User'
           } added to list`,
         );
         onSuccess();
@@ -131,7 +150,7 @@ const AddUsersInList = ({
           disabled={item.isInCustomList}>
           <View style={styles.userInfoContainer}>
             <Image
-            resizeMode='contain'
+              resizeMode='contain'
               source={
                 isSelected ? IMAGES.checkbox_active : IMAGES.checkbox_inactive
               }
@@ -207,7 +226,7 @@ const AddUsersInList = ({
             <EventEmptyRecord
               title="Users not found"
               subTitle={''}
-              isLoading={isLoading}
+              isLoading={isRendering}
             />
           </BottomSheetView>
         }

@@ -1,5 +1,5 @@
 import { useScrollToTop } from '@react-navigation/native';
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   FlatList,
   RefreshControl,
@@ -37,6 +37,25 @@ const EventList = ({
 }) => {
   const scrollToTopRef = useRef(null);
   useScrollToTop(scrollToTopRef);
+
+  const [isRendering, setRendring] = useState(false);
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (isLoading) {
+      setRendring(true); // immediately show skeleton loader
+    } else {
+      // Delay turning off the rendering state to avoid flicker
+      timeoutId = setTimeout(() => {
+        setRendring(false);
+      }, 300); // you can tweak this delay
+    }
+
+    return () => {
+      clearTimeout(timeoutId); // clean up if component unmounts or re-runs
+    };
+  }, [isLoading]);
+
 
   const getEmptyStateMessage = () => {
     console.log('getEmptyStateMessage', selectedFilters);
@@ -229,7 +248,7 @@ const EventList = ({
               <FeaturedFeedItem item={item} isFeatured />
             )}
             showsHorizontalScrollIndicator={false}
-            // contentContainerStyle={{ gap: 10 }}
+          // contentContainerStyle={{ gap: 10 }}
           />
         </View>
       );
@@ -260,7 +279,7 @@ const EventList = ({
     return null;
   };
 
-  if (isLoading && (!allEvents || allEvents.length === 0)) {
+  if (isRendering && (!allEvents || allEvents.length === 0)) {
     return renderEventSkeletonList();
   }
 

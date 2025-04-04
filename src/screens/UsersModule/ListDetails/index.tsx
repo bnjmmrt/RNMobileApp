@@ -31,7 +31,7 @@ import UserListItem, { UserItemInterface } from '../UsersListItem';
 import createStyle from './style';
 
 interface ListDetailsProps
-  extends NativeStackScreenProps<AppStackParamList, 'ListDetail'> {}
+  extends NativeStackScreenProps<AppStackParamList, 'ListDetail'> { }
 
 const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
   const styles = createStyle();
@@ -64,6 +64,26 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
     listType: route.params.listType || 'custom',
     queryString: filterQuery,
   });
+
+  const [isRendering, setRendring] = useState(false);
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (isLoading) {
+      setRendring(true); // immediately show skeleton loader
+    } else {
+      // Delay turning off the rendering state to avoid flicker
+      timeoutId = setTimeout(() => {
+        setRendring(false);
+      }, 300); // you can tweak this delay
+    }
+
+    return () => {
+      clearTimeout(timeoutId); // clean up if component unmounts or re-runs
+    };
+  }, [isLoading]);
+
+
 
   useEffect(() => {
     if (data) {
@@ -199,8 +219,8 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
           route.params.listType === 'favorite'
             ? 'My Favorites'
             : route.params.listType === 'follower'
-            ? 'My Followers'
-            : allUsers.name
+              ? 'My Followers'
+              : allUsers.name
         }
         showProgressBar={false}
         rightIcon={IMAGES.dots}
@@ -245,9 +265,9 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
               <EventEmptyRecord
                 title={getEmptyStateTitle()}
                 subTitle={getEmptyStateMessage()}
-                isLoading={isLoading}
+                isLoading={isRendering}
                 footerContent={
-                  !isLoading && (
+                  !isRendering && (
                     <>
                       {filterNumber > 0 ? (
                         <Button
