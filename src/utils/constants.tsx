@@ -139,7 +139,7 @@ export const LABLE = {
   ADD_A_PHOTO: 'Add a photo',
   ADD_A_PHOTO_SUBTITLE: 'Upload a profile photo to complete your profile.',
   CHAT_WITH_HOST: 'Connect directly\nwith hosts.',
-  CHAT_WITH_GUEST: 'Connect \nwith guests.',
+  CHAT_WITH_GUEST: 'Chat \nwith guests.',
   SEARCH_FOR_EVENT: 'Search for an event...',
   ACCESS_THE_MOST_VALUABLE_CALENDAR:
     'Access culture’s most \n coveted moments.',

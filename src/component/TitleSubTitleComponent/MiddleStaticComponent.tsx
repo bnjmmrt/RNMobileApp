@@ -129,8 +129,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   infoIcon: {
-    width: 14.67,
-    height: 14.67,
+    width: 16,
+    height: 16,
     resizeMode: 'contain',
     marginLeft: 8,
     opacity: 0.5,
