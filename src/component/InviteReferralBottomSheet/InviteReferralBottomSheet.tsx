@@ -372,7 +372,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
                 )}
                 onEndReached={handleLoadMore}
                 onEndReachedThreshold={0.5}
-                // ListEmptyComponent={renderEmptyComponent()}
+                ListEmptyComponent={renderEmptyComponent()}
               />
             )}
           </View>
