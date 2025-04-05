@@ -58,6 +58,7 @@ import AvatarInitials from 'src/component/AvatarInitials';
 import { useFocusEffect } from '@react-navigation/native';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { EventStackParamList } from 'src/navigation/EventStack';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 interface EventGuestListProps
   extends NativeStackScreenProps<EventStackParamList, 'EventGuestList'> {
@@ -69,6 +70,34 @@ if (Platform.OS === 'android') {
     UIManager.setLayoutAnimationEnabledExperimental(true);
   }
 }
+
+const GuestListSkeleton = () => (
+  <FlatList
+    data={[1, 2, 3, 4, 5]}
+    renderItem={() => (
+      <SkeletonPlaceholder backgroundColor={COLORS.lighter_gray}>
+        <View style={[styles.guestItem, styles.skeletonGuestItem]}>
+          <View style={styles.leftContainer}>
+            <View style={styles.skeletonAvatar} />
+            <View style={styles.guestInfo}>
+              <View style={styles.nameContainer}>
+                <View style={styles.skeletonName} />
+              </View>
+              <View style={styles.skeletonStatus} />
+            </View>
+          </View>
+          <View style={styles.rightContainer}>
+            <View style={styles.skeletonTicketType} />
+            <View style={styles.skeletonExpandButton} />
+          </View>
+        </View>
+      </SkeletonPlaceholder>
+    )}
+    keyExtractor={item => item.toString()}
+    contentContainerStyle={styles.listContainer}
+    showsVerticalScrollIndicator={false}
+  />
+);
 
 const EventGuestList: React.FC<EventGuestListProps> = ({
   navigation,
@@ -359,58 +388,35 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   );
 
   const renderContent = () => {
-    // if (isLoadingGuests || isFetchingGuests) {
-    //   return (
-    //     <View style={styles.loadingContainer}>
-    //       <ActivityIndicator color={COLORS.black} />
-    //     </View>
-    //   );
-    // }
-
-    // if (filteredAndSortedGuests.length === 0) {
-    //   return (
-    //     <View style={{ flex: 1 }}>
-    //       <GuestEmptyRecord
-    //         onAddGuest={handleAddGuest}
-    //         isSearchResult={Boolean(searchText.trim())}
-    //         onResetFilters={handleResetFilters}
-    //         filterApplied={Boolean(filterNumber)}
-    //         statusFilter={selectedFilter}
-    //       />
-    //     </View>
-    //   );
-    // }
+    if (isLoadingGuests || isFetchingGuests) {
+      return <GuestListSkeleton />;
+    }
 
     return (
       <FlatList
         data={filteredAndSortedGuests}
         renderItem={renderGuestItem}
         keyExtractor={item => item.id}
-        contentContainerStyle={[styles.listContainer, { paddingBottom: 60 }]}
+        contentContainerStyle={[
+          styles.listContainer,
+          styles.contentListContainer,
+        ]}
         showsVerticalScrollIndicator={false}
         refreshing={false}
         onRefresh={fetchEventGuests}
         ListEmptyComponent={
-          <View
-            style={{
-              height: Hp(67),
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+          <View style={styles.emptyContainer}>
             {filteredAndSortedGuests.length === 0 &&
-            (isLoadingGuests || isFetchingGuests) ? (
-              <View style={styles.loadingContainer}>
-                <ActivityIndicator color={COLORS.black} />
-              </View>
-            ) : (
-              <GuestEmptyRecord
-                onAddGuest={handleAddGuest}
-                isSearchResult={Boolean(searchText.trim())}
-                onResetFilters={handleResetFilters}
-                filterApplied={Boolean(filterNumber)}
-                statusFilter={selectedFilter}
-              />
-            )}
+              !isLoadingGuests &&
+              !isFetchingGuests && (
+                <GuestEmptyRecord
+                  onAddGuest={handleAddGuest}
+                  isSearchResult={Boolean(searchText.trim())}
+                  onResetFilters={handleResetFilters}
+                  filterApplied={Boolean(filterNumber)}
+                  statusFilter={selectedFilter}
+                />
+              )}
           </View>
         }
       />
@@ -680,11 +686,6 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   vouchIndicator: {
     width: horizontalScale(12),
     height: verticalScale(12),
@@ -694,6 +695,45 @@ const styles = StyleSheet.create({
     right: -10,
     top: 0,
     zIndex: 1,
+  },
+  skeletonGuestItem: {
+    paddingVertical: verticalMarginScale(12),
+  },
+  skeletonAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  skeletonName: {
+    width: 120,
+    height: 16,
+    borderRadius: 4,
+  },
+  skeletonStatus: {
+    width: 80,
+    height: 20,
+    borderRadius: 12,
+    marginTop: 4,
+  },
+  skeletonTicketType: {
+    width: 60,
+    height: 24,
+    borderRadius: 12,
+    marginRight: 8,
+  },
+  skeletonExpandButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: COLORS.lighter_gray,
+  },
+  contentListContainer: {
+    paddingBottom: 60,
+  },
+  emptyContainer: {
+    height: Hp(67),
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
