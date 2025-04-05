@@ -37,12 +37,15 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import { ApiErrorInterface, getErrorMessage, removeSignature } from 'src/utils/functions';
+import {
+  ApiErrorInterface,
+  getErrorMessage,
+  removeSignature,
+} from 'src/utils/functions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 import BaseCityComponent from '../ProfileScreen/EditProfile/BaseCityComponent';
 import DatePickerComponent from '../ProfileScreen/EditProfile/DatePickerComponent';
-import { navigate } from 'src/component/NavigationService';
 
 interface Location {
   location?: string;
@@ -108,8 +111,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const [featureTalent, setFeatureTalent] = useState(item?.talents || []);
   const [image, setImage] = useState<string>(
     removeSignature(item?.imageCover) ||
-    removeSignature(item?.imageFlyer) ||
-    '',
+      removeSignature(item?.imageFlyer) ||
+      '',
   );
   const [imageSize, setImageSize] = useState<number>(0);
   const [timeZone, setTimeZone] = useState<string>();
@@ -126,8 +129,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     setFeatureTalent(item?.talents);
     setImage(
       removeSignature(item?.imageCover) ||
-      removeSignature(item?.imageFlyer) ||
-      '',
+        removeSignature(item?.imageFlyer) ||
+        '',
     );
 
     eventNameRef.current?.setInputText(item?.name || '');
@@ -168,6 +171,19 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     const formattedEndDate = moment
       .utc(endDateRef?.current?.selectedDate)
       .format('YYYY-MM-DDTHH:mm:ss[Z]');
+
+    if (moment(formattedStartDate).isAfter(formattedEndDate)) {
+      endDateRef.current?.setErrorMessage(
+        'End date & time must be after start date & time',
+      );
+      return;
+    }
+    if (moment(formattedStartDate).isAfter(formattedEndDate)) {
+      endDateRef.current?.setErrorMessage(
+        'End date & time must be after start date & time',
+      );
+      return;
+    }
     const filteredTalent = featureTalent.map(({ id, ...rest }) =>
       rest.action === 'create' ? rest : { id, ...rest },
     );
@@ -451,7 +467,14 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
           />
 
           <View style={styles.mapContainer}>
-            <MapComponent item={{ location: eventAddress }} />
+            <MapComponent
+              item={{
+                location: {
+                  latitude: Number(eventAddress.latitude),
+                  longitude: Number(eventAddress.longitude),
+                },
+              }}
+            />
           </View>
 
           <Input

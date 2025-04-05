@@ -1,23 +1,21 @@
 import React, {
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useRef,
   useState,
 } from 'react';
 import { StyleSheet } from 'react-native';
-import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
-import IMAGES from '../../../assets/images';
-import { LABLE, ERROR_MESSAGE } from '../../../utils/constants';
-import CustomDatepickerBottomSheet from '../../../component/BottomSheet/CustomDatepickerBottomSheet';
-import { validateAge } from '../../../utils/functions';
+import CustomDateTimePickerBottomSheet from 'src/component/BottomSheet/CustomDateTimePickerBottomSheet';
+import { convertUTCToTimeZoneFormat } from 'src/utils/dateFunctions';
 import {
   horizontalMarginScale,
   verticalMarginScale,
-  verticalScale,
 } from 'src/utils/dimensions';
-import CustomDateTimePickerBottomSheet from 'src/component/BottomSheet/CustomDateTimePickerBottomSheet';
-import { convertUTCToTimeZoneFormat, formatSingleToDeviceTimeZone } from 'src/utils/dateFunctions';
+import IMAGES from '../../../assets/images';
+import CustomDatepickerBottomSheet from '../../../component/BottomSheet/CustomDatepickerBottomSheet';
+import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
+import { ERROR_MESSAGE, LABLE } from '../../../utils/constants';
+import { validateAge } from '../../../utils/functions';
 
 interface DatePickerComponentProps {
   birthDate?: string;
@@ -29,7 +27,9 @@ interface DatePickerComponentProps {
 const DatePickerComponent = forwardRef(
   (props: DatePickerComponentProps, ref) => {
     const bottomSheetRef = useRef<any>(null);
-    const [selectedDate, setSelectedDate] = useState<string>(props.birthDate || ''); // Initialize with birthday from Redux
+    const [selectedDate, setSelectedDate] = useState<string>(
+      props.birthDate || '',
+    ); // Initialize with birthday from Redux
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const openDatePicker = () => {
       bottomSheetRef.current?.open();
@@ -40,12 +40,13 @@ const DatePickerComponent = forwardRef(
       selectedDate,
       validateEventDate,
       setSelectedDate,
+      setErrorMessage,
     }));
 
     const handleDateChange = (date: string) => {
       setErrorMessage(null);
       setSelectedDate(date);
-      validateBirthDate(date)
+      validateBirthDate(date);
       props?.onDateChange && props?.onDateChange(date);
     };
 
@@ -71,7 +72,13 @@ const DatePickerComponent = forwardRef(
       return true;
     };
 
-    const displayDate = props?.isDOB ? selectedDate : convertUTCToTimeZoneFormat(selectedDate, props?.timeZone, props.dateFormat)
+    const displayDate = props?.isDOB
+      ? selectedDate
+      : convertUTCToTimeZoneFormat(
+          selectedDate,
+          props?.timeZone,
+          props.dateFormat,
+        );
 
     return (
       <>
@@ -106,7 +113,7 @@ const DatePickerComponent = forwardRef(
 const styles = StyleSheet.create({
   container: {
     marginTop: 0,
-    height: verticalScale(60),
+    // height: verticalScale(60),
   },
   calenderImage: {
     marginRight: verticalMarginScale(6),
