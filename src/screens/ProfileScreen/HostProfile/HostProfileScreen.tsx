@@ -32,6 +32,7 @@ import { useFetchProfileDetailsQuery } from 'src/redux/actions/profileListApiAct
 import { RootState } from 'src/redux/slices';
 import { setRefresh } from 'src/redux/slices/rspvSlice';
 import { COLORS, LABLE } from 'src/utils/constants';
+import { convertUTCToTimeZoneFormat } from 'src/utils/dateFunctions';
 import {
   fontScale,
   horizontalMarginScale,
@@ -48,7 +49,6 @@ import {
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import ReportHostView from './ReportHostView';
 import ReportAndBlockHostView from './ReportandBlockView';
-import moment from 'moment';
 
 type ViewType =
   | 'options'
@@ -378,9 +378,14 @@ const HostProfileScreen: React.FC = () => {
                       {item.name}
                     </CustomText>
                     <CustomText style={styles.dateText}>
-                      {moment('03/28/2025 18:30', 'MM/DD/YYYY HH:mm').format(
+                      {convertUTCToTimeZoneFormat(
+                        item.startDate,
+                        item.timeZone,
                         'MMM DD, hh:mm A',
                       )}
+                      {/* {moment(item.startDate, 'MM/DD/YYYY HH:mm').format(
+                        'MMM DD, hh:mm A',
+                      )} */}
                     </CustomText>
                     <CustomText
                       style={styles.dateText}

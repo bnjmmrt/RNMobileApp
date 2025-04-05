@@ -110,7 +110,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
         setFilteredContacts(nonMembers.slice(0, PAGE_SIZE));
       } else {
         setContacts(formattedContacts);
-        setFilteredContacts(formattedContacts.slice(0, PAGE_SIZE));
+        setFilteredContacts([]);
       }
     } catch (err) {
       console.error('Error loading contacts:', err);
@@ -246,7 +246,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
           tabTwoLabel="Invite Contacts"
         />
 
-        {!permissionGranted && (
+        {/* {!permissionGranted && (
           <View
             style={{
               height: Hp(65),
@@ -265,18 +265,18 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
               onPress={() => Linking.openURL('app-settings:')}
             />
           </View>
-        )}
+        )} */}
 
         {selectedTab === '01' && (
           <View style={{ flex: 1, gap: 8, marginTop: verticalMarginScale(12) }}>
-            {permissionGranted && (
+            {permissionGranted && !isRendering && !permissionLoading && (
               <SearchInput
                 ref={searchRef}
                 placeholder={LABLE.SEARCH_FRIENDS}
                 onSearchTextChange={handleSearch}
               />
             )}
-            {permissionGranted && (
+            {permissionGranted && !isRendering && !permissionLoading && (
               <View style={styles.sectionWrapper}>
                 <Text style={styles.sectionTitle}>
                   {LABLE.FRIENDS_WHO_ARE_MEMBERS}

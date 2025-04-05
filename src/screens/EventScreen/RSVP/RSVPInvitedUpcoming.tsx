@@ -602,7 +602,7 @@ const RSVPInvitedUpcoming = () => {
                   onPress={onClickReason}
                   style={{
                     marginTop: verticalMarginScale(4),
-                    height: verticalScale(48),
+                    // height: verticalScale(48),
                   }}
                 />
                 <Text style={styles.infoText}>{LABLE.RSVP_TEXT}</Text>
