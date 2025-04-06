@@ -17,6 +17,8 @@ import {
 } from 'src/utils/dimensions';
 import { fontFamily, normalizeEmail } from 'src/utils/functions';
 import useContacts from 'src/utils/hooks/useContactPermission';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 
 interface GuestFormProps {
   hasPhone: boolean;
@@ -35,6 +37,7 @@ const GuestForm: React.FC<GuestFormProps> = ({ hasPhone, data, onSubmit }) => {
   const phoneNumberInputRef = useRef<any>(null);
   const emailInputRef = useRef<any>(null);
   const { getPhoneNumber } = useContacts();
+  const { keyboardVisible } = useKeyboard();
 
   useEffect(() => {
     if (firstNameRef.current) {
@@ -82,7 +85,9 @@ const GuestForm: React.FC<GuestFormProps> = ({ hasPhone, data, onSubmit }) => {
             getPhoneNumber(data?.phoneNumber).countryCode +
             phoneNumberInputRef.current.phoneNumber
           : '',
-        email: hasPhone ? '' : normalizeEmail(emailInputRef?.current?.inputText),
+        email: hasPhone
+          ? ''
+          : normalizeEmail(emailInputRef?.current?.inputText),
       };
       onSubmit(filledValues);
     } else {
@@ -95,7 +100,7 @@ const GuestForm: React.FC<GuestFormProps> = ({ hasPhone, data, onSubmit }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.formContainer}>
         <Input
           ref={firstNameRef}
@@ -128,15 +133,17 @@ const GuestForm: React.FC<GuestFormProps> = ({ hasPhone, data, onSubmit }) => {
             keyboardType="email-address"
           />
         )}
-        <Button
-          disabled={false}
-          style={styles.btnStyle}
-          title={'Add Guest'}
-          colorTheme="dark"
-          onPress={handleSubmit}
-        />
+        {!keyboardVisible ? (
+          <Button
+            disabled={false}
+            style={styles.btnStyle}
+            title={'Add Guest'}
+            colorTheme="dark"
+            onPress={handleSubmit}
+          />
+        ) : null}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -148,10 +155,12 @@ const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
     paddingHorizontal: horizontalMarginScale(20),
+    // width: '100%',
   },
   btnStyle: {
     marginTop: 'auto',
     borderRadius: 100,
+    bottom: BOTTOM_SAFEAREA_SPACING,
   },
   label: {
     fontSize: fontScale(14),

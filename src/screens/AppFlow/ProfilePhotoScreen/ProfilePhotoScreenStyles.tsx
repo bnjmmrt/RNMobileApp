@@ -10,6 +10,7 @@ import {
   horizontalScale,
 } from '../../../utils/dimensions';
 import { COLORS } from '../../../utils/constants';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 const ProfilePhotoScreenStyles = () => {
   return StyleSheet.create({
@@ -21,7 +22,7 @@ const ProfilePhotoScreenStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
-      bottom: Platform.OS === 'android' ? 20 : 0,
+      bottom: BOTTOM_SAFEAREA_SPACING,
     },
     contentContainer: {
       flex: 1,

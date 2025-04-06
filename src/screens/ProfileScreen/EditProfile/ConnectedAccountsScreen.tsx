@@ -20,7 +20,7 @@ import {
 import SocialMediaBottomSheet from 'src/component/BottomSheet/SocialMediaBottomSheet';
 import AccountItem from './AccountItem';
 import { CustomText } from 'src/component/CustomText';
-interface ConnectedAccountsScreenProps { }
+interface ConnectedAccountsScreenProps {}
 
 const items: any = [
   { id: '1', title: PROFILE.INSTAGRAM, image: IMAGES.profileInsta },
@@ -131,7 +131,7 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
     }
   };
 
-  const onConfirm = () => { };
+  const onConfirm = () => {};
 
   return (
     <View style={styles.container}>

@@ -26,7 +26,7 @@ import {
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
 
-interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -44,7 +44,10 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
     lastNameRef.current.validateInputs();
     // validateFirstName('FirstName')
     // validateLastName('LastName')
-    if (firstNameRef.current.validateInputs() && lastNameRef.current.validateInputs()) {
+    if (
+      firstNameRef.current.validateInputs() &&
+      lastNameRef.current.validateInputs()
+    ) {
       dispatch(setFirstName(firstNameRef.current.inputText));
       dispatch(setLastName(lastNameRef.current.inputText));
       dispatch(setIsEmailVerified(false));
@@ -74,7 +77,7 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 

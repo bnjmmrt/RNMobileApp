@@ -4,10 +4,8 @@ import {
   BottomSheetModal,
   useBottomSheetModal,
 } from '@gorhom/bottom-sheet';
-import {
-  BottomSheetBackdropProps,
-  BottomSheetDefaultBackdropProps,
-} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
+import { BottomSheetBackdropProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
+import { BlurView } from '@react-native-community/blur';
 import React, {
   forwardRef,
   useCallback,
@@ -24,20 +22,17 @@ import {
   Platform,
   StatusBar,
   StyleSheet,
-  View,
 } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
+import { useDispatch } from 'react-redux';
+import { changeTopSafeAreaViewColor } from 'src/redux/slices/safeAreaViewConfigSlice';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { COLORS } from '../../utils/constants';
 import { Wp } from '../../utils/dimensions';
 import {
   getFlashMessageBackgroundColor,
   MessageType,
 } from '../FlashMessageComponent/FlashMessageComponent';
-import { changeSafeAreaViewConfig } from 'src/utils/functions';
-import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
-import { BlurView } from '@react-native-community/blur';
-import { useDispatch } from 'react-redux';
-import { changeTopSafeAreaViewColor } from 'src/redux/slices/safeAreaViewConfigSlice';
 
 const { height } = Dimensions.get('window');
 

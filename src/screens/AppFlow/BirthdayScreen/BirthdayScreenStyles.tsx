@@ -1,7 +1,15 @@
 import { Platform, StyleSheet } from 'react-native';
-import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale, Wp } from '../../../utils/dimensions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+} from '../../../utils/dimensions';
 
 import { COLORS } from '../../../utils/constants';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 const GenderScreenStyles = () => {
   return StyleSheet.create({
@@ -14,7 +22,7 @@ const GenderScreenStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
-      bottom:Platform.OS==='android' ? 20 :0
+      bottom: BOTTOM_SAFEAREA_SPACING,
     },
 
     contentContainer: {
@@ -37,7 +45,11 @@ const GenderScreenStyles = () => {
       fontSize: fontScale(16),
       color: COLORS.black,
     },
-    calenderImage: { marginRight: verticalMarginScale(6), width: horizontalMarginScale(16), height: verticalMarginScale(16) },
+    calenderImage: {
+      marginRight: verticalMarginScale(6),
+      width: horizontalMarginScale(16),
+      height: verticalMarginScale(16),
+    },
     iconContainer: {},
   });
 };

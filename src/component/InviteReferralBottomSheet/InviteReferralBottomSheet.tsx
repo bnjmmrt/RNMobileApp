@@ -45,6 +45,7 @@ import EventEmptyRecord from '../EmptyRecord/EventEmptyRecord';
 import Header from '../Header/Header';
 import SearchInput from '../SearchInput';
 import { RenderMemberList } from './RenderMemberList';
+import { BOTTOM_SAFEAREA_SPACING } from '../Wrappers/SafeAreaViewWrapper';
 
 const PAGE_SIZE = 30;
 
@@ -72,7 +73,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 
@@ -109,7 +110,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
         setContacts(nonMembers);
         setFilteredContacts(nonMembers.slice(0, PAGE_SIZE));
       } else {
-        setContacts(formattedContacts);
+        setContacts([]);
         setFilteredContacts([]);
       }
     } catch (err) {
@@ -228,7 +229,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
       <Header headerTitle="Referrals & Invites" showProgressBar={false} />
       <View
         style={{
@@ -293,6 +294,9 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
               contentContainerStyle={{ gap: 4 }}
               keyExtractor={(item, index) => item.phoneNumber + index}
               ListEmptyComponent={renderEmptyComponent()}
+              ListFooterComponent={
+                <View style={{ height: BOTTOM_SAFEAREA_SPACING }} />
+              }
               renderItem={({ item }) => <RenderMemberList item={item} />}
             />
             {/* {!isRendering && (
@@ -387,7 +391,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
           />
         )}
       </View>
-    </SafeAreaView>
+    </View>
   );
 });
 
@@ -409,7 +413,8 @@ const styles = StyleSheet.create({
   },
   btnStyle: {
     borderRadius: 100,
-    marginVertical: verticalMarginScale(20),
+    marginTop: verticalMarginScale(20),
+    marginBottom: BOTTOM_SAFEAREA_SPACING,
     height: 48,
   },
   sectionTitle: {

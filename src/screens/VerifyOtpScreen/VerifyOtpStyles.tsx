@@ -7,6 +7,10 @@ import {
 } from '../../utils/dimensions';
 import { fontFamily } from '../../utils/functions';
 import { COLORS } from '../../utils/constants';
+import {
+  BOTTOM_SAFEAREA_SPACING,
+  TOP_SAFEAREA_SPACING,
+} from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 const VerifyOtpStyles = () => {
   return StyleSheet.create({
@@ -17,7 +21,7 @@ const VerifyOtpStyles = () => {
     contentContainer: {
       flex: 1,
       paddingTop: verticalMarginScale(10),
-      paddingBottom: verticalMarginScale(20),
+      // paddingBottom: verticalMarginScale(20),
       paddingHorizontal: horizontalMarginScale(20),
     },
     spacer: {
@@ -25,6 +29,7 @@ const VerifyOtpStyles = () => {
     },
     btnStyle: {
       width: '100%',
+      bottom: BOTTOM_SAFEAREA_SPACING,
       //   borderRadius: 100,
     },
   });

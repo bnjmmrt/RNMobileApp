@@ -28,9 +28,10 @@ import {
   verticalMarginScale,
   verticalScale,
 } from '../../../utils/dimensions';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 interface HostConnectedAccountsScreenProps
-  extends NativeStackScreenProps<any, any> { }
+  extends NativeStackScreenProps<any, any> {}
 
 const HostConnectedAccountsScreen: React.FC<
   HostConnectedAccountsScreenProps
@@ -88,33 +89,33 @@ const HostConnectedAccountsScreen: React.FC<
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}>
-      <View
-        style={[
-          styles.container,
-          {
-            paddingBottom: keyboardVisible
-              ? Platform.OS === 'ios'
-                ? verticalMarginScale(50)
-                : verticalMarginScale(10)
-              : 0,
-          },
-        ]}>
-        <Header
-          headerTitle={PROFILE.CONNECTED_ACCOUNTS}
-          onPress={handleBackPress}
-          showProgressBar={false}
-        />
+    <View
+      style={[
+        styles.container,
+        {
+          paddingBottom: keyboardVisible
+            ? Platform.OS === 'ios'
+              ? verticalMarginScale(50)
+              : verticalMarginScale(10)
+            : 0,
+        },
+      ]}>
+      <Header
+        headerTitle={PROFILE.CONNECTED_ACCOUNTS}
+        onPress={handleBackPress}
+        showProgressBar={false}
+      />
 
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.contentContainer}>
             <SocialMediaInput
               image={IMAGES.profileInsta}
               ref={instagramRef}
               label={PROFILE.INSTAGRAM}
-              prefix={"instagram.com/"}
+              prefix={'instagram.com/'}
               isIconShown={false}
               defaultValue={
                 hostProfileData?.socialMedia?.instagram
@@ -126,7 +127,7 @@ const HostConnectedAccountsScreen: React.FC<
               image={IMAGES.host_tiktok}
               ref={tiktokRef}
               label={PROFILE.TIKTOK}
-              prefix={"tiktok.com/@"}
+              prefix={'tiktok.com/@'}
               isIconShown={false}
               defaultValue={
                 hostProfileData?.socialMedia?.tiktok
@@ -138,7 +139,7 @@ const HostConnectedAccountsScreen: React.FC<
               image={IMAGES.fb}
               ref={facebookRef}
               label={PROFILE.FACEBOOK}
-              prefix={"facebook.com/"}
+              prefix={'facebook.com/'}
               isIconShown={false}
               defaultValue={
                 hostProfileData?.socialMedia?.facebook
@@ -150,7 +151,7 @@ const HostConnectedAccountsScreen: React.FC<
               image={IMAGES.linkdn}
               ref={linkedinRef}
               label={PROFILE.LINKEDIN}
-              prefix={"linkedin.com/in/"}
+              prefix={'linkedin.com/in/'}
               isIconShown={false}
               defaultValue={
                 hostProfileData?.socialMedia?.linkedin
@@ -162,7 +163,7 @@ const HostConnectedAccountsScreen: React.FC<
               image={IMAGES.host_x}
               ref={xRef}
               label={PROFILE.X}
-              prefix={"x.com/"}
+              prefix={'x.com/'}
               isIconShown={false}
               defaultValue={
                 hostProfileData?.socialMedia?.x
@@ -174,7 +175,7 @@ const HostConnectedAccountsScreen: React.FC<
               image={IMAGES.yt}
               ref={youtubeRef}
               label={PROFILE.YOUTUBE}
-              prefix={"youtube.com/@"}
+              prefix={'youtube.com/@'}
               isIconShown={false}
               defaultValue={
                 hostProfileData?.socialMedia?.youtube
@@ -190,18 +191,18 @@ const HostConnectedAccountsScreen: React.FC<
             />
           )}
         </ScrollView>
-        {!keyboardVisible ? (
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={BUTTON_LABLE.CONFIRM}
-            colorTheme="dark"
-            onPress={onConfirmClick}
-            loading={loading}
-          />
-        ) : null}
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+      {!keyboardVisible ? (
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.CONFIRM}
+          colorTheme="dark"
+          onPress={onConfirmClick}
+          loading={loading}
+        />
+      ) : null}
+    </View>
   );
 };
 
@@ -211,17 +212,18 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   btnStyle: {
-    marginTop: verticalMarginScale(20),
-    marginBottom: verticalMarginScale(20),
+    // marginTop: verticalMarginScale(20),
+    // marginBottom: verticalMarginScale(20),
     borderRadius: radiusScale(100),
-    bottom: Platform.OS === 'android' ? verticalMarginScale(20) : 0,
+    bottom: BOTTOM_SAFEAREA_SPACING,
   },
   contentContainer: {
     flex: 1,
     // paddingVertical: verticalMarginScale(10),
   },
   scrollContainer: {
-    paddingVertical: verticalMarginScale(16),
+    flexGrow: 1,
+    paddingTop: verticalMarginScale(16),
     paddingHorizontal: horizontalMarginScale(20),
   },
   label: {

@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 import { COLORS } from 'src/utils/constants';
 import {
   horizontalMarginScale,
@@ -52,7 +53,7 @@ const createStyles = () => {
     },
     nextButton: {
       position: 'absolute',
-      bottom: verticalScale(8),
+      bottom: BOTTOM_SAFEAREA_SPACING,
     },
     skeletonListContainer: {
       marginTop: verticalMarginScale(16),

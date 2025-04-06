@@ -17,6 +17,7 @@ import GradientSeprator from 'src/component/GradientSeprator';
 import { Collaborator, Event } from 'src/types';
 import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 interface EditEventSettingsProps {
   event: Event;
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: fontFamily.ABCDiatype_Bold,
   },
-  btnStyle: { borderRadius: radiusScale(100), bottom: verticalMarginScale(20) },
+  btnStyle: { borderRadius: radiusScale(100), bottom: BOTTOM_SAFEAREA_SPACING },
   separatorContainer: {
     alignItems: 'center',
     marginVertical: verticalMarginScale(20),

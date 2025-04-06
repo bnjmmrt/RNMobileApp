@@ -48,9 +48,10 @@ import ProfileListItem from './ProfileListItem';
 import ProfileScreenStyle from './ProfileScreenStyle';
 import ProfileTopView from './ProfileTopView';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
+import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 // Define the type for navigation props
-interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
+interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
 interface ListItem {
   id: string;
@@ -86,7 +87,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     profileData,
     companyLogo,
     profilePicture,
-
   } = useSelector(
     (state: RootState) => ({
       isGuest: state.auth.isGuest,
@@ -104,7 +104,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const getUserSettings = async () => {
     const response: any = await apiRequest(
       'get',
-      `${EndPoint.user_notification_preferences}?id=${userId}`
+      `${EndPoint.user_notification_preferences}?id=${userId}`,
     );
     if (response.success) {
       //dependiing on API response parse data and set
@@ -155,7 +155,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       Alert.alert('Error', error?.message || 'Failed to delete account');
     }
   };
-
 
   useEffect(() => {
     if (profileData?.email) {
@@ -355,32 +354,37 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     }
   };
 
-
   const savePhoto = async () => {
     try {
-      setLoader(true)
+      setLoader(true);
       const data = await fetch(image);
       const blob = await data.blob();
       const fileName = image.split('/').pop();
-      const pathType = 'profile'
-      const response = await uploadFileHook(fileName, imageSize, 'image', blob, pathType)
+      const pathType = 'profile';
+      const response = await uploadFileHook(
+        fileName,
+        imageSize,
+        'image',
+        blob,
+        pathType,
+      );
       if (response.success == true) {
         savePhotoBottomSheetRef.current?.close();
-        const imageUrl = environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
+        const imageUrl =
+          environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
         if (role?.toLocaleLowerCase() === 'host') {
           await updateHostProfilePhoto(imageUrl);
         } else {
           await updateProfilePhoto(imageUrl);
         }
       }
-      setLoader(true)
+      setLoader(true);
       console.log('savePhoto', response);
     } catch (error) {
-      setLoader(true)
+      setLoader(true);
       console.error('Error uploading image:', error);
     }
   };
-
 
   // const savePhoto = async () => {
   //   if (image) {
@@ -401,7 +405,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   //     }
   //   }
   // };
-  const onCancel = () => { setImage('') };
+  const onCancel = () => {
+    setImage('');
+  };
 
   const openCamera = async () => {
     ImagePicker.openPicker({
@@ -412,7 +418,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     })
       .then((image: ImageOrVideo) => {
         setImage(image.path);
-        setImageSize(image.size)
+        setImageSize(image.size);
 
         // editPhotoBottomSheetRef.current?.close();
         savePhotoBottomSheetRef.current?.open();
@@ -498,11 +504,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      // Do something when the screen is focused
-      changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-        showBottomSafeAreaView: false,
-      });
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 
@@ -512,7 +514,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         styles.container,
         { backgroundColor: !isGuest ? COLORS.black2 : COLORS.white },
       ]}>
-      <View style={{ backgroundColor: COLORS.white }}>
+      <View
+        style={{
+          backgroundColor: COLORS.white,
+          paddingTop: TOP_SAFEAREA_SPACING,
+        }}>
         {/* <HeaderComponent isDarkTheme={false} /> */}
 
         <ScrollView>
@@ -523,8 +529,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
               role?.toLocaleLowerCase() === 'host'
                 ? companyLogo
                 : profilePicture
-                  ? profilePicture
-                  : profileData?.profilePicture
+                ? profilePicture
+                : profileData?.profilePicture
             }
             name={getUserName()}
             loading={loading}
@@ -575,7 +581,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
         <EditPictureBottomSheet
           ref={logoutBottomSheetRef}
-          title={"Are you sure you want to log out?"}
+          title={'Are you sure you want to log out?'}
           onPress={logOut}
           loadding={loader}
           submitButtonText={BUTTON_LABLE.CONFIRM}

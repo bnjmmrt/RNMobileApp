@@ -1,6 +1,14 @@
-import { Platform, StyleSheet } from 'react-native';
-import { Wp, Hp, radiusScale, verticalMarginScale, horizontalMarginScale, fontScale, verticalScale } from '../../../utils/dimensions';
+import { StyleSheet } from 'react-native';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 import { COLORS } from '../../../utils/constants';
+import {
+  fontScale,
+  horizontalMarginScale,
+  Hp,
+  radiusScale,
+  verticalMarginScale,
+  Wp,
+} from '../../../utils/dimensions';
 
 const GenderScreenStyles = () => {
   return StyleSheet.create({
@@ -12,7 +20,7 @@ const GenderScreenStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
-      bottom: Platform.OS === 'ios' ? 0 :20
+      bottom: BOTTOM_SAFEAREA_SPACING,
     },
     contentContainer: {
       flex: 1,
@@ -29,15 +37,15 @@ const GenderScreenStyles = () => {
       paddingHorizontal: Wp(5),
       borderRadius: radiusScale(30),
       backgroundColor: COLORS.lighter_gray,
-      borderColor:COLORS.borderGray,
-      borderWidth:1.5,
+      borderColor: COLORS.borderGray,
+      borderWidth: 1.5,
       marginVertical: Hp(0.25),
       marginHorizontal: Wp(0.5),
       alignItems: 'center',
     },
     selectedGenderButton: {
       backgroundColor: COLORS.black,
-      borderColor:COLORS.black,
+      borderColor: COLORS.black,
     },
     genderText: {
       fontSize: fontScale(14),

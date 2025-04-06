@@ -43,8 +43,9 @@ import BaseCityComponent from './BaseCityComponent';
 import CreativeFocusComponent from './CreativeFocusComponent';
 import DatePickerComponent from './DatePickerComponent';
 import GenderComponent from './GenderComponent';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
-interface EditProfileScreenProps extends NativeStackScreenProps<any, any> { }
+interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
 const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   navigation,
@@ -297,26 +298,26 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}>
-      <View
-        style={[
-          styles.container,
-          {
-            paddingBottom: keyboardVisible
-              ? Platform.OS === 'ios'
-                ? verticalMarginScale(50)
-                : verticalMarginScale(10)
-              : 0,
-          },
-        ]}>
-        <Header
-          headerTitle={PROFILE.EDIT_PROFILE}
-          onPress={handleBackPress}
-          showProgressBar={false}
-        />
+    <View
+      style={[
+        styles.container,
+        {
+          paddingBottom: keyboardVisible
+            ? Platform.OS === 'ios'
+              ? verticalMarginScale(50)
+              : verticalMarginScale(10)
+            : 0,
+        },
+      ]}>
+      <Header
+        headerTitle={PROFILE.EDIT_PROFILE}
+        onPress={handleBackPress}
+        showProgressBar={false}
+      />
 
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}>
         <ScrollView
           ref={scrollViewRef}
           contentContainerStyle={styles.scrollContainer}>
@@ -388,7 +389,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                   ref={birthDayRef}
                   birthDate={profileData.dateOfBirth}
                   timeZone={profileData?.timeZone}
-                  dateFormat='MM/DD/YYYY'
+                  dateFormat="MM/DD/YYYY"
                   isDOB={true}
                 />
 
@@ -428,31 +429,34 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
           </View>
           {/* </KeyboardAvoidingView> */}
         </ScrollView>
-        {isToastShown && (
-          <View
-            style={{
-              bottom: Platform.OS === 'ios' ? 20 : 0,
-              position: 'relative',
-            }}>
-            <Toast
-              toastStyle={{ position: 'relative', width: '90%' }}
-              message={LABLE.PLEASE_SELECT_AT_LEAST_ONE}
-              onClose={() => setIsToastShown(false)}
-            />
-          </View>
-        )}
-        {!keyboardVisible ? (
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={BUTTON_LABLE.CONFIRM}
-            colorTheme="dark"
-            onPress={onConfirmClick}
-            loading={loading}
+      </KeyboardAvoidingView>
+      {isToastShown && (
+        <View
+          style={{
+            bottom: Platform.OS === 'ios' ? 20 : 0,
+            position: 'relative',
+          }}>
+          <Toast
+            toastStyle={{ position: 'relative', width: '90%' }}
+            message={LABLE.PLEASE_SELECT_AT_LEAST_ONE}
+            onClose={() => setIsToastShown(false)}
           />
-        ) : null}
-      </View>
-    </KeyboardAvoidingView>
+        </View>
+      )}
+      <Button
+        disabled={false}
+        style={[
+          styles.btnStyle,
+          { display: keyboardVisible ? 'none' : 'flex' },
+        ]}
+        title={BUTTON_LABLE.CONFIRM}
+        colorTheme="dark"
+        onPress={onConfirmClick}
+        loading={loading}
+      />
+      {/* {!keyboardVisible ? (
+        ) : null} */}
+    </View>
   );
 };
 
@@ -464,7 +468,7 @@ const styles = StyleSheet.create({
   },
   btnStyle: {
     borderRadius: radiusScale(100),
-    bottom: verticalMarginScale(20),
+    bottom: BOTTOM_SAFEAREA_SPACING,
   },
   contentContainer: {
     flex: 1,

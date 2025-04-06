@@ -58,6 +58,7 @@ import AvatarInitials from 'src/component/AvatarInitials';
 import { useFocusEffect } from '@react-navigation/native';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { EventStackParamList } from 'src/navigation/EventStack';
+import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 interface EventGuestListProps
   extends NativeStackScreenProps<EventStackParamList, 'EventGuestList'> {
@@ -119,7 +120,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     useCallback(() => {
       // fetchEventGuests();
       changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+        ...SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME,
         showBottomSafeAreaView: false,
       });
     }, []),
@@ -513,6 +514,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    paddingTop: TOP_SAFEAREA_SPACING,
   },
 
   headerTop: {

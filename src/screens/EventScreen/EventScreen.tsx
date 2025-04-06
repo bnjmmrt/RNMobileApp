@@ -27,8 +27,9 @@ import AppliedEvents from './Tabs/AppliedEvents';
 import InvitedEvents from './Tabs/InvitedEvents';
 import PastEvents from './Tabs/PastEvents';
 import UpcomingEvents from './Tabs/UpcomingEvents';
+import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
-interface EventScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventScreenProps extends NativeStackScreenProps<any, any> {}
 
 interface TabItem {
   id: string;
@@ -55,12 +56,10 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      if (showEvents && Platform.OS === 'ios') {
-        changeSafeAreaViewConfig({
-          ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-          showBottomSafeAreaView: false,
-          showTopSafeAreaView: false,
-        });
+      if (showEvents) {
+        changeSafeAreaViewConfig(
+          SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME,
+        );
       }
     }, [showEvents]),
   );
@@ -126,10 +125,10 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
         backgroundColor: showEvents ? COLORS.white : COLORS.black2,
       }}>
       {showEvents ? (
-        <View style={{
-          paddingTop: Platform.OS === 'ios' ? verticalMarginScale(61) : 0,
-        }}>
-          <SafeAreaView />
+        <View
+          style={{
+            paddingTop: TOP_SAFEAREA_SPACING,
+          }}>
           <View
             style={{
               backgroundColor: COLORS.white,

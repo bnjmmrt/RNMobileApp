@@ -33,6 +33,7 @@ import { BUTTON_LABLE, LABLE, ROLE } from '../../utils/constants';
 import VerifyOtpStyles from './VerifyOtpStyles';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { RootState } from 'src/redux/slices';
+import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -136,7 +137,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 
@@ -157,7 +158,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
       enabled={Platform.OS === 'ios'}
       style={styles.container}>
       {/* <FullScreenLoader loading={isLoading}> */}
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingTop: TOP_SAFEAREA_SPACING }]}>
         <BackButton onPress={handleBackPress} />
         <View style={styles.contentContainer}>
           <TitleSubtitle

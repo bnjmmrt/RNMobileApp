@@ -13,7 +13,6 @@ import {
   Linking,
   Platform,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -21,7 +20,6 @@ import {
 } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useDispatch, useSelector } from 'react-redux';
 import { EndPoint } from 'src/ApiManager/config';
@@ -33,6 +31,7 @@ import SignupFormsBottomSheet from 'src/component/BottomSheet/SignupFormsBottomS
 import Button from 'src/component/Button';
 import EventAnnouncements from 'src/component/Event/EventAnnouncements';
 import EventHostItem from 'src/component/Event/EventHostItem';
+import EventInvitation from 'src/component/Event/EventInvitation';
 import EventOverview from 'src/component/Event/EventOverview';
 import EventRequests from 'src/component/Event/EventRequests';
 import EventStatus from 'src/component/Event/EventStatus';
@@ -41,6 +40,10 @@ import EventVenue from 'src/component/Event/EventVenue';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import ImageComponent from 'src/component/Image/ImageComponent';
 import Toast from 'src/component/Toast/Toast';
+import {
+  BOTTOM_SAFEAREA_SPACING,
+  TOP_SAFEAREA_SPACING,
+} from 'src/component/Wrappers/SafeAreaViewWrapper';
 import { ROUTES } from 'src/navigation/Route';
 import {
   useFetchEventDetailsQuery,
@@ -68,9 +71,8 @@ import {
 import useCalender from 'src/utils/hooks/useCalender';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
-import EventInvitation from 'src/component/Event/EventInvitation';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: any;
@@ -107,26 +109,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     isLoading: announcementLoading,
   } = useFetchHostEventsAnnouncementQuery(annqueryArgs);
 
-  const { top } = useSafeAreaInsets();
   const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 44 : 24;
-  const TOP_SPACING =
-    Platform.OS === 'ios'
-      ? STATUS_BAR_HEIGHT + verticalMarginScale(16)
-      : (StatusBar.currentHeight || 0) + verticalMarginScale(16);
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-        showTopSafeAreaView: false,
-        topSafeAreaViewColor: 'transparent',
-        translucent: true,
-      });
-
-      return () => {
-        // Reset to default when screen is unfocused
-        changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
-      };
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 
@@ -156,9 +143,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const)
       : ({
-        userId,
-        eventId: route?.params?.id,
-      } as const);
+          userId,
+          eventId: route?.params?.id,
+        } as const);
 
   const useFetchEventDetailsHook =
     role === ROLE.HOST
@@ -358,7 +345,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       height: verticalScale(528),
       borderRadius: 20,
       overflow: 'hidden' as const,
-      marginTop: Platform.OS === 'ios' ? TOP_SPACING : TOP_SPACING,
+      marginTop: TOP_SAFEAREA_SPACING,
     },
   });
   const renderHostButtons = () => {
@@ -613,13 +600,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                   showsHorizontalScrollIndicator={false}
                   keyExtractor={(item: any, index) => `${item.id}-${index}`}
                   renderItem={({ item }) => (
-                    <EventHostItem
-                      item={item}
-                      length={collaborators.length}
-                    />
+                    <EventHostItem item={item} length={collaborators.length} />
                   )}
                 />
-
 
                 {guestStatus == 'INVITED' && (
                   <EventInvitation item={data?.data} />
@@ -692,7 +675,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                       }}>
                       <Image
                         style={{
-                          width: 18, height: 18, right: 5, resizeMode: 'contain'
+                          width: 18,
+                          height: 18,
+                          right: 5,
+                          resizeMode: 'contain',
                         }}
                         source={IMAGES.x_circle}
                       />
@@ -726,7 +712,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
             <BackButtonOverlay
               customStyle={{
-                top: TOP_SPACING,
+                top: TOP_SAFEAREA_SPACING,
                 marginTop: 0,
                 marginHorizontal: 15,
               }}
@@ -737,7 +723,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               <BackButtonOverlay
                 customStyle={{
                   right: 0,
-                  top: TOP_SPACING,
+                  top: TOP_SAFEAREA_SPACING,
                   marginTop: 0,
                   marginHorizontal: 15,
                 }}
@@ -753,7 +739,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               <BackButtonOverlay
                 customStyle={{
                   right: 55,
-                  top: TOP_SPACING,
+                  top: TOP_SAFEAREA_SPACING,
                   marginTop: 0,
                   marginHorizontal: 15,
                 }}
@@ -783,12 +769,14 @@ const styles = StyleSheet.create({
   },
   btnStyle: {
     borderRadius: 100,
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: BOTTOM_SAFEAREA_SPACING,
     height: 50,
   },
   btnStyleLight: {
     borderRadius: 100,
-    marginVertical: 0,
+    marginTop: 0,
+    marginBottom: BOTTOM_SAFEAREA_SPACING,
     borderWidth: verticalScale(2),
     borderColor: COLORS.black,
     height: undefined,

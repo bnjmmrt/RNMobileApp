@@ -846,7 +846,7 @@ const RSVPInvitedUpcoming = () => {
     }
   };
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header
         headerTitle={BUTTON_LABLE.RSVP}
         showProgressBar={false}
@@ -875,7 +875,7 @@ const RSVPInvitedUpcoming = () => {
           </View>
         </BottomSheetComponent>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 export default RSVPInvitedUpcoming;

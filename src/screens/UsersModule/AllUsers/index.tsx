@@ -23,12 +23,13 @@ import UserActionsSheet, {
   UserActionCurrentPageType,
 } from '../BottomSheets/UserActionsSheet';
 import UserListItem, { UserItemInterface } from '../UsersListItem';
-import { COLORS } from 'src/utils/constants'
+import { COLORS } from 'src/utils/constants';
 import { set } from 'lodash';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
-interface AllUserProps { }
+interface AllUserProps {}
 
-const AllUsers: React.FC<AllUserProps> = ({ }) => {
+const AllUsers: React.FC<AllUserProps> = ({}) => {
   const dispatch = useDispatch();
   const searchInputRef = useRef<InputRefMethods>(null);
   const actionSheetRef = useRef<BottomSheetMethods>(null);
@@ -246,7 +247,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
       dispatch(changeBottomTabsVisibility({ showBottomTabs: true }));
     };
   }, []);
-  const isInitialLoading = isRendering && currentPage === 1
+  const isInitialLoading = isRendering && currentPage === 1;
   return (
     <View style={{ marginTop: verticalMarginScale(8), flex: 1 }}>
       <SearchInput
@@ -278,7 +279,6 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
           ListFooterComponent={
             <View style={{ marginBottom: verticalMarginScale(150) }} />
           }
-
           ListEmptyComponent={
             <View
               style={{
@@ -339,7 +339,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
             actionSheetRef?.current?.open();
           }}
           colorTheme="dark"
-          style={{ position: 'absolute', bottom: verticalScale(30) }}
+          style={{ position: 'absolute', bottom: BOTTOM_SAFEAREA_SPACING }}
         />
       ) : null}
       <UserActionsSheet

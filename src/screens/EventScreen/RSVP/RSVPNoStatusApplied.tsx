@@ -41,6 +41,7 @@ import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { EventCard } from '../RSVP/RSVPInvitedUpcoming';
 import { styles } from './RSVPScreenStyle';
 import RequestVouch from './RequestVouch';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 type Guest = {
   id: number;
@@ -77,7 +78,10 @@ const RSVPNoStatusApplied: React.FC = () => {
   } = params?.event;
 
   const [eventQuestions, setEventQuestions] = useState([]);
-  const [selectedGuests, setSelectedGuests] = useState<any>({ id: 0, label: 'No Guests' });
+  const [selectedGuests, setSelectedGuests] = useState<any>({
+    id: 0,
+    label: 'No Guests',
+  });
   const [vouchData, setVouchData] = useState<any>([]);
   const [activeView, setActiveTab] = useState<string>('');
   const guestInputRef = useRef(null);
@@ -425,108 +429,84 @@ const RSVPNoStatusApplied: React.FC = () => {
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={50}>
-        <ScrollView style={styles.scrollView}>
-          <View style={styles.contentContainer}>
-            <EventCard
-              name={name}
-              location={location}
-              imageCover={removeSignature(imageFlyer)}
-              dates={formatDetailedEventDate(startDate, endDate, timeZone)}
-              currentGuestStatus={currentGuestStatus}
-            />
-            {currentGuestStatus === 'APPLIED' && (
-              <View style={styles.yellowBoxRightButton}>
-                <View style={styles.waitingResponseContainer}>
-                  <Image source={IMAGES.loader} style={styles.loaderIcon} />
-                  <CustomText style={styles.waitingText}>
-                    Awaiting response from host
-                  </CustomText>
-                </View>
-                <TouchableOpacity
-                  style={{
-                    paddingLeft: horizontalMarginScale(15),
-                    paddingVertical: verticalMarginScale(12),
-                  }}
-                  onPress={() => {
-                    setActiveTab('options');
-                    bottomSheetRef?.current?.open();
-                  }}>
-                  <Image
-                    source={IMAGES.downArrow}
-                    style={styles.downArrowIcon}
-                    resizeMode="contain"
-                  />
-                </TouchableOpacity>
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 0}>
+        <ScrollView
+          style={{ ...styles.scrollView, ...styles.contentContainer }}>
+          <EventCard
+            name={name}
+            location={location}
+            imageCover={removeSignature(imageFlyer)}
+            dates={formatDetailedEventDate(startDate, endDate, timeZone)}
+            currentGuestStatus={currentGuestStatus}
+          />
+          {currentGuestStatus === 'APPLIED' && (
+            <View style={styles.yellowBoxRightButton}>
+              <View style={styles.waitingResponseContainer}>
+                <Image source={IMAGES.loader} style={styles.loaderIcon} />
+                <CustomText style={styles.waitingText}>
+                  Awaiting response from host
+                </CustomText>
               </View>
-            )}
-            {eventQuestions &&
-              eventQuestions.map(q => (
-                <Input
-                  key={q.questionId}
-                  labelStyle={{
-                    fontFamily: fontFamily.ABCDiatype_Medium,
-                  }}
-                  defaultValue={q?.answer}
-                  inputFieldContainerStyle={{ height: verticalScale(48) }}
-                  isRequired={q.required}
-                  ref={ref => (inputRefs.current[q.questionId] = ref)}
-                  label={q.question}
+              <TouchableOpacity
+                style={{
+                  paddingLeft: horizontalMarginScale(15),
+                  paddingVertical: verticalMarginScale(12),
+                }}
+                onPress={() => {
+                  setActiveTab('options');
+                  bottomSheetRef?.current?.open();
+                }}>
+                <Image
+                  source={IMAGES.downArrow}
+                  style={styles.downArrowIcon}
+                  resizeMode="contain"
                 />
-              ))}
-            {limitOnePlus > 0 && (
+              </TouchableOpacity>
+            </View>
+          )}
+          {eventQuestions &&
+            eventQuestions.map(q => (
               <Input
-                inputFieldContainerStyle={{ height: verticalScale(48) }}
-                editable={false}
+                key={q.questionId}
                 labelStyle={{
                   fontFamily: fontFamily.ABCDiatype_Medium,
                 }}
-                hasDropdown={true}
-                isRequired={false}
-                ref={guestInputRef}
-                rightImage={IMAGES.downArrow}
-                defaultValue={selectedGuests?.label}
-                label="Request access for additional guests?"
-                onPressImage={() => {
-                  Keyboard.dismiss();
-                  InteractionManager.runAfterInteractions(() => {
-                    setActiveTab('guests');
-                    bottomSheetRef?.current?.open();
-                    guestInputRef.current?.setErrorMessage('');
-                  });
-                }}
+                defaultValue={q?.answer}
+                inputFieldContainerStyle={{ height: verticalScale(48) }}
+                isRequired={q.required}
+                ref={ref => (inputRefs.current[q.questionId] = ref)}
+                label={q.question}
               />
-            )}
-          </View>
-
-          <BottomSheetComponent
-            ref={bottomSheetRef}
-            onClose={() => {
-              if (doResetStack) {
-                reset({
-                  index: 0,
-                  routes: [{ name: 'BottomTabBar' }],
+            ))}
+          {limitOnePlus > 0 && (
+            <Input
+              inputFieldContainerStyle={{ height: verticalScale(48) }}
+              editable={false}
+              labelStyle={{
+                fontFamily: fontFamily.ABCDiatype_Medium,
+              }}
+              hasDropdown={true}
+              isRequired={false}
+              ref={guestInputRef}
+              rightImage={IMAGES.downArrow}
+              defaultValue={selectedGuests?.label}
+              label="Request access for additional guests?"
+              onPressImage={() => {
+                Keyboard.dismiss();
+                InteractionManager.runAfterInteractions(() => {
+                  setActiveTab('guests');
+                  bottomSheetRef?.current?.open();
+                  guestInputRef.current?.setErrorMessage('');
                 });
-              } else {
-                activeView !== 'cancel' &&
-                  activeView !== 'guests' &&
-                  activeView !== 'leave' &&
-                  activeView !== 'options' &&
-                  goBack();
-              }
-              setDoResetStack(false);
-            }}
-            snapPoints={[getSnapPoints(), '95%']}>
-            <View style={styles.bottomSheetContent}>
-              {renderBottomSheetContent()}
-            </View>
-          </BottomSheetComponent>
+              }}
+            />
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
       {!keyboardVisible ? (
         <Button
           disabled={false}
-          style={[styles.btnStyle, { marginBottom: verticalScale(20) }]}
+          style={[styles.btnStyle, { marginBottom: BOTTOM_SAFEAREA_SPACING }]}
           title={
             currentGuestStatus == 'APPLIED'
               ? BUTTON_LABLE.UPDATE_APPLICATION
@@ -541,6 +521,29 @@ const RSVPNoStatusApplied: React.FC = () => {
           }
         />
       ) : null}
+
+      <BottomSheetComponent
+        ref={bottomSheetRef}
+        onClose={() => {
+          if (doResetStack) {
+            reset({
+              index: 0,
+              routes: [{ name: 'BottomTabBar' }],
+            });
+          } else {
+            activeView !== 'cancel' &&
+              activeView !== 'guests' &&
+              activeView !== 'leave' &&
+              activeView !== 'options' &&
+              goBack();
+          }
+          setDoResetStack(false);
+        }}
+        snapPoints={[getSnapPoints(), '95%']}>
+        <View style={styles.bottomSheetContent}>
+          {renderBottomSheetContent()}
+        </View>
+      </BottomSheetComponent>
     </View>
   );
 };

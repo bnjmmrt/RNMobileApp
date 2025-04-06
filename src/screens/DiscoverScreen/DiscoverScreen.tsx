@@ -13,7 +13,7 @@ import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
 // Define the type for navigation props
-interface DiscoverScreenProps extends NativeStackScreenProps<any, any> { }
+interface DiscoverScreenProps extends NativeStackScreenProps<any, any> {}
 
 const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
   // Access login data from Redux store
@@ -33,9 +33,9 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
     useCallback(() => {
       if (Platform.OS === 'ios') {
         changeSafeAreaViewConfig({
-          ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-          showTopSafeAreaView: false,
-          showBottomSafeAreaView: false,
+          ...SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME,
+          // showTopSafeAreaView: false,
+          // showBottomSafeAreaView: false,
         });
 
         if (isNotMember && !isGuest) {
@@ -58,7 +58,6 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
   if (isGuest && token && role == ROLE.NON_MEMBER) {
     return <AfterAppStaticComponent />;
   }
-
 
   return (
     <View

@@ -62,7 +62,7 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
   const handleBackPress = () => {
@@ -85,59 +85,59 @@ const GuestCheckInScreen: React.FC<GuestCheckInScreenProps> = ({
       {/* {true ? ( */}
       <ScrollView style={styles.container}>
         <KeyboardAvoidingView
-                          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ProfileCard
-          showGuestStatus={false}
-          user={{
-            name: eventDetails?.guestProfile?.name || '',
-            avatar: eventDetails?.guestProfile?.profilePicture,
-            roles: eventDetails?.guestProfile?.roles,
-            age: eventDetails?.guestProfile?.age,
-            followers: eventDetails?.guestProfile?.followsYou,
-            location: eventDetails?.guestProfile?.location,
-            status: eventDetails?.guestProfile?.status,
-            interests: eventDetails?.guestProfile?.interest,
-            isMember:
-              eventDetails?.guestProfile?.roles[0].roleName === 'non_member'
-                ? false
-                : true,
-          }}
-          actionButtons={[
-            {
-              title: eventDetails?.guestProfile?.checkIn
-                ? LABLE.CHECKED_IN
-                : LABLE.CHECK_IN,
-              icon: IMAGES.checkedinCurved,
-              onPress: () => {},
-              otherStyle: styles.checkInButton,
-            },
-            {
-              title: LABLE.PROFILE,
-              icon: IMAGES.arrow_up_right,
-              onPress: handleProfilePress,
-              otherStyle: styles.profileButton,
-            },
-          ]}
-        />
-        <View style={styles.card}>
-          <AvatarInitials
-            size={32}
-            name={eventDetails?.guestProfile?.addedBy}
-            imgUrl={eventDetails?.guestProfile?.addedByPicture}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <ProfileCard
+            showGuestStatus={false}
+            user={{
+              name: eventDetails?.guestProfile?.name || '',
+              avatar: eventDetails?.guestProfile?.profilePicture,
+              roles: eventDetails?.guestProfile?.roles,
+              age: eventDetails?.guestProfile?.age,
+              followers: eventDetails?.guestProfile?.followsYou,
+              location: eventDetails?.guestProfile?.location,
+              status: eventDetails?.guestProfile?.status,
+              interests: eventDetails?.guestProfile?.interest,
+              isMember:
+                eventDetails?.guestProfile?.roles[0].roleName === 'non_member'
+                  ? false
+                  : true,
+            }}
+            actionButtons={[
+              {
+                title: eventDetails?.guestProfile?.checkIn
+                  ? LABLE.CHECKED_IN
+                  : LABLE.CHECK_IN,
+                icon: IMAGES.checkedinCurved,
+                onPress: () => {},
+                otherStyle: styles.checkInButton,
+              },
+              {
+                title: LABLE.PROFILE,
+                icon: IMAGES.arrow_up_right,
+                onPress: handleProfilePress,
+                otherStyle: styles.profileButton,
+              },
+            ]}
           />
-          <View style={{ paddingLeft: verticalMarginScale(8) }}>
-            <Text style={styles.blurText}>Guest of</Text>
-            <Text style={styles.username}>
-              {eventDetails?.guestProfile?.addedBy}
-            </Text>
+          <View style={styles.card}>
+            <AvatarInitials
+              size={32}
+              name={eventDetails?.guestProfile?.addedBy}
+              imgUrl={eventDetails?.guestProfile?.addedByPicture}
+            />
+            <View style={{ paddingLeft: verticalMarginScale(8) }}>
+              <Text style={styles.blurText}>Guest of</Text>
+              <Text style={styles.username}>
+                {eventDetails?.guestProfile?.addedBy}
+              </Text>
+            </View>
           </View>
-        </View>
-        <CheckInComponent
-          ticketType={eventDetails?.guestDetail?.ticketType}
-          privateGuestNote={eventDetails?.guestDetail?.privateGuestNote}
-          additionalGuests={eventDetails?.guestProfile?.additionalGuests}
-          maxAdditionalGuests={eventDetails?.guestDetail?.maxAdditionalGuests}
-        />
+          <CheckInComponent
+            ticketType={eventDetails?.guestDetail?.ticketType}
+            privateGuestNote={eventDetails?.guestDetail?.privateGuestNote}
+            additionalGuests={eventDetails?.guestProfile?.additionalGuests}
+            maxAdditionalGuests={eventDetails?.guestDetail?.maxAdditionalGuests}
+          />
         </KeyboardAvoidingView>
       </ScrollView>
       {/* ) : (
@@ -164,7 +164,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingBottom: 10,
   },
   card: {
     backgroundColor: COLORS.white,

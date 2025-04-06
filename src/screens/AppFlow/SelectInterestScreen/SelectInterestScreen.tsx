@@ -9,7 +9,10 @@ import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/slices';
-import { setInterest, setPageProgress } from '../../../redux/slices/appFlowSlice';
+import {
+  setInterest,
+  setPageProgress,
+} from '../../../redux/slices/appFlowSlice';
 import Toast from '../../../component/Toast/Toast';
 import useApi from 'src/axios/useApi';
 import { EndPoint } from 'src/ApiManager/config';
@@ -19,7 +22,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-interface SelectInterestScreenProps extends NativeStackScreenProps<any, any> { }
+interface SelectInterestScreenProps extends NativeStackScreenProps<any, any> {}
 
 const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
   navigation,
@@ -31,11 +34,11 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
     route.params
       ? route.params
       : {
-        headerTitle: null,
-        btnTitle: null,
-        subTitle: null,
-        fromProfile: false,
-      },
+          headerTitle: null,
+          btnTitle: null,
+          subTitle: null,
+          fromProfile: false,
+        },
   );
 
   //give all interests
@@ -59,7 +62,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
     );
     if (response.success) {
       //dependiing on API response parse data and set
-      setSelectedCategories(response.data)
+      setSelectedCategories(response.data);
     }
   };
 
@@ -67,11 +70,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
     const requestObject = {
       interestsIds: selectedCategories.map((item: any) => item.id),
     };
-    return apiRequest(
-      'post',
-      EndPoint.user_interests + userId,
-      requestObject,
-    );
+    return apiRequest('post', EndPoint.user_interests + userId, requestObject);
   };
 
   useEffect(() => {
@@ -79,7 +78,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
     if (configData.fromProfile) {
       getMyInterests();
     } else {
-      setSelectedCategories(selectedInterests)
+      setSelectedCategories(selectedInterests);
     }
   }, []);
 
@@ -119,9 +118,12 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
         const response: any = await updateMyInterests();
         if (response.success) {
           // navigation.navigate('ProfileScreen')
-          navigation.goBack()
+          navigation.goBack();
           // dispatch(setInterest(selectedCategories))
-          FlashMessageComponent.show('success', 'Details updated successfully!');
+          FlashMessageComponent.show(
+            'success',
+            'Details updated successfully!',
+          );
         }
       }
       //handle edit profile flow
@@ -140,12 +142,12 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {/* <FullScreenLoader loading={loading}> */}
       <Header
         headerTitle={
@@ -171,9 +173,8 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
               key={item.id}
               style={[
                 styles.categoryButton,
-                selectedCategories.some(
-                  selected => selected.id === item.id,
-                ) && styles.selectedCategoryButton,
+                selectedCategories.some(selected => selected.id === item.id) &&
+                  styles.selectedCategoryButton,
               ]}
               onPress={() => handleCategorySelect(item)}>
               <Text
@@ -199,15 +200,13 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
       <Button
         disabled={false}
         style={styles.btnStyle}
-        title={
-          configData.btnTitle ? configData.btnTitle : BUTTON_LABLE.NEXT
-        }
+        title={configData.btnTitle ? configData.btnTitle : BUTTON_LABLE.NEXT}
         colorTheme="dark"
         onPress={onNextClick}
         loading={loading}
       />
       {/* </FullScreenLoader> */}
-    </SafeAreaView>
+    </View>
   );
 };
 

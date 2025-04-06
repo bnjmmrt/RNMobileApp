@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 import { COLORS } from 'src/utils/constants';
 import {
   fontScale,
@@ -91,6 +92,7 @@ const createStyles = () => {
       gap: horizontalMarginScale(8),
       marginHorizontal: horizontalMarginScale(20),
       paddingVertical: verticalMarginScale(8),
+      bottom: BOTTOM_SAFEAREA_SPACING,
     },
     borderActionCta: {
       borderWidth: verticalScale(2),
