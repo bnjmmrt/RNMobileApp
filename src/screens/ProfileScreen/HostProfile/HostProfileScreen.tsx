@@ -224,11 +224,10 @@ const HostProfileScreen: React.FC = () => {
       }))
       .filter(item => item.icon && item.url !== ''),
   ];
-  console.log('profill', profile?.website);
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 

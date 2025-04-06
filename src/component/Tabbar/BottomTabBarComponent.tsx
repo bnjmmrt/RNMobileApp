@@ -1,12 +1,9 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import React, { useEffect, useRef } from 'react';
 import {
-  Dimensions,
   Image,
   Platform,
-  StatusBar,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -14,6 +11,7 @@ import * as Animatable from 'react-native-animatable';
 import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
 import { fontFamily } from 'src/utils/functions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { COLORS } from '../../utils/constants';
 import {
   fontScale,
@@ -24,7 +22,7 @@ import {
   Wp,
 } from '../../utils/dimensions';
 import { CustomText } from '../CustomText';
-import useKeyboard from 'src/utils/hooks/useKeyboard';
+import { BOTTOM_SAFEAREA_SPACING } from '../Wrappers/SafeAreaViewWrapper';
 
 const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
   state,
@@ -52,12 +50,6 @@ const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
     });
   }, [state.index]);
 
-  let deviceHeight = Dimensions.get('screen').height;
-  let windowHeight = Dimensions.get('window').height;
-  let statusBarHeight = StatusBar.currentHeight || 0;
-  let bottomNavBarHeight = deviceHeight - windowHeight - statusBarHeight;
-  const hasSoftNavButtons = bottomNavBarHeight > 0;
-
   const isTabBarVisible =
     Platform.OS === 'android'
       ? !keyboardVisible && showBottomTabs
@@ -69,12 +61,7 @@ const BottomTabBarComponent: React.FC<BottomTabBarProps> = ({
         styles.container,
         {
           display: isTabBarVisible ? 'flex' : 'none',
-          bottom:
-            Platform.OS === 'android'
-              ? hasSoftNavButtons
-                ? verticalScale(10)
-                : verticalScale(20)
-              : verticalScale(30),
+          bottom: BOTTOM_SAFEAREA_SPACING,
         },
       ]}>
       <View style={styles.tabStyle}>

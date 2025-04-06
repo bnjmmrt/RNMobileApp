@@ -19,7 +19,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> { }
+interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> {}
 
 const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
   navigation,
@@ -76,7 +76,7 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 
@@ -90,8 +90,6 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
           subTitle={LABLE.YOU_CAN_CHOOSE_UP_TO_3_CATEGORIES}
         />
 
-
-
         <View style={styles.categoryContainer}>
           {creativeFocus?.map(item => (
             <TouchableOpacity
@@ -100,7 +98,7 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
               style={[
                 styles.categoryButton,
                 selectedCategories.some(selected => selected.id === item.id) &&
-                styles.selectedCategoryButton,
+                  styles.selectedCategoryButton,
               ]}
               onPress={() => handleCategorySelect(item)}>
               <Text
@@ -121,8 +119,6 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
             onClose={() => setIsToastShown(false)}
           />
         )}
-
-
       </View>
 
       <Button

@@ -7,12 +7,14 @@ import {
 } from '../../utils/dimensions';
 import { fontFamily } from '../../utils/functions';
 import { COLORS } from '../../utils/constants';
+import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 const EmailPhoneStyles = () => {
   return StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: COLORS.white,
+      paddingTop: TOP_SAFEAREA_SPACING,
     },
     btnStyle: {
       width: '100%',

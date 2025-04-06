@@ -112,7 +112,7 @@ const SelectedGuestsToInviteScreen: React.FC<
     useCallback(() => {
       dispatch(removeSelectedUsersToInvite([]));
       changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+        ...SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME,
       });
     }, []),
   );

@@ -13,7 +13,7 @@ import { RootState } from 'src/redux/slices';
 import { fetchUserProfile, fontFamily } from 'src/utils/functions';
 import IMAGES from '../assets/images';
 import { COLORS } from '../utils/constants';
-import { fontScale, Wp } from '../utils/dimensions';
+import { fontScale, verticalMarginScale, Wp } from '../utils/dimensions';
 import HeaderProfileSwitcher from './HeaderProfileSwitcher';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { ROUTES } from 'src/navigation/Route';
@@ -56,10 +56,9 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
     (state: RootState) => state.appFlowApiData.notiCount,
   );
 
-
   useEffect(() => {
     fetchUserProfile();
-  }, [])
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -68,12 +67,17 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
   );
 
   const getNotificationCount = async () => {
-    const notificationCount: any = await apiRequest('get', `${EndPoint.notification_count}?id=${userId}`);
+    const notificationCount: any = await apiRequest(
+      'get',
+      `${EndPoint.notification_count}?id=${userId}`,
+    );
     console.log('notificationCount.data', notificationCount);
     if (notificationCount.data) {
-      dispatch(setNotificationCount(notificationCount?.data?.totalNotifications));
+      dispatch(
+        setNotificationCount(notificationCount?.data?.totalNotifications),
+      );
     }
-  }
+  };
   return (
     <View
       style={[
@@ -117,9 +121,9 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
             styles.iconButton,
             { backgroundColor: backgroundColorNotification },
           ]}>
-          {notiCount > 0 &&
+          {notiCount > 0 && (
             <Image style={styles.badge} source={IMAGES.notification_badge} />
-          }
+          )}
           <Image
             style={[styles.imgStyle, rightImageStyle]}
             source={IMAGES.bell}
@@ -173,7 +177,7 @@ const styles = StyleSheet.create({
   imgStyle: {
     resizeMode: 'contain',
   },
-  badge: { position: 'absolute', top: -4, right: -3,resizeMode:'contain'},
+  badge: { position: 'absolute', top: -4, right: -3, resizeMode: 'contain' },
 });
 
 export default HeaderComponent;

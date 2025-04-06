@@ -127,11 +127,8 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
   useFocusEffect(
     useCallback(() => {
       changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.STATIC_GRADIENT_SCHEME,
-        showBottomSafeAreaView: false,
-        showTopSafeAreaView: false,
-        translucent: true,
-        topSafeAreaViewColor: 'transparent',
+        ...SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME,
+        statusBarStyle: 'light-content',
       });
     }, []),
   );
@@ -216,7 +213,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-
   },
   btnStyle: {
     width: Wp(85),

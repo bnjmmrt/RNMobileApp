@@ -65,6 +65,7 @@ const CreateList = ({
         showBackButton={from === 'customLists' ? false : true}
         showProgressBar={false}
         onPress={() => onPressBack()}
+        addTopSafeAreaPadding={false}
       />
       <BottomSheetView style={[styles.actionContentWrapper, { flex: 1 }]}>
         <CustomText style={styles.createListMessage}>

@@ -28,11 +28,9 @@ import { addGuest } from 'src/redux/slices/rspvSlice';
 import { useDispatch } from 'react-redux';
 import { CustomText } from 'src/component/CustomText';
 
-interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> { }
+interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> {}
 
-const AddGuestOptionScreen: React.FC<EmailPhoneScreenProps> = ({
-
-}) => {
+const AddGuestOptionScreen: React.FC<EmailPhoneScreenProps> = ({}) => {
   const [currentTab, setCurrentTab] = useState('01');
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -66,7 +64,7 @@ const AddGuestOptionScreen: React.FC<EmailPhoneScreenProps> = ({
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
   const handleSyncContacts = () => {
@@ -82,17 +80,25 @@ const AddGuestOptionScreen: React.FC<EmailPhoneScreenProps> = ({
         showProgressBar={false}
       />
       <View style={styles.contentContainer}>
-        <CustomText style={styles.descriptionText}>Provide details to add your additional guest.</CustomText>
+        <CustomText style={styles.descriptionText}>
+          Provide details to add your additional guest.
+        </CustomText>
         <TabBar
-        tab={'01'}
+          tab={'01'}
           onTabChange={handleTabChange}
           tabOneLabel="Add from Contacts"
           tabTwoLabel="Add Manually"
         />
-        {currentTab == '01' ? <AddFromContacts /> : <GuestForm onSubmit={(e) => {
-          dispatch(addGuest(e))
-          navigation.pop(1);
-        }} />}
+        {currentTab == '01' ? (
+          <AddFromContacts />
+        ) : (
+          <GuestForm
+            onSubmit={e => {
+              dispatch(addGuest(e));
+              navigation.pop(1);
+            }}
+          />
+        )}
         {/* <View style={styles.contactContainer}>
           <Image
             source={IMAGES.noRecord}
@@ -129,7 +135,13 @@ const styles = StyleSheet.create({
   spacer: {
     flex: 1,
   },
-  descriptionText: { fontFamily: fontFamily.ABCDiatype_Medium, fontSize: fontScale(14), color: COLORS.light_gray, textAlign: 'center', marginVertical: verticalMarginScale(12) },
+  descriptionText: {
+    fontFamily: fontFamily.ABCDiatype_Medium,
+    fontSize: fontScale(14),
+    color: COLORS.light_gray,
+    textAlign: 'center',
+    marginVertical: verticalMarginScale(12),
+  },
   contactContainer: {
     flex: 1,
     backgroundColor: COLORS.white,

@@ -19,7 +19,7 @@ import { EndPoint } from 'src/ApiManager/config';
 import { setNotificationSettings } from 'src/redux/slices/appSettingsSlice';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
-interface NotificationSettingsScreenProps { }
+interface NotificationSettingsScreenProps {}
 
 interface ConfigData {
   logo: string;
@@ -108,7 +108,7 @@ const NotificationSettingsScreen: React.FC<
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header
         headerTitle={PROFILE.NOTIFICATION}
         onPress={handleBackPress}
@@ -148,7 +148,7 @@ const NotificationSettingsScreen: React.FC<
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

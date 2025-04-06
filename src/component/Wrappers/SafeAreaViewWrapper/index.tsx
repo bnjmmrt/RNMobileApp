@@ -1,9 +1,34 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
-import { Platform, SafeAreaView, StatusBar, View } from 'react-native';
+import {
+  Dimensions,
+  Platform,
+  SafeAreaView,
+  StatusBar,
+  View,
+} from 'react-native';
 import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
-import { verticalMarginScale } from 'src/utils/dimensions';
+import { verticalMarginScale, verticalScale } from 'src/utils/dimensions';
+
+const deviceHeight = Dimensions.get('screen').height;
+const windowHeight = Dimensions.get('window').height;
+const statusBarHeight = StatusBar.currentHeight || 0;
+const bottomNavBarHeight = deviceHeight - windowHeight - statusBarHeight;
+const hasSoftNavButtons = bottomNavBarHeight > 0;
+
+export const BOTTOM_SAFEAREA_SPACING =
+  Platform.OS === 'android'
+    ? hasSoftNavButtons
+      ? verticalScale(10)
+      : verticalScale(20)
+    : verticalScale(30);
+
+export const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 44 : 24;
+export const TOP_SAFEAREA_SPACING =
+  Platform.OS === 'ios'
+    ? STATUS_BAR_HEIGHT + verticalMarginScale(16)
+    : (StatusBar.currentHeight || 0) + verticalMarginScale(16);
 
 export const SafeAreaViewWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -22,12 +47,6 @@ export const SafeAreaViewWrapper: React.FC<{ children: React.ReactNode }> = ({
     }),
     shallowEqual,
   );
-
-  // const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 44 : 24;
-  // const TOP_SPACING =
-  //   Platform.OS === 'ios'
-  //     ? STATUS_BAR_HEIGHT + verticalMarginScale(16)
-  //     : (StatusBar.currentHeight || 0) + verticalMarginScale(16);
 
   return (
     <View style={{ flex: 1 }}>

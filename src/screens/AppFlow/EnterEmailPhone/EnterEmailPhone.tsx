@@ -88,12 +88,14 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
       if (emailInputRef.current.validateEmailAddress()) {
         endPoint = EndPoint.check_email;
         params = {
-          email:normalizeEmail(emailInputRef.current.emailAddress) ,
+          email: normalizeEmail(emailInputRef.current.emailAddress),
         };
         try {
           const response: any = await apiRequest('post', endPoint, params);
           if (response?.data.isValid) {
-            dispatch(setEmail(normalizeEmail(emailInputRef.current.emailAddress)));
+            dispatch(
+              setEmail(normalizeEmail(emailInputRef.current.emailAddress)),
+            );
             navigation.navigate('VerifyEmail', {
               email: normalizeEmail(emailInputRef.current.emailAddress),
               isEmail: true,
@@ -120,7 +122,7 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 

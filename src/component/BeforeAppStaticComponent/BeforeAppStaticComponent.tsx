@@ -116,8 +116,8 @@ const BeforeAppStaticComponent: React.FC<BeforeAppStaticComponentProps> = ({
   useFocusEffect(
     useCallback(() => {
       changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
-        showBottomSafeAreaView: false,
+        ...SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME,
+        statusBarStyle: 'light-content',
       });
     }, []),
   );

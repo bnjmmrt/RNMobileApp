@@ -3,6 +3,7 @@ import React from 'react';
 import {
   Image,
   ImageSourcePropType,
+  Platform,
   StyleProp,
   StyleSheet,
   Text,
@@ -21,6 +22,7 @@ import {
   verticalScale,
 } from '../../utils/dimensions';
 import ProgressBar from '../ProgressBar/ProgressBar';
+import { TOP_SAFEAREA_SPACING } from '../Wrappers/SafeAreaViewWrapper';
 
 interface HeaderProps {
   onPress?: () => void;
@@ -31,6 +33,7 @@ interface HeaderProps {
   onPressRightIcon?: () => void;
   rightIconWrapperStyle?: StyleProp<ViewStyle>;
   numberOfLines?: number;
+  addTopSafeAreaPadding?: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -42,6 +45,7 @@ const Header: React.FC<HeaderProps> = ({
   showBackButton = true,
   rightIconWrapperStyle = {},
   numberOfLines,
+  addTopSafeAreaPadding = true,
 }) => {
   const navigation = useNavigation();
 
@@ -52,8 +56,10 @@ const Header: React.FC<HeaderProps> = ({
       if (navigation.canGoBack()) navigation.goBack();
     }
   };
+
   return (
-    <View style={{}}>
+    <View
+      style={{ paddingTop: addTopSafeAreaPadding ? TOP_SAFEAREA_SPACING : 0 }}>
       <View
         style={[
           styles.container,
@@ -121,7 +127,7 @@ const styles = StyleSheet.create({
   icon: {
     width: verticalScale(16),
     height: verticalScale(16),
-    resizeMode:'contain'
+    resizeMode: 'contain',
   },
   emptyWrapper: {
     width: verticalScale(40),

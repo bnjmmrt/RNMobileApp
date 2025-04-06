@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { RootState } from 'src/redux/slices';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -63,7 +64,7 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 
@@ -78,7 +79,7 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
     <View behavior="padding" style={styles.container}>
       <BackButton onPress={handleBackPress} />
       <TabBar
-      tab={'01'}
+        tab={'01'}
         onTabChange={handleTabChange}
         tabOneLabel="Phone"
         tabTwoLabel="Email"
@@ -108,7 +109,7 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
               disabled={false}
               style={{
                 width: '100%',
-                marginBottom: verticalMarginScale(15),
+                marginBottom: BOTTOM_SAFEAREA_SPACING,
               }}
               title={BUTTON_LABLE.NEXT}
               colorTheme="dark"

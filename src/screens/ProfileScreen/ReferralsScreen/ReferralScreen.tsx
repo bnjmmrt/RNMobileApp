@@ -24,6 +24,7 @@ import InviteFriendsSheet from './InviteFriendsSheet';
 import ReferralRequestItem from './ReferralRequestItem';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useRoute, RouteProp } from '@react-navigation/native';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 type ReferralScreenProps = NativeStackScreenProps<any, any>;
 type RouteParams = {
@@ -33,9 +34,14 @@ type RouteParams = {
 };
 const ReferralScreen: React.FC<ReferralScreenProps> = ({ navigation }) => {
   const route = useRoute<RouteProp<RouteParams>>();
-  console.log('referrelRequests route.params.activeTabroute.params.activeTab ', route.params?.activeTab)
+  console.log(
+    'referrelRequests route.params.activeTabroute.params.activeTab ',
+    route.params?.activeTab,
+  );
   const { apiRequest, loading } = useApi();
-  let routetab = route.params?.activeTab ? route.params?.activeTab : 'referrals';
+  let routetab = route.params?.activeTab
+    ? route.params?.activeTab
+    : 'referrals';
   const [activeTab, setActiveTab] = useState<any>(routetab);
   const inviteFriendSheetRef = useRef<any>(null);
   const { goBack } = useNavigation();
@@ -107,7 +113,6 @@ const ReferralScreen: React.FC<ReferralScreenProps> = ({ navigation }) => {
       await updateVouch(id, flag);
     }
     // setLoading(true)
-
   };
 
   const onInvite = async () => {
@@ -165,7 +170,7 @@ const ReferralScreen: React.FC<ReferralScreenProps> = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header
         headerTitle={PROFILE.REFERRALS}
         showProgressBar={false}
@@ -191,7 +196,7 @@ const ReferralScreen: React.FC<ReferralScreenProps> = ({ navigation }) => {
         onPress={onInvite}
       />
       {isShown && <InviteFriendsSheet ref={inviteFriendSheetRef} />}
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -226,7 +231,7 @@ const styles = StyleSheet.create({
   },
   btnStyle: {
     borderRadius: radiusScale(99),
-    marginBottom: verticalMarginScale(20),
+    marginBottom: BOTTOM_SAFEAREA_SPACING,
   },
 });
 

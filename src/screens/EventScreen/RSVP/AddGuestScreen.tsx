@@ -15,7 +15,11 @@ import Header from '../../../component/Header/Header';
 
 import useApi from '../../../axios/useApi';
 import { EndPoint } from '../../../ApiManager/config';
-import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import { changeSafeAreaViewConfig, fontFamily } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import {
@@ -32,7 +36,7 @@ import { useDispatch } from 'react-redux';
 import { addGuest } from 'src/redux/slices/rspvSlice';
 import { CustomText } from 'src/component/CustomText';
 
-interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 const AddGuestScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   const { apiRequest, loading, error } = useApi();
@@ -62,12 +66,12 @@ const AddGuestScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header
         headerTitle={LABLE.ADD_GUEST}
         onPress={handleBackPress}
@@ -75,16 +79,20 @@ const AddGuestScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
       />
 
       <View style={styles.viewContainer}>
-        <View style={styles.contentContainer}>
-          <CustomText style={[styles.descriptionText]}>Your changes will only be saved in Rumor and will not impact your device’s contact list.</CustomText>
-          <GuestForm data={params?.data} hasPhone onSubmit={(e) => {
-            dispatch(addGuest(e))
+        <CustomText style={[styles.descriptionText]}>
+          Your changes will only be saved in Rumor and will not impact your
+          device’s contact list.
+        </CustomText>
+        <GuestForm
+          data={params?.data}
+          hasPhone
+          onSubmit={e => {
+            dispatch(addGuest(e));
             navigation.pop(2);
-          }} />
-        </View>
+          }}
+        />
       </View>
-
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -93,20 +101,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
   },
-  descriptionText: { fontFamily: fontFamily.ABCDiatype_Medium, fontSize: fontScale(14), color: COLORS.light_gray, textAlign: 'center', marginBottom: verticalMarginScale(12), marginHorizontal: horizontalMarginScale(12) },
+  descriptionText: {
+    fontFamily: fontFamily.ABCDiatype_Medium,
+    fontSize: fontScale(14),
+    color: COLORS.light_gray,
+    textAlign: 'center',
+    marginBottom: verticalMarginScale(12),
+    marginHorizontal: horizontalMarginScale(12),
+  },
   viewContainer: {
     flex: 1,
-    alignItems: 'center',
-  },
-  btnStyle: {
-    width: '85%',
-    borderRadius: radiusScale(100),
-
-  },
-  contentContainer: {
-    flex: 1,
-    paddingVertical: verticalMarginScale(10)
-
+    // alignItems: 'center',
+    paddingVertical: verticalMarginScale(10),
   },
   label: {
     paddingVertical: horizontalMarginScale(2),

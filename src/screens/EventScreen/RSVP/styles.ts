@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 import { COLORS } from 'src/utils/constants';
 import {
   fontScale,
@@ -85,8 +86,8 @@ export const styles = StyleSheet.create({
     width: Wp(95),
     borderRadius: radiusScale(100),
     alignSelf: 'center',
-    marginVertical: verticalMarginScale(10),
     marginTop: 'auto',
+    marginBottom: BOTTOM_SAFEAREA_SPACING,
   },
   clearButton: {
     borderWidth: horizontalScale(1.5),

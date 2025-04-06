@@ -38,6 +38,7 @@ import FeedDetail from './FeedDetail';
 import FeedFilterItem from './FeedFilterItem';
 import FeedItem from './FeedItem';
 import FeedSeriesDetail from './FeedSeriesDetail';
+import { TOP_SAFEAREA_SPACING } from '../Wrappers/SafeAreaViewWrapper';
 
 export interface EventItem {
   admissionType: {
@@ -220,7 +221,7 @@ const EventsFeed = () => {
       // take: 10,
       // skip: (currentPage - 1) * 10,
     },
-    { skip: !userId }
+    { skip: !userId },
   );
 
   const debouncedSearch = useCallback(
@@ -317,15 +318,13 @@ const EventsFeed = () => {
     useCallback(() => {
       if (isGuest) {
         changeSafeAreaViewConfig({
-          ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
-          showBottomSafeAreaView: false,
-          showTopSafeAreaView: false,
+          ...SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME,
+          statusBarStyle: 'light-content',
         });
       } else {
         changeSafeAreaViewConfig({
-          ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-          showBottomSafeAreaView: false,
-          showTopSafeAreaView: false,
+          ...SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME,
+          statusBarStyle: 'dark-content',
         });
       }
     }, []),
@@ -479,8 +478,11 @@ const EventsFeed = () => {
 
       {responseSubmitted && (
         <View style={styles.responseSubmitted}>
-          <Image resizeMode='contain'
-            source={IMAGES.check1} style={styles.check1} />
+          <Image
+            resizeMode="contain"
+            source={IMAGES.check1}
+            style={styles.check1}
+          />
           <Text style={styles.responseSubmittedText}>Response Submitted</Text>
         </View>
       )}
@@ -531,7 +533,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    paddingTop: Platform.OS === 'ios' ? verticalMarginScale(61) : 0,
+    paddingTop: TOP_SAFEAREA_SPACING,
   },
   responseSubmitted: {
     display: 'flex',

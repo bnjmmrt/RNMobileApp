@@ -39,6 +39,7 @@ import { changeSafeAreaViewConfig, fontFamily } from '../../../utils/functions';
 import CreativeFocusComponent from './CreativeFocusComponent';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { CustomText } from 'src/component/CustomText';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 interface FeedbackScreenProps {}
 
@@ -74,7 +75,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 
@@ -205,7 +206,7 @@ const styles = StyleSheet.create({
   btnStyle: {
     width: Wp(85),
     borderRadius: radiusScale(100),
-    bottom: Platform.OS === 'android' ? verticalMarginScale(20) : 0,
+    bottom: BOTTOM_SAFEAREA_SPACING,
   },
   errorInputWrapper: {
     borderColor: COLORS.borderRed,

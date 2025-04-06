@@ -1,6 +1,15 @@
 import { Platform, StyleSheet } from 'react-native';
-import { fontScale, horizontalMarginScale, horizontalScale, radiusScale, verticalMarginScale, verticalScale, Wp } from '../../../utils/dimensions';
+import {
+  fontScale,
+  horizontalMarginScale,
+  horizontalScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+} from '../../../utils/dimensions';
 import { COLORS } from '../../../utils/constants';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 const BaseCityScreenStyles = () => {
   return StyleSheet.create({
@@ -12,7 +21,7 @@ const BaseCityScreenStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
-      bottom:Platform.OS==='android' ? 20 :0
+      bottom: BOTTOM_SAFEAREA_SPACING,
     },
     contentContainer: {
       flex: 1,
@@ -41,8 +50,8 @@ const BaseCityScreenStyles = () => {
       fontSize: fontScale(12),
       marginTop: verticalMarginScale(5),
       color: COLORS.errorText,
-      position:'absolute',
-      top:10
+      position: 'absolute',
+      top: 10,
     },
   });
 };

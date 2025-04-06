@@ -31,7 +31,7 @@ import UserListItem, { UserItemInterface } from '../UsersListItem';
 import createStyle from './style';
 
 interface ListDetailsProps
-  extends NativeStackScreenProps<AppStackParamList, 'ListDetail'> { }
+  extends NativeStackScreenProps<AppStackParamList, 'ListDetail'> {}
 
 const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
   const styles = createStyle();
@@ -82,8 +82,6 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
       clearTimeout(timeoutId); // clean up if component unmounts or re-runs
     };
   }, [isLoading]);
-
-
 
   useEffect(() => {
     if (data) {
@@ -208,7 +206,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 
@@ -219,8 +217,8 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
           route.params.listType === 'favorite'
             ? 'My Favorites'
             : route.params.listType === 'follower'
-              ? 'My Followers'
-              : allUsers.name
+            ? 'My Followers'
+            : allUsers.name
         }
         showProgressBar={false}
         rightIcon={IMAGES.dots}

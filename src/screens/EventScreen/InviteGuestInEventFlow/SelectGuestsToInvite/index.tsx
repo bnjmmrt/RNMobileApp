@@ -256,7 +256,7 @@ const SelectGuestsToInviteScreen: React.FC<
   useFocusEffect(
     useCallback(() => {
       changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
+        ...SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME,
       });
     }, []),
   );

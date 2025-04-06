@@ -46,6 +46,7 @@ import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 import BaseCityComponent from '../ProfileScreen/EditProfile/BaseCityComponent';
 import DatePickerComponent from '../ProfileScreen/EditProfile/DatePickerComponent';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 interface Location {
   location?: string;
@@ -561,7 +562,7 @@ const styles = StyleSheet.create({
   },
   btnStyle: {
     borderRadius: radiusScale(100),
-    bottom: verticalMarginScale(20),
+    bottom: BOTTOM_SAFEAREA_SPACING,
   },
   contentContainer: {
     flex: 1,
