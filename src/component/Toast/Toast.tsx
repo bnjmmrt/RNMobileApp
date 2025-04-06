@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, StyleSheet, TouchableOpacity, Animated, Image, Platform } from 'react-native';
+import { Text, StyleSheet, TouchableOpacity, Animated, Image, Platform, ViewStyle } from 'react-native';
 import { COLORS } from '../../utils/constants';
 import IMAGES from '../../assets/images';
 import { fontScale, horizontalMarginScale, radiusScale, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
@@ -8,7 +8,7 @@ import { fontFamily } from 'src/utils/functions';
 interface ToastProps {
   message: String;
   onClose: () => void;
-  toastStyle?: any
+  toastStyle?: ViewStyle
 }
 const Toast: React.FC<ToastProps> = ({ message, onClose, toastStyle }) => {
   const [fadeAnim] = useState(new Animated.Value(0)); // For fade-in/out animation
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   toast: {
     height: 48,
     position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 10: 35,
+    bottom: Platform.OS === 'ios' ? 10 : 35,
     left: horizontalMarginScale(20),
     right: horizontalMarginScale(20),
     backgroundColor: COLORS.bgRed,
@@ -75,6 +75,6 @@ const styles = StyleSheet.create({
     fontSize: fontScale(14),
     fontWeight: 'bold',
     margin: verticalMarginScale(10),
-    resizeMode:'contain'
+    resizeMode: 'contain'
   },
 });

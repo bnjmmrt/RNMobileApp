@@ -14,6 +14,7 @@ import {
   verticalMarginScale,
   Wp,
 } from '../../utils/dimensions';
+import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 interface BeforeAppStaticScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -28,7 +29,7 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.BLACK_SCHEME);
+      changeSafeAreaViewConfig({ ...SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME, statusBarStyle: 'light-content' });
     }, []),
   );
 
@@ -48,20 +49,20 @@ const BeforeAppStaticScreen: React.FC<BeforeAppStaticScreenProps> = ({
       {!isFromProfile && <TouchableOpacity
         onPress={redirectToHome}
         style={{
-          top: horizontalMarginScale(20),
+          top: TOP_SAFEAREA_SPACING,
           right: horizontalMarginScale(20),
           position: 'absolute',
         }}>
         <View style={styles.iconWrapper}>
           <Image resizeMode='contain'
- source={IMAGES.cross} />
+            source={IMAGES.cross} />
         </View>
       </TouchableOpacity>}
 
       {isFromProfile && <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={{
-          top: horizontalMarginScale(20),
+          top: TOP_SAFEAREA_SPACING,
           left: horizontalMarginScale(20),
           position: 'absolute',
         }}>
@@ -77,6 +78,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    paddingTop: TOP_SAFEAREA_SPACING,
     backgroundColor: COLORS.black2,
   },
   iconWrapper: {

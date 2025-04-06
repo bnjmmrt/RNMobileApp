@@ -18,8 +18,10 @@ import { useGetFocusesQuery } from '../../../redux/actions/appFlowApiAction';
 import { useFocusEffect } from '@react-navigation/native';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import { Hp } from 'src/utils/dimensions';
 
-interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> {}
+interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> { }
 
 const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
   navigation,
@@ -89,32 +91,38 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
           title={LABLE.WHAT_IS_YOUR_CREATIVE_OR_PROFESSIONAL_FOCUS}
           subTitle={LABLE.YOU_CAN_CHOOSE_UP_TO_3_CATEGORIES}
         />
+        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 0.6 }} >
 
-        <View style={styles.categoryContainer}>
-          {creativeFocus?.map(item => (
-            <TouchableOpacity
-              activeOpacity={0.7}
-              key={item.id}
-              style={[
-                styles.categoryButton,
-                selectedCategories.some(selected => selected.id === item.id) &&
-                  styles.selectedCategoryButton,
-              ]}
-              onPress={() => handleCategorySelect(item)}>
-              <Text
+          <View style={styles.categoryContainer}>
+            {creativeFocus?.map(item => (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                key={item.id}
                 style={[
-                  styles.categoryText,
-                  selectedCategories.some(
-                    selected => selected.id === item.id,
-                  ) && styles.selectedCategoryText,
-                ]}>
-                {item.name}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+                  styles.categoryButton,
+                  selectedCategories.some(selected => selected.id === item.id) &&
+                  styles.selectedCategoryButton,
+                ]}
+                onPress={() => handleCategorySelect(item)}>
+                <Text
+                  style={[
+                    styles.categoryText,
+                    selectedCategories.some(
+                      selected => selected.id === item.id,
+                    ) && styles.selectedCategoryText,
+                  ]}>
+                  {item.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+
+        </ScrollView>
+
         {isToastShown && (
           <Toast
+            toastStyle={{ position: 'relative', bottom: BOTTOM_SAFEAREA_SPACING + 10, right: 0, left: 0 }}
             message={'Please select at least one'}
             onClose={() => setIsToastShown(false)}
           />

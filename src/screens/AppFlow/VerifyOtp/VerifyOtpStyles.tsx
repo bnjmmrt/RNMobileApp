@@ -26,7 +26,7 @@ const VerifyOtpStyles = () => {
     },
     contentContainer: {
       flex: 1,
-      paddingVertical: verticalMarginScale(10),
+      paddingTop: verticalMarginScale(0),
       paddingHorizontal: horizontalMarginScale(20),
       marginTop: 15,
     },

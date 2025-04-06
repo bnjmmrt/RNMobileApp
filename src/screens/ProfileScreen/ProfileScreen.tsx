@@ -51,7 +51,7 @@ import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 // Define the type for navigation props
-interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
+interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
 interface ListItem {
   id: string;
@@ -378,10 +378,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           await updateProfilePhoto(imageUrl);
         }
       }
-      setLoader(true);
+      setLoader(false);
       console.log('savePhoto', response);
     } catch (error) {
-      setLoader(true);
+      setLoader(false);
       console.error('Error uploading image:', error);
     }
   };
@@ -529,8 +529,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
               role?.toLocaleLowerCase() === 'host'
                 ? companyLogo
                 : profilePicture
-                ? profilePicture
-                : profileData?.profilePicture
+                  ? profilePicture
+                  : profileData?.profilePicture
             }
             name={getUserName()}
             loading={loading}
@@ -583,7 +583,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           ref={logoutBottomSheetRef}
           title={'Are you sure you want to log out?'}
           onPress={logOut}
-          loadding={loader}
+          loadding={false}
           submitButtonText={BUTTON_LABLE.CONFIRM}
           cancelButtonText={BUTTON_LABLE.CANCEL}
           snapPoints={[Platform.OS === 'android' ? '0.29' : '0.30']}

@@ -15,7 +15,7 @@ const GenderScreenStyles = () => {
     container: {
       flex: 1,
       backgroundColor: COLORS.white,
-      paddingBottom: 20,
+      paddingBottom: 0,
     },
     btnStyle: {
       width: Wp(85),

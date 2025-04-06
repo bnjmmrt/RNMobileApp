@@ -37,7 +37,7 @@ import { verticalMarginScale } from 'src/utils/dimensions';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
-interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> {}
+interface ProfilePhotoScreenProps extends NativeStackScreenProps<any, any> { }
 
 const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   navigation,
@@ -197,7 +197,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header headerTitle={LABLE.PROFILE_PHOTO} onPress={handleBackPress} />
 
       <View style={styles.contentContainer}>
@@ -246,13 +246,14 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
             onCancel={onCancel}
             submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
             cancelButtonText={BUTTON_LABLE.CANCEL}
-            snapPoints={[Platform.OS == 'android' ? 0.45 : 0.4]}
+            snapPoints={[Platform.OS == 'android' ? 0.5 : 0.45]}
             image={image}
           />
         </View>
         {/* Render profile photo */}
         {isToastShown && (
           <Toast
+            toastStyle={{ bottom: 50 }}
             message={'Please upload a Profile Photo'}
             onClose={() => setIsToastShown(false)}
           />
@@ -267,7 +268,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
         loading={loading}
         onPress={onNextClick}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
