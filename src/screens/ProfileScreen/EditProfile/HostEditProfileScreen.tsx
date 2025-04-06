@@ -36,6 +36,10 @@ import {
   verticalScale,
 } from '../../../utils/dimensions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
+import {
+  BOTTOM_SAFEAREA_SPACING,
+  TOP_SAFEAREA_SPACING,
+} from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 interface HostEditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -116,70 +120,60 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}>
-      <View
-        style={[
-          styles.container,
-          {
-            paddingBottom: keyboardVisible
-              ? Platform.OS === 'ios'
-                ? verticalMarginScale(50)
-                : verticalMarginScale(10)
-              : 0,
-          },
-        ]}>
-        <Header
-          headerTitle={PROFILE.EDIT_PROFILE}
-          onPress={handleBackPress}
-          showProgressBar={false}
-        />
+    <View style={{ flex: 1 }}>
+      <Header
+        headerTitle={PROFILE.EDIT_PROFILE}
+        onPress={handleBackPress}
+        showProgressBar={false}
+      />
 
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.contentContainer}>
-            <Input
-              ref={companyNameRef}
-              label={LABLE.COMPANY_NAME}
-              errorMessage={ERROR_MESSAGE.COMPANY_NAME_ERROR}
-              defaultValue={profileData?.companyName}
-              maxLength={100}
-            />
-            <Input
-              blurOnSubmit={true}
-              ref={bioRef}
-              label={LABLE.BIO}
-              errorMessage={''}
-              defaultValue={profileData?.bio}
-              multiline={true}
-              hasHandler={true}
-            />
-            <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
-            <EmailInput ref={emailInputRef} />
-            <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
-            <PhoneNumberInput ref={phoneNumberInputRef} />
-
-            <Input
-              ref={websiteRef}
-              label={LABLE.WEBSITE}
-              errorMessage={ERROR_MESSAGE.WEBSITE_ERROR}
-              defaultValue={profileData?.website}
-              isUrl={true}
-            />
-          </View>
-        </ScrollView>
-        {!keyboardVisible ? (
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={BUTTON_LABLE.CONFIRM}
-            colorTheme="dark"
-            onPress={onConfirmClick}
-            loading={loading}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+        contentContainerStyle={styles.container}>
+        <ScrollView style={styles.scrollContainer}>
+          <Input
+            ref={companyNameRef}
+            label={LABLE.COMPANY_NAME}
+            errorMessage={ERROR_MESSAGE.COMPANY_NAME_ERROR}
+            defaultValue={profileData?.companyName}
+            maxLength={100}
           />
-        ) : null}
-      </View>
-    </KeyboardAvoidingView>
+          <Input
+            blurOnSubmit={true}
+            ref={bioRef}
+            label={LABLE.BIO}
+            errorMessage={''}
+            defaultValue={profileData?.bio}
+            multiline={true}
+            hasHandler={true}
+          />
+          <Text style={[styles.label]}>{LABLE.EMAIL_ADDRESS}</Text>
+          <EmailInput ref={emailInputRef} />
+          <Text style={[styles.label]}>{LABLE.PHONE_NUMBER}</Text>
+          <PhoneNumberInput ref={phoneNumberInputRef} />
+
+          <Input
+            ref={websiteRef}
+            label={LABLE.WEBSITE}
+            errorMessage={ERROR_MESSAGE.WEBSITE_ERROR}
+            defaultValue={profileData?.website}
+            isUrl={true}
+            otherStyle={{ marginBottom: verticalScale(100) }}
+          />
+        </ScrollView>
+      </KeyboardAvoidingView>
+      {!keyboardVisible ? (
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.ADD}
+          colorTheme="dark"
+          onPress={onConfirmClick}
+          loading={loading}
+        />
+      ) : null}
+    </View>
   );
 };
 
@@ -187,21 +181,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    // paddingBottom: 20
   },
   btnStyle: {
     // width: Wp(85),
     // height: 50,
     marginTop: verticalMarginScale(20),
-    marginBottom: verticalMarginScale(20),
     borderRadius: radiusScale(100),
-    bottom: Platform.OS === 'android' ? verticalMarginScale(20) : 0,
+    marginBottom: BOTTOM_SAFEAREA_SPACING,
   },
   contentContainer: {
     flex: 1,
     paddingHorizontal: horizontalMarginScale(20),
   },
-  scrollContainer: { paddingVertical: verticalMarginScale(16) },
+  scrollContainer: {
+    paddingVertical: verticalMarginScale(16),
+    paddingHorizontal: horizontalMarginScale(20),
+  },
   label: {
     paddingVertical: horizontalMarginScale(2),
     fontSize: fontScale(14),

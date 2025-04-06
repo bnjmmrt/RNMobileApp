@@ -1,6 +1,12 @@
 import { Platform, StyleSheet } from 'react-native';
-import { horizontalMarginScale, radiusScale, verticalMarginScale, Wp } from '../../../utils/dimensions';
+import {
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+  Wp,
+} from '../../../utils/dimensions';
 import { COLORS } from '../../../utils/constants';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 const MyDetailsStyles = () => {
   return StyleSheet.create({
@@ -12,7 +18,7 @@ const MyDetailsStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
-      bottom:Platform.OS==='android' ? 20 :0
+      bottom: BOTTOM_SAFEAREA_SPACING,
     },
     contentContainer: {
       flex: 1,

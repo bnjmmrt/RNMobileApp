@@ -1,9 +1,8 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
@@ -12,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { EndPoint } from 'src/ApiManager/config';
 import useApi from 'src/axios/useApi';
 import AvatarInitials from 'src/component/AvatarInitials';
+import { CustomText } from 'src/component/CustomText';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import FollowButton from 'src/component/FollowButton/FollowButton';
 import Header from 'src/component/Header/Header';
@@ -20,20 +20,19 @@ import { ROUTES } from 'src/navigation/Route';
 import { RootState } from 'src/redux/slices';
 import { setRefresh } from 'src/redux/slices/rspvSlice';
 import { COLORS, PROFILE } from 'src/utils/constants';
-import { Hp } from 'src/utils/dimensions';
+import { fontScale, Hp } from 'src/utils/dimensions';
 import { fontFamily, removeSignature } from 'src/utils/functions';
 
 const FollowingScreen: React.FC = () => {
   const { apiRequest, loading } = useApi();
   const [searchQuery, setSearchQuery] = useState('');
-  const { setParams, navigate, goBack } = useNavigation<any>();
+  const { navigate, goBack } = useNavigation<any>();
   const [pagination, setPagination] = useState({ take: 100, skip: 0 });
   const [hostList, setHostList] = useState<any[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const userId = useSelector((state: RootState) => state.auth.userId);
   const refresh = useSelector((state: RootState) => state.rspv.refresh);
-  const routes = useRoute();
   const dispatch = useDispatch();
 
   const getFollowings = useCallback(async () => {
@@ -89,7 +88,7 @@ const FollowingScreen: React.FC = () => {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
       <Header
         headerTitle={PROFILE.FOLLOWING}
         showProgressBar={false}
@@ -150,7 +149,7 @@ const FollowingScreen: React.FC = () => {
               imgUrl={removeSignature(item?.companyLogo)}
               size={48}
             />
-            <Text style={styles.itemName}>{item?.companyName}</Text>
+            <CustomText style={styles.itemName}>{item?.companyName}</CustomText>
             <FollowButton isFollowing={item?.isFollowing} id={item?.id} />
           </View>
         )}
@@ -164,7 +163,7 @@ const FollowingScreen: React.FC = () => {
           hasMore && <ActivityIndicator size="small" color={COLORS.black} />
         }
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -192,9 +191,7 @@ const styles = StyleSheet.create({
   itemName: {
     flex: 1,
     marginLeft: 16,
-    fontSize: 16,
-    fontFamily: fontFamily.ABCDiatype_Regular,
-    color: COLORS.black,
+    fontSize: fontScale(16),
   },
   smallBtnStyle: {
     paddingHorizontal: 12,

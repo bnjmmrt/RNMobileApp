@@ -602,7 +602,7 @@ const RSVPInvitedUpcoming = () => {
                   onPress={onClickReason}
                   style={{
                     marginTop: verticalMarginScale(4),
-                    height: verticalScale(48),
+                    // height: verticalScale(48),
                   }}
                 />
                 <Text style={styles.infoText}>{LABLE.RSVP_TEXT}</Text>
@@ -846,7 +846,7 @@ const RSVPInvitedUpcoming = () => {
     }
   };
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header
         headerTitle={BUTTON_LABLE.RSVP}
         showProgressBar={false}
@@ -875,7 +875,7 @@ const RSVPInvitedUpcoming = () => {
           </View>
         </BottomSheetComponent>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 export default RSVPInvitedUpcoming;

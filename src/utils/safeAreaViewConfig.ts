@@ -9,6 +9,14 @@ export const SAFEWAREAVIEW_CONFIG = {
     statusBarStyle: 'dark-content',
     translucent: false,
   },
+  DEFAULT_TRANSLUCENT_SCHEME: {
+    showTopSafeAreaView: false,
+    topSafeAreaViewColor: 'transparent',
+    showBottomSafeAreaView: false,
+    bottomSafeAreaViewColor: 'transparent',
+    statusBarStyle: 'dark-content',
+    translucent: true,
+  },
   BLACK_SCHEME: {
     showTopSafeAreaView: true,
     topSafeAreaViewColor: COLORS.black2,

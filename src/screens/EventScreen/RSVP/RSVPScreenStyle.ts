@@ -13,7 +13,7 @@ import { fontFamily } from 'src/utils/functions';
 
 export const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.white },
-  contentContainer: { padding: horizontalScale(16) },
+  contentContainer: { paddingHorizontal: horizontalScale(16) },
   eventContainer: {
     flexDirection: 'row',
     borderWidth: 1,
@@ -156,5 +156,5 @@ export const styles = StyleSheet.create({
   cancelPopupContainer: { gap: verticalScale(8), marginTop: verticalScale(4) },
   leaveContainer: { paddingHorizontal: horizontalScale(12) },
   scrollView: { flex: 1 },
-  downArrowIcon: { width: 10, height: 10,resizeMode:'contain' },
+  downArrowIcon: { width: 10, height: 10, resizeMode: 'contain' },
 });

@@ -19,7 +19,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> { }
+interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> {}
 
 const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
   navigation,
@@ -76,7 +76,7 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 
@@ -89,41 +89,36 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
           title={LABLE.WHAT_IS_YOUR_CREATIVE_OR_PROFESSIONAL_FOCUS}
           subTitle={LABLE.YOU_CAN_CHOOSE_UP_TO_3_CATEGORIES}
         />
-        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
 
-
-          <View style={styles.categoryContainer}>
-            {creativeFocus?.map(item => (
-              <TouchableOpacity
-                activeOpacity={0.7}
-                key={item.id}
-                style={[
-                  styles.categoryButton,
-                  selectedCategories.some(selected => selected.id === item.id) &&
+        <View style={styles.categoryContainer}>
+          {creativeFocus?.map(item => (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              key={item.id}
+              style={[
+                styles.categoryButton,
+                selectedCategories.some(selected => selected.id === item.id) &&
                   styles.selectedCategoryButton,
-                ]}
-                onPress={() => handleCategorySelect(item)}>
-                <Text
-                  style={[
-                    styles.categoryText,
-                    selectedCategories.some(
-                      selected => selected.id === item.id,
-                    ) && styles.selectedCategoryText,
-                  ]}>
-                  {item.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          {isToastShown && (
-            <Toast
-              message={'Please select at least one'}
-              onClose={() => setIsToastShown(false)}
-            />
-          )}
-
-        </ScrollView>
-
+              ]}
+              onPress={() => handleCategorySelect(item)}>
+              <Text
+                style={[
+                  styles.categoryText,
+                  selectedCategories.some(
+                    selected => selected.id === item.id,
+                  ) && styles.selectedCategoryText,
+                ]}>
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        {isToastShown && (
+          <Toast
+            message={'Please select at least one'}
+            onClose={() => setIsToastShown(false)}
+          />
+        )}
       </View>
 
       <Button

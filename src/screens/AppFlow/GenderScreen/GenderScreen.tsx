@@ -20,7 +20,7 @@ import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 //   { id: 'NON_BINARY', gender: 'Non-binary'},
 //   { id: 'UNRECOGNIZED', gender: 'Prefer not to say'},
 // ];
-interface GenderScreenProps extends NativeStackScreenProps<any, any> { }
+interface GenderScreenProps extends NativeStackScreenProps<any, any> {}
 
 const GenderScreen: React.FC<GenderScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -47,14 +47,14 @@ const GenderScreen: React.FC<GenderScreenProps> = ({ navigation }) => {
 
   const handleBackPress = () => {
     dispatch(setPageProgress(1));
-    navigation.pop(1)
+    navigation.pop(1);
     navigation.goBack();
     // navigation.navigate('MyDetailsScreen');
   };
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 

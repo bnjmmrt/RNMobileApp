@@ -23,7 +23,7 @@ import useKeyboard from 'src/utils/hooks/useKeyboard';
 export type SelectedFilters = {
   [id: string]: SelectedSingleFilter;
 };
-interface BaseCityScreenProps extends NativeStackScreenProps<any, any> { }
+interface BaseCityScreenProps extends NativeStackScreenProps<any, any> {}
 
 const BaseCityScreen: React.FC<BaseCityScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -63,7 +63,7 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 
@@ -98,7 +98,7 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({ navigation }) => {
           defaultValue={selectedCity.address}
           errorMessage={errorMessage}
           setError={setErrorMessage}
-          submit={() => { }}
+          submit={() => {}}
           setLocation={location => {
             onChangeLocationValue({
               placeId: location.placeId,

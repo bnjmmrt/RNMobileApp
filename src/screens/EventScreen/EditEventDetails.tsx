@@ -37,12 +37,16 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import { ApiErrorInterface, getErrorMessage, removeSignature } from 'src/utils/functions';
+import {
+  ApiErrorInterface,
+  getErrorMessage,
+  removeSignature,
+} from 'src/utils/functions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 import BaseCityComponent from '../ProfileScreen/EditProfile/BaseCityComponent';
 import DatePickerComponent from '../ProfileScreen/EditProfile/DatePickerComponent';
-import { navigate } from 'src/component/NavigationService';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 interface Location {
   location?: string;
@@ -168,6 +172,19 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     const formattedEndDate = moment
       .utc(endDateRef?.current?.selectedDate)
       .format('YYYY-MM-DDTHH:mm:ss[Z]');
+
+    if (moment(formattedStartDate).isAfter(formattedEndDate)) {
+      endDateRef.current?.setErrorMessage(
+        'End date & time must be after start date & time',
+      );
+      return;
+    }
+    if (moment(formattedStartDate).isAfter(formattedEndDate)) {
+      endDateRef.current?.setErrorMessage(
+        'End date & time must be after start date & time',
+      );
+      return;
+    }
     const filteredTalent = featureTalent.map(({ id, ...rest }) =>
       rest.action === 'create' ? rest : { id, ...rest },
     );
@@ -287,6 +304,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       console.error('Error uploading image:', error);
     }
   };
+  const onCancel = () => { setImage('') };
 
   const openCamera = async () => {
     editPhotoBottomSheetRef.current?.close();
@@ -451,7 +469,14 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
           />
 
           <View style={styles.mapContainer}>
-            <MapComponent item={{ location: eventAddress }} />
+            <MapComponent
+              item={{
+                location: {
+                  latitude: Number(eventAddress.latitude),
+                  longitude: Number(eventAddress.longitude),
+                },
+              }}
+            />
           </View>
 
           <Input
@@ -475,6 +500,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
         onPress={openCamera}
         title="Image Flyer"
         loadding={loader}
+        onCancel={onCancel}
         submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
         cancelButtonText={BUTTON_LABLE.CANCEL}
         // snapPoints={[Platform.OS == 'android' ? '80%' : '80%']}
@@ -536,7 +562,7 @@ const styles = StyleSheet.create({
   },
   btnStyle: {
     borderRadius: radiusScale(100),
-    bottom: verticalMarginScale(20),
+    bottom: BOTTOM_SAFEAREA_SPACING,
   },
   contentContainer: {
     flex: 1,

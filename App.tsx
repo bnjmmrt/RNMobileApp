@@ -38,12 +38,12 @@ const AppContent: React.FC = () => {
     await analytics().setAnalyticsCollectionEnabled(status);
   };
 
-  //useEffect(() => {
-  // RNPreventScreenshot?.enableSecureView();
-  // return () => {
-  //   RNPreventScreenshot?.disableSecureView();
-  // };
-  //}, []);
+  useEffect(() => {
+    RNPreventScreenshot?.enableSecureView();
+    return () => {
+      RNPreventScreenshot?.disableSecureView();
+    };
+  }, []);
 
   useEffect(() => {
     NotificationSetup();

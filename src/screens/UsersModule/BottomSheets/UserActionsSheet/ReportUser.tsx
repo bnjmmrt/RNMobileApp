@@ -82,6 +82,7 @@ const ReportUser = ({
         showBackButton={true}
         showProgressBar={false}
         onPress={onPressBack}
+        addTopSafeAreaPadding={false}
       />
       <BottomSheetView style={styles.actionContentWrapper}>
         <CustomText style={styles.reportMessage}>

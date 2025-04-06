@@ -2,13 +2,17 @@ import React, { useCallback, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/slices';
-import { setBirthday, setPageProgress } from '../../../redux/slices/appFlowSlice';
+import {
+  setBirthday,
+  setPageProgress,
+} from '../../../redux/slices/appFlowSlice';
 import Header from '../../../component/Header/Header';
 import Title from '../../../component/Title/Title';
 import Button from '../../../component/Button';
 import CustomSelectableText from '../../../component/CustomSelectableText/CustomSelectableText';
 import IMAGES from '../../../assets/images';
-import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants'; ``
+import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants';
+``;
 import CustomDatepickerBottomSheet from '../../../component/BottomSheet/CustomDatepickerBottomSheet';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import BirthdayScreenStyles from './BirthdayScreenStyles';
@@ -18,16 +22,16 @@ import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { Hp } from 'src/utils/dimensions';
 
-interface BirthdayScreenProps extends NativeStackScreenProps<any, any> { }
+interface BirthdayScreenProps extends NativeStackScreenProps<any, any> {}
 
 const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
-
-
   const dispatch = useDispatch();
   const bottomSheetRef = useRef<any>(null);
   const styles = BirthdayScreenStyles();
   const birthday = useSelector((state: RootState) => state.appFlow.birthday);
-  const [selectedDate, setSelectedDate] = useState<string>(birthday || LABLE.DATE_PLACEHOLDER);
+  const [selectedDate, setSelectedDate] = useState<string>(
+    birthday || LABLE.DATE_PLACEHOLDER,
+  );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleBackPress = () => {
@@ -66,7 +70,7 @@ const BirthdayScreen: React.FC<BirthdayScreenProps> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
 

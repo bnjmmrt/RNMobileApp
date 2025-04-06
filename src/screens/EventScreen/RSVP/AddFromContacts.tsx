@@ -39,7 +39,7 @@ const AddFromContacts: React.FC<MyDetailsScreenProps> = () => {
   }, [permissionGranted]);
 
   useEffect(() => {
-    changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME);
+    changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
   }, []);
 
   const filteredContacts = contacts.filter(contact =>
@@ -73,7 +73,7 @@ const AddFromContacts: React.FC<MyDetailsScreenProps> = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.viewContainer}>
         <SearchInput
           value={searchQuery}
@@ -88,7 +88,7 @@ const AddFromContacts: React.FC<MyDetailsScreenProps> = () => {
           contentContainerStyle={styles.listContainer}
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

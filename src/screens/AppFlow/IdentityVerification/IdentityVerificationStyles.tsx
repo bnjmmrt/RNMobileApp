@@ -11,6 +11,7 @@ import {
 } from '../../../utils/dimensions';
 import { COLORS } from '../../../utils/constants';
 import { fontFamily } from '../../../utils/functions';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 const IdentityVerificationStyles = () => {
   return StyleSheet.create({
@@ -22,7 +23,7 @@ const IdentityVerificationStyles = () => {
     btnStyle: {
       width: Wp(85),
       borderRadius: radiusScale(100),
-      bottom: Platform.OS === 'android' ? 20 : -10,
+      bottom: BOTTOM_SAFEAREA_SPACING,
     },
     btnSmallStyle: {
       width: 'auto',

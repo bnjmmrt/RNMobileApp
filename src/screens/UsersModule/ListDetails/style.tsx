@@ -1,7 +1,8 @@
-import {StyleSheet} from 'react-native';
-import {radiusScale, verticalMarginScale} from 'src/utils/dimensions';
-import {COLORS} from '../../../utils/constants';
-import {fontFamily} from '../../../utils/functions';
+import { StyleSheet } from 'react-native';
+import { radiusScale, verticalMarginScale } from 'src/utils/dimensions';
+import { COLORS } from '../../../utils/constants';
+import { fontFamily } from '../../../utils/functions';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 const createStyle = () => {
   return StyleSheet.create({
@@ -24,7 +25,7 @@ const createStyle = () => {
     removeCta: {
       borderRadius: radiusScale(99),
       position: 'absolute',
-      bottom: verticalMarginScale(10),
+      bottom: BOTTOM_SAFEAREA_SPACING,
     },
   });
 };

@@ -64,16 +64,12 @@ const UserModule: React.FC<UserModuleProps> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      changeSafeAreaViewConfig({
-        ...SAFEWAREAVIEW_CONFIG.DEFAULT_SCHEME,
-        showBottomSafeAreaView: false,
-      });
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, [currentTab?.id]),
   );
 
   return (
     <View style={styles.container}>
-      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
       <Header
         headerTitle="Users"
         showProgressBar={false}

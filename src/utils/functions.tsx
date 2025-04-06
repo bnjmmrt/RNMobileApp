@@ -1,29 +1,22 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import moment from 'moment';
+import { environment } from 'environments/environment';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import moment from 'moment-timezone';
+import React from 'react';
 import { Platform, StatusBar, Text } from 'react-native';
-import settings, { EndPoint } from '../ApiManager/config';
+import DeviceInfo from 'react-native-device-info';
+import { axiosController } from 'src/axios/axiosController';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import { role, setDeviceId, setLoginData } from 'src/redux/slices/authSlice';
 import {
   configStatusBar,
   SafeAreaViewConfig,
 } from 'src/redux/slices/safeAreaViewConfigSlice';
 import store from 'src/redux/store';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
-import React from 'react';
-import {
-  role,
-  setAuthToken,
-  setIsGuest,
-  setLoginData,
-  setUserId,
-} from 'src/redux/slices/authSlice';
-import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
+import settings, { EndPoint } from '../ApiManager/config';
 import { ROLE } from './constants';
-import { AxiosRequestConfig } from 'axios';
-import { axiosController } from 'src/axios/axiosController';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import DeviceInfo from 'react-native-device-info';
-import { setDeviceId } from 'src/redux/slices/authSlice';
-import moment from 'moment-timezone';
 
 // ErrorText component with TypeScript props
 interface ErrorTextProps {
@@ -40,7 +33,7 @@ export const getDeviceId = async () => {
   DeviceInfo.getUniqueId()
     .then(uniqueId => {
       console.log('Device Unique ID:', uniqueId);
-      dispatch(setDeviceId(uniqueId))
+      dispatch(setDeviceId(uniqueId));
     })
     .catch(error => {
       console.error('Error getting unique ID:', error);
@@ -50,7 +43,7 @@ export const getDeviceId = async () => {
 export const LINKS = {
   TERMS_AND_CONDITION: 'https://www.therumor.com/terms-of-service',
   PRIVACY_POLICY: 'https://www.therumor.com/privacy-policy',
-  APPLY_FOR_HOST: 'https://stagehost.therumor.com/auth/sign-up',
+  APPLY_FOR_HOST: `${environment.HOST_WEB_URL}/auth/sign-up`,
 };
 
 export const fontFamily = {
@@ -416,10 +409,10 @@ export const extractCountryCode = (phoneNumber: string) => {
 export const getCountryFlag = (countryCode: string) => {
   return countryCode
     ? countryCode
-      .toUpperCase()
-      .split('')
-      .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
-      .join('')
+        .toUpperCase()
+        .split('')
+        .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
+        .join('')
     : '';
 };
 export interface ApiErrorInterface {
@@ -541,7 +534,10 @@ export const fetchUserProfile = async () => {
 
 export const removeCityFromLocation = (locationText: string, city: string) => {
   if (locationText.includes(city)) {
-    const addressWithoutCity = locationText.replace(city, "").trim().replace(/,\s*$/, "");
+    const addressWithoutCity = locationText
+      .replace(city, '')
+      .trim()
+      .replace(/,\s*$/, '');
     return { address: addressWithoutCity, city };
   }
   return { address: locationText, city };
@@ -551,38 +547,43 @@ export const extractCityFromLocation = (locationText: string, city: string) => {
   const cityIndex = locationText?.indexOf(city);
 
   if (cityIndex !== -1) {
-    const address = locationText.substring(0, cityIndex).trim().replace(/,\s*$/, "");
+    const address = locationText
+      .substring(0, cityIndex)
+      .trim()
+      .replace(/,\s*$/, '');
     const cityDetails = locationText.substring(cityIndex).trim();
     return { address, city: cityDetails };
   }
 
-  return { address: locationText, city: "" };
+  return { address: locationText, city: '' };
 };
 
 export const isCityInLocation = (locationText: string, city: string) => {
   return locationText.includes(city);
 };
 
-
-export const getDisplayLocation = (location: string = '', guestStatus: String = '', showLocation: boolean = false, role: string) => {
-
+export const getDisplayLocation = (
+  location: string = '',
+  guestStatus: String = '',
+  showLocation: boolean = false,
+  role: string,
+) => {
   if (role === ROLE.HOST) {
-    return location
+    return location;
   }
 
   if (guestStatus === 'CONFIRMED') {
     if (showLocation) {
-      return location
+      return location;
     } else {
-      return "Exact Location to Be Announced"
+      return 'Exact Location to Be Announced';
     }
   } else if (guestStatus === 'APPLIED') {
-    return "Location Shared Upon Confirmation"
+    return 'Location Shared Upon Confirmation';
   } else {
-    return "RSVP to See Location"
+    return 'RSVP to See Location';
   }
-
-}
+};
 
 export const switchProfile = () => {
   // api call
