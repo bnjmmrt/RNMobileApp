@@ -37,7 +37,7 @@ import {
 } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-interface NotificationsScreenProps extends NativeStackScreenProps<any, any> {}
+interface NotificationsScreenProps extends NativeStackScreenProps<any, any> { }
 
 // Define the notification type to fix the linter error
 interface Notification {
@@ -218,7 +218,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
         showProgressBar={false}
       />
 
-      {isRendering && !notifications?.length && isDataLoading && (
+      {isRendering && !notifications?.length && (
         <View style={styles.contentContainer}>
           <FlatList
             showsVerticalScrollIndicator={false}
@@ -232,31 +232,31 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
       {Boolean(
         !(isRendering && !notifications?.length) && notifications?.length,
       ) && (
-        <View style={styles.contentContainer}>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={notifications || []}
-            keyExtractor={item => item?.id}
-            renderItem={({ item }) => (
-              <SwapToDeleteComponent
-                item={item}
-                renderItem={item => renderItem(item)}
-                onDelete={handleDelete}
-              />
-            )}
-            onEndReached={loadMore}
-            onEndReachedThreshold={0.5}
-            refreshControl={
-              notifications?.length > 0 ? (
-                <RefreshControl
-                  refreshing={isLoading}
-                  onRefresh={handleRefresh}
+          <View style={styles.contentContainer}>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={notifications || []}
+              keyExtractor={item => item?.id}
+              renderItem={({ item }) => (
+                <SwapToDeleteComponent
+                  item={item}
+                  renderItem={item => renderItem(item)}
+                  onDelete={handleDelete}
                 />
-              ) : undefined
-            }
-          />
-        </View>
-      )}
+              )}
+              onEndReached={loadMore}
+              onEndReachedThreshold={0.5}
+              refreshControl={
+                notifications?.length > 0 ? (
+                  <RefreshControl
+                    refreshing={isLoading}
+                    onRefresh={handleRefresh}
+                  />
+                ) : undefined
+              }
+            />
+          </View>
+        )}
 
       {!isRendering && !notifications?.length && !isDataLoading && (
         <EmptyRecordComponent
