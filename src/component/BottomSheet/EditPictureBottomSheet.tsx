@@ -19,6 +19,7 @@ import Button from '../Button';
 interface EditPictureBottomSheetProps {
   onPress: () => void;
   onPencilClick?: () => void;
+  onCancel?: () => void;
   title?: string;
   submitButtonText: string;
   cancelButtonText: string;
@@ -41,6 +42,7 @@ const EditPictureBottomSheet = forwardRef<
 
   const cancelClick = () => {
     sheetRef?.current?.close();
+    props.onCancel?.();
   };
 
   return (

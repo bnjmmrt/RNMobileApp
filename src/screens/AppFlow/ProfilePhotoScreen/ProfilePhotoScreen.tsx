@@ -75,6 +75,8 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
   //   });
   // };
 
+
+  const onCancel = () => { setImage('') };
   const savePhoto = async () => {
     try {
       setLoading(true);
@@ -241,6 +243,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
             onPress={savePhoto}
             onPencilClick={openPicker}
             loadding={loader}
+            onCancel={onCancel}
             submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
             cancelButtonText={BUTTON_LABLE.CANCEL}
             snapPoints={[Platform.OS == 'android' ? 0.45 : 0.4]}

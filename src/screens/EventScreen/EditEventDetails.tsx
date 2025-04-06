@@ -111,8 +111,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const [featureTalent, setFeatureTalent] = useState(item?.talents || []);
   const [image, setImage] = useState<string>(
     removeSignature(item?.imageCover) ||
-      removeSignature(item?.imageFlyer) ||
-      '',
+    removeSignature(item?.imageFlyer) ||
+    '',
   );
   const [imageSize, setImageSize] = useState<number>(0);
   const [timeZone, setTimeZone] = useState<string>();
@@ -129,8 +129,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     setFeatureTalent(item?.talents);
     setImage(
       removeSignature(item?.imageCover) ||
-        removeSignature(item?.imageFlyer) ||
-        '',
+      removeSignature(item?.imageFlyer) ||
+      '',
     );
 
     eventNameRef.current?.setInputText(item?.name || '');
@@ -303,6 +303,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       console.error('Error uploading image:', error);
     }
   };
+  const onCancel = () => { setImage('') };
 
   const openCamera = async () => {
     editPhotoBottomSheetRef.current?.close();
@@ -498,6 +499,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
         onPress={openCamera}
         title="Image Flyer"
         loadding={loader}
+        onCancel={onCancel}
         submitButtonText={BUTTON_LABLE.REPLACE_PHOTO}
         cancelButtonText={BUTTON_LABLE.CANCEL}
         // snapPoints={[Platform.OS == 'android' ? '80%' : '80%']}

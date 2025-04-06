@@ -156,7 +156,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     }
   };
 
-  
+
   useEffect(() => {
     if (profileData?.email) {
       Intercom.loginUserWithUserAttributes({
@@ -372,8 +372,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         } else {
           await updateProfilePhoto(imageUrl);
         }
-      } else {
-        console.log('savePhoto else', response);
       }
       setLoader(true)
       console.log('savePhoto', response);
@@ -403,6 +401,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   //     }
   //   }
   // };
+  const onCancel = () => { setImage('') };
 
   const openCamera = async () => {
     ImagePicker.openPicker({
@@ -567,6 +566,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           onPress={savePhoto}
           onPencilClick={openCamera}
           loadding={loader}
+          onCancel={onCancel}
           submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
           cancelButtonText={BUTTON_LABLE.CANCEL}
           snapPoints={[Platform.OS === 'android' ? 0.51 : 0.41]}

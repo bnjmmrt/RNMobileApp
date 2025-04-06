@@ -51,7 +51,7 @@ import {
   verticalMarginScale,
 } from 'src/utils/dimensions';
 
-interface IdentityVerificationProps extends NativeStackScreenProps<any, any> {}
+interface IdentityVerificationProps extends NativeStackScreenProps<any, any> { }
 
 const IdentityVerification: React.FC<IdentityVerificationProps> = ({
   navigation,
@@ -82,9 +82,9 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     if (text) {
       setNoInstagram(false);
     }
-    if (showError) {
-      setShowError(false);
-    }
+    // if (showError) {
+    //   setShowError(false);
+    // }
     usernameRef.current?.setInputText(text);
   };
 
@@ -93,18 +93,22 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       return; // Don't allow checking if there's text in the input
     }
     setNoInstagram(!noInstagram);
-    if (showError) {
-      setShowError(false);
-    }
+    // if (showError) {
+    //   usernameRef.current.setErr();
+    //   setShowError(false);
+    // }
     if (!noInstagram) {
       // If we're enabling noInstagram, clear the input
       usernameRef.current?.setInputText('');
+      usernameRef.current?.setErrorMessage('');
     }
   };
 
   const onNextClick = async () => {
     if (!usernameRef.current?.inputText && !noInstagram) {
-      setShowError(true);
+      // setShowError(true);
+      usernameRef.current.validateInputs();
+
       return;
     }
 
@@ -290,12 +294,12 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
           </Text>
         </TouchableOpacity>
 
-        {showError && (
+        {/* {showError && (
           <View style={styles.errorContainer}>
             <Image source={IMAGES.close} />
             <Text style={styles.errorText}>Please select at least one</Text>
           </View>
-        )}
+        )} */}
       </ScrollView>
 
       {!keyboardVisible ? (
