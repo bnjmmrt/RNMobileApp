@@ -15,7 +15,7 @@ const CreativeFocusScreenStyles = () =>
     container: {
       flex: 1,
       backgroundColor: COLORS.white,
-      paddingBottom: 20,
+      paddingBottom: 0,
     },
     contentContainer: {
       flex: 1,
@@ -26,6 +26,7 @@ const CreativeFocusScreenStyles = () =>
       marginTop: verticalMarginScale(10),
       flexDirection: 'row',
       flexWrap: 'wrap',
+      paddingBottom: verticalMarginScale(100)
     },
     categoryButton: {
       borderWidth: 1,

@@ -108,7 +108,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
         );
 
         setContacts(nonMembers);
-        setFilteredContacts(nonMembers.slice(0, PAGE_SIZE));
+        setFilteredContacts(membersWithSentFlag);
       } else {
         setContacts([]);
         setFilteredContacts([]);
@@ -288,7 +288,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
               </View>
             )}
             <FlatList
-              data={filteredContacts}
+              data={filteredMembers}
               scrollEnabled={true}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ gap: 4 }}
