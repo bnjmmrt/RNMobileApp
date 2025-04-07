@@ -31,7 +31,7 @@ import UserListItem, { UserItemInterface } from '../UsersListItem';
 import createStyle from './style';
 
 interface ListDetailsProps
-  extends NativeStackScreenProps<AppStackParamList, 'ListDetail'> {}
+  extends NativeStackScreenProps<AppStackParamList, 'ListDetail'> { }
 
 const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
   const styles = createStyle();
@@ -75,7 +75,7 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
       // Delay turning off the rendering state to avoid flicker
       timeoutId = setTimeout(() => {
         setRendring(false);
-      }, 300); // you can tweak this delay
+      }, 500); // you can tweak this delay
     }
 
     return () => {
@@ -217,8 +217,8 @@ const ListDetails: React.FC<ListDetailsProps> = ({ route }) => {
           route.params.listType === 'favorite'
             ? 'My Favorites'
             : route.params.listType === 'follower'
-            ? 'My Followers'
-            : allUsers.name
+              ? 'My Followers'
+              : allUsers.name
         }
         showProgressBar={false}
         rightIcon={IMAGES.dots}

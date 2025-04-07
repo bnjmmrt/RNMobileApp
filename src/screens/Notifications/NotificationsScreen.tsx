@@ -109,7 +109,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
       // Delay turning off the rendering state to avoid flicker
       timeoutId = setTimeout(() => {
         setRendring(false);
-      }, 300); // you can tweak this delay
+      }, 500); // you can tweak this delay
     }
 
     return () => {

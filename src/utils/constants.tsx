@@ -525,7 +525,7 @@ export const hostTabData: TabItem[] = [
     id: '1',
     label: BUTTON_LABLE.UPCOMING,
     title: 'No Events Here',
-    subTitle: 'No upcoming events.k',
+    subTitle: 'No upcoming events',
   },
   {
     id: '2',

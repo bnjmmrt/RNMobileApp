@@ -27,9 +27,9 @@ import { COLORS } from 'src/utils/constants';
 import { set } from 'lodash';
 import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
-interface AllUserProps {}
+interface AllUserProps { }
 
-const AllUsers: React.FC<AllUserProps> = ({}) => {
+const AllUsers: React.FC<AllUserProps> = ({ }) => {
   const dispatch = useDispatch();
   const searchInputRef = useRef<InputRefMethods>(null);
   const actionSheetRef = useRef<BottomSheetMethods>(null);
@@ -123,7 +123,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
       // Delay turning off the rendering state to avoid flicker
       timeoutId = setTimeout(() => {
         setRendring(false);
-      }, 300); // you can tweak this delay
+      }, 500); // you can tweak this delay
     }
 
     return () => {
