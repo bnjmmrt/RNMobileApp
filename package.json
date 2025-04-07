@@ -8,10 +8,10 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "env-dev": "node set-environment.js environment.dev",
-    "env-uat": "node set-environment.js environment.uat",
-    "env-stage": "node set-environment.js environment.stage",
-    "env-prod": "node set-environment.js environment.prod",
+    "env-dev": "node set-environment.js environment.dev googleServices GoogleServiceInfo",
+    "env-uat": "node set-environment.js environment.uat googleServices GoogleServiceInfo",
+    "env-stage": "node set-environment.js environment.stage googleServices GoogleServiceInfo",
+    "env-prod": "node set-environment.js environment.prod googleServicesProd GoogleServiceProdInfo",
     "ios-bundle": "react-native bundle --entry-file ./index.js --platform ios --bundle-output ios/main.jsbundle --assets-dest ios --dev false"
   },
   "dependencies": {

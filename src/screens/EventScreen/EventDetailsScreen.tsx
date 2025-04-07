@@ -72,7 +72,7 @@ import useCalender from 'src/utils/hooks/useCalender';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 type RouteParams = {
   params: any;
@@ -143,9 +143,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const)
       : ({
-          userId,
-          eventId: route?.params?.id,
-        } as const);
+        userId,
+        eventId: route?.params?.id,
+      } as const);
 
   const useFetchEventDetailsHook =
     role === ROLE.HOST
@@ -429,10 +429,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     const isPastEvent = data?.data?.status === 'PAST_STATUS';
 
     return (
-      <View style={{ margin: 20 }}>
+      <View style={{ margin: 10 }}>
         <Button
           disabled={false}
-          style={styles.btnStyle}
+          style={[styles.btnStyle, { marginBottom: 15 }]}
           title={BUTTON_LABLE.VIEW_TICKET}
           colorTheme="dark"
           onPress={onViewTicketClick}

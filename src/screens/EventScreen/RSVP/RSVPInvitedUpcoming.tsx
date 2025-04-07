@@ -608,7 +608,7 @@ const RSVPInvitedUpcoming = () => {
                 <Text style={styles.infoText}>{LABLE.RSVP_TEXT}</Text>
               </View>
             )}
-            {rspv.response == 'Yes' && (
+            {rspv.response == 'Yes' && maxAdditionalGuests > 0 && (
               <>
                 <View>
                   <Text style={[styles.infoText, { color: COLORS.black }]}>

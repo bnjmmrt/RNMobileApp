@@ -447,6 +447,7 @@ export const COLORS = {
   borderBlur: '#BFBFBF',
   bgGray: '#EAEAEA',
   webBlack: '#181818',
+  surface_disabled_icon: '#464646',
 };
 
 export const EVENT_STATUS = {

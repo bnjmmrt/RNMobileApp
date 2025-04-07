@@ -29,6 +29,8 @@ import { getDeviceId } from 'src/utils/functions';
 import Intercom, { Visibility } from '@intercom/intercom-react-native';
 import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import analytics from '@react-native-firebase/analytics';
+import { environment } from 'environments/environment';
+import { environment as environmentProd } from 'environments/environment.prod';
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
@@ -39,10 +41,15 @@ const AppContent: React.FC = () => {
   };
 
   useEffect(() => {
-    RNPreventScreenshot?.enableSecureView();
-    return () => {
-      RNPreventScreenshot?.disableSecureView();
-    };
+    if (environment.BASE_URL == environmentProd.BASE_URL) {
+      console.log('Running in production mode');
+      RNPreventScreenshot?.enableSecureView();
+      return () => {
+        RNPreventScreenshot?.disableSecureView();
+      };
+    } else {
+      console.log('Running in development mode');
+    }
   }, []);
 
   useEffect(() => {

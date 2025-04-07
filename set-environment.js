@@ -1,33 +1,54 @@
 const fs = require('fs');
-//Obtain the environment string passed to the node script
+const path = require('path');
+
 const environment = process.argv[2];
+const googleServicesFile = process.argv[3];
+const googleServicesInfoPlist = process.argv[4];
 
 function copyFile(source, target, cb) {
-  let cbCalled = false;
-
-  const rd = fs.createReadStream(source);
-  rd.on('error', (err) => {
-    done(err);
-  });
-  const wr = fs.createWriteStream(target);
-  wr.on('error', (err) => {
-    done(err);
-  });
-  wr.on('close', () => {
-    done();
-  });
-  rd.pipe(wr);
-
-  function done(err) {
-    if (!cbCalled) {
+  fs.access(source, fs.constants.F_OK, (err) => {
+    if (err) {
+      console.error(`❌ Source file does not exist: ${source}`);
       cb(err);
-      cbCalled = true;
+      return;
     }
-  }
+
+    const rd = fs.createReadStream(source);
+    const wr = fs.createWriteStream(target);
+
+    rd.on('error', (err) => {
+      console.error(`❌ Error reading file ${source}:`, err);
+      cb(err);
+    });
+
+    wr.on('error', (err) => {
+      console.error(`❌ Error writing file ${target}:`, err);
+      cb(err);
+    });
+
+    wr.on('close', () => {
+      console.log(`✅ Successfully copied ${source} → ${target}`);
+      cb();
+    });
+
+    rd.pipe(wr);
+  });
 }
 
 copyFile(
   `./environments/${environment}.ts`,
   './environments/environment.ts',
-  () => {},
+  () => { }
+);
+
+copyFile(
+  `./environments/${googleServicesFile}.json`,
+  './android/app/google-services.json',
+  () => { }
+);
+
+copyFile(
+  `./environments/${googleServicesInfoPlist}.plist`,
+  './ios/GoogleService-Info.plist',
+  () => { }
 );

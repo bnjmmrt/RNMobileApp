@@ -181,7 +181,7 @@ const RenderToolTip = React.memo(
         content={
           <View>
             <CustomText
-              textProps={{ numberOfLines: 3 }}
+              // textProps={{ numberOfLines: 4 }}
               style={styles.tooltipHeadStyle}>
               {contentText}
             </CustomText>
@@ -197,7 +197,7 @@ const RenderToolTip = React.memo(
   },
 );
 
-const RenderDashedLine = React.memo(({}: {}) => {
+const RenderDashedLine = React.memo(({ }: {}) => {
   return (
     <View
       style={{
@@ -237,7 +237,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
     <BottomSheetComponent
       ref={sheetRef}
       snapPoints={[props.isQRShown ? snap : '65%']}
-      onClose={() => {}}>
+      onClose={() => { }}>
       <ScrollView>
         <View style={styles.container}>
           <CustomText
@@ -265,9 +265,8 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
             <RenderToolTip
               isVisible={showProfileToolitip}
               setIsVisible={setShowProfileToolitip}
-              contentText={`This QR code is valid for ${
-                userDetails?.name || name
-              } only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`}
+              contentText={`This QR code is valid for ${userDetails?.name || name
+                } only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`}
               placement={Placement.BOTTOM}
               arrowStyle={{ top: -10 }}
             />
