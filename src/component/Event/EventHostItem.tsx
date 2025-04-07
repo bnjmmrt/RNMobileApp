@@ -1,0 +1,129 @@
+/* eslint-disable react-native/no-inline-styles */
+import React from 'react';
+import { Text, StyleSheet, View, Image, Dimensions } from 'react-native';
+import {
+  capitalizeFirstLetter,
+  fontFamily,
+  removeSignature,
+} from '../../utils/functions';
+import {
+  BUTTON_LABLE,
+  COLORS,
+  EVENT_STATUS,
+  ROLE,
+} from '../../utils/constants';
+import IMAGES from '@images/index';
+import {
+  fontScale,
+  horizontalMarginScale,
+  horizontalScale,
+  Hp,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+  Wp,
+} from 'src/utils/dimensions';
+import ButtonSmall from '../ButtonSmall';
+import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
+import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+import FastImage from '@d11/react-native-fast-image';
+import FollowButton from '../FollowButton/FollowButton';
+import AvatarInitials from '../AvatarInitials';
+import { ROUTES } from 'src/navigation/Route';
+import { useNavigation } from '@react-navigation/native';
+import { CustomText } from '../CustomText';
+
+interface EventHostItemProps {
+  item: any;
+  length: number;
+}
+
+const handlEventPress = () => {
+  // navigation.navigate('EventDetailsScreen', {item});
+  FlashMessageComponent.show('success', 'in Prrogress..');
+};
+
+const EventHostItem: React.FC<EventHostItemProps> = ({ item, length }) => {
+  const role = useSelector((state: RootState) => state.auth.role);
+  const { navigate } = useNavigation();
+  const getWidth = () => {
+    if (length === 1) return Dimensions.get('screen').width - 30;
+    if (length === 2) return Wp('65%');
+    return Wp('55%');
+  };
+
+  return (
+    <View style={[styles.container, { width: getWidth() }]}>
+      <AvatarInitials
+        onPress={() => {
+          role == ROLE.MEMBER &&
+            navigate('ProfileStack', {
+              screen: ROUTES.HostProfileScreen,
+              params: { hostId: item.id },
+            });
+        }}
+        imgUrl={removeSignature(item?.companyLogo)}
+        size={40}
+      />
+      <View style={{ paddingHorizontal: 10, marginEnd: 20, flex: 1 }}>
+        <CustomText style={styles.title} textProps={{ numberOfLines: 1 }}>
+          {capitalizeFirstLetter(item?.name)}
+        </CustomText>
+        <CustomText style={styles.subtitle}>
+          {capitalizeFirstLetter(item?.role?.name)}
+        </CustomText>
+      </View>
+
+      {role == ROLE.MEMBER && item.role.name == 'host' && (
+        <FollowButton
+          id={item.id}
+          isFollowing={item.isFollowedByCurrentGuest}
+          handleRefresh={true}
+        />
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    borderWidth: 1,
+    padding: verticalMarginScale(8),
+    marginRight: 10,
+    borderRadius: 99,
+    borderColor: COLORS.borderGray,
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  image: {
+    resizeMode: 'center',
+    width: horizontalScale(40),
+    height: verticalScale(40),
+    borderRadius: radiusScale(20),
+  },
+  infoContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingLeft: horizontalMarginScale(8),
+    // marginEnd: 20,
+  },
+  title: {
+    width: '80%',
+    fontFamily: fontFamily.ABCDiatype_Medium,
+  },
+  subtitle: {
+    color: COLORS.light_gray,
+    fontSize: fontScale(12),
+  },
+  btnStyle: {
+    borderRadius: 100,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+});
+
+export default EventHostItem;

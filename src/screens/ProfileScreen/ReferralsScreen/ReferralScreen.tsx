@@ -1,0 +1,238 @@
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useRef, useState } from 'react';
+import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { useSelector } from 'react-redux';
+import { EndPoint } from 'src/ApiManager/config';
+import useApi from 'src/axios/useApi';
+import TabBar from 'src/component/ActiveTabBar/TabBar';
+import Button from 'src/component/Button';
+import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import Header from 'src/component/Header/Header';
+import { RootState } from 'src/redux/slices';
+import { BUTTON_LABLE, COLORS, PROFILE } from 'src/utils/constants';
+import {
+  fontScale,
+  horizontalMarginScale,
+  Hp,
+  radiusScale,
+  verticalMarginScale,
+  Wp,
+} from 'src/utils/dimensions';
+import { fontFamily } from 'src/utils/functions';
+import InviteFriendsSheet from './InviteFriendsSheet';
+import ReferralRequestItem from './ReferralRequestItem';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+
+type ReferralScreenProps = NativeStackScreenProps<any, any>;
+type RouteParams = {
+  params: {
+    activeTab?: string;
+  };
+};
+const ReferralScreen: React.FC<ReferralScreenProps> = ({ navigation }) => {
+  const route = useRoute<RouteProp<RouteParams>>();
+  console.log(
+    'referrelRequests route.params.activeTabroute.params.activeTab ',
+    route.params?.activeTab,
+  );
+  const { apiRequest, loading } = useApi();
+  let routetab = route.params?.activeTab
+    ? route.params?.activeTab
+    : 'referrals';
+  const [activeTab, setActiveTab] = useState<any>(routetab);
+  const inviteFriendSheetRef = useRef<any>(null);
+  const { goBack } = useNavigation();
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  const [referrelRequests, setReferrelRequests] = useState<any[]>([]);
+
+  const [vouchRequests, setVouchRequests] = useState<any[]>([]);
+  const [isShown, setIsShown] = useState<boolean>(false);
+  const getReferredRequest = async () => {
+    const response: any = await apiRequest('get', EndPoint.referral_requests);
+
+    if (response?.success) {
+      setReferrelRequests(response?.data);
+    }
+  };
+
+  const getVouchRequest = async () => {
+    const response: any = await apiRequest('get', EndPoint.vouch_requests);
+
+    if (response.success) {
+      setVouchRequests(response?.data);
+    }
+  };
+
+  const updateReferrel = async (id: string, status: boolean) => {
+    const response: any = await apiRequest(
+      'put',
+      EndPoint.referral_requests + '/' + id,
+      { isApproved: status },
+    );
+    if (!response?.success) {
+      FlashMessageComponent.show(
+        'error',
+        'Something went wrong, please try later',
+      );
+    }
+  };
+
+  const updateVouch = async (id: string, status: boolean) => {
+    const response: any = await apiRequest(
+      'put',
+      EndPoint.vouch_requests + '/' + id,
+      { isApproved: status },
+    );
+    if (!response?.success) {
+      FlashMessageComponent.show(
+        'error',
+        'Something went wrong, please try later',
+      );
+    }
+  };
+
+  useEffect(() => {
+    setActiveTab(routetab);
+    handleTabChange(routetab == 'referrals' ? '01' : '02');
+    // getReferredRequest();
+  }, []);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab === '01' ? 'referrals' : 'vouches');
+    tab === '01' ? getReferredRequest() : getVouchRequest();
+  };
+
+  const handleApproveDeclineClick = async (flag: boolean, id: string) => {
+    // setLoading(true)
+    if (activeTab === 'referrals') {
+      await updateReferrel(id, flag);
+    } else {
+      await updateVouch(id, flag);
+    }
+    // setLoading(true)
+  };
+
+  const onInvite = async () => {
+    setIsShown(true);
+    setTimeout(() => {
+      inviteFriendSheetRef?.current.open();
+    }, 1000);
+  };
+
+  const renderContent = () => {
+    const data = activeTab === 'referrals' ? referrelRequests : vouchRequests;
+    const subtitle =
+      activeTab === 'referrals'
+        ? PROFILE.REVIEW_REFERRAL_REQUESTS
+        : PROFILE.REVIEW_VOUCH_REQUESTS;
+
+    return (
+      <>
+        <FlatList
+          data={data}
+          ListEmptyComponent={
+            <View style={styles.listEmptyCopmponentStyle}>
+              <EventEmptyRecord
+                title={
+                  activeTab === 'referrals'
+                    ? 'You have no referral requests at this time.'
+                    : 'You have no vouch requests at this time.'
+                }
+              />
+            </View>
+          }
+          ListHeaderComponent={
+            <Text style={styles.sectionSubtitle}>{subtitle}</Text>
+          }
+          contentContainerStyle={styles.contentContainerStyle}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <ReferralRequestItem
+              name={item?.requesterName}
+              image={item?.requesterProfileImage}
+              message={
+                activeTab === 'referrals'
+                  ? 'has requested your referral.'
+                  : `has requested your vouch for ${item?.eventName}`
+              }
+              onApproveApi={() => handleApproveDeclineClick(true, item?.id)}
+              onDeclineApi={() => handleApproveDeclineClick(false, item?.id)}
+              loading={loading}
+            />
+          )}
+          keyExtractor={item => item?.id.toString()}
+        />
+      </>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      <Header
+        headerTitle={PROFILE.REFERRALS}
+        showProgressBar={false}
+        onPress={goBack}
+      />
+      <TabBar
+        tab={activeTab === 'referrals' ? '01' : '02'}
+        onTabChange={handleTabChange}
+        tabOneLabel="Referral Requests"
+        tabTwoLabel="Vouch Requests"
+        countOne={referrelRequests?.length ? referrelRequests?.length : ''}
+        countTwo={vouchRequests?.length ? vouchRequests?.length : ''}
+        width={Wp(88)}
+      />
+      <View style={{ paddingHorizontal: horizontalMarginScale(20), flex: 1 }}>
+        {renderContent()}
+      </View>
+      <Button
+        disabled={false}
+        style={styles.btnStyle}
+        title={BUTTON_LABLE.INVITE_FRIENDS}
+        colorTheme="dark"
+        onPress={onInvite}
+      />
+      {isShown && <InviteFriendsSheet ref={inviteFriendSheetRef} />}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+  },
+  sectionSubtitle: {
+    fontSize: fontScale(14),
+    color: COLORS.light_gray,
+    fontFamily: fontFamily.ABCDiatype_Regular,
+    textAlign: 'center',
+    marginBottom: verticalMarginScale(12),
+  },
+  contentContainerStyle: {
+    gap: 12,
+    marginTop: verticalMarginScale(16),
+    paddingBottom: 60,
+  },
+  listEmptyCopmponentStyle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: Hp('50%'),
+    flexDirection: 'row',
+  },
+  messageText: {
+    fontSize: 14,
+    color: COLORS.black,
+    flexWrap: 'wrap',
+    textAlign: 'center',
+  },
+  btnStyle: {
+    borderRadius: radiusScale(99),
+    marginBottom: BOTTOM_SAFEAREA_SPACING,
+  },
+});
+
+export default ReferralScreen;

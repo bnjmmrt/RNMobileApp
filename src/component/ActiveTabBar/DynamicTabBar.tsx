@@ -1,82 +1,88 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import { COLORS } from '../../utils/constants';
+import { radiusScale, verticalMarginScale } from 'src/utils/dimensions';
+import { CustomText } from '../CustomText';
 
-
-interface TabItem {
-    id: string;
-    label: any;
-  }
-  
+export interface TabItem {
+  id: string;
+  label: any;
+  title: string;
+  subTitle: string;
+}
 
 type DynamicTabBarProps = {
-    onTabChange?: (tab: TabItem) => void;
-    tabs: TabItem[];
+  onTabChange?: (tab: TabItem) => void;
+  tabs: TabItem[];
+  activeTabIndex?: number;
 };
 
-const DynamicTabBar: React.FC<DynamicTabBarProps> = ({ onTabChange, tabs }) => {
-    const [activeTab, setActiveTab] = useState<TabItem>(tabs[0]);
+const DynamicTabBar: React.FC<DynamicTabBarProps> = ({
+  onTabChange,
+  tabs,
+  activeTabIndex = 0,
+}) => {
+  const [activeTab, setActiveTab] = useState<TabItem>(tabs[activeTabIndex]);
 
-    const handleTabPress = (tab: TabItem) => {
-        setActiveTab(tab);
-        onTabChange?.(tab); // Notify parent component if callback is provided
-    };
+  useEffect(() => {
+    setActiveTab(activeTab);
+    onTabChange?.(activeTab); // Notify parent component if callback is provided
+  }, [activeTab]);
 
-    return (
-        <View style={styles.container}>
-            {tabs.map((tab) => (
-                <TouchableOpacity
-                    key={tab.id}
-                    style={[styles.tab, activeTab.id === tab.id && styles.activeTab]}
-                    onPress={() => handleTabPress(tab)}
-                >
-                    <Text
-                        style={[
-                            styles.tabText,
-                            activeTab.id === tab.id && styles.activeTabText,
-                        ]}
-                    >
-                        {tab.label}
-                    </Text>
-                </TouchableOpacity>
-            ))}
-        </View>
-    );
+  const handleTabPress = (tab: TabItem) => {
+    setActiveTab(tab);
+    onTabChange?.(tab); // Notify parent component if callback is provided
+  };
+
+  return (
+    <View style={styles.container}>
+      {tabs.map(tab => (
+        <TouchableOpacity
+          key={tab.id}
+          style={[styles.tab, activeTab.id === tab.id && styles.activeTab]}
+          onPress={() => handleTabPress(tab)}>
+          <CustomText
+            style={[
+              styles.tabText,
+              activeTab.id === tab.id && styles.activeTabText,
+            ]}>
+            {tab.label}
+          </CustomText>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flexDirection: 'row',
-        backgroundColor: COLORS.white,
-        borderRadius: 25,
-        borderWidth: 1,
-        borderColor: COLORS.tabBorderColor,
-        padding: 4,
-        alignSelf: 'center',
-        width: '90%',
-        marginVertical: 20,
-    },
-    tab: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingVertical: 10,
-        borderRadius: 20,
-    },
-    activeTab: {
-        backgroundColor: COLORS.tabBorderColor,
-        elevation: 2,
-    },
-    tabText: {
-        color: COLORS.black,
-        fontSize: 14,
-        paddingVertical: 2,
-        fontFamily: fontFamily.ABCDiatype_Regular,
-    },
-    activeTabText: {
-        color: COLORS.black,
-    },
+  container: {
+    flexDirection: 'row',
+    backgroundColor: COLORS.white,
+    borderRadius: radiusScale(99),
+    borderWidth: 1,
+    borderColor: COLORS.tabBorderColor,
+    padding: verticalMarginScale(4),
+    alignSelf: 'center',
+    width: '90%',
+  },
+  tab: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: verticalMarginScale(12),
+    borderRadius: radiusScale(99),
+  },
+  activeTab: {
+    backgroundColor: COLORS.tabBorderColor,
+    elevation: 2,
+  },
+  tabText: {
+    color: COLORS.black,
+  },
+  activeTabText: {
+    color: COLORS.black,
+  },
 });
 
 export default DynamicTabBar;

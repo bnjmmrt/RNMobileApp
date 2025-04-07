@@ -1,53 +1,88 @@
-import React, { useRef } from 'react';
-import { View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants';
-import EmailPhoneStyles from './MyDetailsStyles';
+import React, { useCallback, useRef } from 'react';
+import { View } from 'react-native';
 import Button from '../../../component/Button';
-import Title from '../../../component/Title/Title';
-import Input from '../../../component/Input/Input';
 import Header from '../../../component/Header/Header';
+import Input from '../../../component/Input/Input';
+import Title from '../../../component/Title/Title';
+import {
+  BUTTON_LABLE,
+  ERROR_MESSAGE,
+  LABLE,
+  ROLE,
+} from '../../../utils/constants';
+import EmailPhoneStyles from './MyDetailsStyles';
+// import {useGetPostsQuery} from '../../../redux/slices/apiSlice';
+import { useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { RootState } from '../../../redux/slices';
-import { setFirstName, setIsEmailVerified, setLastName, setPageProgress } from '../../../redux/slices/appFlowSlice';
+import {
+  setFirstName,
+  setIsEmailVerified,
+  setLastName,
+  setPageProgress,
+} from '../../../redux/slices/appFlowSlice';
 
 interface MyDetailsScreenProps extends NativeStackScreenProps<any, any> { }
 
 const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
+  const { keyboardVisible } = useKeyboard();
+
   const userDetails = useSelector((state: RootState) => state.appFlow);
-  const isEmailPhoneBothVerified = useSelector((state: RootState) => state.appFlow.isEmailPhoneBothVerified
-);
-  // console.log("postsssss",posts);
-  // console.log("userDetails",userDetails);
+  const role = useSelector((state: RootState) => state.auth.role);
+
   const styles = EmailPhoneStyles();
   const firstNameRef = useRef<any>(null);
   const lastNameRef = useRef<any>(null);
 
   const onNextClick = () => {
-    firstNameRef.current && firstNameRef.current.handleNextPress();
-    lastNameRef.current && lastNameRef.current.handleNextPress();
-    if (firstNameRef.current.inputText.length > 2 && lastNameRef.current.inputText.length > 2) {
+    firstNameRef.current.validateInputs();
+    lastNameRef.current.validateInputs();
+    // validateFirstName('FirstName')
+    // validateLastName('LastName')
+    if (
+      firstNameRef.current.validateInputs() &&
+      lastNameRef.current.validateInputs()
+    ) {
       dispatch(setFirstName(firstNameRef.current.inputText));
       dispatch(setLastName(lastNameRef.current.inputText));
       dispatch(setIsEmailVerified(false));
-      if(isEmailPhoneBothVerified) {
+      if (role === ROLE.HOST) {
         dispatch(setPageProgress(3));
         navigation.navigate('GenderScreen');
       } else {
-        dispatch(setPageProgress(2));
-        navigation.navigate('EnterEmail');
+        if (userDetails?.isEmailPhoneBothVerified) {
+          dispatch(setPageProgress(3));
+          navigation.navigate('GenderScreen');
+        } else {
+          dispatch(setPageProgress(2));
+          navigation.navigate('EnterEmailPhone');
+        }
       }
     }
   };
 
   const handleBackPress = () => {
-    navigation.goBack()
+    navigation.goBack();
+    // if (loginData?.isInvited || loginData.token.length > 0) {
+    //   navigation.navigate('BottomTabBar');
+    // } else {
+    //   navigation.navigate('BeforeAppStaticScreen');
+    // }
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
+    }, []),
+  );
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header headerTitle={LABLE.MY_DETAILS} onPress={handleBackPress} />
 
       <View style={styles.contentContainer}>
@@ -57,23 +92,28 @@ const MyDetailsScreen: React.FC<MyDetailsScreenProps> = ({ navigation }) => {
           label={LABLE.FIRST_NAME}
           errorMessage={ERROR_MESSAGE.FIRST_NAME}
           defaultValue={userDetails.firstName}
+          maxLength={30}
+          isName={true}
         />
         <Input
           ref={lastNameRef}
           label={LABLE.LAST_NAME}
           errorMessage={ERROR_MESSAGE.LAST_NAME}
           defaultValue={userDetails.lastName}
+          maxLength={30}
+          isName={true}
         />
       </View>
-
-      <Button
-        disabled={false}
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.NEXT}
-        colorTheme="dark"
-        onPress={onNextClick}
-      />
-    </SafeAreaView>
+      {!keyboardVisible ? (
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.NEXT}
+          colorTheme="dark"
+          onPress={onNextClick}
+        />
+      ) : null}
+    </View>
   );
 };
 

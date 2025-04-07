@@ -1,85 +1,132 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useMemo, useState } from 'react';
-import { Provider } from 'react-redux';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { StyleSheet, useColorScheme, LogBox } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import MainNavigation from './src/navigation';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import DarkTheme from './src/Theme/DarkTheme';
-import DefaultTheme from './src/Theme/DefaultTheme';
-import { AppContext } from './src/context/AppContext';
-// import { NetInfoProvider, useAuth } from './src/context/NetInfoContext';
-import NoInternetScreen from './src/component/NoInternetScreen';
-import { useNetInfo } from "@react-native-community/netinfo";
-import { store, persistor } from './src/redux/store';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import React, { useEffect, useCallback } from 'react';
+import { LogBox, Platform, StyleSheet } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-
+import MainNavigation from 'src/navigation';
+import { EndPoint } from './src/ApiManager/config';
+import useApi from './src/axios/useApi';
+import NoInternetScreen from './src/component/NoInternetScreen';
+import { SafeAreaViewWrapper } from './src/component/Wrappers/SafeAreaViewWrapper';
+import {
+  setCreativeFocus,
+  setInterests,
+} from './src/redux/slices/appGlobalDataSlice';
+import { persistor, store } from './src/redux/store';
+import RNPreventScreenshot from 'react-native-screenshot-prevent';
+import {
+  NotificationsListener,
+  requestUserPermission,
+} from 'src/component/PushNotification';
+import { navigationRef } from 'src/component/NavigationService';
+import ScreenshotDetectedDialog from 'src/component/ScreenshotDetectedDialog';
+import { getDeviceId } from 'src/utils/functions';
+import Intercom, { Visibility } from '@intercom/intercom-react-native';
+import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+import analytics from '@react-native-firebase/analytics';
 
 const AppContent: React.FC = () => {
-  // const { isInternetConnected } = useAuth();
   const { isConnected } = useNetInfo();
-  LogBox.ignoreAllLogs();
+  const { apiRequest } = useApi();
+  const dispatch = useDispatch();
+  const updateAnalyticsStatus = async (status: boolean) => {
+    await analytics().setAnalyticsCollectionEnabled(status);
+  };
+
   useEffect(() => {
-    console.log('Internet status:', isConnected);
+    RNPreventScreenshot?.enableSecureView();
+    return () => {
+      RNPreventScreenshot?.disableSecureView();
+    };
+  }, []);
+
+  useEffect(() => {
+    NotificationSetup();
+    Intercom.setLauncherVisibility(Visibility.GONE);
+    if (Platform.OS === 'ios') {
+      request(PERMISSIONS.IOS.APP_TRACKING_TRANSPARENCY).then(status => {
+        switch (status) {
+          case RESULTS.UNAVAILABLE:
+            updateAnalyticsStatus(true);
+          case RESULTS.DENIED:
+            updateAnalyticsStatus(false);
+          case RESULTS.BLOCKED:
+            updateAnalyticsStatus(false);
+          case RESULTS.GRANTED:
+            updateAnalyticsStatus(true);
+          case RESULTS.LIMITED:
+            updateAnalyticsStatus(true);
+        }
+      });
+    }
+  }, []);
+
+  const NotificationSetup = async () => {
+    getDeviceId();
+    requestUserPermission();
+    NotificationsListener();
+  };
+
+  const fetch = async () => {
+    const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
+    console.log('focusResponse.data', focusResponse.data);
+    if (focusResponse.data) {
+      focusResponse.data.sort((a, b) => a.name.localeCompare(b.name));
+      dispatch(setCreativeFocus(focusResponse.data));
+    }
+    const interestResponse: any = await apiRequest('get', EndPoint.interests);
+    if (interestResponse.data) {
+      interestResponse.data.sort((a, b) => a.name.localeCompare(b.name));
+      dispatch(setInterests(interestResponse.data));
+    }
+  };
+
+  useEffect(() => {
+    if (isConnected) {
+      fetch();
+    }
   }, [isConnected]);
 
-  // console.log("isConnected",isConnected)
+  LogBox.ignoreAllLogs();
 
-  // console.log("isInternetConnected",isInternetConnected)
-
-  if (!isConnected && isConnected !== null) {
+  if (isConnected === null) {
+    return <></>;
+  }
+  if (!isConnected) {
     return <NoInternetScreen />;
   }
-
   return <MainNavigation />;
 };
 
 const App: React.FC = () => {
-  const systemTheme = useColorScheme();
-  const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
-
-  type AppContextType = any;
-  const appContext = useMemo<AppContextType>(
-    () => ({
-      isDarkTheme,
-      setIsDarkTheme,
-      themeColors: isDarkTheme ? DarkTheme.colors : DefaultTheme.colors,
-    }),
-    [isDarkTheme]
-  );
-
-  // useEffect(() => {
-  //   setIsDarkTheme(systemTheme === 'light');
-  // }, [systemTheme]);
-
-  useEffect(() => {
-    setIsDarkTheme(true)
-  }, []);
-
-
-  // useEffect(() => {
-  //   const unsubscribe = NetInfo.addEventListener(state => {
-  //     console.log('Network status changed:', state.isConnected);
-  //   });
-  //   return () => unsubscribe(); // Cleanup the listener on component unmount
-  // }, []);
+  const MyTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: 'white',
+      text: 'black',
+    },
+  };
 
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <NavigationContainer theme={isDarkTheme ? DarkTheme : DefaultTheme}>
-            <AppContext.Provider value={appContext}>
-              <SafeAreaProvider style={styles.container}>
+        <SafeAreaViewWrapper>
+          <ScreenshotDetectedDialog />
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <NavigationContainer theme={MyTheme} ref={navigationRef}>
+              <BottomSheetModalProvider>
                 <AppContent />
-                <FlashMessage position="top" />
-              </SafeAreaProvider>
-            </AppContext.Provider>
-          </NavigationContainer>
-        </GestureHandlerRootView>
+              </BottomSheetModalProvider>
+            </NavigationContainer>
+          </GestureHandlerRootView>
+        </SafeAreaViewWrapper>
+        <FlashMessage position="top" />
       </PersistGate>
     </Provider>
   );

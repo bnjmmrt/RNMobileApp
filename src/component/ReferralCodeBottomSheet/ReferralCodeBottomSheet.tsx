@@ -1,25 +1,37 @@
-import React, { useRef, forwardRef } from 'react';
-import { KeyboardAvoidingView, Platform, View, StyleSheet } from 'react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import React, { forwardRef, useRef } from 'react';
+import { Platform, StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+import { useSubmitReferralCodeMutation } from '../../redux/actions/referralApiAction';
+import { BUTTON_LABLE, ERROR_MESSAGE, LABLE } from '../../utils/constants';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+} from '../../utils/dimensions';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
-import { Hp } from '../../utils/dimensions';
-import { BUTTON_LABLE, COLORS, ERROR_MESSAGE, LABLE } from '../../utils/constants';
-import Title from '../Title/Title';
-import Input from '../Input/Input';
 import Button from '../Button';
 import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
+import Input, { InputRefMethods } from '../Input/Input';
+import Title from '../Title/Title';
 
 const ReferralCodeBottomSheet = forwardRef((props, ref) => {
-  const inputRef = useRef(null);
+  const inputRef = useRef<InputRefMethods>(null);
+  const userId = useSelector((state: RootState) => state.auth.userId);
 
-  const handleSubmit = () => {
-    const { inputText, validateInputs } = inputRef.current;
-
-    if (validateInputs()) {
-      if (inputText === 'ONE40') {
+  const [submitReferralCode, { isLoading }] = useSubmitReferralCodeMutation();
+  const handleSubmit = async () => {
+    if (inputRef?.current?.validateInputs()) {
+      try {
+        const response = await submitReferralCode({
+          referralCode: inputRef?.current?.inputText,
+          userId: userId,
+        }).unwrap();
         FlashMessageComponent.show('success', 'Code submitted successfully!');
-        ref.current?.close(); // Assuming the BottomSheet has a `close` method.
-      } else {
-        inputRef.current.setErrorMessage(ERROR_MESSAGE.PLEASE_ENTER_A_VALID_REFERRAL_CODE);
+        ref.current?.close();
+      } catch (error) {
+        console.log(error?.data?.error);
+        inputRef.current.setErrorMessage('Please enter a valid referral code');
       }
     }
   };
@@ -27,40 +39,46 @@ const ReferralCodeBottomSheet = forwardRef((props, ref) => {
   return (
     <BottomSheetComponent
       ref={ref}
-      snapPoints={[Platform.OS=="android"?'45%':'40%']}
-      onClose={() =>console.log(ref)}
+      snapPoints={[`${Platform.OS === 'android' ? 45 : 40}%`]}
+      onClose={() => console.log(ref)}
+      activeSafeAreaViewColor={'#121f22'}
+      inActiveSafeAreaViewColor={'#121f22'}
+    // footer={}
     >
-        <View style={styles.container}>
-          <Title
-            title={LABLE.REFERRAL_CODE}
-            subTitle={LABLE.IF_YOU_HAVE_ANY_REFERRAL_CODE}
-            align="center"
-          />
-          <Input
-            ref={inputRef}
-            label={LABLE.ENTER_CODE}
-            errorMessage={ERROR_MESSAGE.PLEASE_ENTER_A_VALID_REFERRAL_CODE}
-          />
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={BUTTON_LABLE.SUBMIT}
-            colorTheme="dark"
-            onPress={handleSubmit}
-          />
-        </View>
+      <BottomSheetScrollView style={styles.container}>
+        <Title
+          title={LABLE.REFERRAL_CODE}
+          subTitle={LABLE.IF_YOU_HAVE_ANY_REFERRAL_CODE}
+          align="center"
+        />
+        <Input
+          ref={inputRef}
+          inputFieldContainerStyle={{ height: 56 }}
+          label={LABLE.ENTER_CODE}
+          forBottomSheet
+          errorMessage={ERROR_MESSAGE.PLEASE_ENTER_A_VALID_REFERRAL_CODE}
+        />
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.SUBMIT}
+          colorTheme="dark"
+          loading={isLoading}
+          onPress={handleSubmit}
+        />
+      </BottomSheetScrollView>
     </BottomSheetComponent>
   );
 });
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-    gap: 12,
+    paddingHorizontal: horizontalMarginScale(20),
   },
   btnStyle: {
     borderRadius: 100,
-    marginTop: Hp(1),
+    marginTop: verticalMarginScale(40),
+    height: 48,
   },
 });
 

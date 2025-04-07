@@ -1,23 +1,103 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+export type roleType = 'member' | 'non_member' | 'host';
+export interface role {
+  roleId: string;
+  roleName: roleType;
+}
 interface AuthState {
-  loginData: object;
+  userId: string;
+  role: roleType | '';
+  roleId: string | '';
+  roles: role[];
+  token: string;
+  isGuest: boolean;
+  varifyStatus: 0 | 1;
+  profilePicture: string | undefined;
+  companyLogo: string | undefined;
+  fcmToken: string | undefined;
+  deviceId: string | undefined;
 }
 
 const initialState: AuthState = {
-  loginData: {},
+  userId: '',
+  role: '',
+  roleId: '',
+  roles: [],
+  token: '',
+  isGuest: false,
+  varifyStatus: 0,
+  profilePicture: undefined,
+  companyLogo: undefined,
+  fcmToken: '',
+  deviceId: '',
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setLoginData(state, action: PayloadAction<any>) {
-      state.loginData = action.payload;
+    setLoginData(state, action: PayloadAction<AuthState>) {
+      state.userId = action.payload.userId;
+      state.role = action.payload.role;
+      state.roleId = action.payload.roleId;
+      state.roles = action.payload.roles;
+      state.token = action.payload.token;
+      state.isGuest = action.payload.isGuest;
+      state.varifyStatus = action.payload.varifyStatus;
+      state.companyLogo = action.payload.companyLogo;
+      state.profilePicture = action.payload.profilePicture;
+    },
+    setAuthToken(state, action: PayloadAction<any>) {
+      state.token = action.payload;
+    },
+    setCompanyLogo(state, action: PayloadAction<string | undefined>) {
+      state.companyLogo = action.payload;
+    },
+    setProfilePicture(state, action: PayloadAction<string | undefined>) {
+      state.profilePicture = action.payload;
+    },
+    setUserId(state, action: PayloadAction<any>) {
+      state.userId = action.payload;
+    },
+    setRole(state, action: PayloadAction<string>) {
+      state.role = action.payload;
+    },
+    setRoles(state, action: PayloadAction<string>) {
+      state.roles = action.payload;
+    },
+    setRoleId(state, action: PayloadAction<string>) {
+      state.roleId = action.payload;
+    },
+    setIsGuest(state, action: PayloadAction<any>) {
+      state.isGuest = action.payload;
+    },
+    resetLoginData(state) {
+      // Reset state to initial values
+      Object.assign(state, initialState);
+    },
+    setFcmToken(state, action: PayloadAction<any>) {
+      state.fcmToken = action.payload;
+    },
+    setDeviceId(state, action: PayloadAction<any>) {
+      state.deviceId = action.payload;
     },
   },
 });
 
-export const { setLoginData } = authSlice.actions;
+export const {
+  setLoginData,
+  setAuthToken,
+  setUserId,
+  setRole,
+  setRoles,
+  setRoleId,
+  setIsGuest,
+  resetLoginData,
+  setProfilePicture,
+  setCompanyLogo,
+  setFcmToken,
+  setDeviceId,
+} = authSlice.actions;
 
 export default authSlice.reducer;

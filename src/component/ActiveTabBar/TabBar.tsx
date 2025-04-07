@@ -2,35 +2,68 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import { COLORS } from '../../utils/constants';
+import { fontScale, radiusScale, verticalMarginScale } from 'src/utils/dimensions';
 
 type TabBarProps = {
     onTabChange?: (tab: string) => void;
     tabOneLabel: string;
     tabTwoLabel: string;
+    width?: string;
+    countOne?: number;
+    countTwo?: number;
+    tab?: string;
 };
 
-const TabBar: React.FC<TabBarProps> = ({ onTabChange, tabOneLabel, tabTwoLabel }) => {
-    const [activeTab, setActiveTab] = useState('01');
+const TabBar: React.FC<TabBarProps> = ({
+    onTabChange,
+    tabOneLabel,
+    tabTwoLabel,
+    width = '90%',
+    countOne,
+    countTwo,
+    tab
+}) => {
+    const [activeTab, setActiveTab] = useState(tab);
 
     const handleTabPress = (tab: string) => {
         setActiveTab(tab);
         onTabChange?.(tab); // Notify parent component if callback is provided
     };
 
-    const renderTab = (label: string, tabId: string) => (
+    const renderTab = (label: string, tabId: string, count: number) => (
         <TouchableOpacity
             style={[styles.tab, activeTab === tabId && styles.activeTab]}
             onPress={() => handleTabPress(tabId)}>
-            <Text style={[styles.tabText, activeTab === tabId && styles.activeTabText]}>
+            <Text
+                style={[styles.tabText, activeTab === tabId && styles.activeTabText]}>
                 {label}
             </Text>
+            {count && (
+                <View
+                    style={[
+                        styles.countView,
+                        {
+                            backgroundColor:
+                                activeTab === tabId ? COLORS.black : COLORS.tabBorderColor,
+                        },
+                    ]}>
+                    <Text
+                        style={{
+                            fontSize: fontScale(11),
+                            fontFamily: fontFamily.ABCDiatype_Medium,
+                            color: activeTab === tabId ? COLORS.white : COLORS.black,
+                        }}>
+                        {count}
+                    </Text>
+                </View>
+            )}
         </TouchableOpacity>
     );
 
     return (
-        <View style={styles.container}>
-            {renderTab(tabOneLabel, '01')}
-            {renderTab(tabTwoLabel, '02')}
+        <View style={[{ ...styles.container, width }]}>
+            {renderTab(tabOneLabel, '01', countOne)}
+            {renderTab(tabTwoLabel, '02', countTwo)}
         </View>
     );
 };
@@ -39,20 +72,20 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         backgroundColor: COLORS.white,
-        borderRadius: 25,
+        borderRadius: radiusScale(99),
         borderWidth: 1,
         borderColor: COLORS.tabBorderColor,
-        padding: 4,
+        padding: verticalMarginScale(4),
         alignSelf: 'center',
         width: '90%',
-        marginVertical: 20,
     },
     tab: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingVertical: 10,
-        borderRadius: 20,
+        paddingVertical: verticalMarginScale(12),
+        borderRadius: radiusScale(99),
+        flexDirection: 'row'
     },
     activeTab: {
         backgroundColor: COLORS.tabBorderColor,
@@ -60,12 +93,21 @@ const styles = StyleSheet.create({
     },
     tabText: {
         color: COLORS.black,
-        fontSize: 14,
-        paddingVertical: 2,
-        fontFamily: fontFamily.ABCDiatype_Regular,
+        fontSize: fontScale(14),
+        fontFamily: fontFamily.ABCDiatype_Medium,
     },
     activeTabText: {
         color: COLORS.black,
+        fontSize: fontScale(14),
+        fontFamily: fontFamily.ABCDiatype_Medium,
+    },
+    countView: {
+        width: 16,
+        height: 16,
+        marginLeft: 4,
+        borderRadius: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
 

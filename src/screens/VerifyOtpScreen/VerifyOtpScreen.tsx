@@ -1,143 +1,200 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  CommonActions,
+  RouteProp,
+  useFocusEffect,
+  useRoute,
+} from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LABLE, BUTTON_LABLE } from '../../utils/constants';
-import VerifyOtpStyles from './VerifyOtpStyles';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+
+import {
+  setEmail,
+  setFirstName,
+  setLastName,
+  setPhone,
+} from 'src/redux/slices/appFlowSlice';
+import { verticalMarginScale } from 'src/utils/dimensions';
+import {
+  changeSafeAreaViewConfig,
+  fetchUserProfile,
+  getPriorityRole,
+  loginUser,
+} from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import BackButton from '../../component/BackButton/BackButton';
 import Button from '../../component/Button';
 import OTPComponent from '../../component/OTPComponent/OTPComponent';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import { useCheckMemberLoginMutation, useMemberLoginMutation } from '../../redux/slices/apiSlice';
-import { FlashMessageComponent } from '../../component/FlashMessageComponent/FlashMessageComponent';
-import FullScreenLoader from '../../component/FullScreenLoader';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
-import { CommonActions } from '@react-navigation/native';
-import { setLoginData } from '../../redux/slices/authSlice';
-import { useDispatch } from 'react-redux';
+import { useSendOtp } from '../../redux//hooks/useSendOtp';
+import { useVerifyOtp } from '../../redux/hooks/useVerifyOtp';
+import { BUTTON_LABLE, LABLE, ROLE } from '../../utils/constants';
+import VerifyOtpStyles from './VerifyOtpStyles';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
+import { RootState } from 'src/redux/slices';
+import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
 type RouteParams = {
-    params: {
-        isEmail: boolean;
-        email?: string;
-        phone?: string;
-    };
+  params: {
+    isEmail: boolean;
+    email?: string;
+    phone?: string;
+  };
 };
 
 const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
-    const styles = VerifyOtpStyles();
-    const otpInputRef = useRef<{ handleNextPress: () => void, showInvalidCodeError: (message: string) => void }>(null);
-    const route = useRoute<RouteProp<RouteParams>>();
-    const [sendToId, setSendToId] = useState<string>('');
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [isMemberExist, setMemberExist] = useState<boolean>(false);
-    const [checkMemberLogin] = useCheckMemberLoginMutation();
-    const [memberLogin] = useMemberLoginMutation();
-    const dispatch = useDispatch();
+  const styles = VerifyOtpStyles();
+  const otpInputRef = useRef<{ handleNextPress: () => void }>(null);
+  const route = useRoute<RouteProp<RouteParams>>();
+  const { sendOtp, isMemberExist, isGuest } = useSendOtp(
+    route.params.email,
+    route.params.phone,
+  );
+  const { verifyOtp, isLoading, error } = useVerifyOtp(
+    isMemberExist,
+    isGuest,
+    route.params.email,
+    route.params.phone,
+    route.params.isEmail,
+  );
 
-    useEffect(() => {
-        const sendTo = route.params.isEmail ? route.params.email : route.params.phone;
-        setSendToId(sendTo || '');
-        sendTo && sendOtp(false)
-    }, [route.params]);
+  const dispatch = useDispatch();
+  const fcmToken = useSelector((state: RootState) => state.auth.fcmToken);
+  const { keyboardVisible } = useKeyboard();
 
-    const onNextClick = () => {
-        otpInputRef.current?.handleNextPress();
-    };
+  const [errorMsg, setErrorMsg] = useState('');
+  useEffect(() => {
+    otpInputRef?.current?.setApiError(error);
+  }, [error]);
 
-    const handleBackPress = () => {
-        navigation.goBack();
-    };
+  useEffect(() => {
+    const sendTo = route.params.isEmail
+      ? route.params.email
+      : route.params.phone;
+    sendTo && sendOtp(false);
+  }, [route.params]);
 
-    const sendOtp = async (isResend: boolean) => {
-        try {
-            const requestParam = {
-                email: route.params.email,
-                phoneNumber: route.params.phone
-            }
-            const response = await checkMemberLogin(requestParam).unwrap();
-            if (response.status == 200) {
-                console.log("sayyed isExist:", response?.data?.isValid)
-                setMemberExist(response?.data?.isValid)
-            }
-            isResend && FlashMessageComponent.show('success', 'OTP resent successfully!');
+  const onNextClick = () => {
+    Keyboard.dismiss();
+    otpInputRef.current?.handleNextPress();
+  };
+  const handleBackPress = () => navigation.goBack();
 
-        } catch (error) {
-            FlashMessageComponent.show('error', "Something went wrong, please try again!!");
-            console.error('Error creating resource:', error);
-        }
-    };
+  const redirectToHome = (data: any) => {
+    console.log('dataaa', JSON.stringify(data));
 
-    const verifyOtp = async (code: string) => {
-        try {
+    loginUser({
+      id: data?.id,
+      isGuest: data?.isGuest,
+      roles: data?.roles,
+      token: data?.token,
+      varifyStatus: data?.varifyStatus,
+      companyLogo: data?.user?.additionalHostInformation?.companyLogo,
+      profilePicture: data?.user?.profilePicture,
+    });
 
-            const requestParam = {
-                email: route.params.email,
-                phoneNumber: route.params.phone,
-                code: code,
-                isExist: isMemberExist
-            }
-            setIsLoading(true)
-            const response = await memberLogin(requestParam).unwrap();
-            if (response.status == 200) {
-                const data ={
-                    ...response.data,
-                    varifyStatus: route.params.isEmail ? 1 : 2
-                }
-                redirectToHome(data)
-            }
+    dispatch(setEmail(route.params.email || ''));
+    dispatch(setPhone(route.params.phone || ''));
 
-            setIsLoading(false)
+    if (data?.token) {
+      fetchUserProfile();
+    }
 
+    let role = getPriorityRole(data?.roles);
+    let screenName = '';
 
-        } catch (error) {
-            setIsLoading(false)
-            FlashMessageComponent.show('error', "Something went wrong, please try again!!");
-            console.error('Error creating resource:', error);
-        }
-    };
+    switch (role.roleName) {
+      case ROLE.NON_MEMBER:
+        screenName =
+          data?.token?.length > 0 || data?.isGuest
+            ? 'BottomTabBar'
+            : 'BeforeAppStaticScreen';
+        break;
+      case ROLE.MEMBER:
+        screenName = 'BottomTabBar';
+        break;
+      case ROLE.HOST:
+        screenName = 'BottomTabBar';
+        dispatch(setEmail(data?.user?.email));
+        dispatch(setPhone(data?.user?.phoneNumber));
+        dispatch(setFirstName(data?.user?.firstName));
+        dispatch(setLastName(data?.user?.lastName));
+        break;
+    }
 
+    if (screenName) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'AppStack', params: { screen: screenName } }],
+        }),
+      );
+    }
+  };
 
-    const redirectToHome = (data: any) => {
-        dispatch(setLoginData(data))
-        navigation.navigate("AppStack")
-        // navigation.dispatch(
-        //     CommonActions.reset({
-        //         index: 0,
-        //         routes: [{ name: 'AppStack' }],
-        //     })
-        // );
-    };
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
+    }, []),
+  );
 
-    return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={{ flex: 1 }}>
-            <FullScreenLoader loading={isLoading}>
-                <SafeAreaView style={styles.container}>
-                    <BackButton onPress={handleBackPress} />
-                    <View style={styles.contentContainer}>
-                        <TitleSubtitle title={LABLE.ENTER_YOUR_VERIFICATION_CODE} subTitle={`${LABLE.SEND_TO}${sendToId}`} />
-                        <OTPComponent
-                            ref={otpInputRef}
-                            performCodeVerification={verifyOtp}
-                            resendVerificationCode={sendOtp}
-                        />
-                        <View style={styles.spacer} />
-                        <Button
-                            disabled={false}
-                            style={styles.btnStyle}
-                            title={BUTTON_LABLE.GET_STARTED}
-                            colorTheme="dark"
-                            onPress={onNextClick}
-                        />
-                    </View>
-                </SafeAreaView>
-            </FullScreenLoader>
-        </KeyboardAvoidingView>
-    );
+  const callVerifyOTP = (code: string) => {
+    verifyOtp(code, redirectToHome);
+  };
+
+  const clearOTPAndResend = () => {
+    Keyboard.dismiss();
+    otpInputRef?.current?.clearOTP();
+    setErrorMsg('');
+    sendOtp(true);
+  };
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={50}
+      enabled={Platform.OS === 'ios'}
+      style={styles.container}>
+      {/* <FullScreenLoader loading={isLoading}> */}
+      <View style={[styles.container, { paddingTop: TOP_SAFEAREA_SPACING }]}>
+        <BackButton onPress={handleBackPress} />
+        <View style={styles.contentContainer}>
+          <TitleSubtitle
+            title={LABLE.ENTER_YOUR_VERIFICATION_CODE}
+            subTitle={`${LABLE.SEND_TO}${route.params.isEmail ? route.params.email : route.params.phone
+              }`}
+          />
+          <OTPComponent
+            error={errorMsg}
+            ref={otpInputRef}
+            performCodeVerification={(code: string) => callVerifyOTP(code)}
+            resendVerificationCode={clearOTPAndResend}
+          />
+          <View style={styles.spacer} />
+          <Button
+            disabled={false}
+            style={[
+              styles.btnStyle,
+              {
+                marginBottom: keyboardVisible
+                  ? Platform.OS === 'ios'
+                    ? verticalMarginScale(60)
+                    : verticalMarginScale(10)
+                  : 0,
+              },
+            ]}
+            title={BUTTON_LABLE.GET_STARTED}
+            colorTheme="dark"
+            onPress={onNextClick}
+            loading={isLoading}
+          />
+        </View>
+      </View>
+      {/* </FullScreenLoader> */}
+    </KeyboardAvoidingView>
+  );
 };
 
 export default VerifyOtpScreen;

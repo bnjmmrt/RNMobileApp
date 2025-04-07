@@ -1,7 +1,10 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from '@react-navigation/stack';
 import MyDetailsScreen from '../screens/AppFlow/MyDetails/MyDetails';
-import EnterEmail from '../screens/AppFlow/EnterEmailPhone/EnterEmailPhone';
+import EnterEmailPhone from '../screens/AppFlow/EnterEmailPhone/EnterEmailPhone';
 import VerifyEmail from '../screens/AppFlow/VerifyOtp/VerifyOtp';
 import GenderScreen from '../screens/AppFlow/GenderScreen/GenderScreen';
 import BirthdayScreen from '../screens/AppFlow/BirthdayScreen/BirthdayScreen';
@@ -10,14 +13,15 @@ import CreativeFocusScreen from '../screens/AppFlow/CreativeFocusScreen/Creative
 import SelectInterestScreen from '../screens/AppFlow/SelectInterestScreen/SelectInterestScreen';
 import ProfilePhotoScreen from '../screens/AppFlow/ProfilePhotoScreen/ProfilePhotoScreen';
 import IdentityVerification from '../screens/AppFlow/IdentityVerification/IdentityVerification';
+import WelcomeScreen from '../screens/AppFlow/WelcomeScreen/WelcomeScreen';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/slices';
-
+import ReferralScreen from 'src/screens/ProfileScreen/ReferralsScreen/ReferralScreen';
 
 // Define the param list for the stack navigator
 export type AppFlowStackParamList = {
   MyDetailsScreen: undefined;
-  EnterEmail: undefined;
+  EnterEmailPhone: undefined;
   GenderScreen: undefined;
   BirthdayScreen: undefined;
   BaseCityScreen: undefined;
@@ -25,33 +29,34 @@ export type AppFlowStackParamList = {
   SelectInterestScreen: undefined;
   ProfilePhotoScreen: undefined;
   IdentityVerification: undefined;
-  
+  ReferralsScreen: undefined;
 };
 
 const Stack = createStackNavigator<AppFlowStackParamList>();
 
 export const AppFlowStack: React.FC = () => {
-  const pageProgress = useSelector((state: RootState) => state.appFlow.pageProgress);
+  // const pageProgress = useSelector((state: RootState) => state.appFlow.pageProgress);
 
-  const getInitialPage=()=>{
-     switch(pageProgress){
-      case 1: return "MyDetailsScreen";
-      case 2 : return "EnterEmail";
-      case 3 : return "GenderScreen";
-      case 4 : return "BirthdayScreen";
-      case 5 : return "BaseCityScreen";
-      case 6 : return "CreativeFocusScreen";
-      case 7 : return "SelectInterestScreen";
-      case 8 : return "ProfilePhotoScreen";
-      case 9 : return "IdentityVerification";
-      default : return "MyDetailsScreen"
-     }
-  }
+  // const getInitialPage=()=>{
+  //    switch(pageProgress){
+  //     case 1: return "MyDetailsScreen";
+  //     case 2 : return "EnterEmailPhone";
+  //     case 3 : return "GenderScreen";
+  //     case 4 : return "BirthdayScreen";
+  //     case 5 : return "BaseCityScreen";
+  //     case 6 : return "CreativeFocusScreen";
+  //     case 7 : return "SelectInterestScreen";
+  //     case 8 : return "ProfilePhotoScreen";
+  //     case 9 : return "IdentityVerification";
+  //     default : return "MyDetailsScreen"
+  //    }
+  // }
   return (
     <Stack.Navigator
-      initialRouteName={getInitialPage()}
-      screenOptions={({ route, navigation }) => ({})}>
-
+      initialRouteName={'MyDetailsScreen'}
+      screenOptions={({ route, navigation }) => ({
+        cardStyleInterpolator: CardStyleInterpolators.forNoAnimation,
+      })}>
       <Stack.Screen
         name="MyDetailsScreen"
         component={MyDetailsScreen}
@@ -59,8 +64,8 @@ export const AppFlowStack: React.FC = () => {
       />
 
       <Stack.Screen
-        name="EnterEmail"
-        component={EnterEmail}
+        name="EnterEmailPhone"
+        component={EnterEmailPhone}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -102,6 +107,11 @@ export const AppFlowStack: React.FC = () => {
       <Stack.Screen
         name="IdentityVerification"
         component={IdentityVerification}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ReferralsScreen"
+        component={ReferralScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

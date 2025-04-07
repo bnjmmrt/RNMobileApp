@@ -1,0 +1,52 @@
+import { FlashMessageComponent } from '../../component/FlashMessageComponent/FlashMessageComponent';
+import useApi from 'src/axios/useApi';
+import { EndPoint } from 'src/ApiManager/config';
+import React from 'react';
+
+export const useUploadFile = () => {
+    const { apiRequest, loading } = useApi();
+    const [response, setResponse] = React.useState<any>(null);
+    const uploadFileHook = async (fileName: any, size: any, type: any, formData: any,pathType:any) => {
+        try {
+            const params = {
+                "contentType": type == 'pdf' ? 'application/pdf' : 'image/jpeg',
+                "extension": fileName,
+                "path": pathType,
+                "size": size
+            }
+            const response: any = await apiRequest('post', EndPoint.generate_upload_url, params, null, {
+                'Content-Type': 'application/json',
+            });
+            if (response.success) {
+                const pathResponse = await fetch(response?.data?.pathFileUrl, {
+                    method: 'PUT',
+                    body: formData,
+                });
+                console.log('pathResponse', pathResponse);
+                if (pathResponse.status == 200) {
+                    setResponse(response)
+                    return response
+                } else {
+                    FlashMessageComponent.show(
+                        'error',
+                        'Something went wrong, please try again!',
+                    );
+                }
+            } else {
+                FlashMessageComponent.show(
+                    'error',
+                    'Something went wrong, please try again!',
+                );
+            }
+        } catch (error) {
+            FlashMessageComponent.show(
+                'error',
+                'Something went wrong, please try again!',
+            );
+            console.error('Error:', error);
+        }
+    };
+
+    return { uploadFileHook, response };
+};
+

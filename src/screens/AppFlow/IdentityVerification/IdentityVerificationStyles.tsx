@@ -1,113 +1,162 @@
-import { StyleSheet } from 'react-native';
-import { Wp, Hp } from '../../../utils/dimensions';
+import { Platform, StyleSheet } from 'react-native';
+import {
+  Wp,
+  Hp,
+  radiusScale,
+  verticalScale,
+  verticalMarginScale,
+  horizontalMarginScale,
+  fontScale,
+  horizontalScale,
+} from '../../../utils/dimensions';
 import { COLORS } from '../../../utils/constants';
 import { fontFamily } from '../../../utils/functions';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
-const ProfilePhotoScreenStyles = () => {
+const IdentityVerificationStyles = () => {
   return StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: COLORS.white,
+      paddingBottom: 0,
     },
     btnStyle: {
       width: Wp(85),
-      borderRadius: 100,
+      borderRadius: radiusScale(100),
+      bottom: BOTTOM_SAFEAREA_SPACING,
     },
     btnSmallStyle: {
       width: 'auto',
-      height: 40,
-      borderRadius: 100,
+      fontFamily: fontFamily.RomieTrial,
+      height: verticalScale(40),
+      borderRadius: radiusScale(100),
       alignSelf: 'center',
       backgroundColor: COLORS.tabBorderColor,
-      marginTop: Hp(1),
+      marginTop: Hp(2),
+      paddingHorizontal: 5,
     },
     contentContainer: {
       flex: 1,
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-    },
-    genderContainer: {
-      marginTop: 10,
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-    },
-    genderButton: {
-      paddingVertical: Hp(1.5),
-      paddingHorizontal: Wp(5),
-      borderRadius: 20,
-      backgroundColor: COLORS.lighter_gray,
-      marginVertical: Hp(1),
-      marginHorizontal: Wp(1),
-      alignItems: 'center',
-    },
-    selectedGenderButton: {
-      backgroundColor: COLORS.black,
-    },
-    genderText: {
-      fontSize: 16,
-      color: COLORS.black,
-    },
-    selectedGenderText: {
-      color: COLORS.white,
+      paddingVertical: verticalMarginScale(10),
+      paddingHorizontal: horizontalMarginScale(20),
     },
     mainContainer: {
       borderWidth: 1,
       borderColor: COLORS.borderGray,
-      borderRadius: 8,
+      borderRadius: radiusScale(16),
       alignItems: 'center',
-      padding: 15,
-      marginTop: 20,
+      padding: verticalMarginScale(15),
+      marginTop: verticalMarginScale(25),
     },
     title: {
       color: COLORS.black,
-      fontSize: 20,
+      fontSize: fontScale(20),
       fontFamily: fontFamily.RomieTrial_Bold,
     },
     subTitle: {
       color: COLORS.light_gray,
-      fontSize: 14,
+      fontSize: fontScale(14),
       fontFamily: fontFamily.ABCDiatype_Regular,
-      marginVertical: Hp(0.15),
+      marginVertical: Hp(0.5),
       textAlign: 'center',
+      paddingHorizontal: horizontalMarginScale(10),
     },
     numberContainer: {
-      height: 20,
-      width: 20,
-      borderRadius: 10,
+      height: verticalScale(20),
+      width: horizontalScale(20),
+      borderRadius: radiusScale(10),
       backgroundColor: COLORS.surfaceSecondary,
-      fontSize: 14,
-      marginTop: Hp(1),
+      fontSize: fontScale(14),
+      marginTop: Hp(1.5),
       alignItems: 'center',
       justifyContent: 'center',
-      alignSelf: 'center'
+      alignSelf: 'center',
     },
     numberText: {
       color: COLORS.black,
-      fontSize: 14,
+      fontSize: fontScale(14),
       fontFamily: fontFamily.ABCDiatype_Regular,
       textAlign: 'center',
     },
     btnRumor: {
       color: COLORS.black,
-      backgroundColor: COLORS.tabBorderColor,
-      fontSize: 11,
+      fontSize: fontScale(11),
+      fontWeight: '500',
     },
     iconStyle: {
-      height: 20,
-      width: 20,
+      height: verticalMarginScale(20),
+      width: horizontalMarginScale(20),
       resizeMode: 'contain',
     },
     emailStyle: {
       color: COLORS.black,
-      fontWeight: 'bold'
+      fontFamily: fontFamily.ABCDiatype_Bold,
     },
     divider: {
       height: 0.5,
       backgroundColor: COLORS.tabBorderColor,
-      width: 200,
-      marginTop: 20
-    }
+      width: horizontalScale(200),
+      marginTop: verticalMarginScale(20),
+    },
+    btnRumorContainer: {
+      backgroundColor: COLORS.lighter_gray,
+      borderRadius: 5,
+      padding: 3,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    rumorTextContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    noInstagramContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: verticalMarginScale(14),
+      borderWidth: 1,
+      borderRadius: radiusScale(16),
+      paddingHorizontal: horizontalMarginScale(16),
+      paddingVertical: verticalMarginScale(12),
+      borderColor: COLORS.borderGray,
+    },
+    noInstagramText: {
+      marginLeft: 8,
+      fontSize: fontScale(14),
+      color: COLORS.DARK,
+      fontWeight: '400',
+      fontFamily: fontFamily.ABCDiatype_Regular,
+    },
+    errorContainer: {
+      backgroundColor: COLORS.bgRed,
+      padding: verticalMarginScale(16),
+      marginTop: verticalMarginScale(16),
+      borderRadius: radiusScale(8),
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    errorText: {
+      color: COLORS.DARK,
+      fontSize: fontScale(14),
+      marginLeft: horizontalMarginScale(8),
+      fontFamily: fontFamily.ABCDiatype_Regular,
+    },
+    rumorTextContainerAdjusted: {
+      marginTop: -5,
+    },
+    subTitleNoPadding: {
+      paddingHorizontal: 0,
+    },
+    scrollViewContent: {
+      paddingBottom: 50,
+    },
+    inputMarginTop: {
+      marginTop: 15,
+    },
+    inputFieldHeight: {
+      height: 60,
+    },
   });
 };
 
-export default ProfilePhotoScreenStyles;
+export default IdentityVerificationStyles;

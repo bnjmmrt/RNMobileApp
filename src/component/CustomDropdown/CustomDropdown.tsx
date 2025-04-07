@@ -45,10 +45,10 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                 renderRow={renderRow}
                 onSelect={(index, value) => onSelect(index, value)}
                 dropdownStyle={[defaultStyle.dropDownStyle, dropDonwViewStyle]}
-                // renderScrollComponent={(props:any) => (
-                //     <ScrollView {...props} showsVerticalScrollIndicator={true} />
-                // )}
-                >
+            // renderScrollComponent={(props:any) => (
+            //     <ScrollView {...props} showsVerticalScrollIndicator={true} />
+            // )}
+            >
                 <View style={defaultStyle.textDownImgMainView}>
                     <View style={defaultStyle.justifyCenter}>
                         <Text allowFontScaling={false} style={[selectedTextStyle]}>
@@ -56,7 +56,9 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                         </Text>
                     </View>
                     <View style={defaultStyle.justifyCenter}>
-                        <Image source={languageImage || Images.downArrowImg} style={[downArrowStyle]} />
+                        <Image
+                            resizeMode='contain'
+                            source={languageImage || Images.downArrowImg} style={[downArrowStyle]} />
                     </View>
                 </View>
             </ModalDropdown>

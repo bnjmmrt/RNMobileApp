@@ -1,40 +1,66 @@
-import React, { useRef } from 'react';
+import React, { forwardRef, useCallback, useRef } from 'react';
 import { StyleSheet } from 'react-native';
 import WebView from 'react-native-webview';
 import BottomSheetComponent from '../BottomSheet/BottomSheet';
 import { Hp } from '../../utils/dimensions';
 import { COLORS } from '../../utils/constants';
-interface WebViewBottomSheetProps {
-    url: string; // URL to be passed from the parent
-    onChange?: (index: number) => void; // Callback function to be called when the bottom sheet changes
-}
+import { useFocusEffect } from '@react-navigation/native';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-const WebViewBottomSheet = ({ url, onChange }: WebViewBottomSheetProps) => {
-    const bottomSheetRef = useRef(null);
+const WebViewBottomSheet = forwardRef((props, ref) => {
+  // const bottomSheetRef = useRef(null);
+  const onClose = () => {
+    console.log('onclose', props.isFromLanding);
 
-    return (
+    if (props.isFromLanding) {
+      changeSafeAreaViewConfig({
+        ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
+        showTopSafeAreaView: false,
+        topSafeAreaViewColor: 'transparent',
+        translucent: true,
+        showBottomSafeAreaView: false,
+        bottomSafeAreaViewColor: 'transparent',
+      });
+    }
+  };
 
-        <BottomSheetComponent
-            ref={bottomSheetRef}
-            snapPoints={['95%']} // Adjustable snap points
-            onClose={() => console.log('Bottom sheet closed')}
-            onChange={onChange}
-            children={
-                <WebView
-                    source={{ uri: url }}
-                    style={styles.webView}
-                />
-            }
-        />
-    );
-};
+  console.log('url', props.url);
+
+  return (
+    <BottomSheetComponent
+      ref={ref}
+      snapPoints={['90%']} // Adjustable snap points
+      backgroundColor={COLORS.webBlack}
+      onClose={() => onClose()}>
+      <WebView
+        source={{ uri: props.url }}
+        style={styles.webView}
+        startInLoadingState={true}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        onError={syntheticEvent => {
+          const { nativeEvent } = syntheticEvent;
+          console.warn('WebView error: ', nativeEvent);
+        }}
+        onHttpError={syntheticEvent => {
+          const { nativeEvent } = syntheticEvent;
+          console.warn('HTTP error: ', nativeEvent);
+        }}
+        onLoadProgress={({ nativeEvent }) =>
+          console.log('WebView load progress:', nativeEvent.progress)
+        }
+      />
+    </BottomSheetComponent>
+  );
+});
 
 const styles = StyleSheet.create({
-    webView: {
-        flex: 1,
-        height : Hp(100),
-        backgroundColor: COLORS.black,
-    },
+  webView: {
+    flex: 1,
+    height: Hp(100),
+    backgroundColor: COLORS.webBlack,
+  },
 });
 
 export default WebViewBottomSheet;

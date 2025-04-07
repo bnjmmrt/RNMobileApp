@@ -4,15 +4,16 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native';
 interface FullScreenLoaderProps {
   loading: boolean;
   children: React.ReactNode;
+  customStyle?: any
 }
 
-const FullScreenLoader: React.FC<FullScreenLoaderProps> = ({ loading, children }) => {
+const FullScreenLoader: React.FC<FullScreenLoaderProps> = ({ loading, children, customStyle }) => {
   return (
     <View style={{ flex: 1 }}>
       {children}
       {loading && (
-        <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color="#ffffff" />
+        <View style={[styles.loaderContainer, customStyle]}>
+          <ActivityIndicator size='small' color="#ffffff" />
         </View>
       )}
     </View>

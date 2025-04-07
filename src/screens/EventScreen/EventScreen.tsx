@@ -1,84 +1,160 @@
-import React, { useState } from 'react';
-import { View, FlatList } from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
-import IMAGES from '../../assets/images/index';
-import EventScreenStyle from './EventScreenStyle';
-import { SafeAreaView } from 'react-native';
+import debounce from 'lodash/debounce';
+import React, { useCallback, useRef, useState } from 'react';
+import { Platform, SafeAreaView, View } from 'react-native';
+import { useSelector } from 'react-redux';
+import AfterAppStaticComponent from 'src/component/BeforeAppStaticComponent/AfterAppStaticComponent';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import DynamicTabBar from '../../component/ActiveTabBar/DynamicTabBar';
 import HeaderComponent from '../../component/HeaderComponent';
 import SearchInput from '../../component/SearchInput';
-import DynamicTabBar from '../../component/ActiveTabBar/DynamicTabBar';
-import EventItem from './EventItem';
-import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
-import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/slices';
-// Define the type for navigation props
+import {
+  BUTTON_LABLE,
+  COLORS,
+  hostTabData,
+  memberTabData,
+} from '../../utils/constants';
+import EventScreenStyle from './EventScreenStyle';
+import AppliedEvents from './Tabs/AppliedEvents';
+import InvitedEvents from './Tabs/InvitedEvents';
+import PastEvents from './Tabs/PastEvents';
+import UpcomingEvents from './Tabs/UpcomingEvents';
+import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+
 interface EventScreenProps extends NativeStackScreenProps<any, any> { }
+
 interface TabItem {
   id: string;
   label: string;
-}
-
-interface EventItem {
-  id: string;
   title: string;
-  date: string;
-  type: string;
-  location: string;
-  image: string
-
+  subTitle: string;
 }
+
 const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const styles = EventScreenStyle();
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const [isInvited, setInvited] = useState<boolean>(loginData?.isInvited || false)
-  const tabsData: TabItem[] = [
-    { id: '1', label: BUTTON_LABLE.UPCOMING },
-    { id: '2', label: BUTTON_LABLE.INVITED },
-    { id: '3', label: BUTTON_LABLE.APPLIED },
-    { id: '4', label: BUTTON_LABLE.PAST },
-  ];
-  const [currentTab, setCurrentTab] = useState<TabItem>(tabsData[0]);
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  const role = useSelector((state: RootState) => state.auth.role);
+  const isGuest = useSelector((state: RootState) => state.auth.isGuest);
 
-  const events: EventItem[] = [
-    { id: '1', title: 'Revolve Festival', date: 'Fri, Apr 13, 9:00PM – 11:00PM EST', type: 'RSVP to See Location', location: 'Los Angeles, California', image: IMAGES.eventCoverPlaceholders },
-    { id: '2', title: 'Revolve Festival', date: 'Fri, Apr 13, 9:00PM – 11:00PM EST', type: 'RSVP to See Location', location: 'Los Angeles, California', image: IMAGES.eventCoverPlaceholders1 },
-    { id: '3', title: 'Revolve Festival', date: 'Fri, Apr 13, 9:00PM – 11:00PM EST', type: 'RSVP to See Location', location: 'Los Angeles, California', image: IMAGES.eventCoverPlaceholders },
-    { id: '4', title: 'Revolve Festival', date: 'Fri, Apr 13, 9:00PM – 11:00PM EST', type: 'RSVP to See Location', location: 'Los Angeles, California', image: IMAGES.eventCoverPlaceholders1 },
-  ];
+  // const role =
+  //   (loginData?.roles &&
+  //     loginData?.roles.length > 0 &&
+  //     loginData?.roles[0]?.roleName) ||
+  //   'non_member';
+  const searchInputRef = useRef<any>(null);
+  const [searchText, setSearchText] = useState('');
+  const showEvents = isGuest || role === 'member' || role === 'host';
+  const tabs = role === 'host' ? hostTabData : memberTabData;
+
+  useFocusEffect(
+    useCallback(() => {
+      if (showEvents) {
+        changeSafeAreaViewConfig(
+          SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME,
+        );
+      }
+    }, [showEvents]),
+  );
+
+  const [currentTab, setCurrentTab] = useState<TabItem>(tabs[0]);
+
+  const debouncedSearch = useCallback(
+    debounce((text: string) => setSearchText(text), 500),
+    [],
+  );
+
+  const handleSearchTextChange = (text: string) => {
+    debouncedSearch(text);
+  };
 
   const handleTabChange = (tab: TabItem) => {
     setCurrentTab(tab);
   };
+
+  const renderTabContent = () => {
+    switch (currentTab.label) {
+      case BUTTON_LABLE.UPCOMING:
+        return (
+          <UpcomingEvents
+            userId={userId}
+            searchText={searchText}
+            tab={currentTab}
+          />
+        );
+      case BUTTON_LABLE.INVITED:
+        return (
+          <InvitedEvents
+            userId={userId}
+            searchText={searchText}
+            tab={currentTab}
+          />
+        );
+      case BUTTON_LABLE.APPLIED:
+        return (
+          <AppliedEvents
+            userId={userId}
+            searchText={searchText}
+            tab={currentTab}
+          />
+        );
+      case BUTTON_LABLE.PAST:
+        return (
+          <PastEvents
+            userId={userId}
+            searchText={searchText}
+            tab={currentTab}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
-
-    <SafeAreaView style={[styles.container, {backgroundColor: isInvited ? COLORS.black : COLORS.white}]}>
-     {isInvited ?
-      <BeforeAppStaticComponent
-        title={LABLE.UNLOCK_ACCESS_TO_EXCLUSIVE_EVENTS}
-        subTitle={LABLE.GET_DISCOVERY_BY_THE_WORLD} />
-     :
-     <View>
-      <HeaderComponent />
-      <SearchInput />
-      <DynamicTabBar onTabChange={handleTabChange} tabs={tabsData} />
-      <View style={styles.contentContainer}>
-        <FlatList
-          data={events}
-          style={{ padding: 10}}
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <EventItem item={item} />
-          )}
-        />
-
-      </View>
-      </View>
-      }
-
-    </SafeAreaView>
+    <View
+      style={{
+        ...styles.container,
+        backgroundColor: showEvents ? COLORS.white : COLORS.black2,
+      }}>
+      {showEvents ? (
+        <View
+          style={{
+            paddingTop: TOP_SAFEAREA_SPACING,
+          }}>
+          <View
+            style={{
+              backgroundColor: COLORS.white,
+              flex: 1,
+            }}>
+            <HeaderComponent isDarkTheme={false} />
+            <SearchInput
+              ref={searchInputRef}
+              onSearchTextChange={handleSearchTextChange}
+              mainContainerStyle={{
+                marginHorizontal: horizontalMarginScale(20),
+                marginBottom: verticalMarginScale(8),
+              }}
+            />
+            <DynamicTabBar
+              onTabChange={handleTabChange}
+              tabs={tabs}
+              activeTabIndex={isGuest ? 1 : 0}
+            />
+            <View style={styles.contentContainer}>{renderTabContent()}</View>
+          </View>
+        </View>
+      ) : (
+        <AfterAppStaticComponent />
+      )}
+    </View>
   );
 };
 

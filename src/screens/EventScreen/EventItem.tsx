@@ -1,111 +1,197 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
-import { Image } from 'react-native-animatable';
-import IMAGES from '../../assets/images';
-import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
-import { fontFamily } from '../../utils/functions';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Wp, Hp } from '../../utils/dimensions';
+import FastImage from '@d11/react-native-fast-image';
+import IMAGES from '@images/index';
+import { useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { CustomText } from 'src/component/CustomText';
+import { ROUTES } from 'src/navigation/Route';
+import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
 import ButtonSmall from '../../component/ButtonSmall';
+import {
+  BUTTON_LABLE,
+  COLORS,
+  EVENT,
+  LABLE,
+  ROLE,
+} from '../../utils/constants';
+import {
+  fontScale,
+  horizontalMarginScale,
+  horizontalScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+} from '../../utils/dimensions';
+import { fontFamily, getDisplayLocation, isCityInLocation, removeSignature } from '../../utils/functions';
+import { formatDetailedEventDate } from 'src/utils/dateFunctions';
+import { Event } from 'src/types';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
 
 interface EventItemProps {
-    item: {
-        id: string;
-        title: string;
-        date: string;
-        type: string;
-        location: string;
-        image: string;
-    };
+  item: Event;
 }
 const EventItem: React.FC<EventItemProps> = ({ item }) => {
+  // Handle the "Next" button press
+  const navigation = useNavigation();
+  // Handle the "Next" button press
+  const role = useSelector((state: RootState) => state.auth.role);
+  const userId = useSelector((state: RootState) => state.auth.userId);
 
+  const dates = formatDetailedEventDate(item?.startDate, item?.endDate, item?.timeZone);
+  const handlEventPress = () => {
+    navigation.navigate(ROUTES.EventStack, {
+      screen: ROUTES.EventDetailsScreen,
+      params: item,
+    });
+  };
 
-    // Handle the "Next" button press
-    const handlEventPress = () => {
+  const getUserRole = () => {
+    if (!item || !userId) return '';
 
-    };
+    // Check if the user is the owner
+    if (item?.owner?.id === userId) {
+      return 'HOST';
+    }
 
-    return (
-        <View style={styles.container}>
-            <View style={[styles.imageContainer]}>
-                <Image source={item.image} style={styles.icon} />
-            </View>
-            <View style={styles.contentContainer}>
-                <Text style={styles.titleStyle}>{item.title}</Text>
-                <Text style={styles.subtitle}>{item.date}</Text>
-                <Text style={styles.subtitle}>{item.type}</Text>
-                <Text style={styles.subtitle}>{item.location}</Text>
-                <View style={{alignItems:'flex-start', flexDirection:'row'}}>
-                <ButtonSmall
-                    disabled={false}
-                    style={styles.btnStyle}
-                    title={BUTTON_LABLE.VIEW_EVENT}
-                    colorTheme={'dark'}
-                    onPress={handlEventPress}
-                />
-                </View>
-              
-
-            </View>
-        </View>
+    // Check if the user is in the collaborators list
+    const collaborator = item.collaborators?.find(
+      collab => collab?.id === userId,
     );
+
+    if (collaborator) {
+      return collaborator?.role?.name?.toUpperCase().replace('_', '-');
+    }
+
+    return ''; // Default return if no match is found
+  };
+
+
+  const locationText = getDisplayLocation(item?.location?.location, item?.guest?.guestStatus, item.showLocation, role)
+  const isHideCity = isCityInLocation(locationText, item?.location?.city || '')
+  // const isShowLocation =
+  //   role === ROLE.HOST ||
+  //   item?.currentGuestStatus === 'CONFIRMED' ||
+  //   item?.guest?.guestStatus === 'CONFIRMED';
+  // const locationText = isShowLocation
+  //   ? item?.location?.city
+  //   : 'RSVP to See Location';
+
+  return (
+    <View style={styles.container}>
+      <FastImage
+        source={{
+          uri:
+            removeSignature(item?.imageCover) ||
+            removeSignature(item?.imageFlyer),
+        }}
+        resizeMode={FastImage.resizeMode.cover}
+        style={styles.icon}>
+        {role === ROLE.HOST && (
+          <View style={styles.roleContainer}>
+            <CustomText style={styles.roleText}>{getUserRole()}</CustomText>
+          </View>
+        )}
+      </FastImage>
+
+      <View style={styles.contentContainer}>
+        <CustomText style={styles.titleStyle} textProps={{ numberOfLines: 1 }}>
+          {item?.name}
+        </CustomText>
+        <CustomText style={styles.subtitle} textProps={{ numberOfLines: 2 }}>
+          {dates}{' '}
+        </CustomText>
+        {role === ROLE.HOST ? (
+          <>
+            <CustomText style={styles.subtitle}>
+              {EVENT.TOTAL_CONFIRMED} {item?.totalConfirmedGuests}
+            </CustomText>
+            <CustomText style={styles.subtitle}>
+              {EVENT.TOTAL_CHECKEDIN} {item?.totalCheckedInGuests}
+            </CustomText>
+          </>
+        ) : (
+          <View>
+            <CustomText style={styles.subtitle} textProps={{ numberOfLines: 3 }}>
+              {locationText}
+            </CustomText>
+            {!isHideCity && <CustomText style={styles.subtitle} textProps={{ numberOfLines: 2 }}>
+              {item?.location?.city}
+            </CustomText>
+            }
+          </View>
+
+        )}
+        <ButtonSmall
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.VIEW_EVENT}
+          colorTheme={'dark'}
+          onPress={handlEventPress}
+        />
+      </View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    btnStyle: {
-        borderRadius: 100,
-        paddingHorizontal:10,
-        marginTop: 20,
-        paddingVertical: 7
-    },
-    container: {
-        flexDirection: 'row',
-        padding: 10,
-        flex: 1,
-        width: Wp(90),
-        // height: Hp(25),
-        backgroundColor: COLORS.white,
-        borderColor: COLORS.borderGray,
-        borderRadius: 10,
-        borderWidth: 1,
-        marginBottom: 10,
-    },
-    imageContainer: {
-        alignItems: 'center',
-        // height: 100,
-    },
-    contentContainer: {
-        flexDirection: 'column',
-        padding: 10,
-        flex: 1,
-        backgroundColor: COLORS.white,
-    },
-    errorInputWrapper: {
-        borderColor: COLORS.borderRed,
-        backgroundColor: COLORS.bgRed,
-    },
-    icon: {
-        // marginRight: 10,
-        height: Hp(20),
-        width: Wp(30),
-    },
-    titleStyle: {
-        fontSize: 22,
-        fontFamily: fontFamily.RomieTrial_Bold,
-        marginBottom: 5
-    },
-    subtitle: {
-        color: COLORS.light_gray,
-        fontSize: 12,
-        fontFamily: fontFamily.ABCDiatype_Regular,
-        marginTop: 1,
-    },
-    errorText: {
-        fontSize: 12,
-        marginTop: 5,
-        color: COLORS.errorText,
-    },
+  btnStyle: {
+    borderRadius: 100,
+    marginTop: verticalMarginScale(10),
+    paddingVertical: verticalMarginScale(8),
+    paddingHorizontal: horizontalMarginScale(12),
+    alignSelf: 'flex-start',
+  },
+  container: {
+    flexDirection: 'row',
+    paddingHorizontal: horizontalMarginScale(16),
+    paddingVertical: verticalMarginScale(16),
+    borderColor: COLORS.borderGray,
+    borderRadius: radiusScale(16),
+    borderWidth: 1,
+    marginBottom: 10,
+    gap: horizontalMarginScale(16),
+  },
+  contentContainer: {
+    flexDirection: 'column',
+    paddingTop: verticalMarginScale(18),
+    flex: 1,
+    backgroundColor: COLORS.white,
+  },
+  icon: {
+    borderRadius: radiusScale(8),
+    height: horizontalScale(175),
+    width: verticalScale(120),
+    backgroundColor: COLORS.borderGray,
+  },
+  titleStyle: {
+    fontSize: fontScale(24),
+    fontFamily: fontFamily.RomieTrial_Bold,
+    marginBottom: verticalMarginScale(10),
+    color: 'black'
+  },
+  subtitle: {
+    color: COLORS.light_gray,
+    fontFamily: fontFamily.ABCDiatype_Medium,
+    fontSize: fontScale(12),
+  },
+  roleContainer: {
+    backgroundColor: COLORS.white, // Ensure background is applied
+    borderRadius: 3, // Apply border radius
+    borderColor: COLORS.black, // Define border color
+    paddingVertical: 2,
+    paddingHorizontal: 5,
+    position: 'absolute',
+    zIndex: 2,
+    bottom: 1,
+    marginBottom: 5,
+    alignSelf: 'center',
+  },
+  roleText: {
+    color: COLORS.black,
+    fontSize: fontScale(12),
+    textAlign: 'center',
+  },
 });
 
 export default EventItem;

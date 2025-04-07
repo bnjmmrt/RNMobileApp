@@ -1,266 +1,460 @@
-import React, { useState, useRef, forwardRef, useEffect } from 'react';
+// InviteReferralBottomSheet.tsx
+
+import { useFocusEffect } from '@react-navigation/native';
+import { environment } from 'environments/environment';
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
-  StyleSheet,
-  View,
-  Text,
   FlatList,
-  Share,
-  PermissionsAndroid,
+  Linking,
   Platform,
+  SafeAreaView,
+  Share,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import Contacts, { Contact } from 'react-native-contacts';
-import BottomSheetComponent from '../BottomSheet/BottomSheet';
+import useApi from 'src/axios/useApi';
+import {
+  fontScale,
+  horizontalMarginScale,
+  horizontalScale,
+  Hp,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
+import useContacts, { ContactItem } from 'src/utils/hooks/useContactPermission';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import IMAGES from '../../assets/images';
+import { useGetConfirmedMembersMutation } from '../../redux/actions/referralApiAction';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
-import Title from '../Title/Title';
+import {
+  changeSafeAreaViewConfig,
+  fontFamily,
+  numberSpacing,
+} from '../../utils/functions';
+import TabBar from '../ActiveTabBar/TabBar';
 import AvatarInitials from '../AvatarInitials';
-import { fontFamily } from '../../../src/utils/functions';
-import Input from '../Input/Input';
-import IMAGES from '../../../src/assets/images';
-import ButtonSmall from '../ButtonSmall';
 import Button from '../Button';
+import ButtonSmall from '../ButtonSmall';
+import EventEmptyRecord from '../EmptyRecord/EventEmptyRecord';
+import Header from '../Header/Header';
+import SearchInput from '../SearchInput';
+import { RenderMemberList } from './RenderMemberList';
+import { BOTTOM_SAFEAREA_SPACING } from '../Wrappers/SafeAreaViewWrapper';
 
-interface AppMember {
-  name: string;
-  phone: string;
-}
-
-interface ContactItem {
-  name: string;
-  phone: string;
-}
-
-const appMembers: AppMember[] = [
-  { name: 'Leslie Alexander', phone: '2195550114' },
-  { name: 'David Taylor', phone: '5556106679' },
-  { name: 'Orson Plante', phone: '23244402' },
-];
+const PAGE_SIZE = 30;
 
 const InviteReferralBottomSheet = forwardRef((props, ref) => {
-  const [contacts, setContacts] = useState<ContactItem[]>([]);
-  const [members, setMembers] = useState<ContactItem[]>([]);
-  const [filteredContacts, setFilteredContacts] = useState<ContactItem[]>([]);
-  const [filteredMembers, setFilteredMembers] = useState<ContactItem[]>([]);
-  const [requestSent, setRequestSent] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const searchInputRef = useRef(null);
+  const [contacts, setContacts] = useState([]);
+  const [members, setMembers] = useState([]);
+  const [filteredContacts, setFilteredContacts] = useState([]);
+  const [filteredMembers, setFilteredMembers] = useState([]);
+  const [selectedTab, setSelectedTab] = useState('01');
+  const [requestSent, setRequestSent] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [getConfirmedMembers, { data, isLoading }] =
+    useGetConfirmedMembersMutation();
+  const { apiRequest } = useApi();
+  const {
+    getContacts,
+    permissionGranted,
+    getContactNumbersOnly,
+    permissionLoading,
+  } = useContacts(true);
+  const searchRef = useRef(null);
+  const debounceTimeoutRef = useRef(null);
 
-  const requestAndroidPermissions = ()=>{
-    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
-        title: 'Contacts',
-        message: 'This app would like to view your contacts.',
-        buttonPositive: 'Please accept bare mortal',
-    })
-        .then((res) => {
-            console.log('Permission: ', res);
-            fetchContacts();
-        })
-        .catch((error) => {
-            console.error('Permission error: ', error);
-        });
-  };
+  const [isRendering, setRendring] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
+    }, []),
+  );
 
   useEffect(() => {
-    Platform.OS == 'ios' ? fetchContacts() : requestAndroidPermissions();
-  }, []);
+    if (permissionGranted) fetchContacts();
+  }, [permissionGranted]);
 
   const fetchContacts = async () => {
     try {
-      const deviceContacts = await Contacts.getAll();
-
-      const formattedContacts = deviceContacts.map((contact: Contact) => ({
-        name: `${contact.givenName} ${contact.familyName}`.trim(),
-        phone: contact.phoneNumbers[0]?.number.replace(/\D/g, '') || '',
-      })).filter(contact => contact.phone);
-
-      const appMemberPhones = appMembers.map((member) => member.phone);
-      const membersList = formattedContacts.filter((contact) =>
-        appMemberPhones.includes(contact.phone)
+      setRendring(true);
+      const formattedContacts = await getContacts();
+      const contactNumbers = await getContactNumbersOnly();
+      const response = await getConfirmedMembers({ contacts: contactNumbers });
+      const referralRequests = await apiRequest(
+        'get',
+        'users/v1/auth/list-referral-requests/',
       );
-      const nonMembersList = formattedContacts.filter(
-        (contact) => !appMemberPhones.includes(contact.phone)
-      );
+      const referralUserIds = referralRequests?.data?.data?.map(r => r.userId);
 
-      setContacts(nonMembersList);
-      setMembers(membersList);
-      setFilteredContacts(nonMembersList);
-      setFilteredMembers(membersList);
-    } catch (error) {
-      console.error('Error fetching contacts:', error);
+      if (response?.data?.data) {
+        const membersWithSentFlag = response.data.data.map(member => ({
+          ...member,
+          isSent: referralUserIds?.includes(member.userId),
+        }));
+
+        setMembers(membersWithSentFlag);
+        setFilteredMembers(membersWithSentFlag);
+
+        const memberPhoneNumbers = membersWithSentFlag.map(m => m.phoneNumber);
+        const nonMembers = formattedContacts.filter(
+          contact => !memberPhoneNumbers.includes(contact.phoneNumber),
+        );
+
+        setContacts(nonMembers);
+        setFilteredContacts(membersWithSentFlag);
+      } else {
+        setContacts([]);
+        setFilteredContacts([]);
+      }
+    } catch (err) {
+      console.error('Error loading contacts:', err);
+    } finally {
+      setRendring(false);
     }
   };
 
   const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    const lowercasedQuery = query.toLowerCase();
+    if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
 
-    setFilteredMembers(
-      members.filter((member) =>
-        member.name.toLowerCase().includes(lowercasedQuery)
-      )
-    );
+    debounceTimeoutRef.current = setTimeout(() => {
+      const lower = query.toLowerCase();
 
-    setFilteredContacts(
-      contacts.filter((contact) =>
-        contact.name.toLowerCase().includes(lowercasedQuery)
-      )
-    );
+      if (!query) {
+        setFilteredMembers(members.slice(0, PAGE_SIZE));
+        setFilteredContacts(contacts.slice(0, PAGE_SIZE));
+        return;
+      }
+
+      if (query.length < 2) {
+        setFilteredMembers([]);
+        setFilteredContacts([]);
+        return;
+      }
+
+      setFilteredMembers(
+        members.filter(m => m?.name?.toLowerCase().includes(lower)),
+      );
+      setFilteredContacts(
+        contacts
+          .filter(c => c?.name?.toLowerCase().includes(lower))
+          .slice(0, PAGE_SIZE),
+      );
+    }, 500);
+  };
+
+  const handleLoadMore = () => {
+    const nextPage = currentPage + 1;
+    const start = currentPage * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+    const newContacts = contacts.slice(start, end);
+    if (newContacts.length > 0) {
+      setFilteredContacts(prev => [...prev, ...newContacts]);
+      setCurrentPage(nextPage);
+    }
   };
 
   const handleInviteLink = async () => {
+    const link =
+      Platform.OS === 'android'
+        ? environment.playstoreLink
+        : environment.appStoreLink;
     try {
       await Share.share({
-        message:
-          '"Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world\'s top event organizers. Click here to join and start exploring unique opportunities: [Rumor App Link]"',
+        title: 'Join Rumor and Unlock Unique Experiences!',
+        message: `Hey! I wanted to invite you to join Rumor... ${link}`,
       });
-    } catch (error) {
-      console.error('Error sharing invite link:', error);
+    } catch (err) {
+      console.error('Share error:', err);
     }
   };
 
   const handleInvite = (contact: ContactItem) => {
-    setRequestSent((prev) => [...prev, contact.phone]);
-    // FlashMessageComponent.show('success', `Invitation sent to ${contact.name}.`);
+    const rumorAppLink =
+      Platform.OS === 'android'
+        ? environment.playstoreLink
+        : environment.appStoreLink;
+    const message = `Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world's top event organizers. Click here to join and start exploring unique opportunities: Andorid: ${environment.playstoreLink} | iOS: ${environment.appStoreLink}`;
+
+    const url = `sms:${contact.phoneNumber}?body=${encodeURIComponent(
+      message,
+    )}`;
+
+    Linking.openURL(url)
+      .then(() => setRequestSent(prev => [...prev, contact.phoneNumber]))
+      .catch(err => console.error('SMS error:', err));
   };
 
-  const renderListItem = (
-    item: ContactItem,
-    buttonLabel: string,
-    onPressAction: () => void,
-    isSent: boolean
-  ) => (
-    <View style={styles.listItem}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-        <AvatarInitials name={item.name} size={48} />
-        <View>
-          <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.phone}>{item.phone}</Text>
+  const renderEmptyComponent = () => {
+    if (!permissionGranted) {
+      return (
+        <View style={styles.emptyContainer}>
+          <EventEmptyRecord
+            isLoading={isRendering || permissionLoading}
+            title="Access your contacts"
+            subTitle="Sync your phone contacts to invite friends"
+            footerContent={
+              <ButtonSmall
+                colorTheme="dark"
+                leftIcon={IMAGES.settings}
+                style={styles.settingsButton}
+                title="Sync Contacts in Settings"
+                onPress={() => Linking.openURL('app-settings:')}
+              />
+            }
+          />
         </View>
+      );
+    }
+
+    return (
+      <View style={styles.emptyContainer}>
+        <EventEmptyRecord
+          title="No Results"
+          subTitle={
+            searchRef?.current?.searchText === ''
+              ? 'No Contacts are members at this time'
+              : 'Please refine your search.'
+          }
+          isLoading={isRendering || permissionLoading}
+        />
       </View>
-      <ButtonSmall
-        disabled={isSent}
-        style={styles.smallBtnStyle}
-        title={isSent ? 'Sent' : buttonLabel}
-        colorTheme={isSent ? 'dark' : 'dark'}
-        borderType={isSent ? 'STRIPE' : 'SOLID'}
-        leftIcon={isSent ? IMAGES.check : null}
-        onPress={onPressAction}
-      />
-    </View>
-  );
+    );
+  };
 
   return (
-    <BottomSheetComponent
-      ref={ref}
-      snapPoints={['90%']}
-      onClose={() => console.log('Bottom sheet closed')}
-    >
-      <View style={{ paddingHorizontal: 20, flex: 1 }}>
-        <Title title={LABLE.SELECT_A_REFERRAL} align="center" />
-        <View style={{ height: 16 }} />
-
-        <Input
-          ref={searchInputRef}
-          placeholder={LABLE.SEARCH_FRIENDS}
-          leftImage={IMAGES.search}
-          onChangeText={handleSearch}
-          defaultValue={searchQuery}
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <Header headerTitle="Referrals & Invites" showProgressBar={false} />
+      <View
+        style={{
+          paddingHorizontal: 20,
+          flex: 1,
+          marginTop: verticalMarginScale(12),
+        }}>
+        <TabBar
+          tab={'01'}
+          onTabChange={tab => {
+            setSelectedTab(tab);
+            handleSearch('');
+          }}
+          tabOneLabel="Request a Referral"
+          tabTwoLabel="Invite Contacts"
         />
 
-        {filteredMembers.length > 0 && (
-          <>
-            <Text style={styles.sectionTitle}>{LABLE.FRIENDS_WHO_ARE_MEMBERS}</Text>
-            <Text style={styles.sectionSubtitle}>{LABLE.REQUEST_A_REFERRAL}</Text>
+        {/* {!permissionGranted && (
+          <View
+            style={{
+              height: Hp(65),
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <EventEmptyRecord
+              title="Access your contacts"
+              subTitle="Easily sync your phone contacts to request referrals from members and invite friends to join you on Rumor"
+            />
+            <ButtonSmall
+              colorTheme="dark"
+              leftIcon={IMAGES.settings}
+              style={styles.settingsButton}
+              title="Sync Contacts in Settings"
+              onPress={() => Linking.openURL('app-settings:')}
+            />
+          </View>
+        )} */}
+
+        {selectedTab === '01' && (
+          <View style={{ flex: 1, gap: 8, marginTop: verticalMarginScale(12) }}>
+            {permissionGranted && !isRendering && !permissionLoading && (
+              <SearchInput
+                ref={searchRef}
+                placeholder={LABLE.SEARCH_FRIENDS}
+                onSearchTextChange={handleSearch}
+              />
+            )}
+            {permissionGranted && !isRendering && !permissionLoading && (
+              <View style={styles.sectionWrapper}>
+                <Text style={styles.sectionTitle}>
+                  {LABLE.FRIENDS_WHO_ARE_MEMBERS}
+                </Text>
+                <Text style={styles.sectionSubtitle}>
+                  {LABLE.REQUEST_A_REFERRAL}
+                </Text>
+              </View>
+            )}
             <FlatList
               data={filteredMembers}
-              scrollEnabled={false}
+              scrollEnabled={true}
+              showsVerticalScrollIndicator={false}
               contentContainerStyle={{ gap: 4 }}
-              keyExtractor={(item) => item.phone}
-              renderItem={({ item }) =>
-                renderListItem(
-                  item,
-                  'Request',
-                  () => handleInvite(item),
-                  requestSent.includes(item.phone)
-                )
+              keyExtractor={(item, index) => item.phoneNumber + index}
+              ListEmptyComponent={renderEmptyComponent()}
+              ListFooterComponent={
+                <View style={{ height: BOTTOM_SAFEAREA_SPACING }} />
               }
+              renderItem={({ item }) => <RenderMemberList item={item} />}
             />
-          </>
+            {/* {!isRendering && (
+            )} */}
+          </View>
         )}
 
-        {filteredContacts.length > 0 && (
-          <>
-            <Text style={styles.sectionTitle}>{LABLE.CONTACTS}</Text>
-            <Text style={styles.sectionSubtitle}>{LABLE.INVITE_FRIENDS_TO}</Text>
-            <FlatList
-              data={filteredContacts}
-              scrollEnabled={false}
-              keyExtractor={(item) => item.phone}
-              contentContainerStyle={{ gap: 4 }}
-              renderItem={({ item }) =>
-                renderListItem(
-                  item,
-                  'Invite',
-                  () => handleInvite(item),
-                  requestSent.includes(item.phone)
-                )
-              }
-            />
-          </>
+        {/* CONTACTS LIST */}
+        {selectedTab === '02' && (
+          <View style={{ flex: 1, gap: 8, marginTop: verticalMarginScale(12) }}>
+            {permissionGranted && (
+              <SearchInput
+                ref={searchRef}
+                placeholder={LABLE.SEARCH_FRIENDS}
+                onSearchTextChange={handleSearch}
+              />
+            )}
+            {permissionGranted && (
+              <View style={styles.sectionWrapper}>
+                <Text style={styles.sectionTitle}>{LABLE.CONTACTS}</Text>
+                <Text style={styles.sectionSubtitle}>
+                  {LABLE.INVITE_FRIENDS_TO}
+                </Text>
+              </View>
+            )}
+            {!isRendering && (
+              <FlatList
+                data={filteredContacts}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  gap: 4,
+                  flexGrow: 1,
+                  paddingBottom: verticalMarginScale(100),
+                }}
+                keyExtractor={(item, index) => item.phoneNumber + index}
+                renderItem={({ item }) => (
+                  <View style={styles.listItem}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        flex: 1,
+                        gap: 12,
+                      }}>
+                      <AvatarInitials name={item.name} size={48} />
+                      <View style={{ width: horizontalScale(206) }}>
+                        <Text numberOfLines={1} style={styles.name}>
+                          {item.name}
+                        </Text>
+                        <Text style={styles.phone}>
+                          {numberSpacing(item.phoneNumber, item.countryCode)}
+                        </Text>
+                      </View>
+                    </View>
+                    <ButtonSmall
+                      disabled={requestSent.includes(item.phoneNumber)}
+                      title={
+                        requestSent.includes(item.phoneNumber)
+                          ? 'Sent'
+                          : 'Invite'
+                      }
+                      style={styles.smallBtnStyle}
+                      colorTheme="dark"
+                      borderType={
+                        requestSent.includes(item.phoneNumber)
+                          ? 'STRIPE'
+                          : 'SOLID'
+                      }
+                      leftIcon={
+                        requestSent.includes(item.phoneNumber)
+                          ? IMAGES.check
+                          : null
+                      }
+                      onPress={() => handleInvite(item)}
+                    />
+                  </View>
+                )}
+                onEndReached={handleLoadMore}
+                onEndReachedThreshold={0.5}
+                ListEmptyComponent={renderEmptyComponent()}
+              />
+            )}
+          </View>
+        )}
+
+        {selectedTab === '02' && (
+          <Button
+            style={styles.btnStyle}
+            title={BUTTON_LABLE.INVITE_CONTACTS_VIA}
+            colorTheme="dark"
+            onPress={handleInviteLink}
+          />
         )}
       </View>
-      <Button
-        disabled={false}
-        style={styles.btnStyle}
-        title={BUTTON_LABLE.INVITE_CONTACTS_VIA}
-        colorTheme="dark"
-        onPress={handleInviteLink}
-      />
-    </BottomSheetComponent>
+    </View>
   );
 });
 
 const styles = StyleSheet.create({
+  sectionWrapper: {
+    gap: verticalMarginScale(4),
+    marginVertical: verticalMarginScale(4),
+  },
   smallBtnStyle: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: horizontalMarginScale(12),
+    paddingVertical: verticalMarginScale(8),
+    borderRadius: 100,
+  },
+  settingsButton: {
+    marginTop: verticalMarginScale(12),
+    paddingHorizontal: horizontalMarginScale(12),
+    paddingVertical: verticalMarginScale(8),
     borderRadius: 100,
   },
   btnStyle: {
     borderRadius: 100,
-    marginTop: 20,
-    marginBottom: 40,
+    marginTop: verticalMarginScale(20),
+    marginBottom: BOTTOM_SAFEAREA_SPACING,
+    height: 48,
   },
   sectionTitle: {
-    fontSize: 18,
-    marginTop: 16,
+    fontSize: fontScale(18),
     textAlign: 'center',
     fontFamily: fontFamily.ABCDiatype_Medium,
+    color: COLORS.black,
   },
   sectionSubtitle: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     color: COLORS.light_gray,
     fontFamily: fontFamily.ABCDiatype_Regular,
-    marginBottom: 16,
     textAlign: 'center',
   },
   listItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 12,
+    paddingHorizontal: horizontalMarginScale(12),
+    paddingVertical: verticalMarginScale(12),
     borderWidth: 1,
     borderColor: COLORS.borderGray,
     borderRadius: 16,
+    gap: 8,
   },
   name: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     fontFamily: fontFamily.ABCDiatype_Regular,
+    color: COLORS.black,
   },
   phone: {
-    fontSize: 12,
+    fontSize: fontScale(12),
     color: COLORS.light_gray,
-    marginTop: 4,
+    marginTop: verticalMarginScale(4),
     fontFamily: fontFamily.ABCDiatype_Regular,
+  },
+  emptyContainer: {
+    height: Hp(55),
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -1,18 +1,17 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from '@react-navigation/stack';
 import LandingScreen from '../screens/LandingScreen/LandingScreen';
 import EmailPhoneScreen from '../screens/EmailPhoneScreen/EmailPhoneScreen';
 import VerifyOtpScreen from '../screens/VerifyOtpScreen/VerifyOtpScreen';
-import { AppStack } from './AppStack';
-
 
 // Define the param list for the stack navigator
 export type AuthStackParamList = {
   LandingScreen: undefined;
   EmailPhoneScreen: undefined;
   VerifyOtpScreen: undefined;
-  BottomTabBar: undefined;
-  AppStack: undefined;
 };
 
 const Stack = createStackNavigator<AuthStackParamList>();
@@ -21,8 +20,9 @@ export const AuthStack: React.FC = () => {
   return (
     <Stack.Navigator
       initialRouteName="LandingScreen"
-      screenOptions={({ route, navigation }) => ({})}>
-
+      screenOptions={({ route, navigation }) => ({
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      })}>
       <Stack.Screen
         name="LandingScreen"
         component={LandingScreen}
@@ -39,13 +39,6 @@ export const AuthStack: React.FC = () => {
         component={VerifyOtpScreen}
         options={{ headerShown: false }}
       />
-
-      <Stack.Screen
-        name="AppStack"
-        component={AppStack}
-        options={{ headerShown: false }}
-      />
-
     </Stack.Navigator>
   );
 };

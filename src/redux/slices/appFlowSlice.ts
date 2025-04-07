@@ -1,35 +1,49 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface UserDetailsState {
+export interface Address {
+  address: string;
+  placeId: string;
+  latitude?: string;
+  longitude?: string;
+  timeZone?: {
+    timeZoneId: string;
+    timeZoneName: string;
+  };
+}
+export interface UserDetailsState {
   firstName: string;
   lastName: string;
-  gender: string | null;
-  baseCity: string;
+  gender: string;
+  baseCity: Address;
   birthday: string;
   email: string;
   phone: string;
   creativeFocus: string[];
   interest: string[];
-  profilePic:any;
+  profilePic: any;
   pageProgress: number;
   isEmailVerified: boolean;
   isEmailPhoneBothVerified: boolean;
+  countryCodeFlag: string;
+  countryCallingCode: string;
 }
 
 const initialState: UserDetailsState = {
   firstName: '',
   lastName: '',
-  gender: null,
-  baseCity: '',
+  gender: '',
+  baseCity: { address: '', placeId: '' },
   birthday: '',
   email: '',
   phone: '',
   creativeFocus: [],
   interest: [],
-  profilePic:'',
+  profilePic: '',
   pageProgress: 1,
   isEmailVerified: false,
   isEmailPhoneBothVerified: false,
+  countryCodeFlag: '',
+  countryCallingCode: '',
 };
 
 const appFlowSlice = createSlice({
@@ -42,11 +56,15 @@ const appFlowSlice = createSlice({
     setLastName(state, action: PayloadAction<string>) {
       state.lastName = action.payload;
     },
-    setGender(state, action: PayloadAction<string | null>) {
+    setGender(state, action: PayloadAction<string>) {
       state.gender = action.payload;
     },
-    setBaseCity(state, action: PayloadAction<string>) {
-      state.baseCity = action.payload;
+    setBaseCity(
+      state,
+      action: PayloadAction<{ address: string; placeId: string }>,
+    ) {
+      state.baseCity.address = action.payload.address;
+      state.baseCity.placeId = action.payload.placeId;
     },
     setBirthday(state, action: PayloadAction<string>) {
       state.birthday = action.payload;
@@ -56,6 +74,12 @@ const appFlowSlice = createSlice({
     },
     setPhone(state, action: PayloadAction<string>) {
       state.phone = action.payload;
+    },
+    setCountryCallingCode(state, action: PayloadAction<string>) {
+      state.countryCallingCode = action.payload;
+    },
+    setCountryCodeFlag(state, action: PayloadAction<string>) {
+      state.countryCodeFlag = action.payload;
     },
     setCreativeFocus(state, action: PayloadAction<string[]>) {
       state.creativeFocus = action.payload;
@@ -75,6 +99,11 @@ const appFlowSlice = createSlice({
     setIsEmailPhoneBothVerified(state, action: PayloadAction<any>) {
       state.isEmailPhoneBothVerified = action.payload;
     },
+
+    getAppFlowDetails(state) {
+      // return state object
+      return state;
+    },
     resetAppFlowDetails(state) {
       // Reset state to initial values
       Object.assign(state, initialState);
@@ -90,12 +119,15 @@ export const {
   setBirthday,
   setEmail,
   setPhone,
+  setCountryCallingCode,
+  setCountryCodeFlag,
   setCreativeFocus,
   setInterest,
   setPageProgress,
   setProfilePic,
   setIsEmailVerified,
   setIsEmailPhoneBothVerified,
+  getAppFlowDetails,
   resetAppFlowDetails,
 } = appFlowSlice.actions;
 

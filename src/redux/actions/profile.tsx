@@ -36,7 +36,7 @@ export const signupProfileSetup =
 
         if (data) {
           try {
-            console.log('auth signup profile setup response data:', data);
+            // console.log('auth signup profile setup response data:', data);
           } catch (error) {
             console.error('Error during additional operations:', error);
           }

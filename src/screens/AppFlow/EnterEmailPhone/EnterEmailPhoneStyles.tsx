@@ -1,36 +1,56 @@
-import { StyleSheet } from 'react-native';
-import { Wp, Hp } from '../../../utils/dimensions';
+import { Platform, StyleSheet } from 'react-native';
+import {
+  Wp,
+  Hp,
+  radiusScale,
+  verticalMarginScale,
+  horizontalMarginScale,
+  fontScale,
+  verticalScale,
+} from '../../../utils/dimensions';
 import { fontFamily } from '../../../utils/functions';
 import { COLORS } from '../../../utils/constants';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 const EnterEmailPhoneStyles = () => {
   return StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: COLORS.white,
+      paddingBottom: 20,
     },
     btnStyle: {
       width: Wp(85),
-      borderRadius: 100,
+      borderRadius: radiusScale(100),
+      bottom: BOTTOM_SAFEAREA_SPACING,
     },
     contentContainer: {
       flex: 1,
-      paddingVertical: 10,
-      paddingHorizontal: 20,
+      paddingTop: verticalMarginScale(10),
+      paddingHorizontal: horizontalMarginScale(20),
     },
     title: {
       color: COLORS.black,
-      fontSize: 32,
+      fontSize: fontScale(32),
       fontFamily: fontFamily.RomieTrial_Bold,
     },
     subtitle: {
       color: COLORS.light_gray,
-      fontSize: 13,
+      fontSize: fontScale(13),
       fontFamily: fontFamily.ABCDiatype_Regular,
       marginVertical: Hp(2),
     },
     spacer: {
       flex: 1,
+    },
+    label: {
+      // paddingVertical: horizontalMarginScale(2),
+      fontSize: fontScale(14),
+      paddingTop: verticalMarginScale(8),
+      marginBottom: 3,
+      color: COLORS.black,
+      fontWeight: '500',
+      lineHeight: 16,
     },
   });
 };

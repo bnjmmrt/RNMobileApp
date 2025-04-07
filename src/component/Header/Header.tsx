@@ -1,36 +1,104 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {TouchableOpacity, StyleSheet, Text, View, Image} from 'react-native';
-import {Wp, Hp} from '../../utils/dimensions';
+import {
+  Image,
+  ImageSourcePropType,
+  Platform,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native';
+import { fontFamily } from '../..//utils/functions';
 import IMAGES from '../../assets/images';
-import {COLORS} from '../../utils/constants';
+import { COLORS } from '../../utils/constants';
+import {
+  fontScale,
+  horizontalMarginScale,
+  radiusScale,
+  verticalMarginScale,
+  verticalScale,
+} from '../../utils/dimensions';
 import ProgressBar from '../ProgressBar/ProgressBar';
-import {fontFamily} from '../..//utils/functions';
+import { TOP_SAFEAREA_SPACING } from '../Wrappers/SafeAreaViewWrapper';
 
 interface HeaderProps {
-  onPress: () => void;
+  onPress?: () => void;
   headerTitle?: string;
-   showProgressBar?:boolean
+  showProgressBar?: boolean;
+  showBackButton?: boolean;
+  rightIcon?: ImageSourcePropType;
+  onPressRightIcon?: () => void;
+  rightIconWrapperStyle?: StyleProp<ViewStyle>;
+  numberOfLines?: number;
+  addTopSafeAreaPadding?: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({
   onPress,
   headerTitle,
-  showProgressBar=true
+  showProgressBar = true,
+  onPressRightIcon = () => { },
+  rightIcon,
+  showBackButton = true,
+  rightIconWrapperStyle = {},
+  numberOfLines,
+  addTopSafeAreaPadding = true,
 }) => {
+  const navigation = useNavigation();
+
+  const onPressBackIcon = () => {
+    if (onPress) {
+      onPress();
+    } else {
+      if (navigation.canGoBack()) navigation.goBack();
+    }
+  };
+
   return (
-    <View style={{}}>
-      <View style={styles.container}>
+    <View
+      style={{ paddingTop: addTopSafeAreaPadding ? TOP_SAFEAREA_SPACING : 0 }}>
+      <View
+        style={[
+          styles.container,
+          {
+            paddingBottom: showProgressBar
+              ? verticalMarginScale(7)
+              : verticalMarginScale(16),
+          },
+        ]}>
         {/* Back Arrow */}
-        <TouchableOpacity onPress={onPress}>
-          <View style={styles.iconWrapper}>
-            <Image source={IMAGES.leftArrow} />
-          </View>
-        </TouchableOpacity>
+        {showBackButton ? (
+          <TouchableOpacity
+            onPress={onPressBackIcon}
+            style={styles.iconWrapper}>
+            <Image source={IMAGES.leftArrow} style={styles.icon} />
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.emptyWrapper} />
+        )}
 
         {/* Header Title */}
-       { headerTitle &&  <Text style={styles.headerTitle}>{headerTitle}</Text>}
+        <View style={styles.titleWrapper}>
+          <Text style={styles.headerTitle} numberOfLines={numberOfLines}>
+            {headerTitle}
+          </Text>
+        </View>
+
+        {/* Right Icon */}
+        {rightIcon ? (
+          <TouchableOpacity
+            onPress={onPressRightIcon}
+            style={[styles.iconWrapper, rightIconWrapperStyle]}>
+            <Image source={rightIcon} style={styles.icon} />
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.emptyWrapper} />
+        )}
       </View>
-     { showProgressBar &&  <ProgressBar />}
+      {showProgressBar ? <ProgressBar /> : null}
     </View>
   );
 };
@@ -39,28 +107,40 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: Wp(5),
-    marginTop: Hp(2),
+    marginHorizontal: horizontalMarginScale(20),
+    paddingTop: verticalMarginScale(16),
+    paddingBottom: verticalMarginScale(16),
   },
   iconWrapper: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: verticalScale(40),
+    height: verticalScale(40),
+    borderRadius: radiusScale(40),
     backgroundColor: COLORS.tabBorderColor,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 2, // Shadow on Android
+    // elevation: 2, // Shadow on Android
     // shadowColor: '#000',
     // shadowOffset: {width: 0, height: 2},
     // shadowOpacity: 0.2,
     // shadowRadius: 2,
   },
+  icon: {
+    width: verticalScale(16),
+    height: verticalScale(16),
+    resizeMode: 'contain',
+  },
+  emptyWrapper: {
+    width: verticalScale(40),
+    height: verticalScale(40),
+  },
+  titleWrapper: {
+    flex: 1,
+  },
   headerTitle: {
-    width:"77%",
-    fontSize: 24,
+    fontSize: fontScale(24),
     color: COLORS.black,
     fontFamily: fontFamily.RomieTrial_Bold,
-    textAlign:"center",
+    textAlign: 'center',
   },
 });
 

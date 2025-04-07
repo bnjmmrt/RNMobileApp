@@ -2,26 +2,28 @@ import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import { COLORS } from '../../utils/constants';
-import { Hp } from '../../utils/dimensions';
+import { fontScale, Hp, verticalMarginScale } from '../../utils/dimensions';
 
 interface HeaderProps {
-  title: string;
+  title?: string;
   subTitle?: string;
-  align?: 'left' | 'center' | 'right'; 
+  align?: 'left' | 'center' | 'right';
+  numberOfLinesTitle?: number;
+  numberOfLinesSubtitle?: number;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, subTitle, align = 'left' }) => {
+const Header: React.FC<HeaderProps> = ({ title, subTitle, align = 'left', numberOfLinesTitle, numberOfLinesSubtitle }) => {
   return (
     <View style={[styles.container, { alignItems: align }]}>
-      <Text style={styles.title}>{title}</Text>
-      {subTitle && <Text style={styles.subTitle}>{subTitle}</Text>}
+      {title && <Text numberOfLines={numberOfLinesTitle} style={[styles.title, { textAlign: align }]}>{title}</Text>}
+      {subTitle && <Text numberOfLines={numberOfLinesSubtitle} style={[styles.subTitle, { textAlign: align }]}>{subTitle}</Text>}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 10,
+    marginTop: verticalMarginScale(10),
   },
   title: {
     color: COLORS.black,
@@ -30,8 +32,8 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     color: COLORS.light_gray,
-    fontSize: 13,
-    fontFamily: fontFamily.ABCDiatype_Regular,
+    fontSize: 14,
+    fontFamily: fontFamily.ABCDiatype_Medium,
     marginVertical: Hp(1),
     textAlign: 'center', // Default alignment
   },

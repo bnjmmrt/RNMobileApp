@@ -1,33 +1,55 @@
-import React, { useState } from 'react';
+import React, { useCallback } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { LABLE } from '../../utils/constants';
 import ChatScreenStyle from './ChatScreenStyle';
-import { SafeAreaView } from 'react-native';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 import AfterAppStaticComponent from '../../component/BeforeAppStaticComponent/AfterAppStaticComponent';
-import { useSelector } from 'react-redux';
-import { RootState } from '@reduxjs/toolkit/query';
-// Define the type for navigation props
+import { shallowEqual, useSelector } from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { View } from 'react-native-animatable';
+import { RootState } from 'src/redux/slices';
+import { ROLE } from 'src/utils/constants';
 interface ChatScreenProps extends NativeStackScreenProps<any, any> { }
 
 const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
   const styles = ChatScreenStyle();
 
+  const { role, token } = useSelector(
+    (state: RootState) => ({
+      token: state.auth.token,
+      role: state.auth.role,
+    }),
+    shallowEqual,
+  );
 
-  const loginData = useSelector((state: RootState) => state.auth.loginData);
-  const [isInvited, setInvited] = useState<boolean>(loginData?.isInvited || false)
+  useFocusEffect(
+    useCallback(() => {
+      if (!token && role !== ROLE.NON_MEMBER) {
+        changeSafeAreaViewConfig({
+          ...SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME,
+          statusBarStyle: 'light-content',
+        });
+      }
+    }, []),
+  );
+
+  if (token && role == ROLE.NON_MEMBER) {
+    return <AfterAppStaticComponent />;
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
-      {loginData.isSignUpCompleted ?
-        <AfterAppStaticComponent
-          title={LABLE.YOU_ARE_ON_WAITLIST}
-          subTitle={LABLE.FULL_ACCESS_UNLOCK} />
-        :
-        <BeforeAppStaticComponent
-          title={LABLE.CHAT_WITH_HOST}
-          subTitle={LABLE.CONNECT_DIRECTLY_WITH_PEOPLE} />}
-    </SafeAreaView>
+    <View style={styles.container}>
+      {token ? (
+        role !== ROLE.NON_MEMBER ? (
+          <BeforeAppStaticComponent isChatScreen={true} />
+        ) : (
+          <AfterAppStaticComponent />
+        )
+      ) : (
+        <BeforeAppStaticComponent isChatScreen={true} />
+      )}
+    </View>
   );
 };
 

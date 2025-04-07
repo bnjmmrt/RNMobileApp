@@ -1,83 +1,126 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Text } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LABLE, BUTTON_LABLE } from '../../utils/constants';
-import EmailPhoneStyles from './EmailPhoneStyles';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { KeyboardAvoidingView, View } from 'react-native';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
+import { changeSafeAreaViewConfig } from 'src/utils/functions';
+import useKeyboard from 'src/utils/hooks/useKeyboard';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import TabBar from '../../component/ActiveTabBar/TabBar';
 import BackButton from '../../component/BackButton/BackButton';
-import PhoneNumberInput from '../../component/PhonNumberComponent/PhoneNumberInput';
 import Button from '../../component/Button';
-import TermsAndPolicy from '../../component/TermsAndPlolicy/TermsAndPolicy';
 import EmailInput from '../../component/EmailComponent/EmailInput';
-import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
+import PhoneNumberInput from '../../component/PhonNumberComponent/PhoneNumberInput';
+import TermsAndPolicy from '../../component/TermsAndPlolicy/TermsAndPolicy';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
+import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
+import { BUTTON_LABLE, LABLE } from '../../utils/constants';
+import EmailPhoneStyles from './EmailPhoneStyles';
+import { useDispatch, useSelector } from 'react-redux';
+import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
+import { verticalMarginScale } from 'src/utils/dimensions';
+import { RootState } from 'src/redux/slices';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> { }
 
 const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
-    const styles = EmailPhoneStyles();
-    const [currentTab, setCurrentTab] = useState('01');
-    const phoneNumberInputRef = useRef<any>(null);
-    const emailInputRef = useRef<any>(null);
-    const [showBottomSheet, setShowBottomSheet] = useState(false);
-    const [URL, setURL] = useState('');
+  const dispatch = useDispatch();
+  const { keyboardVisible } = useKeyboard();
+  const styles = EmailPhoneStyles();
+  const [currentTab, setCurrentTab] = useState('01');
+  const phoneNumberInputRef = useRef<any>(null);
+  const emailInputRef = useRef<any>(null);
+  const [URL, setURL] = useState('');
+  const fcmToken = useSelector((state: RootState) => state.auth.fcmToken);
 
-    useEffect(() => {
-        URL.length > 0 && setShowBottomSheet(true)
-    }, [URL])
+  const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
-    const setWebUrl = (url: string) => {
-        setURL(url)
-    };
-    const onChangeBottomSheet = (index: number) => {
-        if (index === -1) {
-            setShowBottomSheet(false);
-        }
+  dispatch(resetAppFlowDetails());
+
+  useEffect(() => {
+    URL.length > 0 && bottomSheetRef?.current?.open();
+  }, [URL]);
+
+  const setWebUrl = (url: string) => {
+    setURL(url);
+    url && bottomSheetRef?.current?.open();
+  };
+
+  const onNextClick = () => {
+    if (currentTab == '01') {
+      phoneNumberInputRef.current &&
+        phoneNumberInputRef.current.handleNextPress();
+    } else {
+      emailInputRef.current && emailInputRef.current.handleNextPress();
     }
+  };
 
-    const onNextClick = () => {
-        if (currentTab == '01') {
-            phoneNumberInputRef.current && phoneNumberInputRef.current.handleNextPress();
-        } else {
-            emailInputRef.current && emailInputRef.current.handleNextPress();
-        }
-    };
+  const handleBackPress = () => navigation.goBack();
 
-    const handleBackPress = () => navigation.goBack();
+  const handleTabChange = (tab: string) => {
+    setCurrentTab(tab);
+  };
 
-    const handleTabChange = (tab: string) => {
-        setCurrentTab(tab);
-    };
-    const title = currentTab == '01' ? LABLE.ENTER_YOUR_PHONE_NUMBER : LABLE.ENTER_YOUR_EMAIL
-    const subTitle = currentTab == '01' ? LABLE.RUMOR_WILL_SEND_YOU_A_TEXT_WITH_A_VERIFICATION_CODE : LABLE.RUMOR_WILL_SEND_YOU_A_EMAIL_WITH_A_VERIFICATION_CODE
-    return (
-        <SafeAreaView style={styles.container}>
-            <BackButton onPress={handleBackPress} />
-            <TabBar onTabChange={handleTabChange} tabOneLabel="Phone" tabTwoLabel="Email" />
-            <View style={styles.contentContainer}>
-                <TitleSubtitle title={title} subTitle={subTitle}/>
+  useFocusEffect(
+    useCallback(() => {
+      changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
+    }, []),
+  );
 
-                {currentTab == '01' ?
-                    <PhoneNumberInput ref={phoneNumberInputRef} />
-                    :
-                    <EmailInput ref={emailInputRef} />}
+  const title =
+    currentTab == '01' ? LABLE.ENTER_YOUR_PHONE_NUMBER : LABLE.ENTER_YOUR_EMAIL;
+  const subTitle =
+    currentTab == '01'
+      ? LABLE.RUMOR_WILL_SEND_YOU_A_TEXT_WITH_A_VERIFICATION_CODE
+      : LABLE.RUMOR_WILL_SEND_YOU_A_EMAIL_WITH_A_VERIFICATION_CODE;
 
-                <View style={styles.spacer} />
-                <TermsAndPolicy setUrl={setWebUrl} type='large'showMessage ={true} />
-                <Button
-                    disabled={false}
-                    style={styles.btnStyle}
-                    title={BUTTON_LABLE.NEXT}
-                    colorTheme="dark"
-                    onPress={onNextClick}
-                />
-            </View>
-            {showBottomSheet && <WebViewBottomSheet url={URL} onChange={onChangeBottomSheet} />}
+  return (
+    <View behavior="padding" style={styles.container}>
+      <BackButton onPress={handleBackPress} />
+      <TabBar
+        tab={'01'}
+        onTabChange={handleTabChange}
+        tabOneLabel="Phone"
+        tabTwoLabel="Email"
+      />
+      <View style={styles.contentContainer}>
+        <TitleSubtitle title={title} subTitle={subTitle} />
 
-        </SafeAreaView>
-    );
+        {currentTab == '01' ? (
+          <PhoneNumberInput
+            ref={phoneNumberInputRef}
+            otherStyle={{ marginTop: 12 }}
+          />
+        ) : (
+          <EmailInput ref={emailInputRef} otherStyle={{ marginTop: 12 }} />
+        )}
+
+        <View style={styles.spacer} />
+
+        {!keyboardVisible ? (
+          <>
+            <TermsAndPolicy
+              setUrl={setWebUrl}
+              type="large"
+              showMessage={true}
+            />
+            <Button
+              disabled={false}
+              style={{
+                width: '100%',
+                marginBottom: BOTTOM_SAFEAREA_SPACING,
+              }}
+              title={BUTTON_LABLE.NEXT}
+              colorTheme="dark"
+              onPress={onNextClick}
+            />
+          </>
+        ) : null}
+      </View>
+      <WebViewBottomSheet url={URL} ref={bottomSheetRef} />
+    </View>
+  );
 };
 
 export default EmailPhoneScreen;
-

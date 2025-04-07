@@ -6,12 +6,12 @@ import { fontFamily } from '../../utils/functions';
 const ChatScreenStyle = () => {
 
     return StyleSheet.create({
-     
+
         container: {
             flex: 1,
             alignItems: 'center',
             // justifyContent: 'center',
-            backgroundColor: COLORS.black
+            backgroundColor: COLORS.black2
         },
         contentContainer: {
             flex: 1,
@@ -31,7 +31,7 @@ const ChatScreenStyle = () => {
         textBelowStyle: {
             color: COLORS.light_gray,
             fontSize: 12,
-            textAlign:'center',
+            textAlign: 'center',
             fontFamily: fontFamily.ABCDiatype_Regular,
             marginVertical: Hp(1),
         },
