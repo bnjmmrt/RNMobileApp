@@ -50,8 +50,8 @@ const useCalender = (eventDetails: Event) => {
 
     try {
       const events = await RNCalendarEvents.fetchAllEvents(
-        eventDetails.startDate,
-        eventDetails.endDate,
+        eventDetails?.startDate,
+        eventDetails?.endDate,
       );
       return events;
     } catch (error) {

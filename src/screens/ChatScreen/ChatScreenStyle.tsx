@@ -2,14 +2,16 @@ import { Platform, StyleSheet, } from 'react-native';
 import { Wp, Hp } from '../../utils/dimensions';
 import { COLORS } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
+import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 const ChatScreenStyle = () => {
 
     return StyleSheet.create({
-     
+
         container: {
             flex: 1,
             alignItems: 'center',
+            paddingTop: TOP_SAFEAREA_SPACING,
             // justifyContent: 'center',
             backgroundColor: COLORS.black2
         },
@@ -31,7 +33,7 @@ const ChatScreenStyle = () => {
         textBelowStyle: {
             color: COLORS.light_gray,
             fontSize: 12,
-            textAlign:'center',
+            textAlign: 'center',
             fontFamily: fontFamily.ABCDiatype_Regular,
             marginVertical: Hp(1),
         },

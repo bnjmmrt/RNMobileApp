@@ -10,7 +10,7 @@ import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { View } from 'react-native-animatable';
 import { RootState } from 'src/redux/slices';
 import { ROLE } from 'src/utils/constants';
-interface ChatScreenProps extends NativeStackScreenProps<any, any> {}
+interface ChatScreenProps extends NativeStackScreenProps<any, any> { }
 
 const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
   const styles = ChatScreenStyle();
@@ -37,6 +37,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
   if (token && role == ROLE.NON_MEMBER) {
     return <AfterAppStaticComponent />;
   }
+
 
   return (
     <View style={styles.container}>
