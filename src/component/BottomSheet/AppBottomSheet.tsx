@@ -23,16 +23,11 @@ import {
   StatusBar,
   StyleSheet,
 } from 'react-native';
-import FlashMessage from 'react-native-flash-message';
 import { useDispatch } from 'react-redux';
 import { changeTopSafeAreaViewColor } from 'src/redux/slices/safeAreaViewConfigSlice';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { COLORS } from '../../utils/constants';
 import { Wp } from '../../utils/dimensions';
-import {
-  getFlashMessageBackgroundColor,
-  MessageType,
-} from '../FlashMessageComponent/FlashMessageComponent';
 
 const { height } = Dimensions.get('window');
 
@@ -53,7 +48,6 @@ interface BottomSheetComponentProps {
 export type BottomSheetMethods = {
   open: () => void;
   close: () => void;
-  showFlashMessage: (type: MessageType, message: string) => void;
 };
 
 const BottomSheetComponent = forwardRef<
@@ -75,7 +69,6 @@ const BottomSheetComponent = forwardRef<
     },
     ref,
   ) => {
-    const flashMessageRef = useRef<FlashMessage | null>(null);
     const sheetRef = useRef<BottomSheetModal>(null);
     const { dismissAll } = useBottomSheetModal();
     const dispatch = useDispatch();
@@ -89,17 +82,7 @@ const BottomSheetComponent = forwardRef<
       close: () => {
         dismissAll();
       },
-      showFlashMessage: showFlashMessage,
     }));
-
-    const showFlashMessage = (type: MessageType, message: string) => {
-      flashMessageRef?.current?.showMessage({
-        message,
-        type: 'default',
-        backgroundColor: getFlashMessageBackgroundColor(type),
-        color: '#fff',
-      });
-    };
 
     const handleSheetChange = useCallback(
       (index: number) => {
@@ -203,7 +186,6 @@ const BottomSheetComponent = forwardRef<
         keyboardBlurBehavior="restore"
         enableDismissOnClose={true}>
         {children}
-        <FlashMessage ref={flashMessageRef} position={'top'} />
       </BottomSheetModal>
     );
   },

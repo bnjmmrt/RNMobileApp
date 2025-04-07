@@ -1,6 +1,13 @@
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import type {
   GooglePlaceData,
   GooglePlaceDetail,
@@ -134,14 +141,27 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
           data: GooglePlaceData,
           detail: GooglePlaceDetail | null,
         ) => {
-          // console.log('data.placeId', JSON.stringify(detail));
-          // console.log('data.placeeeeeee', JSON.stringify(data));
+          // console.log('data.data', JSON.stringify(data));
+          // console.log('data.detail', JSON.stringify(detail));
           const address: Address = {
             address: data.description,
             placeId: data.place_id,
             latitude: detail ? String(detail?.geometry?.location?.lat) : '',
             longitude: detail ? String(detail?.geometry?.location?.lng) : '',
           };
+          if (detail?.address_components) {
+            let city = '';
+            detail?.address_components.forEach(component => {
+              const types = component.types;
+
+              if (types.includes('locality')) {
+                city = component.long_name;
+              }
+            });
+            if (city) {
+              address.city = city;
+            }
+          }
           if (fetchTimezone) {
             const timestamp = Math.floor(Date.now() / 1000);
             const timeZoneResponse = await axios.get(

@@ -57,8 +57,6 @@ const AddNewUserSheet = forwardRef<
   useImperativeHandle(ref, () => ({
     open: () => sheetRef.current?.open(),
     close: () => sheetRef.current?.close(),
-    showFlashMessage: (type, message) =>
-      sheetRef.current?.showFlashMessage(type, message),
   }));
 
   const firstNameRef = useRef<InputRefMethods>(null);
@@ -197,11 +195,10 @@ const AddNewUserSheet = forwardRef<
       validateName('FirstName') &&
       lastNameRef?.current?.validateInputs() &&
       validateName('LastName') &&
-      (
-        //   phoneNumberRef?.current?.validatePhoneNumber(
-        //   ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
-        // ) ||
-        emailRef?.current?.validateInputs())
+      //   phoneNumberRef?.current?.validatePhoneNumber(
+      //   ERROR_MESSAGE.PLEASE_PROVIDE_EMAIL_OR_PHONE,
+      // ) ||
+      emailRef?.current?.validateInputs()
     ) {
       let validEmail = validateEmailAddress();
 
@@ -213,9 +210,10 @@ const AddNewUserSheet = forwardRef<
           email: normalizeEmail(email),
           firstName: firstName,
           lastName: lastName,
-          phoneNumber: phone != '' ? removeSpaceFromStr(
-            `${selectedCountry?.dial_code}${phone}`,
-          ) : phone,
+          phoneNumber:
+            phone != ''
+              ? removeSpaceFromStr(`${selectedCountry?.dial_code}${phone}`)
+              : phone,
         }).unwrap();
 
         if (response.success) {
@@ -303,7 +301,7 @@ const AddNewUserSheet = forwardRef<
           onChangeText={text => setPhone(text)}
           onSelectCountry={setSelectedCountry}
           forBottomSheet={true}
-        // errorMsg={errorMessage}
+          // errorMsg={errorMessage}
         />
 
         {existingUser ? (
@@ -311,15 +309,16 @@ const AddNewUserSheet = forwardRef<
             style={styles.userPreviewContainer}
             onPress={onPressExsitingUser}>
             <AvatarInitials
-              name={`${existingUser?.user?.firstName || ''} ${existingUser?.user?.lastName || ''
-                }`}
+              name={`${existingUser?.user?.firstName || ''} ${
+                existingUser?.user?.lastName || ''
+              }`}
               size={48}
               imgUrl={existingUser?.user?.imageUrl}
             />
             <View style={{ flex: 1 }}>
               <CustomText style={styles.userName}>
                 {`${existingUser?.user?.firstName} ${existingUser?.user?.lastName}`}
-                <Image resizeMode='contain' source={IMAGES.arrow_up_right} />
+                <Image resizeMode="contain" source={IMAGES.arrow_up_right} />
               </CustomText>
               <CustomText style={styles.alreadyPresent}>
                 {'This user is already a part of our database'}

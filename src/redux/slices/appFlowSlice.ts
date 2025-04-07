@@ -9,6 +9,7 @@ export interface Address {
     timeZoneId: string;
     timeZoneName: string;
   };
+  city?: string;
 }
 export interface UserDetailsState {
   firstName: string;

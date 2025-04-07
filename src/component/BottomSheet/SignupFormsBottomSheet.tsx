@@ -71,8 +71,6 @@ const SignupFormsBottomSheet = forwardRef<
   useImperativeHandle(ref, () => ({
     open: () => bottomSheetRef.current?.open(),
     close: () => bottomSheetRef.current?.close(),
-    showFlashMessage: (type, message) =>
-      bottomSheetRef.current?.showFlashMessage(type, message),
   }));
 
   const handleCopyLink = () => {

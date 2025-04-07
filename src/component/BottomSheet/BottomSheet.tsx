@@ -2,6 +2,7 @@ import {
   BottomSheetBackdrop,
   BottomSheetFooter,
   BottomSheetModal,
+  useBottomSheetModal,
 } from '@gorhom/bottom-sheet';
 import { BottomSheetBackdropProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
 import { BlurView } from '@react-native-community/blur';
@@ -21,16 +22,11 @@ import {
   StatusBar,
   StyleSheet,
 } from 'react-native';
-import FlashMessage from 'react-native-flash-message';
 import { useDispatch } from 'react-redux';
 import { changeTopSafeAreaViewColor } from 'src/redux/slices/safeAreaViewConfigSlice';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { COLORS } from '../../utils/constants';
 import { Wp } from '../../utils/dimensions';
-import {
-  getFlashMessageBackgroundColor,
-  MessageType,
-} from '../FlashMessageComponent/FlashMessageComponent';
 
 interface BottomSheetComponentProps {
   children: React.ReactNode;
@@ -49,7 +45,6 @@ interface BottomSheetComponentProps {
 export type BottomSheetMethods = {
   open: () => void;
   close: () => void;
-  showFlashMessage: (type: MessageType, message: string) => void;
 };
 
 const BottomSheetComponent = forwardRef<
@@ -71,9 +66,9 @@ const BottomSheetComponent = forwardRef<
     },
     ref,
   ) => {
-    const flashMessageRef = useRef<FlashMessage | null>(null);
     const sheetRef = useRef<BottomSheetModal>(null);
     const dispatch = useDispatch();
+    const { dismiss, dismissAll } = useBottomSheetModal();
 
     const [isSheetOpen, setIsSheetOpen] = useState(false);
 
@@ -84,17 +79,7 @@ const BottomSheetComponent = forwardRef<
       close: () => {
         sheetRef.current?.dismiss();
       },
-      showFlashMessage: showFlashMessage,
     }));
-
-    const showFlashMessage = (type: MessageType, message: string) => {
-      flashMessageRef?.current?.showMessage({
-        message,
-        type: 'default',
-        backgroundColor: getFlashMessageBackgroundColor(type),
-        color: '#fff',
-      });
-    };
 
     const handleSheetAnimationChange = useCallback((index: number) => {
       if (index === -1) {
@@ -202,7 +187,6 @@ const BottomSheetComponent = forwardRef<
         enableDismissOnClose={true}
         onAnimate={handleSheetAnimationChange}>
         {children}
-        <FlashMessage ref={flashMessageRef} position={'top'} />
       </BottomSheetModal>
     );
   },

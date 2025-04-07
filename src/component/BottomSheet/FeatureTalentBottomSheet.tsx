@@ -1,17 +1,23 @@
-import React, { useRef, forwardRef, useState, useEffect } from 'react';
+import IMAGES from '@images/index';
+import { environment } from 'environments/environment';
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import {
-  View,
-  StyleSheet,
-  Text,
-  Image,
-  TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import BottomSheetComponent from '../BottomSheet/BottomSheet';
-import { COLORS } from '../../utils/constants';
-import Button from '../Button';
-import { fontFamily, removeSignature } from '../../utils/functions';
+import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
+import { openSettings } from 'react-native-permissions';
+import { EndPoint } from 'src/ApiManager/config';
 import {
   fontScale,
   horizontalMarginScale,
@@ -20,19 +26,17 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import IMAGES from '@images/index';
-import ImagePlaceHolder from '../../assets/svgs/icons/ImagePlaceholder.svg';
-import ImageErrorPlaceHolder from '../../assets/svgs/icons/ImageErrorPlaceHolder.svg';
-import BtnBack from '../../assets/svgs/icons/BtnBack.svg';
-import Input from '../Input/Input';
-import { BottomSheetMethods } from '@gorhom/bottom-sheet';
-import { EndPoint } from 'src/ApiManager/config';
-import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
-import useApi from 'src/axios/useApi';
-import { openSettings } from 'react-native-permissions';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
-import { environment } from 'environments/environment';
-import { TextInput } from 'react-native-gesture-handler';
+import BtnBack from '../../assets/svgs/icons/BtnBack.svg';
+import ImageErrorPlaceHolder from '../../assets/svgs/icons/ImageErrorPlaceHolder.svg';
+import ImagePlaceHolder from '../../assets/svgs/icons/ImagePlaceholder.svg';
+import { COLORS } from '../../utils/constants';
+import { fontFamily, removeSignature } from '../../utils/functions';
+import BottomSheetComponent, {
+  BottomSheetMethods,
+} from '../BottomSheet/BottomSheet';
+import Button from '../Button';
+import Input, { InputRefMethods } from '../Input/Input';
 
 interface FeatureTalentBottomSheetProps {
   onPress: (data: {
@@ -42,25 +46,33 @@ interface FeatureTalentBottomSheetProps {
     action: string;
   }) => void;
   title?: string;
+  image?: string;
   submitButtonText: string;
   cancelButtonText: string;
   snapPoints: any;
   talent?: { id?: string; name?: string; imageKeyUrl?: string } | null;
+  onClose?: () => void;
 }
 
 const FeatureTalentBottomSheet = forwardRef<
   BottomSheetMethods,
   FeatureTalentBottomSheetProps
 >((props, ref) => {
-  const inputRef = useRef<any>(null);
-  const [image, setImage] = useState(props.talent?.imageKeyUrl || '');
+  const sheetRef = useRef<BottomSheetMethods>(null);
+  const inputRef = useRef<InputRefMethods>(null);
+  const [image, setImage] = useState(props?.image || '');
   const [imageError, setImageError] = useState(false);
 
-  useEffect(() => {
-    if (props?.talent?.imageKeyUrl) {
-      setImage(props.talent?.imageKeyUrl || '');
-    }
-  }, [props]);
+  useImperativeHandle(ref, () => ({
+    open: () => sheetRef.current?.open(),
+    close: () => sheetRef.current?.close(),
+  }));
+
+  // useEffect(() => {
+  //   if (props?.talent?.imageKeyUrl) {
+  //     setImage(props.talent?.imageKeyUrl || '');
+  //   }
+  // }, [props]);
 
   const { uploadFileHook } = useUploadFile();
   const [imageSize, setImageSize] = useState<number>(0);
@@ -149,15 +161,15 @@ const FeatureTalentBottomSheet = forwardRef<
     }
   };
 
-  const cancelClick = () => {
-    if (ref && typeof ref !== 'function' && ref.current) {
-      ref.current.close();
+  const closeSheet = () => {
+    if (props.onClose) {
+      props.onClose();
     }
   };
 
   return (
     <BottomSheetComponent
-      ref={ref}
+      ref={sheetRef}
       footer={
         <View style={{ marginTop: 'auto', gap: 8 }}>
           <Button
@@ -172,17 +184,17 @@ const FeatureTalentBottomSheet = forwardRef<
             style={styles.btnStyle}
             title={props.cancelButtonText}
             colorTheme="dark"
-            onPress={cancelClick}
+            onPress={closeSheet}
             clearButtonStyle={styles.clearButton}
             textStyle={{ color: '#000' }}
           />
         </View>
       }
-      snapPoints={[imageError ? '65%' : '60%']}
-      onClose={() => console.log('BottomSheet Closed')}>
+      snapPoints={[imageError ? '60%' : '55%']}
+      onClose={() => closeSheet()}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => ref?.current?.close()}>
+          <TouchableOpacity onPress={() => closeSheet()}>
             <BtnBack height={32} width={32} />
           </TouchableOpacity>
           <Text style={styles.title}>
@@ -279,7 +291,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     position: 'absolute',
-    right: -5,
+    right: 0,
     bottom: 0,
   },
   ic_pencil: {

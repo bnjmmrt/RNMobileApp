@@ -84,8 +84,6 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
     useImperativeHandle(ref, () => ({
       open: () => sheetRef.current?.open(),
       close: () => sheetRef.current?.close(),
-      showFlashMessage: (type, message) =>
-        sheetRef.current?.showFlashMessage(type, message),
     }));
 
     const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
