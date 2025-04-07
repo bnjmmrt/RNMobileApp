@@ -10,7 +10,7 @@ import {
   UIManager,
   View,
 } from 'react-native';
-import { COLORS } from 'src/utils/constants';
+import { COLORS, EVENT } from 'src/utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
@@ -144,7 +144,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
         }}>
         <View style={{ flex: 1 }}>
           <CustomText style={styles.label}>
-            {'Ticket Type'}
+            {EVENT.TICKET_TYPE}
             <CustomText style={[styles.label, { color: COLORS.errorText }]}>
               {' *'}
             </CustomText>
@@ -158,7 +158,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
             disabled={disableTicketType}>
             <CustomText
               style={disableTicketType && { color: COLORS.neutral_disabled }}>
-              {selectedTicketType?.name || 'Select Ticket Type'}
+              {selectedTicketType?.name || EVENT.SELECT_TICKET_TYPE}
             </CustomText>
             <Image
               source={IMAGES.arrowRight}
@@ -179,7 +179,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
         </View>
 
         <View>
-          <CustomText style={styles.label}>{'Additional Guest'}</CustomText>
+          <CustomText style={styles.label}>{EVENT.ADDITIONAL_GUEST}</CustomText>
           <Counter
             counterValue={additionalGuests}
             onPressMinus={() =>
@@ -195,7 +195,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
         <>
           {showInviteMessage ? (
             <View>
-              <CustomText style={styles.label}>{'Invite Message'}</CustomText>
+              <CustomText style={styles.label}>{EVENT.INVITE_MSG}</CustomText>
               <View
                 style={[
                   styles.inviteMessageInputContainer,
@@ -219,7 +219,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
                   ref={inviteMessageRef}
                   defaultValue={inviteMessage}
                   errorMessage=""
-                  placeholder="Add your optional message..."
+                  placeholder={EVENT.ADD_MSG}
                   multiline
                   inputFieldContainerStyle={{
                     borderWidth: 0,
@@ -242,7 +242,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
             label="Guest Note"
             defaultValue={guestNote}
             errorMessage=""
-            placeholder="Add a private note. Not visible to the guest."
+            placeholder={EVENT.ADD_NOTE}
             multiline
             inputFieldContainerStyle={{ borderRadius: radiusScale(8) }}
             otherStyle={{ marginTop: 0 }}
@@ -269,7 +269,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
                     resizeMode="contain"
                   />
                   <CustomText style={{ flex: 1, fontSize: fontScale(14) }}>
-                    {'This guest will be added directly to the confirmed tab'}
+                    {EVENT.DIRECTLY_ADD}
                   </CustomText>
                   <Button
                     onPress={() =>
@@ -288,7 +288,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
               ) : (
                 <View>
                   <CustomText style={styles.bypassLabel}>
-                    Want users to bypass registration?
+                   {EVENT.BYPASS_REGISTRATION}
                   </CustomText>
                   <TouchableOpacity
                     style={styles.bypassTextContainer}
@@ -296,7 +296,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
                       onDirectlySendToConfirmChange(!directlySendToConfirm)
                     }>
                     <CustomText style={styles.bypassText}>
-                      Add guests directly to the confirmed tab
+                     {EVENT.ADD_DIRECTLY}
                     </CustomText>
                   </TouchableOpacity>
                 </View>
@@ -306,7 +306,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
 
           {declinedReason ? (
             <View>
-              <CustomText style={styles.label}>{'Decline Reason'}</CustomText>
+              <CustomText style={styles.label}>{EVENT.DECLINE_REASON}</CustomText>
               <View style={styles.inviteMessageInputContainer}>
                 <CustomText
                   style={[
@@ -324,7 +324,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   );
 
   return (
-    <CollapseWrap title="Invite Details" isCollapsible={isCollapsible}>
+    <CollapseWrap title={EVENT.INVITE_DETAIL} isCollapsible={isCollapsible}>
       {renderContent()}
     </CollapseWrap>
   );

@@ -14,12 +14,6 @@ import { useFocusEffect } from '@react-navigation/native';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-// const genderList = [
-//   { id: 'MALE', gender: 'Male'},
-//   { id: 'FEMALE', gender: 'Female'},
-//   { id: 'NON_BINARY', gender: 'Non-binary'},
-//   { id: 'UNRECOGNIZED', gender: 'Prefer not to say'},
-// ];
 interface GenderScreenProps extends NativeStackScreenProps<any, any> {}
 
 const GenderScreen: React.FC<GenderScreenProps> = ({ navigation }) => {

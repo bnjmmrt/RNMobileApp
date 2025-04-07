@@ -7,7 +7,7 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
-import { COLORS } from 'src/utils/constants';
+import { COLORS, EVENT, ROLE } from 'src/utils/constants';
 import {
   fontScale,
   radiusScale,
@@ -57,13 +57,13 @@ interface ProfileCardProps {
 const MemberBadge = () => (
   <View style={styles.memberBadge}>
     <Image source={IMAGES.check_verified} style={styles.memberBadgeIcon} />
-    <Text style={styles.memberBadgeText}>Member</Text>
+    <Text style={styles.memberBadgeText}>{ROLE.CAP_MEMBER}</Text>
   </View>
 );
 
 const NonMemberBadge = () => (
   <View style={styles.nonMemberBadge}>
-    <Text style={styles.nonMemberBadgeText}>Non-Member</Text>
+    <Text style={styles.nonMemberBadgeText}>{ROLE.CAP_NON_MEMBER}</Text>
   </View>
 );
 

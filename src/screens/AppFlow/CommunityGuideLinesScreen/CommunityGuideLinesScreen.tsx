@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
-import { COLORS, BUTTON_LABLE } from '../../../utils/constants';
+import { COLORS, BUTTON_LABLE, COMMUNITY_GUIDELINE } from '../../../utils/constants';
 import IMAGES from '../../../assets/images';
 import Button from '../../../component/Button';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -40,20 +40,17 @@ const PRINCIPLES: PrincipleItemProps[] = [
   {
     icon: IMAGES.lock_01,
     title: 'Privacy',
-    description:
-      'Rumor experiences are intended exclusively for our community. Screenshotting private content from Rumor is strictly prohibited.',
+    description: COMMUNITY_GUIDELINE.description_1
   },
   {
     icon: IMAGES.heart_hand,
     title: 'Respect',
-    description:
-      'Our community thrives on mutual respect—please be mindful of your interactions and conduct yourself responsibly with other guests, hosts, and staff at events.',
+    description: COMMUNITY_GUIDELINE.description_2
   },
   {
     icon: IMAGES.ticket_01,
     title: 'Responsible Engagement',
-    description:
-      'RSVP with intent. If your plans change, update your RSVP promptly to respect hosts and other members.',
+    description: COMMUNITY_GUIDELINE.description_3
   },
 ];
 
@@ -86,11 +83,7 @@ const CommunityGuideLinesScreen: React.FC = () => {
 
         <Text style={styles.title}>Welcome{'\n'}to Rumor!</Text>
 
-        <Text style={styles.description}>
-          We are committed to fostering a community built on respect, privacy,
-          and meaningful connections. By using Rumor, you agree to uphold the
-          following principles:
-        </Text>
+        <Text style={styles.description}>{COMMUNITY_GUIDELINE.description}</Text>
 
         <View style={styles.principlesContainer}>
           {PRINCIPLES.map((principle, index) => (

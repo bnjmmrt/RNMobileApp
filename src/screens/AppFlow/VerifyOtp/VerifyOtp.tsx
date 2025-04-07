@@ -22,7 +22,7 @@ import {
   setIsEmailPhoneBothVerified,
   setPageProgress,
 } from '../../../redux/slices/appFlowSlice';
-import { BUTTON_LABLE, LABLE } from '../../../utils/constants';
+import { BUTTON_LABLE, ERROR_MESSAGE, LABLE } from '../../../utils/constants';
 import VerifyOtpStyles from './VerifyOtpStyles';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 
@@ -77,7 +77,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     } else if (error) {
       FlashMessageComponent.show(
         'error',
-        'Something went wrong, please try again!',
+        ERROR_MESSAGE.SOMETHING_WENT_WRONG,
       );
     }
   };
