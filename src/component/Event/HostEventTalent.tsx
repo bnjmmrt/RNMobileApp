@@ -1,19 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Text, StyleSheet, View, FlatList, Pressable, Alert } from 'react-native';
-import { fontFamily, removeSignature } from '../../utils/functions';
-import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
-import IMAGES from '@images/index';
 import FastImage from '@d11/react-native-fast-image';
+import IMAGES from '@images/index';
+import React, { useEffect, useRef } from 'react';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+import {
+  fontScale,
+  horizontalMarginScale,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
+import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
+import { fontFamily, removeSignature } from '../../utils/functions';
 import AvatarInitials from '../AvatarInitials';
-import { fontScale, horizontalMarginScale, verticalMarginScale } from 'src/utils/dimensions';
-import GradientSeprator from '../GradientSeprator';
-import { CustomText } from '../CustomText';
 import CircleButtonOverlay from '../BackButton/CircleButtonOverlay';
+import { BottomSheetMethods } from '../BottomSheet/BottomSheet';
 import FeatureTalentBottomSheet from '../BottomSheet/FeatureTalentBottomSheet';
-import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
-import useApi from 'src/axios/useApi';
-import { EndPoint } from 'src/ApiManager/config';
-import DeleteAccountBottomSheet from '../BottomSheet/DeleteAccountBottomSheet';
+import { CustomText } from '../CustomText';
+import GradientSeprator from '../GradientSeprator';
 import DeleteTalentBottomSheet from './DeleteTalentBottomSheet';
 
 interface Talent {
@@ -27,36 +28,47 @@ interface HostEventTalentProps {
   onTalentChange: (talents: Talent[]) => void;
 }
 
-const HostEventTalent: React.FC<HostEventTalentProps> = ({ talents: initialTalents, onTalentChange }) => {
-  const featureTalentSheet = useRef<any>(null);
+const HostEventTalent: React.FC<HostEventTalentProps> = ({
+  talents: initialTalents,
+  onTalentChange,
+}) => {
+  const featureTalentSheet = useRef<BottomSheetMethods>(null);
   const deleteRef = useRef<any>(null);
   const [talents, setTalents] = React.useState<Talent[]>(initialTalents);
-  const [selectedTalent, setSelectedTalent] = React.useState<Talent | null>(null);
+  const [selectedTalent, setSelectedTalent] = React.useState<Talent | null>(
+    null,
+  );
+  const [featuredTalentSheetVisible, setFeaturedTalentSheetVisible] =
+    React.useState<boolean>(false);
 
   useEffect(() => {
     onTalentChange(talents);
-  }, [talents])
+  }, [talents]);
 
   const handleDeleteTalent = (id: string) => {
-    setTalents((prevTalents) =>
+    setTalents(prevTalents =>
       prevTalents
-        .map((talent) =>
-          talent.id === id && (talent?.action === "update" || !talent?.action)
-            ? { ...talent, action: "delete" }
-            : talent
+        .map(talent =>
+          talent.id === id && (talent?.action === 'update' || !talent?.action)
+            ? { ...talent, action: 'delete' }
+            : talent,
         )
-        .filter((talent) => talent.id !== id || talent?.action === "delete"));
+        .filter(talent => talent.id !== id || talent?.action === 'delete'),
+    );
   };
+
   const handleUpdateTalent = (newTalent: Talent) => {
-    setTalents((prevTalents) =>
-      prevTalents.some((talent) => talent.id === newTalent.id)
-        ? prevTalents.map((talent) =>
-          talent.id === newTalent.id ? { ...talent, ...newTalent } : talent
-        )
-        : [...prevTalents, newTalent]
+    setTalents(prevTalents =>
+      prevTalents.some(talent => talent.id === newTalent.id)
+        ? prevTalents.map(talent =>
+            talent.id === newTalent.id ? { ...talent, ...newTalent } : talent,
+          )
+        : [...prevTalents, newTalent],
     );
     featureTalentSheet.current?.close();
+    setFeaturedTalentSheetVisible(false);
   };
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -65,7 +77,10 @@ const HostEventTalent: React.FC<HostEventTalentProps> = ({ talents: initialTalen
         <CircleButtonOverlay
           onPress={() => {
             setSelectedTalent(null);
-            featureTalentSheet?.current?.open()
+            setFeaturedTalentSheetVisible(true);
+            setTimeout(() => {
+              featureTalentSheet?.current?.open();
+            }, 500);
           }}
           customStyle={{ position: 'relative' }}
           imageSource={IMAGES.add}
@@ -76,8 +91,8 @@ const HostEventTalent: React.FC<HostEventTalentProps> = ({ talents: initialTalen
 
       {/* Talent List */}
       <FlatList
-        data={talents.filter((talent) => talent?.action !== "delete")}
-        keyExtractor={(item) => item.id}
+        data={talents.filter(talent => talent?.action !== 'delete')}
+        keyExtractor={item => item.id}
         ItemSeparatorComponent={GradientSeprator}
         contentContainerStyle={styles.itemContainer}
         renderItem={({ item }) => (
@@ -97,7 +112,10 @@ const HostEventTalent: React.FC<HostEventTalentProps> = ({ talents: initialTalen
             <CircleButtonOverlay
               onPress={() => {
                 setSelectedTalent(item);
-                featureTalentSheet.current?.open();
+                setFeaturedTalentSheetVisible(true);
+                setTimeout(() => {
+                  featureTalentSheet?.current?.open();
+                }, 500);
               }}
               customStyle={{ position: 'relative' }}
               imageSource={IMAGES.edit}
@@ -116,17 +134,31 @@ const HostEventTalent: React.FC<HostEventTalentProps> = ({ talents: initialTalen
           </View>
         )}
       />
-
-      <FeatureTalentBottomSheet
-        ref={featureTalentSheet}
-        onPress={handleUpdateTalent}
-        submitButtonText={"Save"}
-        cancelButtonText={BUTTON_LABLE.CANCEL}
-        snapPoints={['65%']}
-        title={selectedTalent ? 'Edit Featured Talent' : 'Add Featured Talent'}
-        talent={selectedTalent}
+      {featuredTalentSheetVisible ? (
+        <FeatureTalentBottomSheet
+          ref={featureTalentSheet}
+          onPress={handleUpdateTalent}
+          submitButtonText={'Save'}
+          cancelButtonText={BUTTON_LABLE.CANCEL}
+          snapPoints={['65%']}
+          title={
+            selectedTalent ? 'Edit Featured Talent' : 'Add Featured Talent'
+          }
+          talent={selectedTalent}
+          image={selectedTalent?.imageKeyUrl}
+          onClose={() => {
+            featureTalentSheet?.current?.close();
+            setSelectedTalent(null);
+            setTimeout(() => {
+              setFeaturedTalentSheetVisible(false);
+            }, 500);
+          }}
+        />
+      ) : null}
+      <DeleteTalentBottomSheet
+        ref={deleteRef}
+        handleDelete={() => handleDeleteTalent(selectedTalent?.id)}
       />
-      <DeleteTalentBottomSheet ref={deleteRef} handleDelete={() => handleDeleteTalent(selectedTalent?.id)} />
     </View>
   );
 };
