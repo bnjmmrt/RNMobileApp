@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "639681590518",
+    "project_id": "therumor-5da69",
+    "storage_bucket": "therumor-5da69.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:639681590518:android:483043feee6e0788ae28d7",
+        "android_client_info": {
+          "package_name": "com.therumor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzhNfmX_SgIGxfzHeJCoEtqTdMOT98I5o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
