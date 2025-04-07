@@ -6,9 +6,11 @@ import {
 import { AppStack } from './AppStack';
 import { AuthStack } from './AuthStack';
 import WelcomeScreen from '../screens/AppFlow/WelcomeScreen/WelcomeScreen';
+import CommunityGuideLinesScreen from 'src/screens/AppFlow/CommunityGuideLinesScreen/CommunityGuideLinesScreen'
 
 export type MainStackParamList = {
   WelcomeScreen: undefined;
+  CommunityGuidelinesScreen: undefined;
   AuthStack: undefined;
   AppStack: { screen?: string };
 };
@@ -32,6 +34,7 @@ export const MainStack: React.FC<MainStackProps> = ({
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       }}>
       <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+      <Stack.Screen name="CommunityGuidelinesScreen" component={CommunityGuideLinesScreen} />
       <Stack.Screen name="AuthStack" component={AuthStack} />
       <Stack.Screen
         name="AppStack"
