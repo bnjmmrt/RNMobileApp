@@ -24,7 +24,7 @@ import {
   setPageProgress,
   setPhone,
 } from '../../../redux/slices/appFlowSlice';
-import { BUTTON_LABLE, LABLE } from '../../../utils/constants';
+import { BUTTON_LABLE, ERROR_MESSAGE, LABLE } from '../../../utils/constants';
 import EnterEmailPhoneStyles from './EnterEmailPhoneStyles';
 
 interface EnterEmailPhoneProps extends NativeStackScreenProps<any, any> {}
@@ -74,12 +74,12 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
             });
           } else {
             phoneNumberInputRef.current?.setErrorMessage(
-              'Phone Number already exist.',
+              ERROR_MESSAGE.ALREADY_PHONE,
             );
           }
         } catch (error) {
           phoneNumberInputRef.current?.setErrorMessage(
-            'Phone Number already exist.',
+            ERROR_MESSAGE.ALREADY_PHONE,
           );
           console.log('ererror', error);
         }
@@ -102,12 +102,12 @@ const EnterEmailPhone: React.FC<EnterEmailPhoneProps> = ({ navigation }) => {
             });
           } else {
             emailInputRef.current?.setErrorMessage(
-              'Email address already exist.',
+              ERROR_MESSAGE.ALREADY_EMAIL
             );
           }
         } catch (error) {
           emailInputRef.current?.setErrorMessage(
-            'Email address already exist.',
+            ERROR_MESSAGE.ALREADY_EMAIL
           );
           console.log('ererror', error);
         }

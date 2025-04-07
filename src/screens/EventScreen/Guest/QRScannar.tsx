@@ -30,7 +30,7 @@ import FullScreenLoader from 'src/component/FullScreenLoader';
 import { EventStackParamList } from 'src/navigation/EventStack';
 import { ROUTES } from 'src/navigation/Route';
 import { RootState } from 'src/redux/slices';
-import { COLORS } from 'src/utils/constants';
+import { BUTTON_LABLE, COLORS, EVENT, PERMISSION } from 'src/utils/constants';
 import {
   fontScale,
   horizontalScale,
@@ -60,15 +60,15 @@ const QRCodeScanner = () => {
     setHasPermission(status === 'granted');
     if (status !== 'granted') {
       Alert.alert(
-        'Permission Required',
-        'We need access to your camera to allow you to scan. Please enable camera permissions in your device settings.',
+        PERMISSION.PERMISSION_REQUIRED,
+        PERMISSION.CAMERA_PERMISSION,
         [
           {
-            text: 'Cancel',
+            text: BUTTON_LABLE.CANCEL,
             style: 'cancel',
           },
           {
-            text: 'Open Settings',
+            text: PERMISSION.OPEN_SETTING,
             onPress: async () => {
               openSettings();
             },
@@ -137,14 +137,14 @@ const QRCodeScanner = () => {
   if (!hasPermission) {
     return (
       <>
-        <BackButton onPress={() => {}} />
+        <BackButton onPress={() => { }} />
         <View style={styles.btnContainer}>
-          <Text>Camera permission is required</Text>
+          <Text>{PERMISSION.CAMER_REQUIRED}</Text>
           <Button
             imageSource={IMAGES.settings}
             style={styles.btn}
             colorTheme="dark"
-            title="Give Access"
+            title={EVENT.GIVE_ACCESS}
             onPress={() => onMenuClick()}
           />
         </View>
@@ -152,7 +152,7 @@ const QRCodeScanner = () => {
     );
   }
 
-  if (!device) return <Text>Loading Camera...</Text>;
+  if (!device) return <Text>{EVENT.LOADING_CAMERA}</Text>;
   if (loading)
     return (
       <FullScreenLoader
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.transperantBackground,
   },
   btnContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  btn: { width: '60%', marginVertical: verticalMarginScale(20),resizeMode:'contain' },
+  btn: { width: '60%', marginVertical: verticalMarginScale(20), resizeMode: 'contain' },
   camera: {
     width: '100%',
     height: '100%',

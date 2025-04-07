@@ -37,7 +37,7 @@ import {
   useFetchSelectedRecipientsQuery,
 } from 'src/redux/actions/eventApiAction';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
-import { ANNOUNCEMENT, COLORS, ERROR_MESSAGE } from 'src/utils/constants';
+import { ANNOUNCEMENT, BUTTON_LABLE, COLORS, ERROR_MESSAGE, PERMISSION } from 'src/utils/constants';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
@@ -50,7 +50,7 @@ import {
 import AddAnnouncementStyles from './AddAnnouncementStyles';
 import { TicketType } from '../TicketType';
 import { Collaborator } from '../Collaborator';
-import { Recipient } from '../REcipient';
+import { Recipient } from '../Recipient';
 import { RecipientDetail } from '../RecipientDetail';
 import { AnnouncementDetail } from '../AnnouncementDetail';
 
@@ -252,7 +252,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
         payload: addAnnouncementRequest,
       }).unwrap();
       if (response.success == true) {
-        FlashMessageComponent.show('success', `Event announcement posted`);
+        FlashMessageComponent.show('success', ANNOUNCEMENT.Announcement_posted);
         dispatch(setRsvpStatus('UPDATE' + Date.now()));
         navigation.goBack();
       } else {
@@ -387,7 +387,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
         announcementId: announcementId || '',
       }).unwrap();
       if (response.success == true) {
-        FlashMessageComponent.show('success', `Event announcement deleted`);
+        FlashMessageComponent.show('success',ANNOUNCEMENT.Announcement_deleted);
         deleteBottomSheetRef.current?.close();
         dispatch(setRsvpStatus('UPDATE' + Date.now()));
         navigation.goBack();
@@ -413,7 +413,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
         payload: editAnnouncementRequest,
       }).unwrap();
       if (response.success == true) {
-        FlashMessageComponent.show('success', `Event announcement updated`);
+        FlashMessageComponent.show('success', ANNOUNCEMENT.Announcement_updated);
         dispatch(setRsvpStatus('UPDATE' + Date.now()));
         navigation.goBack();
       } else {
@@ -452,15 +452,15 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
 
         if (error?.message?.includes('did not grant library permission')) {
           Alert.alert(
-            'Permission Required',
-            'We need access to your photo library to allow you to add a picture. Please enable photo library permissions in your device settings.',
+            PERMISSION.PERMISSION_REQUIRED,
+            PERMISSION.GALLERY_PERMISSION,
             [
               {
-                text: 'Cancel',
+                text: BUTTON_LABLE.CANCEL,
                 style: 'cancel',
               },
               {
-                text: 'Open Settings',
+                text: PERMISSION.OPEN_SETTING,
                 onPress: async () => {
                   openSettings();
                 },

@@ -10,7 +10,7 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
-import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
+import { LABLE, BUTTON_LABLE, ERROR_MESSAGE, PERMISSION } from '../../../utils/constants';
 import ProfilePhotoScreenStyles from './ProfilePhotoScreenStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
@@ -136,7 +136,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
     if (loader == true) {
       FlashMessageComponent.show(
         'info',
-        'Please wait for the upload to complete',
+        ERROR_MESSAGE.PLEASE_WAIT,
       );
     } else if (image) {
       dispatch(setPageProgress(9));
@@ -171,15 +171,15 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
 
         if (error?.message?.includes('did not grant library permission')) {
           Alert.alert(
-            'Permission Required',
-            'We need access to your photo library to allow you to add a profile picture. Please enable photo library permissions in your device settings.',
+            PERMISSION.PERMISSION_REQUIRED,
+            PERMISSION.GALLERY_PERMISSION,
             [
               {
-                text: 'Cancel',
+                text: BUTTON_LABLE.CANCEL,
                 style: 'cancel',
               },
               {
-                text: 'Open Settings',
+                text: PERMISSION.OPEN_SETTING,
                 onPress: async () => {
                   openSettings();
                 },
@@ -254,7 +254,7 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
         {isToastShown && (
           <Toast
             toastStyle={{ bottom: 50 }}
-            message={'Please upload a Profile Photo'}
+            message={ERROR_MESSAGE.UPLOAD_PHOTO}
             onClose={() => setIsToastShown(false)}
           />
         )}

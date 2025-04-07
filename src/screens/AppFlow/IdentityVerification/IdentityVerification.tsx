@@ -33,6 +33,7 @@ import { role, setRole, setRoleId } from '../../../redux/slices/authSlice';
 import {
   BUTTON_LABLE,
   COLORS,
+  ERROR_MESSAGE,
   genderList,
   LABLE,
 } from '../../../utils/constants';
@@ -199,7 +200,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     } else {
       FlashMessageComponent.show(
         'error',
-        'Something went wrong, please try again!',
+        ERROR_MESSAGE.SOMETHING_WRONG,
       );
       // console.error('Error verifying OTP:', error);
     }
@@ -243,7 +244,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
           placeholder={'@Username'}
           placeholderTextColor={COLORS.placeHodler}
           leftImage={IMAGES.instagramLogo}
-          errorMessage={'Please enter username'}
+          errorMessage={ERROR_MESSAGE.ENTER_USER_NAME}
           defaultValue={''}
           onChangeText={handleInstagramInput}
           editable={!noInstagram}

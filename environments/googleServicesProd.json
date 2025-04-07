@@ -12,7 +12,12 @@
           "package_name": "com.therumor"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "639681590518-ttndti125s515q59tocvp7t0ut0u92r6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCzhNfmX_SgIGxfzHeJCoEtqTdMOT98I5o"
@@ -20,7 +25,20 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "639681590518-ttndti125s515q59tocvp7t0ut0u92r6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "639681590518-7f70p81v2lgd9g7bnrrv9k5ve09qhvec.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.therumor.app",
+                "app_store_id": "6503365397"
+              }
+            }
+          ]
         }
       }
     }
