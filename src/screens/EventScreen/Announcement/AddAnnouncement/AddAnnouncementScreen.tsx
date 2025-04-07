@@ -3,45 +3,32 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { environment } from 'environments/environment';
 import React, {
-  useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
 import {
-  ActivityIndicator,
   Alert,
   BackHandler,
-  FlatList,
-  Image,
-  ImageBackground,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import { openSettings } from 'react-native-permissions';
-import Tooltip, { Placement } from 'react-native-tooltip-2';
 import { useDispatch } from 'react-redux';
 import { EndPoint } from 'src/ApiManager/config';
 import useApi from 'src/axios/useApi';
-import AvatarInitials from 'src/component/AvatarInitials';
 import BottomSheetComponent from 'src/component/BottomSheet/BottomSheet';
 import ConfirmationBottomSheet from 'src/component/BottomSheet/ConfirmationBottomSheet';
 import DocumentBottomSheet from 'src/component/BottomSheet/DocumentBottomSheet';
 import Button from 'src/component/Button';
-import { CustomText } from 'src/component/CustomText';
-import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import Header from 'src/component/Header/Header';
-import Input, { InputRefMethods } from 'src/component/Input/Input';
-import SearchInput from 'src/component/SearchInput';
+import { InputRefMethods } from 'src/component/Input/Input';
 import {
   useCreateEventAnnouncementMutation,
   useDeleteEventAnnouncementMutation,
@@ -50,13 +37,8 @@ import {
   useFetchSelectedRecipientsQuery,
 } from 'src/redux/actions/eventApiAction';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
-import { ANNOUNCEMENT, COLORS, ERROR_MESSAGE } from 'src/utils/constants';
-import {
-  horizontalScale,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-} from 'src/utils/dimensions';
+import { ANNOUNCEMENT, BUTTON_LABLE, COLORS, ERROR_MESSAGE, PERMISSION } from 'src/utils/constants';
+import { verticalMarginScale } from 'src/utils/dimensions';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 import {
@@ -66,7 +48,11 @@ import {
   guestInterface,
 } from './AddAnnouncementInterface';
 import AddAnnouncementStyles from './AddAnnouncementStyles';
-import RecipientListItem from './RecipientListItem';
+import { TicketType } from '../TicketType';
+import { Collaborator } from '../Collaborator';
+import { Recipient } from '../Recipient';
+import { RecipientDetail } from '../RecipientDetail';
+import { AnnouncementDetail } from '../AnnouncementDetail';
 
 interface AddAnnouncementScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -112,11 +98,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [collaborators, setCollaborators] = useState([]);
-  const [showRecipientDetail, setshowRecipientDetail] = useState(true);
-  const [showAnnouncementDetail, setshowAnnouncementDetail] = useState(true);
-  const [showProfileToolitip, setShowProfileToolitip] = useState(false);
-  const [showTicketTooltip, setshowTicketTooltip] = useState(false);
-
   const { uploadFileHook } = useUploadFile();
   const { apiRequest } = useApi();
 
@@ -220,20 +201,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
     }
   };
 
-  // useEffect(() => {
-  //     setRefreshing(isLoading)
-  // }, [isLoading])
-
-  const handleRefresh = () => {
-    setCurrentPage(1);
-  };
-
-  const loadMore = () => {
-    // if (allRecipients?.currentPage < announcementRecipientsData?.totalPages && !isLoading) {
-    //     setCurrentPage((prev) => prev + 1);
-    // }
-  };
-
   const [
     createEventAnnouncement,
     { error: addAnnouncementError, isLoading: addAnnouncementLoading },
@@ -285,7 +252,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
         payload: addAnnouncementRequest,
       }).unwrap();
       if (response.success == true) {
-        FlashMessageComponent.show('success', `Event announcement posted`);
+        FlashMessageComponent.show('success', ANNOUNCEMENT.Announcement_posted);
         dispatch(setRsvpStatus('UPDATE' + Date.now()));
         navigation.goBack();
       } else {
@@ -301,11 +268,11 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
   const renderBottomSheetContent = () => {
     switch (activeView) {
       case 'collaborator':
-        return renderCollaborator();
+        return <Collaborator collaborators={collaborators} selectedCollaborator={selectedCollaborator} toggleCollaborator={toggleCollaborator} cancelClick={cancelClick} confirmCollaborator={confirmCollaborator} />;
       case 'ticketTypeOptions':
-        return renderTicketTypeOptions();
+        return <TicketType eventData={eventData} selectedTicketType={selectedTicketType} toggleTicketType={toggleTicketType} cancelClick={cancelClick} confirmTicketType={confirmTicketType} />;
       case 'receipient':
-        return renderReceipient();
+        return <Recipient allRecipients={allRecipients} searchInputRef={searchInputRef} handleSearchTextChange={handleSearchTextChange} searchText={searchText} totalCount={totalCount} selectedUsers={selectedUsers} />
       default:
         return null;
     }
@@ -342,8 +309,8 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
       setTicketTypeArr(selectedTicketType);
     }
     bottomSheetRef.current?.close();
-    // getRecipients()
   };
+
   const removeTicketType = (item: any) => {
     if (ticketTypeArr?.includes(item)) {
       setTicketTypeArr(ticketTypeArr?.filter((i: any) => i !== item));
@@ -357,18 +324,12 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
     }
   };
   const toggleTicketType = (item: any, index: number) => {
-    // if (index == 0) {
-    //     setSelectedTicketType([item]);
-    // }
-    // else {
     if (selectedTicketType.includes(item)) {
       setSelectedTicketType(selectedTicketType.filter((i: any) => i !== item));
     } else {
       setSelectedTicketType([...selectedTicketType, item]);
     }
-    // }
   };
-
   useEffect(() => {
     if (announcementId == null) {
       console.log('ticketTypeArrww', ticketTypeArr);
@@ -379,56 +340,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
       }
     }
   }, [ticketTypeArr, collaboratorArr, searchText]);
-
-  const renderTicketTypeOptions = () => {
-    return (
-      <View>
-        {eventData?.ticketTypes?.map((item: any, index: number) => {
-          let isSelected = selectedTicketType.includes(item);
-          return (
-            <TouchableOpacity
-              key={item.id.toString()}
-              style={[
-                styles.guestButton,
-                isSelected && {
-                  borderWidth: 2,
-                  borderColor: COLORS.black,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingHorizontal: 12,
-                },
-              ]}
-              onPress={() => toggleTicketType(item, index)}>
-              {isSelected && (
-                <Image
-                  source={IMAGES.check}
-                  style={{ width: 16, height: 16, resizeMode: 'contain' }}
-                />
-              )}
-              <Text style={styles.guestButtonText}>{item.name}</Text>
-              {isSelected && <View />}
-            </TouchableOpacity>
-          );
-        })}
-        <Button
-          disabled={false}
-          style={styles.btnStyle}
-          title={'Confirm'}
-          colorTheme="dark"
-          onPress={confirmTicketType}
-        />
-        <Button
-          disabled={false}
-          style={styles.cancelbtnStyle}
-          title={'Cancel'}
-          colorTheme="light"
-          onPress={cancelClick}
-          clearButtonStyle={styles.clearButton}
-          textStyle={{ color: '#000' }}
-        />
-      </View>
-    );
-  };
   const confirmCollaborator = () => {
     if (selectedCollaborator.length == 0) {
       setCollaboratorArr([]);
@@ -438,7 +349,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
       setCollaboratorArr(selectedCollaborator);
     }
     bottomSheetRef.current?.close();
-    // getRecipients()
   };
   const removeCollaborator = (item: any) => {
     if (collaboratorArr?.includes(item)) {
@@ -453,17 +363,8 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
     } else {
       setselectedCollaborator([...selectedCollaborator, item]);
     }
-    // getRecipients()
   };
   const toggleCollaborator = (item: any, index: number) => {
-    // if (index == 0) {
-    //     if (selectedCollaborator.includes(item)) {
-    //         setselectedCollaborator([]);
-    //     } else {
-    //         setselectedCollaborator([item]);
-    //     }
-    // }
-    // else {
     if (selectedCollaborator.includes(item)) {
       setselectedCollaborator(
         selectedCollaborator.filter((i: any) => i !== item),
@@ -471,168 +372,10 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
     } else {
       setselectedCollaborator([...selectedCollaborator, item]);
     }
-    // }
-  };
-  const renderCollaborator = () => {
-    return (
-      <View>
-        {collaborators.map((item: any, index: number) => {
-          let isSelected = selectedCollaborator.includes(item);
-          const collabratorName = `${item?.companyName || item?.email} (${item?.role?.name
-            })`;
-
-          return (
-            <TouchableOpacity
-              key={item.id.toString()}
-              style={[
-                styles.guestButton,
-                isSelected && {
-                  borderWidth: 2,
-                  borderColor: COLORS.black,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingHorizontal: 12,
-                },
-              ]}
-              onPress={() => toggleCollaborator(item, index)}>
-              {isSelected && (
-                <Image
-                  source={IMAGES.check}
-                  resizeMode='contain'
-                  style={{ width: 16, height: 16 }}
-                />
-              )}
-              <Text style={styles.guestButtonText}>{collabratorName}</Text>
-              {isSelected && <View />}
-            </TouchableOpacity>
-          );
-        })}
-        <Button
-          disabled={false}
-          style={styles.btnStyle}
-          title={'Confirm'}
-          colorTheme="dark"
-          onPress={confirmCollaborator}
-        />
-        <Button
-          disabled={false}
-          style={styles.cancelbtnStyle}
-          title={'Cancel'}
-          colorTheme="light"
-          onPress={cancelClick}
-          clearButtonStyle={styles.clearButton}
-          textStyle={{ color: '#000' }}
-        />
-      </View>
-    );
   };
   const handleSearchTextChange = (text: string) => {
     setCurrentPage(1);
     setSearchText(text);
-  };
-  const onSelectRecipient = (user: guestInterface) => {
-    // const isSelected = selectedUsers.some(
-    //     selectedUser => selectedUser?.id === user.id,
-    // );
-    // if (isSelected) {
-    //     const newArray = selectedUsers.filter(u => u.id !== user.id);
-    //     setSelectedUsers(newArray);
-    // } else {
-    //     const newArray = [...selectedUsers, user];
-    //     setSelectedUsers(newArray);
-    // }
-  };
-  const onRefreshPage = () => {
-    setCurrentPage(1);
-    // refetch();
-  };
-
-  const renderItem = useCallback(
-    ({ item, index }: { item: guestInterface; index: number }) => {
-      const isSelected = selectedUsers.some(user => user.id === item.id);
-      return (
-        <RecipientListItem
-          index={index}
-          item={item}
-          onSelectUser={onSelectRecipient}
-          isSelected={isSelected}
-        />
-      );
-    },
-    [selectedUsers],
-  );
-  const renderReceipient = () => {
-    return (
-      <View style={{ marginTop: verticalMarginScale(10) }}>
-        <View style={styles.recipientHeader}>
-          <Text style={styles.title}>{ANNOUNCEMENT.Recipients}</Text>
-          <View style={styles.countWrapper}>
-            <Text style={[styles.label, { paddingTop: 0 }]}>{totalCount}</Text>
-          </View>
-        </View>
-        <SearchInput
-          ref={searchInputRef}
-          onSearchTextChange={handleSearchTextChange}
-          placeholder="Search..."
-          mainContainerStyle={{ marginVertical: verticalMarginScale(15) }}
-          defaultValue={searchText}
-        />
-        <FlatList
-          data={allRecipients || []}
-          style={{
-            marginBottom: verticalMarginScale(90),
-            marginTop: verticalMarginScale(5),
-          }}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={{ gap: verticalMarginScale(16) }}
-          ListFooterComponent={
-            <View style={{ marginBottom: verticalMarginScale(150) }} />
-          }
-          ListEmptyComponent={
-            <View
-              style={{
-                // height: verticalScale(55),
-                marginTop: 20,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <EventEmptyRecord
-                title={
-                  searchText != ''
-                    ? ANNOUNCEMENT.No_results
-                    : ANNOUNCEMENT.No_Recipients
-                }
-                subTitle={
-                  searchText != '' ? ANNOUNCEMENT.Please_refine_your_search : ''
-                }
-              // isLoading={isLoading}
-              />
-            </View>
-          }
-          onEndReached={loadMore}
-          onEndReachedThreshold={0.4}
-          showsVerticalScrollIndicator={false}
-        // refreshControl={
-        //     allRecipients?.length > 0 ? (
-        //         <RefreshControl refreshing={isLoading} onRefresh={onRefreshPage} />
-        //     ) : undefined
-        // }
-        />
-        {/* {selectedUsers.length != 0 ? (
-                    <Button
-                        title="Add to List"
-                        onPress={() => {
-                            setSelectedRecipients(selectedUsers);
-                            setrecipienterrorMessage(false)
-                            cancelClick()
-                        }}
-                        colorTheme="dark"
-                        style={{ position: 'absolute', bottom: verticalScale(0) }}
-                    />
-                ) : null} */}
-      </View>
-    );
   };
   const editPhotoClick = () => {
     editPhotoBottomSheetRef.current?.open();
@@ -644,7 +387,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
         announcementId: announcementId || '',
       }).unwrap();
       if (response.success == true) {
-        FlashMessageComponent.show('success', `Event announcement deleted`);
+        FlashMessageComponent.show('success',ANNOUNCEMENT.Announcement_deleted);
         deleteBottomSheetRef.current?.close();
         dispatch(setRsvpStatus('UPDATE' + Date.now()));
         navigation.goBack();
@@ -670,7 +413,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
         payload: editAnnouncementRequest,
       }).unwrap();
       if (response.success == true) {
-        FlashMessageComponent.show('success', `Event announcement updated`);
+        FlashMessageComponent.show('success', ANNOUNCEMENT.Announcement_updated);
         dispatch(setRsvpStatus('UPDATE' + Date.now()));
         navigation.goBack();
       } else {
@@ -693,7 +436,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
       navigation.goBack();
     }
   };
-
   const openCamera = async () => {
     ImagePicker.openPicker({
       width: 300,
@@ -710,15 +452,15 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
 
         if (error?.message?.includes('did not grant library permission')) {
           Alert.alert(
-            'Permission Required',
-            'We need access to your photo library to allow you to add a picture. Please enable photo library permissions in your device settings.',
+            PERMISSION.PERMISSION_REQUIRED,
+            PERMISSION.GALLERY_PERMISSION,
             [
               {
-                text: 'Cancel',
+                text: BUTTON_LABLE.CANCEL,
                 style: 'cancel',
               },
               {
-                text: 'Open Settings',
+                text: PERMISSION.OPEN_SETTING,
                 onPress: async () => {
                   openSettings();
                 },
@@ -751,11 +493,9 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
       }
     }
   };
-
   const onPressDelete = (uri: string) => {
     setAttachmentArr(prev => prev.filter(item => item?.media !== uri));
   };
-
   const removeAnnouncementId = () => {
     setAnnouncementId(null);
     setTicketTypeArr([]);
@@ -763,42 +503,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
     setAnnouncementText('');
     setAttachmentArr([]);
   };
-
-  const renderAttchmentItem = ({ item }: { item: any }) => (
-    <>
-      {item.mediaType == 'pdf' ? (
-        <TouchableOpacity
-          onPress={() => onPressDelete(item.media)}
-          style={styles.pdfContainer}>
-          <Image
-            source={IMAGES.pdf}
-            style={styles.pdfIcon}
-            resizeMode="contain"
-          />
-          <CustomText style={{ width: '80%' }} textProps={{ numberOfLines: 2 }}>
-            {item?.mediaName}
-          </CustomText>
-          <TouchableOpacity
-            style={{ marginTop: -50 }}
-            onPress={() => onPressDelete(item.media)}>
-            <Image source={IMAGES.delete} resizeMode="contain" />
-          </TouchableOpacity>
-        </TouchableOpacity>
-      ) : (
-        <ImageBackground
-          source={{ uri: item.media }}
-          style={styles.attachImgWrapper}
-          imageStyle={{ borderRadius: radiusScale(8) }}>
-          <TouchableOpacity
-            style={{ alignItems: 'center', justifyContent: 'center' }}
-            onPress={() => onPressDelete(item.media)}>
-            <Image source={IMAGES.delete} resizeMode="contain" />
-          </TouchableOpacity>
-        </ImageBackground>
-      )}
-    </>
-  );
-
   const getFilePathFromContentUri = async (
     contentUri: string,
     fileName: string,
@@ -807,7 +511,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
     await RNFS.copyFile(contentUri, filePath);
     return `file://${filePath}`;
   };
-
   const savePhoto = async (image: any, type: string, name: any, size: any) => {
     setRefreshing(true);
     try {
@@ -846,7 +549,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
       console.error('Error uploading image:', error);
     }
   };
-
   return (
     <KeyboardAvoidingView style={styles.container}>
       <Header
@@ -863,476 +565,33 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
       />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.contentContainer}>
-          {!showRecipientDetail ? (
-            <View style={[styles.Detailcontainer]}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Text style={styles.headerTitle}>
-                  {ANNOUNCEMENT.Recipient_Details}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    setshowRecipientDetail(!showRecipientDetail);
-                  }}
-                  style={styles.iconWrapper}>
-                  <Image source={IMAGES.downArrow} style={styles.downicon} />
-                </TouchableOpacity>
-              </View>
-            </View>
-          ) : (
-            <View style={[styles.Detailcontainer]}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Text style={styles.headerTitle}>
-                  {ANNOUNCEMENT.Recipient_Details}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    setshowRecipientDetail(!showRecipientDetail);
-                  }}
-                  style={styles.iconWrapper}>
-                  <Image source={IMAGES.upArrow} style={styles.icon} />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.headerDes}>
-                {ANNOUNCEMENT.Announcement_Description}
-              </Text>
-              <View style={styles.lineView} />
-              <View>
-                <CustomText style={[styles.label]}>
-                  {ANNOUNCEMENT.Ticket_Type}
-                  <CustomText style={{ color: COLORS.errorText }}>
-                    {' '}
-                    *
-                  </CustomText>
-                  <TouchableOpacity
-                    onPress={() => setshowTicketTooltip(!showTicketTooltip)}>
-                    <Image
-                      style={{ marginTop: 25, left: 5, resizeMode: 'contain' }}
-                      tintColor={COLORS.light_gray}
-                      source={IMAGES.info_filled}
-                    />
-                  </TouchableOpacity>
-                </CustomText>
-                <Tooltip
-                  contentStyle={[
-                    styles.toolTipStyle,
-                    {
-                      height: verticalScale(60),
-                    },
-                  ]}
-                  isVisible={showTicketTooltip}
-                  displayInsets={{
-                    left: 0,
-                    right: 260,
-                    top: 0,
-                    bottom: 0,
-                  }}
-                  arrowStyle={{ left: -10 }}
-                  backgroundColor="transparent"
-                  topAdjustment={verticalScale(-10)}
-                  content={
-                    <View>
-                      <Text style={styles.tooltipHeadStyle}>
-                        {ANNOUNCEMENT.ANNOUNCEMENT_TICKET_TOOLTIP}
-                      </Text>
-                    </View>
-                  }
-                  placement={Placement.RIGHT}
-                  onClose={() => setshowTicketTooltip(false)}>
-                  <View />
-                </Tooltip>
-                <View
-                  style={
-                    ticketerrorMessage
-                      ? styles.errorContainer
-                      : [
-                        styles.inputContainer,
-                        {
-                          backgroundColor:
-                            announcementId != null
-                              ? COLORS.lighter_gray
-                              : 'white',
-                        },
-                      ]
-                  }>
-                  <View ref={ticketTypeRef} style={styles.userInfoContainer}>
-                    {ticketTypeArr?.length == 0 ? (
-                      <Text style={[styles.inputStyle, { left: 0 }]}>
-                        Please select...
-                      </Text>
-                    ) : (
-                      <ScrollView
-                        showsHorizontalScrollIndicator={false}
-                        horizontal={true}
-                        style={{
-                          marginVertical: verticalMarginScale(10),
-                          width: '100%',
-                        }}>
-                        {ticketTypeArr?.map((item: any) => {
-                          return (
-                            <View
-                              style={[
-                                styles.countWrapper,
-                                {
-                                  marginHorizontal: 3,
-                                  paddingVertical: verticalScale(3),
-                                  flexDirection: 'row',
-                                },
-                              ]}>
-                              <Text style={[styles.label, { paddingTop: 0 }]}>
-                                {item?.name}
-                              </Text>
-                              {announcementId == null && (
-                                <TouchableOpacity
-                                  onPress={() => removeTicketType(item)}>
-                                  <Image
-                                    source={IMAGES.cross}
-                                    style={{ left: 5, resizeMode: 'contain' }}
-                                  />
-                                </TouchableOpacity>
-                              )}
-                            </View>
-                          );
-                        })}
-                      </ScrollView>
-                    )}
-                  </View>
-                  <TouchableOpacity
-                    style={{
-                      width: '20%',
-                      alignItems: 'center',
-                      paddingVertical: '10%',
-                      marginRight: -20,
-                    }}
-                    onPress={() => {
-                      if (announcementId == null) {
-                        setActiveTab('ticketTypeOptions');
-                        setSelectedTicketType(ticketTypeArr);
-                        bottomSheetRef?.current?.open();
-                      }
-                    }}>
-                    <Image style={styles.arrowicon} source={IMAGES.downArrow} />
-                  </TouchableOpacity>
-                </View>
-                {ticketerrorMessage ? (
-                  <Text style={[styles.errorText]}>
-                    {ERROR_MESSAGE.TICKET_TYPE_ERROR}
-                  </Text>
-                ) : null}
-              </View>
 
-              <View>
-                <CustomText style={[styles.label]}>
-                  {ANNOUNCEMENT.Added_by}
-                  <CustomText style={{ color: COLORS.errorText }}>
-                    {' '}
-                    *
-                  </CustomText>
-                  <TouchableOpacity
-                    onPress={() =>
-                      setShowProfileToolitip(!showProfileToolitip)
-                    }>
-                    <Image
-                      style={{ marginTop: 25, left: 5, resizeMode: 'contain' }}
-                      tintColor={COLORS.light_gray}
-                      source={IMAGES.info_filled}
-                    />
-                  </TouchableOpacity>
-                </CustomText>
-                <Tooltip
-                  contentStyle={[
-                    styles.toolTipStyle,
-                    {
-                      height: verticalScale(90),
-                    },
-                  ]}
-                  isVisible={showProfileToolitip}
-                  displayInsets={{
-                    left: 0,
-                    right: 270,
-                    top: 0,
-                    bottom: 0,
-                  }}
-                  arrowStyle={{ left: -10 }}
-                  backgroundColor="transparent"
-                  topAdjustment={verticalScale(-10)}
-                  content={
-                    <View>
-                      <Text style={styles.tooltipHeadStyle}>
-                        {ANNOUNCEMENT.ANNOUNCEMENT_TOOLTIP}
-                      </Text>
-                    </View>
-                  }
-                  placement={Placement.RIGHT}
-                  onClose={() => setShowProfileToolitip(false)}>
-                  <View />
-                </Tooltip>
-                <View
-                  style={
-                    addedByerrorMessage
-                      ? styles.errorContainer
-                      : [
-                        styles.inputContainer,
-                        {
-                          backgroundColor:
-                            announcementId != null
-                              ? COLORS.lighter_gray
-                              : 'white',
-                        },
-                      ]
-                  }>
-                  <View ref={addedRef} style={styles.userInfoContainer}>
-                    {collaboratorArr?.length == 0 ? (
-                      <Text style={[styles.inputStyle, { left: 0 }]}>
-                        Please select...
-                      </Text>
-                    ) : (
-                      <ScrollView
-                        showsHorizontalScrollIndicator={false}
-                        horizontal={true}
-                        style={{ marginVertical: verticalMarginScale(10) }}>
-                        {collaboratorArr?.map((item: any) => {
-                          const collabratorName = announcementId === null ? `${item?.companyName || item?.email} (${item?.role?.name})` : item?.additionalHostInformation?.companyName;
-                          return (
-                            <View
-                              style={[
-                                styles.countWrapper,
-                                {
-                                  marginHorizontal: 3,
-                                  paddingVertical: verticalScale(3),
-                                  flexDirection: 'row',
-                                },
-                              ]}>
-                              <Text style={[styles.label, { paddingTop: 0 }]}>{collabratorName}</Text>
-                              {announcementId == null && (
-                                <TouchableOpacity
-                                  onPress={() => removeCollaborator(item)}>
-                                  <Image
-                                    source={IMAGES.cross}
-                                    style={{ left: 5, resizeMode: 'contain' }}
-                                  />
-                                </TouchableOpacity>
-                              )}
-                            </View>
-                          );
-                        })}
-                      </ScrollView>
-                    )}
-                  </View>
-                  <TouchableOpacity
-                    style={{
-                      width: '20%',
-                      alignItems: 'center',
-                      paddingVertical: '10%',
-                      marginRight: -20,
-                    }}
-                    onPress={() => {
-                      if (announcementId == null) {
-                        setActiveTab('collaborator');
-                        setselectedCollaborator(collaboratorArr);
-                        bottomSheetRef?.current?.open();
-                      }
-                    }}>
-                    <Image style={styles.arrowicon} source={IMAGES.downArrow} />
-                  </TouchableOpacity>
-                </View>
-                {addedByerrorMessage ? (
-                  <Text style={[styles.errorText]}>
-                    {ERROR_MESSAGE.COLLABORATOR_ERROR}
-                  </Text>
-                ) : null}
-              </View>
+          <RecipientDetail
+            allRecipients={allRecipients}
+            ticketerrorMessage={ticketerrorMessage}
+            announcementId={announcementId}
+            ticketTypeRef={ticketTypeRef}
+            ticketTypeArr={ticketTypeArr}
+            removeTicketType={removeTicketType}
+            setActiveTab={setActiveTab}
+            setSelectedTicketType={setSelectedTicketType}
+            bottomSheetRef={bottomSheetRef}
+            addedByerrorMessage={addedByerrorMessage}
+            addedRef={addedRef}
+            collaboratorArr={collaboratorArr}
+            removeCollaborator={removeCollaborator}
+            setselectedCollaborator={setselectedCollaborator}
+            recipienterrorMessage={recipienterrorMessage} />
 
-              <View>
-                <Text style={styles.label}>{ANNOUNCEMENT.Send_to}</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    if (announcementId == null) {
-                      setActiveTab('receipient');
-                      bottomSheetRef?.current?.open();
-                    }
-                  }}
-                  style={
-                    recipienterrorMessage
-                      ? styles.errorContainer
-                      : [
-                        styles.inputContainer,
-                        {
-                          backgroundColor:
-                            announcementId != null
-                              ? COLORS.lighter_gray
-                              : 'white',
-                        },
-                      ]
-                  }>
-                  <View style={styles.userInfoContainer}>
-                    {allRecipients?.length == 0 ? (
-                      <View style={styles.recipintWrapper} />
-                    ) : (
-                      <FlatList
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                        data={allRecipients}
-                        renderItem={({ item, index }) => {
-                          const name =
-                            announcementId == null
-                              ? item?.user?.firstName +
-                              ' ' +
-                              item?.user?.lastName
-                              : item?.firstName + ' ' + item?.lastName;
-                          const profilePicture =
-                            announcementId == null
-                              ? item?.user?.profilePicture
-                              : item?.profileImage;
-                          return (
-                            <View>
-                              {index < 3 ? (
-                                <View
-                                  style={[
-                                    styles.receipientImg,
-                                    { left: index * -15 },
-                                  ]}>
-                                  <AvatarInitials
-                                    name={name}
-                                    imgUrl={profilePicture}
-                                    size={30}
-                                    textColor="white"
-                                  />
-                                </View>
-                              ) : null}
-                            </View>
-                          );
-                        }}
-                      />
-                    )}
-                    <View
-                      style={{
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        left:
-                          allRecipients.length == 1
-                            ? horizontalScale(-160)
-                            : allRecipients.length == 2
-                              ? horizontalScale(-140)
-                              : allRecipients.length >= 3
-                                ? horizontalScale(-120)
-                                : horizontalScale(10),
-                      }}>
-                      <Text style={[styles.label, { paddingTop: 0 }]}>
-                        {ANNOUNCEMENT.Recipients}
-                      </Text>
-                      <Text style={styles.attachDes}>
-                        {allRecipients.length} Users
-                      </Text>
-                    </View>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (announcementId == null) {
-                        setActiveTab('receipient');
-                        bottomSheetRef?.current?.open();
-                      }
-                    }}>
-                    <Image source={IMAGES.arrowRight} resizeMode='contain' />
-                  </TouchableOpacity>
-                </TouchableOpacity>
-                {recipienterrorMessage ? (
-                  <Text style={[styles.errorText]}>
-                    {ERROR_MESSAGE.RECIPIENTS_ERROR}
-                  </Text>
-                ) : null}
-              </View>
-            </View>
-          )}
-          {!showAnnouncementDetail ? (
-            <View style={[styles.Detailcontainer]}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Text style={styles.headerTitle}>
-                  {ANNOUNCEMENT.Announcement_Details}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    setshowAnnouncementDetail(!showAnnouncementDetail);
-                  }}
-                  style={styles.iconWrapper}>
-                  <Image source={IMAGES.downArrow} style={styles.downicon} />
-                </TouchableOpacity>
-              </View>
-            </View>
-          ) : (
-            <View style={[styles.Detailcontainer]}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Text style={styles.headerTitle}>
-                  {ANNOUNCEMENT.Announcement_Details}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    setshowAnnouncementDetail(!showAnnouncementDetail);
-                  }}
-                  style={styles.iconWrapper}>
-                  <Image source={IMAGES.upArrow} style={styles.icon} />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.lineView} />
-              {refreshing && (
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <ActivityIndicator color={COLORS.black} />
-                </View>
-              )}
-              <Input
-                editable={true}
-                isRequired={true}
-                multiline={true}
-                ref={announcementRef}
-                placeholder={ANNOUNCEMENT.Share_updates}
-                defaultValue={announcementText}
-                onChangeText={setAnnouncementText}
-                label={ANNOUNCEMENT.Announcement}
-                errorMessage={ERROR_MESSAGE.ANNOUNCEMENT_DETAIL_ERROR}
-                hasHandler={true}
-              />
-              <Text style={styles.label}>{ANNOUNCEMENT.Attachments}</Text>
+          <AnnouncementDetail
+            announcementText={announcementText}
+            setAnnouncementText={setAnnouncementText}
+            refreshing={refreshing}
+            announcementRef={announcementRef}
+            atachmentArr={atachmentArr}
+            editPhotoClick={editPhotoClick}
+            onPressDelete={onPressDelete} />
 
-              <View style={{ flexDirection: 'row' }}>
-                {atachmentArr.length < 3 && (
-                  <TouchableOpacity
-                    onPress={() => editPhotoClick()}
-                    style={styles.attachWrapper}>
-                    <Image source={IMAGES.upload} style={styles.icon} />
-                  </TouchableOpacity>
-                )}
-                <FlatList
-                  data={atachmentArr}
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}
-                  renderItem={renderAttchmentItem}
-                />
-              </View>
-              <Text style={styles.attachDescription}>
-                {ANNOUNCEMENT.Attachments_Descripiton}
-              </Text>
-            </View>
-          )}
         </View>
       </ScrollView>
       {announcementId != null ? (

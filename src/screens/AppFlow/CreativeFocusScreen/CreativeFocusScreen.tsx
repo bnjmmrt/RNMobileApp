@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CreativeFocusScreenStyles from './CreativeFocusScreenStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
-import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
+import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants';
 import Header from '../../../component/Header/Header';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/slices';
@@ -123,7 +123,7 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
         {isToastShown && (
           <Toast
             toastStyle={{ position: 'relative', bottom: BOTTOM_SAFEAREA_SPACING + 10, right: 0, left: 0 }}
-            message={'Please select at least one'}
+            message={ERROR_MESSAGE.CREATIVE_FOCUS}
             onClose={() => setIsToastShown(false)}
           />
         )}

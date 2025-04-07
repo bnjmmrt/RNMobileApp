@@ -4,7 +4,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SelectInterestScreenStyles from './SelectInterestScreenStyles';
 import Button from '../../../component/Button';
-import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
+import { LABLE, BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants';
 import Title from '../../../component/Title/Title';
 import Header from '../../../component/Header/Header';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,7 +22,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
-interface SelectInterestScreenProps extends NativeStackScreenProps<any, any> {}
+interface SelectInterestScreenProps extends NativeStackScreenProps<any, any> { }
 
 const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
   navigation,
@@ -34,11 +34,11 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
     route.params
       ? route.params
       : {
-          headerTitle: null,
-          btnTitle: null,
-          subTitle: null,
-          fromProfile: false,
-        },
+        headerTitle: null,
+        btnTitle: null,
+        subTitle: null,
+        fromProfile: false,
+      },
   );
 
   //give all interests
@@ -122,7 +122,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
           // dispatch(setInterest(selectedCategories))
           FlashMessageComponent.show(
             'success',
-            'Details updated successfully!',
+            ERROR_MESSAGE.DETAIL_UPDATED,
           );
         }
       }
@@ -174,7 +174,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
               style={[
                 styles.categoryButton,
                 selectedCategories.some(selected => selected.id === item.id) &&
-                  styles.selectedCategoryButton,
+                styles.selectedCategoryButton,
               ]}
               onPress={() => handleCategorySelect(item)}>
               <Text
@@ -192,7 +192,7 @@ const SelectInterestScreen: React.FC<SelectInterestScreenProps> = ({
         {isToastShown && (
           <Toast
             toastStyle={{ bottom: 25 }}
-            message={'Please select at least one'}
+            message={ERROR_MESSAGE.CREATIVE_FOCUS}
             onClose={() => setIsToastShown(false)}
           />
         )}

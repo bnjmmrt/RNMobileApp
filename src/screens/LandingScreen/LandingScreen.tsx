@@ -20,7 +20,6 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log("useCallbackuseCallbackuseCallback",useCallback)
       changeSafeAreaViewConfig({
         ...SAFEWAREAVIEW_CONFIG.BLACK_SCHEME,
         showTopSafeAreaView: false,

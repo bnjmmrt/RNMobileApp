@@ -3,7 +3,7 @@ import IMAGES from '@images/index';
 import { useNavigation } from '@react-navigation/native';
 import { environment } from 'environments/environment';
 import moment from 'moment';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -20,6 +20,7 @@ import { useDispatch } from 'react-redux';
 import { EndPoint } from 'src/ApiManager/config';
 import useApi from 'src/axios/useApi';
 import CircleButtonOverlay from 'src/component/BackButton/CircleButtonOverlay';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import EditPictureBottomSheet from 'src/component/BottomSheet/EditPictureBottomSheet';
 import Button from 'src/component/Button';
 import { CustomText } from 'src/component/CustomText';
@@ -27,6 +28,7 @@ import HostEventTalent from 'src/component/Event/HostEventTalent';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import Input from 'src/component/Input/Input';
 import MapComponent from 'src/component/MapComponent';
+import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 import { Address } from 'src/redux/slices/appFlowSlice';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import { BUTTON_LABLE, COLORS, EVENT } from 'src/utils/constants';
@@ -46,7 +48,6 @@ import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 import BaseCityComponent from '../ProfileScreen/EditProfile/BaseCityComponent';
 import DatePickerComponent from '../ProfileScreen/EditProfile/DatePickerComponent';
-import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 interface Location {
   location?: string;
@@ -98,7 +99,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const baseCityRef = useRef<any>(null);
   const startDateRef = useRef<any>(null);
   const endDateRef = useRef<any>(null);
-  const editPhotoBottomSheetRef = useRef<any>(null);
+  const editPhotoBottomSheetRef = useRef<BottomSheetMethods>(null);
   const { uploadFileHook } = useUploadFile();
   const [loader, setLoader] = useState<boolean>(false);
 
@@ -112,8 +113,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const [featureTalent, setFeatureTalent] = useState(item?.talents || []);
   const [image, setImage] = useState<string>(
     removeSignature(item?.imageCover) ||
-    removeSignature(item?.imageFlyer) ||
-    '',
+      removeSignature(item?.imageFlyer) ||
+      '',
   );
   const [imageSize, setImageSize] = useState<number>(0);
   const [timeZone, setTimeZone] = useState<string>();
@@ -125,13 +126,14 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       address: item?.location?.location || '',
       latitude: item?.location?.latitude || '',
       longitude: item?.location?.longitude || '',
+      city: item?.location?.city || '',
     });
     setshowAddress(item?.showLocation || false);
     setFeatureTalent(item?.talents);
     setImage(
       removeSignature(item?.imageCover) ||
-      removeSignature(item?.imageFlyer) ||
-      '',
+        removeSignature(item?.imageFlyer) ||
+        '',
     );
 
     eventNameRef.current?.setInputText(item?.name || '');
@@ -193,7 +195,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       name: eventNameRef.current.inputText,
       description: eventDescriptionRef.current.inputText,
       eventLocation: {
-        city: eventAddress?.address || '',
+        city: eventAddress?.city || '',
         latitude: Number(eventAddress?.latitude) || 0,
         location: baseCityRef.current.selectedCity?.address || '',
         longitude: Number(eventAddress?.longitude) || 0,
@@ -304,7 +306,9 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
       console.error('Error uploading image:', error);
     }
   };
-  const onCancel = () => { setImage('') };
+  const onCancel = () => {
+    setImage('');
+  };
 
   const openCamera = async () => {
     editPhotoBottomSheetRef.current?.close();
@@ -355,6 +359,15 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   useEffect(() => {
     setTimeZone(item?.timeZone);
   }, [item]);
+
+  const RenderFeaturedTalent = useCallback(({}: {}) => {
+    return (
+      <HostEventTalent
+        talents={featureTalent}
+        onTalentChange={e => setFeatureTalent(e)}
+      />
+    );
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -488,10 +501,11 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
             hasHandler={true}
           />
 
-          <HostEventTalent
+          <RenderFeaturedTalent />
+          {/* <HostEventTalent
             talents={featureTalent}
             onTalentChange={e => setFeatureTalent(e)}
-          />
+          /> */}
         </View>
       </ScrollView>
 

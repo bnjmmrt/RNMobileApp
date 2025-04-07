@@ -39,8 +39,6 @@ const TicketTypeBottomSheet = forwardRef<
   useImperativeHandle(ref, () => ({
     open: () => sheetRef.current?.open(),
     close: () => sheetRef.current?.close(),
-    showFlashMessage: (type, message) =>
-      sheetRef.current?.showFlashMessage(type, message),
   }));
 
   const closeSheet = () => {
@@ -66,7 +64,12 @@ const TicketTypeBottomSheet = forwardRef<
     },
     [selectedTicketType],
   );
-  const snapPoint = ticketTypes.length == 1 ? `12%` : ticketTypes.length > 8 ? '50%' : `${(ticketTypes.length * 10)}%`
+  const snapPoint =
+    ticketTypes.length == 1
+      ? `12%`
+      : ticketTypes.length > 8
+      ? '50%'
+      : `${ticketTypes.length * 10}%`;
   return (
     <BottomSheetComponent
       ref={sheetRef}

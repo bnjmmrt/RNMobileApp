@@ -26,8 +26,6 @@ const DeleteListUsersSheet = forwardRef<
   useImperativeHandle(ref, () => ({
     open: () => sheetRef.current?.open(),
     close: () => sheetRef.current?.close(),
-    showFlashMessage: (type, message) =>
-      sheetRef.current?.showFlashMessage(type, message),
   }));
 
   const [

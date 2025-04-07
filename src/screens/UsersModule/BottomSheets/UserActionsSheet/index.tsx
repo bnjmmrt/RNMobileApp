@@ -57,8 +57,6 @@ const UserActionsSheet = forwardRef<
     useImperativeHandle(ref, () => ({
       open: () => sheetRef.current?.open(),
       close: () => sheetRef.current?.close(),
-      showFlashMessage: (type, message) =>
-        sheetRef.current?.showFlashMessage(type, message),
     }));
 
     const { userDetails } = useSelector((state: RootState) => {
@@ -71,21 +69,24 @@ const UserActionsSheet = forwardRef<
       };
     }, shallowEqual);
 
-    const [fetchUserDetails, { }] = useLazyFetchUserDetailsQuery();
-    const isNonMemberHasNotAppliedUser = userDetails?.hostUserMappingId && userDetails?.eventCount === 0;
+    const [fetchUserDetails, {}] = useLazyFetchUserDetailsQuery();
+    const isNonMemberHasNotAppliedUser =
+      userDetails?.hostUserMappingId && userDetails?.eventCount === 0;
 
     const snapPoints =
       selectedAction === 'report'
         ? ['60%']
         : selectedAction === 'markSpam'
-          ? ['35%']
-          : selectedAction === 'delete'
-            ? ['33%']
-            : selectedAction === 'addToList'
-              ? ['60%']
-              : selectedAction === 'createList'
-                ? ['45%']
-                : isNonMemberHasNotAppliedUser ? ['24%'] : ['30%'];
+        ? ['35%']
+        : selectedAction === 'delete'
+        ? ['33%']
+        : selectedAction === 'addToList'
+        ? ['60%']
+        : selectedAction === 'createList'
+        ? ['45%']
+        : isNonMemberHasNotAppliedUser
+        ? ['24%']
+        : ['30%'];
 
     const onCreateListSuccess = () => {
       closeSheet();
