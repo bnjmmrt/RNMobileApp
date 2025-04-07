@@ -26,7 +26,7 @@ const EnterEmailPhoneStyles = () => {
     },
     contentContainer: {
       flex: 1,
-      paddingVertical: verticalMarginScale(10),
+      paddingTop: verticalMarginScale(10),
       paddingHorizontal: horizontalMarginScale(20),
     },
     title: {
