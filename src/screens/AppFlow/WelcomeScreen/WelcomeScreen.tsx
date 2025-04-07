@@ -44,7 +44,7 @@ const WelcomeScreen: React.FC = () => {
 
   const onEnterClick = () => {
     updateUserStatus()
-    navigation.navigate('AppStack', { screen: ROUTES.BottomTabBar });
+    navigation.navigate('CommunityGuidelinesScreen');
   };
 
   return (
