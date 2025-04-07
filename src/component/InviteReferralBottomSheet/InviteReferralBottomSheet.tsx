@@ -103,15 +103,16 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
         setFilteredMembers(membersWithSentFlag);
 
         const memberPhoneNumbers = membersWithSentFlag.map(m => m.phoneNumber);
+
         const nonMembers = formattedContacts.filter(
-          contact => !memberPhoneNumbers.includes(contact.phoneNumber),
+          contact => !memberPhoneNumbers.includes(contact.phoneNumber?.replace(/[^\d+]/g, '')),
         );
 
         setContacts(nonMembers);
-        setFilteredContacts(membersWithSentFlag);
+        setFilteredContacts(nonMembers.slice(0, PAGE_SIZE));
       } else {
-        setContacts([]);
-        setFilteredContacts([]);
+        setContacts(formattedContacts);
+        setFilteredContacts(formattedContacts.slice(0, PAGE_SIZE));
       }
     } catch (err) {
       console.error('Error loading contacts:', err);
@@ -191,7 +192,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       .catch(err => console.error('SMS error:', err));
   };
 
-  const renderEmptyComponent = () => {
+  const renderEmptyComponentMember = () => {
     if (!permissionGranted) {
       return (
         <View style={styles.emptyContainer}>
@@ -222,6 +223,43 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
               ? 'No Contacts are members at this time'
               : 'Please refine your search.'
           }
+          isLoading={isRendering || permissionLoading}
+        />
+      </View>
+    );
+  };
+
+
+  const renderEmptyComponentContact = () => {
+    if (!permissionGranted) {
+      return (
+        <View style={styles.emptyContainer}>
+          <EventEmptyRecord
+            isLoading={isRendering || permissionLoading}
+            title="Access your contacts"
+            subTitle="Sync your phone contacts to invite friends"
+            footerContent={
+              <ButtonSmall
+                colorTheme="dark"
+                leftIcon={IMAGES.settings}
+                style={styles.settingsButton}
+                title="Sync Contacts in Settings"
+                onPress={() => Linking.openURL('app-settings:')}
+              />
+            }
+          />
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.emptyContainer}>
+        <EventEmptyRecord
+          title="No Results"
+          subTitle={
+            searchRef?.current?.searchText ? 'Please refine your search.' : 'No contacts are available in phonebook'
+          }
+
           isLoading={isRendering || permissionLoading}
         />
       </View>
@@ -293,7 +331,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ gap: 4 }}
               keyExtractor={(item, index) => item.phoneNumber + index}
-              ListEmptyComponent={renderEmptyComponent()}
+              ListEmptyComponent={renderEmptyComponentMember()}
               ListFooterComponent={
                 <View style={{ height: BOTTOM_SAFEAREA_SPACING }} />
               }
@@ -376,7 +414,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
                 )}
                 onEndReached={handleLoadMore}
                 onEndReachedThreshold={0.5}
-                ListEmptyComponent={renderEmptyComponent()}
+                ListEmptyComponent={renderEmptyComponentContact()}
               />
             )}
           </View>

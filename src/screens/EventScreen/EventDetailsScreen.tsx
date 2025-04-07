@@ -378,7 +378,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
         <Button
           disabled={false}
-          style={styles.btnStyle}
+          style={[styles.btnStyle, { marginBottom: 15 }]}
           title={BUTTON_LABLE.CHECK_IN}
           colorTheme="dark"
           loading={loading1}

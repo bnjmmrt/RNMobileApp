@@ -57,17 +57,17 @@ const useContacts = (autoRequestForPermision?: boolean, timout?: number) => {
     const phone = parsePhoneNumberFromString(phoneNumber);
     return phone
       ? {
-          countryCode: phone.countryCallingCode,
-          flag: getCountryFlag(phone.country),
-          phoneNumber: phone.nationalNumber.replace(/\D/g, ''),
-          currentCountry: phone.country,
-        }
+        countryCode: phone.countryCallingCode,
+        flag: getCountryFlag(phone.country),
+        phoneNumber: phone.nationalNumber.replace(/\D/g, ''),
+        currentCountry: phone.country,
+      }
       : {
-          currentCountry,
-          flag: getCountryFlag(currentCountry),
-          countryCode: getCountryCallingCode(`${currentCountry}`),
-          phoneNumber: phoneNumber.replace(/\D/g, ''),
-        };
+        currentCountry,
+        flag: getCountryFlag(currentCountry),
+        countryCode: getCountryCallingCode(`${currentCountry}`),
+        phoneNumber: phoneNumber.replace(/\D/g, ''),
+      };
   };
 
   const getContacts = async (): Promise<ContactItem[]> => {
@@ -80,7 +80,7 @@ const useContacts = (autoRequestForPermision?: boolean, timout?: number) => {
       const formattedContacts = deviceContacts
         .map(contact => ({
           name: `${contact.givenName} ${contact.familyName}`.trim(),
-          phoneNumber: contact.phoneNumbers[0]?.number || '',
+          phoneNumber: contact.phoneNumbers[0]?.number?.replace(/[^\d+]/g, '') || '',
           firstName: contact.givenName,
           lastName: contact.familyName,
         }))

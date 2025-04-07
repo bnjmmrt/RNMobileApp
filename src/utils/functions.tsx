@@ -355,7 +355,7 @@ export const parseAndFormatDate = (dateString: string) => {
   return moment().subtract(18, 'years').format('YYYY-MM-DD');
 };
 export const numberSpacing = (number: any, callingCode: any) => {
-  const cleanedText = number.replace(/\D/g, '');
+  const cleanedText = number.replace(/[^\d+]/g, '');
   const fullNumber = `${callingCode}${cleanedText}`;
   let parsedNumber = parsePhoneNumberFromString(fullNumber);
   if (parsedNumber && parsedNumber.isValid()) {
@@ -409,10 +409,10 @@ export const extractCountryCode = (phoneNumber: string) => {
 export const getCountryFlag = (countryCode: string) => {
   return countryCode
     ? countryCode
-        .toUpperCase()
-        .split('')
-        .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
-        .join('')
+      .toUpperCase()
+      .split('')
+      .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
+      .join('')
     : '';
 };
 export interface ApiErrorInterface {
