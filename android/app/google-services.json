@@ -1,37 +1,37 @@
 {
   "project_info": {
-    "project_number": "639681590518",
-    "project_id": "therumor-5da69",
-    "storage_bucket": "therumor-5da69.firebasestorage.app"
+    "project_number": "911470503708",
+    "project_id": "therumor-development",
+    "storage_bucket": "therumor-development.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:639681590518:android:483043feee6e0788ae28d7",
+        "mobilesdk_app_id": "1:911470503708:android:e788cf380fa4c1b25abcd9",
         "android_client_info": {
           "package_name": "com.therumor"
         }
       },
       "oauth_client": [
         {
-          "client_id": "639681590518-ttndti125s515q59tocvp7t0ut0u92r6.apps.googleusercontent.com",
+          "client_id": "911470503708-1bmaqolablgugdfrhmakhpbhn6uq7vr4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCzhNfmX_SgIGxfzHeJCoEtqTdMOT98I5o"
+          "current_key": "AIzaSyD0Fn8JGWAk59MY72WYJYUkC8uKCNJGQ2o"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "639681590518-ttndti125s515q59tocvp7t0ut0u92r6.apps.googleusercontent.com",
+              "client_id": "911470503708-1bmaqolablgugdfrhmakhpbhn6uq7vr4.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "639681590518-7f70p81v2lgd9g7bnrrv9k5ve09qhvec.apps.googleusercontent.com",
+              "client_id": "911470503708-a4a9bg88fbfpur8u3n86jkadgrq0dnk0.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.therumor.app",

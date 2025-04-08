@@ -1,6 +1,6 @@
 import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { verticalMarginScale } from 'src/utils/dimensions';
@@ -82,9 +82,9 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     }
   };
 
-  // useEffect(() => {
-  //   sendOtp('sent');
-  // }, [route.params]);
+  useEffect(() => {
+    sendOtp('sent');
+  }, [route.params]);
 
   const verifyCode = async () => {
     let params;
