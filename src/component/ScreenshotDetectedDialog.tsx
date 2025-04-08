@@ -12,17 +12,18 @@ import IMAGES from '@images/index';
 import { addListener } from 'react-native-screenshot-prevent';
 import FastImage from '@d11/react-native-fast-image';
 import { BlurView } from '@react-native-community/blur';
-// import RNPreventScreenshot from 'react-native-screenshot-prevent';
-
+import { environment } from 'environments/environment';
+import { environment as environmentProd } from 'environments/environment.prod';
 const ScreenshotDetectedDialog: React.FC = () => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     addListener(() => {
-      setVisible(true);
+      if (environment.BASE_URL == environmentProd.BASE_URL) {
+        setVisible(true);
+      }
     });
-
-    return () => {};
+    return () => { };
   }, []);
 
   if (!visible) return null;

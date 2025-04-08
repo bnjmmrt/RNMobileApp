@@ -99,7 +99,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
       endPoint = EndPoint.phone_verify_code;
       params = {
         phoneNumber: removeSpaceFromStr(sendToId),
-        verificationCode: otpInputRef.current && otpInputRef.current.code,
+        code: otpInputRef.current && otpInputRef.current.code,
       };
     }
 

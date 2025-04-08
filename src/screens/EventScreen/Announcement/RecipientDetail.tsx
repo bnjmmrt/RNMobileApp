@@ -95,7 +95,7 @@ export const RecipientDetail: React.FC<RecipientProps> = ({ ticketerrorMessage, 
                             contentStyle={[
                                 styles.toolTipStyle,
                                 {
-                                    height: verticalScale(60),
+                                    height: verticalScale(20),
                                 },
                             ]}
                             isVisible={showTicketTooltip}
