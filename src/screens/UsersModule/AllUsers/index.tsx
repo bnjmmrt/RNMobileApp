@@ -289,11 +289,11 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
               <EventEmptyRecord
                 title={getEmptyStateTitle()}
                 subTitle={getEmptyStateMessage()}
-                isLoading={isRendering}
+                isLoading={isLoading}
                 footerContent={
                   !isLoading && filterNumber > 0 ? (
                     <Button
-                      title={'Reset Filterssdfdfdfd'}
+                      title={'Reset Filters'}
                       imageSource={IMAGES.refresh}
                       leftImageStyle={{
                         height: verticalScale(16),
