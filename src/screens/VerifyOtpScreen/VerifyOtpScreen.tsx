@@ -154,7 +154,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={50}
+      keyboardVerticalOffset={10}
       enabled={Platform.OS === 'ios'}
       style={styles.container}>
       {/* <FullScreenLoader loading={isLoading}> */}
@@ -176,16 +176,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
           <View style={styles.spacer} />
           <Button
             disabled={false}
-            style={[
-              styles.btnStyle,
-              {
-                marginBottom: keyboardVisible
-                  ? Platform.OS === 'ios'
-                    ? verticalMarginScale(60)
-                    : verticalMarginScale(10)
-                  : 0,
-              },
-            ]}
+            style={[styles.btnStyle]}
             title={BUTTON_LABLE.GET_STARTED}
             colorTheme="dark"
             onPress={onNextClick}

@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     borderWidth: 1,
     borderColor: COLORS.borderGray,
-    borderRadius: 8,
+    borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: horizontalMarginScale(10),

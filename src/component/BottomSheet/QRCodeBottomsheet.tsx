@@ -164,7 +164,12 @@ const RenderToolTip = React.memo(
   }) => {
     return (
       <Tooltip
-        contentStyle={styles.toolTipStyle}
+        contentStyle={[
+          styles.toolTipStyle,
+          {
+            height: verticalScale(80),
+          },
+        ]}
         isVisible={isVisible}
         displayInsets={{ left: 0, right: 0, top: 0, bottom: 0 }}
         arrowStyle={arrowStyle}
@@ -422,12 +427,17 @@ const styles = StyleSheet.create({
   infoText: {
     color: COLORS.light_gray,
   },
-
   toolTipStyle: {
     backgroundColor: COLORS.dark_gray,
-    paddingHorizontal: verticalMarginScale(16),
     width: '80%',
+    paddingHorizontal: 15,
+    height: Platform.OS === 'ios' ? verticalScale(30) : verticalScale(20),
   },
+  // toolTipStyle: {
+  //   backgroundColor: COLORS.dark_gray,
+  //   paddingHorizontal: verticalMarginScale(16),
+  //   width: '80%',
+  // },
   tooltipHeadStyle: {
     fontSize: fontScale(12),
     fontFamily: fontFamily.ABCDiatype_Regular,

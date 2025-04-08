@@ -51,7 +51,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
     useState<UserActionCurrentPageType>('');
 
-  const { data, isLoading, error, isError, refetch } = useFetchAllUsersQuery({
+  const { data, isLoading, error, isError, refetch,isFetching } = useFetchAllUsersQuery({
     take: 10,
     skip: (currentPage - 1) * 10,
     searchValue: searchText,
@@ -107,6 +107,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
   };
 
   const onClearFilter = () => {
+    // setRendring(true)
     setCurrentPage(1);
     setFilterQuery('');
     setFilterNumber(0);
@@ -116,8 +117,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
   const [isRendering, setRendring] = useState(false);
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
-
-    if (isLoading) {
+    if (isFetching) {
       setRendring(true); // immediately show skeleton loader
     } else {
       // Delay turning off the rendering state to avoid flicker
@@ -129,7 +129,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
     return () => {
       clearTimeout(timeoutId); // clean up if component unmounts or re-runs
     };
-  }, [isLoading]);
+  }, [isFetching]);
 
   const getEmptyStateMessage = () => {
     if (filterNumber > 0 && searchText) {
@@ -224,6 +224,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
 
   useEffect(() => {
     if (data && data.data) {
+      // setRendring(false);
       if (currentPage === 1) {
         setAllUsers(data.data);
       } else {
@@ -233,6 +234,9 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
         }));
       }
     }
+    // else{
+    //   setRendring(false);
+    // }
   }, [data]);
 
   useEffect(() => {
@@ -289,7 +293,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
               <EventEmptyRecord
                 title={getEmptyStateTitle()}
                 subTitle={getEmptyStateMessage()}
-                isLoading={isLoading}
+                isLoading={isRendering}
                 footerContent={
                   !isLoading && filterNumber > 0 ? (
                     <Button
