@@ -174,7 +174,18 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   }, [listFilter]);
 
   // Calculate total confirmed guests from entire list
-  const totalConfirmedGuests = guests.filter(guest => guest.checkIn).length;
+  // const totalConfirmedGuests = guests.filter(guest => guest.checkIn).length;
+  const totalConfirmedGuests = guests.reduce((count, guest) => {
+    if (!guest.checkIn) return count;
+
+    const confirmedAdditionalGuests = guest.additionalGuests?.filter(
+      g => g.status === "CONFIRMED"
+    )?.length || 0;
+
+    // +1 to include the main guest
+    return count + confirmedAdditionalGuests + 1;
+  }, 0);
+
   const totalGuestCount = guests.reduce((total, guest) => {
     // Add 1 for the main guest
     let count = 1;
@@ -381,7 +392,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
             status: item.status,
             userId: guest.id,
             profilePicture: undefined,
-            checkIn:guest.checkIn,
+            checkIn: guest.checkIn,
           };
           return renderInvitee(inviteeGuest, item.id);
         })}

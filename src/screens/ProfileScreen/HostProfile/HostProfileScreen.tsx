@@ -209,12 +209,12 @@ const HostProfileScreen: React.FC = () => {
   const socialMediaData = [
     ...(profile?.website
       ? [
-          {
-            id: 'website',
-            icon: IMAGES['website_black'],
-            url: profile?.website,
-          },
-        ]
+        {
+          id: 'website',
+          icon: IMAGES['website_black'],
+          url: profile?.website,
+        },
+      ]
       : []),
     ...Object.keys(socialMediaLinks)
       .map(key => ({
@@ -285,9 +285,9 @@ const HostProfileScreen: React.FC = () => {
                   contentContainerStyle={
                     socialMediaData.length > 0
                       ? {
-                          marginBottom: verticalMarginScale(16),
-                          marginTop: verticalMarginScale(6),
-                        }
+                        marginBottom: verticalMarginScale(16),
+                        marginTop: verticalMarginScale(6),
+                      }
                       : {}
                   }
                   data={socialMediaData}
@@ -433,7 +433,11 @@ const HostProfileScreen: React.FC = () => {
                       {item.name}
                     </CustomText>
                     <CustomText style={styles.dateText}>
-                      {item.startDate}
+                      {convertUTCToTimeZoneFormat(
+                        item.startDate,
+                        item.timeZone,
+                        'MMM DD, hh:mm A',
+                      )}
                     </CustomText>
                     <CustomText
                       style={styles.dateText}
