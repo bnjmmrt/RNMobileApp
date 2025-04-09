@@ -33,7 +33,7 @@ import {
 } from 'src/utils/dimensions';
 import TicketBottom from '../../assets/svgs/icons/ticketBottom.svg';
 import { base64RumorLogo, COLORS, LABLE } from '../../utils/constants';
-import { fontFamily } from '../../utils/functions';
+import { fontFamily, getNumberOfLines } from '../../utils/functions';
 import AvatarInitials from '../AvatarInitials';
 import { CustomText } from '../CustomText';
 import BottomSheetComponent, { BottomSheetMethods } from './BottomSheet';
@@ -162,12 +162,14 @@ const RenderToolTip = React.memo(
     placement: Placement | undefined;
     arrowStyle: ViewStyle;
   }) => {
+    let myHeight =  getNumberOfLines(contentText)
+    console.log('myHeight', myHeight);
     return (
       <Tooltip
         contentStyle={[
           styles.toolTipStyle,
           {
-            height: verticalScale(80),
+            height: verticalScale(myHeight*25),
           },
         ]}
         isVisible={isVisible}
@@ -476,3 +478,5 @@ const styles = StyleSheet.create({
 });
 
 export default QRCodeBottomsheet;
+
+

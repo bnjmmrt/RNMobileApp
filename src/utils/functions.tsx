@@ -67,6 +67,15 @@ export const fontFamily = {
   RomieTrial: 'RomieTrial',
 };
 
+export const getNumberOfLines = (str:string)=> {
+  if (!str) return 0;
+
+  const totalChars = str.length;
+  const charsPerLine = 50;
+
+  return Math.ceil(totalChars / charsPerLine);
+}
+
 export const ErrorText: React.FC<ErrorTextProps> = ({ msg }) => {
   return (
     <Text
