@@ -1,7 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { KeyboardAvoidingView, View } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
@@ -14,13 +14,25 @@ import PhoneNumberInput from '../../component/PhonNumberComponent/PhoneNumberInp
 import TermsAndPolicy from '../../component/TermsAndPlolicy/TermsAndPolicy';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
-import { BUTTON_LABLE, LABLE } from '../../utils/constants';
+import { BUTTON_LABLE, LABLE, COLORS } from '../../utils/constants';
 import EmailPhoneStyles from './EmailPhoneStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
-import { verticalMarginScale } from 'src/utils/dimensions';
+import {
+  verticalMarginScale,
+  horizontalMarginScale,
+} from 'src/utils/dimensions';
 import { RootState } from 'src/redux/slices';
 import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import IMAGES from '@images/index';
+import { fontFamily } from 'src/utils/functions';
+
+const InfoBanner = ({ message }: { message: string }) => (
+  <View style={styles.infoBannerContainer}>
+    <Image source={IMAGES.info} style={styles.infoIcon} />
+    <Text style={styles.infoText}>{message}</Text>
+  </View>
+);
 
 interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -76,7 +88,7 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
       : LABLE.RUMOR_WILL_SEND_YOU_A_EMAIL_WITH_A_VERIFICATION_CODE;
 
   return (
-    <View behavior="padding" style={styles.container}>
+    <View style={styles.container}>
       <BackButton onPress={handleBackPress} />
       <TabBar
         tab={'01'}
@@ -95,6 +107,8 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
         ) : (
           <EmailInput ref={emailInputRef} otherStyle={{ marginTop: 12 }} />
         )}
+
+        <InfoBanner message="If you have already been invited to an event via email, make sure to login using the email address associated, not your mobile number." />
 
         <View style={styles.spacer} />
 
@@ -122,5 +136,31 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  ...EmailPhoneStyles(),
+  infoBannerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: COLORS.borderGray,
+    paddingVertical: verticalMarginScale(16),
+    paddingHorizontal: horizontalMarginScale(24),
+    marginTop: verticalMarginScale(24),
+  },
+  infoIcon: {
+    width: 20,
+    height: 20,
+    marginRight: horizontalMarginScale(8),
+    color: COLORS.light_gray,
+  },
+  infoText: {
+    flex: 1,
+    color: COLORS.light_gray,
+    fontSize: 14,
+    fontFamily: fontFamily.ABCDiatype_Regular,
+  },
+});
 
 export default EmailPhoneScreen;
