@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { COLORS, BUTTON_LABLE, COMMUNITY_GUIDELINE } from '../../../utils/constants';
 import IMAGES from '../../../assets/images';
 import Button from '../../../component/Button';
@@ -13,6 +13,9 @@ import {
   fontScale,
   verticalMarginScale,
 } from '../../../utils/dimensions';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
+import { apiPut } from 'src/ApiManager/MainApi';
 
 interface PrincipleItemProps {
   icon: any;
@@ -56,6 +59,17 @@ const PRINCIPLES: PrincipleItemProps[] = [
 
 const CommunityGuideLinesScreen: React.FC = () => {
   const navigation = useNavigation<any>();
+  const userId = useSelector((state: RootState) => state.auth.userId);
+
+  const updateUserStatus = async () => {
+    try {
+      await apiPut(`/auth/user/${userId}/set-login-status`, {
+        id: userId,
+      });
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -67,11 +81,12 @@ const CommunityGuideLinesScreen: React.FC = () => {
   );
 
   const onAgreeClick = () => {
+    updateUserStatus()
     navigation.navigate('AppStack', { screen: ROUTES.BottomTabBar });
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.content}>
         <View style={styles.logoContainer}>
           <Image
@@ -98,7 +113,7 @@ const CommunityGuideLinesScreen: React.FC = () => {
           onPress={onAgreeClick}
         />
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

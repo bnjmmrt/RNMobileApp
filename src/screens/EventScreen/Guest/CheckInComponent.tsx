@@ -61,6 +61,7 @@ const RenderItemComponent = ({
   index,
   expandList = [],
   toggleExpand,
+  checkInPlusOne,
   navigation,
   onChangeGuestNote,
 }: {
@@ -73,6 +74,7 @@ const RenderItemComponent = ({
     additionalGuest: any;
   }[];
   toggleExpand: any;
+  checkInPlusOne: any,
   navigation: any;
   onChangeGuestNote: (guestNote: string) => void;
 }) => {
@@ -97,9 +99,9 @@ const RenderItemComponent = ({
           expandList[index]?.isExpand
             ? styles.bottomRadius
             : {
-                borderBottomStartRadius: radiusScale(16),
-                borderBottomRightRadius: radiusScale(16),
-              },
+              borderBottomStartRadius: radiusScale(16),
+              borderBottomRightRadius: radiusScale(16),
+            },
         ]}>
         <View style={styles.guestHeader}>
           {item?.isPending ? (
@@ -115,12 +117,12 @@ const RenderItemComponent = ({
             {item?.additionalGuest?.firstName}
           </Text>
           {!item?.isPending && item?.additionalGuest?.checkIn ? (
-            <View style={styles.checkInButton}>
+            <TouchableOpacity onPress={() => checkInPlusOne(item?.additionalGuest?.guestId, item?.additionalGuest?.checkIn)} style={styles.checkInButton}>
               <Image source={IMAGES.checkedinCurved} />
               <Text style={styles.checkInText}>{LABLE.CHECKED_IN}</Text>
-            </View>
+            </TouchableOpacity>
           ) : !item?.isPending && !item?.additionalGuest?.checkIn ? (
-            <View
+            <TouchableOpacity onPress={() => checkInPlusOne(item?.additionalGuest?.guestId, item?.additionalGuest?.checkIn)}
               style={[
                 styles.checkInButton,
                 {
@@ -131,7 +133,7 @@ const RenderItemComponent = ({
               ]}>
               <Image source={IMAGES.checkinCurved} />
               <Text style={styles.checkInText}>{LABLE.CHECK_IN}</Text>
-            </View>
+            </TouchableOpacity>
           ) : (
             <View style={styles.pendingDetailsButton}>
               <Image source={IMAGES.alertTriangle} />
@@ -143,7 +145,7 @@ const RenderItemComponent = ({
           {!item?.isPending && (
             <TouchableOpacity onPress={() => toggleExpand(item)}>
               <Image
-                  resizeMode='contain'
+                resizeMode='contain'
                 source={
                   item?.isExpand ? IMAGES.arrowupCircle : IMAGES.arrowDownCircle
                 }
@@ -274,6 +276,32 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
     }
   };
 
+  const checkInPlusOne = async (guestId: any, checkInStatus: any) => {
+    const response: any = await apiRequest(
+      'post',
+      `events/v1/guest/ticket/${guestId}/validate`,
+      {
+        checkIn: !checkInStatus,
+      },
+    );
+    if (response.success) {
+      setExpandList(prevList =>
+        prevList.map(item =>
+          item.additionalGuest.guestId === guestId
+            ? {
+              ...item,
+              additionalGuest: {
+                ...item.additionalGuest,
+                checkIn: !checkInStatus,
+              },
+            }
+            : item,
+        ),
+      );
+      // setCheckedIn(response.data.checkInStatus);
+    }
+  };
+
   const handleCheckIn = () => {
     validateDetails();
   };
@@ -361,11 +389,11 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
                 ]}
                 onPress={handleCheckIn}>
                 <Image
-                resizeMode='contain'
+                  resizeMode='contain'
                   source={
                     checkedIn ? IMAGES.checkedinCurved : IMAGES.checkinCurved
                   }
-                  // style={styles.actionButtonIcon}
+                // style={styles.actionButtonIcon}
                 />
                 <Text style={styles.actionButtonText}>
                   {checkedIn ? LABLE.CHECKED_IN : LABLE.CHECK_IN}
@@ -414,12 +442,13 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
                 expandList={expandlist || []}
                 toggleExpand={toggleExpand}
                 navigation={navigation}
+                checkInPlusOne={checkInPlusOne}
                 onChangeGuestNote={newGuestNote => {
                   handleGuestAction(newGuestNote, item.additionalGuest.guestId);
                 }}
               />
             )}
-            //   contentContainerStyle={styles.container}
+          //   contentContainerStyle={styles.container}
           />
         </>
       )}

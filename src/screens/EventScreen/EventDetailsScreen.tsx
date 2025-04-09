@@ -611,6 +611,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                 {role === ROLE.HOST && (
                   <EventRequests
                     eventId={data?.data?.id}
+                    checkedinCount={data?.data?.totalCheckedInGuests}
                     onTicketBreakdownPress={onPressManageInvite}
                   />
                 )}

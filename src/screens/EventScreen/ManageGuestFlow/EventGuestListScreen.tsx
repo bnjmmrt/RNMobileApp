@@ -293,7 +293,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
           </View>
         </View>
       </View>
-      {item.status === 'CONFIRMED' && (
+      {item.checkIn && (
         <Image
           source={IMAGES.confirmed_badge}
           style={[styles.confirmedBadge]}
@@ -339,7 +339,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
           </View>
         </View>
         <View style={styles.rightContainer}>
-          {item.status === 'CONFIRMED' && (
+          {item.checkIn && (
             <Image
               source={IMAGES.confirmed_badge}
               style={[styles.confirmedBadge]}
@@ -381,6 +381,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
             status: item.status,
             userId: guest.id,
             profilePicture: undefined,
+            checkIn:guest.checkIn,
           };
           return renderInvitee(inviteeGuest, item.id);
         })}
