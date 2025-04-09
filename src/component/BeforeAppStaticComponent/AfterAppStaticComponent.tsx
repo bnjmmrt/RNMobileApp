@@ -12,7 +12,7 @@ import { EndPoint } from 'src/ApiManager/config';
 import useApi from 'src/axios/useApi';
 import { ROUTES } from 'src/navigation/Route';
 import { RootState } from 'src/redux/slices';
-import { role, setRole, setRoles } from 'src/redux/slices/authSlice';
+import { role, setIsGuest, setRole, setRoles } from 'src/redux/slices/authSlice';
 import GradientOverlay from 'src/screens/BeforeApplicationFlow/GradientOverlay';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
@@ -55,7 +55,7 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
           );
 
           if (response.success) {
-            const { roles, name } = response.data;
+            const { roles, name , isGuest} = response.data;
 
             const transformedRoles = roles.map((role: any) => ({
               roleName: role.name,
@@ -65,11 +65,15 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
             const isMember = transformedRoles.some(
               (role: role) => role.roleName === ROLE.MEMBER,
             );
+            console.log("Guest ifff",isMember);
 
             if (isMember) {
-              navigate(ROUTES.WelcomeScreen, { userName: name });
+              navigate('CommunityGuidelinesScreen',{ userName: name });
+              // navigate(ROUTES.WelcomeScreen, { userName: name });
               dispatch(setRole(ROLE.MEMBER));
               dispatch(setRoles(transformedRoles));
+            }else{
+              dispatch(setIsGuest(isGuest || false))
             }
           }
         } catch (error) {

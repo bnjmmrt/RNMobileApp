@@ -3,7 +3,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import debounce from 'lodash/debounce';
 import React, { useCallback, useRef, useState } from 'react';
-import { Platform, SafeAreaView, View } from 'react-native';
+import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 import AfterAppStaticComponent from 'src/component/BeforeAppStaticComponent/AfterAppStaticComponent';
 import {
@@ -29,7 +29,7 @@ import PastEvents from './Tabs/PastEvents';
 import UpcomingEvents from './Tabs/UpcomingEvents';
 import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
-interface EventScreenProps extends NativeStackScreenProps<any, any> {}
+interface EventScreenProps extends NativeStackScreenProps<any, any> { }
 
 interface TabItem {
   id: string;
@@ -43,7 +43,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const userId = useSelector((state: RootState) => state.auth.userId);
   const role = useSelector((state: RootState) => state.auth.role);
   const isGuest = useSelector((state: RootState) => state.auth.isGuest);
-
+  console.log('EventScreen isGuest', isGuest)
   // const role =
   //   (loginData?.roles &&
   //     loginData?.roles.length > 0 &&

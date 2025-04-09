@@ -34,7 +34,7 @@ const EventRequests: React.FC<EventOverviewProps> = ({
     setConfirmCount(data?.data?.confirmedCount || 0);
     setInviteCount(data?.data?.invitedCount || 0);
     setRequestCount(data?.data?.requestedCount || 0);
-    setCheckInCount(data?.data?.checkedInCount || 0);
+    // setCheckInCount(data?.data?.checkedInCount || 0);
   }, [data]);
 
   const renderCountView = (count: number, type: string) => {

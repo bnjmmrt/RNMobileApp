@@ -213,15 +213,14 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
         </View>
       );
     }
-
     return (
       <View style={styles.emptyContainer}>
         <EventEmptyRecord
           title="No Results"
           subTitle={
-            searchRef?.current?.searchText === ''
-              ? 'No Contacts are members at this time'
-              : 'Please refine your search.'
+            searchRef?.current?.searchText 
+              ?'Please refine your search.'
+              :  'No Contacts are members at this time'
           }
           isLoading={isRendering || permissionLoading}
         />

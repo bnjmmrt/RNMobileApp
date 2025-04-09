@@ -2,7 +2,7 @@ import { getApp, getApps, initializeApp } from '@react-native-firebase/app';
 import messaging from '@react-native-firebase/messaging';
 import { Alert, Platform } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFcmToken } from 'src/redux/slices/authSlice';
+import { setFcmToken, setIsGuest } from 'src/redux/slices/authSlice';
 import { navigate, navigateToNestedStack } from './NavigationService';
 import { ROUTES } from 'src/navigation/Route';
 import store from 'src/redux/store';
@@ -36,14 +36,22 @@ export async function getFCMToken() {
 }
 
 export const NotificationsListener = async () => {
+    const dispatch = store.store.dispatch;
     // Background/killed state handler
     messaging().setBackgroundMessageHandler(async remoteMessage => {
         console.log("Message handled in the background!", remoteMessage);
+        if (remoteMessage?.data?.notificationType == 'eventInvitationNonMember') {
+            dispatch(setIsGuest(true))
+        }
     });
 
     // Foreground listener
     messaging().onMessage(async remoteMessage => {
+        const dispatch = store.store.dispatch;
         console.log('Received foreground message:', remoteMessage);
+        if (remoteMessage?.data?.notificationType == 'eventInvitationNonMember') {
+            dispatch(setIsGuest(true))
+        }
         await onDisplayNotification(remoteMessage);
     });
 
@@ -90,21 +98,6 @@ async function onDisplayNotification(remoteMessage: any) {
             pressAction: { id: 'default' },
         },
     });
-}
-
-const markeAsRead = async (data: any) => {
-    console.log("markeAsRead response: tetstts");
-
-    const { apiRequest } = useApi();
-    const dispatch = useDispatch();
-    const token = useSelector((state: RootState) => state.auth.token);
-    const response: any = await apiRequest(
-        'get',
-        `${EndPoint.noti_detail}/${data.messageId}`);
-    console.log("markeAsRead response:", response);
-    if (response.success) {
-        navigateToScreen(data, 'push')
-    }
 }
 
 export const navigateToScreen = (data: any, type: string = 'in-app') => {
