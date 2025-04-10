@@ -22,9 +22,9 @@ import useContacts, { ContactItem } from 'src/utils/hooks/useContactPermission';
 import { EventGuest } from '../../types';
 import createStyles from './styles';
 
-interface InviteFromContactsProps {}
+interface InviteFromContactsProps { }
 
-const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
+const InviteFromContacts: React.FC<InviteFromContactsProps> = ({ }) => {
   const styles = createStyles();
   const navigation = useNavigation<NavigationProp<EventStackParamList>>();
   const dispatch = useDispatch();
@@ -78,6 +78,7 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
             nonInvitedUsers.push(item);
           }
         });
+
         setContacts(nonInvitedUsers);
         setFilteredContacts(nonInvitedUsers);
       }
@@ -111,6 +112,11 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({}) => {
       );
     }, 500);
   };
+
+  useEffect(() => {
+
+    console.log("Sayyed filteredContacts:", filteredContacts)
+  }, [filteredContacts])
 
   const renderItem = useCallback(
     ({ item }: { item: ContactItem }) => {

@@ -34,6 +34,7 @@ import VerifyOtpStyles from './VerifyOtpStyles';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { RootState } from 'src/redux/slices';
 import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import { setIsGuest } from 'src/redux/slices/authSlice';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -84,8 +85,6 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const handleBackPress = () => navigation.goBack();
 
   const redirectToHome = (data: any) => {
-    console.log('dataaa', JSON.stringify(data));
-
     loginUser({
       id: data?.id,
       isGuest: data?.isGuest,
@@ -95,9 +94,10 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
       companyLogo: data?.user?.additionalHostInformation?.companyLogo,
       profilePicture: data?.user?.profilePicture,
     });
-
+    console.log("Sayyd data:", data)
     dispatch(setEmail(route.params.email || ''));
     dispatch(setPhone(route.params.phone || ''));
+    dispatch(setIsGuest(data?.isGuest));
 
     if (data?.token) {
       fetchUserProfile();
@@ -163,9 +163,8 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         <View style={styles.contentContainer}>
           <TitleSubtitle
             title={LABLE.ENTER_YOUR_VERIFICATION_CODE}
-            subTitle={`${LABLE.SEND_TO}${
-              route.params.isEmail ? route.params.email : route.params.phone
-            }`}
+            subTitle={`${LABLE.SEND_TO}${route.params.isEmail ? route.params.email : route.params.phone
+              }`}
           />
           <OTPComponent
             error={errorMsg}

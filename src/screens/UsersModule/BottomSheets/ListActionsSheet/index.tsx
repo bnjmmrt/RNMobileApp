@@ -78,7 +78,7 @@ const ListActionsSheet = forwardRef<
         case 'addUsers':
           return ['85%'];
         case 'createList':
-          return [`45%`];
+          return [`40%`];
         case 'deleteList':
           return [`35%`];
         case 'duplicateList':
@@ -91,7 +91,6 @@ const ListActionsSheet = forwardRef<
           } else {
             return [`15%`];
           }
-
         default:
           return [`35%`];
       }
@@ -201,7 +200,7 @@ const ListActionsSheet = forwardRef<
           ) : null}
 
           {selectedAction === 'editListName' ||
-          selectedAction === 'createList' ? (
+            selectedAction === 'createList' ? (
             <CreateEditList
               onSuccessAdd={onCreateListSuccess}
               onSuccessEdit={onEditListSuccess}
