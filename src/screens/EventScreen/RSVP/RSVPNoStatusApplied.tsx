@@ -298,13 +298,13 @@ const RSVPNoStatusApplied: React.FC = () => {
       case 'guests':
         return limitOnePlus == 0 ? '10%' : `${limitOnePlus * 6 + 10} %`;
       case 'submit':
-        return Platform.OS == 'android' ? '70%' : '65%';
+        return Platform.OS == 'android' ? '70%' : '60%';
       case 'options':
-        return '20%';
+        return '18%';
       case 'cancel':
-        return '33%';
+        return '30%';
       case 'leave':
-        return '40%';
+        return '38%';
       default:
         return '85%';
     }

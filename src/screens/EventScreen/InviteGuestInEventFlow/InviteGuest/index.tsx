@@ -68,7 +68,7 @@ export interface existingUserType {
   lastName: string;
 }
 interface InviteGuestProps
-  extends NativeStackScreenProps<EventStackParamList, 'InviteGuestScreen'> {}
+  extends NativeStackScreenProps<EventStackParamList, 'InviteGuestScreen'> { }
 
 const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
   const styles = createStyles();
@@ -138,7 +138,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
     inviteNewGuests,
     { error: inviteNewGuestsError, isLoading: inviteNewGuestsLoading },
   ] = useInviteNewGuestsMutation();
-  const [fetchAllUsers, {}] = useLazyFetchAllUsersQuery();
+  const [fetchAllUsers, { }] = useLazyFetchAllUsersQuery();
 
   const onFocusInput = (type: 'inviteMessage' | 'guestNote') => {
     if (scrollRef?.current) {
@@ -178,8 +178,8 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
             guestStatus: directlySendToConfirm
               ? 'CONFIRMED'
               : sendInvite
-              ? 'INVITED'
-              : 'DRAFT',
+                ? 'INVITED'
+                : 'DRAFT',
             maxAdditionalGuests: additionalGuests || 0,
             ticketTypeId: selectedTicketType?.id || '',
             users: selectedUsers.map((item, index) => item.id),
@@ -192,19 +192,17 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
           if (directlySendToConfirm) {
             FlashMessageComponent.show(
               'success',
-              `${
-                selectedUsers.length > 1
-                  ? `${selectedUsers.length} Guests`
-                  : selectedUsers[0].name
+              `${selectedUsers.length > 1
+                ? `${selectedUsers.length} Guests`
+                : selectedUsers[0].name
               } ${'added to Confirmed'}`,
             );
           } else {
             FlashMessageComponent.show(
               'success',
-              `${selectedUsers.length} ${
-                sendInvite
-                  ? 'Guests have been invited to this event'
-                  : 'Guests have been saved as drafts'
+              `${selectedUsers.length} ${sendInvite
+                ? 'Guests have been invited to this event'
+                : 'Guests have been saved as drafts'
               }`,
             );
           }
@@ -296,8 +294,8 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         guestStatus: directlySendToConfirm
           ? 'CONFIRMED'
           : sendInvite
-          ? 'INVITED'
-          : 'DRAFT',
+            ? 'INVITED'
+            : 'DRAFT',
         // guestStatus: directlySendToConfirm ? 'CONFIRMED' : 'INVITED',
         maxAdditionalGuests: additionalGuests || 0,
         sendInvite: true,
@@ -305,7 +303,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         inviteMessage: inviteMessage,
         privateGuestNote: guestNote,
         email: payloadEmail,
-        phoneNumber: payloadPhoneNumber,
+        phoneNumber: payloadPhoneNumber?.includes('+') ? payloadPhoneNumber : `+${payloadPhoneNumber}`,
         firstName: payloadFirstName || '',
         lastName: payloadLastName || '',
       };
@@ -388,9 +386,9 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
       style={[
         styles.container,
         isManual === true &&
-          type === 'email' && {
-            marginTop: verticalMarginScale(16),
-          },
+        type === 'email' && {
+          marginTop: verticalMarginScale(16),
+        },
       ]}>
       {isManual === true && type === 'email' ? null : (
         <Header
@@ -484,9 +482,8 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
             directlySendToConfirm
               ? 'Add to Confirmed'
               : isManual
-              ? 'Send Invite'
-              : `Send ${selectedUsers.length} ${
-                  selectedUsers.length > 1 ? 'Invites' : 'Invite'
+                ? 'Send Invite'
+                : `Send ${selectedUsers.length} ${selectedUsers.length > 1 ? 'Invites' : 'Invite'
                 }`
           }
           onPress={() => {

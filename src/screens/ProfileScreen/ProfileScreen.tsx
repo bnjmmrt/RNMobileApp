@@ -575,7 +575,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           onCancel={onCancel}
           submitButtonText={BUTTON_LABLE.SAVE_PHOTO}
           cancelButtonText={BUTTON_LABLE.CANCEL}
-          snapPoints={[Platform.OS === 'android' ? 0.51 : 0.41]}
+          snapPoints={[Platform.OS === 'android' ? 0.51 : 0.43]}
           image={image}
         />
 
