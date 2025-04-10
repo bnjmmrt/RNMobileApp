@@ -130,14 +130,14 @@ const QRCodeScanner = () => {
   const onMenuClick = () => {
     eventStackNavigation.navigate(ROUTES.EventGuestList, {
       eventId: eventId,
-      listFilter: { id: 'confirmed', label: 'Confirmed' },
+      listFilter: 'CONFIRMED',
     });
   };
 
   if (!hasPermission) {
     return (
       <>
-        <BackButton onPress={() => { }} />
+        <BackButton onPress={() => {}} />
         <View style={styles.btnContainer}>
           <Text>{PERMISSION.CAMER_REQUIRED}</Text>
           <Button
@@ -180,10 +180,10 @@ const QRCodeScanner = () => {
           <View style={[styles.corner, styles.bottomRight]} />
         </View>
         <TouchableOpacity style={styles.closeIcon} onPress={onClose}>
-          <Image resizeMode='contain' source={IMAGES.close_gray} />
+          <Image resizeMode="contain" source={IMAGES.close_gray} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuIcon} onPress={onMenuClick}>
-          <Image resizeMode='contain' source={IMAGES.menu_gray} />
+          <Image resizeMode="contain" source={IMAGES.menu_gray} />
         </TouchableOpacity>
       </View>
     </View>
@@ -200,7 +200,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.transperantBackground,
   },
   btnContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  btn: { width: '60%', marginVertical: verticalMarginScale(20), resizeMode: 'contain' },
+  btn: {
+    width: '60%',
+    marginVertical: verticalMarginScale(20),
+    resizeMode: 'contain',
+  },
   camera: {
     width: '100%',
     height: '100%',

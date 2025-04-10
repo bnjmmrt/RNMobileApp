@@ -72,7 +72,7 @@ import useCalender from 'src/utils/hooks/useCalender';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: any;
@@ -143,9 +143,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const)
       : ({
-        userId,
-        eventId: route?.params?.id,
-      } as const);
+          userId,
+          eventId: route?.params?.id,
+        } as const);
 
   const useFetchEventDetailsHook =
     role === ROLE.HOST
