@@ -8,9 +8,6 @@ import {
   View,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { EndPoint } from 'src/ApiManager/config';
-import useApi from 'src/axios/useApi';
-import { ROUTES } from 'src/navigation/Route';
 import { RootState } from 'src/redux/slices';
 import { role, setIsGuest, setRole, setRoles } from 'src/redux/slices/authSlice';
 import GradientOverlay from 'src/screens/BeforeApplicationFlow/GradientOverlay';
@@ -30,13 +27,13 @@ import HeaderComponent from '../HeaderComponent';
 import ReferralCodeBottomSheet from '../ReferralCodeBottomSheet/ReferralCodeBottomSheet';
 import MiddleStaticComponent from '../TitleSubTitleComponent/MiddleStaticComponent';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
+import { useGetUserWithRolesByIdMutation } from 'src/redux/actions/inviteGuestsApiAction';
 
 const AfterAppStaticComponent: React.FC<{}> = () => {
   const { navigate } = useNavigation();
-  const { apiRequest, loading, error } = useApi();
   const userId = useSelector((state: RootState) => state.auth.userId);
   const role = useSelector((state: RootState) => state.auth.role);
-
+  const [getUserById] = useGetUserWithRolesByIdMutation();
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
   const dispatch = useDispatch();
 
@@ -44,89 +41,39 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
     navigate('InviteReferralScreen');
   };
 
+  const fetchUserById = async () => {
+    try {
+      const response = await getUserById({ id: userId }).unwrap();
+      if (response.success) {
+        const { roles, name, isGuest } = response.data;
+
+        const transformedRoles = roles.map((role: any) => ({
+          roleName: role.name,
+          roleId: role.id,
+        }));
+        dispatch(setRoles(transformedRoles));
+
+        const isMember = transformedRoles.some(
+          (role: role) => role.roleName === ROLE.MEMBER,
+        );
+        if (isMember) {
+          navigate('CommunityGuidelinesScreen', { userName: name });
+          // navigate(ROUTES.WelcomeScreen, { userName: name });
+          dispatch(setRole(ROLE.MEMBER));
+        } else {
+          dispatch(setIsGuest(isGuest || false))
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
-      const fetchUserById = async () => {
-        try {
-          const response: any = await apiRequest(
-            'post',
-            EndPoint.get_user_with_role_by_id,
-            { id: userId },
-          );
-
-          if (response.success) {
-            const { roles, name , isGuest} = response.data;
-
-            const transformedRoles = roles.map((role: any) => ({
-              roleName: role.name,
-              roleId: role.id,
-            }));
-
-            const isMember = transformedRoles.some(
-              (role: role) => role.roleName === ROLE.MEMBER,
-            );
-            console.log("Guest ifff",isMember);
-
-            if (isMember) {
-              navigate('CommunityGuidelinesScreen',{ userName: name });
-              // navigate(ROUTES.WelcomeScreen, { userName: name });
-              dispatch(setRole(ROLE.MEMBER));
-              dispatch(setRoles(transformedRoles));
-            }else{
-              dispatch(setIsGuest(isGuest || false))
-            }
-          }
-        } catch (error) {
-          console.error('Error fetching user:', error);
-        }
-      };
-
-      if (role === ROLE.NON_MEMBER) {
-        fetchUserById();
-      }
-    }, [role, userId, dispatch]),
+      if (role === ROLE.NON_MEMBER) { fetchUserById() }
+    }, [role]),
   );
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     const fetchUserById = async () => {
-  //       try {
-  //         const response: any = await apiRequest(
-  //           'post',
-  //           EndPoint.get_user_with_role_by_id,
-  //           { id: userId },
-  //         );
-  //         if (response.success) {
-
-  //           if (response.data.roles > 1) {
-  //             if (
-  //               response.data.roles[0].roleName == ROLE.MEMBER ||
-  //               response.data.roles[0].name == ROLE.MEMBER ||
-  //               response.data.roles[1].roleName == ROLE.MEMBER ||
-  //               response.data.roles[1].name == ROLE.MEMBER
-  //             ) {
-  //               navigate(ROUTES.WelcomeScreen, { userName: response?.data.name });
-  //               dispatch(setRole(ROLE.MEMBER));
-  //             }
-
-  //           }
-
-  //           if (
-  //             response.data.roles[0].roleName == ROLE.MEMBER ||
-  //             response.data.roles[0].name == ROLE.MEMBER
-  //           ) {
-  //             navigate(ROUTES.WelcomeScreen, { userName: response?.data.name });
-  //             dispatch(setRole(ROLE.MEMBER));
-  //           }
-  //         }
-  //       } catch (error) {
-  //         console.error('Error fetching user:', error);
-  //       }
-  //     };
-
-  //     role == ROLE.NON_MEMBER && fetchUserById();
-  //   }, []),
-  // );
 
   useFocusEffect(
     useCallback(() => {

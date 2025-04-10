@@ -19,43 +19,32 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
   // Access login data from Redux store
   const role = useSelector((state: RootState) => state.auth.role);
   const token = useSelector((state: RootState) => state.auth.token);
-
-  // Memoize styles to avoid unnecessary recalculations
   const styles = useMemo(() => DiscoverScreenStyle(), []);
-  const isNotMember = role == ROLE.NON_MEMBER;
-  // const hasFullAccess = isSignUpCompleted || token.length > 0;
-  const isGuest = useSelector(
-    (state: RootState) => state.auth.isGuest,
-    shallowEqual,
-  );
 
   useFocusEffect(
     useCallback(() => {
-      if (Platform.OS === 'ios') {
+      if (role == ROLE.MEMBER) {
         changeSafeAreaViewConfig({
           ...SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME,
+          statusBarStyle: 'dark-content',
           // showTopSafeAreaView: false,
           // showBottomSafeAreaView: false,
         });
 
-        if (isNotMember && !isGuest) {
-          console.log('DiscoverScreen if', isGuest, token, role);
+        // if (isNotMember && !isGuest) {
+        //   // Update status bar when AfterAppStaticComponent is active
+        //   StatusBar.setBarStyle('light-content');
+        //   StatusBar.setBackgroundColor('transparent');
+        // } else {
+        //   console.log('DiscoverScreen else', isGuest, token, role);
 
-          // Update status bar when AfterAppStaticComponent is active
-          StatusBar.setBarStyle('light-content');
-          StatusBar.setBackgroundColor('transparent');
-        } else {
-          console.log('DiscoverScreen else', isGuest, token, role);
-
-          StatusBar.setBarStyle('dark-content');
-        }
+        //   StatusBar.setBarStyle('dark-content');
+        // }
       }
-    }, []),
+    }, [role]),
   );
 
-  console.log('siya guest', isGuest, token, role);
-
-  if (isGuest && role == ROLE.NON_MEMBER) {
+  if (role == ROLE.NON_MEMBER) {
     if (token) {
       return <AfterAppStaticComponent />
     }
@@ -68,7 +57,6 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
     <View
       style={{
         ...styles.container,
-        backgroundColor: isNotMember ? COLORS.black2 : COLORS.white,
       }}>
       <EventsFeed />
     </View>

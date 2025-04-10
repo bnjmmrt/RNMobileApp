@@ -1,5 +1,5 @@
 import messaging from '@react-native-firebase/messaging';
-import { setFcmToken, setIsGuest,setNotificationAlert } from 'src/redux/slices/authSlice';
+import { setFcmToken, setIsGuest, setNotificationAlert } from 'src/redux/slices/authSlice';
 import { navigate, navigateToNestedStack } from './NavigationService';
 import { ROUTES } from 'src/navigation/Route';
 import store from 'src/redux/store';
@@ -98,7 +98,7 @@ export const navigateToScreen = (data: any, type: string = 'in-app') => {
     const role = store.store.getState().auth.role;
     const dispatch = store.store.dispatch;
     const myRole = "non-member"
-    if (data?.data?.role != role) {
+    if (data?.data?.role != role && type == 'push') {
         dispatch(setNotificationAlert(true))
         return
     }
