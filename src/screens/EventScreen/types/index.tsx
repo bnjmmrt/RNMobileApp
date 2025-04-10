@@ -11,6 +11,7 @@ export interface AdditionalGuest {
   lastName: string;
   id: string;
   guestId: string;
+  checkIn: boolean;
 }
 
 export interface Vouch {
@@ -19,7 +20,7 @@ export interface Vouch {
   isApproved: boolean;
   name: string;
   picture: string;
-  isVouched:boolean
+  isVouched: boolean;
 }
 
 export interface EventGuest {

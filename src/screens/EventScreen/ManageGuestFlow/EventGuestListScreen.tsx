@@ -1,65 +1,69 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {
-  useState,
-  useRef,
-  useMemo,
-  useEffect,
-  useCallback,
-} from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
+  ActivityIndicator,
   Animated,
+  FlatList,
+  Image,
   LayoutAnimation,
   Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
   UIManager,
-  ActivityIndicator,
+  View,
 } from 'react-native';
-import { COLORS, LABLE } from '../../../utils/constants';
-import { changeSafeAreaViewConfig, fontFamily } from 'src/utils/functions';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import IMAGES from 'src/assets/images';
+import AvatarInitials from 'src/component/AvatarInitials';
+import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
+import GuestEmptyRecord from 'src/component/EmptyRecord/GuestEmptyRecord';
+import FiltersSheet from 'src/component/FilterSheet';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import ProgressBanner from 'src/component/ProgressBanner/ProgressBanner';
+import SearchInput from 'src/component/SearchInput';
+import StatusLabel from 'src/component/StatusLabel/StatusLabel';
+import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import { EventStackParamList } from 'src/navigation/EventStack';
+import { ROUTES } from 'src/navigation/Route';
+import { useGetGuestsQuery } from 'src/redux/actions/eventApiAction';
+import { RootState } from 'src/redux/slices';
+import { setEventId } from 'src/redux/slices/eventSlice';
 import {
+  Hp,
   fontScale,
   horizontalMarginScale,
-  verticalMarginScale,
   horizontalScale,
-  verticalScale,
   radiusScale,
-  Hp,
+  verticalMarginScale,
+  verticalScale,
 } from 'src/utils/dimensions';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { EventGuest } from '../types';
-import IMAGES from 'src/assets/images';
-import SearchInput from 'src/component/SearchInput';
-import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
+import { changeSafeAreaViewConfig, fontFamily } from 'src/utils/functions';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { COLORS, LABLE } from '../../../utils/constants';
 import {
   GuestListFilterSheet,
   GuestListSortSheet,
   filterOptions,
 } from '../Guest/GuestListSheets';
-import ProgressBanner from 'src/component/ProgressBanner/ProgressBanner';
-import GuestEmptyRecord from 'src/component/EmptyRecord/GuestEmptyRecord';
-import StatusLabel from 'src/component/StatusLabel/StatusLabel';
-import { ROUTES } from 'src/navigation/Route';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  useGetGuestsQuery,
-  useLazyGetGuestsQuery,
-} from 'src/redux/actions/eventApiAction';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import { RootState } from 'src/redux/slices';
-import { useDispatch, useSelector } from 'react-redux';
-import { setEventId } from 'src/redux/slices/eventSlice';
-import FiltersSheet from 'src/component/FilterSheet';
-import AvatarInitials from 'src/component/AvatarInitials';
-import { useFocusEffect } from '@react-navigation/native';
-import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
-import { EventStackParamList } from 'src/navigation/EventStack';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import { EventGuest } from '../types';
+
+export interface GuestCountInterface {
+  data: {
+    data: {
+      confirmedCount: number;
+      declinedCount: number;
+      draftedCount: number;
+      invitedCount: number;
+      requestedCount: number;
+      totalCount: number;
+    };
+  };
+  status: number;
+}
 
 interface EventGuestListProps
   extends NativeStackScreenProps<EventStackParamList, 'EventGuestList'> {
@@ -104,24 +108,36 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   navigation,
   route,
 }) => {
+  const dispatch = useDispatch();
+
   const eventId = route?.params?.eventId;
   const listFilter = route?.params?.listFilter;
 
-  const [searchText, setSearchText] = useState('');
-  const [expandedGuests, setExpandedGuests] = useState<{
-    [key: string]: boolean;
-  }>({});
-  const [selectedFilter, setSelectedFilter] = useState('all');
-  const [selectedSort, setSelectedSort] = useState('name_asc');
   const filtersSheetRef = useRef<BottomSheetMethods>(null);
   const sortSheetRef = useRef<BottomSheetMethods>(null);
   const searchFilterRef = useRef<BottomSheetMethods>(null);
+
+  const [expandedGuests, setExpandedGuests] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  const [searchText, setSearchText] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const [filterQuery, setFilterQuery] = useState<string>('');
   const [filterNumber, setFilterNumber] = useState<number>(0);
-  const dispatch = useDispatch();
+  const [selectedSort, setSelectedSort] = useState<'ASC' | 'DESC'>('ASC');
+  const [selectedFilter, setSelectedFilter] = useState<
+    'INVITED' | 'APPLIED' | 'CONFIRMED' | 'DECLINED' | 'DRAFT' | ''
+  >('');
+
+  const [allGuests, setAllGuests] = useState<{
+    result: EventGuest[];
+    totalCount: number;
+  }>({ totalCount: 0, result: [] });
 
   const selectedEvent = useSelector(
     (state: RootState) => state.inviteGuestsFlow.selectedEvent,
+    shallowEqual,
   );
 
   const {
@@ -130,20 +146,51 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     isLoading: isLoadingGuests,
     isFetching: isFetchingGuests,
     refetch: refetchGuests,
-  } = useGetGuestsQuery({ eventId, queryString: filterQuery });
-  // const [
-  //   fetchGuests,
-  //   {
-  //     data: guestsData,
-  //     error: guestsError,
-  //     isLoading: isLoadingGuests,
-  //     isFetching: isFetchingGuests,
-  //   },
-  // ] = useLazyGetGuestsQuery();
+  } = useGetGuestsQuery({
+    eventId,
+    queryString: filterQuery,
+    take: 10,
+    skip: (currentPage - 1) * 10,
+    searchValue: searchText,
+    guestStatus: selectedFilter,
+    sortBy: 'name',
+    sortDirection: selectedSort,
+  });
 
-  const fetchEventGuests = () => {
-    refetchGuests();
+  const loadMore = () => {
+    if (
+      allGuests?.result?.length < guestsData?.data?.totalCount &&
+      !isLoadingGuests &&
+      !isFetchingGuests
+    ) {
+      setCurrentPage(prev => prev + 1);
+    }
   };
+
+  useEffect(() => {
+    if (guestsError) {
+      FlashMessageComponent.show('error', 'Failed to load guests');
+    }
+  }, [guestsError]);
+
+  useEffect(() => {
+    if (listFilter) {
+      handleFilterSelect(listFilter);
+    }
+  }, [listFilter]);
+
+  useEffect(() => {
+    if (guestsData && guestsData.data) {
+      if (currentPage === 1) {
+        setAllGuests(guestsData.data);
+      } else {
+        setAllGuests(prev => ({
+          totalCount: guestsData.data.totalCount,
+          result: [...prev.result, ...guestsData.data.result],
+        }));
+      }
+    }
+  }, [guestsData]);
 
   useFocusEffect(
     useCallback(() => {
@@ -155,83 +202,10 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     }, []),
   );
 
-  const guests: EventGuest[] = useMemo(() => {
-    const apiGuests = guestsData?.data?.result || [];
-
-    return apiGuests;
-  }, [guestsData?.data?.result]);
-
-  useEffect(() => {
-    if (guestsError) {
-      FlashMessageComponent.show('error', 'Failed to load guests');
-    }
-  }, [guestsError]);
-
-  useEffect(() => {
-    if (listFilter) {
-      handleFilterSelect(listFilter?.id);
-    }
-  }, [listFilter]);
-
-  // Calculate total confirmed guests from entire list
-  // const totalConfirmedGuests = guests.filter(guest => guest.checkIn).length;
-  const totalConfirmedGuests = guests.reduce((count, guest) => {
-    if (!guest.checkIn) return count;
-
-    const confirmedAdditionalGuests = guest.additionalGuests?.filter(
-      g => g.status === "CONFIRMED"
-    )?.length || 0;
-
-    // +1 to include the main guest
-    return count + confirmedAdditionalGuests + 1;
-  }, 0);
-
-  const totalGuestCount = guests.reduce((total, guest) => {
-    // Add 1 for the main guest
-    let count = 1;
-    // Add the number of additional guests if any
-    if (guest.additionalGuests?.length) {
-      count += guest.additionalGuests.length;
-    }
-    return total + count;
-  }, 0);
-
-  const filteredAndSortedGuests = useMemo(() => {
-    let result = [...guests];
-
-    if (searchText.trim()) {
-      result = result.filter(guest =>
-        guest.name.toLowerCase().includes(searchText.toLowerCase()),
-      );
-    }
-
-    if (selectedFilter !== 'all') {
-      result = result.filter(
-        guest => guest.status.toLowerCase() === selectedFilter,
-      );
-    }
-
-    result.sort((a, b) => {
-      switch (selectedSort) {
-        case 'name_asc':
-          return a.name.localeCompare(b.name);
-        case 'name_desc':
-          return b.name.localeCompare(a.name);
-        case 'party_size':
-          const aSize = a.additionalGuests?.length || 0;
-          const bSize = b.additionalGuests?.length || 0;
-          return bSize - aSize;
-        default:
-          return 0;
-      }
-    });
-
-    return result;
-  }, [guests, searchText, selectedFilter, selectedSort]);
-
-  const confirmedGuests = filteredAndSortedGuests.filter(
-    guest => guest.status === 'CONFIRMED',
-  ).length;
+  const fetchEventGuests = () => {
+    setCurrentPage(1);
+    // refetchGuests();
+  };
 
   const toggleExpand = (guestId: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -242,37 +216,39 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   };
 
   const handleSearchTextChange = (text: string) => {
+    setCurrentPage(1);
     setSearchText(text);
   };
 
-  const handleFilterSelect = (filter: string) => {
+  const handleFilterSelect = (
+    filter: 'INVITED' | 'APPLIED' | 'CONFIRMED' | 'DECLINED' | 'DRAFT' | '',
+  ) => {
+    setCurrentPage(1);
     setSelectedFilter(filter);
   };
 
-  const handleSortSelect = (sort: string) => {
+  const handleSortSelect = (sort: 'ASC' | 'DESC') => {
+    setCurrentPage(1);
     setSelectedSort(sort);
   };
 
   const handleAddGuest = () => {
-    // Navigate to add guest screen or open add guest modal
     navigation.navigate(ROUTES.SelectGuestsToInviteScreen);
-    // navigation.navigate(ROUTES.InviteGuestScreen, {
-    //   isManual: false,
-    //   type: 'new',
-    // });
   };
 
   const handleResetFilters = () => {
+    setCurrentPage(1);
     setFilterQuery('');
     setFilterNumber(0);
-    setSelectedFilter('all');
-    setSelectedSort('name_asc');
+    setSelectedFilter('');
+    setSelectedSort('ASC');
   };
 
   const onApplyFilter = (
     queryString: string,
     numberOfFiltersApplied: number,
   ) => {
+    setCurrentPage(1);
     setFilterQuery(queryString);
     setFilterNumber(numberOfFiltersApplied);
   };
@@ -280,9 +256,10 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   const onClearFilter = () => {
     setFilterQuery('');
     setFilterNumber(0);
+    setCurrentPage(1);
   };
 
-  const renderInvitee = (item: EventGuest, leadId: string) => (
+  const renderInvitee = (item: EventGuest, leadId: string, index: number) => (
     <TouchableOpacity
       style={styles.inviteeItem}
       onPress={() => {
@@ -290,7 +267,8 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
           guestId: leadId,
           eventId,
         });
-      }}>
+      }}
+      key={`lead_guest${leadId}_guest_${item.id}_${index}`}>
       <View style={styles.inviteeLeftContainer}>
         <Image source={IMAGES.nested_badge} style={[styles.nestedIcon]} />
         <View style={styles.leftContainer}>
@@ -313,7 +291,13 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     </TouchableOpacity>
   );
 
-  const renderGuestItem = ({ item }: { item: EventGuest }) => (
+  const renderGuestItem = ({
+    item,
+    index,
+  }: {
+    item: EventGuest;
+    index: number;
+  }) => (
     <View>
       <TouchableOpacity
         style={styles.guestItem}
@@ -325,7 +309,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
         }}>
         <View style={styles.leftContainer}>
           <View>
-            {selectedFilter === 'applied' && Boolean(item.vouches?.length) && (
+            {selectedFilter === 'APPLIED' && Boolean(item.vouches?.length) && (
               <View style={styles.vouchIndicator} />
             )}
             <AvatarInitials
@@ -346,7 +330,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
               )}
             </View>
 
-            {selectedFilter === 'all' && <StatusLabel status={item.status} />}
+            {selectedFilter === '' && <StatusLabel status={item.status} />}
           </View>
         </View>
         <View style={styles.rightContainer}>
@@ -381,9 +365,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
       <Animated.View
         style={[
           styles.inviteesContainer,
-          expandedGuests[item.id]
-            ? { maxHeight: 1000 }
-            : { maxHeight: 0, overflow: 'hidden' },
+          expandedGuests[item.id] ? {} : { maxHeight: 0, overflow: 'hidden' },
         ]}>
         {item.additionalGuests?.map(guest => {
           const inviteeGuest: EventGuest = {
@@ -394,22 +376,22 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
             profilePicture: undefined,
             checkIn: guest.checkIn,
           };
-          return renderInvitee(inviteeGuest, item.id);
+          return renderInvitee(inviteeGuest, item.id, index);
         })}
       </Animated.View>
     </View>
   );
 
   const renderContent = () => {
-    if (isLoadingGuests || isFetchingGuests) {
+    if ((isLoadingGuests || isFetchingGuests) && currentPage === 1) {
       return <GuestListSkeleton />;
     }
 
     return (
       <FlatList
-        data={filteredAndSortedGuests}
+        data={allGuests?.result || []}
         renderItem={renderGuestItem}
-        keyExtractor={item => item.id}
+        keyExtractor={(item, index) => `lead_guest${item.id}_${index}`}
         contentContainerStyle={[
           styles.listContainer,
           styles.contentListContainer,
@@ -417,9 +399,11 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
         showsVerticalScrollIndicator={false}
         refreshing={false}
         onRefresh={fetchEventGuests}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.4}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            {filteredAndSortedGuests.length === 0 &&
+            {allGuests?.result.length === 0 &&
               !isLoadingGuests &&
               !isFetchingGuests && (
                 <GuestEmptyRecord
@@ -431,6 +415,16 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
                 />
               )}
           </View>
+        }
+        ListFooterComponent={
+          (isLoadingGuests || isFetchingGuests) && currentPage > 1 ? (
+            <ActivityIndicator
+              color={COLORS.black}
+              style={{ marginTop: verticalScale(10) }}
+            />
+          ) : (
+            <View style={{ height: verticalScale(50) }} />
+          )
         }
       />
     );
@@ -499,10 +493,10 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
         {renderContent()}
       </View>
 
-      {confirmedGuests > 0 && selectedFilter === 'confirmed' && (
+      {allGuests?.totalCount > 0 && selectedFilter === 'CONFIRMED' && (
         <ProgressBanner
-          confirmed={totalConfirmedGuests}
-          total={totalGuestCount}
+          confirmed={selectedEvent?.totalCheckedInGuests || 0}
+          total={selectedEvent?.totalConfirmedGuests || 0}
         />
       )}
 

@@ -116,7 +116,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
 
     fetchGuestStatusCount: builder.query({
       query: ({ eventId }: { eventId: string }) => ({
-        url: `events/v1/events/${eventId}/guest-status-counts`,
+        url: `events/v1/events/${eventId}/guest-counts`,
         method: 'GET',
       }),
       providesTags: ['GuestStatusCount'],
@@ -136,13 +136,43 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       query: ({
         eventId,
         queryString,
+        searchValue,
+        sortBy,
+        sortDirection,
+        take,
+        skip,
+        guestStatus,
       }: {
         eventId?: string;
         queryString?: string;
+        searchValue?: string;
+        sortBy?: 'name' | 'partySize';
+        guestStatus?:
+          | 'INVITED'
+          | 'APPLIED'
+          | 'CONFIRMED'
+          | 'DECLINED'
+          | 'DRAFT'
+          | '';
+        sortDirection?: 'ASC' | 'DESC';
+        take?: number;
+        skip?: number;
       }) => {
-        let url = `events/v1/events/${eventId}/guests/`;
+        let url = `events/v1/events/${eventId}/guests/?`;
+        if (take) {
+          url = `${url}&take=${take}&skip=${skip}`;
+        }
         if (queryString) {
-          url = `${url}?${queryString}`;
+          url = `${url}&${queryString}`;
+        }
+        if (searchValue) {
+          url = `${url}&searchValue=${searchValue}`;
+        }
+        if (sortBy && sortDirection) {
+          url = `${url}&sortBy=${sortBy}&sortDirection=${sortDirection}`;
+        }
+        if (guestStatus) {
+          url = `${url}&status=${guestStatus}`;
         }
         return {
           url,
@@ -317,6 +347,20 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       }),
       providesTags: ['EventTypes'],
     }),
+
+    guestCheckIn: builder.mutation({
+      query: ({ guestId, checkIn }: { guestId: string; checkIn: boolean }) => ({
+        url: `events/v1/guest/ticket/${guestId}/validate`,
+        method: 'POST',
+        body: { checkIn },
+      }),
+      invalidatesTags: [
+        'GuestDetails',
+        'EventGuestList',
+        'GuestStatusCount',
+        'EventDetails',
+      ],
+    }),
   }),
 });
 
@@ -344,4 +388,5 @@ export const {
   useFetchAnnouncementDetailQuery,
   useFetchSignupFormsQuery,
   useFetchEventTypesQuery,
+  useGuestCheckInMutation,
 } = eventApiAction;

@@ -31,10 +31,13 @@ export type EventStackParamList = {
   AddGuestScreen: undefined;
   EventGuestList: {
     eventId: string;
-    listFilter?: {
-      id: string;
-      label: string;
-    };
+    listFilter?:
+      | 'INVITED'
+      | 'APPLIED'
+      | 'CONFIRMED'
+      | 'DECLINED'
+      | 'DRAFT'
+      | '';
   };
   GuestCheckInScreen: undefined;
   QRCodeScanner: undefined;
