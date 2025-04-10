@@ -405,9 +405,9 @@ const EventsFeed = () => {
     return <FeedItem item={item} />;
   }, []);
 
-  if (isGuest) {
-    return <BeforeAppStaticComponent isChatScreen={false} />;
-  }
+  // if (isGuest) {
+  //   return <BeforeAppStaticComponent isChatScreen={false} />;
+  // }
 
   return (
     <View style={styles.container}>
