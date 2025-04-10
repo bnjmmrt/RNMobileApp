@@ -29,7 +29,12 @@ import { fontFamily } from 'src/utils/functions';
 
 const InfoBanner = ({ message }: { message: string }) => (
   <View style={styles.infoBannerContainer}>
-    <Image source={IMAGES.info} style={styles.infoIcon} />
+    <Image
+      resizeMode="contain"
+      source={IMAGES.info}
+      tintColor={COLORS.blueDark}
+      style={styles.infoIcon}
+    />
     <Text style={styles.infoText}>{message}</Text>
   </View>
 );
@@ -108,7 +113,7 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
           <EmailInput ref={emailInputRef} otherStyle={{ marginTop: 12 }} />
         )}
 
-        <InfoBanner message="If you have already been invited to an event via email, make sure to login using the email address associated, not your mobile number." />
+        <InfoBanner message="If you were invited to an event via text, please log in with your phone number—not your email address." />
 
         <View style={styles.spacer} />
 
@@ -142,25 +147,26 @@ const styles = StyleSheet.create({
   infoBannerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 16,
+    borderRadius: 8,
     // borderWidth: 1,
-    backgroundColor: COLORS.blueDark,
+    backgroundColor: COLORS.bgBlue,
     // borderColor: COLORS.borderGray,
     paddingVertical: verticalMarginScale(16),
-    paddingHorizontal: horizontalMarginScale(24),
+    paddingHorizontal: horizontalMarginScale(16),
     marginTop: verticalMarginScale(24),
   },
   infoIcon: {
-    width: 20,
-    height: 20,
-    marginRight: horizontalMarginScale(8),
-    color: COLORS.light_gray,
+    width: 16,
+    height: 16,
+    // paddingRight: horizontalMarginScale(8),
+    color: COLORS.blueDark,
   },
   infoText: {
     flex: 1,
-    color: COLORS.light_gray,
+    color: COLORS.black,
     fontSize: 14,
-    fontFamily: fontFamily.ABCDiatype_Regular,
+    marginLeft: horizontalMarginScale(8),
+    fontFamily: fontFamily.ABCDiatype_Medium,
   },
 });
 
