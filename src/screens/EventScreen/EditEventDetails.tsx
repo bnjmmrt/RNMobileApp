@@ -91,6 +91,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     address: item?.location?.location || '',
     latitude: item?.location?.latitude || '',
     longitude: item?.location?.longitude || '',
+    city: item?.location?.city || '',
   };
   const [eventAddress, setEventAddress] = useState<Address>(address);
   const eventNameRef = useRef<any>(null);
@@ -113,8 +114,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const [featureTalent, setFeatureTalent] = useState(item?.talents || []);
   const [image, setImage] = useState<string>(
     removeSignature(item?.imageCover) ||
-      removeSignature(item?.imageFlyer) ||
-      '',
+    removeSignature(item?.imageFlyer) ||
+    '',
   );
   const [imageSize, setImageSize] = useState<number>(0);
   const [timeZone, setTimeZone] = useState<string>();
@@ -132,8 +133,8 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     setFeatureTalent(item?.talents);
     setImage(
       removeSignature(item?.imageCover) ||
-        removeSignature(item?.imageFlyer) ||
-        '',
+      removeSignature(item?.imageFlyer) ||
+      '',
     );
 
     eventNameRef.current?.setInputText(item?.name || '');
@@ -360,7 +361,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     setTimeZone(item?.timeZone);
   }, [item]);
 
-  const RenderFeaturedTalent = useCallback(({}: {}) => {
+  const RenderFeaturedTalent = useCallback(({ }: {}) => {
     return (
       <HostEventTalent
         talents={featureTalent}
