@@ -4,7 +4,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import debounce from 'lodash/debounce';
 import React, { useCallback, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AfterAppStaticComponent from 'src/component/BeforeAppStaticComponent/AfterAppStaticComponent';
 import {
   horizontalMarginScale,
@@ -21,6 +21,7 @@ import {
   COLORS,
   hostTabData,
   memberTabData,
+  ROLE,
 } from '../../utils/constants';
 import EventScreenStyle from './EventScreenStyle';
 import AppliedEvents from './Tabs/AppliedEvents';
@@ -28,6 +29,9 @@ import InvitedEvents from './Tabs/InvitedEvents';
 import PastEvents from './Tabs/PastEvents';
 import UpcomingEvents from './Tabs/UpcomingEvents';
 import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import { EndPoint } from 'src/ApiManager/config';
+import { setIsGuest, setRole, setRoles } from 'src/redux/slices/authSlice';
+import useApi from 'src/axios/useApi';
 
 interface EventScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -42,17 +46,15 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const styles = EventScreenStyle();
   const userId = useSelector((state: RootState) => state.auth.userId);
   const role = useSelector((state: RootState) => state.auth.role);
+  const roles = useSelector((state: RootState) => state.auth.roles);
   const isGuest = useSelector((state: RootState) => state.auth.isGuest);
-  console.log('EventScreen isGuest', isGuest)
-  // const role =
-  //   (loginData?.roles &&
-  //     loginData?.roles.length > 0 &&
-  //     loginData?.roles[0]?.roleName) ||
-  //   'non_member';
+  const { apiRequest, loading, error } = useApi();
+
   const searchInputRef = useRef<any>(null);
   const [searchText, setSearchText] = useState('');
   const showEvents = isGuest || role === 'member' || role === 'host';
   const tabs = role === 'host' ? hostTabData : memberTabData;
+  const dispatch = useDispatch();
 
   useFocusEffect(
     useCallback(() => {
@@ -63,6 +65,47 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
       }
     }, [showEvents]),
   );
+
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     const fetchUserById = async () => {
+  //       try {
+  //         const response: any = await apiRequest(
+  //           'post',
+  //           EndPoint.get_user_with_role_by_id,
+  //           { id: userId },
+  //         );
+
+  //         if (response.success) {
+  //           const { roles, name , isGuest} = response.data;
+
+  //           const transformedRoles = roles.map((role: any) => ({
+  //             roleName: role.name,
+  //             roleId: role.id,
+  //           }));
+
+  //           const isMember = transformedRoles.some(
+  //             (role: role) => role.roleName === ROLE.MEMBER,
+  //           );
+
+  //           if (isMember) {
+  //             // navigate(ROUTES.WelcomeScreen, { userName: name });
+  //             dispatch(setRole(ROLE.MEMBER));
+  //             dispatch(setRoles(transformedRoles));
+  //           }else{
+  //             dispatch(setIsGuest(isGuest || false))
+  //           }
+  //         }
+  //       } catch (error) {
+  //         console.error('Error fetching user:', error);
+  //       }
+  //     };
+
+  //     if (roles.length > 1 && role === ROLE.NON_MEMBER) {
+  //       fetchUserById();
+  //     }
+  //   }, [role, userId, roles]),
+  // );
 
   const [currentTab, setCurrentTab] = useState<TabItem>(tabs[0]);
 
@@ -78,6 +121,12 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const handleTabChange = (tab: TabItem) => {
     setCurrentTab(tab);
   };
+
+
+
+
+
+
 
   const renderTabContent = () => {
     switch (currentTab.label) {

@@ -32,14 +32,40 @@ import analytics from '@react-native-firebase/analytics';
 import { environment } from 'environments/environment';
 import { environment as environmentProd } from 'environments/environment.prod';
 import NotificationDialog from 'src/component/NotificationDialog';
+import { useGetUserWithRolesByIdMutation } from 'src/redux/actions/inviteGuestsApiAction';
+import { RootState } from 'src/redux/slices';
+import { setRoles } from 'src/redux/slices/authSlice';
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
   const { apiRequest } = useApi();
   const dispatch = useDispatch();
+  const [getUserById] = useGetUserWithRolesByIdMutation();
   const updateAnalyticsStatus = async (status: boolean) => {
     await analytics().setAnalyticsCollectionEnabled(status);
   };
+
+  const userId = useSelector((state: RootState) => state.auth.userId);
+
+  const fetchUserById = async () => {
+    try {
+      const response = await getUserById({ id: userId }).unwrap();
+      if (response.success) {
+        const { roles } = response.data;
+        const transformedRoles = roles.map((role: any) => ({
+          roleName: role.name,
+          roleId: role.id,
+        }));
+        dispatch(setRoles(transformedRoles));
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserById()
+  }, []);
 
   useEffect(() => {
     if (environment.BASE_URL == environmentProd.BASE_URL) {
@@ -52,6 +78,7 @@ const AppContent: React.FC = () => {
       console.log('Running in development mode');
     }
   }, []);
+
 
   useEffect(() => {
     NotificationSetup();
@@ -127,7 +154,7 @@ const App: React.FC = () => {
       <PersistGate loading={null} persistor={persistor}>
         <SafeAreaViewWrapper>
           <ScreenshotDetectedDialog />
-          <NotificationDialog /> 
+          <NotificationDialog />
           <GestureHandlerRootView style={{ flex: 1 }}>
             <NavigationContainer theme={MyTheme} ref={navigationRef}>
               <BottomSheetModalProvider>

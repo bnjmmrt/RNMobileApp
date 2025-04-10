@@ -93,21 +93,30 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
                 newRole?.roleName === 'non_member'
                   ? 'Non-Member'
                   : newRole?.roleName === 'host'
-                  ? 'Host'
-                  : 'Member';
+                    ? 'Host'
+                    : 'Member';
               FlashMessageComponent.show(
                 `success`,
                 `Switched to ${newRoleName} Account`,
               );
+              const myRole = response?.data?.roles[0] || newRole;
               setIsRolesExpanded(false);
-              dispatch(setRole(newRole.roleName));
-              dispatch(setRoleId(newRole.roleId));
+              dispatch(setRole(myRole.roleName));
+              dispatch(setRoleId(myRole.roleId));
               dispatch(setAuthToken(response?.data?.token));
               fetchUserProfile();
             }
           } catch (error) {
             const typedError = error as ApiErrorInterface;
-            FlashMessageComponent.show('error', getErrorMessage(typedError));
+            const errorMessage = getErrorMessage(typedError);
+            if (errorMessage === 'User does not have the requested role.') {
+              if (newRole?.roleName === 'non_member') {
+                toggleRole({ ...newRole, roleName: 'member' })
+              }
+            } else {
+              FlashMessageComponent.show('error', errorMessage);
+            }
+            console.log(errorMessage);
           } finally {
             setSwitchingRole('');
           }
