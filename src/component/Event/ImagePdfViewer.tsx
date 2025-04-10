@@ -55,7 +55,10 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(index);
   const bottomSheetRef = useRef(null);
-  console.log(index, 'indexindexindex')
+  const folderName = 'TheRumor';
+  const folderPath = `${RNFS.DocumentDirectoryPath}/${folderName}`;
+  // const folderPath = `${RNFS.ExternalStorageDirectoryPath}/Documents/${folderName}`;
+
   const requestStoragePermission = async () => {
     if (Platform.OS === 'android') {
       try {
@@ -76,12 +79,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
     return true;
   };
 
-  const saveFile = async () => {
-    const fileName = mediaItems[currentIndex]?.mediaName;
-    const filePath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
-    console.log('File saved at:', filePath);
-
-    const fileContent = mediaItems[currentIndex]?.media;
+  const createFolder = async () => {
     const hasPermission = await requestStoragePermission();
     if (!hasPermission) {
       Alert.alert(
@@ -92,13 +90,65 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
     }
 
     try {
-      await RNFS.writeFile(filePath, fileContent, 'utf8');
-      Alert.alert('File Saved', `File saved at: ${filePath}`);
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Error', 'Failed to save the file.');
+      const exists = await RNFS.exists(folderPath);
+      if (!exists) {
+        await RNFS.mkdir(folderPath);
+        downloadFile()
+      } else {
+        downloadFile()
+      }
+    } catch (err) {
+      console.error('Error creating folder:', err);
     }
   };
+
+  const downloadFile = async () => {
+    const fileName = mediaItems[currentIndex]?.mediaName;
+    const destPath = `${folderPath}/${fileName}`;
+
+    try {
+      const options = {
+        fromUrl: mediaItems[currentIndex]?.media,
+        toFile: destPath,
+      };
+
+      const result = await RNFS.downloadFile(options).promise;
+      if (result.statusCode === 200) {
+        console.log("File downloaded successfully:", destPath);
+        Alert.alert('Success', `File downloaded to ${destPath}`);
+      } else {
+        Alert.alert('Error', `Download failed with status ${result.statusCode}`);
+      }
+    } catch (err) {
+      console.error('Download error:', err);
+      Alert.alert('Download failed', err.message);
+    }
+  };
+
+
+  // const saveFile = async () => {
+  //   const fileName = mediaItems[currentIndex]?.mediaName;
+  //   const filePath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
+  //   console.log('File saved at:', filePath);
+
+  //   const fileContent = mediaItems[currentIndex]?.media;
+  //   const hasPermission = await requestStoragePermission();
+  //   if (!hasPermission) {
+  //     Alert.alert(
+  //       'Permission Denied',
+  //       'Storage permission is required to save files.',
+  //     );
+  //     return;
+  //   }
+
+  //   try {
+  //     await RNFS.writeFile(filePath, fileContent, 'utf8');
+  //     Alert.alert('File Saved', `File saved at: ${filePath}`);
+  //   } catch (error) {
+  //     console.error(error);
+  //     Alert.alert('Error', 'Failed to save the file.');
+  //   }
+  // };
 
   const handleNext = () => {
     if (currentIndex < mediaItems.length - 1) {
@@ -216,7 +266,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
             style={styles.btnStyle}
             title={BUTTON_LABLE.SAVE_TO_FILE}
             colorTheme="light"
-            onPress={() => saveFile()}
+            onPress={() => createFolder()}
           />
         </View>
       </View>

@@ -12,6 +12,7 @@ interface AuthState {
   roles: role[];
   token: string;
   isGuest: boolean;
+  notificationAlert:boolean
   varifyStatus: 0 | 1;
   profilePicture: string | undefined;
   companyLogo: string | undefined;
@@ -31,6 +32,7 @@ const initialState: AuthState = {
   companyLogo: undefined,
   fcmToken: '',
   deviceId: '',
+  notificationAlert:false,
 };
 
 const authSlice = createSlice({
@@ -72,6 +74,9 @@ const authSlice = createSlice({
     setIsGuest(state, action: PayloadAction<any>) {
       state.isGuest = action.payload;
     },
+    setNotificationAlert(state, action: PayloadAction<any>) {
+      state.notificationAlert = action.payload;
+    },
     resetLoginData(state) {
       // Reset state to initial values
       Object.assign(state, initialState);
@@ -93,6 +98,7 @@ export const {
   setRoles,
   setRoleId,
   setIsGuest,
+  setNotificationAlert,
   resetLoginData,
   setProfilePicture,
   setCompanyLogo,

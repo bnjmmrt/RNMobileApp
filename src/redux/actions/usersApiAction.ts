@@ -151,11 +151,13 @@ export const usersApiAction = createBaseApi.injectEndpoints({
       query: ({
         take,
         skip,
+        role
       }: {
         take: number;
         skip: number;
+        role: string;
       }) => ({
-        url: `/notifications/v1/notifications?take=${take}&skip=${skip}`,
+        url: `/notifications/v1/notifications?take=${take}&skip=${skip}&role=${role}`,
         method: 'GET',
       }),
       providesTags: ['fetchNotification']
