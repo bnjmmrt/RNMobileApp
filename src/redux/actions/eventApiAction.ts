@@ -148,12 +148,12 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         searchValue?: string;
         sortBy?: 'name' | 'partySize';
         guestStatus?:
-          | 'INVITED'
-          | 'APPLIED'
-          | 'CONFIRMED'
-          | 'DECLINED'
-          | 'DRAFT'
-          | '';
+        | 'INVITED'
+        | 'APPLIED'
+        | 'CONFIRMED'
+        | 'DECLINED'
+        | 'DRAFT'
+        | '';
         sortDirection?: 'ASC' | 'DESC';
         take?: number;
         skip?: number;
@@ -341,7 +341,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
     }),
 
     fetchEventTypes: builder.query({
-      query: ({}: {}) => ({
+      query: ({ }: {}) => ({
         url: `/events/v1/event-types`,
         method: 'GET',
       }),
@@ -356,7 +356,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       }),
       invalidatesTags: [
         'GuestDetails',
-        'EventGuestList',
+        // 'EventGuestList',
         'GuestStatusCount',
         'EventDetails',
       ],

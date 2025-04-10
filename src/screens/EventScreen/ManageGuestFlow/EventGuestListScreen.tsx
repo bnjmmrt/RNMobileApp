@@ -140,6 +140,16 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     shallowEqual,
   );
 
+  const { eventDetails } = useSelector((state: RootState) => {
+    const queryResult =
+      state.api.queries[
+      `fetchHostEventDetails(${JSON.stringify({ eventId })})`
+      ];;
+    return {
+      eventDetails: queryResult?.data?.data ?? undefined,
+    };
+  }, shallowEqual);
+
   const {
     data: guestsData,
     error: guestsError,
@@ -495,8 +505,8 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
 
       {allGuests?.totalCount > 0 && selectedFilter === 'CONFIRMED' && (
         <ProgressBanner
-          confirmed={selectedEvent?.totalCheckedInGuests || 0}
-          total={selectedEvent?.totalConfirmedGuests || 0}
+          confirmed={eventDetails?.totalCheckedInGuests || 0}
+          total={eventDetails?.totalConfirmedGuests || 0}
         />
       )}
 

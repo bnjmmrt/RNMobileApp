@@ -31,6 +31,10 @@ const EventRequests: React.FC<EventOverviewProps> = ({
   const { data } = useFetchGuestStatusCountQuery({ eventId });
 
   useEffect(() => {
+    setCheckInCount(checkedinCount || 0);
+  }, [checkedinCount])
+
+  useEffect(() => {
     setConfirmCount(data?.data?.confirmedCount || 0);
     setInviteCount(data?.data?.invitedCount || 0);
     setRequestCount(data?.data?.requestedCount || 0);
