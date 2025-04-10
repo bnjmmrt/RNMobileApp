@@ -15,7 +15,10 @@ import useApi from 'src/axios/useApi';
 import AvatarInitials from 'src/component/AvatarInitials';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { ROUTES } from 'src/navigation/Route';
-import { useManageGuestMutation } from 'src/redux/actions/eventApiAction';
+import {
+  useGuestCheckInMutation,
+  useManageGuestMutation,
+} from 'src/redux/actions/eventApiAction';
 import { RootState } from 'src/redux/slices';
 import { BUTTON_LABLE, COLORS, LABLE } from 'src/utils/constants';
 import {
@@ -25,6 +28,7 @@ import {
   radiusScale,
   verticalMarginScale,
   verticalScale,
+  Wp,
 } from 'src/utils/dimensions';
 import {
   ApiErrorInterface,
@@ -33,6 +37,7 @@ import {
 } from 'src/utils/functions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { ManageGuestPayload } from '../types';
+import Button from 'src/component/Button';
 
 interface AdditionalGuest {
   addedBy: string;
@@ -63,7 +68,9 @@ const RenderItemComponent = ({
   toggleExpand,
   checkInPlusOne,
   navigation,
+  isCheckInLoading,
   onChangeGuestNote,
+  selectedGuestForCheckIn,
 }: {
   item: any;
   index: number;
@@ -74,8 +81,10 @@ const RenderItemComponent = ({
     additionalGuest: any;
   }[];
   toggleExpand: any;
-  checkInPlusOne: any,
+  checkInPlusOne: any;
   navigation: any;
+  isCheckInLoading: boolean;
+  selectedGuestForCheckIn: string;
   onChangeGuestNote: (guestNote: string) => void;
 }) => {
   const inputRef = useRef<TextInput>(null);
@@ -99,9 +108,9 @@ const RenderItemComponent = ({
           expandList[index]?.isExpand
             ? styles.bottomRadius
             : {
-              borderBottomStartRadius: radiusScale(16),
-              borderBottomRightRadius: radiusScale(16),
-            },
+                borderBottomStartRadius: radiusScale(16),
+                borderBottomRightRadius: radiusScale(16),
+              },
         ]}>
         <View style={styles.guestHeader}>
           {item?.isPending ? (
@@ -117,23 +126,60 @@ const RenderItemComponent = ({
             {item?.additionalGuest?.firstName}
           </Text>
           {!item?.isPending && item?.additionalGuest?.checkIn ? (
-            <TouchableOpacity onPress={() => checkInPlusOne(item?.additionalGuest?.guestId, item?.additionalGuest?.checkIn)} style={styles.checkInButton}>
-              <Image source={IMAGES.checkedinCurved} />
-              <Text style={styles.checkInText}>{LABLE.CHECKED_IN}</Text>
-            </TouchableOpacity>
-          ) : !item?.isPending && !item?.additionalGuest?.checkIn ? (
-            <TouchableOpacity onPress={() => checkInPlusOne(item?.additionalGuest?.guestId, item?.additionalGuest?.checkIn)}
+            <Button
+              onPress={() =>
+                checkInPlusOne(
+                  item?.additionalGuest?.guestId,
+                  item?.additionalGuest?.checkIn,
+                )
+              }
+              title={LABLE.CHECKED_IN}
+              imageSource={IMAGES.checkedinCurved}
               style={[
                 styles.checkInButton,
                 {
+                  width: Wp(35),
+                },
+              ]}
+              leftImageStyle={styles.actionButtonIcon}
+              loading={
+                isCheckInLoading &&
+                selectedGuestForCheckIn === item?.additionalGuest?.guestId
+              }
+              disabled={
+                isCheckInLoading &&
+                selectedGuestForCheckIn === item?.additionalGuest?.guestId
+              }
+            />
+          ) : !item?.isPending && !item?.additionalGuest?.checkIn ? (
+            <Button
+              onPress={() =>
+                checkInPlusOne(
+                  item?.additionalGuest?.guestId,
+                  item?.additionalGuest?.checkIn,
+                )
+              }
+              title={LABLE.CHECK_IN}
+              imageSource={IMAGES.checkinCurved}
+              style={[
+                styles.checkInButton,
+                {
+                  width: Wp(30),
                   backgroundColor: COLORS.white,
                   borderWidth: 1,
                   borderColor: COLORS.borderGray,
                 },
-              ]}>
-              <Image source={IMAGES.checkinCurved} />
-              <Text style={styles.checkInText}>{LABLE.CHECK_IN}</Text>
-            </TouchableOpacity>
+              ]}
+              leftImageStyle={styles.actionButtonIcon}
+              loading={
+                isCheckInLoading &&
+                selectedGuestForCheckIn === item?.additionalGuest?.guestId
+              }
+              disabled={
+                isCheckInLoading &&
+                selectedGuestForCheckIn === item?.additionalGuest?.guestId
+              }
+            />
           ) : (
             <View style={styles.pendingDetailsButton}>
               <Image source={IMAGES.alertTriangle} />
@@ -145,7 +191,7 @@ const RenderItemComponent = ({
           {!item?.isPending && (
             <TouchableOpacity onPress={() => toggleExpand(item)}>
               <Image
-                resizeMode='contain'
+                resizeMode="contain"
                 source={
                   item?.isExpand ? IMAGES.arrowupCircle : IMAGES.arrowDownCircle
                 }
@@ -185,7 +231,7 @@ const RenderItemComponent = ({
         <TouchableOpacity
           style={styles.profileButton}
           onPress={handleProfilePress}>
-          <Image resizeMode='contain' source={IMAGES.arrow_up_right} />
+          <Image resizeMode="contain" source={IMAGES.arrow_up_right} />
           <Text style={styles.profileText}>{BUTTON_LABLE.PROFILE}</Text>
         </TouchableOpacity>
       )}
@@ -204,7 +250,9 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
 }) => {
   const navigation = useNavigation();
   const { updateKeyboardStatus } = useKeyboard();
-  const { apiRequest, loading, error } = useApi();
+
+  const [selectedGuestForCheckin, setSelectedGuestForCheckin] =
+    useState<string>('');
   const [checkedIn, setCheckedIn] = useState(guestProfile?.checkIn);
   const [isShownCard, setIsShownCard] = useState(true);
   const [guestNote, setGuestNote] = useState(privateGuestNote);
@@ -216,16 +264,19 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
       additionalGuest: any;
     }[]
   >([]);
+
   const selectedEvent = useSelector(
     (state: RootState) => state.inviteGuestsFlow.selectedEvent,
   );
+
   const [manageGuest] = useManageGuestMutation();
+  const [
+    guestCheckIn,
+    { error: guestCheckInError, isLoading: guestCheckInLoading },
+  ] = useGuestCheckInMutation();
 
   const pendingGuestCount = maxAdditionalGuests - additionalGuests.length;
   const guestString = pendingGuestCount > 1 ? ' Guests' : ' Guest';
-
-  // const [manageGuest] = useManageGuestMutation();
-  console.log('additionalGuests', JSON.stringify(additionalGuests));
 
   useEffect(() => {
     let expandIndex = additionalGuests.map((guest, index) => ({
@@ -263,47 +314,42 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   const handleCardShown = () => {
     setIsShownCard(!isShownCard);
   };
-  const validateDetails = async () => {
-    const response: any = await apiRequest(
-      'post',
-      `events/v1/guest/ticket/${guestProfile.guestId}/validate`,
-      {
-        checkIn: !checkedIn,
-      },
-    );
-    if (response.success) {
-      setCheckedIn(response.data.checkInStatus);
-    }
-  };
 
-  const checkInPlusOne = async (guestId: any, checkInStatus: any) => {
-    const response: any = await apiRequest(
-      'post',
-      `events/v1/guest/ticket/${guestId}/validate`,
-      {
-        checkIn: !checkInStatus,
-      },
-    );
-    if (response.success) {
-      setExpandList(prevList =>
-        prevList.map(item =>
-          item.additionalGuest.guestId === guestId
-            ? {
-              ...item,
-              additionalGuest: {
-                ...item.additionalGuest,
-                checkIn: !checkInStatus,
-              },
-            }
-            : item,
-        ),
-      );
-      // setCheckedIn(response.data.checkInStatus);
+  const handleCheckIn = async (
+    guestId: string,
+    checkIn: boolean,
+    isPlusOne: boolean,
+  ) => {
+    setSelectedGuestForCheckin(guestId);
+    try {
+      const response = await guestCheckIn({
+        guestId: guestId,
+        checkIn: checkIn,
+      }).unwrap();
+      if (response.success) {
+        if (isPlusOne) {
+          setExpandList(prevList =>
+            prevList.map(item =>
+              item.additionalGuest.guestId === guestId
+                ? {
+                    ...item,
+                    additionalGuest: {
+                      ...item.additionalGuest,
+                      checkIn: response.data.checkInStatus,
+                    },
+                  }
+                : item,
+            ),
+          );
+        } else {
+          setCheckedIn(response.data.checkInStatus);
+        }
+      }
+    } catch (error) {
+      const typedError = error as ApiErrorInterface;
+      FlashMessageComponent.show('error', getErrorMessage(typedError));
+    } finally {
     }
-  };
-
-  const handleCheckIn = () => {
-    validateDetails();
   };
 
   const handleGuestAction = async (newGuestNote: string, guestId: string) => {
@@ -350,7 +396,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
         <Text style={styles.headerText}>{LABLE.GUEST_CHICKED_IN}</Text>
         <TouchableOpacity style={styles.iconButton} onPress={handleCardShown}>
           <Image
-            resizeMode='contain'
+            resizeMode="contain"
             source={isShownCard ? IMAGES.arrowUpgray : IMAGES.arrowDowngray}
           />
         </TouchableOpacity>
@@ -365,7 +411,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
               </Text>
               <View style={styles.dropdown}>
                 <Text style={styles.dropdownText}>{ticketType}</Text>
-                <Image resizeMode='contain' source={IMAGES.downArrow} />
+                <Image resizeMode="contain" source={IMAGES.downArrow} />
               </View>
             </View>
           ) : (
@@ -381,7 +427,31 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
                 </View>
               </View>
 
-              <TouchableOpacity
+              <Button
+                onPress={() =>
+                  handleCheckIn(guestProfile.guestId, !checkedIn, false)
+                }
+                title={checkedIn ? LABLE.CHECKED_IN : LABLE.CHECK_IN}
+                imageSource={
+                  checkedIn ? IMAGES.checkedinCurved : IMAGES.checkinCurved
+                }
+                style={[
+                  styles.checkInButton,
+                  styles.whiteBtn,
+                  { width: '100%' },
+                  checkedIn && styles.greenBtn,
+                ]}
+                leftImageStyle={styles.actionButtonIcon}
+                loading={
+                  guestCheckInLoading &&
+                  selectedGuestForCheckin === guestProfile.guestId
+                }
+                disabled={
+                  guestCheckInLoading &&
+                  selectedGuestForCheckin === guestProfile.guestId
+                }
+              />
+              {/* <TouchableOpacity
                 style={[
                   styles.checkInButton,
                   styles.whiteBtn,
@@ -389,16 +459,16 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
                 ]}
                 onPress={handleCheckIn}>
                 <Image
-                  resizeMode='contain'
+                  resizeMode="contain"
                   source={
                     checkedIn ? IMAGES.checkedinCurved : IMAGES.checkinCurved
                   }
-                // style={styles.actionButtonIcon}
+                  // style={styles.actionButtonIcon}
                 />
                 <Text style={styles.actionButtonText}>
                   {checkedIn ? LABLE.CHECKED_IN : LABLE.CHECK_IN}
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           )}
 
@@ -442,13 +512,17 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
                 expandList={expandlist || []}
                 toggleExpand={toggleExpand}
                 navigation={navigation}
-                checkInPlusOne={checkInPlusOne}
+                checkInPlusOne={(guestId, checkIn) =>
+                  handleCheckIn(guestId, !checkIn, true)
+                }
                 onChangeGuestNote={newGuestNote => {
                   handleGuestAction(newGuestNote, item.additionalGuest.guestId);
                 }}
+                isCheckInLoading={guestCheckInLoading}
+                selectedGuestForCheckIn={selectedGuestForCheckin}
               />
             )}
-          //   contentContainerStyle={styles.container}
+            //   contentContainerStyle={styles.container}
           />
         </>
       )}
@@ -675,6 +749,7 @@ const styles = StyleSheet.create({
   actionButtonIcon: {
     width: horizontalScale(16),
     height: verticalScale(16),
+    resizeMode: 'contain',
   },
   // checkInButton: {
   //   flex: 0,

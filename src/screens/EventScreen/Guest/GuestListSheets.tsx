@@ -11,28 +11,38 @@ import {
 } from 'src/utils/dimensions';
 
 interface SheetProps {
-  onSelect: (value: string) => void;
+  onSelect: (
+    value: 'INVITED' | 'APPLIED' | 'CONFIRMED' | 'DECLINED' | 'DRAFT' | '',
+  ) => void;
+  selectedValue: string;
+}
+interface SortSheetProps {
+  onSelect: (value: 'ASC' | 'DESC') => void;
   selectedValue: string;
 }
 
 interface OptionType {
-  id: string;
+  id: 'INVITED' | 'APPLIED' | 'CONFIRMED' | 'DECLINED' | 'DRAFT' | '';
+  label: string;
+}
+interface SortingOptionType {
+  id: 'ASC' | 'DESC';
   label: string;
 }
 
 export const filterOptions: OptionType[] = [
-  { id: 'all', label: 'All' },
-  { id: 'confirmed', label: 'Confirmed' },
-  { id: 'invited', label: 'Invited' },
-  { id: 'applied', label: 'Requested' },
-  { id: 'draft', label: 'Drafts' },
-  { id: 'declined', label: 'Declined' },
+  { id: '', label: 'All' },
+  { id: 'CONFIRMED', label: 'Confirmed' },
+  { id: 'INVITED', label: 'Invited' },
+  { id: 'APPLIED', label: 'Requested' },
+  { id: 'DRAFT', label: 'Drafts' },
+  { id: 'DECLINED', label: 'Declined' },
 ];
 
-export const sortOptions: OptionType[] = [
-  { id: 'name_asc', label: 'Name Ascending' },
-  { id: 'name_desc', label: 'Name Descending' },
-  { id: 'party_size', label: 'Party Size' },
+export const sortOptions: SortingOptionType[] = [
+  { id: 'ASC', label: 'Name Ascending' },
+  { id: 'DESC', label: 'Name Descending' },
+  // { id: 'party_size', label: 'Party Size' },
 ];
 
 export const GuestListFilterSheet = forwardRef<BottomSheetMethods, SheetProps>(
@@ -65,33 +75,34 @@ export const GuestListFilterSheet = forwardRef<BottomSheetMethods, SheetProps>(
   },
 );
 
-export const GuestListSortSheet = forwardRef<BottomSheetMethods, SheetProps>(
-  ({ onSelect, selectedValue }, ref) => {
-    const bottomSheetRef = ref as MutableRefObject<BottomSheetMethods>;
+export const GuestListSortSheet = forwardRef<
+  BottomSheetMethods,
+  SortSheetProps
+>(({ onSelect, selectedValue }, ref) => {
+  const bottomSheetRef = ref as MutableRefObject<BottomSheetMethods>;
 
-    return (
-      <BottomSheet ref={ref} snapPoints={['30%', '50%', '75%']}>
-        <View style={styles.container}>
-          {sortOptions.map(option => (
-            <TouchableOpacity
-              key={option.id}
-              style={[
-                styles.optionButton,
-                selectedValue === option.id && styles.selectedOption,
-              ]}
-              onPress={() => {
-                onSelect(option.id);
-                bottomSheetRef?.current?.close();
-              }}>
-              <Text style={[styles.optionText]}>{option.label}</Text>
-            </TouchableOpacity>
-          ))}
-          <View style={styles.bottomIndicator} />
-        </View>
-      </BottomSheet>
-    );
-  },
-);
+  return (
+    <BottomSheet ref={ref} snapPoints={['20%']}>
+      <View style={styles.container}>
+        {sortOptions.map(option => (
+          <TouchableOpacity
+            key={option.id}
+            style={[
+              styles.optionButton,
+              selectedValue === option.id && styles.selectedOption,
+            ]}
+            onPress={() => {
+              onSelect(option.id);
+              bottomSheetRef?.current?.close();
+            }}>
+            <Text style={[styles.optionText]}>{option.label}</Text>
+          </TouchableOpacity>
+        ))}
+        <View style={styles.bottomIndicator} />
+      </View>
+    </BottomSheet>
+  );
+});
 
 const styles = StyleSheet.create({
   container: {
