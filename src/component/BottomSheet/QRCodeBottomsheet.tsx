@@ -162,14 +162,15 @@ const RenderToolTip = React.memo(
     placement: Placement | undefined;
     arrowStyle: ViewStyle;
   }) => {
-    let myHeight =  getNumberOfLines(contentText)
+    let myHeight = getNumberOfLines(contentText)
     console.log('myHeight', myHeight);
     return (
       <Tooltip
         contentStyle={[
           styles.toolTipStyle,
           {
-            height: verticalScale(myHeight*25),
+            width: myHeight > 2 ? '80%' : '90%',
+            height: verticalScale(myHeight > 2 ? myHeight * 20 : myHeight * 30),
           },
         ]}
         isVisible={isVisible}

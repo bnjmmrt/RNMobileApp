@@ -1,22 +1,16 @@
-import { getApp, getApps, initializeApp } from '@react-native-firebase/app';
 import messaging from '@react-native-firebase/messaging';
-import { Alert, Platform } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { setFcmToken, setIsGuest } from 'src/redux/slices/authSlice';
+import { setFcmToken, setIsGuest,setNotificationAlert } from 'src/redux/slices/authSlice';
 import { navigate, navigateToNestedStack } from './NavigationService';
 import { ROUTES } from 'src/navigation/Route';
 import store from 'src/redux/store';
-import notifee, { AndroidImportance } from '@notifee/react-native';
-import useApi from 'src/axios/useApi';
-import { RootState } from 'src/redux/slices';
-import { EndPoint } from 'src/ApiManager/config';
-
+import notifee from '@notifee/react-native';
 // Request Notification Permission
 export async function requestUserPermission() {
     const authStatus = await messaging().requestPermission();
     const enabled =
         authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
         authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    console.log('Authorization status:', authStatus, enabled);
     if (enabled) {
         getFCMToken()
     }
@@ -101,7 +95,13 @@ async function onDisplayNotification(remoteMessage: any) {
 }
 
 export const navigateToScreen = (data: any, type: string = 'in-app') => {
-    console.log("navigateToScreen data:", data);
+    const role = store.store.getState().auth.role;
+    const dispatch = store.store.dispatch;
+    const myRole = "non-member"
+    if (data?.data?.role != role) {
+        dispatch(setNotificationAlert(true))
+        return
+    }
     const eventTypes = [
         'eventReminder',
         // 'eventCancelled',
@@ -131,16 +131,23 @@ export const navigateToScreen = (data: any, type: string = 'in-app') => {
     else if (notifiType === 'eventVouch') {
         let userData = { activeTab: 'vouches' };
         navigateToNestedStack(ROUTES.ProfileStack, ROUTES.ReferralScreen, userData);
-    } else if (notifiType === 'hostApplication') {
+    }
+    else if (notifiType === 'profileReferrals') {
+        let userData = { activeTab: 'referrals' };
+        navigateToNestedStack(ROUTES.ProfileStack, ROUTES.ReferralScreen, userData);
+    }
+    else if (notifiType === 'hostApplication') {
         let userData = {
             hostId: type == 'push' ? data?.data?.userId : data?.body?.userId
         };
         navigateToNestedStack('ProfileStack', ROUTES.HostProfileScreen, userData);
-    } else if (notifiType === 'userApplication' || notifiType === 'profileReferrals') {
+    }
+    else if (notifiType === 'userApplication') {
         let userData = {
             user: type == 'push' ? data?.data?.userId : data?.body?.userId
         };
         navigate(ROUTES.UserDetail, userData);
-    } else { }
+    }
+    else { }
 };
 

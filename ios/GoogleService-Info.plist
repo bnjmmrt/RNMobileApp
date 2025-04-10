@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>639681590518-7f70p81v2lgd9g7bnrrv9k5ve09qhvec.apps.googleusercontent.com</string>
+	<string>911470503708-a4a9bg88fbfpur8u3n86jkadgrq0dnk0.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.639681590518-7f70p81v2lgd9g7bnrrv9k5ve09qhvec</string>
+	<string>com.googleusercontent.apps.911470503708-a4a9bg88fbfpur8u3n86jkadgrq0dnk0</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCR26RURPjBvk9Zh43tuNbCA6btxLcrK8U</string>
+	<string>AIzaSyAGFfFYB9OFSO1TVvWyJpp2QHRcbhANpqw</string>
 	<key>GCM_SENDER_ID</key>
-	<string>639681590518</string>
+	<string>911470503708</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.therumor.app</string>
 	<key>PROJECT_ID</key>
-	<string>therumor-5da69</string>
+	<string>therumor-development</string>
 	<key>STORAGE_BUCKET</key>
-	<string>therumor-5da69.firebasestorage.app</string>
+	<string>therumor-development.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:639681590518:ios:90cdbfa5d660028dae28d7</string>
+	<string>1:911470503708:ios:1dabd0fac35dbd0f5abcd9</string>
 </dict>
 </plist>
