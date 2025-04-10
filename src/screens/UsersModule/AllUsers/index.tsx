@@ -24,7 +24,6 @@ import UserActionsSheet, {
 } from '../BottomSheets/UserActionsSheet';
 import UserListItem, { UserItemInterface } from '../UsersListItem';
 import { COLORS } from 'src/utils/constants';
-import { set } from 'lodash';
 import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
 interface AllUserProps { }
@@ -51,7 +50,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
     useState<UserActionCurrentPageType>('');
 
-  const { data, isLoading, error, isError, refetch,isFetching } = useFetchAllUsersQuery({
+  const { data, isLoading, error, isError, refetch, isFetching } = useFetchAllUsersQuery({
     take: 10,
     skip: (currentPage - 1) * 10,
     searchValue: searchText,

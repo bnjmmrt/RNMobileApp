@@ -80,7 +80,7 @@ const useContacts = (autoRequestForPermision?: boolean, timout?: number) => {
       const formattedContacts = deviceContacts
         .map(contact => ({
           name: `${contact.givenName} ${contact.familyName}`.trim(),
-          phoneNumber: contact.phoneNumbers[0]?.number?.replace(/[^\d+]/g, '') || '',
+          phoneNumber: contact.phoneNumbers[0]?.number || '',
           firstName: contact.givenName,
           lastName: contact.familyName,
         }))

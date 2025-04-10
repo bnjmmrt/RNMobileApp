@@ -13,7 +13,7 @@ import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
 // Define the type for navigation props
-interface DiscoverScreenProps extends NativeStackScreenProps<any, any> {}
+interface DiscoverScreenProps extends NativeStackScreenProps<any, any> { }
 
 const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
   // Access login data from Redux store
@@ -53,10 +53,15 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
     }, []),
   );
 
-  console.log('DiscoverScreen', isGuest, token, role);
+  console.log('siya guest', isGuest, token, role);
 
-  if (isGuest && token && role == ROLE.NON_MEMBER) {
-    return <AfterAppStaticComponent />;
+  if (isGuest && role == ROLE.NON_MEMBER) {
+    if (token) {
+      return <AfterAppStaticComponent />
+    }
+    else {
+      return <BeforeAppStaticComponent isChatScreen={false} />
+    }
   }
 
   return (
@@ -65,13 +70,7 @@ const DiscoverScreen: React.FC<DiscoverScreenProps> = () => {
         ...styles.container,
         backgroundColor: isNotMember ? COLORS.black2 : COLORS.white,
       }}>
-      {!isNotMember ? (
-        <EventsFeed />
-      ) : isGuest ? (
-        <BeforeAppStaticComponent isChatScreen={false} />
-      ) : (
-        <AfterAppStaticComponent />
-      )}
+      <EventsFeed />
     </View>
   );
 };

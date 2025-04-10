@@ -31,7 +31,7 @@ import { ROUTES } from 'src/navigation/Route';
 import { useFetchProfileDetailsQuery } from 'src/redux/actions/profileListApiAction';
 import { RootState } from 'src/redux/slices';
 import { setRefresh } from 'src/redux/slices/rspvSlice';
-import { COLORS, LABLE } from 'src/utils/constants';
+import { COLORS, LABLE, SOCIAL_LINKS } from 'src/utils/constants';
 import { convertUTCToTimeZoneFormat } from 'src/utils/dateFunctions';
 import {
   fontScale,
@@ -296,11 +296,18 @@ const HostProfileScreen: React.FC = () => {
                       onPress={() => {
                         if (item?.url) {
                           let url = item.url;
-                          if (
-                            item?.url.includes('https://') ||
-                            item?.url.includes('http://')
-                          ) {
-                            url = item?.url;
+                          if (item?.id == 'x') {
+                            url = SOCIAL_LINKS.X + item?.url;
+                          } else if (item?.id == 'tiktok') {
+                            url = SOCIAL_LINKS.TikTok + item?.url;
+                          } else if (item?.id == 'youtube') {
+                            url = SOCIAL_LINKS.YouTube + item?.url;
+                          } else if (item?.id == 'facebook') {
+                            url = SOCIAL_LINKS.Facebook + item?.url;
+                          } else if (item?.id == 'linkedin') {
+                            url = SOCIAL_LINKS.LinkedIn + item?.url;
+                          } else if (item?.id == 'instagram') {
+                            url = SOCIAL_LINKS.Instagram + item?.url;
                           } else {
                             url = 'https://' + item?.url;
                           }

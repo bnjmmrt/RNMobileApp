@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import { useSelector } from 'react-redux';
 import AvatarInitials from 'src/component/AvatarInitials';
 import EmptyRecordComponent from 'src/component/EmptyRecord/EmptyRecordComponent';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
@@ -36,6 +37,7 @@ import {
   getErrorMessage,
 } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { RootState } from 'src/redux/slices';
 
 interface NotificationsScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -91,10 +93,12 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedNotification, setSelectedNotification] =
     useState<Notification | null>(null);
+    const role = useSelector((state: RootState) => state.auth.role);
 
   const queryArgs = {
     take: 10,
     skip: (currentPage - 1) * 10,
+    role:role
   };
 
   const { data, isLoading, refetch } = useFetchNotificationQuery(queryArgs);

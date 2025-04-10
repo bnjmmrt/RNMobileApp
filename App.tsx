@@ -31,6 +31,7 @@ import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import analytics from '@react-native-firebase/analytics';
 import { environment } from 'environments/environment';
 import { environment as environmentProd } from 'environments/environment.prod';
+import NotificationDialog from 'src/component/NotificationDialog';
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
@@ -74,6 +75,7 @@ const AppContent: React.FC = () => {
   }, []);
 
   const NotificationSetup = async () => {
+    console.log('NotificationSetup');
     getDeviceId();
     requestUserPermission();
     NotificationsListener();
@@ -125,6 +127,7 @@ const App: React.FC = () => {
       <PersistGate loading={null} persistor={persistor}>
         <SafeAreaViewWrapper>
           <ScreenshotDetectedDialog />
+          <NotificationDialog /> 
           <GestureHandlerRootView style={{ flex: 1 }}>
             <NavigationContainer theme={MyTheme} ref={navigationRef}>
               <BottomSheetModalProvider>

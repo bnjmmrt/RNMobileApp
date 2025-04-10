@@ -181,7 +181,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       Platform.OS === 'android'
         ? environment.playstoreLink
         : environment.appStoreLink;
-    const message = `Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world's top event organizers. Click here to join and start exploring unique opportunities: Andorid: ${environment.playstoreLink} | iOS: ${environment.appStoreLink}`;
+    const message = `Hey! I wanted to invite you to join Rumor, a new private network offering exclusive experiences curated by the world's top event organizers. Click here to join and start exploring unique opportunities: ${rumorAppLink}`;
 
     const url = `sms:${contact.phoneNumber}?body=${encodeURIComponent(
       message,
