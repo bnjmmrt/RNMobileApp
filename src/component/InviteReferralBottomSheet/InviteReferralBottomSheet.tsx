@@ -64,6 +64,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
     getContacts,
     permissionGranted,
     getContactNumbersOnly,
+    getContactNumbersWithCountryCode,
     permissionLoading,
   } = useContacts(true);
   const searchRef = useRef(null);
@@ -85,7 +86,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
     try {
       setRendring(true);
       const formattedContacts = await getContacts();
-      const contactNumbers = await getContactNumbersOnly();
+      const contactNumbers = await getContactNumbersWithCountryCode();
       const response = await getConfirmedMembers({ contacts: contactNumbers });
       const referralRequests = await apiRequest(
         'get',
@@ -94,6 +95,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       const referralUserIds = referralRequests?.data?.data?.map(r => r.userId);
 
       if (response?.data?.data) {
+        console.log("Sayyed response :", response?.data?.data)
         const membersWithSentFlag = response.data.data.map(member => ({
           ...member,
           isSent: referralUserIds?.includes(member.userId),
@@ -218,9 +220,9 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
         <EventEmptyRecord
           title="No Results"
           subTitle={
-            searchRef?.current?.searchText 
-              ?'Please refine your search.'
-              :  'No Contacts are members at this time'
+            searchRef?.current?.searchText
+              ? 'Please refine your search.'
+              : 'No Contacts are members at this time'
           }
           isLoading={isRendering || permissionLoading}
         />

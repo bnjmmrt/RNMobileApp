@@ -23,7 +23,7 @@ const RequestVouch = ({
   eventId: string;
   vouchData: any;
 }) => {
-  const { getContactNumbersOnly, permissionGranted } = useContacts(true, 2000);
+  const { getContactNumbersWithCountryCode, permissionGranted } = useContacts(true, 2000);
   const [members, setMembers] = useState<ContactItem[]>([]);
   const [loader, setLaoder] = useState(false);
   const [getConfirmedMembers, { isLoading }] = useGetConfirmedMembersMutation();
@@ -41,7 +41,7 @@ const RequestVouch = ({
   const fetchContacts = async () => {
     setLaoder(true);
     try {
-      const contacts = await getContactNumbersOnly();
+      const contacts = await getContactNumbersWithCountryCode();
       if (contacts.length === 0) {
         return;
       }
