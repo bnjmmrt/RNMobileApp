@@ -29,6 +29,13 @@ export const appFlowApiAction = createBaseApi.injectEndpoints({
         body: requestParam,
       }),
     }),
+    memberLogout: builder.mutation({
+      query: requestParam => ({
+        url: EndPoint.member_logout,
+        method: 'POST',
+        body: requestParam,
+      }),
+    }),
   }),
 });
 
@@ -36,4 +43,5 @@ export const {
   useGetFocusesQuery,
   useGetInterestsQuery,
   useMemberSignUpMutation,
+  useMemberLogoutMutation,
 } = appFlowApiAction;
