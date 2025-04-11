@@ -28,7 +28,7 @@ const DeclineBottomSheet = forwardRef<
   return (
     <BottomSheet
       ref={ref}
-      snapPoints={['35%', '40%', '45%']}
+      snapPoints={['25%', '30%', '35%', '40%', '45%']}
       enableDynamicSizing={false}>
       <View style={styles.container}>
         <View style={styles.contentContainer}>

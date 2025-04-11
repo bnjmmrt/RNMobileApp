@@ -1,6 +1,6 @@
 import IMAGES from '@images/index';
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -38,6 +38,7 @@ import {
 } from 'src/utils/functions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { ManageGuestPayload } from '../types';
+import { debounce } from 'lodash';
 
 interface AdditionalGuest {
   addedBy: string;
@@ -100,6 +101,15 @@ const RenderItemComponent = ({
       user: item?.additionalGuest?.id,
     });
   };
+
+  const debouncedSearch = useCallback(
+    debounce((text: string) => onChangeGuestNote(text), 3000),
+    [],
+  );
+  const handleNoteChange = useCallback((text: string) => {
+    debouncedSearch(text);
+  }, []);
+
   return (
     <View style={[styles.card, { padding: 0 }]}>
       <View
@@ -220,7 +230,7 @@ const RenderItemComponent = ({
               onFocus={() => updateKeyboardStatus(true)}
               onBlur={() => updateKeyboardStatus(false)}
               onChangeText={text => {
-                onChangeGuestNote(text);
+                handleNoteChange(text);
               }}
             />
           </View>
@@ -354,6 +364,21 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
     }
   };
 
+  const debouncedSearch = useCallback(
+    debounce(
+      (newGuestNote: string, guestId: string) =>
+        handleGuestAction(newGuestNote, guestId),
+      3000,
+    ),
+    [],
+  );
+  const handleNoteChange = useCallback(
+    (newGuestNote: string, guestId: string) => {
+      debouncedSearch(newGuestNote, guestId);
+    },
+    [],
+  );
+
   const handleGuestAction = async (newGuestNote: string, guestId: string) => {
     if (status === 'CONFIRMED' && selectedEvent?.id) {
       try {
@@ -481,7 +506,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
             <Text style={styles.label}>{LABLE.GUEST_NOTE}</Text>
             <TextInput
               onChangeText={text => {
-                handleGuestAction(text, guestProfile?.guestId);
+                handleNoteChange(text, guestProfile?.guestId);
                 setGuestNote(text);
               }}
               style={[

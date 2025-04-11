@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
@@ -56,6 +56,7 @@ import TicketTypeBottomSheet, {
 } from '../InviteGuestInEventFlow/TicketTypeBottomSheet';
 import { EventGuest, ManageGuestPayload } from '../types';
 import DeclinedBySection from '../Guest/DeclinedBySection';
+import { setManageGuestSkip } from 'src/redux/slices/listSkipSlice';
 
 enum GuestStatus {
   DRAFT = 'DRAFT',
@@ -74,6 +75,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   navigation,
   route,
 }): JSX.Element => {
+  const dispatch = useDispatch();
   const guestId = route.params?.guestId as string;
   const loggedInUserId = useSelector((state: RootState) => state.auth.userId);
 
@@ -162,8 +164,11 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     newStatus?: GuestStatus,
     successMessage?: string,
   ) => {
-    const formValidated = validateForm();
-    if (!formValidated) return;
+    if (action === 'UPDATE' && newStatus === GuestStatus.DECLINED) {
+    } else {
+      const formValidated = validateForm();
+      if (!formValidated) return;
+    }
 
     try {
       setIsLoadingAction(true);
@@ -183,6 +188,10 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         sendNotification: true,
       };
 
+      if (action === 'UPDATE' && newStatus === GuestStatus.DECLINED) {
+        delete payload.ticketTypeId;
+      }
+
       if (guestProfile?.status === 'CONFIRMED') {
         delete payload.privateGuestNote;
       }
@@ -192,6 +201,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       }).unwrap();
 
       if (response.success) {
+        dispatch(setManageGuestSkip(0));
         // navigation.goBack();
         refreshGuestDetails();
         let message = `${guestProfile?.name}'s invite has been updated`;
@@ -341,9 +351,8 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         };
       case 'applied':
         return {
-          title: 'Delete Request',
-          description:
-            'Are you sure you want to decline \nselected guests request?',
+          title: 'Decline Request',
+          description: 'Are you sure you want to decline this guest request?',
           buttonText: 'Decline Request',
         };
       case 'confirmed':

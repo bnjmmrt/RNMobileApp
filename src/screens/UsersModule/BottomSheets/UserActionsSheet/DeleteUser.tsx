@@ -1,6 +1,6 @@
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import Button from 'src/component/Button';
 import { CustomText } from 'src/component/CustomText';
 import {
@@ -12,6 +12,7 @@ import { verticalMarginScale } from 'src/utils/dimensions';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { styles } from './style';
 import { useNavigation } from '@react-navigation/native';
+import { setUsersTabAllUsersSkip } from 'src/redux/slices/listSkipSlice';
 
 const DeleteUser = ({
   showError,
@@ -23,6 +24,7 @@ const DeleteUser = ({
   user: string;
 }) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const [deleteUser, { error, isLoading }] = useDeleteUserMutation();
 
@@ -44,6 +46,7 @@ const DeleteUser = ({
         }).unwrap();
 
         if (response.success) {
+          dispatch(setUsersTabAllUsersSkip(0));
           showSuccess(`${userDetails.firstName} has been deleted`);
           navigation.goBack();
         } else {

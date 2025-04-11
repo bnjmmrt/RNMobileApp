@@ -19,6 +19,8 @@ import CreateEditList from './CreateEditList';
 import DeleteList from './DeleteList';
 import DuplicateList from './DuplicateList';
 import { styles } from './style';
+import { useDispatch } from 'react-redux';
+import { setUsersTabAllListsSkip } from 'src/redux/slices/listSkipSlice';
 
 export type actionSheetFromType = 'customLists' | 'listDetail';
 export type listActionCurrentPageType =
@@ -62,6 +64,7 @@ const ListActionsSheet = forwardRef<
     ref,
   ) => {
     const sheetRef = useRef<BottomSheetMethods>(null);
+    const dispatch = useDispatch();
 
     const [selectedListData, setSelectedListData] = useState<{
       id: string;
@@ -105,6 +108,7 @@ const ListActionsSheet = forwardRef<
     };
 
     const onCreateListSuccess = (listId: string, listName: string) => {
+      dispatch(setUsersTabAllListsSkip(0));
       setSelectedListData({ id: listId, name: listName });
       closeSheet();
       InteractionManager.runAfterInteractions(() => {
@@ -116,6 +120,7 @@ const ListActionsSheet = forwardRef<
     };
 
     const onEditListSuccess = () => {
+      dispatch(setUsersTabAllListsSkip(0));
       setSelectedAction('');
       closeSheet();
       if (onSuccess) {
@@ -124,6 +129,7 @@ const ListActionsSheet = forwardRef<
     };
 
     const onAddUserToListSuccess = () => {
+      dispatch(setUsersTabAllListsSkip(0));
       setSelectedAction('');
       closeSheet();
       if (onSuccess) {
@@ -132,6 +138,7 @@ const ListActionsSheet = forwardRef<
     };
 
     const onDuplicateListSuccess = () => {
+      dispatch(setUsersTabAllListsSkip(0));
       if (onSuccess) {
         onSuccess();
       }
@@ -200,7 +207,7 @@ const ListActionsSheet = forwardRef<
           ) : null}
 
           {selectedAction === 'editListName' ||
-            selectedAction === 'createList' ? (
+          selectedAction === 'createList' ? (
             <CreateEditList
               onSuccessAdd={onCreateListSuccess}
               onSuccessEdit={onEditListSuccess}
@@ -223,6 +230,7 @@ const ListActionsSheet = forwardRef<
             <DeleteList
               listId={selectedListId || ''}
               onSuccess={() => {
+                dispatch(setUsersTabAllListsSkip(0));
                 closeSheet();
                 if (onSuccess) onSuccess();
               }}

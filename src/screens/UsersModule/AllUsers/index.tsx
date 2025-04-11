@@ -1,9 +1,14 @@
 import IMAGES from '@images/index';
 import { useScrollToTop } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { FlatList, RefreshControl, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  View,
+} from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import { useDispatch } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
@@ -25,10 +30,12 @@ import UserActionsSheet, {
 import UserListItem, { UserItemInterface } from '../UsersListItem';
 import { COLORS } from 'src/utils/constants';
 import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import { RootState } from 'src/redux/slices';
+import { setUsersTabAllUsersSkip } from 'src/redux/slices/listSkipSlice';
 
-interface AllUserProps { }
+interface AllUserProps {}
 
-const AllUsers: React.FC<AllUserProps> = ({ }) => {
+const AllUsers: React.FC<AllUserProps> = ({}) => {
   const dispatch = useDispatch();
   const searchInputRef = useRef<InputRefMethods>(null);
   const actionSheetRef = useRef<BottomSheetMethods>(null);
@@ -36,35 +43,43 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
   const scrollToTopRef = useRef(null);
   useScrollToTop(scrollToTopRef);
 
-  const [allUsers, setAllUsers] = useState<{
-    result: UserItemInterface[];
-    totalCount: number;
-  }>({ totalCount: 0, result: [] });
+  const listTakeCount = 10;
+
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>('');
   const [filterQuery, setFilterQuery] = useState<string>('');
   const [filterNumber, setFilterNumber] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
 
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
     useState<UserActionCurrentPageType>('');
 
-  const { data, isLoading, error, isError, refetch, isFetching } = useFetchAllUsersQuery({
-    take: 10,
-    skip: (currentPage - 1) * 10,
-    searchValue: searchText,
-    queryString: filterQuery,
-  });
+  const { usersTabAllUsersSkipCount } = useSelector((state: RootState) => {
+    return {
+      usersTabAllUsersSkipCount: state?.listSkip?.usersTabAllUsersSkipCount,
+    };
+  }, shallowEqual);
+
+  const { data, isLoading, error, isError, refetch, isFetching } =
+    useFetchAllUsersQuery({
+      take: listTakeCount,
+      skip: usersTabAllUsersSkipCount,
+      searchValue: searchText,
+      queryString: filterQuery,
+    });
 
   const onRefreshPage = () => {
-    setCurrentPage(1);
-    refetch();
+    dispatch(setUsersTabAllUsersSkip(0));
   };
 
   const loadMore = () => {
-    if (allUsers?.result?.length < data?.data?.totalCount && !isLoading) {
-      setCurrentPage(prev => prev + 1);
+    if (
+      !isLoading &&
+      usersTabAllUsersSkipCount + listTakeCount < data?.data?.totalCount
+    ) {
+      dispatch(
+        setUsersTabAllUsersSkip(usersTabAllUsersSkipCount + listTakeCount),
+      );
     }
   };
 
@@ -82,7 +97,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
   };
 
   const handleSearchTextChange = (text: string) => {
-    setCurrentPage(1);
+    dispatch(setUsersTabAllUsersSkip(0));
     setSearchText(text);
   };
 
@@ -95,7 +110,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
     numberOfFiltersApplied: number,
     selectedFilters?: SelectedFilters,
   ) => {
-    setCurrentPage(1);
+    dispatch(setUsersTabAllUsersSkip(0));
     setFilterQuery(queryString);
     setFilterNumber(numberOfFiltersApplied);
 
@@ -107,7 +122,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
 
   const onClearFilter = () => {
     // setRendring(true)
-    setCurrentPage(1);
+    dispatch(setUsersTabAllUsersSkip(0));
     setFilterQuery('');
     setFilterNumber(0);
     setSelectedFilters({});
@@ -222,27 +237,33 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
   }, [selectedUsers]);
 
   useEffect(() => {
-    if (data && data.data) {
-      // setRendring(false);
-      if (currentPage === 1) {
-        setAllUsers(data.data);
-      } else {
-        setAllUsers(prev => ({
-          totalCount: data.data.totalCount,
-          result: [...prev.result, ...data.data.result],
-        }));
-      }
-    }
-    // else{
-    //   setRendring(false);
-    // }
-  }, [data]);
+    return () => {
+      dispatch(setUsersTabAllUsersSkip(0));
+    };
+  }, []);
 
-  useEffect(() => {
-    if (isError) {
-      setAllUsers({ totalCount: 0, result: [] });
-    }
-  }, [isError]);
+  // useEffect(() => {
+  //   if (data && data.data) {
+  //     // setRendring(false);
+  //     if (currentPage === 1) {
+  //       setAllUsers(data.data);
+  //     } else {
+  //       setAllUsers(prev => ({
+  //         totalCount: data.data.totalCount,
+  //         result: [...prev.result, ...data.data.result],
+  //       }));
+  //     }
+  //   }
+  //   // else{
+  //   //   setRendring(false);
+  //   // }
+  // }, [data]);
+
+  // useEffect(() => {
+  //   if (isError) {
+  //     setAllUsers({ totalCount: 0, result: [] });
+  //   }
+  // }, [isError]);
 
   useEffect(() => {
     return () => {
@@ -250,7 +271,9 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
       dispatch(changeBottomTabsVisibility({ showBottomTabs: true }));
     };
   }, []);
-  const isInitialLoading = isRendering && currentPage === 1;
+
+  const isInitialLoading = isRendering && usersTabAllUsersSkipCount === 0;
+
   return (
     <View style={{ marginTop: verticalMarginScale(8), flex: 1 }}>
       <SearchInput
@@ -271,7 +294,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
       ) : (
         <FlatList
           ref={scrollToTopRef}
-          data={allUsers?.result || []}
+          data={data?.data?.result || []}
           style={{
             marginHorizontal: horizontalMarginScale(20),
             marginTop: verticalMarginScale(16),
@@ -280,7 +303,17 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={{ gap: verticalMarginScale(16) }}
           ListFooterComponent={
-            <View style={{ marginBottom: verticalMarginScale(150) }} />
+            (isLoading || isFetching) && usersTabAllUsersSkipCount > 0 ? (
+              <ActivityIndicator
+                color={COLORS.black}
+                style={{
+                  marginTop: verticalScale(10),
+                  marginBottom: verticalMarginScale(150),
+                }}
+              />
+            ) : (
+              <View style={{ marginBottom: verticalMarginScale(150) }} />
+            )
           }
           ListEmptyComponent={
             <View
@@ -324,7 +357,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
           onEndReachedThreshold={0.4}
           showsVerticalScrollIndicator={false}
           refreshControl={
-            allUsers?.result?.length > 0 ? (
+            data?.data?.result?.length > 0 ? (
               <RefreshControl
                 refreshing={isLoading}
                 onRefresh={onRefreshPage}
