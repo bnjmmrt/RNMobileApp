@@ -27,6 +27,8 @@ import {
 } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
 import Button from '../Button';
+import Share from 'react-native-share';
+
 interface MediaItem {
   mediaType: 'image' | 'pdf';
   media?: any;
@@ -58,25 +60,50 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
   const folderName = 'TheRumor';
   const folderPath = `${RNFS.DocumentDirectoryPath}/${folderName}`;
   // const folderPath = `${RNFS.ExternalStorageDirectoryPath}/Documents/${folderName}`;
-
+ console.log("mediaItems[currentIndex]?.mediaType",mediaItems[currentIndex])
   const requestStoragePermission = async () => {
-    if (Platform.OS === 'android') {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          {
-            title: 'Storage Permission',
-            message: 'App needs access to your storage to save files.',
-            buttonPositive: 'OK',
-          },
-        );
-        return granted === PermissionsAndroid.RESULTS.GRANTED;
-      } catch (err) {
-        console.warn(err);
-        return false;
+    if (Platform.OS === 'android' && Platform.Version < 33) {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Storage Permission',
+          message: 'App needs access to storage to download the file',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        }
+      );
+      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+        Alert.alert('Permission Denied', 'Cannot download file without storage permission');
+        return;
       }
     }
     return true;
+  };
+
+  const downloadAndShareFile = async () => {
+    try {
+      const fileUrl = mediaItems[currentIndex]?.media;
+      const fileName = mediaItems[currentIndex]?.mediaName;
+      const localFilePath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
+      const downloadResult = await RNFS.downloadFile({
+        fromUrl: fileUrl,
+        toFile: localFilePath,
+      }).promise;
+      if (downloadResult.statusCode === 200) {
+        console.log('Download complete:', localFilePath);
+        await Share.open({
+          url: 'file://' + localFilePath,
+          type: mediaItems[currentIndex]?.mediaType === 'pdf' ? 'application/pdf' : 'image/jpeg', // Change based on file type
+          saveToFiles: true, // :point_left: this enables the "Save to Files" option in iOS
+        });
+      } else {
+        Alert.alert('Download Failed', `Status code: ${downloadResult.statusCode}`);
+      }
+    } catch (err) {
+      console.error('Error downloading or sharing file:', err);
+      Alert.alert('Error', 'Something went wrong while downloading or sharing the file.');
+    }
   };
 
   const createFolder = async () => {
@@ -88,14 +115,11 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
       );
       return;
     }
-
     try {
-      const exists = await RNFS.exists(folderPath);
-      if (!exists) {
-        await RNFS.mkdir(folderPath);
+      if (Platform.OS === 'android') {
         downloadFile()
       } else {
-        downloadFile()
+        downloadAndShareFile()
       }
     } catch (err) {
       console.error('Error creating folder:', err);
@@ -103,9 +127,9 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
   };
 
   const downloadFile = async () => {
+    const folderPathNew = `${RNFS.DownloadDirectoryPath}`;
     const fileName = mediaItems[currentIndex]?.mediaName;
-    const destPath = `${folderPath}/${fileName}`;
-
+    const destPath = `${folderPathNew}/${fileName}`;
     try {
       const options = {
         fromUrl: mediaItems[currentIndex]?.media,
@@ -124,31 +148,6 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
       Alert.alert('Download failed', err.message);
     }
   };
-
-
-  // const saveFile = async () => {
-  //   const fileName = mediaItems[currentIndex]?.mediaName;
-  //   const filePath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
-  //   console.log('File saved at:', filePath);
-
-  //   const fileContent = mediaItems[currentIndex]?.media;
-  //   const hasPermission = await requestStoragePermission();
-  //   if (!hasPermission) {
-  //     Alert.alert(
-  //       'Permission Denied',
-  //       'Storage permission is required to save files.',
-  //     );
-  //     return;
-  //   }
-
-  //   try {
-  //     await RNFS.writeFile(filePath, fileContent, 'utf8');
-  //     Alert.alert('File Saved', `File saved at: ${filePath}`);
-  //   } catch (error) {
-  //     console.error(error);
-  //     Alert.alert('Error', 'Failed to save the file.');
-  //   }
-  // };
 
   const handleNext = () => {
     if (currentIndex < mediaItems.length - 1) {

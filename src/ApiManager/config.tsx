@@ -65,6 +65,7 @@ export const EndPoint = {
   get_focuses: `${API_USERS_V1_AUTH}/get-focuses`,
   interests: `${API_USERS_V1_AUTH}/interests`,
   member_signUp: `${API_USERS_V1_AUTH}/member-sign-up`,
+  member_logout: `${API_USERS_V1_AUTH}/logout`,
   check_member_logiin: `${API_USERS_V1_AUTH}/check-member-login`,
   email_send_verification_code: `${API_USERS_V1_AUTH}/send-verification-code-by-email`,
   email_verify_code: `${API_USERS_V1_AUTH}/verify-code-by-email`,

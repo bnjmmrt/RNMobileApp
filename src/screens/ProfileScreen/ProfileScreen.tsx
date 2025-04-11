@@ -49,6 +49,7 @@ import ProfileScreenStyle from './ProfileScreenStyle';
 import ProfileTopView from './ProfileTopView';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import { useMemberLogoutMutation } from 'src/redux/actions/appFlowApiAction';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
@@ -77,6 +78,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const [image, setImage] = useState<string>('');
   const [imageSize, setImageSize] = useState<number>(0);
   const { uploadFileHook } = useUploadFile();
+  const [memberLogout, { error, isLoading }] = useMemberLogoutMutation();
 
   const {
     userId,
@@ -298,22 +300,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     editPhotoBottomSheetRef.current?.open();
   };
 
-  // const uploadFile = async () => {
-  //   const mimeType = `images/${image.split('.').pop()}`;
-  //   const fileName = image.split('/').pop();
-
-  //   const formData = new FormData();
-  //   formData.append('file', {
-  //     uri: image,
-  //     type: mimeType,
-  //     name: fileName,
-  //   });
-
-  //   return await apiRequest('post', EndPoint.file_upload, formData, null, {
-  //     'Content-Type': 'multipart/form-data',
-  //   });
-  // };
-
   const updateProfilePhoto = async (url: string) => {
     const fileUploadResponse: any = await apiRequest(
       'put',
@@ -385,26 +371,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       console.error('Error uploading image:', error);
     }
   };
-
-  // const savePhoto = async () => {
-  //   if (image) {
-  //     // setIsToastShown(false);
-  //     savePhotoBottomSheetRef.current?.close();
-  //     const response: any = await uploadFile();
-  //     if (response.success) {
-  //       // setIsToastShown(false);
-  //       const imageUrl =
-  //         environment.BASE_URL + EndPoint.view_image + response.data.fileKeyId;
-  //       if (role?.toLocaleLowerCase() === 'host') {
-  //         await updateHostProfilePhoto(imageUrl);
-  //       } else {
-  //         await updateProfilePhoto(imageUrl);
-  //       }
-  //     } else {
-  //       //display error
-  //     }
-  //   }
-  // };
   const onCancel = () => {
     setImage('');
   };
@@ -447,22 +413,33 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       });
   };
 
-  const logOut = () => {
+  const logOut = async () => {
     logoutBottomSheetRef.current?.close();
-    const resetAction = CommonActions.reset({
-      index: 0,
-      routes: [{ name: 'AuthStack' }],
-    });
-    dispatch(resetProfileData());
-    dispatch(resetLoginData());
-    dispatch(setAuthToken(null));
-    dispatch(resetAppFlowDetails());
-    // navigation.dispatch(resetAction);
-    InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => {
-        navigation.replace('AuthStack');
-      }, 500);
-    });
+    const requestParam = {
+      fcmToken: '',
+      deviceId: '',
+    }
+    const response = await memberLogout(requestParam).unwrap();
+    if (response.success) {
+      const resetAction = CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'AuthStack' }],
+      });
+      dispatch(resetProfileData());
+      dispatch(resetLoginData());
+      dispatch(setAuthToken(null));
+      dispatch(resetAppFlowDetails());
+      InteractionManager.runAfterInteractions(() => {
+        setTimeout(() => {
+          navigation.replace('AuthStack');
+        }, 500);
+      });
+      FlashMessageComponent.show('success', 'Logout successfully');
+    }
+    else {
+      FlashMessageComponent.show('error', 'Something went wrong, please try again!');
+    }
+
   };
 
   const getUserName = () => {
@@ -589,6 +566,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           snapPoints={[Platform.OS === 'android' ? '0.29' : '0.30']}
           image={null}
         />
+        <Text style={styles.textBelowStyle}>{environment.SERVER}</Text>
         <DeleteAccountBottomSheet
           ref={deleteAccountBottomSheetRef}
           onPress={deleteAccount}
