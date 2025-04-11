@@ -2,6 +2,7 @@ import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
 import React, { useRef, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Dimensions,
   Image,
@@ -56,11 +57,12 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
   index
 }) => {
   const [currentIndex, setCurrentIndex] = useState(index);
+  const [loader, setLoader] = useState(false);
   const bottomSheetRef = useRef(null);
   const folderName = 'TheRumor';
   const folderPath = `${RNFS.DocumentDirectoryPath}/${folderName}`;
   // const folderPath = `${RNFS.ExternalStorageDirectoryPath}/Documents/${folderName}`;
- console.log("mediaItems[currentIndex]?.mediaType",mediaItems[currentIndex])
+  console.log("mediaItems[currentIndex]?.mediaType", mediaItems[currentIndex])
   const requestStoragePermission = async () => {
     if (Platform.OS === 'android' && Platform.Version < 33) {
       const granted = await PermissionsAndroid.request(
@@ -91,6 +93,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
         toFile: localFilePath,
       }).promise;
       if (downloadResult.statusCode === 200) {
+        setLoader(false)
         console.log('Download complete:', localFilePath);
         await Share.open({
           url: 'file://' + localFilePath,
@@ -98,15 +101,18 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
           saveToFiles: true, // :point_left: this enables the "Save to Files" option in iOS
         });
       } else {
+        setLoader(false)
         Alert.alert('Download Failed', `Status code: ${downloadResult.statusCode}`);
       }
     } catch (err) {
+      setLoader(false)
       console.error('Error downloading or sharing file:', err);
       Alert.alert('Error', 'Something went wrong while downloading or sharing the file.');
     }
   };
 
   const createFolder = async () => {
+    setLoader(true)
     const hasPermission = await requestStoragePermission();
     if (!hasPermission) {
       Alert.alert(
@@ -122,6 +128,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
         downloadAndShareFile()
       }
     } catch (err) {
+      setLoader(false)
       console.error('Error creating folder:', err);
     }
   };
@@ -138,12 +145,15 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
 
       const result = await RNFS.downloadFile(options).promise;
       if (result.statusCode === 200) {
+        setLoader(false)
         console.log("File downloaded successfully:", destPath);
         Alert.alert('Success', `File downloaded to ${destPath}`);
       } else {
+        setLoader(false)
         Alert.alert('Error', `Download failed with status ${result.statusCode}`);
       }
     } catch (err) {
+      setLoader(false)
       console.error('Download error:', err);
       Alert.alert('Download failed', err.message);
     }
@@ -215,7 +225,6 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
         </View>
 
         <View style={styles.mediaContainer}>{renderMedia()}</View>
-
         {mediaItems.length > 1 && (
           <>
             {currentIndex > 0 && (
@@ -265,6 +274,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
             style={styles.btnStyle}
             title={BUTTON_LABLE.SAVE_TO_FILE}
             colorTheme="light"
+            loading={loader}
             onPress={() => createFolder()}
           />
         </View>
