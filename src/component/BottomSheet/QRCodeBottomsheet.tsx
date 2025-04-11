@@ -169,8 +169,8 @@ const RenderToolTip = React.memo(
         contentStyle={[
           styles.toolTipStyle,
           {
-            width: myHeight > 2 ? '80%' : '90%',
-            height: verticalScale(myHeight > 2 ? myHeight * 20 : myHeight * 30),
+            width: myHeight > 2 ? '80%' : '100%',
+            height: verticalScale(myHeight > 2 ? myHeight * 25 : myHeight * 30),
           },
         ]}
         isVisible={isVisible}
@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
   toolTipStyle: {
     backgroundColor: COLORS.dark_gray,
     width: '80%',
-    paddingHorizontal: 15,
+    paddingHorizontal: horizontalMarginScale(10),
     height: Platform.OS === 'ios' ? verticalScale(30) : verticalScale(20),
   },
   // toolTipStyle: {

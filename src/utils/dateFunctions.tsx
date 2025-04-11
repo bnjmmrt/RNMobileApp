@@ -155,7 +155,7 @@ export const formatEventRSVPDate = (
   if (start.isSame(today, 'day')) {
     return `Today, ${startTime}`;
   } else if (start.isSame(tomorrow, 'day')) {
-    return `Tomorrow, ${startTime}}`;
+    return `Tomorrow, ${startTime}`;
   } else {
     return `${startFormat}, ${startTime}`;
   }

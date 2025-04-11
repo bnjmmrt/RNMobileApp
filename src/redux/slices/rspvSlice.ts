@@ -30,7 +30,7 @@ const rsvpSlice = createSlice({
     reducers: {
         setResponse(state, action: PayloadAction<'Yes' | 'No'>) {
             state.response = action.payload;
-            if (action.payload === 'No') {
+            if (action.payload === 'No' || action.payload === null) {
                 state.selectedGuest = null;
                 state.guests = [];
             }

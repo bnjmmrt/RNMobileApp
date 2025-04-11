@@ -179,7 +179,7 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({ }) => {
 
   return (
     <View style={styles.container}>
-      {filteredContacts.length > 0 ? (
+      {/* {filteredContacts.length > 0 ? ( */}
         <SearchInput
           placeholder={'Search...'}
           onSearchTextChange={query => {
@@ -190,7 +190,7 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({ }) => {
             marginTop: verticalMarginScale(8),
           }}
         />
-      ) : null}
+      {/* // ) : null} */}
       <FlatList
         data={filteredContacts || []}
         style={{
