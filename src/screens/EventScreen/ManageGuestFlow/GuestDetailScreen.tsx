@@ -164,8 +164,11 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     newStatus?: GuestStatus,
     successMessage?: string,
   ) => {
-    const formValidated = validateForm();
-    if (!formValidated) return;
+    if (action === 'UPDATE' && newStatus === GuestStatus.DECLINED) {
+    } else {
+      const formValidated = validateForm();
+      if (!formValidated) return;
+    }
 
     try {
       setIsLoadingAction(true);
@@ -184,6 +187,10 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         isSelectedAll: false,
         sendNotification: true,
       };
+
+      if (action === 'UPDATE' && newStatus === GuestStatus.DECLINED) {
+        delete payload.ticketTypeId;
+      }
 
       if (guestProfile?.status === 'CONFIRMED') {
         delete payload.privateGuestNote;
@@ -344,9 +351,8 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         };
       case 'applied':
         return {
-          title: 'Delete Request',
-          description:
-            'Are you sure you want to decline \nselected guests request?',
+          title: 'Decline Request',
+          description: 'Are you sure you want to decline this guest request?',
           buttonText: 'Decline Request',
         };
       case 'confirmed':

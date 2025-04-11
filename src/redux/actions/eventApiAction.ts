@@ -216,7 +216,12 @@ export const eventApiAction = createBaseApi.injectEndpoints({
           body: payload,
         };
       },
-      invalidatesTags: ['EventDetails', 'GuestStatusCount', 'EventGuestList'],
+      invalidatesTags: [
+        'EventDetails',
+        'GuestStatusCount',
+        'EventGuestList',
+        'GuestDetails',
+      ],
     }),
 
     // create event announcement for host builder.mutation({
