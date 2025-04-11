@@ -93,6 +93,40 @@ const useContacts = (autoRequestForPermision?: boolean, timout?: number) => {
     }
   };
 
+  const getContactNumbersWithCountryCode = async (
+    defaultCountryCode: string = '1'
+  ): Promise<string[]> => {
+    if (!permissionGranted) {
+      return [];
+    }
+    try {
+      defaultCountryCode = getCountryCallingCode(`${currentCountry}`);
+      const deviceContacts = await Contacts.getAll();
+      const contactNumbers = deviceContacts
+        .map(contact => {
+          let rawNumber = contact.phoneNumbers[0]?.number || '';
+          let cleanedNumber = rawNumber.replace(/\D/g, '');
+
+          // Check if number already includes country code (e.g. 10+ digits and starts with a common code)
+          if (cleanedNumber.length < 10) return ''; // skip too-short numbers
+
+          if (!rawNumber.trim().startsWith('+')) {
+            // Add default country code if it's missing
+            return `+${defaultCountryCode}${cleanedNumber}`;
+          }
+
+          return `+${cleanedNumber}`;
+        })
+        .filter(number => number);
+
+      return contactNumbers;
+    } catch (error) {
+      console.error('Error fetching contact numbers:', error);
+      return [];
+    }
+  };
+
+
   const getContactNumbersOnly = async (): Promise<string[]> => {
     if (!permissionGranted) {
       return [];
@@ -187,6 +221,7 @@ const useContacts = (autoRequestForPermision?: boolean, timout?: number) => {
     getContacts,
     getContactNumbersOnly,
     getPhoneNumber,
+    getContactNumbersWithCountryCode,
     permissionLoading,
   };
 };
