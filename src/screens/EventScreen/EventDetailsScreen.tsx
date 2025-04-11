@@ -102,6 +102,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     eventId: eventId,
     take: 50,
     skip: 0,
+    id: userId,
+    role: role,
   };
   const {
     data: announcementData,

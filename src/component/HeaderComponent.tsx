@@ -69,7 +69,7 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
   const getNotificationCount = async () => {
     const notificationCount: any = await apiRequest(
       'get',
-      `${EndPoint.notification_count}?id=${userId}`,
+      `${EndPoint.notification_count}?id=${userId}&role=${role}`,
     );
     console.log('notificationCount.data', notificationCount);
     if (notificationCount.data) {

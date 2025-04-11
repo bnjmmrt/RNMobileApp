@@ -198,9 +198,12 @@ const RSVPInvitedUpcoming = () => {
   const { apiRequest, loading, error } = useApi();
   const [selectedDeleteGuest, setSelectedDeleteGuest] = React.useState(null);
   const rspv = useSelector(state => state.rspv);
-
+  console.log('siya rspv', rspv);
   React.useEffect(() => {
     getInvitees();
+    return () => {
+      handleResponse(null)
+    }
   }, []);
   React.useEffect(() => {
     setTimeout(() => {
