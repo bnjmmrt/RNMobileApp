@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
@@ -56,6 +56,7 @@ import TicketTypeBottomSheet, {
 } from '../InviteGuestInEventFlow/TicketTypeBottomSheet';
 import { EventGuest, ManageGuestPayload } from '../types';
 import DeclinedBySection from '../Guest/DeclinedBySection';
+import { setManageGuestSkip } from 'src/redux/slices/listSkipSlice';
 
 enum GuestStatus {
   DRAFT = 'DRAFT',
@@ -74,6 +75,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   navigation,
   route,
 }): JSX.Element => {
+  const dispatch = useDispatch();
   const guestId = route.params?.guestId as string;
   const loggedInUserId = useSelector((state: RootState) => state.auth.userId);
 
@@ -192,6 +194,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       }).unwrap();
 
       if (response.success) {
+        dispatch(setManageGuestSkip(0));
         // navigation.goBack();
         refreshGuestDetails();
         let message = `${guestProfile?.name}'s invite has been updated`;

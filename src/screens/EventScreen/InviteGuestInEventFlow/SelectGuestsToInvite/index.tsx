@@ -6,7 +6,12 @@ import {
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { FlatList, RefreshControl, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  View,
+} from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
@@ -39,6 +44,7 @@ import {
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import createStyles from './styles';
+import { setInviteGuestAllUsersSkip } from 'src/redux/slices/listSkipSlice';
 
 interface SelectGuestsToInviteProps
   extends NativeStackScreenProps<
@@ -56,28 +62,25 @@ const SelectGuestsToInviteScreen: React.FC<
   const searchInputRef = useRef<InputRefMethods>(null);
   const filtersSheetRef = useRef<BottomSheetMethods>(null);
 
-  const [allUsers, setAllUsers] = useState<{
-    result: UserItemInterface[];
-    totalCount: number;
-  }>({ totalCount: 0, result: [] });
+  const listTakeCount = 10;
+
   const [searchText, setSearchText] = useState<string>('');
   const [filterQuery, setFilterQuery] = useState<string>('');
   const [filterNumber, setFilterNumber] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState(1);
 
-  const [isDataLoading, setIsDataLoading] = useState(true);
+  const { selectedUsers, selectedEvent, inviteGuestUsersSkipCount } =
+    useSelector(
+      (state: RootState) => ({
+        selectedUsers: state.inviteGuestsFlow.selectedUsers,
+        selectedEvent: state.inviteGuestsFlow.selectedEvent,
+        inviteGuestUsersSkipCount: state?.listSkip?.inviteGuestUsersSkipCount,
+      }),
+      shallowEqual,
+    );
 
-  const { selectedUsers, selectedEvent } = useSelector(
-    (state: RootState) => ({
-      selectedUsers: state.inviteGuestsFlow.selectedUsers,
-      selectedEvent: state.inviteGuestsFlow.selectedEvent,
-    }),
-    shallowEqual,
-  );
-
-  const { data, isLoading, error, isError, refetch } = useFetchAllUsersQuery({
-    take: 10,
-    skip: (currentPage - 1) * 10,
+  const { data, isLoading, isFetching } = useFetchAllUsersQuery({
+    take: listTakeCount,
+    skip: inviteGuestUsersSkipCount,
     searchValue: searchText,
     queryString: filterQuery,
     eventId: selectedEvent?.id,
@@ -90,13 +93,22 @@ const SelectGuestsToInviteScreen: React.FC<
   // );
 
   const onRefreshPage = () => {
-    setCurrentPage(1);
-    refetch();
+    dispatch(setInviteGuestAllUsersSkip(0));
   };
 
   const loadMore = () => {
-    if (allUsers?.result?.length < data?.data?.totalCount && !isLoading) {
-      setCurrentPage(prev => prev + 1);
+    console.log('end');
+
+    if (
+      !isLoading &&
+      !isFetching &&
+      inviteGuestUsersSkipCount + listTakeCount < data?.data?.totalCount
+    ) {
+      console.log('endsss');
+
+      dispatch(
+        setInviteGuestAllUsersSkip(inviteGuestUsersSkipCount + listTakeCount),
+      );
     }
   };
 
@@ -114,7 +126,7 @@ const SelectGuestsToInviteScreen: React.FC<
   };
 
   const handleSearchTextChange = (text: string) => {
-    setCurrentPage(1);
+    dispatch(setInviteGuestAllUsersSkip(0));
     setSearchText(text);
   };
 
@@ -122,13 +134,13 @@ const SelectGuestsToInviteScreen: React.FC<
     queryString: string,
     numberOfFiltersApplied: number,
   ) => {
-    setCurrentPage(1);
+    dispatch(setInviteGuestAllUsersSkip(0));
     setFilterQuery(queryString);
     setFilterNumber(numberOfFiltersApplied);
   };
 
   const onClearFilter = () => {
-    setCurrentPage(1);
+    dispatch(setInviteGuestAllUsersSkip(0));
     setFilterQuery('');
     setFilterNumber(0);
   };
@@ -225,31 +237,10 @@ const SelectGuestsToInviteScreen: React.FC<
   };
 
   useEffect(() => {
-    if (data && data.data) {
-      if (currentPage === 1) {
-        setAllUsers(data.data);
-        setIsDataLoading(false);
-      } else {
-        setAllUsers(prev => ({
-          totalCount: data.data.totalCount,
-          result: [...prev.result, ...data.data.result],
-        }));
-        setIsDataLoading(false);
-      }
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (isError) {
-      setAllUsers({ totalCount: 0, result: [] });
-      setIsDataLoading(false);
-    }
-  }, [isError]);
-
-  useEffect(() => {
     return () => {
       dispatch(setSelectedUsersToInvite([]));
       dispatch(removeSelectedUsersToInvite([]));
+      dispatch(setInviteGuestAllUsersSkip(0));
     };
   }, []);
 
@@ -289,16 +280,28 @@ const SelectGuestsToInviteScreen: React.FC<
         defaultValue={searchText}
       />
 
-      {isDataLoading && currentPage === 1 ? (
+      {(isLoading || isFetching) && inviteGuestUsersSkipCount === 0 ? (
         renderUserSkeletonList()
       ) : (
         <FlatList
-          data={allUsers?.result}
+          data={data?.data?.result}
           style={styles.flatListContainer}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.flatListContentContainer}
-          ListFooterComponent={<View style={styles.flatListFooter} />}
+          ListFooterComponent={
+            (isLoading || isFetching) && inviteGuestUsersSkipCount > 0 ? (
+              <ActivityIndicator
+                color={COLORS.black}
+                style={{
+                  marginTop: verticalScale(10),
+                  marginBottom: verticalMarginScale(150),
+                }}
+              />
+            ) : (
+              <View style={styles.flatListFooter} />
+            )
+          }
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <EventEmptyRecord
@@ -325,7 +328,7 @@ const SelectGuestsToInviteScreen: React.FC<
           onEndReachedThreshold={0.4}
           showsVerticalScrollIndicator={false}
           refreshControl={
-            allUsers?.result?.length > 0 ? (
+            data?.data?.result?.length > 0 ? (
               <RefreshControl
                 refreshing={isLoading}
                 onRefresh={onRefreshPage}

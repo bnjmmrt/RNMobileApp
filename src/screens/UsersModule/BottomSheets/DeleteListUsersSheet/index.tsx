@@ -10,6 +10,8 @@ import { useRemoveUsersFromCustomListMutation } from 'src/redux/actions/listsApi
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { styles } from './style';
 import { UserItemInterface } from '../../UsersListItem';
+import { useDispatch } from 'react-redux';
+import { setUsersTabAllListsSkip } from 'src/redux/slices/listSkipSlice';
 
 interface DeleteListUsersPropsInterface {
   listName: string;
@@ -23,6 +25,8 @@ const DeleteListUsersSheet = forwardRef<
   DeleteListUsersPropsInterface
 >(({ listName, listId, selectedUsers = [], onSuccess }, ref) => {
   const sheetRef = useRef<BottomSheetMethods>(null);
+  const dispatch = useDispatch();
+
   useImperativeHandle(ref, () => ({
     open: () => sheetRef.current?.open(),
     close: () => sheetRef.current?.close(),
@@ -50,6 +54,7 @@ const DeleteListUsersSheet = forwardRef<
     try {
       const response = await removeUsersFromList(payload).unwrap();
       if (response.success) {
+        dispatch(setUsersTabAllListsSkip(0));
         if (selectedUsers.length === 1) {
           FlashMessageComponent.show(
             'success',

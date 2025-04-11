@@ -5,7 +5,7 @@ import React, {
   useImperativeHandle,
   useRef,
 } from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import BottomSheetComponent, {
   BottomSheetMethods,
 } from 'src/component/BottomSheet/BottomSheet';
@@ -23,6 +23,7 @@ import DeleteUser from './DeleteUser';
 import MarkAsSpam from './MarkAsSpam';
 import ReportUser from './ReportUser';
 import { styles } from './style';
+import { setUsersTabAllListsSkip } from 'src/redux/slices/listSkipSlice';
 
 export type actionSheetFromType = 'usersList' | 'customLists' | 'userDetail';
 export type UserActionCurrentPageType =
@@ -53,6 +54,7 @@ const UserActionsSheet = forwardRef<
     ref,
   ) => {
     const sheetRef = useRef<BottomSheetMethods>(null);
+    const dispatch = useDispatch();
 
     useImperativeHandle(ref, () => ({
       open: () => sheetRef.current?.open(),
@@ -89,6 +91,7 @@ const UserActionsSheet = forwardRef<
         : ['30%'];
 
     const onCreateListSuccess = () => {
+      dispatch(setUsersTabAllListsSkip(0));
       closeSheet();
       if (onSuccess) {
         onSuccess();
@@ -96,6 +99,7 @@ const UserActionsSheet = forwardRef<
     };
 
     const onAddUserToListSuccess = () => {
+      dispatch(setUsersTabAllListsSkip(0));
       if (onSuccess) {
         onSuccess();
       }

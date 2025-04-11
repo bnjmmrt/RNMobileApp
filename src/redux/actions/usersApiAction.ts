@@ -43,6 +43,16 @@ export const usersApiAction = createBaseApi.injectEndpoints({
         };
       },
       providesTags: ['Users'], // Adjust the tag if needed for cache invalidation
+      serializeQueryArgs: ({ endpointName }) => endpointName,
+      merge: (currentCache, newItems, otherArgs) => {
+        currentCache.data.result =
+          otherArgs?.arg?.skip === 0
+            ? newItems?.data?.result
+            : [...currentCache.data.result, ...newItems?.data?.result];
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg?.skip !== previousArg?.skip;
+      },
     }),
 
     fetchUserFilters: builder.query({
@@ -151,7 +161,7 @@ export const usersApiAction = createBaseApi.injectEndpoints({
       query: ({
         take,
         skip,
-        role
+        role,
       }: {
         take: number;
         skip: number;
@@ -160,10 +170,10 @@ export const usersApiAction = createBaseApi.injectEndpoints({
         url: `/notifications/v1/notifications?take=${take}&skip=${skip}&role=${role}`,
         method: 'GET',
       }),
-      providesTags: ['fetchNotification']
+      providesTags: ['fetchNotification'],
     }),
 
-    // fetch notification detail  for host 
+    // fetch notification detail  for host
     fetchNotificationDetail: builder.query({
       query: ({ notificationId }: { notificationId: string }) => ({
         url: `/notifications/v1/notification/${notificationId}`,
@@ -179,8 +189,6 @@ export const usersApiAction = createBaseApi.injectEndpoints({
         method: 'DELETE',
       }),
     }),
-
-
   }),
 });
 

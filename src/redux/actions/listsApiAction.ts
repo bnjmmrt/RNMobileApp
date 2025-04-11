@@ -9,6 +9,16 @@ export const listsApiAction = createBaseApi.injectEndpoints({
         method: 'GET',
       }),
       providesTags: ['CustomLists'], // Adjust the tag if needed for cache invalidation
+      serializeQueryArgs: ({ endpointName }) => endpointName,
+      merge: (currentCache, newItems, otherArgs) => {
+        currentCache.data.result =
+          otherArgs?.arg?.skip === 0
+            ? newItems?.data?.result
+            : [...currentCache.data.result, ...newItems?.data?.result];
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg?.skip !== previousArg?.skip;
+      },
     }),
     addNewCustomList: builder.mutation({
       query: (requestParam: { customName: string; userIds: string[] }) => ({

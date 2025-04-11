@@ -1,12 +1,20 @@
 /* eslint-disable react-native/no-inline-styles */
 import { useScrollToTop } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { FlatList, RefreshControl, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  View,
+} from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import GradientSeprator from 'src/component/GradientSeprator';
 import { useFetchAllCustomListsQuery } from 'src/redux/actions/listsApiAction';
+import { RootState } from 'src/redux/slices';
+import { setUsersTabAllListsSkip } from 'src/redux/slices/listSkipSlice';
 import { COLORS } from 'src/utils/constants';
 import {
   horizontalMarginScale,
@@ -46,27 +54,30 @@ export interface ListInterface {
   totalCount: number;
   result: ListItemInterface[];
 }
-interface ListsProps { }
+interface ListsProps {}
 
-const Lists: React.FC<ListsProps> = ({ }) => {
+const Lists: React.FC<ListsProps> = ({}) => {
   const styles = createStyle();
+  const dispatch = useDispatch();
   const actionSheetRef = useRef<BottomSheetMethods>(null);
   const scrollToTopRef = useRef(null);
   useScrollToTop(scrollToTopRef);
+  const listTakeCount = 10;
 
-  const [allCustomLists, setAllCustomLists] = useState<ListInterface>({
-    result: [],
-    totalCount: 0,
-  });
-  const [currentPage, setCurrentPage] = useState(1);
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
     useState<listActionCurrentPageType>('');
   const [selectedList, setSelectedList] = useState<string | null>(null);
   const [selectedListName, setSelectedListName] = useState<string | null>(null);
 
-  const { data, isLoading, refetch } = useFetchAllCustomListsQuery({
-    take: 10,
-    skip: (currentPage - 1) * 10,
+  const { usersTabAllListsSkipCount } = useSelector((state: RootState) => {
+    return {
+      usersTabAllListsSkipCount: state?.listSkip?.usersTabAllListsSkipCount,
+    };
+  }, shallowEqual);
+
+  const { data, isLoading, refetch, isFetching } = useFetchAllCustomListsQuery({
+    take: listTakeCount,
+    skip: usersTabAllListsSkipCount,
   });
 
   const [isRendering, setRendring] = useState(false);
@@ -87,35 +98,31 @@ const Lists: React.FC<ListsProps> = ({ }) => {
     };
   }, [isLoading]);
 
-
   useEffect(() => {
-    if (data) {
-      if (currentPage === 1) {
-        setAllCustomLists(data.data);
-      } else {
-        setAllCustomLists(prev => ({
-          totalCount: data.data.totalCount,
-          result: [...prev.result, ...data.data.result],
-        }));
-      }
-    }
-  }, [data]);
+    return () => {
+      dispatch(setUsersTabAllListsSkip(0));
+    };
+  }, [usersTabAllListsSkipCount]);
 
   const loadMore = () => {
-    if (allCustomLists?.result?.length < data?.data?.totalCount) {
-      setCurrentPage(prev => prev + 1);
+    if (
+      !isLoading &&
+      !isFetching &&
+      usersTabAllListsSkipCount + listTakeCount < data?.data?.totalCount
+    ) {
+      dispatch(
+        setUsersTabAllListsSkip(usersTabAllListsSkipCount + listTakeCount),
+      );
     }
   };
 
   const onRefreshPage = () => {
-    setCurrentPage(1);
-    refetch();
+    dispatch(setUsersTabAllListsSkip(0));
   };
 
   const onListActionSheetSuccess = () => {
+    dispatch(setUsersTabAllListsSkip(0));
     actionSheetRef?.current?.close();
-    setCurrentPage(1);
-    refetch();
   };
 
   const renderItem = useCallback(
@@ -138,13 +145,13 @@ const Lists: React.FC<ListsProps> = ({ }) => {
               index === 0 ? 'follower' : index === 1 ? 'favorite' : 'custom'
             }
           />
-          {allCustomLists?.result?.length > 2 && index === 1 ? (
+          {data?.data?.result?.length > 2 && index === 1 ? (
             <GradientSeprator style={styles.seprator} />
           ) : null}
         </>
       );
     },
-    [allCustomLists?.result],
+    [data?.data?.result],
   );
 
   const renderListSkeletonItem = (index: number) => {
@@ -209,24 +216,34 @@ const Lists: React.FC<ListsProps> = ({ }) => {
 
   return (
     <View style={styles.container}>
-      {isRendering && currentPage === 1 ? (
+      {isRendering && usersTabAllListsSkipCount === 0 ? (
         renderListSkeletonList()
       ) : (
         <FlatList
           ref={scrollToTopRef}
-          data={allCustomLists?.result || []}
+          data={data?.data?.result || []}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           style={{ gap: 10 }}
           contentContainerStyle={{ gap: 16 }}
           ListFooterComponent={
-            <View style={{ marginBottom: verticalScale(150) }} />
+            (isLoading || isFetching) && usersTabAllListsSkipCount > 0 ? (
+              <ActivityIndicator
+                color={COLORS.black}
+                style={{
+                  marginTop: verticalScale(10),
+                  marginBottom: verticalMarginScale(150),
+                }}
+              />
+            ) : (
+              <View style={{ marginBottom: verticalMarginScale(150) }} />
+            )
           }
           onEndReached={loadMore}
           onEndReachedThreshold={0.4}
           showsVerticalScrollIndicator={false}
           refreshControl={
-            allCustomLists?.result?.length > 0 ? (
+            data?.data?.result?.length > 0 ? (
               <RefreshControl
                 refreshing={isLoading}
                 onRefresh={onRefreshPage}
