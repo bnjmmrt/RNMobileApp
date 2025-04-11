@@ -10,6 +10,7 @@ import rspvSlice from './rspvSlice';
 import inviteGuestsFlowSlice from './inviteGuestsFlowSlice';
 import eventSlice from './eventSlice';
 import keyboardSlice from './keyboardSlice';
+import listSkipSlice from './listSkipSlice';
 
 // Combine all reducers into a single root reducer
 export const rootReducer = combineReducers({
@@ -24,6 +25,7 @@ export const rootReducer = combineReducers({
   inviteGuestsFlow: inviteGuestsFlowSlice,
   event: eventSlice,
   keyboard: keyboardSlice,
+  listSkip: listSkipSlice,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

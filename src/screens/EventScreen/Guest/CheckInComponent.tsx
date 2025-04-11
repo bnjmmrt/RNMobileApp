@@ -10,9 +10,9 @@ import {
   View,
 } from 'react-native';
 import { Image } from 'react-native-animatable';
-import { useSelector } from 'react-redux';
-import useApi from 'src/axios/useApi';
+import { useDispatch, useSelector } from 'react-redux';
 import AvatarInitials from 'src/component/AvatarInitials';
+import Button from 'src/component/Button';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { ROUTES } from 'src/navigation/Route';
 import {
@@ -20,6 +20,7 @@ import {
   useManageGuestMutation,
 } from 'src/redux/actions/eventApiAction';
 import { RootState } from 'src/redux/slices';
+import { setManageGuestSkip } from 'src/redux/slices/listSkipSlice';
 import { BUTTON_LABLE, COLORS, LABLE } from 'src/utils/constants';
 import {
   fontScale,
@@ -37,7 +38,6 @@ import {
 } from 'src/utils/functions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { ManageGuestPayload } from '../types';
-import Button from 'src/component/Button';
 
 interface AdditionalGuest {
   addedBy: string;
@@ -249,6 +249,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   selectedTicketType,
 }) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const { updateKeyboardStatus } = useKeyboard();
 
   const [selectedGuestForCheckin, setSelectedGuestForCheckin] =
@@ -327,6 +328,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
         checkIn: checkIn,
       }).unwrap();
       if (response.success) {
+        dispatch(setManageGuestSkip(0));
         if (isPlusOne) {
           setExpandList(prevList =>
             prevList.map(item =>
@@ -374,6 +376,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
           eventId: selectedEvent?.id,
         }).unwrap();
 
+        dispatch(setManageGuestSkip(0));
         // FlashMessageComponent.show(
         //   'success',
         //   `${guestProfile?.name}'s invite has been updated`,
