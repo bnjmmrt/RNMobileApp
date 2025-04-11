@@ -1,7 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { KeyboardAvoidingView, View } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
@@ -14,13 +14,30 @@ import PhoneNumberInput from '../../component/PhonNumberComponent/PhoneNumberInp
 import TermsAndPolicy from '../../component/TermsAndPlolicy/TermsAndPolicy';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
-import { BUTTON_LABLE, LABLE } from '../../utils/constants';
+import { BUTTON_LABLE, LABLE, COLORS } from '../../utils/constants';
 import EmailPhoneStyles from './EmailPhoneStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetAppFlowDetails } from 'src/redux/slices/appFlowSlice';
-import { verticalMarginScale } from 'src/utils/dimensions';
+import {
+  verticalMarginScale,
+  horizontalMarginScale,
+} from 'src/utils/dimensions';
 import { RootState } from 'src/redux/slices';
 import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import IMAGES from '@images/index';
+import { fontFamily } from 'src/utils/functions';
+
+const InfoBanner = ({ message }: { message: string }) => (
+  <View style={styles.infoBannerContainer}>
+    <Image
+      resizeMode="contain"
+      source={IMAGES.info}
+      tintColor={COLORS.blueDark}
+      style={styles.infoIcon}
+    />
+    <Text style={styles.infoText}>{message}</Text>
+  </View>
+);
 
 interface EmailPhoneScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -76,7 +93,7 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
       : LABLE.RUMOR_WILL_SEND_YOU_A_EMAIL_WITH_A_VERIFICATION_CODE;
 
   return (
-    <View behavior="padding" style={styles.container}>
+    <View style={styles.container}>
       <BackButton onPress={handleBackPress} />
       <TabBar
         tab={'01'}
@@ -95,6 +112,8 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
         ) : (
           <EmailInput ref={emailInputRef} otherStyle={{ marginTop: 12 }} />
         )}
+
+        <InfoBanner message="If you were invited to an event via text, please log in with your phone number—not your email address." />
 
         <View style={styles.spacer} />
 
@@ -122,5 +141,33 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  ...EmailPhoneStyles(),
+  infoBannerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 8,
+    // borderWidth: 1,
+    backgroundColor: COLORS.bgBlue,
+    // borderColor: COLORS.borderGray,
+    paddingVertical: verticalMarginScale(16),
+    paddingHorizontal: horizontalMarginScale(16),
+    marginTop: verticalMarginScale(24),
+  },
+  infoIcon: {
+    width: 16,
+    height: 16,
+    // paddingRight: horizontalMarginScale(8),
+    color: COLORS.blueDark,
+  },
+  infoText: {
+    flex: 1,
+    color: COLORS.black,
+    fontSize: 14,
+    marginLeft: horizontalMarginScale(8),
+    fontFamily: fontFamily.ABCDiatype_Medium,
+  },
+});
 
 export default EmailPhoneScreen;

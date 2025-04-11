@@ -148,12 +148,12 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         searchValue?: string;
         sortBy?: 'name' | 'partySize';
         guestStatus?:
-        | 'INVITED'
-        | 'APPLIED'
-        | 'CONFIRMED'
-        | 'DECLINED'
-        | 'DRAFT'
-        | '';
+          | 'INVITED'
+          | 'APPLIED'
+          | 'CONFIRMED'
+          | 'DECLINED'
+          | 'DRAFT'
+          | '';
         sortDirection?: 'ASC' | 'DESC';
         take?: number;
         skip?: number;
@@ -180,6 +180,16 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         };
       },
       providesTags: ['EventGuestList'],
+      serializeQueryArgs: ({ endpointName }) => endpointName,
+      merge: (currentCache, newItems, otherArgs) => {
+        currentCache.data.result =
+          otherArgs?.arg?.skip === 0
+            ? newItems?.data?.result
+            : [...currentCache.data.result, ...newItems?.data?.result];
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg?.skip !== previousArg?.skip;
+      },
     }),
 
     fetchGuestDetails: builder.query({
@@ -206,7 +216,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
           body: payload,
         };
       },
-      invalidatesTags: ['EventDetails', 'GuestStatusCount', 'EventGuestList'],
+      invalidatesTags: ['EventDetails', 'GuestStatusCount'],
     }),
 
     // create event announcement for host builder.mutation({
@@ -345,7 +355,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
     }),
 
     fetchEventTypes: builder.query({
-      query: ({ }: {}) => ({
+      query: ({}: {}) => ({
         url: `/events/v1/event-types`,
         method: 'GET',
       }),
@@ -358,12 +368,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         method: 'POST',
         body: { checkIn },
       }),
-      invalidatesTags: [
-        'GuestDetails',
-        // 'EventGuestList',
-        'GuestStatusCount',
-        'EventDetails',
-      ],
+      invalidatesTags: ['GuestDetails', 'GuestStatusCount', 'EventDetails'],
     }),
   }),
 });

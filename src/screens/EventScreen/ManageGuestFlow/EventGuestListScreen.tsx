@@ -50,6 +50,7 @@ import {
   filterOptions,
 } from '../Guest/GuestListSheets';
 import { EventGuest } from '../types';
+import { setManageGuestSkip } from 'src/redux/slices/listSkipSlice';
 
 export interface GuestCountInterface {
   data: {
@@ -78,7 +79,7 @@ if (Platform.OS === 'android') {
 
 const GuestListSkeleton = () => (
   <FlatList
-    data={[1, 2, 3, 4, 5]}
+    data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
     renderItem={() => (
       <SkeletonPlaceholder backgroundColor={COLORS.lighter_gray}>
         <View style={[styles.guestItem, styles.skeletonGuestItem]}>
@@ -112,6 +113,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
 
   const eventId = route?.params?.eventId;
   const listFilter = route?.params?.listFilter;
+  const listTakeCount = 10;
 
   const filtersSheetRef = useRef<BottomSheetMethods>(null);
   const sortSheetRef = useRef<BottomSheetMethods>(null);
@@ -122,7 +124,6 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   }>({});
 
   const [searchText, setSearchText] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
   const [filterQuery, setFilterQuery] = useState<string>('');
   const [filterNumber, setFilterNumber] = useState<number>(0);
   const [selectedSort, setSelectedSort] = useState<'ASC' | 'DESC'>('ASC');
@@ -130,37 +131,30 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     'INVITED' | 'APPLIED' | 'CONFIRMED' | 'DECLINED' | 'DRAFT' | ''
   >('');
 
-  const [allGuests, setAllGuests] = useState<{
-    result: EventGuest[];
-    totalCount: number;
-  }>({ totalCount: 0, result: [] });
-
-  const selectedEvent = useSelector(
-    (state: RootState) => state.inviteGuestsFlow.selectedEvent,
+  const { eventDetails, manageGuestSkipCount } = useSelector(
+    (state: RootState) => {
+      const queryResult =
+        state.api.queries[
+          `fetchHostEventDetails(${JSON.stringify({ eventId })})`
+        ];
+      return {
+        eventDetails: queryResult?.data?.data ?? undefined,
+        manageGuestSkipCount: state?.listSkip?.manageGuestSkipCount,
+      };
+    },
     shallowEqual,
   );
-
-  const { eventDetails } = useSelector((state: RootState) => {
-    const queryResult =
-      state.api.queries[
-      `fetchHostEventDetails(${JSON.stringify({ eventId })})`
-      ];;
-    return {
-      eventDetails: queryResult?.data?.data ?? undefined,
-    };
-  }, shallowEqual);
 
   const {
     data: guestsData,
     error: guestsError,
     isLoading: isLoadingGuests,
     isFetching: isFetchingGuests,
-    refetch: refetchGuests,
   } = useGetGuestsQuery({
     eventId,
     queryString: filterQuery,
-    take: 10,
-    skip: (currentPage - 1) * 10,
+    take: listTakeCount,
+    skip: manageGuestSkipCount,
     searchValue: searchText,
     guestStatus: selectedFilter,
     sortBy: 'name',
@@ -169,11 +163,11 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
 
   const loadMore = () => {
     if (
-      allGuests?.result?.length < guestsData?.data?.totalCount &&
       !isLoadingGuests &&
-      !isFetchingGuests
+      !isFetchingGuests &&
+      manageGuestSkipCount + listTakeCount < guestsData?.data?.totalCount
     ) {
-      setCurrentPage(prev => prev + 1);
+      dispatch(setManageGuestSkip(manageGuestSkipCount + listTakeCount));
     }
   };
 
@@ -184,27 +178,19 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   }, [guestsError]);
 
   useEffect(() => {
+    return () => {
+      dispatch(setManageGuestSkip(0));
+    };
+  }, []);
+
+  useEffect(() => {
     if (listFilter) {
       handleFilterSelect(listFilter);
     }
   }, [listFilter]);
 
-  useEffect(() => {
-    if (guestsData && guestsData.data) {
-      if (currentPage === 1) {
-        setAllGuests(guestsData.data);
-      } else {
-        setAllGuests(prev => ({
-          totalCount: guestsData.data.totalCount,
-          result: [...prev.result, ...guestsData.data.result],
-        }));
-      }
-    }
-  }, [guestsData]);
-
   useFocusEffect(
     useCallback(() => {
-      // fetchEventGuests();
       changeSafeAreaViewConfig({
         ...SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME,
         showBottomSafeAreaView: false,
@@ -213,8 +199,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   );
 
   const fetchEventGuests = () => {
-    setCurrentPage(1);
-    // refetchGuests();
+    dispatch(setManageGuestSkip(0));
   };
 
   const toggleExpand = (guestId: string) => {
@@ -226,19 +211,19 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   };
 
   const handleSearchTextChange = (text: string) => {
-    setCurrentPage(1);
+    dispatch(setManageGuestSkip(0));
     setSearchText(text);
   };
 
   const handleFilterSelect = (
     filter: 'INVITED' | 'APPLIED' | 'CONFIRMED' | 'DECLINED' | 'DRAFT' | '',
   ) => {
-    setCurrentPage(1);
+    dispatch(setManageGuestSkip(0));
     setSelectedFilter(filter);
   };
 
   const handleSortSelect = (sort: 'ASC' | 'DESC') => {
-    setCurrentPage(1);
+    dispatch(setManageGuestSkip(0));
     setSelectedSort(sort);
   };
 
@@ -246,27 +231,27 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     navigation.navigate(ROUTES.SelectGuestsToInviteScreen);
   };
 
-  const handleResetFilters = () => {
-    setCurrentPage(1);
-    setFilterQuery('');
-    setFilterNumber(0);
-    setSelectedFilter('');
-    setSelectedSort('ASC');
-  };
-
   const onApplyFilter = (
     queryString: string,
     numberOfFiltersApplied: number,
   ) => {
-    setCurrentPage(1);
+    dispatch(setManageGuestSkip(0));
     setFilterQuery(queryString);
     setFilterNumber(numberOfFiltersApplied);
+  };
+
+  const resetList = () => {
+    dispatch(setManageGuestSkip(0));
+    setFilterQuery('');
+    setFilterNumber(0);
+    setSelectedSort('ASC');
+    setSelectedFilter('');
   };
 
   const onClearFilter = () => {
     setFilterQuery('');
     setFilterNumber(0);
-    setCurrentPage(1);
+    dispatch(setManageGuestSkip(0));
   };
 
   const renderInvitee = (item: EventGuest, leadId: string, index: number) => (
@@ -393,13 +378,13 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   );
 
   const renderContent = () => {
-    if ((isLoadingGuests || isFetchingGuests) && currentPage === 1) {
+    if ((isLoadingGuests || isFetchingGuests) && manageGuestSkipCount === 0) {
       return <GuestListSkeleton />;
     }
 
     return (
       <FlatList
-        data={allGuests?.result || []}
+        data={guestsData?.data?.result || []}
         renderItem={renderGuestItem}
         keyExtractor={(item, index) => `lead_guest${item.id}_${index}`}
         contentContainerStyle={[
@@ -413,13 +398,13 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
         onEndReachedThreshold={0.4}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            {allGuests?.result.length === 0 &&
+            {guestsData?.data?.result?.length === 0 &&
               !isLoadingGuests &&
               !isFetchingGuests && (
                 <GuestEmptyRecord
                   onAddGuest={handleAddGuest}
                   isSearchResult={Boolean(searchText.trim())}
-                  onResetFilters={handleResetFilters}
+                  onResetFilters={resetList}
                   filterApplied={Boolean(filterNumber)}
                   statusFilter={selectedFilter}
                 />
@@ -427,7 +412,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
           </View>
         }
         ListFooterComponent={
-          (isLoadingGuests || isFetchingGuests) && currentPage > 1 ? (
+          (isLoadingGuests || isFetchingGuests) && manageGuestSkipCount > 0 ? (
             <ActivityIndicator
               color={COLORS.black}
               style={{ marginTop: verticalScale(10) }}
@@ -456,7 +441,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
           </TouchableOpacity>
           <Text style={styles.title}>{LABLE.GUEST_LIST}</Text>
 
-          {selectedEvent?.useQr ? (
+          {eventDetails?.useQr ? (
             <TouchableOpacity onPress={onCheckInPress}>
               <View style={styles.iconButton}>
                 <Image source={IMAGES.qr} style={styles.icon} />
@@ -503,7 +488,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
         {renderContent()}
       </View>
 
-      {allGuests?.totalCount > 0 && selectedFilter === 'CONFIRMED' && (
+      {guestsData?.data?.totalCount > 0 && selectedFilter === 'CONFIRMED' && (
         <ProgressBanner
           confirmed={eventDetails?.totalCheckedInGuests || 0}
           total={eventDetails?.totalConfirmedGuests || 0}
