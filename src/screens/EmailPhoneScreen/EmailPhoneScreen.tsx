@@ -113,7 +113,13 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
           <EmailInput ref={emailInputRef} otherStyle={{ marginTop: 12 }} />
         )}
 
-        <InfoBanner message="If you were invited to an event via text, please log in with your phone number—not your email address." />
+        <InfoBanner
+          message={
+            currentTab === '01'
+              ? 'If you were invited to an event via email, please log in with that email address—not your phone number.'
+              : 'If you were invited to an event via text, please log in with your phone number—not your email address.'
+          }
+        />
 
         <View style={styles.spacer} />
 

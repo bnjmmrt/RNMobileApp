@@ -63,7 +63,7 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
   useFocusEffect(
     useCallback(() => {
       getNotificationCount();
-    }, []),
+    }, [role]),
   );
 
   const getNotificationCount = async () => {

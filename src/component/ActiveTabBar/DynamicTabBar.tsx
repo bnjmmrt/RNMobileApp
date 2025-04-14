@@ -1,9 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {fontFamily} from '../../utils/functions';
-import {COLORS} from '../../utils/constants';
-import {radiusScale, verticalMarginScale} from 'src/utils/dimensions';
-import {CustomText} from '../CustomText';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { changeSafeAreaViewConfig, fontFamily } from '../../utils/functions';
+import { COLORS } from '../../utils/constants';
+import { radiusScale, verticalMarginScale } from 'src/utils/dimensions';
+import { CustomText } from '../CustomText';
+import { useFocusEffect } from '@react-navigation/native';
+import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 
 export interface TabItem {
   id: string;
@@ -16,14 +18,22 @@ type DynamicTabBarProps = {
   onTabChange?: (tab: TabItem) => void;
   tabs: TabItem[];
   activeTabIndex?: number;
+  currentTab: TabItem
 };
 
 const DynamicTabBar: React.FC<DynamicTabBarProps> = ({
   onTabChange,
   tabs,
   activeTabIndex = 0,
+  currentTab
 }) => {
-  const [activeTab, setActiveTab] = useState<TabItem>(tabs[activeTabIndex]);
+  const [activeTab, setActiveTab] = useState<TabItem>(currentTab ? currentTab : tabs[activeTabIndex]);
+  useFocusEffect(
+    useCallback(() => {
+      console.log("hi siyaaa");
+      onTabChange?.(activeTab);
+    }, [activeTab]),
+  );
 
   useEffect(() => {
     setActiveTab(activeTab);
@@ -36,22 +46,43 @@ const DynamicTabBar: React.FC<DynamicTabBarProps> = ({
   };
 
   return (
-    <View style={styles.container}>
-      {tabs.map(tab => (
-        <TouchableOpacity
-          key={tab.id}
-          style={[styles.tab, activeTab.id === tab.id && styles.activeTab]}
-          onPress={() => handleTabPress(tab)}>
-          <CustomText
-            style={[
-              styles.tabText,
-              activeTab.id === tab.id && styles.activeTabText,
-            ]}>
-            {tab.label}
-          </CustomText>
-        </TouchableOpacity>
-      ))}
-    </View>
+    <>
+      {currentTab ?
+        <View style={styles.container}>
+          {tabs.map(tab => (
+            <TouchableOpacity
+              key={tab.id}
+              style={[styles.tab, currentTab.id === tab.id && styles.activeTab]}
+              onPress={() => handleTabPress(tab)}>
+              <CustomText
+                style={[
+                  styles.tabText,
+                  currentTab.id === tab.id && styles.activeTabText,
+                ]}>
+                {tab.label}
+              </CustomText>
+            </TouchableOpacity>
+          ))}
+        </View> :
+        <View style={styles.container}>
+          {tabs.map(tab => (
+            <TouchableOpacity
+              key={tab.id}
+              style={[styles.tab, activeTab.id === tab.id && styles.activeTab]}
+              onPress={() => handleTabPress(tab)}>
+              <CustomText
+                style={[
+                  styles.tabText,
+                  activeTab.id === tab.id && styles.activeTabText,
+                ]}>
+                {tab.label}
+              </CustomText>
+            </TouchableOpacity>
+          ))}
+        </View>
+      }
+    </>
+
   );
 };
 
