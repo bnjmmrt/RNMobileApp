@@ -14,7 +14,7 @@ import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import GradientSeprator from 'src/component/GradientSeprator';
 import { useFetchAllCustomListsQuery } from 'src/redux/actions/listsApiAction';
 import { RootState } from 'src/redux/slices';
-import { setUsersTabAllListsSkip } from 'src/redux/slices/listSkipSlice';
+import { setUsersTabAllListsRefresh, setUsersTabAllListsSkip } from 'src/redux/slices/listSkipSlice';
 import { COLORS } from 'src/utils/constants';
 import {
   horizontalMarginScale,
@@ -54,9 +54,9 @@ export interface ListInterface {
   totalCount: number;
   result: ListItemInterface[];
 }
-interface ListsProps {}
+interface ListsProps { }
 
-const Lists: React.FC<ListsProps> = ({}) => {
+const Lists: React.FC<ListsProps> = ({ }) => {
   const styles = createStyle();
   const dispatch = useDispatch();
   const actionSheetRef = useRef<BottomSheetMethods>(null);
@@ -69,9 +69,10 @@ const Lists: React.FC<ListsProps> = ({}) => {
   const [selectedList, setSelectedList] = useState<string | null>(null);
   const [selectedListName, setSelectedListName] = useState<string | null>(null);
 
-  const { usersTabAllListsSkipCount } = useSelector((state: RootState) => {
+  const { usersTabAllListsSkipCount, usersTabAllListRefresh } = useSelector((state: RootState) => {
     return {
       usersTabAllListsSkipCount: state?.listSkip?.usersTabAllListsSkipCount,
+      usersTabAllListRefresh: state?.listSkip?.usersTabAllListRefresh,
     };
   }, shallowEqual);
 
@@ -83,7 +84,6 @@ const Lists: React.FC<ListsProps> = ({}) => {
   const [isRendering, setRendring] = useState(false);
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
-    console.log('isRendering.............', isLoading);
     if (isLoading) {
       setRendring(true); // immediately show skeleton loader
     } else {
@@ -100,9 +100,14 @@ const Lists: React.FC<ListsProps> = ({}) => {
 
   useEffect(() => {
     return () => {
-      dispatch(setUsersTabAllListsSkip(0));
+      dispatch(setUsersTabAllListsRefresh());
     };
   }, [usersTabAllListsSkipCount]);
+
+  useEffect(() => {
+    dispatch(setUsersTabAllListsSkip(0));
+    refetch()
+  }, [usersTabAllListRefresh])
 
   const loadMore = () => {
     if (
@@ -117,11 +122,11 @@ const Lists: React.FC<ListsProps> = ({}) => {
   };
 
   const onRefreshPage = () => {
-    dispatch(setUsersTabAllListsSkip(0));
+    dispatch(setUsersTabAllListsRefresh());
   };
 
   const onListActionSheetSuccess = () => {
-    dispatch(setUsersTabAllListsSkip(0));
+    dispatch(setUsersTabAllListsRefresh());
     actionSheetRef?.current?.close();
   };
 

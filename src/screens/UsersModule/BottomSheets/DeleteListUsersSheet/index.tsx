@@ -11,7 +11,7 @@ import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { styles } from './style';
 import { UserItemInterface } from '../../UsersListItem';
 import { useDispatch } from 'react-redux';
-import { setUsersTabAllListsSkip } from 'src/redux/slices/listSkipSlice';
+import { setUsersTabAllListsRefresh, setUsersTabAllListsSkip } from 'src/redux/slices/listSkipSlice';
 
 interface DeleteListUsersPropsInterface {
   listName: string;
@@ -54,7 +54,7 @@ const DeleteListUsersSheet = forwardRef<
     try {
       const response = await removeUsersFromList(payload).unwrap();
       if (response.success) {
-        dispatch(setUsersTabAllListsSkip(0));
+        dispatch(setUsersTabAllListsRefresh());
         if (selectedUsers.length === 1) {
           FlashMessageComponent.show(
             'success',
@@ -63,8 +63,7 @@ const DeleteListUsersSheet = forwardRef<
         } else {
           FlashMessageComponent.show(
             'success',
-            `${selectedUsers.length} ${
-              selectedUsers.length > 1 ? 'users' : 'user'
+            `${selectedUsers.length} ${selectedUsers.length > 1 ? 'users' : 'user'
             } has been removed from list`,
           );
         }
@@ -79,11 +78,10 @@ const DeleteListUsersSheet = forwardRef<
     }
   };
 
-  let message = `Are you sure you want to remove ${
-    selectedUsers.length > 1
-      ? `${selectedUsers.length} users`
-      : `${selectedUsers.length} user`
-  } from this list?`;
+  let message = `Are you sure you want to remove ${selectedUsers.length > 1
+    ? `${selectedUsers.length} users`
+    : `${selectedUsers.length} user`
+    } from this list?`;
   if (selectedUsers.length === 1) {
     message = `Are you sure you want to remove ${selectedUsers[0].name} from this list?`;
   }
@@ -93,7 +91,7 @@ const DeleteListUsersSheet = forwardRef<
       ref={sheetRef}
       snapPoints={['50%']} // Adjustable snap points
       enableDynamicSizing
-      onClose={() => {}}>
+      onClose={() => { }}>
       <BottomSheetView style={styles.actionContentWrapper}>
         <CustomText style={styles.title}>
           {selectedUsers?.length > 1

@@ -12,7 +12,7 @@ import { verticalMarginScale } from 'src/utils/dimensions';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { styles } from './style';
 import { useNavigation } from '@react-navigation/native';
-import { setUsersTabAllUsersSkip } from 'src/redux/slices/listSkipSlice';
+import { setUsersTabAllUsersRefresh } from 'src/redux/slices/listSkipSlice';
 
 const DeleteUser = ({
   showError,
@@ -46,7 +46,7 @@ const DeleteUser = ({
         }).unwrap();
 
         if (response.success) {
-          dispatch(setUsersTabAllUsersSkip(0));
+          dispatch(setUsersTabAllUsersRefresh());
           showSuccess(`${userDetails.firstName} has been deleted`);
           navigation.goBack();
         } else {

@@ -113,11 +113,6 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({ }) => {
     }, 500);
   };
 
-  useEffect(() => {
-
-    console.log("Sayyed filteredContacts:", filteredContacts)
-  }, [filteredContacts])
-
   const renderItem = useCallback(
     ({ item }: { item: ContactItem }) => {
       const userPhone = getPhoneNumber(item.phoneNumber);
@@ -180,16 +175,16 @@ const InviteFromContacts: React.FC<InviteFromContactsProps> = ({ }) => {
   return (
     <View style={styles.container}>
       {/* {filteredContacts.length > 0 ? ( */}
-        <SearchInput
-          placeholder={'Search...'}
-          onSearchTextChange={query => {
-            handleSearch(query);
-          }}
-          mainContainerStyle={{
-            marginHorizontal: horizontalMarginScale(20),
-            marginTop: verticalMarginScale(8),
-          }}
-        />
+      <SearchInput
+        placeholder={'Search...'}
+        onSearchTextChange={query => {
+          handleSearch(query);
+        }}
+        mainContainerStyle={{
+          marginHorizontal: horizontalMarginScale(20),
+          marginTop: verticalMarginScale(8),
+        }}
+      />
       {/* // ) : null} */}
       <FlatList
         data={filteredContacts || []}

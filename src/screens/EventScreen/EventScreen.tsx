@@ -48,14 +48,10 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   const role = useSelector((state: RootState) => state.auth.role);
   const roles = useSelector((state: RootState) => state.auth.roles);
   const isGuest = useSelector((state: RootState) => state.auth.isGuest);
-  const { apiRequest, loading, error } = useApi();
-
   const searchInputRef = useRef<any>(null);
   const [searchText, setSearchText] = useState('');
   const showEvents = isGuest || role === 'member' || role === 'host';
   const tabs = role === 'host' ? hostTabData : memberTabData;
-  const dispatch = useDispatch();
-
   useFocusEffect(
     useCallback(() => {
       if (showEvents) {

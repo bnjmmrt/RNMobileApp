@@ -45,6 +45,7 @@ export const usersApiAction = createBaseApi.injectEndpoints({
       providesTags: ['Users'], // Adjust the tag if needed for cache invalidation
       serializeQueryArgs: ({ endpointName }) => endpointName,
       merge: (currentCache, newItems, otherArgs) => {
+        currentCache.data.totalCount = newItems.data.totalCount
         currentCache.data.result =
           otherArgs?.arg?.skip === 0
             ? newItems?.data?.result

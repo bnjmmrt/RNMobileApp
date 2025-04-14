@@ -95,7 +95,6 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       const referralUserIds = referralRequests?.data?.data?.map(r => r.userId);
 
       if (response?.data?.data) {
-        console.log("Sayyed response :", response?.data?.data)
         const membersWithSentFlag = response.data.data.map(member => ({
           ...member,
           isSent: referralUserIds?.includes(member.userId),
