@@ -2,7 +2,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import debounce from 'lodash/debounce';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import AfterAppStaticComponent from 'src/component/BeforeAppStaticComponent/AfterAppStaticComponent';
@@ -119,14 +119,16 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   };
 
   const handleTabChange = (tab: TabItem) => {
-    setCurrentTab(tab);
+    // setTimeout(()=>{
+      setCurrentTab(tab);
+    // },1000)
   };
-
-
-
-
-
-
+  useFocusEffect(
+    useCallback(() => {
+      console.log('EventScreen mounted',role);
+      handleTabChange(tabs[0])
+    }, [role])
+  )
 
   const renderTabContent = () => {
     switch (currentTab.label) {
@@ -196,6 +198,7 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
               onTabChange={handleTabChange}
               tabs={tabs}
               activeTabIndex={isGuest ? 1 : 0}
+              currentTab={currentTab}
             />
             <View style={styles.contentContainer}>{renderTabContent()}</View>
           </View>

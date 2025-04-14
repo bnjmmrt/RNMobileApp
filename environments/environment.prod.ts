@@ -1,5 +1,7 @@
 export const environment = {
   SERVER:'',
+  VERSION_ANDROID: '',
+  VERSION_IOS: '',
   BASE_URL: 'https://api.therumor.com/',
   HOST_WEB_URL: 'https://host.therumor.com',
   PLACES_API_KEY: 'AIzaSyA0ddGMP39hK7Osw_npl0maaxoenfaeRLk',
