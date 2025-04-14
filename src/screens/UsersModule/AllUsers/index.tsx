@@ -31,11 +31,11 @@ import UserListItem, { UserItemInterface } from '../UsersListItem';
 import { COLORS } from 'src/utils/constants';
 import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 import { RootState } from 'src/redux/slices';
-import { setUsersTabAllUsersSkip } from 'src/redux/slices/listSkipSlice';
+import { setUsersTabAllUsersRefresh, setUsersTabAllUsersSkip } from 'src/redux/slices/listSkipSlice';
 
-interface AllUserProps {}
+interface AllUserProps { }
 
-const AllUsers: React.FC<AllUserProps> = ({}) => {
+const AllUsers: React.FC<AllUserProps> = ({ }) => {
   const dispatch = useDispatch();
   const searchInputRef = useRef<InputRefMethods>(null);
   const actionSheetRef = useRef<BottomSheetMethods>(null);
@@ -43,7 +43,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   const scrollToTopRef = useRef(null);
   useScrollToTop(scrollToTopRef);
 
-  const listTakeCount = 10;
+  const listTakeCount = 20;
 
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>('');
@@ -54,9 +54,11 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
     useState<UserActionCurrentPageType>('');
 
-  const { usersTabAllUsersSkipCount } = useSelector((state: RootState) => {
+  const { usersTabAllUsersSkipCount, usersTabAllUsersRefresh } = useSelector((state: RootState) => {
     return {
       usersTabAllUsersSkipCount: state?.listSkip?.usersTabAllUsersSkipCount,
+      usersTabAllUsersRefresh: state?.listSkip?.usersTabAllUsersRefresh,
+
     };
   }, shallowEqual);
 
@@ -69,12 +71,17 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
     });
 
   const onRefreshPage = () => {
-    dispatch(setUsersTabAllUsersSkip(0));
+    dispatch(setUsersTabAllUsersRefresh());
   };
+
+  useEffect(() => {
+    dispatch(setUsersTabAllUsersSkip(0));
+    refetch()
+  }, [searchText, filterQuery, filterNumber, usersTabAllUsersRefresh])
 
   const loadMore = () => {
     if (
-      !isLoading &&
+      !isLoading && !isFetching && data?.data?.totalCount > 0 &&
       usersTabAllUsersSkipCount + listTakeCount < data?.data?.totalCount
     ) {
       dispatch(
@@ -97,7 +104,6 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
   };
 
   const handleSearchTextChange = (text: string) => {
-    dispatch(setUsersTabAllUsersSkip(0));
     setSearchText(text);
   };
 
@@ -110,19 +116,14 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
     numberOfFiltersApplied: number,
     selectedFilters?: SelectedFilters,
   ) => {
-    dispatch(setUsersTabAllUsersSkip(0));
     setFilterQuery(queryString);
     setFilterNumber(numberOfFiltersApplied);
-
     if (selectedFilters) {
-      console.log('selectedFilters', selectedFilters);
       setSelectedFilters(selectedFilters);
     }
   };
 
   const onClearFilter = () => {
-    // setRendring(true)
-    dispatch(setUsersTabAllUsersSkip(0));
     setFilterQuery('');
     setFilterNumber(0);
     setSelectedFilters({});
@@ -238,7 +239,7 @@ const AllUsers: React.FC<AllUserProps> = ({}) => {
 
   useEffect(() => {
     return () => {
-      dispatch(setUsersTabAllUsersSkip(0));
+      dispatch(setUsersTabAllUsersRefresh());
     };
   }, []);
 

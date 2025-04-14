@@ -21,7 +21,7 @@ import IMAGES from 'src/assets/images';
 import AvatarInitials from 'src/component/AvatarInitials';
 import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import GuestEmptyRecord from 'src/component/EmptyRecord/GuestEmptyRecord';
-import FiltersSheet from 'src/component/FilterSheet';
+import FiltersSheet, { SelectedFilters } from 'src/component/FilterSheet';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import ProgressBanner from 'src/component/ProgressBanner/ProgressBanner';
 import SearchInput from 'src/component/SearchInput';
@@ -50,7 +50,7 @@ import {
   filterOptions,
 } from '../Guest/GuestListSheets';
 import { EventGuest } from '../types';
-import { setManageGuestSkip } from 'src/redux/slices/listSkipSlice';
+import { setManageGuestRefresh, setManageGuestSkip } from 'src/redux/slices/listSkipSlice';
 
 export interface GuestCountInterface {
   data: {
@@ -130,16 +130,18 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   const [selectedFilter, setSelectedFilter] = useState<
     'INVITED' | 'APPLIED' | 'CONFIRMED' | 'DECLINED' | 'DRAFT' | ''
   >('');
+  const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
 
-  const { eventDetails, manageGuestSkipCount } = useSelector(
+  const { eventDetails, manageGuestSkipCount, manageGuestRefresh } = useSelector(
     (state: RootState) => {
       const queryResult =
         state.api.queries[
-          `fetchHostEventDetails(${JSON.stringify({ eventId })})`
+        `fetchHostEventDetails(${JSON.stringify({ eventId })})`
         ];
       return {
         eventDetails: queryResult?.data?.data ?? undefined,
         manageGuestSkipCount: state?.listSkip?.manageGuestSkipCount,
+        manageGuestRefresh: state?.listSkip?.manageGuestRefresh,
       };
     },
     shallowEqual,
@@ -150,6 +152,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     error: guestsError,
     isLoading: isLoadingGuests,
     isFetching: isFetchingGuests,
+    refetch,
   } = useGetGuestsQuery({
     eventId,
     queryString: filterQuery,
@@ -179,7 +182,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
 
   useEffect(() => {
     return () => {
-      dispatch(setManageGuestSkip(0));
+      dispatch(setManageGuestRefresh());
     };
   }, []);
 
@@ -199,7 +202,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   );
 
   const fetchEventGuests = () => {
-    dispatch(setManageGuestSkip(0));
+    dispatch(setManageGuestRefresh());
   };
 
   const toggleExpand = (guestId: string) => {
@@ -211,19 +214,22 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   };
 
   const handleSearchTextChange = (text: string) => {
-    dispatch(setManageGuestSkip(0));
     setSearchText(text);
   };
+
+  useEffect(() => {
+    dispatch(setManageGuestSkip(0));
+    refetch()
+  }, [selectedFilter, selectedSort, searchText, filterQuery, filterNumber, manageGuestRefresh])
 
   const handleFilterSelect = (
     filter: 'INVITED' | 'APPLIED' | 'CONFIRMED' | 'DECLINED' | 'DRAFT' | '',
   ) => {
-    dispatch(setManageGuestSkip(0));
     setSelectedFilter(filter);
+
   };
 
   const handleSortSelect = (sort: 'ASC' | 'DESC') => {
-    dispatch(setManageGuestSkip(0));
     setSelectedSort(sort);
   };
 
@@ -231,17 +237,19 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     navigation.navigate(ROUTES.SelectGuestsToInviteScreen);
   };
 
+
   const onApplyFilter = (
     queryString: string,
     numberOfFiltersApplied: number,
   ) => {
-    dispatch(setManageGuestSkip(0));
     setFilterQuery(queryString);
     setFilterNumber(numberOfFiltersApplied);
+    if (selectedFilters) {
+      setSelectedFilters(selectedFilters);
+    }
   };
 
   const resetList = () => {
-    dispatch(setManageGuestSkip(0));
     setFilterQuery('');
     setFilterNumber(0);
     setSelectedSort('ASC');
@@ -251,7 +259,8 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   const onClearFilter = () => {
     setFilterQuery('');
     setFilterNumber(0);
-    dispatch(setManageGuestSkip(0));
+    setSelectedFilters({});
+
   };
 
   const renderInvitee = (item: EventGuest, leadId: string, index: number) => (
@@ -317,11 +326,11 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
             <View style={styles.nameContainer}>
               <Text style={styles.guestName}>{item.name}</Text>
 
-              {Boolean(item.additionalGuests?.length) && (
+              {Boolean(item?.maxAdditionalGuests) && (
                 <Text
                   style={
                     styles.inviteCount
-                  }>{` +${item.additionalGuests?.length}`}</Text>
+                  }>{` +${item.maxAdditionalGuests}`}</Text>
               )}
             </View>
 
@@ -512,6 +521,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
         from="manageGuests"
         onApplyFilter={onApplyFilter}
         onClearFilter={onClearFilter}
+        selectedFiltersInParent={selectedFilters}
       />
     </View>
   );

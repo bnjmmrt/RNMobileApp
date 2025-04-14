@@ -56,7 +56,7 @@ import TicketTypeBottomSheet, {
 } from '../InviteGuestInEventFlow/TicketTypeBottomSheet';
 import { EventGuest, ManageGuestPayload } from '../types';
 import DeclinedBySection from '../Guest/DeclinedBySection';
-import { setManageGuestSkip } from 'src/redux/slices/listSkipSlice';
+import { setManageGuestRefresh } from 'src/redux/slices/listSkipSlice';
 
 enum GuestStatus {
   DRAFT = 'DRAFT',
@@ -201,7 +201,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       }).unwrap();
 
       if (response.success) {
-        dispatch(setManageGuestSkip(0));
+        dispatch(setManageGuestRefresh());
         // navigation.goBack();
         refreshGuestDetails();
         let message = `${guestProfile?.name}'s invite has been updated`;
@@ -258,8 +258,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       if (response.success) {
         FlashMessageComponent.show(
           'success',
-          `${guestProfile.name} ${
-            guestProfile?.isSpammedByHost ? 'unmarked' : 'marked'
+          `${guestProfile.name} ${guestProfile?.isSpammedByHost ? 'unmarked' : 'marked'
           } as spam`,
         );
         refreshGuestDetails();

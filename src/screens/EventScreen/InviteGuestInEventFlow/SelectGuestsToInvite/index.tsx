@@ -18,7 +18,7 @@ import { BottomSheetMethods } from 'src/component/BottomSheet/BottomSheet';
 import Button from 'src/component/Button';
 import { CustomText } from 'src/component/CustomText';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
-import FiltersSheet from 'src/component/FilterSheet';
+import FiltersSheet, { SelectedFilters } from 'src/component/FilterSheet';
 import Header from 'src/component/Header/Header';
 import { InputRefMethods } from 'src/component/Input/Input';
 import SearchInput from 'src/component/SearchInput';
@@ -44,17 +44,17 @@ import {
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import createStyles from './styles';
-import { setInviteGuestAllUsersSkip } from 'src/redux/slices/listSkipSlice';
+import { setInviteGuestAllUsersRefresh, setInviteGuestAllUsersSkip } from 'src/redux/slices/listSkipSlice';
 
 interface SelectGuestsToInviteProps
   extends NativeStackScreenProps<
     EventStackParamList,
     'SelectGuestsToInviteScreen'
-  > {}
+  > { }
 
 const SelectGuestsToInviteScreen: React.FC<
   SelectGuestsToInviteProps
-> = ({}) => {
+> = ({ }) => {
   const styles = createStyles();
   const navigation = useNavigation<NavigationProp<EventStackParamList>>();
   const dispatch = useDispatch();
@@ -67,18 +67,20 @@ const SelectGuestsToInviteScreen: React.FC<
   const [searchText, setSearchText] = useState<string>('');
   const [filterQuery, setFilterQuery] = useState<string>('');
   const [filterNumber, setFilterNumber] = useState<number>(0);
+  const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
 
-  const { selectedUsers, selectedEvent, inviteGuestUsersSkipCount } =
+  const { selectedUsers, selectedEvent, inviteGuestUsersSkipCount, inviteGuestUsersRefresh } =
     useSelector(
       (state: RootState) => ({
         selectedUsers: state.inviteGuestsFlow.selectedUsers,
         selectedEvent: state.inviteGuestsFlow.selectedEvent,
-        inviteGuestUsersSkipCount: state?.listSkip?.inviteGuestUsersSkipCount,
-      }),
-      shallowEqual,
+        inviteGuestUsersSkipCount: state.listSkip.inviteGuestUsersSkipCount,
+        inviteGuestUsersRefresh: state.listSkip.inviteGuestUsersRefresh,
+      })
     );
 
-  const { data, isLoading, isFetching } = useFetchAllUsersQuery({
+
+  const { data, isLoading, isFetching, refetch } = useFetchAllUsersQuery({
     take: listTakeCount,
     skip: inviteGuestUsersSkipCount,
     searchValue: searchText,
@@ -93,7 +95,7 @@ const SelectGuestsToInviteScreen: React.FC<
   // );
 
   const onRefreshPage = () => {
-    dispatch(setInviteGuestAllUsersSkip(0));
+    dispatch(setInviteGuestAllUsersRefresh());
   };
 
   const loadMore = () => {
@@ -101,16 +103,32 @@ const SelectGuestsToInviteScreen: React.FC<
 
     if (
       !isLoading &&
-      !isFetching &&
+      !isFetching && data?.data?.totalCount > 0 &&
       inviteGuestUsersSkipCount + listTakeCount < data?.data?.totalCount
     ) {
-      console.log('endsss');
-
       dispatch(
         setInviteGuestAllUsersSkip(inviteGuestUsersSkipCount + listTakeCount),
       );
     }
   };
+
+
+  const [isRendering, setRendring] = useState(false);
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    if (isFetching) {
+      setRendring(true); // immediately show skeleton loader
+    } else {
+      // Delay turning off the rendering state to avoid flicker
+      timeoutId = setTimeout(() => {
+        setRendring(false);
+      }, 500); // you can tweak this delay
+    }
+
+    return () => {
+      clearTimeout(timeoutId); // clean up if component unmounts or re-runs
+    };
+  }, [isFetching]);
 
   const onSelectUser = (user: UserItemInterface) => {
     const isSelected = selectedUsers.some(
@@ -125,24 +143,32 @@ const SelectGuestsToInviteScreen: React.FC<
     }
   };
 
-  const handleSearchTextChange = (text: string) => {
+  useEffect(() => {
     dispatch(setInviteGuestAllUsersSkip(0));
+    refetch()
+  }, [filterQuery, searchText, inviteGuestUsersRefresh])
+
+
+  const handleSearchTextChange = (text: string) => {
     setSearchText(text);
   };
 
   const onApplyFilter = (
     queryString: string,
     numberOfFiltersApplied: number,
+    selectedFilters?: SelectedFilters,
   ) => {
-    dispatch(setInviteGuestAllUsersSkip(0));
     setFilterQuery(queryString);
     setFilterNumber(numberOfFiltersApplied);
+    if (selectedFilters) {
+      setSelectedFilters(selectedFilters);
+    }
   };
 
   const onClearFilter = () => {
-    dispatch(setInviteGuestAllUsersSkip(0));
     setFilterQuery('');
     setFilterNumber(0);
+    setSelectedFilters({})
   };
 
   const onPressNext = () => {
@@ -195,6 +221,7 @@ const SelectGuestsToInviteScreen: React.FC<
     [selectedUsers],
   );
 
+
   const renderUserSkeletonItem = () => {
     return (
       <SkeletonPlaceholder backgroundColor={COLORS.lighter_gray}>
@@ -240,7 +267,7 @@ const SelectGuestsToInviteScreen: React.FC<
     return () => {
       dispatch(setSelectedUsersToInvite([]));
       dispatch(removeSelectedUsersToInvite([]));
-      dispatch(setInviteGuestAllUsersSkip(0));
+      dispatch(setInviteGuestAllUsersRefresh());
     };
   }, []);
 
@@ -280,7 +307,7 @@ const SelectGuestsToInviteScreen: React.FC<
         defaultValue={searchText}
       />
 
-      {(isLoading || isFetching) && inviteGuestUsersSkipCount === 0 ? (
+      {(isRendering || isFetching) && inviteGuestUsersSkipCount === 0 ? (
         renderUserSkeletonList()
       ) : (
         <FlatList
@@ -307,7 +334,7 @@ const SelectGuestsToInviteScreen: React.FC<
               <EventEmptyRecord
                 title={getEmptyStateTitle()}
                 subTitle={getEmptyStateMessage()}
-                isLoading={isLoading}
+                isLoading={isRendering}
                 footerContent={
                   !isLoading && filterNumber > 0 ? (
                     <Button
@@ -339,9 +366,8 @@ const SelectGuestsToInviteScreen: React.FC<
       )}
 
       <Button
-        title={`${
-          selectedUsers.length > 0 ? `${selectedUsers.length} Selected - ` : ''
-        }Next`}
+        title={`${selectedUsers.length > 0 ? `${selectedUsers.length} Selected - ` : ''
+          }Next`}
         onPress={onPressNext}
         colorTheme="dark"
         style={styles.nextButton}
@@ -353,6 +379,7 @@ const SelectGuestsToInviteScreen: React.FC<
         from="inviteGuests"
         onApplyFilter={onApplyFilter}
         onClearFilter={onClearFilter}
+        selectedFiltersInParent={selectedFilters}
       />
     </View>
   );

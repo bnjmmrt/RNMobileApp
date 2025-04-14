@@ -20,7 +20,7 @@ import {
   useManageGuestMutation,
 } from 'src/redux/actions/eventApiAction';
 import { RootState } from 'src/redux/slices';
-import { setManageGuestSkip } from 'src/redux/slices/listSkipSlice';
+import { setManageGuestRefresh, setManageGuestSkip } from 'src/redux/slices/listSkipSlice';
 import { BUTTON_LABLE, COLORS, LABLE } from 'src/utils/constants';
 import {
   fontScale,
@@ -118,9 +118,9 @@ const RenderItemComponent = ({
           expandList[index]?.isExpand
             ? styles.bottomRadius
             : {
-                borderBottomStartRadius: radiusScale(16),
-                borderBottomRightRadius: radiusScale(16),
-              },
+              borderBottomStartRadius: radiusScale(16),
+              borderBottomRightRadius: radiusScale(16),
+            },
         ]}>
         <View style={styles.guestHeader}>
           {item?.isPending ? (
@@ -338,18 +338,18 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
         checkIn: checkIn,
       }).unwrap();
       if (response.success) {
-        dispatch(setManageGuestSkip(0));
+        dispatch(setManageGuestRefresh());
         if (isPlusOne) {
           setExpandList(prevList =>
             prevList.map(item =>
               item.additionalGuest.guestId === guestId
                 ? {
-                    ...item,
-                    additionalGuest: {
-                      ...item.additionalGuest,
-                      checkIn: response.data.checkInStatus,
-                    },
-                  }
+                  ...item,
+                  additionalGuest: {
+                    ...item.additionalGuest,
+                    checkIn: response.data.checkInStatus,
+                  },
+                }
                 : item,
             ),
           );
@@ -401,7 +401,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
           eventId: selectedEvent?.id,
         }).unwrap();
 
-        dispatch(setManageGuestSkip(0));
+        dispatch(setManageGuestRefresh());
         // FlashMessageComponent.show(
         //   'success',
         //   `${guestProfile?.name}'s invite has been updated`,
@@ -550,7 +550,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
                 selectedGuestForCheckIn={selectedGuestForCheckin}
               />
             )}
-            //   contentContainerStyle={styles.container}
+          //   contentContainerStyle={styles.container}
           />
         </>
       )}

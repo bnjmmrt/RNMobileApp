@@ -20,7 +20,7 @@ import DeleteList from './DeleteList';
 import DuplicateList from './DuplicateList';
 import { styles } from './style';
 import { useDispatch } from 'react-redux';
-import { setUsersTabAllListsSkip } from 'src/redux/slices/listSkipSlice';
+import { setUsersTabAllListsRefresh } from 'src/redux/slices/listSkipSlice';
 
 export type actionSheetFromType = 'customLists' | 'listDetail';
 export type listActionCurrentPageType =
@@ -108,7 +108,7 @@ const ListActionsSheet = forwardRef<
     };
 
     const onCreateListSuccess = (listId: string, listName: string) => {
-      dispatch(setUsersTabAllListsSkip(0));
+      dispatch(setUsersTabAllListsRefresh());
       setSelectedListData({ id: listId, name: listName });
       closeSheet();
       InteractionManager.runAfterInteractions(() => {
@@ -120,7 +120,7 @@ const ListActionsSheet = forwardRef<
     };
 
     const onEditListSuccess = () => {
-      dispatch(setUsersTabAllListsSkip(0));
+      dispatch(setUsersTabAllListsRefresh());
       setSelectedAction('');
       closeSheet();
       if (onSuccess) {
@@ -129,7 +129,7 @@ const ListActionsSheet = forwardRef<
     };
 
     const onAddUserToListSuccess = () => {
-      dispatch(setUsersTabAllListsSkip(0));
+      dispatch(setUsersTabAllListsRefresh());
       setSelectedAction('');
       closeSheet();
       if (onSuccess) {
@@ -138,7 +138,7 @@ const ListActionsSheet = forwardRef<
     };
 
     const onDuplicateListSuccess = () => {
-      dispatch(setUsersTabAllListsSkip(0));
+      dispatch(setUsersTabAllListsRefresh());
       if (onSuccess) {
         onSuccess();
       }
@@ -207,7 +207,7 @@ const ListActionsSheet = forwardRef<
           ) : null}
 
           {selectedAction === 'editListName' ||
-          selectedAction === 'createList' ? (
+            selectedAction === 'createList' ? (
             <CreateEditList
               onSuccessAdd={onCreateListSuccess}
               onSuccessEdit={onEditListSuccess}
@@ -230,7 +230,7 @@ const ListActionsSheet = forwardRef<
             <DeleteList
               listId={selectedListId || ''}
               onSuccess={() => {
-                dispatch(setUsersTabAllListsSkip(0));
+                dispatch(setUsersTabAllListsRefresh());
                 closeSheet();
                 if (onSuccess) onSuccess();
               }}

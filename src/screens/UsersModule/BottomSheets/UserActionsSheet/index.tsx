@@ -16,14 +16,13 @@ import {
   UserDetailResponse,
 } from 'src/redux/actions/usersApiAction';
 import { RootState } from 'src/redux/slices';
-import { verticalScale } from 'src/utils/dimensions';
 import AddToList from './AddToList';
 import CreateList from './CreateList';
 import DeleteUser from './DeleteUser';
 import MarkAsSpam from './MarkAsSpam';
 import ReportUser from './ReportUser';
 import { styles } from './style';
-import { setUsersTabAllListsSkip } from 'src/redux/slices/listSkipSlice';
+import { setUsersTabAllListsRefresh } from 'src/redux/slices/listSkipSlice';
 
 export type actionSheetFromType = 'usersList' | 'customLists' | 'userDetail';
 export type UserActionCurrentPageType =
@@ -71,7 +70,7 @@ const UserActionsSheet = forwardRef<
       };
     }, shallowEqual);
 
-    const [fetchUserDetails, {}] = useLazyFetchUserDetailsQuery();
+    const [fetchUserDetails, { }] = useLazyFetchUserDetailsQuery();
     const isNonMemberHasNotAppliedUser =
       userDetails?.hostUserMappingId && userDetails?.eventCount === 0;
 
@@ -79,19 +78,19 @@ const UserActionsSheet = forwardRef<
       selectedAction === 'report'
         ? ['60%']
         : selectedAction === 'markSpam'
-        ? ['35%']
-        : selectedAction === 'delete'
-        ? ['33%']
-        : selectedAction === 'addToList'
-        ? ['60%']
-        : selectedAction === 'createList'
-        ? ['45%']
-        : isNonMemberHasNotAppliedUser
-        ? ['24%']
-        : ['30%'];
+          ? ['35%']
+          : selectedAction === 'delete'
+            ? ['33%']
+            : selectedAction === 'addToList'
+              ? ['60%']
+              : selectedAction === 'createList'
+                ? ['45%']
+                : isNonMemberHasNotAppliedUser
+                  ? ['24%']
+                  : ['30%'];
 
     const onCreateListSuccess = () => {
-      dispatch(setUsersTabAllListsSkip(0));
+      dispatch(setUsersTabAllListsRefresh());
       closeSheet();
       if (onSuccess) {
         onSuccess();
@@ -99,7 +98,7 @@ const UserActionsSheet = forwardRef<
     };
 
     const onAddUserToListSuccess = () => {
-      dispatch(setUsersTabAllListsSkip(0));
+      dispatch(setUsersTabAllListsRefresh());
       if (onSuccess) {
         onSuccess();
       }
