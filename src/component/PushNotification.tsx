@@ -113,6 +113,7 @@ export const navigateToScreen = (data: any, type: string = 'in-app') => {
         // 'eventVouch',
         'signUpFormApproved',
         'signUpFormRejected',
+        // 'rsvpSignupFormRequest',
         'eventInvitationNonMember',
         'eventSubmissionApproved',
         'eventAnnouncement',
@@ -127,6 +128,11 @@ export const navigateToScreen = (data: any, type: string = 'in-app') => {
             id: type == 'push' ? data?.data?.eventId : data?.body?.eventId
         };
         navigateToNestedStack(ROUTES.EventStack, ROUTES.EventDetailsScreen, eventData);
+    } else if (notifiType = 'rsvpSignupFormRequest') {
+        let eventData = {
+            eventId: type == 'push' ? data?.data?.eventId : data?.body?.eventId
+        };
+        navigate(ROUTES.EventGuestList, eventData);
     }
     else if (notifiType === 'eventVouch') {
         let userData = { activeTab: 'vouches' };
