@@ -95,6 +95,8 @@ async function onDisplayNotification(remoteMessage: any) {
 }
 
 export const navigateToScreen = (data: any, type: string = 'in-app') => {
+    console.log('navigateToScreen:', data);
+
     const role = store.store.getState().auth.role;
     const dispatch = store.store.dispatch;
     const myRole = "non-member"
@@ -128,13 +130,15 @@ export const navigateToScreen = (data: any, type: string = 'in-app') => {
             id: type == 'push' ? data?.data?.eventId : data?.body?.eventId
         };
         navigateToNestedStack(ROUTES.EventStack, ROUTES.EventDetailsScreen, eventData);
-    } else if (notifiType = 'rsvpSignupFormRequest') {
+    } else if (notifiType === 'rsvpSignupFormRequest') {
         let eventData = {
-            eventId: type == 'push' ? data?.data?.eventId : data?.body?.eventId
+            eventId: type == 'push' ? data?.data?.eventId : data?.body?.eventId,
         };
-        navigate(ROUTES.EventGuestList, eventData);
+        console.log(" RSVP Signup Form Request", eventData);
+        navigateToNestedStack(ROUTES.EventStack, ROUTES.EventGuestList, eventData);
     }
     else if (notifiType === 'eventVouch') {
+        console.log("Event Vouch");
         let userData = { activeTab: 'vouches' };
         navigateToNestedStack(ROUTES.ProfileStack, ROUTES.ReferralScreen, userData);
     }

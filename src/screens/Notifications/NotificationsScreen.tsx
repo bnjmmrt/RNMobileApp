@@ -49,6 +49,7 @@ interface Notification {
   image?: string;
   isSeen: boolean;
   createdDate: string;
+  body: any
 }
 
 const NotificationItemSkeleton = () => {
@@ -93,17 +94,21 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedNotification, setSelectedNotification] =
     useState<Notification | null>(null);
-    const role = useSelector((state: RootState) => state.auth.role);
+  const role = useSelector((state: RootState) => state.auth.role);
+  const userId = useSelector((state: RootState) => state.auth.userId);
 
   const queryArgs = {
     take: 10,
     skip: (currentPage - 1) * 10,
-    role:role
+    role: role,
+    id: userId
   };
 
   const { data, isLoading, refetch } = useFetchNotificationQuery(queryArgs);
 
   const [isRendering, setRendring] = useState(false);
+  const [cancelledEvents, setCancelledEvents] = useState([]);
+
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
 
@@ -133,11 +138,16 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
           ? data?.data?.result
           : [...prev, ...data?.data?.result],
       );
+      setCancelledEvents(data?.data?.result
+        ?.filter((event: any) => event.type === 'eventCancelled')
+        ?.map((event: any) => event?.body?.eventId));
       setIsDataLoading(false);
     } else {
       setIsDataLoading(false);
     }
   }, [data]);
+
+  console.log('cancelled Notifications:', cancelledEvents);
 
   const handleRefresh = () => {
     setCurrentPage(1);
@@ -145,7 +155,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
   };
 
   const detailQueryArgs = selectedNotification
-    ? { notificationId: String(selectedNotification.id) }
+    ? { notificationId: String(selectedNotification.id), id: userId }
     : undefined;
   const { data: notiDetail } = useFetchNotificationDetailQuery(
     detailQueryArgs as { notificationId: string },
@@ -156,10 +166,24 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
   const markAsRead = (noti: Notification) => {
     console.log('Mark as read:', noti);
     if (selectedNotification?.id === noti?.id) {
-      navigateToScreen(noti, 'in-app');
+      console.log('Mark as read: if',);
+
+      checkEventStatus(noti);
     } else {
-      navigateToScreen(noti, 'in-app');
+      console.log('Mark as read: else',);
+
+      checkEventStatus(noti);
       setSelectedNotification(noti);
+    }
+  };
+  const checkEventStatus = (noti: Notification) => {
+    const eventID = noti?.body?.eventId;
+    if (cancelledEvents.includes(eventID)) {
+      FlashMessageComponent.show('info', 'This event has been cancelled and it is no longer accessible.');
+      return;
+    }
+    else {
+      navigateToScreen(noti, 'in-app');
     }
   };
   const loadMore = () => {

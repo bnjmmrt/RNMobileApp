@@ -567,7 +567,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           snapPoints={[Platform.OS === 'android' ? '0.29' : '0.30']}
           image={null}
         />
-        <Text style={styles.textBelowStyle}>{environment.SERVER + ' '}{Platform.OS == 'android' ? environment.VERSION_ANDROID : environment.VERSION_IOS}</Text>
+        {environment.SERVER != '' &&
+          <Text style={styles.textBelowStyle}>{environment.SERVER + ' '}{Platform.OS == 'android' ? environment.VERSION_ANDROID : environment.VERSION_IOS}</Text>
+        }
         <DeleteAccountBottomSheet
           ref={deleteAccountBottomSheetRef}
           onPress={deleteAccount}

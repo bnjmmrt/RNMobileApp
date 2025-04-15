@@ -400,7 +400,7 @@ const RSVPInvitedUpcoming = () => {
       <Button
         disabled={false}
         buttonType="stripe"
-        style={styles.btnStyle}
+        style={[styles.btnStyle, { marginTop: '-5%' }]}
         onPress={() => {
           bottomSheetRef?.current?.close();
         }}
@@ -414,7 +414,7 @@ const RSVPInvitedUpcoming = () => {
       <Title
         align="center"
         title="Remove Guest?"
-        subTitle="Are you sure you want to remove this guest?They will be notified that their pass has been canceled. You can add a new guest later. "
+        subTitle="Are you sure you want to remove this guest? They will be notified that their pass has been canceled. You can add a new guest later. "
       />
       <Button
         disabled={false}
@@ -429,7 +429,7 @@ const RSVPInvitedUpcoming = () => {
       <Button
         disabled={false}
         buttonType="stripe"
-        style={styles.btnStyle}
+        style={[styles.btnStyle, { marginTop: '-5%' }]}
         onPress={() => {
           bottomSheetRef?.current?.close();
         }}
