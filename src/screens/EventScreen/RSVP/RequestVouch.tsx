@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
+import { useSelector } from 'react-redux';
 import EventEmptyRecord from 'src/component/EmptyRecord/EventEmptyRecord';
 import { RenderMemberList } from 'src/component/InviteReferralBottomSheet/RenderMemberList';
 import SearchInput from 'src/component/SearchInput';
 import Title from 'src/component/Title/Title';
 import { useGetConfirmedMembersMutation } from 'src/redux/actions/referralApiAction';
+import { RootState } from 'src/redux/slices';
 import { COLORS } from 'src/utils/constants';
 import { Hp } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
@@ -15,15 +17,13 @@ interface ContactItem {
 }
 
 const RequestVouch = ({
-  onClose,
   eventId,
   vouchData,
 }: {
-  onClose: () => void;
   eventId: string;
   vouchData: any;
 }) => {
-  const { getContactNumbersWithCountryCode, permissionGranted } = useContacts(true, 2000);
+  const { getContactNumbersWithCountryCode, getContactWithoutMe, permissionGranted } = useContacts(true, 2000);
   const [members, setMembers] = useState<ContactItem[]>([]);
   const [loader, setLaoder] = useState(false);
   const [getConfirmedMembers, { isLoading }] = useGetConfirmedMembersMutation();
@@ -38,6 +38,9 @@ const RequestVouch = ({
     }
   }, [permissionGranted]);
 
+
+
+
   const fetchContacts = async () => {
     setLaoder(true);
     try {
@@ -46,10 +49,11 @@ const RequestVouch = ({
         return;
       }
       const response = await getConfirmedMembers({ contacts });
+      const updatedResponse = getContactWithoutMe(response)
       const vouchUserId =
         vouchData && vouchData.map(request => request.idUserVouch);
-      if (response?.data?.data) {
-        const membersWithSentFlag = response.data.data.map(member => ({
+      if (updatedResponse?.data?.data) {
+        const membersWithSentFlag = updatedResponse.data.data.map(member => ({
           ...member,
           isSent: vouchUserId.includes(member.userId),
         }));

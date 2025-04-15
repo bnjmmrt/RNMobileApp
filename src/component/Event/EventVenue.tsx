@@ -52,7 +52,7 @@ const EventVenue: React.FC<EventVenueProps> = ({
   const locationText = getDisplayLocation(
     item?.location?.location,
     item?.currentGuestStatus,
-    item.showLocation,
+    item?.showLocation,
     role,
   );
   const isHideCity = isCityInLocation(locationText, item?.location?.city || '');

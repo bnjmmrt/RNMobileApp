@@ -326,7 +326,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
             <View style={styles.nameContainer}>
               <Text style={styles.guestName}>{item.name}</Text>
 
-              {Boolean(item?.maxAdditionalGuests) && (
+              {Boolean(item?.maxAdditionalGuests && item?.maxAdditionalGuests > 0) && (
                 <Text
                   style={
                     styles.inviteCount

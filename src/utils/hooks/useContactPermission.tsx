@@ -15,6 +15,8 @@ import { getCountry } from 'react-native-localize';
 import { getCountryFlag } from '../functions';
 import { openSettings } from 'react-native-permissions';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/slices';
 
 type PermissionStatus = boolean | null;
 export type ContactItem = {
@@ -32,6 +34,8 @@ const useContacts = (autoRequestForPermision?: boolean, timout?: number) => {
     autoRequestForPermision ? true : false,
   );
   const currentCountry = getCountry();
+  const myPhoneNumber = useSelector((state: RootState) => state.appFlow.phone);
+  console.log("Sayyd phone :", myPhoneNumber)
 
   const showAllowPermissionFromSettingAlert = () => {
     Alert.alert(
@@ -125,6 +129,28 @@ const useContacts = (autoRequestForPermision?: boolean, timout?: number) => {
       return [];
     }
   };
+
+  const getContactWithoutMe = (response: any) => {
+    if (
+      response?.data?.success &&
+      Array.isArray(response?.data?.data)
+    ) {
+      const filteredData = response?.data?.data?.filter(
+        (item) => item.phoneNumber !== myPhoneNumber
+      );
+
+      return {
+        ...response,
+        data: {
+          ...response?.data,
+          data: filteredData,
+        },
+      };
+    }
+
+    return response; // return original if structure isn't as expected
+  };
+
 
 
   const getContactNumbersOnly = async (): Promise<string[]> => {
@@ -222,6 +248,7 @@ const useContacts = (autoRequestForPermision?: boolean, timout?: number) => {
     getContactNumbersOnly,
     getPhoneNumber,
     getContactNumbersWithCountryCode,
+    getContactWithoutMe,
     permissionLoading,
   };
 };
