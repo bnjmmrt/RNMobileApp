@@ -163,12 +163,14 @@ export const usersApiAction = createBaseApi.injectEndpoints({
         take,
         skip,
         role,
+        id
       }: {
         take: number;
         skip: number;
         role: string;
+        id: string
       }) => ({
-        url: `/notifications/v1/notifications?take=${take}&skip=${skip}&role=${role}`,
+        url: `/notifications/v1/notifications?take=${take}&skip=${skip}&role=${role}&id=${id}`,
         method: 'GET',
       }),
       providesTags: ['fetchNotification'],
@@ -176,8 +178,8 @@ export const usersApiAction = createBaseApi.injectEndpoints({
 
     // fetch notification detail  for host
     fetchNotificationDetail: builder.query({
-      query: ({ notificationId }: { notificationId: string }) => ({
-        url: `/notifications/v1/notification/${notificationId}`,
+      query: ({ notificationId,id }: { notificationId: string, id: string }) => ({
+        url: `/notifications/v1/notification/${notificationId}?id=${id}`,
         method: 'GET',
       }),
       providesTags: ['notificationDetail'],

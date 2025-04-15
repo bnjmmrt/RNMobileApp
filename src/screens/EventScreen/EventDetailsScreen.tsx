@@ -769,6 +769,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     gap: verticalScale(20),
     flex: 1,
+    paddingBottom:verticalMarginScale(30),
   },
   btnStyle: {
     borderRadius: 100,

@@ -21,7 +21,7 @@ import IMAGES from 'src/assets/images';
 import StatusLabel from 'src/component/StatusLabel/StatusLabel';
 import AvatarInitials from 'src/component/AvatarInitials';
 import { CustomText } from 'src/component/CustomText';
-
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 interface User {
   name: string;
   avatar?: string;
@@ -80,20 +80,29 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <View>
             {showGuestStatus ? <StatusLabel status={status} /> : null}
           </View>
-
-          {user?.isSpam ? (
-            <View style={styles.followIndicator}>
-              <Image
-                source={IMAGES.alert_triangle_filled}
-                style={styles.followIcon}
-              />
-            </View>
-          ) : null}
-          {user?.isFollowing ? (
-            <View style={styles.followIndicator}>
-              <Image source={IMAGES.user_check} style={styles.followIcon} />
-            </View>
-          ) : null}
+          <View style={styles.userActionsFloatingContainer}>
+            {user?.isSpam ? (
+              <TouchableOpacity
+                style={styles.userActionButton}
+                onPress={() => {
+                  FlashMessageComponent.show(
+                    'info',
+                    'You marked this user as spam',
+                  );
+                }}>
+                <Image resizeMode='contain' source={IMAGES.alert_triangle_filled} />
+              </TouchableOpacity>
+            ) : null}
+            {user?.isFollowing ? (
+              <TouchableOpacity
+                style={styles.userActionButton}
+                onPress={() => {
+                  FlashMessageComponent.show('info', 'User is following you');
+                }}>
+                <Image resizeMode='contain' source={IMAGES.user_check} />
+              </TouchableOpacity>
+            ) : null}
+          </View>
         </View>
         <View style={styles.guestCardContent}>
           <View style={styles.profileImageContainer}>
@@ -200,7 +209,7 @@ const styles = StyleSheet.create({
   followIcon: {
     width: horizontalScale(16),
     height: verticalScale(16),
-    resizeMode:'contain'
+    resizeMode: 'contain'
   },
   guestCard: {
     backgroundColor: COLORS.white,
@@ -240,7 +249,7 @@ const styles = StyleSheet.create({
     height: verticalScale(12),
     marginRight: horizontalMarginScale(4),
     tintColor: COLORS.surfaceSecondary,
-    resizeMode:'contain'
+    resizeMode: 'contain'
   },
   memberBadgeText: {
     color: COLORS.white,
@@ -285,6 +294,21 @@ const styles = StyleSheet.create({
     paddingVertical: verticalMarginScale(4),
     borderRadius: radiusScale(128),
   },
+  userActionsFloatingContainer: {
+    position: 'absolute',
+    right: horizontalMarginScale(8),
+    top: horizontalMarginScale(8),
+    flexDirection: 'row',
+    gap: horizontalMarginScale(4),
+  },
+  userActionButton: {
+    borderRadius: radiusScale(99),
+    borderWidth: 1,
+    borderColor: COLORS.borderGray,
+    paddingVertical: verticalMarginScale(12),
+    paddingHorizontal: horizontalMarginScale(16),
+  },
+
   roleText: {
     fontSize: fontScale(12),
     color: COLORS.black,
