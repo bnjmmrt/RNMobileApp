@@ -166,6 +166,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         name: `${profileData?.firstName} ${profileData?.lastName}`,
       });
     }
+    Intercom.setBottomPadding(60)
     Intercom.setLauncherVisibility(Visibility.GONE);
 
     return () => {
@@ -528,7 +529,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
           <TouchableOpacity
             onPress={() => handleLogoutPress()}
-            style={{ marginBottom: verticalScale(50) }}>
+            style={{ marginBottom: verticalScale(0) }}>
             <Text style={styles.textBelowStyle}>{PROFILE.LOGOUT}</Text>
           </TouchableOpacity>
         </ScrollView>

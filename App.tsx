@@ -82,6 +82,7 @@ const AppContent: React.FC = () => {
 
   useEffect(() => {
     NotificationSetup();
+    Intercom.setBottomPadding(60)
     Intercom.setLauncherVisibility(Visibility.GONE);
     if (Platform.OS === 'ios') {
       request(PERMISSIONS.IOS.APP_TRACKING_TRANSPARENCY).then(status => {

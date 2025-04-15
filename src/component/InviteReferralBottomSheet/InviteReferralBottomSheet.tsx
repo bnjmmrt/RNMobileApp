@@ -63,7 +63,7 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
   const {
     getContacts,
     permissionGranted,
-    getContactNumbersOnly,
+    getContactWithoutMe,
     getContactNumbersWithCountryCode,
     permissionLoading,
   } = useContacts(true);
@@ -88,14 +88,16 @@ const InviteReferralBottomSheet = forwardRef((props, ref) => {
       const formattedContacts = await getContacts();
       const contactNumbers = await getContactNumbersWithCountryCode();
       const response = await getConfirmedMembers({ contacts: contactNumbers });
+      const updatedResponse = getContactWithoutMe(response)
+
       const referralRequests = await apiRequest(
         'get',
         'users/v1/auth/list-referral-requests/',
       );
       const referralUserIds = referralRequests?.data?.data?.map(r => r.userId);
 
-      if (response?.data?.data) {
-        const membersWithSentFlag = response.data.data.map(member => ({
+      if (updatedResponse?.data?.data) {
+        const membersWithSentFlag = updatedResponse.data.data.map(member => ({
           ...member,
           isSent: referralUserIds?.includes(member.userId),
         }));

@@ -17,6 +17,7 @@ import {
 import store from 'src/redux/store';
 import settings, { EndPoint } from '../ApiManager/config';
 import { ROLE } from './constants';
+import { setEmail, setFirstName, setIsEmailPhoneBothVerified, setLastName, setPhone } from 'src/redux/slices/appFlowSlice';
 
 // ErrorText component with TypeScript props
 interface ErrorTextProps {
@@ -67,7 +68,7 @@ export const fontFamily = {
   RomieTrial: 'RomieTrial',
 };
 
-export const getNumberOfLines = (str:string)=> {
+export const getNumberOfLines = (str: string) => {
   if (!str) return 0;
 
   const totalChars = str.length;
@@ -533,6 +534,13 @@ export const fetchUserProfile = async () => {
           profilePicture: response?.data?.imageUrl,
         }),
       );
+      response?.data?.email && dispatch(setEmail(response?.data?.email));
+      response?.data?.phoneNumber && dispatch(setPhone(response?.data?.phoneNumber));
+      if (response?.data?.email && response?.data?.phoneNumber) {
+        dispatch(setIsEmailPhoneBothVerified(true));
+      }
+      response?.data?.firstName && dispatch(setFirstName(response?.data?.firstName));
+      response?.data?.lastName && dispatch(setLastName(response?.data?.lastName));
     }
   } catch (err) {
     const typedError = err as ApiErrorInterface;

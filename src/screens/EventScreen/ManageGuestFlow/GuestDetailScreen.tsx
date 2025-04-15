@@ -94,9 +94,31 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     skip: !guestId,
   });
 
+  const extractGuestIds = (data) => {
+    const guestIds = [];
+
+    // Add guestId from guestDetail if present
+    if (data?.guestDetail?.guestId) {
+      guestIds.push(data.guestDetail.guestId);
+    }
+
+    // Add guestIds from additionalGuests if present
+    if (Array.isArray(data?.additionalGuests)) {
+      data.additionalGuests.forEach(guest => {
+        if (guest?.guestId) {
+          guestIds.push(guest.guestId);
+        }
+      });
+    }
+
+    return guestIds;
+  };
+
+
   const guestProfile = guestDetails?.data?.guestProfile;
   const guestDetail = guestDetails?.data?.guestDetail;
   const quizQuestions = guestDetails?.data?.quizDataList;
+  // const additionalGuestsIds = extractGuestIds(guestDetail?.data);
   const status = guestProfile?.status?.toLowerCase() || 'draft';
 
   const actionSheetRef = useRef<BottomSheetMethods>(null);
@@ -164,7 +186,9 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
     newStatus?: GuestStatus,
     successMessage?: string,
   ) => {
+    let inclusiveIds = [guestProfile?.guestId]
     if (action === 'UPDATE' && newStatus === GuestStatus.DECLINED) {
+      inclusiveIds = extractGuestIds(guestDetails?.data)
     } else {
       const formValidated = validateForm();
       if (!formValidated) return;
@@ -183,7 +207,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
         privateGuestNote: guestNote,
         action,
         exclusiveIds: [],
-        inclusiveIds: [guestProfile?.guestId],
+        inclusiveIds: inclusiveIds,
         isSelectedAll: false,
         sendNotification: true,
       };
@@ -195,6 +219,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       if (guestProfile?.status === 'CONFIRMED') {
         delete payload.privateGuestNote;
       }
+
       const response = await manageGuest({
         payload,
         eventId: route?.params?.eventId,
