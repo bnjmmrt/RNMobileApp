@@ -264,7 +264,7 @@ const RSVPNoStatusApplied: React.FC = () => {
         disabled={false}
         buttonType="stripe"
         style={styles.btnStyle}
-        title={'Discover More Events'}
+        title={BUTTON_LABLE.DISCOVER_MORE_EVENTS}
         colorTheme="dark"
         onPress={() => {
           setDoResetStack(true);
