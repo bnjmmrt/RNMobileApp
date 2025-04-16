@@ -7,6 +7,7 @@ import { Hp, verticalMarginScale } from '../../../utils/dimensions';
 import EventItem from '../EventItem';
 import { COLORS } from 'src/utils/constants';
 import EventItemSkeleton from '../../../component/EventItemSkeleton';
+import { gridStyles, numColumns, isIPad } from './config';
 
 interface InvitedEventsProps {
   userId: string;
@@ -61,21 +62,29 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({
       {isLoading && !events?.length ? (
         <FlatList
           data={[1, 2, 3]} // Show 3 skeleton items
-          style={styles.list}
+          style={[styles.list, gridStyles.list]}
           keyExtractor={item => `skeleton-${item}`}
           renderItem={() => <EventItemSkeleton />}
+          numColumns={numColumns}
+          columnWrapperStyle={isIPad ? gridStyles.columnWrapper : undefined}
         />
       ) : events?.length > 0 ? (
         <FlatList
           ref={scrollToTopRef}
           data={events}
-          style={styles.list}
+          style={[styles.list, gridStyles.list]}
           keyExtractor={(item, index) => `${item.id}-${index}`}
-          renderItem={({ item }) => <EventItem item={item} />}
+          renderItem={({ item }) => (
+            <View style={isIPad ? gridStyles.itemContainer : undefined}>
+              <EventItem item={item} />
+            </View>
+          )}
           refreshing={refreshing}
           onRefresh={handleRefresh}
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
+          numColumns={numColumns}
+          columnWrapperStyle={isIPad ? gridStyles.columnWrapper : undefined}
           ListFooterComponent={
             <View style={styles.footer}>
               {isLoading ? <ActivityIndicator color={COLORS.black} /> : null}
@@ -99,11 +108,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    flexDirection: 'row',
   },
   list: {
-    paddingBottom: 10,
-    paddingHorizontal: 15,
+    flex: 1,
   },
   footer: {
     marginBottom: verticalMarginScale(100),

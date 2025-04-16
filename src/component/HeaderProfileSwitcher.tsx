@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
 import {
