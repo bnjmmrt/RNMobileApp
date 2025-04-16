@@ -8,6 +8,7 @@ import {
 import { fontFamily } from '../../utils/functions';
 import { COLORS } from '../../utils/constants';
 import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import { isIPad } from '../EventScreen/Tabs/config'
 
 const EmailPhoneStyles = () => {
   return StyleSheet.create({
@@ -23,7 +24,7 @@ const EmailPhoneStyles = () => {
     contentContainer: {
       flex: 1,
       maxWidth: 526,
-      marginHorizontal: 'auto',
+      marginHorizontal: isIPad ? 'auto' : 0,
       paddingTop: verticalMarginScale(16),
       paddingBottom: verticalMarginScale(8),
       paddingHorizontal: horizontalMarginScale(20),
