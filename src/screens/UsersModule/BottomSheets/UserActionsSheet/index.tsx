@@ -2,6 +2,7 @@ import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, {
   forwardRef,
   useCallback,
+  useEffect,
   useImperativeHandle,
   useRef,
 } from 'react';
@@ -23,6 +24,7 @@ import MarkAsSpam from './MarkAsSpam';
 import ReportUser from './ReportUser';
 import { styles } from './style';
 import { setUsersTabAllListsRefresh } from 'src/redux/slices/listSkipSlice';
+import { useFetchAllCustomListsQuery } from 'src/redux/actions/listsApiAction';
 
 export type actionSheetFromType = 'usersList' | 'customLists' | 'userDetail';
 export type UserActionCurrentPageType =
@@ -74,6 +76,12 @@ const UserActionsSheet = forwardRef<
     const isNonMemberHasNotAppliedUser =
       userDetails?.hostUserMappingId && userDetails?.eventCount === 0;
 
+    const { data, isLoading } = useFetchAllCustomListsQuery({
+      take: 20,
+      skip: 0,
+    });
+
+    const calculateHeight = `${(data?.data?.result?.length * 7) + 5}%`;
     const snapPoints =
       selectedAction === 'report'
         ? ['60%']
@@ -82,7 +90,7 @@ const UserActionsSheet = forwardRef<
           : selectedAction === 'delete'
             ? ['33%']
             : selectedAction === 'addToList'
-              ? ['60%']
+              ? data?.data?.count > 9 ? ['60%'] : [calculateHeight]
               : selectedAction === 'createList'
                 ? ['45%']
                 : isNonMemberHasNotAppliedUser
