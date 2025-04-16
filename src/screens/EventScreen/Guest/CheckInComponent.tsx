@@ -61,6 +61,7 @@ interface CheckInComponentProps {
   status?: string;
   guestProfile?: any;
   selectedTicketType?: any;
+  isPastEvent: boolean;
 }
 const RenderItemComponent = ({
   item,
@@ -72,6 +73,7 @@ const RenderItemComponent = ({
   isCheckInLoading,
   onChangeGuestNote,
   selectedGuestForCheckIn,
+  isPastEvent
 }: {
   item: any;
   index: number;
@@ -87,6 +89,7 @@ const RenderItemComponent = ({
   isCheckInLoading: boolean;
   selectedGuestForCheckIn: string;
   onChangeGuestNote: (guestNote: string) => void;
+  isPastEvent: boolean
 }) => {
   const inputRef = useRef<TextInput>(null);
   const { updateKeyboardStatus } = useKeyboard(inputRef);
@@ -156,9 +159,9 @@ const RenderItemComponent = ({
                 isCheckInLoading &&
                 selectedGuestForCheckIn === item?.additionalGuest?.guestId
               }
-              disabled={
-                isCheckInLoading &&
-                selectedGuestForCheckIn === item?.additionalGuest?.guestId
+              disabled={item.isPaseEvent ||
+                (isCheckInLoading &&
+                  selectedGuestForCheckIn === item?.additionalGuest?.guestId)
               }
             />
           ) : !item?.isPending && !item?.additionalGuest?.checkIn ? (
@@ -257,6 +260,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
   status,
   guestProfile,
   selectedTicketType,
+  isPastEvent
 }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -474,9 +478,9 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
                   guestCheckInLoading &&
                   selectedGuestForCheckin === guestProfile.guestId
                 }
-                disabled={
-                  guestCheckInLoading &&
-                  selectedGuestForCheckin === guestProfile.guestId
+                disabled={isPastEvent ||
+                  (guestCheckInLoading &&
+                    selectedGuestForCheckin === guestProfile.guestId)
                 }
               />
               {/* <TouchableOpacity
@@ -513,19 +517,20 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
                 styles.input,
                 {
                   backgroundColor:
-                    status === 'CONFIRMED' ? COLORS.white : COLORS.bgGray,
+                    status === 'CONFIRMED' && !isPastEvent ? COLORS.white : COLORS.bgGray,
                 },
               ]}
               placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
               defaultValue={privateGuestNote}
               multiline
-              editable={status === 'CONFIRMED' ? true : false}
+              editable={status === 'CONFIRMED' && !isPastEvent ? true : false}
               onFocus={() => {
                 updateKeyboardStatus(true);
               }}
               onBlur={() => {
                 updateKeyboardStatus(false);
               }}
+
             />
           </View>
           <Text style={styles.sectionTitle}>{LABLE.PLUS_1S}</Text>
@@ -548,6 +553,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
                 }}
                 isCheckInLoading={guestCheckInLoading}
                 selectedGuestForCheckIn={selectedGuestForCheckin}
+                isPastEvent={isPastEvent}
               />
             )}
           //   contentContainerStyle={styles.container}

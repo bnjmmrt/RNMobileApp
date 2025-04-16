@@ -113,7 +113,8 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
 
   const eventId = route?.params?.eventId;
   const listFilter = route?.params?.listFilter;
-  const listTakeCount = 10;
+  const isPastEvent = route?.params?.isPastEvent;
+  const listTakeCount = 30;
 
   const filtersSheetRef = useRef<BottomSheetMethods>(null);
   const sortSheetRef = useRef<BottomSheetMethods>(null);
@@ -218,6 +219,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   };
 
   useEffect(() => {
+    console.log("[API Request] refetch is triggering:", manageGuestRefresh)
     dispatch(setManageGuestSkip(0));
     refetch()
   }, [selectedFilter, selectedSort, searchText, filterQuery, filterNumber, manageGuestRefresh])
@@ -242,6 +244,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     queryString: string,
     numberOfFiltersApplied: number,
   ) => {
+    dispatch(setManageGuestSkip(0));
     setFilterQuery(queryString);
     setFilterNumber(numberOfFiltersApplied);
     if (selectedFilters) {
@@ -263,8 +266,9 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
 
   };
 
-  const renderInvitee = (item: EventGuest, leadId: string, index: number) => (
-    <TouchableOpacity
+  const renderInvitee = (item: EventGuest, leadId: string, index: number) => {
+    console.log("sayyed item status:", item.status)
+    return (<TouchableOpacity
       style={styles.inviteeItem}
       onPress={() => {
         navigation.navigate(ROUTES.GuestDetailScreen, {
@@ -286,15 +290,18 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
           </View>
         </View>
       </View>
-      {item.checkIn && (
+      {item.checkIn && item.guestStatus == 'CONFIRMED' && (
         <Image
           source={IMAGES.confirmed_badge}
           style={[styles.confirmedBadge]}
         />
       )}
-    </TouchableOpacity>
-  );
+    </TouchableOpacity>)
+  };
 
+  const isAnyUserApproved = (response) => {
+    return response?.some(user => user.isApproved === true);
+  }
   const renderGuestItem = ({
     item,
     index,
@@ -309,11 +316,12 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
           navigation.navigate(ROUTES.GuestDetailScreen, {
             guestId: item.id,
             eventId,
+            isPastEvent,
           });
         }}>
         <View style={styles.leftContainer}>
           <View>
-            {selectedFilter === 'APPLIED' && Boolean(item.vouches?.length) && (
+            {selectedFilter === 'APPLIED' && isAnyUserApproved(item?.vouches) && (
               <View style={styles.vouchIndicator} />
             )}
             <AvatarInitials
@@ -338,7 +346,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
           </View>
         </View>
         <View style={styles.rightContainer}>
-          {item.checkIn && (
+          {item.checkIn && item.status == 'CONFIRMED' && (
             <Image
               source={IMAGES.confirmed_badge}
               style={[styles.confirmedBadge]}
@@ -375,10 +383,11 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
           const inviteeGuest: EventGuest = {
             id: guest.guestId,
             name: `${guest.firstName} ${guest.lastName}`,
-            status: item.status,
+            status: item?.status,
             userId: guest.id,
             profilePicture: undefined,
             checkIn: guest.checkIn,
+            guestStatus: guest.status
           };
           return renderInvitee(inviteeGuest, item.id, index);
         })}

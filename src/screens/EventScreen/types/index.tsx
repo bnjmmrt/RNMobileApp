@@ -27,6 +27,7 @@ export interface EventGuest {
   id: string;
   name: string;
   status: GuestStatus;
+  guestStatus: string;
   addedBy?: string;
   additionalGuests?: AdditionalGuest[];
   age?: number;

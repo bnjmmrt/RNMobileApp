@@ -158,6 +158,7 @@ const SelectGuestsToInviteScreen: React.FC<
     numberOfFiltersApplied: number,
     selectedFilters?: SelectedFilters,
   ) => {
+    dispatch(setInviteGuestAllUsersSkip(0));
     setFilterQuery(queryString);
     setFilterNumber(numberOfFiltersApplied);
     if (selectedFilters) {

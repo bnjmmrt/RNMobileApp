@@ -34,7 +34,7 @@ const logMiddleware = async (
     //   result.error?.data?.message || 'Something went wrong, please try again!',
     // );
   } else {
-    console.log(`[API Response] ${method} ${url}`, JSON.stringify(result.data));
+    console.log(`[API Response] ${method} ${url}`, result.data);
   }
 
   return result;
@@ -46,24 +46,24 @@ export const customBaseQuery: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = (args, api, extraOptions) =>
-  logMiddleware(
-    args,
-    api,
-    extraOptions,
-    fetchBaseQuery({
-      baseUrl: environment.BASE_URL,
-      prepareHeaders: (headers, { getState }) => {
-        const token = (getState() as any).auth?.token; // Replace with your token logic
-        console.log('Token:', token);
-        if (token) {
-          headers.set('Authorization', `Bearer ${token}`);
-        }
-        headers.set('Content-Type', 'application/json');
-        headers.set('Accept', 'application/json');
-        return headers;
-      },
-    }),
-  );
+    logMiddleware(
+      args,
+      api,
+      extraOptions,
+      fetchBaseQuery({
+        baseUrl: environment.BASE_URL,
+        prepareHeaders: (headers, { getState }) => {
+          const token = (getState() as any).auth?.token; // Replace with your token logic
+          console.log('Token:', token);
+          if (token) {
+            headers.set('Authorization', `Bearer ${token}`);
+          }
+          headers.set('Content-Type', 'application/json');
+          headers.set('Accept', 'application/json');
+          return headers;
+        },
+      }),
+    );
 
 // Create API with custom base query
 export const createBaseApi = createApi({
