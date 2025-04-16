@@ -22,6 +22,8 @@ const EmailPhoneStyles = () => {
     },
     contentContainer: {
       flex: 1,
+      maxWidth: 526,
+      marginHorizontal: 'auto',
       paddingTop: verticalMarginScale(16),
       paddingBottom: verticalMarginScale(8),
       paddingHorizontal: horizontalMarginScale(20),

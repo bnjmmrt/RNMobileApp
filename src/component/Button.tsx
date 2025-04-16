@@ -126,6 +126,9 @@ const styles = StyleSheet.create({
   },
   text: {
     marginHorizontal: 10,
+    textAlign: 'center',
+    // width: '100%',
+    flex: 1,
     fontFamily: fontFamily.ABCDiatype_Medium,
     fontSize: fontScale(14),
   },
