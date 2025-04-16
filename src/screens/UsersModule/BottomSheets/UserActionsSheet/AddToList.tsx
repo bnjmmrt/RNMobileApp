@@ -67,10 +67,9 @@ const AddToList = ({
       if (response.success) {
         FlashMessageComponent.show(
           'success',
-          `${
-            selectedUsers && selectedUsers?.length > 1
-              ? `${selectedUsers?.length} Users`
-              : 'User'
+          `${selectedUsers && selectedUsers?.length > 1
+            ? `${selectedUsers?.length} Users`
+            : 'User'
           } added to list`,
         );
         onSuccess();
@@ -113,9 +112,9 @@ const AddToList = ({
         currentPage === 1
           ? data.data
           : {
-              count: data?.data?.count,
-              list: [...prev.result, ...data.data.result],
-            },
+            count: data?.data?.count,
+            list: [...prev.result, ...data.data.result],
+          },
       );
     }
   }, [data]);

@@ -62,7 +62,7 @@ const Lists: React.FC<ListsProps> = ({ }) => {
   const actionSheetRef = useRef<BottomSheetMethods>(null);
   const scrollToTopRef = useRef(null);
   useScrollToTop(scrollToTopRef);
-  const listTakeCount = 10;
+  const listTakeCount = 30;
 
   const [selectedActionSheetAction, setSelectedActionSheetAction] =
     useState<listActionCurrentPageType>('');
