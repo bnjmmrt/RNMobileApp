@@ -57,6 +57,7 @@ interface InviteDetailsProps {
   declinedBy?: string;
   declinedReason?: string;
   spammedByHost?: boolean;
+  isPastEvent?: boolean;
 }
 
 if (Platform.OS === 'android') {
@@ -83,10 +84,11 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
   ticketTypeError,
   status,
   timeZone,
-  onFocusGuestNote = () => {},
-  onFocusInviteMessage = () => {},
+  onFocusGuestNote = () => { },
+  onFocusInviteMessage = () => { },
   declinedBy,
   declinedReason,
+  isPastEvent,
   spammedByHost,
 }) => {
   const inviteMessageRef = useRef<InputRefMethods>(null);
@@ -130,6 +132,13 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
       showBypassRegistration = false;
     }
   }
+
+  if (isPastEvent) {
+    disableTicketType = true;
+    disableAdditionalguest = true;
+    disableGuestNote = true;
+    disableInviteMessage = true;
+  }
   if (status === 'INVITED') {
     disableInviteMessage = true;
   }
@@ -167,7 +176,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
                   height: verticalScale(16),
                   width: horizontalScale(16),
                   transform: [{ rotate: '90deg' }],
-                  resizeMode:'contain'
+                  resizeMode: 'contain'
                 },
                 disableTicketType && { tintColor: COLORS.neutral_disabled },
               ]}
@@ -210,9 +219,8 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
                       color: COLORS.neutral_disabled,
                     },
                   ]}>
-                  {`Hi, you're invited to ${
-                    eventName || '[Event Name]'
-                  } on ${formatedDate}`}
+                  {`Hi, you're invited to ${eventName || '[Event Name]'
+                    } on ${formatedDate}`}
                 </CustomText>
                 <View style={styles.seperator} />
                 <Input
@@ -288,7 +296,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
               ) : (
                 <View>
                   <CustomText style={styles.bypassLabel}>
-                   {EVENT.BYPASS_REGISTRATION}
+                    {EVENT.BYPASS_REGISTRATION}
                   </CustomText>
                   <TouchableOpacity
                     style={styles.bypassTextContainer}
@@ -296,7 +304,7 @@ const InviteDetails: React.FC<InviteDetailsProps> = ({
                       onDirectlySendToConfirmChange(!directlySendToConfirm)
                     }>
                     <CustomText style={styles.bypassText}>
-                     {EVENT.ADD_DIRECTLY}
+                      {EVENT.ADD_DIRECTLY}
                     </CustomText>
                   </TouchableOpacity>
                 </View>

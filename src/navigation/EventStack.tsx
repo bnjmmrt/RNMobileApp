@@ -32,16 +32,17 @@ export type EventStackParamList = {
   EventGuestList: {
     eventId: string;
     listFilter?:
-      | 'INVITED'
-      | 'APPLIED'
-      | 'CONFIRMED'
-      | 'DECLINED'
-      | 'DRAFT'
-      | '';
+    | 'INVITED'
+    | 'APPLIED'
+    | 'CONFIRMED'
+    | 'DECLINED'
+    | 'DRAFT'
+    | '';
+    isPastEvent: boolean;
   };
   GuestCheckInScreen: undefined;
   QRCodeScanner: undefined;
-  GuestDetailScreen: { guestId: string; eventId: string };
+  GuestDetailScreen: { guestId: string; eventId: string, isPastEvent: boolean };
   [ROUTES.SelectGuestsToInviteScreen]: undefined;
   [ROUTES.SelectedGuestsToInviteScreen]: {
     users: UserItemInterface[];

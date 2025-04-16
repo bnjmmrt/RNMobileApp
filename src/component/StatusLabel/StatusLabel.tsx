@@ -10,7 +10,7 @@ interface StatusLabelProps {
 }
 
 export const getStatusColor = (statusText: string) => {
-  const statusKey = statusText.toLowerCase();
+  const statusKey = statusText?.toLowerCase();
   switch (statusKey) {
     case 'confirmed':
       return { bg: COLORS.successLight, text: COLORS.success };

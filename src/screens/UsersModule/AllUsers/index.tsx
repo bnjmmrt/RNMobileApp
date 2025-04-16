@@ -116,6 +116,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
     numberOfFiltersApplied: number,
     selectedFilters?: SelectedFilters,
   ) => {
+    dispatch(setUsersTabAllUsersSkip(0));
     setFilterQuery(queryString);
     setFilterNumber(numberOfFiltersApplied);
     if (selectedFilters) {
