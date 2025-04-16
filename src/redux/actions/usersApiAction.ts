@@ -187,8 +187,8 @@ export const usersApiAction = createBaseApi.injectEndpoints({
 
     // delete notification
     deleteNotification: builder.mutation({
-      query: ({ notificationId }: { notificationId: string }) => ({
-        url: `/notifications/v1/notification/${notificationId}`,
+      query: ({ notificationId,id }: { notificationId: string,id:string }) => ({
+        url: `/notifications/v1/notification/${notificationId}?id=${id}`,
         method: 'DELETE',
       }),
     }),

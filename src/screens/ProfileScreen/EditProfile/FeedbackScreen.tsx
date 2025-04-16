@@ -41,7 +41,7 @@ import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { CustomText } from 'src/component/CustomText';
 import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 
-interface FeedbackScreenProps {}
+interface FeedbackScreenProps { }
 
 export interface Tag {
   id: number;
@@ -64,6 +64,8 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
 
   const [selectedData, getSelectedData] = useState<Tag[]>();
   const userId = useSelector((state: RootState) => state.auth.userId);
+  const role = useSelector((state: RootState) => state.auth.role);
+
   const feedbackRef = useRef<InputRefMethods>(null);
 
   useEffect(() => {
@@ -105,6 +107,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
         description: feedbackRef?.current?.inputText,
         tag: selectedData[0].value,
         userId: userId,
+        role: role
       };
       const response: any = await apiRequest(
         'post',

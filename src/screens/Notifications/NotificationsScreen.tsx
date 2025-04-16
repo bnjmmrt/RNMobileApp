@@ -205,6 +205,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
     try {
       const response = await deleteNotification({
         notificationId: id || '',
+        id: userId,
       }).unwrap();
       if (response.success == true) {
         FlashMessageComponent.show('success', response?.data?.message);
