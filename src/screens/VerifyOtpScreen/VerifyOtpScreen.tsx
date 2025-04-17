@@ -94,15 +94,10 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
       companyLogo: data?.user?.additionalHostInformation?.companyLogo,
       profilePicture: data?.user?.profilePicture,
     });
-    console.log("Sayyd data:", data)
     dispatch(setEmail(route.params.email || ''));
     dispatch(setPhone(route.params.phone || ''));
     dispatch(setIsGuest(data?.isGuest));
-
-    if (data?.token) {
-      fetchUserProfile();
-    }
-
+    fetchUserProfile();
     let role = getPriorityRole(data?.roles);
     let screenName = '';
 

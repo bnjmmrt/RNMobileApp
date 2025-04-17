@@ -226,7 +226,7 @@ const RenderItemComponent = ({
                     : COLORS.bgGray,
                 },
               ]}
-              editable={!item?.additionalGuest?.checkIn ? true : false}
+              editable={!item?.additionalGuest?.checkIn ? isPastEvent ? false : true : false}
               placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
               defaultValue={item?.additionalGuest.privateGuestNote}
               multiline
@@ -523,7 +523,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
               placeholder={LABLE.PLACEHOLDER_PRIVATE_NOTE}
               defaultValue={privateGuestNote}
               multiline
-              editable={status === 'CONFIRMED' && !isPastEvent ? true : false}
+              editable={status === 'CONFIRMED' && !isPastEvent}
               onFocus={() => {
                 updateKeyboardStatus(true);
               }}

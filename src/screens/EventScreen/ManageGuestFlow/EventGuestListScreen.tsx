@@ -267,7 +267,6 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   };
 
   const renderInvitee = (item: EventGuest, leadId: string, index: number) => {
-    console.log("sayyed item status:", item.status)
     return (<TouchableOpacity
       style={styles.inviteeItem}
       onPress={() => {

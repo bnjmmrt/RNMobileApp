@@ -50,6 +50,8 @@ import ProfileTopView from './ProfileTopView';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 import { useMemberLogoutMutation } from 'src/redux/actions/appFlowApiAction';
+import { useLogout } from 'src/utils/hooks/useLogout';
+const { logOut } = useLogout();
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
@@ -414,33 +416,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       });
   };
 
-  const logOut = async () => {
+  const onPresslogOut = async () => {
     logoutBottomSheetRef.current?.close();
-    const requestParam = {
-      fcmToken: '',
-      deviceId: '',
-    }
-    const response = await memberLogout(requestParam).unwrap();
-    if (response.success) {
-      const resetAction = CommonActions.reset({
-        index: 0,
-        routes: [{ name: 'AuthStack' }],
-      });
-      dispatch(resetProfileData());
-      dispatch(resetLoginData());
-      dispatch(setAuthToken(null));
-      dispatch(resetAppFlowDetails());
-      InteractionManager.runAfterInteractions(() => {
-        setTimeout(() => {
-          navigation.replace('AuthStack');
-        }, 500);
-      });
-      FlashMessageComponent.show('success', 'Logout successfully');
-    }
-    else {
-      FlashMessageComponent.show('error', 'Something went wrong, please try again!');
-    }
-
+    logOut()
   };
 
   const getUserName = () => {
@@ -560,7 +538,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         <EditPictureBottomSheet
           ref={logoutBottomSheetRef}
           title={'Are you sure you want to log out?'}
-          onPress={logOut}
+          onPress={onPresslogOut}
           loadding={false}
           submitButtonText={BUTTON_LABLE.CONFIRM}
           cancelButtonText={BUTTON_LABLE.CANCEL}

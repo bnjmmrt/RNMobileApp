@@ -73,8 +73,6 @@ const AppContent: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Sayyed resetApp:", resetApp)
-    console.log("Sayyed hasLoggedOut.current:", hasLoggedOut.current)
     if (resetApp && !hasLoggedOut.current) {
       hasLoggedOut.current = true;
       logOut()

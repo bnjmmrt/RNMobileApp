@@ -45,12 +45,16 @@ const AddUsersInList = ({
     totalCount: number;
   }>({ totalCount: 0, result: [] });
 
-  const { data, isLoading } = useFetchAllUsersQuery({
+  const { data, isLoading, refetch } = useFetchAllUsersQuery({
     take: 10,
     skip: (currentPage - 1) * 10,
     searchValue: searchText,
     customListId: listId,
   });
+
+  useEffect(() => {
+    refetch()
+  }, [searchText])
 
   const [
     addUsersToList,

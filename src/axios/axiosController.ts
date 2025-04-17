@@ -72,7 +72,7 @@ axiosController.interceptors.response.use(
     // const errorMessage = (error.response?.data as any)?.error?.message || error?.message;
 
     if (status === 400) {
-      console.log("Sayyed 400 error:", error)
+      console.log("Error 400 error:", error)
       // FlashMessageComponent.show(
       //   'error',
       //   getErrorMessage(error?.response) || 'Something went wrong, please try again!',
@@ -94,7 +94,7 @@ axiosController.interceptors.response.use(
       //     'Internal server error. Please try again later.',
       //   );
     } else {
-      console.log("Sayyed 400 error:", error)
+      console.log("Error 400 error:", error)
       // FlashMessageComponent.show('error', errorMessage);
     }
 

@@ -9,7 +9,7 @@ import DeviceInfo from 'react-native-device-info';
 import { axiosController } from 'src/axios/axiosController';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
-import { role, setDeviceId, setLoginData } from 'src/redux/slices/authSlice';
+import { resetAppStack, role, setDeviceId, setLoginData } from 'src/redux/slices/authSlice';
 import {
   configStatusBar,
   SafeAreaViewConfig,
@@ -548,6 +548,12 @@ export const fetchUserProfile = async () => {
   } finally {
   }
 };
+
+export const performLogout = async () => {
+  const dispatch = store.store.dispatch;
+  dispatch(resetAppStack(true));
+};
+
 
 export const removeCityFromLocation = (locationText: string, city: string) => {
   if (locationText.includes(city)) {
