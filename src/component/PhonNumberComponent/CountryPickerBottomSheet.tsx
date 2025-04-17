@@ -97,8 +97,6 @@ const CountryPickerBottomSheet = forwardRef<
       });
     }, [searchValue]);
 
-    console.log('lllll');
-
     const renderItem = ({
       item,
       index,

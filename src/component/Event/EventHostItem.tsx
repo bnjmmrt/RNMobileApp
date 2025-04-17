@@ -24,7 +24,7 @@ import AvatarInitials from '../AvatarInitials';
 import { ROUTES } from 'src/navigation/Route';
 import { useNavigation } from '@react-navigation/native';
 import { CustomText } from '../CustomText';
-import { isIPad } from 'src/screens/EventScreen/Tabs/config'
+import { isIPad } from 'src/utils/isTabletConfig';
 
 interface EventHostItemProps {
   item: any;
@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: COLORS.white,
   },
   image: {
     resizeMode: 'center',

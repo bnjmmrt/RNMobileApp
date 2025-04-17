@@ -2,12 +2,6 @@ import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import {
-  fontScale,
-  horizontalMarginScale,
-  radiusScale,
-  verticalMarginScale,
-} from 'src/utils/dimensions';
 import { COLORS, LABLE } from '../../utils/constants';
 import { fontFamily, removeSignature } from '../../utils/functions';
 import AvatarInitials from '../AvatarInitials';
@@ -64,8 +58,8 @@ const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
     borderColor: COLORS.borderGray,
-    borderRadius: radiusScale(16),
-    paddingTop: verticalMarginScale(18),
+    borderRadius: 16,
+    paddingTop: 18,
     backgroundColor: COLORS.white,
   },
   icon: {
@@ -75,25 +69,25 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.borderGray,
   },
   title: {
-    fontSize: fontScale(16),
+    fontSize: 16,
     fontFamily: fontFamily.ABCDiatype_Medium,
-    paddingHorizontal: horizontalMarginScale(16),
+    paddingHorizontal: 16,
   },
   divider: {
     height: 1,
     width: '100%',
     backgroundColor: COLORS.borderGray,
-    marginTop: verticalMarginScale(18),
+    marginTop: 18,
   },
   itemContainer: {
-    // paddingVertical: verticalMarginScale(10),
+    // paddingVertical: 10,
   },
   talentItem: {
     alignItems: 'center',
-    marginHorizontal: horizontalMarginScale(16),
-    paddingVertical: verticalMarginScale(16),
+    marginHorizontal: 16,
+    paddingVertical: 16,
     flexDirection: 'row',
-    gap: horizontalMarginScale(16),
+    gap: 16,
   },
   name: {
     fontFamily: fontFamily.ABCDiatype_Medium,

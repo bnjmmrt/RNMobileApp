@@ -7,17 +7,11 @@ import Header from '../../../component/Header/Header';
 import { COLORS, PROFILE } from '../../../utils/constants';
 import { useNavigation } from '@react-navigation/native';
 import { RootState } from '../../../redux/slices';
-import {
-  fontScale,
-  horizontalMarginScale,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-} from 'src/utils/dimensions';
 import useApi from 'src/axios/useApi';
 import { EndPoint } from 'src/ApiManager/config';
 import { setNotificationSettings } from 'src/redux/slices/appSettingsSlice';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { isIPad } from 'src/utils/isTabletConfig';
 
 interface NotificationSettingsScreenProps {}
 
@@ -113,6 +107,7 @@ const NotificationSettingsScreen: React.FC<
         headerTitle={PROFILE.NOTIFICATION}
         onPress={handleBackPress}
         showProgressBar={false}
+        showBackButton={!isIPad}
       />
       <ScrollView>
         <View style={styles.itemContainer}>
@@ -156,34 +151,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    paddingBottom: verticalMarginScale(20),
+    paddingBottom: 20,
   },
   itemContainer: {
-    marginTop: verticalMarginScale(20),
-    paddingVertical: verticalMarginScale(10),
-    paddingHorizontal: horizontalMarginScale(20),
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
   item: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: COLORS.lighter_gray,
-    paddingHorizontal: horizontalMarginScale(16),
-    paddingVertical: verticalMarginScale(18),
-    marginBottom: verticalMarginScale(4),
-    borderRadius: radiusScale(4),
-    height: verticalScale(56),
+    paddingHorizontal: 16,
+    paddingVertical: 18,
+    marginBottom: 4,
+    borderRadius: 4,
+    height: 56,
   },
   topRadius: {
-    borderTopLeftRadius: radiusScale(25),
-    borderTopRightRadius: radiusScale(25),
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
   },
   bottomRadius: {
-    borderBottomRightRadius: radiusScale(25),
-    borderBottomLeftRadius: radiusScale(25),
+    borderBottomRightRadius: 25,
+    borderBottomLeftRadius: 25,
   },
   label: {
-    fontSize: fontScale(14),
+    fontSize: 14,
     color: COLORS.black,
     fontWeight: '500',
   },

@@ -62,21 +62,14 @@ import { setEventId } from 'src/redux/slices/eventSlice';
 import { setSelectedEventForInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
 import { setRefresh, setRsvpStatus } from 'src/redux/slices/rspvSlice';
 import {
-  fontScale,
-  horizontalMarginScale,
-  horizontalScale,
-  verticalMarginScale,
-  verticalScale,
-} from 'src/utils/dimensions';
-import {
-  changeSafeAreaViewConfig,
   fontFamily,
   removeSignature,
+  changeSafeAreaViewConfig,
 } from 'src/utils/functions';
 import useCalender from 'src/utils/hooks/useCalender';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
-import { isIPad } from './Tabs/config';
+import { isIPad } from '../../utils/isTabletConfig';
 
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -352,10 +345,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
   const imageWrapperStyle = StyleSheet.create({
     wrapper: {
-      height: isIPad ? 810 : verticalScale(528),
+      height: isIPad ? '100%' : 528,
       width: isIPad ? 420 : 'auto',
       borderRadius: 20,
-      // overflow: 'hidden' as const,
       marginTop: isIPad ? 0 : TOP_SAFEAREA_SPACING,
     },
   });
@@ -378,10 +370,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
               position: 'relative',
               left: 0,
               right: 0,
-              marginHorizontal: horizontalMarginScale(12),
+              marginHorizontal: 12,
               height: undefined,
-              paddingVertical: verticalMarginScale(12),
-              paddingHorizontal: verticalMarginScale(8),
+              paddingVertical: 12,
+              paddingHorizontal: 8,
               alignItems: 'flex-start',
             }}
           />
@@ -505,15 +497,21 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       <ScrollView
         style={{
           ...styles.container,
-          marginTop: verticalScale(20) + STATUS_BAR_HEIGHT,
+          marginTop: 20 + STATUS_BAR_HEIGHT,
         }}>
-        <View style={styles.contentContainer}>
+        <View
+          style={[
+            styles.contentContainer,
+            {
+              flexDirection: 'column',
+            },
+          ]}>
           <SkeletonPlaceholder backgroundColor={COLORS.lighter_gray}>
-            <SkeletonPlaceholder.Item>
+            <SkeletonPlaceholder.Item style={{ width: '100%' }}>
               {/* Cover Image Skeleton */}
               <SkeletonPlaceholder.Item
                 width="100%"
-                height={verticalScale(528)}
+                height={528}
                 borderRadius={20}
               />
 
@@ -620,7 +618,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                     bottom: 0,
                   }}>
                   <View style={[imageWrapperStyle.wrapper, { width: 420 }]}>
-                    <View style={{ width: 420, height: '80%' }}>
+                    <View style={{ width: 420, height: 610 }}>
                       <ImageComponent
                         loading={isLoading}
                         imageURL={
@@ -970,17 +968,18 @@ const styles = StyleSheet.create({
   contentContainer: {
     flexDirection: isIPad ? 'row' : 'column',
     paddingHorizontal: 15,
-    gap: verticalScale(20),
+    width: '100%',
+    gap: 20,
     flex: 1,
-    paddingBottom: verticalMarginScale(30),
+    paddingBottom: 30,
   },
 
   innerContentContainer: {
     flexDirection: 'column',
-    gap: verticalScale(20),
+    gap: 20,
     flex: 1,
     paddingTop: 112,
-    paddingBottom: verticalMarginScale(30),
+    paddingBottom: 30,
     flexGrow: 1,
   },
   btnStyle: {
@@ -994,19 +993,19 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     marginTop: 0,
     marginBottom: BOTTOM_SAFEAREA_SPACING,
-    borderWidth: verticalScale(2),
+    borderWidth: 2,
     borderColor: COLORS.black,
     height: undefined,
-    paddingVertical: verticalMarginScale(16),
+    paddingVertical: 16,
   },
   imageWrapper: {
-    height: verticalScale(528),
+    height: 528,
     borderRadius: 20,
     overflow: 'hidden',
   },
   name: {
     color: COLORS.black2,
-    fontSize: fontScale(14),
+    fontSize: 14,
     flex: 1,
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
@@ -1020,7 +1019,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.bgRed,
   },
   titleStyle: {
-    fontSize: fontScale(32),
+    fontSize: 32,
     fontFamily: fontFamily.RomieTrial_Bold,
     paddingHorizontal: 5,
     color: 'black',
@@ -1043,7 +1042,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: verticalScale(700),
+    height: 700,
     zIndex: -1,
     overflow: 'hidden',
   },
@@ -1053,7 +1052,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    height: verticalScale(300),
+    height: 300,
     objectFit: 'contain',
     transform: [{ scale: 1.5 }],
     backgroundColor: COLORS.borderGray,
@@ -1062,8 +1061,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: COLORS.borderRed,
     backgroundColor: COLORS.bgRed,
-    paddingVertical: verticalScale(10),
-    paddingHorizontal: horizontalScale(10),
+    paddingVertical: 10,
+    paddingHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

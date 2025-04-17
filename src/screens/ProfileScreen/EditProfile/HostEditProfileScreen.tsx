@@ -40,6 +40,7 @@ import {
   BOTTOM_SAFEAREA_SPACING,
   TOP_SAFEAREA_SPACING,
 } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import { isIPad } from 'src/utils/isTabletConfig';
 
 interface HostEditProfileScreenProps extends NativeStackScreenProps<any, any> {}
 

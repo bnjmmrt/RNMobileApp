@@ -8,7 +8,7 @@ import {
 import { fontFamily } from '../../utils/functions';
 import { COLORS } from '../../utils/constants';
 import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
-import { isIPad } from '../EventScreen/Tabs/config'
+import { isIPad } from '../../utils/isTabletConfig';
 
 const EmailPhoneStyles = () => {
   return StyleSheet.create({

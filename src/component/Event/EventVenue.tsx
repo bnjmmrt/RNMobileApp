@@ -18,12 +18,6 @@ import {
 } from '../../utils/functions';
 import { COLORS, ROLE } from '../../utils/constants';
 import IMAGES from '@images/index';
-import {
-  fontScale,
-  horizontalMarginScale,
-  radiusScale,
-  verticalMarginScale,
-} from 'src/utils/dimensions';
 import { RootState } from 'src/redux/slices';
 import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
 import formatToDeviceTimeZone from 'src/utils/formatToDeviceTimeZone';
@@ -64,7 +58,7 @@ const EventVenue: React.FC<EventVenueProps> = ({
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
-          gap: horizontalMarginScale(16),
+          gap: 16,
         }}>
         <View>
           <CustomText style={styles.title}>{dates[0]}</CustomText>
@@ -72,7 +66,7 @@ const EventVenue: React.FC<EventVenueProps> = ({
         </View>
         {item.currentGuestStatus === 'CONFIRMED' && (
           <TouchableOpacity onPress={handleCalendarPress}>
-            <Image resizeMode='contain' source={IMAGES.calendarCircle} />
+            <Image resizeMode="contain" source={IMAGES.calendarCircle} />
           </TouchableOpacity>
         )}
       </View>
@@ -96,11 +90,12 @@ const EventVenue: React.FC<EventVenueProps> = ({
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-    paddingHorizontal: horizontalMarginScale(16),
-    paddingVertical: verticalMarginScale(16),
-    borderRadius: radiusScale(16),
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderRadius: 16,
     borderColor: COLORS.borderGray,
-    gap: verticalMarginScale(16),
+    gap: 16,
+    backgroundColor: COLORS.white,
   },
   contentContainer: {
     flex: 1,
@@ -108,7 +103,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   dateContainer: {
-    marginBottom: verticalMarginScale(10),
+    marginBottom: 10,
     flex: 1,
   },
   locationContainer: {},
@@ -125,12 +120,12 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
   title: {
-    fontSize: fontScale(16),
+    fontSize: 16,
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
   subtitle: {
     color: COLORS.light_gray,
-    marginTop: verticalMarginScale(4),
+    marginTop: 4,
   },
   mapButton: {
     width: 60,

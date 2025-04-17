@@ -14,15 +14,9 @@ import {
 import { fontFamily } from '../..//utils/functions';
 import IMAGES from '../../assets/images';
 import { COLORS } from '../../utils/constants';
-import {
-  fontScale,
-  horizontalMarginScale,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-} from '../../utils/dimensions';
 import ProgressBar from '../ProgressBar/ProgressBar';
 import { TOP_SAFEAREA_SPACING } from '../Wrappers/SafeAreaViewWrapper';
+import { isIPad } from 'src/utils/isTabletConfig';
 
 interface HeaderProps {
   onPress?: () => void;
@@ -59,14 +53,14 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <View
-      style={{ paddingTop: addTopSafeAreaPadding ? TOP_SAFEAREA_SPACING : 0 }}>
+      style={{
+        paddingTop: addTopSafeAreaPadding && !isIPad ? TOP_SAFEAREA_SPACING : 0,
+      }}>
       <View
         style={[
           styles.container,
           {
-            paddingBottom: showProgressBar
-              ? verticalMarginScale(7)
-              : verticalMarginScale(16),
+            paddingBottom: showProgressBar ? 7 : 16,
           },
         ]}>
         {/* Back Arrow */}
@@ -107,14 +101,14 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: horizontalMarginScale(20),
-    paddingTop: verticalMarginScale(16),
-    paddingBottom: verticalMarginScale(16),
+    marginHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 16,
   },
   iconWrapper: {
-    width: verticalScale(40),
-    height: verticalScale(40),
-    borderRadius: radiusScale(40),
+    width: 40,
+    height: 40,
+    borderRadius: 40,
     backgroundColor: COLORS.tabBorderColor,
     justifyContent: 'center',
     alignItems: 'center',
@@ -125,19 +119,19 @@ const styles = StyleSheet.create({
     // shadowRadius: 2,
   },
   icon: {
-    width: verticalScale(16),
-    height: verticalScale(16),
+    width: 16,
+    height: 16,
     resizeMode: 'contain',
   },
   emptyWrapper: {
-    width: verticalScale(40),
-    height: verticalScale(40),
+    width: 40,
+    height: 40,
   },
   titleWrapper: {
     flex: 1,
   },
   headerTitle: {
-    fontSize: fontScale(24),
+    fontSize: 24,
     color: COLORS.black,
     fontFamily: fontFamily.RomieTrial_Bold,
     textAlign: 'center',

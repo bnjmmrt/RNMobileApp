@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.borderGray,
     borderRadius: 16,
     borderWidth: 1,
-    marginBottom: 10,
+    marginBottom: 16,
     gap: 16,
   },
   contentContainer: {

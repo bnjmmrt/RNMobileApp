@@ -8,6 +8,7 @@ import { Wp, Hp } from '../../utils/dimensions';
 import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle';
 import AvatarInitials from '../../component/AvatarInitials';
 import FullScreenLoader from 'src/component/FullScreenLoader';
+import { isIPad } from '../../utils/isTabletConfig';
 
 interface ProfileTopViewProps {
   editPhotoClick: () => void;
@@ -29,7 +30,7 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({
     <View style={styles.container}>
       <View style={styles.profilePhotoContainer}>
         <FullScreenLoader
-          loading={loading}
+          loading={Boolean(loading)}
           customStyle={styles.profilePhotoContainer}>
           {profilePic ? (
             <FastImage
@@ -54,7 +55,7 @@ const ProfileTopView: React.FC<ProfileTopViewProps> = ({
       <TitleSubtitle
         title={name}
         subTitle={role}
-        centerTextAlign={true}
+        centerTextAlign={!isIPad}
         titleFontSize={38}
         subTitleMargin={5}
         style={{ margin: 20 }}
@@ -71,10 +72,10 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   container: {
-    flexDirection: 'column',
+    flexDirection: isIPad ? 'row' : 'column',
     padding: 10,
     marginTop: 10,
-    width: Wp(100),
+    width: '100%',
     backgroundColor: COLORS.white,
   },
   imageContainer: {
@@ -93,8 +94,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     // marginRight: 10,
-    height: Hp(20),
-    width: Wp(30),
+    height: '20%',
+    width: '30%',
   },
   titleStyle: {
     fontSize: 22,

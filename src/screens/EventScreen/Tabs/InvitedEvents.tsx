@@ -7,7 +7,7 @@ import { Hp, verticalMarginScale } from '../../../utils/dimensions';
 import EventItem from '../EventItem';
 import { COLORS } from 'src/utils/constants';
 import EventItemSkeleton from '../../../component/EventItemSkeleton';
-import { gridStyles, numColumns, isIPad } from './config';
+import { gridStyles, numColumns, isIPad } from '../../../utils/isTabletConfig';
 
 interface InvitedEventsProps {
   userId: string;

@@ -1,8 +1,13 @@
-import React, {ReactNode} from 'react';
-import {StyleProp, StyleSheet, Text, TextProps, TextStyle} from 'react-native';
-import {fontFamily} from 'src/utils/functions';
-import {styles} from './style';
-import {fontScale} from 'src/utils/dimensions';
+import React, { ReactNode } from 'react';
+import {
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextProps,
+  TextStyle,
+} from 'react-native';
+import { fontFamily } from 'src/utils/functions';
+import { styles } from './style';
 
 interface CustomTextProps {
   textProps?: TextProps;
@@ -30,7 +35,7 @@ export const CustomText = ({
           fontSize:
             flattenedStyle && flattenedStyle?.fontSize
               ? flattenedStyle?.fontSize
-              : fontScale(14),
+              : 14,
           fontFamily:
             defaultFontFamily === 'abcd'
               ? fontFamily.ABCDiatype_Regular
