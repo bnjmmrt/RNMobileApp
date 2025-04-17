@@ -2,7 +2,7 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { LogBox, Platform, StyleSheet } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -35,12 +35,17 @@ import NotificationDialog from 'src/component/NotificationDialog';
 import { useGetUserWithRolesByIdMutation } from 'src/redux/actions/inviteGuestsApiAction';
 import { RootState } from 'src/redux/slices';
 import { setRoles } from 'src/redux/slices/authSlice';
+import { useLogout } from 'src/utils/hooks/useLogout';
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
   const { apiRequest } = useApi();
   const dispatch = useDispatch();
   const [getUserById] = useGetUserWithRolesByIdMutation();
+  const resetApp = useSelector((state: RootState) => state.auth.resetApp);
+  const { logOut } = useLogout();
+  const hasLoggedOut = useRef(false);
+
   const updateAnalyticsStatus = async (status: boolean) => {
     await analytics().setAnalyticsCollectionEnabled(status);
   };
@@ -64,8 +69,17 @@ const AppContent: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchUserById()
+    userId && fetchUserById()
   }, []);
+
+  useEffect(() => {
+    console.log("Sayyed resetApp:", resetApp)
+    console.log("Sayyed hasLoggedOut.current:", hasLoggedOut.current)
+    if (resetApp && !hasLoggedOut.current) {
+      hasLoggedOut.current = true;
+      logOut()
+    }
+  }, [resetApp])
 
   useEffect(() => {
     if (environment.BASE_URL == environmentProd.BASE_URL) {

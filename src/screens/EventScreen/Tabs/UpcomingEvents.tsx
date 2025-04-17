@@ -48,18 +48,22 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
   const queryArgs =
     role === ROLE.HOST
       ? ({
-          status: 'UPCOMING_STATUS',
-          searchText,
-          take: 10,
-          skip: (currentPage - 1) * 10,
-        } as const)
+        status: 'UPCOMING_STATUS',
+        searchText,
+        take: 10,
+        skip: (currentPage - 1) * 10,
+        sortBy: 'startDate',
+        order: 'DESC'
+      } as const)
       : ({
-          userId,
-          guestEventStatus: 'UPCOMING',
-          searchText,
-          take: 10,
-          skip: (currentPage - 1) * 10,
-        } as const);
+        userId,
+        guestEventStatus: 'UPCOMING',
+        searchText,
+        take: 10,
+        skip: (currentPage - 1) * 10,
+        sortBy: 'startDate',
+        order: 'DESC'
+      } as const);
 
   const { data, isLoading, refetch } = useFetchEvents(queryArgs as any);
 

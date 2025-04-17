@@ -7,7 +7,7 @@ import axios, {
 import { environment } from '../../environments/environment';
 import { FlashMessageComponent } from '../component/FlashMessageComponent/FlashMessageComponent';
 import { store } from 'src/redux/store';
-import { getErrorMessage } from 'src/utils/functions';
+import { getErrorMessage, performLogout } from 'src/utils/functions';
 
 // Extend AxiosRequestConfig to include custom `withAuth` key
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
@@ -68,31 +68,35 @@ axiosController.interceptors.response.use(
       console.log('Request URL on error:', requestUrl);
     }
 
-    // const status = error.response?.status;
-    // const errorMessage = (error.response?.data as any)?.error?.message || error.message;
+    const status = error.response?.status;
+    // const errorMessage = (error.response?.data as any)?.error?.message || error?.message;
 
-    // if (status === 400) {
-    //   FlashMessageComponent.show(
-    //     'error',
-    //     getErrorMessage(error?.response) || 'Something went wrong, please try again!',
-    //   );
-    // } else if (status === 401) {
-    //   FlashMessageComponent.show(
-    //     'error',
-    //     'Unauthorized access - Token might be expired',
-    //   );
-    // } else if (status === 403) {
-    //   FlashMessageComponent.show('error', errorMessage || 'Forbidden access');
-    // } else if (status === 404) {
-    //   FlashMessageComponent.show('error', 'Resource not found');
-    // } else if (status >= 500) {
-    //   FlashMessageComponent.show(
-    //     'error',
-    //     'Internal server error. Please try again later.',
-    //   );
-    // } else {
-    //   FlashMessageComponent.show('error', errorMessage);
-    // }
+    if (status === 400) {
+      console.log("Sayyed 400 error:", error)
+      // FlashMessageComponent.show(
+      //   'error',
+      //   getErrorMessage(error?.response) || 'Something went wrong, please try again!',
+      // );
+    } else if (status === 401) {
+      performLogout()
+      FlashMessageComponent.show(
+        'error',
+        'Unauthorized access - Token might be expired',
+      );
+
+      // } else if (status === 403) {
+      //   FlashMessageComponent.show('error', errorMessage || 'Forbidden access');
+      // } else if (status === 404) {
+      //   FlashMessageComponent.show('error', 'Resource not found');
+      // } else if (status >= 500) {
+      //   FlashMessageComponent.show(
+      //     'error',
+      //     'Internal server error. Please try again later.',
+      //   );
+    } else {
+      console.log("Sayyed 400 error:", error)
+      // FlashMessageComponent.show('error', errorMessage);
+    }
 
     return error.response;
   },

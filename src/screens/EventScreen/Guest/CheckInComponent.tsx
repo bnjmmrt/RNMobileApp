@@ -159,7 +159,7 @@ const RenderItemComponent = ({
                 isCheckInLoading &&
                 selectedGuestForCheckIn === item?.additionalGuest?.guestId
               }
-              disabled={item.isPaseEvent ||
+              disabled={
                 (isCheckInLoading &&
                   selectedGuestForCheckIn === item?.additionalGuest?.guestId)
               }
@@ -478,7 +478,7 @@ const CheckInComponent: React.FC<CheckInComponentProps> = ({
                   guestCheckInLoading &&
                   selectedGuestForCheckin === guestProfile.guestId
                 }
-                disabled={isPastEvent ||
+                disabled={
                   (guestCheckInLoading &&
                     selectedGuestForCheckin === guestProfile.guestId)
                 }
