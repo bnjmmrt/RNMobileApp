@@ -81,6 +81,7 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
 
   const toggleRole = async (newRole: role) => {
     const isHostHasActiveRole = isHostActive(roles)
+
     if (roles.length > 1 && isHostHasActiveRole) {
       setIsRolesExpanded(!isRolesExpanded);
       if (isRolesExpanded) {

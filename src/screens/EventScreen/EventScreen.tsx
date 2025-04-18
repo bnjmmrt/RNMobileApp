@@ -29,9 +29,6 @@ import InvitedEvents from './Tabs/InvitedEvents';
 import PastEvents from './Tabs/PastEvents';
 import UpcomingEvents from './Tabs/UpcomingEvents';
 import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
-import { EndPoint } from 'src/ApiManager/config';
-import { setIsGuest, setRole, setRoles } from 'src/redux/slices/authSlice';
-import useApi from 'src/axios/useApi';
 
 interface EventScreenProps extends NativeStackScreenProps<any, any> { }
 

@@ -53,7 +53,7 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
         take: 10,
         skip: (currentPage - 1) * 10,
         sortBy: 'startDate',
-        order: 'DESC'
+        order: 'ASC'
       } as const)
       : ({
         userId,
@@ -62,7 +62,7 @@ const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
         take: 10,
         skip: (currentPage - 1) * 10,
         sortBy: 'startDate',
-        order: 'DESC'
+        order: 'ASC'
       } as const);
 
   const { data, isLoading, refetch } = useFetchEvents(queryArgs as any);

@@ -1,7 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import { ProfileStack } from '../../navigation/ProfileStack';
 import { ROUTES } from '../../navigation/Route';
 import { RootState } from '../../redux/slices';
 import UsersModule from '../../screens/UsersModule';
@@ -11,7 +10,6 @@ import DiscoverScreen from '../../screens/DiscoverScreen/DiscoverScreen';
 import EventScreen from '../../screens/EventScreen/EventScreen';
 import ProfileScreen from '../../screens/ProfileScreen/ProfileScreen';
 import BottomTabBrComponent from './BottomTabBarComponent';
-import { useGetUserStatus } from 'src/redux/hooks/useGetUserStatus';
 
 const Tab = createBottomTabNavigator();
 
@@ -62,7 +60,6 @@ const hostTabs = [
 ];
 
 const BottomTabBar = () => {
-  const { userStatusData } = useGetUserStatus();
 
   const { role, isGuest } = useSelector(
     (state: RootState) => ({
@@ -72,11 +69,7 @@ const BottomTabBar = () => {
     shallowEqual,
   );
 
-  useEffect(() => {
-    if (userStatusData) {
-      console.log('User Status Data:', userStatusData);
-    }
-  }, [userStatusData]);
+
   // const role =
   //   (loginData?.roles &&
   //     loginData?.roles.length > 0 &&

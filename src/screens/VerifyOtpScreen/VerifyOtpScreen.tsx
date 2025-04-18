@@ -34,7 +34,8 @@ import VerifyOtpStyles from './VerifyOtpStyles';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { RootState } from 'src/redux/slices';
 import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
-import { setIsGuest } from 'src/redux/slices/authSlice';
+import { setIsGuest, setRoles } from 'src/redux/slices/authSlice';
+import { useGetUserWithRolesByIdMutation } from 'src/redux/actions/inviteGuestsApiAction';
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, any>;
 
@@ -63,6 +64,8 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   );
 
   const dispatch = useDispatch();
+  const [getUserById] = useGetUserWithRolesByIdMutation();
+
   const fcmToken = useSelector((state: RootState) => state.auth.fcmToken);
   const { keyboardVisible } = useKeyboard();
 
@@ -84,6 +87,24 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   };
   const handleBackPress = () => navigation.goBack();
 
+  const fetchUserById = async (userId: string) => {
+    try {
+      const response = await getUserById({ id: userId }).unwrap();
+      if (response.success) {
+        const { roles } = response.data;
+        const transformedRoles = roles.map((role: any) => ({
+          roleName: role.name,
+          roleId: role.id,
+          roleStatus: role.status
+        }));
+        dispatch(setRoles(transformedRoles));
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
+  };
+
+
   const redirectToHome = (data: any) => {
     loginUser({
       id: data?.id,
@@ -98,6 +119,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     dispatch(setPhone(route.params.phone || ''));
     dispatch(setIsGuest(data?.isGuest));
     fetchUserProfile();
+    fetchUserById(data?.id)
     let role = getPriorityRole(data?.roles);
     let screenName = '';
 

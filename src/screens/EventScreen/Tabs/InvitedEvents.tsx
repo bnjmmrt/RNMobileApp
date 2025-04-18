@@ -32,7 +32,7 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({
     take: 10,
     skip: (currentPage - 1) * 10,
     sortBy: 'startDate',
-    order: 'DESC'
+    order: 'ASC'
   });
 
   useEffect(() => {

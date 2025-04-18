@@ -48,8 +48,8 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
         searchText,
         take: 10,
         skip: (currentPage - 1) * 10,
-        sortBy: 'startDate',
-        order: 'DESC'
+        sortBy: 'endDate',
+        order: 'ASC'
       } as const); // Type assertion
 
   const { data, isLoading, refetch } = useFetchEvents(queryArgs);
