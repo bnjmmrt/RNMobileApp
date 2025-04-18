@@ -301,6 +301,32 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   const isAnyUserApproved = (response) => {
     return response?.some(user => user.isApproved === true);
   }
+
+  useEffect(() => {
+    if (!searchText) return;
+
+    const newExpanded: Record<string, boolean> = {};
+
+    guestsData?.data?.result?.forEach(guest => {
+      // Check if the main guest matches
+      const guestMatches = guest.name.toLowerCase().includes(searchText.toLowerCase());
+
+      // Check if any additional guest matches
+      const subGuestMatches = guest.additionalGuests?.some(sub =>
+        `${sub.firstName} ${sub.lastName}`.toLowerCase().includes(searchText.toLowerCase())
+      );
+
+      if (subGuestMatches) {
+        newExpanded[guest.id] = true; // auto-expand this parent
+      }
+    });
+
+    setExpandedGuests(prev => ({
+      ...prev,
+      ...newExpanded,
+    }));
+  }, [searchText, guestsData]);
+
   const renderGuestItem = ({
     item,
     index,
@@ -357,6 +383,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
               <Text style={styles.ticketTypeText}>{item.ticketType}</Text>
             </View>
           )}
+
 
           {item.additionalGuests && item.additionalGuests.length > 0 && (
             <TouchableOpacity
@@ -498,7 +525,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
               searchFilterRef?.current?.open();
             }}
             rightIconText={String(filterNumber || '') || ''}
-            mainContainerStyle={{ marginHorizontal: horizontalMarginScale(20) }}
+            mainContainerStyle={{ marginHorizontal: horizontalMarginScale(20), marginBottom: 10 }}
           />
         </View>
 

@@ -28,9 +28,9 @@ const DynamicTabBar: React.FC<DynamicTabBarProps> = ({
   currentTab
 }) => {
   const [activeTab, setActiveTab] = useState<TabItem>(currentTab ? currentTab : tabs[activeTabIndex]);
+
   useFocusEffect(
     useCallback(() => {
-      console.log("hi siyaaa");
       onTabChange?.(activeTab);
     }, [activeTab]),
   );
@@ -68,12 +68,12 @@ const DynamicTabBar: React.FC<DynamicTabBarProps> = ({
           {tabs.map(tab => (
             <TouchableOpacity
               key={tab.id}
-              style={[styles.tab, activeTab.id === tab.id && styles.activeTab]}
+              style={[styles.tab, activeTab?.id === tab?.id && styles.activeTab]}
               onPress={() => handleTabPress(tab)}>
               <CustomText
                 style={[
                   styles.tabText,
-                  activeTab.id === tab.id && styles.activeTabText,
+                  activeTab?.id === tab?.id && styles.activeTabText,
                 ]}>
                 {tab.label}
               </CustomText>

@@ -137,10 +137,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         //   response?.message || 'User account deactivated successfully.',
         // );
         deleteAccountBottomSheetRef.current?.close();
-        const resetAction = CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'AuthStack' }],
-        });
         dispatch(resetProfileData());
         dispatch(resetLoginData());
         dispatch(setAuthToken(null));
