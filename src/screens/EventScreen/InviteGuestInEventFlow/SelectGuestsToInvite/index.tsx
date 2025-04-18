@@ -62,7 +62,7 @@ const SelectGuestsToInviteScreen: React.FC<
   const searchInputRef = useRef<InputRefMethods>(null);
   const filtersSheetRef = useRef<BottomSheetMethods>(null);
 
-  const listTakeCount = 10;
+  const listTakeCount = 30;
 
   const [searchText, setSearchText] = useState<string>('');
   const [filterQuery, setFilterQuery] = useState<string>('');
@@ -158,6 +158,7 @@ const SelectGuestsToInviteScreen: React.FC<
     numberOfFiltersApplied: number,
     selectedFilters?: SelectedFilters,
   ) => {
+    dispatch(setInviteGuestAllUsersSkip(0));
     setFilterQuery(queryString);
     setFilterNumber(numberOfFiltersApplied);
     if (selectedFilters) {

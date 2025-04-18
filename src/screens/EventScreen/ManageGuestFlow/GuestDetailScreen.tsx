@@ -56,7 +56,7 @@ import TicketTypeBottomSheet, {
 } from '../InviteGuestInEventFlow/TicketTypeBottomSheet';
 import { EventGuest, ManageGuestPayload } from '../types';
 import DeclinedBySection from '../Guest/DeclinedBySection';
-import { setManageGuestRefresh } from 'src/redux/slices/listSkipSlice';
+import { setManageGuestRefresh, setManageGuestSkip } from 'src/redux/slices/listSkipSlice';
 
 enum GuestStatus {
   DRAFT = 'DRAFT',
@@ -77,7 +77,9 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
 }): JSX.Element => {
   const dispatch = useDispatch();
   const guestId = route.params?.guestId as string;
+  const isPastEvent = route.params?.isPastEvent as boolean;
   const loggedInUserId = useSelector((state: RootState) => state.auth.userId);
+  const manageGuestSkipCount = useSelector((state: RootState) => state.listSkip);
 
   const { userId, selectedEvent } = useSelector(
     (state: RootState) => ({
@@ -226,6 +228,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
       }).unwrap();
 
       if (response.success) {
+        // dispatch(setManageGuestSkip(0))
         dispatch(setManageGuestRefresh());
         // navigation.goBack();
         refreshGuestDetails();
@@ -744,6 +747,7 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               }}
               spammedByHost={guestProfile.isSpammedByHost}
               declinedBy={guestProfile?.declinedById}
+              isPastEvent={isPastEvent}
               declinedReason={guestProfile?.rejectedReason}
             />
 
@@ -770,11 +774,12 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
               additionalGuests={guestProfile?.additionalGuests}
               maxAdditionalGuests={guestDetail?.maxAdditionalGuests}
               selectedTicketType={selectedTicketType}
+              isPastEvent={isPastEvent}
             />
           )}
         </ScrollView>
       </KeyboardAvoidingView>
-      <View style={styles.footer}>{renderFooterButtons()}</View>
+      {!isPastEvent && <View style={styles.footer}>{renderFooterButtons()}</View>}
 
       <TicketTypeBottomSheet
         ref={actionSheetRef}

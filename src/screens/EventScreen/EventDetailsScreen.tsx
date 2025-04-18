@@ -489,6 +489,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     dispatch(setSelectedEventForInvite(data.data));
     navigation.navigate(ROUTES.EventGuestList, {
       eventId: route?.params?.id,
+      isPastEvent: data?.data?.status === 'PAST_STATUS'
     });
   };
 

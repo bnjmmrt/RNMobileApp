@@ -24,48 +24,48 @@ export const listSkipSlice = createSlice({
   name: 'listSkipSlice',
   initialState,
   reducers: {
-    setManageGuestSkip: (state, action: PayloadAction<Partial<number>>) => {
+    setManageGuestSkip: (state, action: PayloadAction<number>) => {
       state.manageGuestSkipCount = action.payload;
     },
     setUsersTabAllUsersSkip: (
       state,
-      action: PayloadAction<Partial<number>>,
+      action: PayloadAction<number>,
     ) => {
       state.usersTabAllUsersSkipCount = action.payload;
     },
     setUsersTabAllListsSkip: (
       state,
-      action: PayloadAction<Partial<number>>,
+      action: PayloadAction<number>,
     ) => {
       state.usersTabAllListsSkipCount = action.payload;
     },
     setInviteGuestAllUsersSkip: (
       state,
-      action: PayloadAction<Partial<number>>,
+      action: PayloadAction<number>,
     ) => {
       state.inviteGuestUsersSkipCount = action.payload;
     },
     setManageGuestRefresh: (state) => {
-      state.manageGuestRefresh = !state.manageGuestRefresh;
       state.manageGuestSkipCount = 0;
+      state.manageGuestRefresh = !state.manageGuestRefresh;
     },
     setUsersTabAllUsersRefresh: (
       state,
     ) => {
-      state.usersTabAllUsersRefresh = !state.usersTabAllUsersRefresh
       state.usersTabAllUsersSkipCount = 0;
+      state.usersTabAllUsersRefresh = !state.usersTabAllUsersRefresh
     },
     setUsersTabAllListsRefresh: (
       state,
     ) => {
-      state.usersTabAllListRefresh = !state.usersTabAllListRefresh;
       state.usersTabAllListsSkipCount = 0;
+      state.usersTabAllListRefresh = !state.usersTabAllListRefresh;
     },
     setInviteGuestAllUsersRefresh: (
       state,
     ) => {
-      state.inviteGuestUsersRefresh = !state.inviteGuestUsersRefresh;
       state.inviteGuestUsersSkipCount = 0;
+      state.inviteGuestUsersRefresh = !state.inviteGuestUsersRefresh;
     },
   },
 });

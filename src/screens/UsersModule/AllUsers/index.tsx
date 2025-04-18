@@ -43,7 +43,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
   const scrollToTopRef = useRef(null);
   useScrollToTop(scrollToTopRef);
 
-  const listTakeCount = 20;
+  const listTakeCount = 30;
 
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>('');
@@ -62,7 +62,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
     };
   }, shallowEqual);
 
-  const { data, isLoading, error, isError, refetch, isFetching } =
+  const { data, isLoading, refetch, isFetching } =
     useFetchAllUsersQuery({
       take: listTakeCount,
       skip: usersTabAllUsersSkipCount,
@@ -116,6 +116,7 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
     numberOfFiltersApplied: number,
     selectedFilters?: SelectedFilters,
   ) => {
+    dispatch(setUsersTabAllUsersSkip(0));
     setFilterQuery(queryString);
     setFilterNumber(numberOfFiltersApplied);
     if (selectedFilters) {
