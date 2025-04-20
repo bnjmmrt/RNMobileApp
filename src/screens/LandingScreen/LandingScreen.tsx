@@ -60,13 +60,17 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
         </View>
 
         <View style={styles.buttonWrapper}>
-          <Button
+
+          {/* //TODO: fixing design */}
+
+          
+          {/* <Button
             disabled={false}
             style={styles.btnStyle}
             title={BUTTON_LABLE.APPLY_TO_BE_HOST}
             colorTheme={'dark'}
             onPress={handleOpenWebView}
-          />
+          /> */}
 
           <View style={{ height: Hp(2) }} />
 
