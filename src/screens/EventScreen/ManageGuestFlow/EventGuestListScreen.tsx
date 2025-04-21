@@ -29,7 +29,7 @@ import StatusLabel from 'src/component/StatusLabel/StatusLabel';
 import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 import { EventStackParamList } from 'src/navigation/EventStack';
 import { ROUTES } from 'src/navigation/Route';
-import { useGetGuestsQuery } from 'src/redux/actions/eventApiAction';
+import { useFetchHostEventDetailsQuery, useGetGuestsQuery } from 'src/redux/actions/eventApiAction';
 import { RootState } from 'src/redux/slices';
 import { setEventId } from 'src/redux/slices/eventSlice';
 import {
@@ -51,6 +51,7 @@ import {
 } from '../Guest/GuestListSheets';
 import { EventGuest } from '../types';
 import { setManageGuestRefresh, setManageGuestSkip } from 'src/redux/slices/listSkipSlice';
+import { setSelectedEventForInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
 
 export interface GuestCountInterface {
   data: {
@@ -110,7 +111,6 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   route,
 }) => {
   const dispatch = useDispatch();
-
   const eventId = route?.params?.eventId;
   const listFilter = route?.params?.listFilter;
   const isPastEvent = route?.params?.isPastEvent;
@@ -147,6 +147,12 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     },
     shallowEqual,
   );
+
+  const { data } = useFetchHostEventDetailsQuery({ eventId }, { skip: !eventId })
+
+  useEffect(() => {
+    data && dispatch(setSelectedEventForInvite(data?.data));
+  }, [data])
 
   const {
     data: guestsData,
