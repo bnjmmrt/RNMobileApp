@@ -273,9 +273,9 @@ const RSVPInvitedUpcoming = () => {
       case 'submit':
         return '60%';
       case 'options':
-        return '20%';
+        return '12%';
       case 'cancel':
-        return Platform.OS == 'android' ? '95%' : '88%';
+        return Platform.OS == 'android' ? '86%' : '80%';
       case 'leave':
         return '40%';
       case 'remove':

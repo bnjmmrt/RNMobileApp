@@ -50,6 +50,7 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
         const transformedRoles = roles.map((role: any) => ({
           roleName: role.name,
           roleId: role.id,
+          roleStatus: role.status
         }));
         dispatch(setRoles(transformedRoles));
 

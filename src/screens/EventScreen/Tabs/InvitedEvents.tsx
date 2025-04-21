@@ -31,6 +31,8 @@ const InvitedEvents: React.FC<InvitedEventsProps> = ({
     searchText: searchText,
     take: 10,
     skip: (currentPage - 1) * 10,
+    sortBy: 'startDate',
+    order: 'ASC'
   });
 
   useEffect(() => {

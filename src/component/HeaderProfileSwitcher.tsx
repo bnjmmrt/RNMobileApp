@@ -74,11 +74,15 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
   const profilePhoto =
     role?.toLocaleLowerCase() === 'host' ? companyLogo : profilePicture;
 
+  const isHostActive = (roles) => {
+    const host = roles?.find(member => member.roleName === 'host');
+    return host?.roleStatus === 'ACTIVE';
+  }
+
   const toggleRole = async (newRole: role) => {
-    if (roles.length === 1) {
-      navigation.navigate(ROUTES.ProfileScreen);
-      setSwitchingRole('');
-    } else {
+    const isHostHasActiveRole = isHostActive(roles)
+
+    if (roles.length > 1 && isHostHasActiveRole) {
       setIsRolesExpanded(!isRolesExpanded);
       if (isRolesExpanded) {
         if (newRole.roleName !== role) {
@@ -122,6 +126,9 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
           }
         }
       }
+    } else {
+      navigation.navigate(ROUTES.ProfileScreen);
+      setSwitchingRole('');
     }
   };
 

@@ -29,7 +29,7 @@ import StatusLabel from 'src/component/StatusLabel/StatusLabel';
 import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 import { EventStackParamList } from 'src/navigation/EventStack';
 import { ROUTES } from 'src/navigation/Route';
-import { useGetGuestsQuery } from 'src/redux/actions/eventApiAction';
+import { useFetchHostEventDetailsQuery, useGetGuestsQuery } from 'src/redux/actions/eventApiAction';
 import { RootState } from 'src/redux/slices';
 import { setEventId } from 'src/redux/slices/eventSlice';
 import {
@@ -51,6 +51,7 @@ import {
 } from '../Guest/GuestListSheets';
 import { EventGuest } from '../types';
 import { setManageGuestRefresh, setManageGuestSkip } from 'src/redux/slices/listSkipSlice';
+import { setSelectedEventForInvite } from 'src/redux/slices/inviteGuestsFlowSlice';
 
 export interface GuestCountInterface {
   data: {
@@ -110,7 +111,6 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   route,
 }) => {
   const dispatch = useDispatch();
-
   const eventId = route?.params?.eventId;
   const listFilter = route?.params?.listFilter;
   const isPastEvent = route?.params?.isPastEvent;
@@ -147,6 +147,12 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
     },
     shallowEqual,
   );
+
+  const { data } = useFetchHostEventDetailsQuery({ eventId }, { skip: !eventId })
+
+  useEffect(() => {
+    data && dispatch(setSelectedEventForInvite(data?.data));
+  }, [data])
 
   const {
     data: guestsData,
@@ -267,7 +273,6 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   };
 
   const renderInvitee = (item: EventGuest, leadId: string, index: number) => {
-    console.log("sayyed item status:", item.status)
     return (<TouchableOpacity
       style={styles.inviteeItem}
       onPress={() => {
@@ -302,6 +307,32 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   const isAnyUserApproved = (response) => {
     return response?.some(user => user.isApproved === true);
   }
+
+  useEffect(() => {
+    if (!searchText) return;
+
+    const newExpanded: Record<string, boolean> = {};
+
+    guestsData?.data?.result?.forEach(guest => {
+      // Check if the main guest matches
+      const guestMatches = guest.name.toLowerCase().includes(searchText.toLowerCase());
+
+      // Check if any additional guest matches
+      const subGuestMatches = guest.additionalGuests?.some(sub =>
+        `${sub.firstName} ${sub.lastName}`.toLowerCase().includes(searchText.toLowerCase())
+      );
+
+      if (subGuestMatches) {
+        newExpanded[guest.id] = true; // auto-expand this parent
+      }
+    });
+
+    setExpandedGuests(prev => ({
+      ...prev,
+      ...newExpanded,
+    }));
+  }, [searchText, guestsData]);
+
   const renderGuestItem = ({
     item,
     index,
@@ -358,6 +389,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
               <Text style={styles.ticketTypeText}>{item.ticketType}</Text>
             </View>
           )}
+
 
           {item.additionalGuests && item.additionalGuests.length > 0 && (
             <TouchableOpacity
@@ -499,7 +531,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
               searchFilterRef?.current?.open();
             }}
             rightIconText={String(filterNumber || '') || ''}
-            mainContainerStyle={{ marginHorizontal: horizontalMarginScale(20) }}
+            mainContainerStyle={{ marginHorizontal: horizontalMarginScale(20), marginBottom: 10 }}
           />
         </View>
 

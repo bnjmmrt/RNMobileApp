@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     gap: horizontalMarginScale(4),
   },
   icon: {
-    resizeMode:'contain'
+    resizeMode: 'contain'
     // marginRight: 10,
   },
   input: {
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   clearIcon: {
-    resizeMode:'contain',
+    resizeMode: 'contain',
     width: 16,
     height: 16,
   },

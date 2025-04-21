@@ -7,6 +7,7 @@ import {
 } from '@reduxjs/toolkit/query/react';
 import { environment } from '../../environments/environment';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { performLogout } from 'src/utils/functions';
 
 // Middleware for logging requests and responses
 const logMiddleware = async (
@@ -29,6 +30,10 @@ const logMiddleware = async (
 
   if (result.error) {
     console.error(`[API Error] ${method} ${url}`, result.error);
+    if (result?.error?.status == 401) {
+      FlashMessageComponent.show('error', result?.error?.message || "Unauthorized!!");
+      performLogout()
+    }
     // FlashMessageComponent.show(
     //   'error',
     //   result.error?.data?.message || 'Something went wrong, please try again!',

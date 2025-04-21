@@ -1,6 +1,5 @@
 import { EndPoint } from 'src/ApiManager/config';
 import { createBaseApi } from '../../ApiManager/createBaseApi';
-import { useGetUserStatus } from '../hooks/useGetUserStatus';
 
 export const loginApiAction = createBaseApi.injectEndpoints({
   endpoints: builder => ({
