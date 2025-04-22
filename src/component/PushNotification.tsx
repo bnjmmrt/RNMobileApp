@@ -133,6 +133,7 @@ export const navigateToScreen = (data: any, type: string = 'in-app') => {
     } else if (notifiType === 'rsvpSignupFormRequest') {
         let eventData = {
             eventId: type == 'push' ? data?.data?.eventId : data?.body?.eventId,
+            applyRequestFilter: true
         };
         console.log(" RSVP Signup Form Request", eventData);
         navigateToNestedStack(ROUTES.EventStack, ROUTES.EventGuestList, eventData);
