@@ -119,7 +119,6 @@ export const navigateToScreen = (data: any, type: string = 'in-app') => {
         'eventInvitationNonMember',
         'eventSubmissionApproved',
         'eventAnnouncement',
-        'newGuestRequest',
         'eventApproved',
         'eventSubmitted',
         'eventEdited',
@@ -130,7 +129,7 @@ export const navigateToScreen = (data: any, type: string = 'in-app') => {
             id: type == 'push' ? data?.data?.eventId : data?.body?.eventId
         };
         navigateToNestedStack(ROUTES.EventStack, ROUTES.EventDetailsScreen, eventData);
-    } else if (notifiType === 'rsvpSignupFormRequest') {
+    } else if (notifiType === 'rsvpSignupFormRequest' || notifiType === 'newGuestRequest') {
         let eventData = {
             eventId: type == 'push' ? data?.data?.eventId : data?.body?.eventId,
             applyRequestFilter: true
