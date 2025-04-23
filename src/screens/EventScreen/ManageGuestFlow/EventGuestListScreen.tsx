@@ -130,7 +130,7 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   const [selectedSort, setSelectedSort] = useState<'ASC' | 'DESC'>('ASC');
   const [selectedFilter, setSelectedFilter] = useState<
     'INVITED' | 'APPLIED' | 'CONFIRMED' | 'DECLINED' | 'DRAFT' | ''
-  >('');
+  >(route?.params?.applyRequestFilter ? 'APPLIED' : '');
   const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
 
   const { eventDetails, manageGuestSkipCount, manageGuestRefresh } = useSelector(
