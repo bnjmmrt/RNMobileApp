@@ -74,8 +74,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: horizontalScale(16),
     },
     rumorLogo: {
-        height: 16,
-        width: 102,
+        height: verticalScale(25),
+        width: verticalScale(130),
         zIndex: 1000000,
         marginBottom: verticalScale(40),
     },

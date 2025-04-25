@@ -122,6 +122,7 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
             />
 
             <MiddleStaticComponent
+              hasGradient={true}
               style={{ marginTop: verticalMarginScale(16) }}
             />
 

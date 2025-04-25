@@ -131,16 +131,16 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignSelf: 'center',
     backgroundColor: COLORS.white,
-    height: verticalScale(64),
-    width: verticalScale(64),
-    borderRadius: verticalScale(32),
+    height: verticalScale(80),
+    width: verticalScale(80),
+    borderRadius: verticalScale(40),
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: verticalMarginScale(24),
   },
   logo: {
-    height: verticalScale(48),
-    width: verticalScale(48),
+    height: verticalScale(40),
+    width: verticalScale(40),
     tintColor: COLORS.black,
   },
   title: {

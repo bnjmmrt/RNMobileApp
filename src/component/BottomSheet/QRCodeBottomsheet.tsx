@@ -170,7 +170,7 @@ const RenderToolTip = React.memo(
           styles.toolTipStyle,
           {
             width: myHeight > 2 ? '80%' : '100%',
-            height: verticalScale(myHeight > 2 ? myHeight * 25 : myHeight * 30),
+            height: verticalScale(myHeight > 2 ? myHeight * 20 : myHeight * 30),
           },
         ]}
         isVisible={isVisible}
@@ -276,7 +276,7 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
               contentText={`This QR code is valid for ${userDetails?.name || name
                 } only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`}
               placement={Placement.BOTTOM}
-              arrowStyle={{ top: -10 }}
+              arrowStyle={{ top: -9 }}
             />
           </View>
 

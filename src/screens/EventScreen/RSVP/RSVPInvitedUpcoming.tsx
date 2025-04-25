@@ -736,6 +736,10 @@ const RSVPInvitedUpcoming = () => {
     />
   );
   const renderUpcomingRSVPView = () => {
+    let guestCount = calculateAvailableGuestPasses(
+      combinedGuests,
+      maxAdditionalGuests,
+    )
     return (
       <>
         <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
@@ -756,14 +760,15 @@ const RSVPInvitedUpcoming = () => {
               }}
             />
             <View style={{ gap: 6 }}>
-              <CustomText style={{ color: COLORS.light_gray }}>
-                You have{' '}
-                {calculateAvailableGuestPasses(
-                  combinedGuests,
-                  maxAdditionalGuests,
-                )}{' '}
-                guest passes available{' '}
-              </CustomText>
+              {guestCount > 0 ?
+                <CustomText style={{ color: COLORS.light_gray }}>
+                  You have{' '}
+                  {guestCount}{' '}
+                  guest {guestCount > 1 ? 'passes' : 'pass'} available{' '}
+                </CustomText> :
+                <CustomText style={{ color: COLORS.light_gray }}>
+                  You don't have any guest pass.
+                </CustomText>}
               <FlatList
                 data={combinedGuests}
                 renderItem={renderItem}

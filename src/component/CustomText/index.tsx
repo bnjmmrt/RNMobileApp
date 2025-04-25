@@ -1,8 +1,8 @@
-import React, {ReactNode} from 'react';
-import {StyleProp, StyleSheet, Text, TextProps, TextStyle} from 'react-native';
-import {fontFamily} from 'src/utils/functions';
-import {styles} from './style';
-import {fontScale} from 'src/utils/dimensions';
+import React, { ReactNode } from 'react';
+import { StyleProp, StyleSheet, Text, TextProps, TextStyle } from 'react-native';
+import { fontFamily } from 'src/utils/functions';
+import { styles } from './style';
+import { fontScale } from 'src/utils/dimensions';
 
 interface CustomTextProps {
   textProps?: TextProps;
@@ -10,6 +10,7 @@ interface CustomTextProps {
   children?: ReactNode;
   onPress?: () => void;
   defaultFontFamily?: 'abcd' | 'romie';
+  noOfLine?: number;
 }
 
 export const CustomText = ({
@@ -18,11 +19,13 @@ export const CustomText = ({
   children,
   onPress,
   defaultFontFamily = 'abcd',
+  noOfLine
 }: CustomTextProps): React.JSX.Element => {
   const flattenedStyle = StyleSheet.flatten(style);
 
   return (
     <Text
+      numberOfLines={noOfLine}
       {...textProps}
       style={[
         styles?.customText,

@@ -437,7 +437,7 @@ const HostProfileScreen: React.FC = () => {
                     <CustomText
                       style={styles.eventNameText}
                       textProps={{ numberOfLines: 1 }}>
-                      {item.name}
+                    vaihskhhshsh kjh khdks 
                     </CustomText>
                     <CustomText style={styles.dateText}>
                       {convertUTCToTimeZoneFormat(
