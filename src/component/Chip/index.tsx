@@ -34,7 +34,7 @@ const Chip: React.FC<ChipProps> = ({
           onPress(id);
         }
       }}>
-      <CustomText style={isSelected ? styles.selectedTitle : {}}>
+      <CustomText noOfLine={1} style={isSelected ? styles.selectedTitle : {}}>
         {title}
       </CustomText>
       {showCross ? (
