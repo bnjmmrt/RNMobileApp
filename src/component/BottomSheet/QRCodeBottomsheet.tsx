@@ -169,7 +169,7 @@ const RenderToolTip = React.memo(
         contentStyle={[
           styles.toolTipStyle,
           {
-            width: myHeight > 2 ? '80%' : '100%',
+            width: myHeight > 2 ? '77%' : '100%',
             height: verticalScale(myHeight > 2 ? myHeight * 20 : myHeight * 30),
           },
         ]}

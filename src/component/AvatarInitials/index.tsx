@@ -91,7 +91,7 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
             color: textColor,
             fontSize: listing
               ? radiusScale(size) / 2.5
-              : radiusScale(size) / 1.7,
+              : radiusScale(size) / 2.0,
           },
         ]}>
         {initials}

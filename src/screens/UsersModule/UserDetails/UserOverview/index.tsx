@@ -36,33 +36,33 @@ const UserOverview: React.FC<UserOverviewProps> = ({ user }) => {
   const socialPresenceData = [
     {
       icon: IMAGES.insta,
-      value: userDetails?.socialStats?.instagramFollowersCount || 0,
+      value: userDetails?.socialStats?.instagramFollowersCount || '-',
     },
     {
       icon: IMAGES.x,
-      value: userDetails?.socialStats?.xFollowersCount || 0,
+      value: userDetails?.socialStats?.xFollowersCount || '-',
     },
 
     {
       icon: IMAGES.tiktok_rounded,
-      value: userDetails?.socialStats?.tiktokFollowersCount || 0,
+      value: userDetails?.socialStats?.tiktokFollowersCount || '-',
     },
 
     {
       icon: IMAGES.fb,
-      value: userDetails?.socialStats?.facebookFollowersCount || 0,
+      value: userDetails?.socialStats?.facebookFollowersCount || '-',
     },
     {
       icon: IMAGES.linkdn,
-      value: userDetails?.socialStats?.linkedinFollowersCount || 0,
+      value: userDetails?.socialStats?.linkedinFollowersCount || '-',
     },
     {
       icon: IMAGES.yt,
-      value: userDetails?.socialStats?.youtubeFollowersCount || 0,
+      value: userDetails?.socialStats?.youtubeFollowersCount || '-',
     },
     {
       icon: IMAGES.snapchat,
-      value: userDetails?.socialStats?.snapchatFollowersCount || 0,
+      value: userDetails?.socialStats?.snapchatFollowersCount || '-',
     },
   ];
 
@@ -114,7 +114,7 @@ const UserOverview: React.FC<UserOverviewProps> = ({ user }) => {
       <CustomText style={[styles.sectionTitle, { marginTop: 0 }]}>
         {'Information'}
       </CustomText>
-      {userDetails?.gender &&  userDetails?.gender != 'N/A' ? (
+      {userDetails?.gender && userDetails?.gender != 'N/A' ? (
         <InfoRow title={userDetails?.gender} icon={IMAGES.profileTab} />
       ) : null}
       {userDetails?.age ? (
@@ -123,7 +123,7 @@ const UserOverview: React.FC<UserOverviewProps> = ({ user }) => {
           icon={IMAGES.hourglass}
         />
       ) : null}
-      {userDetails?.city &&  userDetails?.city != 'N/A' ? (
+      {userDetails?.city && userDetails?.city != 'N/A' ? (
         <InfoRow title={userDetails?.city} icon={IMAGES.location} />
       ) : null}
       {userDetails?.dateOfBirth ? (
