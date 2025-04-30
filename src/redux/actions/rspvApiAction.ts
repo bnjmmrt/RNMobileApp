@@ -55,9 +55,10 @@ export const rspvApiAction = createBaseApi.injectEndpoints({
             }),
         }),
         acceptInvitation: builder.mutation({
-            query: ({ id, eventId }) => ({
+            query: ({ id, eventId, limitOnePlus }) => ({
                 url: `events/v1/users/${id}/events/${eventId}/accept`,
                 method: 'PUT',
+                body: { limitOnePlus }
             }),
         }),
         inviteGuests: builder.mutation({
