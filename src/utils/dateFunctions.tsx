@@ -1,4 +1,5 @@
 import moment from 'moment-timezone';
+import { DateType } from 'react-native-ui-datepicker';
 
 export const formatEventDate = (
   startDate: string,
@@ -272,3 +273,27 @@ export const formatSingleToDeviceTimeZone = (dateString: any) => {
 
   return `${month}/${day}/${year} ${hour}:${minute} ${period} ${timeZone}`;
 };
+
+export const formatDateToUTCString = (date: DateType) => {
+  if (!(date instanceof Date) || isNaN(date.getTime())) {
+    throw new Error("Invalid Date object provided");
+  }
+
+  const pad = (n) => String(n).padStart(2, "0");
+
+  return (
+    date.getUTCFullYear() +
+    "-" +
+    pad(date.getUTCMonth() + 1) +
+    "-" +
+    pad(date.getUTCDate()) +
+    " " +
+    pad(date.getUTCHours()) +
+    ":" +
+    pad(date.getUTCMinutes()) +
+    ":" +
+    pad(date.getUTCSeconds()) +
+    "+00"
+  );
+}
+
