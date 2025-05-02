@@ -48,6 +48,8 @@ import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 import BaseCityComponent from '../ProfileScreen/EditProfile/BaseCityComponent';
 import DatePickerComponent from '../ProfileScreen/EditProfile/DatePickerComponent';
+import DateTimePicker, { DateType, useDefaultClassNames, useDefaultStyles } from 'react-native-ui-datepicker';
+import { formatDateToUTCString } from 'src/utils/dateFunctions';
 
 interface Location {
   location?: string;
@@ -103,6 +105,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   const editPhotoBottomSheetRef = useRef<BottomSheetMethods>(null);
   const { uploadFileHook } = useUploadFile();
   const [loader, setLoader] = useState<boolean>(false);
+  const defaultStyles = useDefaultStyles();
 
   useEffect(() => {
     const formattedStartDate = moment
@@ -119,6 +122,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
   );
   const [imageSize, setImageSize] = useState<number>(0);
   const [timeZone, setTimeZone] = useState<string>();
+  const defaultClassNames = useDefaultClassNames();
 
   const onDiscardChanges = () => {
     setSelectedStartDate(item?.startDate || '');
@@ -421,6 +425,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
               ref={startDateRef}
               onDateChange={e => setSelectedStartDate(e)}
               birthDate={item?.startDate}
+              minDate={item?.startDate}
               timeZone={timeZone}
               dateFormat="MM/DD/YY h:mm A z"
             />
@@ -430,9 +435,29 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
               startDate={selectedStartDate}
               ref={endDateRef}
               birthDate={item?.endDate}
+              minDate={item?.startDate}
               timeZone={timeZone}
               dateFormat="MM/DD/YY h:mm A z"
             />
+            {/* <DateTimePicker
+              mode="single"
+              use12Hours
+              timePicker
+              date={selected}
+              timeZone={timeZone}
+              onChange={({ date }) => {
+                console.log('Type of date:', typeof date, date);
+                setSelected(date instanceof Date ? date : new Date(date));
+              }}
+    
+              styles={{
+                ...defaultStyles,
+                today: { backgroundColor: COLORS.disable, borderRadius: 22, width: 44, height: 44 }, // Add a border to today's date
+                selected: { backgroundColor: COLORS.black, borderRadius: 22, width: 44, height: 44 }, // Highlight the selected day
+                selected_label: { color: 'white' }, // Highlight the selected day label
+              }}
+            /> */}
+
           </View>
 
           <View>

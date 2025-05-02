@@ -66,10 +66,11 @@ const UserOverview: React.FC<UserOverviewProps> = ({ user }) => {
     },
   ];
 
-  const totalFollowers = socialPresenceData.reduce(
-    (total, item) => total + (item.value || 0),
-    0,
-  );
+  const totalFollowers = socialPresenceData.reduce((total, item) => {
+    const value = Number(item.value);
+    return !isNaN(value) ? total + value : total;
+  }, 0);
+
 
   const InfoRow = ({
     icon,

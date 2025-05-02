@@ -21,6 +21,7 @@ interface DatePickerComponentProps {
   birthDate?: string;
   timeZone?: string;
   dateFormat?: string;
+  minDate?: string;
   isDOB?: boolean;
 }
 
@@ -75,10 +76,10 @@ const DatePickerComponent = forwardRef(
     const displayDate = props?.isDOB
       ? selectedDate
       : convertUTCToTimeZoneFormat(
-          selectedDate,
-          props?.timeZone,
-          props.dateFormat,
-        );
+        selectedDate,
+        props?.timeZone,
+        props.dateFormat,
+      );
 
     return (
       <>
@@ -94,9 +95,10 @@ const DatePickerComponent = forwardRef(
         {props?.type == 'DateTime' ? (
           <CustomDateTimePickerBottomSheet
             ref={bottomSheetRef}
-            minDate={props?.startDate}
+            minDate={props?.minDate}
             setSelectedDate={handleDateChange}
             date={selectedDate}
+            timeZone={'UTC'}
           />
         ) : (
           <CustomDatepickerBottomSheet
