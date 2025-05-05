@@ -15,6 +15,7 @@ interface CustomTextProps {
   children?: ReactNode;
   onPress?: () => void;
   defaultFontFamily?: 'abcd' | 'romie';
+  noOfLine?: number;
 }
 
 export const CustomText = ({
@@ -23,11 +24,13 @@ export const CustomText = ({
   children,
   onPress,
   defaultFontFamily = 'abcd',
+  noOfLine
 }: CustomTextProps): React.JSX.Element => {
   const flattenedStyle = StyleSheet.flatten(style);
 
   return (
     <Text
+      numberOfLines={noOfLine}
       {...textProps}
       style={[
         styles?.customText,

@@ -3,7 +3,7 @@ import IMAGES from '@images/index';
 import dayjs from 'dayjs';
 import React, { useEffect, useRef, useState } from 'react';
 import { Image, TouchableOpacity } from 'react-native';
-import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
+import DateTimePicker, { CalendarComponents, DateType, useDefaultStyles } from 'react-native-ui-datepicker';
 import Chip from 'src/component/Chip';
 import GooglePlacesInput from 'src/component/GooglePlacesInput/GooglePlacesInput';
 import Input, { InputRefMethods } from 'src/component/Input/Input';
@@ -70,13 +70,14 @@ const FilterOptions = ({
 
   const [minAge, setMinAge] = useState<string>(
     ((selectedFilters && selectedFilters?.ageFrom?.value[0].id) as string) ||
-      '',
+    '',
   );
   const [maxAge, setMaxAge] = useState<string>(
     ((selectedFilters && selectedFilters?.ageTo?.value[0].id) as string) || '',
   );
 
   const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false);
+  const defaultStyles = useDefaultStyles();
 
   useEffect(() => {
     if (minAge && parseInt(minAge) < 18) {
@@ -111,6 +112,14 @@ const FilterOptions = ({
     ? dayjs(maxEndDate).format('MM/DD/YY')
     : 'No max date';
 
+  const components: CalendarComponents = {
+    IconNext: <Image resizeMode="contain" source={IMAGES.arrowRight} />,
+    IconPrev: <Image
+      source={IMAGES.arrowRight}
+      resizeMode="contain"
+      style={{ transform: [{ rotate: '180deg' }] }}
+    />
+  };
   return (
     <BottomSheetView>
       {optionType === 'checkbox' ? (
@@ -128,8 +137,8 @@ const FilterOptions = ({
                 isSelected={
                   selectedFilters
                     ? selectedFilters[id]?.value?.some(
-                        innerItem => innerItem.id === item.id,
-                      )
+                      innerItem => innerItem.id === item.id,
+                    )
                     : false || false
                 }
                 onPress={optionId => {
@@ -173,11 +182,12 @@ const FilterOptions = ({
           {datePickerVisible && (
             <BottomSheetView style={styles.datePicker}>
               <DateTimePicker
+                // components={components}
                 mode="range"
                 startDate={
                   selectedFilters['minStartDate']?.value[0]
                     ? selectedFilters['minStartDate']?.value[0]?.date ||
-                      undefined
+                    undefined
                     : undefined
                 }
                 endDate={
@@ -185,34 +195,42 @@ const FilterOptions = ({
                     ? selectedFilters['maxEndDate']?.value[0]?.date || undefined
                     : undefined
                 }
-                headerButtonStyle={styles.headerButtonStyle}
-                headerContainerStyle={{ marginTop: 16 }}
-                headerTextStyle={{
-                  fontFamily: fontFamily.ABCDiatype_Regular,
-                  fontSize: fontScale(14),
-                }}
+                // headerButtonStyle={styles.headerButtonStyle}
+                // headerContainerStyle={{ marginTop: 16 }}
+                // headerTextStyle={{
+                //   fontFamily: fontFamily.ABCDiatype_Regular,
+                //   fontSize: fontScale(14),
+                // }}
                 minDate={new Date()}
-                weekDaysTextStyle={{
-                  fontFamily: fontFamily.ABCDiatype_Bold,
-                  fontSize: fontScale(14),
+                styles={{
+                  ...defaultStyles,
+                  today: { backgroundColor: COLORS.disable, borderRadius: 22, width: 44, height: 44 }, // Add a border to today's date
+                  selected: { backgroundColor: COLORS.black, borderRadius: 22, width: 44, height: 44 }, // Highlight the selected day
+                  selected_label: { color: 'white' }, // Highlight the selected day label
+                  range_fill: { backgroundColor: 'lightgray' }
+
                 }}
-                calendarTextStyle={{
-                  fontFamily: fontFamily.ABCDiatype_Regular,
-                  fontSize: fontScale(14),
-                }}
-                selectedItemColor={COLORS.black}
-                selectedRangeBackgroundColor="lightgray"
-                dayContainerStyle={styles.dayContainerStyle}
-                buttonNextIcon={
-                  <Image resizeMode="contain" source={IMAGES.arrowRight} />
-                }
-                buttonPrevIcon={
-                  <Image
-                    source={IMAGES.arrowRight}
-                    resizeMode="contain"
-                    style={{ transform: [{ rotate: '180deg' }] }}
-                  />
-                }
+                // weekDaysTextStyle={{
+                //   fontFamily: fontFamily.ABCDiatype_Bold,
+                //   fontSize: fontScale(14),
+                // }}
+                // calendarTextStyle={{
+                //   fontFamily: fontFamily.ABCDiatype_Regular,
+                //   fontSize: fontScale(14),
+                // }}
+                // selectedItemColor={COLORS.black}
+                // selectedRangeBackgroundColor="lightgray"
+                // dayContainerStyle={styles.dayContainerStyle}
+                // buttonNextIcon={
+                //   <Image resizeMode="contain" source={IMAGES.arrowRight} />
+                // }
+                // buttonPrevIcon={
+                //   <Image
+                //     source={IMAGES.arrowRight}
+                //     resizeMode="contain"
+                //     style={{ transform: [{ rotate: '180deg' }] }}
+                //   />
+                // }
                 onChange={({ startDate, endDate }) => {
                   onChangeOptionValue(id, optionType, {
                     id: id,
@@ -270,14 +288,14 @@ const FilterOptions = ({
       {optionType === 'baseCityFilter' || optionType === 'location' ? (
         <BottomSheetView>
           <GooglePlacesInput
-            submit={() => {}}
+            submit={() => { }}
             autoFetchCurrentLocation={optionType === 'location'}
             allowFullAddres={false}
             defaultValue={
               optionType === 'baseCityFilter'
                 ? selectedFilters &&
-                  selectedFilters[id] &&
-                  selectedFilters[id].value[0]?.name
+                selectedFilters[id] &&
+                selectedFilters[id].value[0]?.name
                 : selectedFilters['longitude']?.value[0]?.name || ''
             }
             setLocation={location => {
@@ -292,9 +310,9 @@ const FilterOptions = ({
             }}
           />
           {showSelectedLocationChip &&
-          selectedFilters &&
-          selectedFilters[id] &&
-          selectedFilters[id].value ? (
+            selectedFilters &&
+            selectedFilters[id] &&
+            selectedFilters[id].value ? (
             <BottomSheetScrollView
               contentContainerStyle={{
                 gap: horizontalMarginScale(4),

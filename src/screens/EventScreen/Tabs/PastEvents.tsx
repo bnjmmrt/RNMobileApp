@@ -36,18 +36,22 @@ const PastEvents: React.FC<PastEventsProps> = ({ userId, searchText, tab }) => {
   const queryArgs =
     role === ROLE.HOST
       ? ({
-          status: 'PAST_STATUS',
-          searchText,
-          take: 10,
-          skip: (currentPage - 1) * 10,
-        } as const) // Type assertion to prevent union mismatch
+        status: 'PAST_STATUS',
+        searchText,
+        take: 10,
+        skip: (currentPage - 1) * 10,
+        sortBy: 'endDate',
+        order: 'ASC'
+      } as const) // Type assertion to prevent union mismatch
       : ({
-          userId,
-          guestEventStatus: 'PAST',
-          searchText,
-          take: 10,
-          skip: (currentPage - 1) * 10,
-        } as const); // Type assertion
+        userId,
+        guestEventStatus: 'PAST',
+        searchText,
+        take: 10,
+        skip: (currentPage - 1) * 10,
+        sortBy: 'endDate',
+        order: 'ASC'
+      } as const); // Type assertion
 
   const { data, isLoading, refetch } = useFetchEvents(queryArgs);
 

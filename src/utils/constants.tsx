@@ -290,7 +290,7 @@ export const EVENT = {
   START_DATE: 'Start Date',
   END_DATE: 'End Date',
   LOCATION: 'Location',
-  FURTHER_INSTRUCTION: 'Further Instructions',
+  FURTHER_INSTRUCTION: 'Further Instructions (optional)',
   EVENT_DESCRIPTION: 'Event Description',
   HIDE_ADDRESS: 'Hide full address for confirmed guests',
   FEATURE_TALENT: 'Featured Talent',

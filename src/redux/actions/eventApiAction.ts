@@ -15,14 +15,18 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         searchText,
         take,
         skip,
+        sortBy,
+        order
       }: {
         userId: string;
         guestEventStatus: string;
         searchText: string;
         take: number;
         skip: number;
+        sortBy: string;
+        order: string;
       }) => ({
-        url: `events/v1/events/users/${userId}/events?guestEventStatus=${guestEventStatus}&take=${take}&skip=${skip}&findInNameAndDescription=${searchText}`,
+        url: `events/v1/events/users/${userId}/events?guestEventStatus=${guestEventStatus}&take=${take}&skip=${skip}&sortBy=${sortBy}&order=${order}&findInNameAndDescription=${searchText}`,
         method: 'GET',
       }),
       providesTags: ['Event'], // Adjust the tag if needed for cache invalidation
@@ -34,13 +38,17 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         searchText,
         take,
         skip,
+        sortBy,
+        order
       }: {
         status: string;
         searchText: string;
         take: number;
         skip: number;
+        sortBy: string;
+        order: string;
       }) => ({
-        url: `events/v1/hosts/events?take=${take}&skip=${skip}&status=${status}&eventName=${searchText}`,
+        url: `events/v1/hosts/events?take=${take}&skip=${skip}&sortBy=${sortBy}&order=${order}&status=${status}&eventName=${searchText}`,
         method: 'GET',
       }),
       providesTags: ['HostEvents'], // Adjust the tag if needed for cache invalidation

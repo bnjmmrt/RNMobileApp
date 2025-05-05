@@ -39,6 +39,7 @@ export type EventStackParamList = {
     | 'DRAFT'
     | '';
     isPastEvent: boolean;
+    applyRequestFilter: boolean;
   };
   GuestCheckInScreen: undefined;
   QRCodeScanner: undefined;

@@ -39,8 +39,9 @@ import DatePickerComponent from './DatePickerComponent';
 import GenderComponent from './GenderComponent';
 import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 import { isIPad } from 'src/utils/isTabletConfig';
+import { useGetUserWithRolesByIdMutation } from 'src/redux/actions/inviteGuestsApiAction';
 
-interface EditProfileScreenProps extends NativeStackScreenProps<any, any> {}
+interface EditProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
 const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   navigation,
@@ -48,6 +49,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   const { apiRequest, loading, error } = useApi();
   const dispatch = useDispatch();
   const { keyboardVisible } = useKeyboard();
+  const [getUserById] = useGetUserWithRolesByIdMutation();
 
   const { userId, isGuest, profileData, role, token } = useSelector(
     (state: RootState) => ({
@@ -100,11 +102,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
 
   const fetchUserById = async () => {
     try {
-      const response: any = await apiRequest(
-        'post',
-        EndPoint.get_user_with_role_by_id,
-        { id: userId },
-      );
+      const response = await getUserById({ id: userId }).unwrap();
       if (response.success) {
         dispatch(setProfileData(response?.data));
       }

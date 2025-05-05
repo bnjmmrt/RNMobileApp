@@ -42,6 +42,7 @@ import { EventCard } from '../RSVP/RSVPInvitedUpcoming';
 import { styles } from './RSVPScreenStyle';
 import RequestVouch from './RequestVouch';
 import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 type Guest = {
   id: number;
@@ -170,6 +171,7 @@ const RSVPNoStatusApplied: React.FC = () => {
       dispatch(setRsvpStatus('APPLIED'));
       bottomSheetRef.current?.open();
     } catch (error) {
+      FlashMessageComponent.show("error", error?.data?.message)
       console.error('Error submitting application:', error);
     }
   };

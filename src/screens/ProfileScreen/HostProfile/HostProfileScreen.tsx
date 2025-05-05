@@ -276,7 +276,7 @@ const HostProfileScreen: React.FC = () => {
                 numberOfLinesTitle={2}
                 numberOfLinesSubtitle={4}
                 title={profile?.companyName || 'Company Name'}
-                subTitle={profile?.bio || 'Bio not available'}
+                subTitle={profile?.bio || ''}
                 align="center"
               />
               {socialMediaData.length > 0 ? (
@@ -437,7 +437,7 @@ const HostProfileScreen: React.FC = () => {
                     <CustomText
                       style={styles.eventNameText}
                       textProps={{ numberOfLines: 1 }}>
-                      {item.name}
+                    vaihskhhshsh kjh khdks 
                     </CustomText>
                     <CustomText style={styles.dateText}>
                       {convertUTCToTimeZoneFormat(

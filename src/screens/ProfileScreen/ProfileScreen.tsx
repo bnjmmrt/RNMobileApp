@@ -59,6 +59,7 @@ import ConnectedAccountsScreen from './EditProfile/ConnectedAccountsScreen';
 import NotificationsScreen from '../Notifications/NotificationsScreen';
 import FeedbackScreen from './EditProfile/FeedbackScreen';
 import NotificationSettingsScreen from './EditProfile/NotificationSettingsScreen';
+import { useLogout } from 'src/utils/hooks/useLogout';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
@@ -76,6 +77,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
   const [selectedScreen, setSelectedScreen] = useState<string | null>(
     PROFILE.EDIT_PROFILE,
   );
+
+const { logOut } = useLogout();
+
 
   const editPhotoBottomSheetRef = useRef<any>(null);
   const savePhotoBottomSheetRef = useRef<any>(null);
@@ -148,10 +152,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
         //   response?.message || 'User account deactivated successfully.',
         // );
         deleteAccountBottomSheetRef.current?.close();
-        const resetAction = CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'AuthStack' }],
-        });
         dispatch(resetProfileData());
         dispatch(resetLoginData());
         dispatch(setAuthToken(null));
@@ -427,34 +427,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
       });
   };
 
-  const logOut = async () => {
+  const onPresslogOut = async () => {
     logoutBottomSheetRef.current?.close();
-    const requestParam = {
-      fcmToken: '',
-      deviceId: '',
-    };
-    const response = await memberLogout(requestParam).unwrap();
-    if (response.success) {
-      const resetAction = CommonActions.reset({
-        index: 0,
-        routes: [{ name: 'AuthStack' }],
-      });
-      dispatch(resetProfileData());
-      dispatch(resetLoginData());
-      dispatch(setAuthToken(null));
-      dispatch(resetAppFlowDetails());
-      InteractionManager.runAfterInteractions(() => {
-        setTimeout(() => {
-          navigation.replace('AuthStack');
-        }, 500);
-      });
-      FlashMessageComponent.show('success', 'Logout successfully');
-    } else {
-      FlashMessageComponent.show(
-        'error',
-        'Something went wrong, please try again!',
-      );
-    }
+    logOut()
   };
 
   const getUserName = () => {
@@ -596,7 +571,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
         <EditPictureBottomSheet
           ref={logoutBottomSheetRef}
           title={'Are you sure you want to log out?'}
-          onPress={logOut}
+          onPress={onPresslogOut}
           loadding={false}
           submitButtonText={BUTTON_LABLE.CONFIRM}
           cancelButtonText={BUTTON_LABLE.CANCEL}

@@ -155,7 +155,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       ? useFetchHostEventDetailsQuery
       : useFetchEventDetailsQuery;
   const { data, isLoading, refetch } = useFetchEventDetailsHook(
-    queryArgs as any,
+    queryArgs as any, { skip: !userId },
   );
 
   useEffect(() => {
@@ -408,7 +408,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     );
   };
   const renderRSVPButton = () => {
-    if (isDeclinedByHost || guestStatus === 'CONFIRMED' || role === ROLE.HOST) {
+    if (isDeclinedByHost || isDeclinedByMe || guestStatus === 'CONFIRMED' || role === ROLE.HOST) {
       return null;
     }
 
@@ -440,19 +440,17 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const renderDiscoverMoreEventButton = () => {
-    if (isDeclinedByHost) {
-      return (
-        <View style={{ margin: 10 }}>
-          <Button
-            disabled={false}
-            style={[styles.btnStyle, { marginBottom: 15 }]}
-            title={BUTTON_LABLE.DISCOVER_MORE_EVENTS}
-            colorTheme="dark"
-            onPress={redirectToDiscover}
-            loading={loading}
-          />
-        </View>
-      );
+    if (isDeclinedByHost || isDeclinedByMe) {
+      return <View style={{ margin: 10 }}>
+        <Button
+          disabled={false}
+          style={[styles.btnStyle, { marginBottom: 15 }]}
+          title={BUTTON_LABLE.DISCOVER_MORE_EVENTS}
+          colorTheme="dark"
+          onPress={redirectToDiscover}
+          loading={loading}
+        />
+      </View>
     }
   };
 

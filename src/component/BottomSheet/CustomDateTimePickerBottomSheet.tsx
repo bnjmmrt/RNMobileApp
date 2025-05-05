@@ -3,7 +3,7 @@ import IMAGES from '@images/index';
 import moment from 'moment';
 import React, { forwardRef, useState } from 'react';
 import { Image, Platform, StyleSheet, Text, View } from 'react-native';
-import DateTimePicker from 'react-native-ui-datepicker';
+import DateTimePicker, { DateType, useDefaultClassNames, useDefaultStyles } from 'react-native-ui-datepicker';
 import { fontFamily } from 'src/utils/functions';
 import { COLORS } from '../../utils/constants';
 import {
@@ -15,10 +15,13 @@ import {
 } from '../../utils/dimensions';
 import Button from '../Button';
 import BottomSheetComponent from './BottomSheet';
+import { formatDateToUTCString } from 'src/utils/dateFunctions';
 
 interface Props {
   setSelectedDate: (date: string) => void;
   date: string;
+  minDate: string;
+  timeZone: string
 }
 
 const CustomDateTimePickerBottomSheet = forwardRef((props: Props, ref) => {
@@ -31,15 +34,29 @@ const CustomDateTimePickerBottomSheet = forwardRef((props: Props, ref) => {
 
     return date.utc().format('YYYY-MM-DD HH:mm');
   };
-  const myDate = formatDate(props.date);
+
+  const formatDateValue = (date: string) => {
+    const rawString = date?.toString();
+    const isoString = rawString?.replace(" ", "T").replace(/\+(\d{2})$/, "+$1:00"); // fixes "+00" to "+00:00"
+    return new Date(isoString)
+  }
+
+  const date = new Date(formatDateValue(props?.date));
+  const minDate = new Date(formatDateValue(props?.minDate));
+  const [selectedDate, setSelectedDate] = useState<DateType>(date);
+  const timeZone = props?.timeZone;
+
+  // const myDate = formatDate(props.date);
   // const formattedMinDate = props?.minDate ? formatDate(props?.minDate) : undefined;
 
-  const [selectedDate, setSelectedDate] = useState(myDate);
+  // const [selectedDate, setSelectedDate] = useState(myDate);
+  const defaultClassNames = useDefaultClassNames();
+  const defaultStyles = useDefaultStyles();
 
   return (
     <BottomSheetComponent
       ref={ref}
-      snapPoints={[Platform.OS === 'ios' ? '82%' : '82%']}
+      snapPoints={['72%']}
       onClose={() => console.log(ref)}>
       <View style={styles.container}>
         <Text style={styles.title}>{'Date & Time'}</Text>
@@ -54,43 +71,76 @@ const CustomDateTimePickerBottomSheet = forwardRef((props: Props, ref) => {
             <BottomSheetView style={styles.datePicker}>
               <DateTimePicker
                 mode="single"
+                use12Hours
                 timePicker
-                minDate={props?.minDate || new Date()}
-                timePickerDecelerationRate={'fast'}
+                date={selectedDate}
+                // timeZone={timeZone}
+                minDate={minDate}
+                onChange={({ date }) => {
+                  console.log('Type of date:', typeof date, date);
+                  setSelectedDate(date instanceof Date ? date : new Date(date));
+                }}
+                styles={{
+                  ...defaultStyles,
+                  today: { backgroundColor: COLORS.disable, borderRadius: 22, width: 44, height: 44 }, // Add a border to today's date
+                  selected: { backgroundColor: COLORS.black, borderRadius: 22, width: 44, height: 44 }, // Highlight the selected day
+                  selected_label: { color: 'white' }, // Highlight the selected day label
+
+                }}
+
+
+              />
+
+              {/* 
+              <DateTimePicker
+                classNames={{
+                  ...defaultClassNames,
+                  today: 'border-amber-500', // Add a border to today's date
+                  selected: 'bg-amber-500 border-amber-500', // Highlight the selected day
+                  selected_label: "text-white", // Highlight the selected day label
+                  day: `${defaultClassNames.day} hover:bg-amber-100`, // Change background color on hover
+                  disabled: 'opacity-50', // Make disabled dates appear more faded
+                }}
+                mode="single"
+                // timePicker
+                // use12Hours
+                // minDate={props?.minDate || new Date()}
+
+                // timePickerDecelerationRate={'fast'}
                 date={selectedDate.toString()}
-                headerButtonStyle={styles.headerButtonStyle}
-                headerContainerStyle={{ marginTop: 16 }}
-                headerTextStyle={{
-                  fontFamily: fontFamily.ABCDiatype_Regular,
-                  fontSize: fontScale(14),
-                }}
-                weekDaysTextStyle={{
-                  fontFamily: fontFamily.ABCDiatype_Bold,
-                  fontSize: fontScale(14),
-                }}
-                calendarTextStyle={{
-                  fontFamily: fontFamily.ABCDiatype_Regular,
-                  fontSize: fontScale(14),
-                }}
-                selectedItemColor={COLORS.black}
-                selectedRangeBackgroundColor="lightgray"
-                dayContainerStyle={styles.dayContainerStyle}
-                buttonNextIcon={
-                  <Image resizeMode="contain" source={IMAGES.arrowRight} />
-                }
-                buttonPrevIcon={
-                  <Image
-                    source={IMAGES.arrowRight}
-                    style={{
-                      transform: [{ rotate: '180deg' }],
-                      resizeMode: 'contain',
-                    }}
-                  />
-                }
+                // headerButtonStyle={styles.headerButtonStyle}
+                // headerContainerStyle={{ marginTop: 16 }}
+                // headerTextStyle={{
+                //   fontFamily: fontFamily.ABCDiatype_Regular,
+                //   fontSize: fontScale(14),
+                // }}
+                // weekDaysTextStyle={{
+                //   fontFamily: fontFamily.ABCDiatype_Bold,
+                //   fontSize: fontScale(14),
+                // }}
+                // calendarTextStyle={{
+                //   fontFamily: fontFamily.ABCDiatype_Regular,
+                //   fontSize: fontScale(14),
+                // }}
+                // selectedItemColor={COLORS.black}
+                // selectedRangeBackgroundColor="lightgray"
+                // dayContainerStyle={styles.dayContainerStyle}
+                // buttonNextIcon={
+                //   <Image resizeMode="contain" source={IMAGES.arrowRight} />
+                // }
+                // buttonPrevIcon={
+                //   <Image
+                //     source={IMAGES.arrowRight}
+                //     style={{
+                //       transform: [{ rotate: '180deg' }],
+                //       resizeMode: 'contain',
+                //     }}
+                //   />
+                // }
                 onChange={({ date }) => {
                   setSelectedDate(date);
                 }}
-              />
+              /> */}
             </BottomSheetView>
           </View>
         </View>
@@ -100,7 +150,8 @@ const CustomDateTimePickerBottomSheet = forwardRef((props: Props, ref) => {
             title={'Save'}
             colorTheme="dark"
             onPress={() => {
-              props?.setSelectedDate(selectedDate);
+              const FormatedDate = formatDateToUTCString(selectedDate)
+              props?.setSelectedDate(FormatedDate);
               ref?.current?.close();
             }}
           />
@@ -173,6 +224,7 @@ const styles = StyleSheet.create({
     borderRadius: radiusScale(12),
     borderColor: COLORS.borderGray,
     borderWidth: 1,
+    width: '100%',
     paddingHorizontal: horizontalMarginScale(12),
   },
 });

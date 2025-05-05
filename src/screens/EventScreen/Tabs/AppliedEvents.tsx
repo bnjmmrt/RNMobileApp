@@ -32,6 +32,8 @@ const AppliedEvents: React.FC<AppliedEventsProps> = ({
     searchText: searchText,
     take: 10,
     skip: (currentPage - 1) * 10,
+    sortBy: 'startDate',
+    order: 'ASC'
   });
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Text,
   StyleSheet,
@@ -12,6 +12,7 @@ import { fontFamily } from '../../utils/functions';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
 import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface MiddleStaticComponentProps {
   style?: ViewStyle; // Added style prop
@@ -32,6 +33,13 @@ const MiddleStaticComponent: React.FC<MiddleStaticComponentProps> = ({
     LABLE.INVITE_YOUR_FRIEND,
     BUTTON_LABLE.ENTER_REFERRAL_CODE,
   ];
+
+  useFocusEffect(
+    useCallback(() => {
+      setShowTooltip(false);
+    }, []),
+  );
+
 
   const renderListItem = (item: string, index: number) => {
     if (item === LABLE.VERIFY_YOUR_INSTAGRAM) {

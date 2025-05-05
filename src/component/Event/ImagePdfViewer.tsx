@@ -102,12 +102,12 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
         });
       } else {
         setLoader(false)
-        Alert.alert('Download Failed', `Status code: ${downloadResult.statusCode}`);
+        // Alert.alert('Download Failed', `Status code: ${downloadResult.statusCode}`);
       }
     } catch (err) {
       setLoader(false)
       console.error('Error downloading or sharing file:', err);
-      Alert.alert('Error', 'Something went wrong while downloading or sharing the file.');
+      // Alert.alert('Error', 'Something went wrong while downloading or sharing the file.');
     }
   };
 

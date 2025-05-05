@@ -79,7 +79,6 @@ const GuestDetailScreen: React.FC<GuestDetailScreenProps> = ({
   const guestId = route.params?.guestId as string;
   const isPastEvent = route.params?.isPastEvent as boolean;
   const loggedInUserId = useSelector((state: RootState) => state.auth.userId);
-  const manageGuestSkipCount = useSelector((state: RootState) => state.listSkip);
 
   const { userId, selectedEvent } = useSelector(
     (state: RootState) => ({

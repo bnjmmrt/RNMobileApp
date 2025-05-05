@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   Linking,
   Image,
+  Alert,
 } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
@@ -211,8 +212,27 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     navigation.goBack();
   };
 
-  const goToInstagram = () => {
-    Linking.openURL('instagram://');
+
+  // const goToInstagram = () => {
+  //   Linking.openURL('https://www.instagram.com/therumor/');
+  // };
+
+  const goToInstagram = async () => {
+    const username = 'therumor';
+    const appURL = `instagram://user?username=${username}`;
+    const webURL = `https://www.instagram.com/${username}/`;
+
+    try {
+      const supported = await Linking.canOpenURL(appURL);
+      if (supported) {
+        await Linking.openURL(appURL);
+      } else {
+        await Linking.openURL(webURL);
+      }
+    } catch (err) {
+      Linking.openURL('https://www.instagram.com/therumor/');
+      // Alert.alert('Error', 'Unable to open Instagram.');
+    }
   };
 
   useFocusEffect(
