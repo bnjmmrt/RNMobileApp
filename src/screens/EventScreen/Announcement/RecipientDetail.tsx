@@ -11,6 +11,7 @@ import AvatarInitials from "src/component/AvatarInitials";
 
 interface RecipientProps {
     allRecipients: any[];
+    recipientCount: number;
     ticketerrorMessage: boolean;
     announcementId: string | null;
     ticketTypeRef: React.RefObject<any>;
@@ -27,7 +28,7 @@ interface RecipientProps {
     recipienterrorMessage: boolean;
 }
 
-export const RecipientDetail: React.FC<RecipientProps> = ({ ticketerrorMessage, announcementId, ticketTypeRef, ticketTypeArr, removeTicketType, setActiveTab, setSelectedTicketType, bottomSheetRef, addedByerrorMessage, collaboratorArr, addedRef, removeCollaborator, setselectedCollaborator, recipienterrorMessage, allRecipients }) => {
+export const RecipientDetail: React.FC<RecipientProps> = ({ ticketerrorMessage, recipientCount, announcementId, ticketTypeRef, ticketTypeArr, removeTicketType, setActiveTab, setSelectedTicketType, bottomSheetRef, addedByerrorMessage, collaboratorArr, addedRef, removeCollaborator, setselectedCollaborator, recipienterrorMessage, allRecipients }) => {
     const styles = AddAnnouncementStyles();
     const [showRecipientDetail, setshowRecipientDetail] = useState(true);
     const [showProfileToolitip, setShowProfileToolitip] = useState(false);
@@ -343,7 +344,7 @@ export const RecipientDetail: React.FC<RecipientProps> = ({ ticketerrorMessage, 
                                         },
                                     ]
                             }>
-                            <View style={styles.userInfoContainer}>
+                            <View style={[styles.userInfoContainer]}>
                                 {allRecipients?.length == 0 ? (
                                     <View style={styles.recipintWrapper} />
                                 ) : (
@@ -385,8 +386,9 @@ export const RecipientDetail: React.FC<RecipientProps> = ({ ticketerrorMessage, 
                                 )}
                                 <View
                                     style={{
-                                        alignItems: 'center',
+                                        alignItems: 'flex-start',
                                         justifyContent: 'center',
+                                        flexDirection: 'column',
                                         left:
                                             allRecipients.length == 1
                                                 ? horizontalScale(-160)
@@ -396,11 +398,11 @@ export const RecipientDetail: React.FC<RecipientProps> = ({ ticketerrorMessage, 
                                                         ? horizontalScale(-120)
                                                         : horizontalScale(10),
                                     }}>
-                                    <Text style={[styles.label, { paddingTop: 0 }]}>
+                                    <Text style={[styles.label, { paddingTop: 0, }]}>
                                         {ANNOUNCEMENT.Recipients}
                                     </Text>
                                     <Text style={styles.attachDes}>
-                                        {allRecipients.length} Users
+                                        {recipientCount} Users
                                     </Text>
                                 </View>
                             </View>

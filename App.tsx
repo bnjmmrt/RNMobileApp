@@ -25,7 +25,7 @@ import {
 } from 'src/component/PushNotification';
 import { navigationRef } from 'src/component/NavigationService';
 import ScreenshotDetectedDialog from 'src/component/ScreenshotDetectedDialog';
-import { getDeviceId } from 'src/utils/functions';
+import { fetchUserProfile, getDeviceId, getRoleRole } from 'src/utils/functions';
 import Intercom, { Visibility } from '@intercom/intercom-react-native';
 import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import analytics from '@react-native-firebase/analytics';
@@ -34,8 +34,10 @@ import { environment as environmentProd } from 'environments/environment.prod';
 import NotificationDialog from 'src/component/NotificationDialog';
 import { useGetUserWithRolesByIdMutation } from 'src/redux/actions/inviteGuestsApiAction';
 import { RootState } from 'src/redux/slices';
-import { setRoles } from 'src/redux/slices/authSlice';
+import { setAuthToken, setRole, setRoleId, setRoles } from 'src/redux/slices/authSlice';
 import { useLogout } from 'src/utils/hooks/useLogout';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+import { useNavigation } from '@react-navigation/native';
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
@@ -43,9 +45,10 @@ const AppContent: React.FC = () => {
   const dispatch = useDispatch();
   const [getUserById] = useGetUserWithRolesByIdMutation();
   const resetApp = useSelector((state: RootState) => state.auth.resetApp);
+  const targetRole = useSelector((state: RootState) => state.auth.targetRole);
   const { logOut } = useLogout();
   const hasLoggedOut = useRef(false);
-
+  const { navigate } = useNavigation();
   const updateAnalyticsStatus = async (status: boolean) => {
     await analytics().setAnalyticsCollectionEnabled(status);
   };
@@ -77,8 +80,38 @@ const AppContent: React.FC = () => {
     if (resetApp && !hasLoggedOut.current) {
       hasLoggedOut.current = true;
       logOut()
+      hasLoggedOut.current = false;
     }
   }, [resetApp])
+
+  useEffect(() => {
+    const switchProfile = async () => {
+      try {
+
+        const response: any = await apiRequest(
+          'post',
+          `${EndPoint.switch_profile}/${userId}`,
+          { targetRole: targetRole.roleName }
+        );
+
+        if (response?.success) {
+          FlashMessageComponent.show(
+            'success',
+            'Your current active role is deactivated, and have been switched account'
+          );
+          // `Your current active role is deactivated and Switched to ${getRoleRole(targetRole?.roleName)} Account`
+          dispatch(setRole(targetRole.roleName));
+          dispatch(setRoleId(targetRole.roleId));
+          dispatch(setAuthToken(response?.data?.token));
+          fetchUserProfile();
+          navigate('BottomTabBar');
+        }
+      } catch (error) {
+        console.error('Failed to switch profile:', error);
+      }
+    };
+    targetRole && switchProfile();
+  }, [targetRole]);
 
   useEffect(() => {
     if (environment.BASE_URL == environmentProd.BASE_URL) {

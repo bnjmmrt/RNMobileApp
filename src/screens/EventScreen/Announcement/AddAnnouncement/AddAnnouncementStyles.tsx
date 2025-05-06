@@ -64,7 +64,7 @@ const AddAnnouncementStyles = () => {
       fontSize: fontScale(12),
       color: COLORS.light_text,
       fontWeight: '500',
-      left: -11,
+      // left: -11,
       fontFamily: fontFamily.ABCDiatype_Bold,
     },
     inputStyle: {
@@ -134,17 +134,17 @@ const AddAnnouncementStyles = () => {
     icon: {
       width: verticalScale(16),
       height: verticalScale(16),
-      resizeMode:'contain'
+      resizeMode: 'contain'
     },
     downicon: {
       width: verticalScale(11),
       height: verticalScale(5.5),
-      resizeMode:'contain'
+      resizeMode: 'contain'
     },
     arrowicon: {
       width: verticalScale(10),
       height: verticalScale(7),
-      resizeMode:'contain'
+      resizeMode: 'contain'
     },
     pdfContainer: {
       width: horizontalScale(90),

@@ -82,7 +82,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
   const [searchText, setSearchText] = useState<string>('');
   const [allRecipients, setallRecipients] = useState<any[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<guestInterface[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [atachmentArr, setAttachmentArr] = useState<attachmentArrInterface[]>(
     [],
   );
@@ -186,7 +186,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
 
     const announcementRecipientsData: any = await apiRequest(
       'get',
-      `/events/v1/event/${queryArgs.eventId}/event-announcement-guest?${queryArgs.ticketType}${queryArgs.addedBy}&findByName=${searchText}&take=${queryArgs.take}&skip=${queryArgs.skip}`,
+      `events/v1/event/${queryArgs.eventId}/event-announcement-guest?${queryArgs.ticketType}${queryArgs.addedBy}&findByName=${searchText}&take=${queryArgs.take}&skip=${queryArgs.skip}`,
     );
     console.log('notificationCount.data', announcementRecipientsData);
     if (announcementRecipientsData.data) {
@@ -201,24 +201,11 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
     }
   };
 
-  const [
-    createEventAnnouncement,
-    { error: addAnnouncementError, isLoading: addAnnouncementLoading },
-  ] = useCreateEventAnnouncementMutation();
+  const [createEventAnnouncement] = useCreateEventAnnouncementMutation();
 
-  const [
-    deleteEventAnnouncement,
-    {
-      isLoading: deleteLoading,
-      isError: deleteError,
-      isSuccess: deleteSuccess,
-    },
-  ] = useDeleteEventAnnouncementMutation();
+  const [deleteEventAnnouncement] = useDeleteEventAnnouncementMutation();
 
-  const [
-    editEventAnnouncement,
-    { isLoading: editLoading, isError: editError, isSuccess: editSuccess },
-  ] = useEditEventAnnouncementMutation();
+  const [editEventAnnouncement] = useEditEventAnnouncementMutation();
 
   const checkAnnouncement = async () => {
     if (
@@ -272,7 +259,16 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
       case 'ticketTypeOptions':
         return <TicketType eventData={eventData} selectedTicketType={selectedTicketType} toggleTicketType={toggleTicketType} cancelClick={cancelClick} confirmTicketType={confirmTicketType} />;
       case 'receipient':
-        return <Recipient allRecipients={allRecipients} searchInputRef={searchInputRef} handleSearchTextChange={handleSearchTextChange} searchText={searchText} totalCount={totalCount} selectedUsers={selectedUsers} />
+        return <Recipient
+          allRecipients={allRecipients}
+          searchInputRef={searchInputRef}
+          handleSearchTextChange={handleSearchTextChange}
+          searchText={searchText}
+          totalCount={totalCount}
+          selectedUsers={selectedUsers}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        />
       default:
         return null;
     }
@@ -339,7 +335,8 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
         setallRecipients([]);
       }
     }
-  }, [ticketTypeArr, collaboratorArr, searchText]);
+  }, [ticketTypeArr, collaboratorArr, searchText, currentPage]);
+
   const confirmCollaborator = () => {
     if (selectedCollaborator.length == 0) {
       setCollaboratorArr([]);
@@ -387,7 +384,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
         announcementId: announcementId || '',
       }).unwrap();
       if (response.success == true) {
-        FlashMessageComponent.show('success',ANNOUNCEMENT.Announcement_deleted);
+        FlashMessageComponent.show('success', ANNOUNCEMENT.Announcement_deleted);
         deleteBottomSheetRef.current?.close();
         dispatch(setRsvpStatus('UPDATE' + Date.now()));
         navigation.goBack();
@@ -568,6 +565,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
 
           <RecipientDetail
             allRecipients={allRecipients}
+            recipientCount={totalCount}
             ticketerrorMessage={ticketerrorMessage}
             announcementId={announcementId}
             ticketTypeRef={ticketTypeRef}

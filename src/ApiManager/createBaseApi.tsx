@@ -7,7 +7,7 @@ import {
 } from '@reduxjs/toolkit/query/react';
 import { environment } from '../../environments/environment';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
-import { performLogout } from 'src/utils/functions';
+import { performLogout, switchProfileDueToInactiveRole } from 'src/utils/functions';
 
 // Middleware for logging requests and responses
 const logMiddleware = async (
@@ -33,13 +33,17 @@ const logMiddleware = async (
     if (result?.error?.status == 401) {
       FlashMessageComponent.show('error', result?.error?.message || "Unauthorized!!");
       performLogout()
+    } else if (result?.error?.status == 301) {
+      switchProfileDueToInactiveRole(result.data.data)
     }
     // FlashMessageComponent.show(
     //   'error',
     //   result.error?.data?.message || 'Something went wrong, please try again!',
     // );
   } else {
-    console.log(`[API Response] ${method} ${url}`, result.data);
+    if (result?.data?.statusCode === 206) {
+      switchProfileDueToInactiveRole(result.data.data)
+    }
   }
 
   return result;
@@ -59,9 +63,12 @@ export const customBaseQuery: BaseQueryFn<
         baseUrl: environment.BASE_URL,
         prepareHeaders: (headers, { getState }) => {
           const token = (getState() as any).auth?.token; // Replace with your token logic
+          const role = (getState() as any).auth?.role; // Replace with your token logic
           console.log('Token:', token);
+          console.log("Api call role:", role)
           if (token) {
             headers.set('Authorization', `Bearer ${token}`);
+            headers.set('requester', `${role}`);
           }
           headers.set('Content-Type', 'application/json');
           headers.set('Accept', 'application/json');
