@@ -45,6 +45,8 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item, length }) => {
     return Dimensions.get('screen').width * 0.55;
   };
 
+  console.log(item, 'chekcing checking');
+
   return (
     <View style={[styles.container, { width: getWidth() }]}>
       <AvatarInitials
@@ -59,7 +61,7 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item, length }) => {
         size={40}
       />
       <View style={{ paddingHorizontal: 10, marginEnd: 20, flex: 1 }}>
-        <CustomText style={styles.title} textProps={{ numberOfLines: 1 }}>
+        <CustomText style={styles.title} >
           {capitalizeFirstLetter(item?.name)}
         </CustomText>
         <CustomText style={styles.subtitle}>
@@ -67,7 +69,7 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item, length }) => {
         </CustomText>
       </View>
 
-      {role == ROLE.MEMBER && item.role.name == 'host' && (
+      {role === ROLE.MEMBER && item.role.name === 'host' && (
         <FollowButton
           id={item.id}
           isFollowing={item.isFollowedByCurrentGuest}
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
     padding: 8,
     marginRight: 10,
     borderRadius: 99,
-    maxWidth: isIPad ? 160 : 'auto',
+    maxWidth: isIPad ? 260 : 'auto',
     borderColor: COLORS.borderGray,
     flexDirection: 'row',
     alignSelf: 'flex-start',
@@ -106,6 +108,7 @@ const styles = StyleSheet.create({
   title: {
     width: isIPad ? '100%' : '80%',
     fontFamily: fontFamily.ABCDiatype_Medium,
+    fontSize: 14,
   },
   subtitle: {
     color: COLORS.light_gray,

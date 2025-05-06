@@ -155,7 +155,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       ? useFetchHostEventDetailsQuery
       : useFetchEventDetailsQuery;
   const { data, isLoading, refetch } = useFetchEventDetailsHook(
-    queryArgs as any, { skip: !userId },
+    queryArgs as any,
+    { skip: !userId },
   );
 
   useEffect(() => {
@@ -384,7 +385,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           style={[
             styles.btnStyle,
             isIPad
-              ? { marginTop: 0, marginBottom: 0 }
+              ? { marginTop: 0, marginBottom: 0, maxWidth: 206 }
               : { marginBottom: 15, maxWidth: 'auto' },
           ]}
           title={BUTTON_LABLE.CHECK_IN}
@@ -397,7 +398,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
           disabled={false}
           style={[
             styles.btnStyle,
-            isIPad ? { marginTop: 0, marginBottom: 0 } : { marginBottom: 15 },
+            isIPad
+              ? { marginTop: 0, marginBottom: 0, maxWidth: 206 }
+              : { marginBottom: 15, maxWidth: 'auto' },
           ]}
           title={BUTTON_LABLE.INVITE_GUESTS}
           colorTheme="light"
@@ -408,7 +411,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     );
   };
   const renderRSVPButton = () => {
-    if (isDeclinedByHost || isDeclinedByMe || guestStatus === 'CONFIRMED' || role === ROLE.HOST) {
+    if (
+      isDeclinedByHost ||
+      isDeclinedByMe ||
+      guestStatus === 'CONFIRMED' ||
+      role === ROLE.HOST
+    ) {
       return null;
     }
 
@@ -416,19 +424,17 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       return null;
     }
     return (
-      <View>
-        <Button
-          disabled={false}
-          style={[styles.btnStyle]}
-          title={
-            guestStatus === 'APPLIED'
-              ? BUTTON_LABLE.UPDATE_APPLICATION
-              : BUTTON_LABLE.RSVP
-          }
-          colorTheme="dark"
-          onPress={onNextClick}
-        />
-      </View>
+      <Button
+        disabled={false}
+        style={[styles.btnStyle]}
+        title={
+          guestStatus === 'APPLIED'
+            ? BUTTON_LABLE.UPDATE_APPLICATION
+            : BUTTON_LABLE.RSVP
+        }
+        colorTheme="dark"
+        onPress={onNextClick}
+      />
     );
   };
 
@@ -441,16 +447,18 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
   const renderDiscoverMoreEventButton = () => {
     if (isDeclinedByHost || isDeclinedByMe) {
-      return <View style={{ margin: 10 }}>
-        <Button
-          disabled={false}
-          style={[styles.btnStyle, { marginBottom: 15 }]}
-          title={BUTTON_LABLE.DISCOVER_MORE_EVENTS}
-          colorTheme="dark"
-          onPress={redirectToDiscover}
-          loading={loading}
-        />
-      </View>
+      return (
+        <View style={{ margin: 10 }}>
+          <Button
+            disabled={false}
+            style={[styles.btnStyle, { marginBottom: 15 }]}
+            title={BUTTON_LABLE.DISCOVER_MORE_EVENTS}
+            colorTheme="dark"
+            onPress={redirectToDiscover}
+            loading={loading}
+          />
+        </View>
+      );
     }
   };
 
@@ -461,10 +469,18 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     const isPastEvent = data?.data?.status === 'PAST_STATUS';
 
     return (
-      <View style={{ margin: 10 }}>
+      <View
+        style={[
+          { margin: 10 },
+
+          isIPad && { flexDirection: 'row', gap: 8 },
+        ]}>
         <Button
           disabled={false}
-          style={[styles.btnStyle, { marginBottom: 15 }]}
+          style={[
+            styles.btnStyle,
+            isIPad ? { maxWidth: 206 } : { marginBottom: 15 },
+          ]}
           title={BUTTON_LABLE.VIEW_TICKET}
           colorTheme="dark"
           onPress={onViewTicketClick}
@@ -473,7 +489,10 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         {!isPastEvent ? (
           <Button
             disabled={false}
-            style={styles.btnStyleLight}
+            style={[
+              styles.btnStyleLight,
+              isIPad ? { maxWidth: 206 } : { marginBottom: 15 },
+            ]}
             title={BUTTON_LABLE.UPDATE_RSVP}
             colorTheme="light"
             onPress={onNextClick}
@@ -487,7 +506,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     dispatch(setSelectedEventForInvite(data.data));
     navigation.navigate(ROUTES.EventGuestList, {
       eventId: route?.params?.id,
-      isPastEvent: data?.data?.status === 'PAST_STATUS'
+      isPastEvent: data?.data?.status === 'PAST_STATUS',
     });
   };
 
@@ -630,8 +649,11 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                     <View
                       style={{
                         maxWidth: 420,
+                        width: '100%',
+                        display: 'flex',
                         flexDirection: 'row',
                         alignItems: 'center',
+                        justifyContent: 'center',
                         overflow: 'hidden',
                         gap: 8,
                         marginTop: 8,
@@ -984,18 +1006,16 @@ const styles = StyleSheet.create({
   btnStyle: {
     borderRadius: 100,
     marginTop: isIPad ? 0 : 10,
-    maxWidth: isIPad ? 206 : 'auto',
     marginBottom: isIPad ? 0 : BOTTOM_SAFEAREA_SPACING,
     height: 50,
   },
   btnStyleLight: {
     borderRadius: 100,
     marginTop: 0,
-    marginBottom: BOTTOM_SAFEAREA_SPACING,
+    marginBottom: isIPad ? 0 : BOTTOM_SAFEAREA_SPACING,
     borderWidth: 2,
     borderColor: COLORS.black,
-    height: undefined,
-    paddingVertical: 16,
+    height: 50,
   },
   imageWrapper: {
     height: 528,

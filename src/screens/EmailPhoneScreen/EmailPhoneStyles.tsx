@@ -23,8 +23,10 @@ const EmailPhoneStyles = () => {
     },
     contentContainer: {
       flex: 1,
+      alignSelf: 'center',
       maxWidth: 526,
-      marginHorizontal: isIPad ? 'auto' : 0,
+      width: '100%',
+      marginHorizontal: 0,
       paddingTop: verticalMarginScale(16),
       paddingBottom: verticalMarginScale(8),
       paddingHorizontal: horizontalMarginScale(20),
