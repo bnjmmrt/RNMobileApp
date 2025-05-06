@@ -60,6 +60,9 @@ import NotificationsScreen from '../Notifications/NotificationsScreen';
 import FeedbackScreen from './EditProfile/FeedbackScreen';
 import NotificationSettingsScreen from './EditProfile/NotificationSettingsScreen';
 import { useLogout } from 'src/utils/hooks/useLogout';
+import FollowingScreen from './FollowingScreen/FollowingScreen'
+import ReferralScreen from './ReferralsScreen/ReferralScreen'
+import SelectInterestScreen from '../AppFlow/SelectInterestScreen/SelectInterestScreen'
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
@@ -487,6 +490,12 @@ const { logOut } = useLogout();
     switch (selectedScreen) {
       case PROFILE.EDIT_PROFILE:
         return <EditProfileScreen navigation={navigation} route={route} />;
+      case PROFILE.FOLLOWING:
+        return <FollowingScreen />;
+      case PROFILE.REFERRALS:
+        return <ReferralScreen navigation={navigation} route={route} />;
+      case PROFILE.MY_INTERESTS:
+        return <SelectInterestScreen navigation={navigation} route={route} />;
       case PROFILE.CONNECTED_ACCOUNTS:
         return <ConnectedAccountsScreen />;
       case PROFILE.NOTIFICATION:
