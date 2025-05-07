@@ -28,6 +28,8 @@ const logMiddleware = async (
 
   const result = await baseQuery(args, api, extraOptions);
 
+  console.log(`[API Response] ${method} ${environment.BASE_URL}${url}`, result);
+
   if (result.error) {
     console.error(`[API Error] ${method} ${url}`, result.error);
     if (result?.error?.status == 401) {
@@ -46,6 +48,7 @@ const logMiddleware = async (
     }
   }
 
+  console.log("API Response", result)
   return result;
 };
 

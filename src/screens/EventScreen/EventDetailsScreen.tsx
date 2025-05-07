@@ -632,7 +632,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                   )}
                 />
 
-                {guestStatus == 'INVITED' && (
+                {(guestStatus == 'INVITED' || guestStatus == 'CONFIRMED') && (
                   <EventInvitation item={data?.data} />
                 )}
 

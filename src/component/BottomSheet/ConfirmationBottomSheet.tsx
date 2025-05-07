@@ -34,6 +34,7 @@ interface ConfirmationBottomSheetProps {
   status?: string;
   btnStyle?: any;
   isSuccess?: boolean;
+  isLoading?: boolean;
   back?: () => void;
   isAnnouncement?: boolean;
   colorTheme?: string;
@@ -90,6 +91,7 @@ const ConfirmationBottomSheet = forwardRef(
             disabled={false}
             style={props.btnStyle ? props.btnStyle : styles.btnStyle}
             title={props.btnLabel}
+            loading={props.isLoading}
             colorTheme={
               props.colorTheme
                 ? props.colorTheme
