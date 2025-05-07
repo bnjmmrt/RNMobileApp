@@ -170,7 +170,7 @@ const RenderToolTip = React.memo(
           styles.toolTipStyle,
           {
             width: myHeight > 2 ? '77%' : '100%',
-            height: verticalScale(myHeight > 2 ? myHeight * 20 : myHeight * 30),
+            height: verticalScale(myHeight > 2 ? Platform.OS === 'android' ? myHeight * 21 : myHeight * 20 : myHeight * 30),
           },
         ]}
         isVisible={isVisible}

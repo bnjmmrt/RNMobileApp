@@ -23,11 +23,11 @@ export const useLogout = () => {
             const response = await memberLogout(requestParam).unwrap();
 
             if (response.success) {
+                dispatch(resetAppStack(false));
                 dispatch(resetProfileData());
                 dispatch(resetLoginData());
                 dispatch(setAuthToken(null));
                 dispatch(resetAppFlowDetails());
-                dispatch(resetAppStack(false));
 
                 InteractionManager.runAfterInteractions(() => {
                     setTimeout(() => {

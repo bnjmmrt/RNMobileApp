@@ -80,7 +80,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const [image, setImage] = useState<string>('');
   const [imageSize, setImageSize] = useState<number>(0);
   const { uploadFileHook } = useUploadFile();
-  const [memberLogout, { error, isLoading }] = useMemberLogoutMutation();
 
   const {
     userId,
@@ -104,6 +103,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     }),
     shallowEqual,
   );
+
 
   const getUserSettings = async () => {
     const response: any = await apiRequest(
@@ -155,6 +155,16 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       Alert.alert('Error', error?.message || 'Failed to delete account');
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      const loadUserProfile = async () => {
+        await fetchUserProfile();
+      };
+      loadUserProfile();
+    }, []),
+  );
+
 
   useEffect(() => {
     if (profileData?.email) {

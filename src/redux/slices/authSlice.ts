@@ -4,6 +4,7 @@ export type roleType = 'member' | 'non_member' | 'host';
 export interface role {
   roleId: string;
   roleName: roleType;
+  roleStatus: string;
 }
 interface AuthState {
   userId: string;
@@ -18,7 +19,8 @@ interface AuthState {
   companyLogo: string | undefined;
   fcmToken: string | undefined;
   deviceId: string | undefined;
-  resetApp: boolean
+  resetApp: boolean;
+  targetRole: role | '';
 }
 
 const initialState: AuthState = {
@@ -34,7 +36,8 @@ const initialState: AuthState = {
   fcmToken: '',
   deviceId: '',
   notificationAlert: false,
-  resetApp: false
+  resetApp: false,
+  targetRole: ''
 };
 
 const authSlice = createSlice({
@@ -86,6 +89,9 @@ const authSlice = createSlice({
     resetAppStack(state, action: PayloadAction<any>) {
       state.resetApp = action.payload;
     },
+    switchProfile(state, action: PayloadAction<any>) {
+      state.targetRole = action.payload;
+    },
     setFcmToken(state, action: PayloadAction<any>) {
       state.fcmToken = action.payload;
     },
@@ -110,6 +116,7 @@ export const {
   setCompanyLogo,
   setFcmToken,
   setDeviceId,
+  switchProfile,
 } = authSlice.actions;
 
 export default authSlice.reducer;

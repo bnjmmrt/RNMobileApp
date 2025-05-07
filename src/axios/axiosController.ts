@@ -7,7 +7,7 @@ import axios, {
 import { environment } from '../../environments/environment';
 import { FlashMessageComponent } from '../component/FlashMessageComponent/FlashMessageComponent';
 import { store } from 'src/redux/store';
-import { getErrorMessage, performLogout } from 'src/utils/functions';
+import { getErrorMessage, performLogout, switchProfileDueToInactiveRole } from 'src/utils/functions';
 
 // Extend AxiosRequestConfig to include custom `withAuth` key
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
@@ -26,6 +26,8 @@ export const axiosController: AxiosInstance = axios.create({
 axiosController.interceptors.request.use(
   async (config: CustomAxiosRequestConfig) => {
     const token = store.getState().auth.token;
+    const role = store.getState().auth.role;
+    console.log("Api call role:", role)
 
     // Check for `withAuth` flag (default true if not specified)
     const shouldAttachToken = config.withAuth !== false;
@@ -33,6 +35,7 @@ axiosController.interceptors.request.use(
     if (shouldAttachToken && token) {
       if (config.headers) {
         config.headers['Authorization'] = `Bearer ${token}`;
+        config.headers['requester'] = `${role}`;
       }
     }
 
@@ -79,10 +82,10 @@ axiosController.interceptors.response.use(
       // );
     } else if (status === 401) {
       performLogout()
-      FlashMessageComponent.show(
-        'error',
-        'Unauthorized access - Token might be expired',
-      );
+      // FlashMessageComponent.show(
+      //   'error',
+      //   'Unauthorized access - Token might be expired',
+      // );
 
       // } else if (status === 403) {
       //   FlashMessageComponent.show('error', errorMessage || 'Forbidden access');
@@ -93,8 +96,12 @@ axiosController.interceptors.response.use(
       //     'error',
       //     'Internal server error. Please try again later.',
       //   );
+      // } else if (status === 302) {
+      //   console.log("Error 302 error:", error?.response?.data)
+      //   FlashMessageComponent.show('error', errorMessage || 'Current user role is inactive. switching to active role');
+      //   switchProfileDueToInactiveRole(error?.response?.data)
     } else {
-      console.log("Error 400 error:", error)
+      console.log("Error 4002 error:", error)
       // FlashMessageComponent.show('error', errorMessage);
     }
 

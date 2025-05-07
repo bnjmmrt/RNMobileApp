@@ -81,14 +81,17 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
   const searchInputRef = useRef<InputRefMethods>(null);
   const [searchText, setSearchText] = useState<string>('');
   const [allRecipients, setallRecipients] = useState<any[]>([]);
+  const [allRecipientsIds, setAllRecipientsIds] = useState<any[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<guestInterface[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [atachmentArr, setAttachmentArr] = useState<attachmentArrInterface[]>(
     [],
   );
   const [ticketerrorMessage, setticketerrorMessage] = useState(false);
   const [recipienterrorMessage, setrecipienterrorMessage] = useState(false);
   const [addedByerrorMessage, setaddedByerrorMessage] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+
   const [ticketTypeArr, setTicketTypeArr] = useState<any[]>([]);
   const [collaboratorArr, setCollaboratorArr] = useState<any[]>([]);
   const [announcementText, setAnnouncementText] = React.useState('');
@@ -186,10 +189,11 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
 
     const announcementRecipientsData: any = await apiRequest(
       'get',
-      `/events/v1/event/${queryArgs.eventId}/event-announcement-guest?${queryArgs.ticketType}${queryArgs.addedBy}&findByName=${searchText}&take=${queryArgs.take}&skip=${queryArgs.skip}`,
+      `events/v1/event/${queryArgs.eventId}/event-announcement-guest?${queryArgs.ticketType}${queryArgs.addedBy}&findByName=${searchText}&take=${queryArgs.take}&skip=${queryArgs.skip}`,
     );
     console.log('notificationCount.data', announcementRecipientsData);
     if (announcementRecipientsData.data) {
+      getAllRecipientsId() // Just for hack now to get all recipents ids we need to fix it from backend
       setrecipienterrorMessage(false);
       setTotalCount(announcementRecipientsData?.data?.totalCount);
       setallRecipients(prev =>
@@ -201,24 +205,38 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
     }
   };
 
-  const [
-    createEventAnnouncement,
-    { error: addAnnouncementError, isLoading: addAnnouncementLoading },
-  ] = useCreateEventAnnouncementMutation();
 
-  const [
-    deleteEventAnnouncement,
-    {
-      isLoading: deleteLoading,
-      isError: deleteError,
-      isSuccess: deleteSuccess,
-    },
-  ] = useDeleteEventAnnouncementMutation();
+  const getAllRecipientsId = async () => {
+    const ticketQueryString = ticketTypeArr
+      .map((item: any) => `ticketType=${item.id}`)
+      .join('&');
+    const collaboratorQueryString = selectedCollaborator
+      .map((item: any) => `&addedBy=${item.id}`)
+      .join('&');
+    const queryArgs = {
+      eventId: eventData?.id,
+      ticketType: ticketQueryString,
+      addedBy: collaboratorQueryString,
+      searchText: searchText,
+      take: 10000,
+      skip: 0,
+    } as const;
 
-  const [
-    editEventAnnouncement,
-    { isLoading: editLoading, isError: editError, isSuccess: editSuccess },
-  ] = useEditEventAnnouncementMutation();
+    const announcementRecipientsData: any = await apiRequest(
+      'get',
+      `events/v1/event/${queryArgs.eventId}/event-announcement-guest?${queryArgs.ticketType}${queryArgs.addedBy}&findByName=${searchText}&take=${queryArgs.take}&skip=${queryArgs.skip}`,
+    );
+    if (announcementRecipientsData.data) {
+      const allRecipientsIds = announcementRecipientsData?.data?.result?.map((item: any) => item.id);
+      setAllRecipientsIds(allRecipientsIds)
+    };
+  }
+
+  const [createEventAnnouncement] = useCreateEventAnnouncementMutation();
+
+  const [deleteEventAnnouncement] = useDeleteEventAnnouncementMutation();
+
+  const [editEventAnnouncement] = useEditEventAnnouncementMutation();
 
   const checkAnnouncement = async () => {
     if (
@@ -239,18 +257,21 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
 
   const postAnnouncement = async () => {
     try {
-      console.log('in try');
+      setLoading(true)
       const addAnnouncementRequest: addAnnouncementRequestInterface = {
         ticketType: selectedTicketType.map((item: any) => item.id),
         addedBy: selectedCollaborator.map((item: any) => item.id),
         announcement: announcementRef.current.inputText,
         attachments: atachmentArr,
-        recipients: allRecipients.map((item: any) => item.id),
+        recipients: allRecipientsIds,
       };
       const response = await createEventAnnouncement({
         eventId: eventData?.id || '',
         payload: addAnnouncementRequest,
       }).unwrap();
+
+      setLoading(false)
+
       if (response.success == true) {
         FlashMessageComponent.show('success', ANNOUNCEMENT.Announcement_posted);
         dispatch(setRsvpStatus('UPDATE' + Date.now()));
@@ -260,6 +281,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
         FlashMessageComponent.show('error', getErrorMessage(typedError));
       }
     } catch (error) {
+      setLoading(false)
       const typedError = error as ApiErrorInterface;
       FlashMessageComponent.show('error', getErrorMessage(typedError));
     }
@@ -272,7 +294,16 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
       case 'ticketTypeOptions':
         return <TicketType eventData={eventData} selectedTicketType={selectedTicketType} toggleTicketType={toggleTicketType} cancelClick={cancelClick} confirmTicketType={confirmTicketType} />;
       case 'receipient':
-        return <Recipient allRecipients={allRecipients} searchInputRef={searchInputRef} handleSearchTextChange={handleSearchTextChange} searchText={searchText} totalCount={totalCount} selectedUsers={selectedUsers} />
+        return <Recipient
+          allRecipients={allRecipients}
+          searchInputRef={searchInputRef}
+          handleSearchTextChange={handleSearchTextChange}
+          searchText={searchText}
+          totalCount={totalCount}
+          selectedUsers={selectedUsers}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        />
       default:
         return null;
     }
@@ -331,15 +362,17 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
     }
   };
   useEffect(() => {
-    if (announcementId == null) {
-      console.log('ticketTypeArrww', ticketTypeArr);
-      if (ticketTypeArr.length > 0 && collaboratorArr.length > 0) {
-        getRecipients();
-      } else {
-        setallRecipients([]);
-      }
+    //   if (announcementId == null) {
+    console.log('ticketTypeArr', ticketTypeArr);
+    console.log('collaboratorArr', collaboratorArr);
+    if (ticketTypeArr.length > 0 && collaboratorArr.length > 0) {
+      getRecipients();
+    } else {
+      setallRecipients([]);
     }
-  }, [ticketTypeArr, collaboratorArr, searchText]);
+    //  }
+  }, [ticketTypeArr, collaboratorArr, searchText, currentPage]);
+
   const confirmCollaborator = () => {
     if (selectedCollaborator.length == 0) {
       setCollaboratorArr([]);
@@ -387,7 +420,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
         announcementId: announcementId || '',
       }).unwrap();
       if (response.success == true) {
-        FlashMessageComponent.show('success',ANNOUNCEMENT.Announcement_deleted);
+        FlashMessageComponent.show('success', ANNOUNCEMENT.Announcement_deleted);
         deleteBottomSheetRef.current?.close();
         dispatch(setRsvpStatus('UPDATE' + Date.now()));
         navigation.goBack();
@@ -568,6 +601,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
 
           <RecipientDetail
             allRecipients={allRecipients}
+            recipientCount={totalCount}
             ticketerrorMessage={ticketerrorMessage}
             announcementId={announcementId}
             ticketTypeRef={ticketTypeRef}
@@ -622,6 +656,7 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
           style={styles.btnStyle}
           title={ANNOUNCEMENT.Post_Announcement}
           colorTheme="dark"
+          loading={isLoading}
           onPress={checkAnnouncement}
         />
       )}
@@ -682,10 +717,12 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
         ref={postBottomSheetRef}
         isAnnouncement={true}
         snapPoints={['0.30']}
+        isLoading={isLoading}
         title={ANNOUNCEMENT.Post_Announcement}
         subTitle={
-          ANNOUNCEMENT.announcement_des + allRecipients.length + ' recipients'
+          ANNOUNCEMENT.announcement_des + totalCount + ' recipients'
         }
+
         btnLabel={ANNOUNCEMENT.Post_Announcement}
         back={() => postAnnouncement()}
       />
