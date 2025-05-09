@@ -34,6 +34,7 @@ const basicUserAllowedFilters = [
   'gender',
   'age',
   'interest',
+  'type',
 ];
 const allUsersAllowedFilters = ['list', ...basicUserAllowedFilters];
 const listDetailsAllowedFilters = basicUserAllowedFilters;
@@ -51,7 +52,14 @@ const manageGuestsAllowedFilters = [
   'gender',
   'age',
   'ticketType',
+  'basecity',
   'checkedIn',
+  'partySize',
+  'spammed',
+  'userSource',
+  'declinedBy',
+  'addedBy',
+  'vouch',
 ];
 //followers is out of scope for now
 // Ticket Type
@@ -198,6 +206,8 @@ const AllUsersFilters = ({
       }
     }
   }, [userId]);
+
+  console.log('filterData', filterData);
 
   return (
     <BottomSheetFlatList

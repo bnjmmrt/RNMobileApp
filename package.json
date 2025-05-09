@@ -75,6 +75,7 @@
     "react-native-maps": "^1.20.1",
     "react-native-modal-dropdown": "^1.0.2",
     "react-native-notifier": "^2.0.0",
+    "react-native-orientation-locker": "^1.7.0",
     "react-native-otp-entry": "^1.8.2",
     "react-native-permissions": "^5.2.5",
     "react-native-qr-code-styling": "^1.1.3",
