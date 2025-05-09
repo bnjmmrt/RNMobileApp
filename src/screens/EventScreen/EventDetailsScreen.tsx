@@ -3,7 +3,12 @@
 import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
 import { BlurView } from '@react-native-community/blur';
-import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import moment from 'moment';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -72,7 +77,7 @@ import useCalender from 'src/utils/hooks/useCalender';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
 
-interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> { }
+interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
 type RouteParams = {
   params: any;
@@ -147,16 +152,17 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     role === ROLE.HOST
       ? ({ eventId: route?.params?.id } as const)
       : ({
-        userId,
-        eventId: route?.params?.id,
-      } as const);
+          userId,
+          eventId: route?.params?.id,
+        } as const);
 
   const useFetchEventDetailsHook =
     role === ROLE.HOST
       ? useFetchHostEventDetailsQuery
       : useFetchEventDetailsQuery;
   const { data, isLoading, refetch } = useFetchEventDetailsHook(
-    queryArgs as any, { skip: !userId },
+    queryArgs as any,
+    { skip: !userId },
   );
 
   useEffect(() => {
@@ -401,7 +407,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     );
   };
   const renderRSVPButton = () => {
-    if (isDeclinedByHost || isDeclinedByMe || guestStatus === 'CONFIRMED' || role === ROLE.HOST) {
+    if (
+      isDeclinedByHost ||
+      isDeclinedByMe ||
+      guestStatus === 'CONFIRMED' ||
+      role === ROLE.HOST
+    ) {
       return null;
     }
 
@@ -430,25 +441,26 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       index: 0,
       routes: [{ name: 'BottomTabBar' }],
     });
-  }
+  };
 
   const renderDiscoverMoreEventButton = () => {
     if (isDeclinedByHost || isDeclinedByMe) {
-      return <View style={{ margin: 10 }}>
-        <Button
-          disabled={false}
-          style={[styles.btnStyle, { marginBottom: 15 }]}
-          title={BUTTON_LABLE.DISCOVER_MORE_EVENTS}
-          colorTheme="dark"
-          onPress={redirectToDiscover}
-          loading={loading}
-        />
-      </View>
+      return (
+        <View style={{ margin: 10 }}>
+          <Button
+            disabled={false}
+            style={[styles.btnStyle, { marginBottom: 15 }]}
+            title={BUTTON_LABLE.DISCOVER_MORE_EVENTS}
+            colorTheme="dark"
+            onPress={redirectToDiscover}
+            loading={loading}
+          />
+        </View>
+      );
     }
-  }
+  };
 
   const renderConfirmedButtons = () => {
-
     if (guestStatus !== 'CONFIRMED' || role === ROLE.HOST) {
       return null;
     }
@@ -475,14 +487,13 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
         ) : null}
       </View>
     );
-
   };
 
   const onPressManageInvite = () => {
     dispatch(setSelectedEventForInvite(data.data));
     navigation.navigate(ROUTES.EventGuestList, {
       eventId: route?.params?.id,
-      isPastEvent: data?.data?.status === 'PAST_STATUS'
+      isPastEvent: data?.data?.status === 'PAST_STATUS',
     });
   };
 
@@ -648,13 +659,6 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                   <EventVenue
                     item={data?.data}
                     handleCalendarPress={addCalenderEvents}
-                  />
-                )}
-
-                {(guestStatus === 'CONFIRMED' || role === ROLE.HOST) && (
-                  <EventOverview
-                    item={data?.data}
-                    isFurtherInstrection={true}
                   />
                 )}
 
