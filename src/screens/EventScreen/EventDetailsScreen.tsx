@@ -651,7 +651,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                   />
                 )}
 
-                {guestStatus == 'CONFIRMED' && (
+                {(guestStatus === 'CONFIRMED' || role === ROLE.HOST) && (
                   <EventOverview
                     item={data?.data}
                     isFurtherInstrection={true}
