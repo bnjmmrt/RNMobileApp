@@ -47,7 +47,6 @@ const useApi = <T>(): UseApiReturn<T> => {
           method === 'delete' ? config : data,
           config,
         );
-        console.log('useAPI response', response);
         if (response && response.success) {
           if (response?.statusCode === 206) {
             switchProfileDueToInactiveRole(response.data)

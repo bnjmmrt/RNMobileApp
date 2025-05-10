@@ -2,12 +2,17 @@
   "name": "Rumor",
   "version": "0.0.1",
   "private": true,
+  "resolutions": {
+    "@babel/core": "^7.20.2",
+    "babel-loader": "^8.3.0"
+  },
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
+    "clear-cache": "rm -rf $TMPDIR/metro-* && watchman watch-del-all && yarn start --reset-cache",
     "env-dev": "node set-environment.js environment.dev googleServices GoogleServiceInfo",
     "env-uat": "node set-environment.js environment.uat googleServices GoogleServiceInfo",
     "env-stage": "node set-environment.js environment.stage googleServices GoogleServiceInfo",
@@ -70,6 +75,7 @@
     "react-native-maps": "^1.20.1",
     "react-native-modal-dropdown": "^1.0.2",
     "react-native-notifier": "^2.0.0",
+    "react-native-orientation-locker": "^1.7.0",
     "react-native-otp-entry": "^1.8.2",
     "react-native-permissions": "^5.2.5",
     "react-native-qr-code-styling": "^1.1.3",
@@ -116,6 +122,7 @@
     "eslint": "^8.19.0",
     "jest": "^29.6.3",
     "prettier": "2.8.8",
+    "react-native-dotenv": "^3.4.11",
     "react-test-renderer": "18.3.1",
     "typescript": "5.0.4"
   },

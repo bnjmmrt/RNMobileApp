@@ -71,7 +71,6 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
       'get',
       `${EndPoint.notification_count}?id=${userId}&role=${role}`,
     );
-    console.log('notificationCount.data', notificationCount);
     if (notificationCount.data) {
       dispatch(
         setNotificationCount(notificationCount?.data?.totalNotifications),

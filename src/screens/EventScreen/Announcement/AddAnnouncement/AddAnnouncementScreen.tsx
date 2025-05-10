@@ -155,7 +155,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
 
   useEffect(() => {
     if (announcementDetailsData != undefined) {
-      console.log('announcementDetailsData', announcementDetailsData);
       setTicketTypeArr(announcementDetailsData?.data?.ticketType);
       setCollaboratorArr(announcementDetailsData?.data?.addedBy);
       setAnnouncementText(announcementDetailsData.data?.announcement);
@@ -191,7 +190,6 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
       'get',
       `events/v1/event/${queryArgs.eventId}/event-announcement-guest?${queryArgs.ticketType}${queryArgs.addedBy}&findByName=${searchText}&take=${queryArgs.take}&skip=${queryArgs.skip}`,
     );
-    console.log('notificationCount.data', announcementRecipientsData);
     if (announcementRecipientsData.data) {
       getAllRecipientsId() // Just for hack now to get all recipents ids we need to fix it from backend
       setrecipienterrorMessage(false);

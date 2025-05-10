@@ -7,7 +7,11 @@ import axios, {
 import { environment } from '../../environments/environment';
 import { FlashMessageComponent } from '../component/FlashMessageComponent/FlashMessageComponent';
 import { store } from 'src/redux/store';
-import { getErrorMessage, performLogout, switchProfileDueToInactiveRole } from 'src/utils/functions';
+import {
+  getErrorMessage,
+  performLogout,
+  switchProfileDueToInactiveRole,
+} from 'src/utils/functions';
 
 // Extend AxiosRequestConfig to include custom `withAuth` key
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
@@ -27,7 +31,7 @@ axiosController.interceptors.request.use(
   async (config: CustomAxiosRequestConfig) => {
     const token = store.getState().auth.token;
     const role = store.getState().auth.role;
-    console.log("Api call role:", role)
+    console.log('Api call role:', role);
 
     // Check for `withAuth` flag (default true if not specified)
     const shouldAttachToken = config.withAuth !== false;
@@ -43,16 +47,7 @@ axiosController.interceptors.request.use(
     const fullUrl = config.baseURL
       ? `${config.baseURL}${config.url}`
       : config.url;
-    console.log('Request URL:', fullUrl);
-    console.log('Request Method:', config.method);
-    console.log('Request Headers:', config.headers);
-    if (config.params) {
-      console.log('Request Params:', config.params);
-    }
-    if (config.data) {
-      console.log('Request Data:', config.data);
-    }
-
+    console.log('Request URL:', fullUrl, config.method);
     return config;
   },
   (error: AxiosError) => Promise.reject(error),
@@ -61,7 +56,6 @@ axiosController.interceptors.request.use(
 // Response interceptor
 axiosController.interceptors.response.use(
   (response: AxiosResponse) => {
-    console.log("response:", response.data)
     return response.data;
   },
   (error: AxiosError) => {
@@ -75,13 +69,13 @@ axiosController.interceptors.response.use(
     // const errorMessage = (error.response?.data as any)?.error?.message || error?.message;
 
     if (status === 400) {
-      console.log("Error 400 error:", error)
+      console.log('Error 400 error:', error);
       // FlashMessageComponent.show(
       //   'error',
       //   getErrorMessage(error?.response) || 'Something went wrong, please try again!',
       // );
     } else if (status === 401) {
-      performLogout()
+      performLogout();
       // FlashMessageComponent.show(
       //   'error',
       //   'Unauthorized access - Token might be expired',
@@ -101,7 +95,7 @@ axiosController.interceptors.response.use(
       //   FlashMessageComponent.show('error', errorMessage || 'Current user role is inactive. switching to active role');
       //   switchProfileDueToInactiveRole(error?.response?.data)
     } else {
-      console.log("Error 4002 error:", error)
+      console.log('Error 4002 error:', error);
       // FlashMessageComponent.show('error', errorMessage);
     }
 
