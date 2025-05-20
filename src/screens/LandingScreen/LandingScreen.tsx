@@ -1,5 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, Linking, Image, SafeAreaView, StatusBar } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Linking,
+  Image,
+  SafeAreaView,
+  StatusBar,
+  Share,
+} from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Hp } from '../../utils/dimensions';
 import { BUTTON_LABLE } from '../../utils/constants';
@@ -8,15 +16,16 @@ import Video from 'react-native-video';
 import IMAGES from '../../assets/images/index';
 import LandingStyles from './LandingStyles';
 import Button from '../../component/Button';
-import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
 import { useFocusEffect } from '@react-navigation/native';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import { createBranchLink } from '../../config/branch';
+import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
+
 // Define the type for navigation props
-interface LandingScreenProps extends NativeStackScreenProps<any, any> { }
+interface LandingScreenProps extends NativeStackScreenProps<any, any> {}
 
 const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
   const styles = LandingStyles();
-  const bottomSheetRef = useRef(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -28,7 +37,6 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
         showBottomSafeAreaView: false,
         bottomSafeAreaViewColor: 'transparent',
       });
-
     }, [navigation]),
   );
 
@@ -36,8 +44,32 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
     navigation.navigate('EmailPhoneScreen');
   };
 
-  const handleOpenWebView = () => {
-    bottomSheetRef?.current?.open();
+  const handleCreateBranchLink = async () => {
+    try {
+      const link = await createBranchLink(
+        {
+          title: 'Join Rumor',
+          description: 'Join me on Rumor - The Social Experience App',
+          screen: 'profile',
+          type: 'user',
+        },
+        {
+          feature: 'invite',
+          channel: 'app',
+        },
+      );
+
+      if (link) {
+        // Share the link
+        await Share.share({
+          message: `Join me on Rumor - The Social Experience App\n${link}`,
+          url: link,
+        });
+      }
+    } catch (error) {
+      console.error('Error creating Branch link:', error);
+      FlashMessageComponent.show('error', 'Failed to create sharing link');
+    }
   };
 
   return (
@@ -59,15 +91,15 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
         </View>
 
         <View style={styles.buttonWrapper}>
-          {/* <Button
+          <Button
             disabled={false}
             style={styles.btnStyle}
-            title={BUTTON_LABLE.APPLY_TO_BE_HOST}
+            title="Share App"
             colorTheme={'dark'}
-            onPress={handleOpenWebView}
-          /> */}
+            onPress={handleCreateBranchLink}
+          />
 
-          {/* <View style={{ height: Hp(2) }} /> */}
+          <View style={{ height: Hp(2) }} />
 
           <Button
             disabled={false}
@@ -77,8 +109,6 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
             onPress={onEnterClick}
           />
         </View>
-
-        <WebViewBottomSheet url={LINKS.APPLY_FOR_HOST} ref={bottomSheetRef} isFromLanding={true} />
       </View>
     </View>
   );

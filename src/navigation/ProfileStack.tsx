@@ -14,20 +14,21 @@ import ReferralScreen from 'src/screens/ProfileScreen/ReferralsScreen/ReferralSc
 import FollowingScreen from 'src/screens/ProfileScreen/FollowingScreen/FollowingScreen';
 import HostEditProfileScreen from 'src/screens/ProfileScreen/EditProfile/HostEditProfileScreen';
 import HostConnectedAccountsScreen from 'src/screens/ProfileScreen/EditProfile/HostConnectedAccountsScreen';
+import { ROUTES } from './Route';
 
 // Define the param list for the stack navigator
 export type ProfileStackParamList = {
-  EditProfileScreen: undefined;
-  ProfileScreen: undefined;
-  ConnectedAccountsScreen: undefined;
-  SelectInterestScreen: undefined;
-  NotificationSettingsScreen: undefined;
-  FeedbackScreen: undefined;
-  HostProfileScreen: undefined;
-  ReferralScreen: undefined;
-  FollowingScreen: undefined;
-  HostEditProfileScreen: undefined;
-  HostConnectedAccountsScreen: undefined;
+  [ROUTES.ProfileScreen]: undefined;
+  [ROUTES.EditProfileScreen]: undefined;
+  [ROUTES.ConnectedAccountsScreen]: undefined;
+  [ROUTES.SelectInterestScreen]: undefined;
+  [ROUTES.NotificationSettingsScreen]: undefined;
+  [ROUTES.FeedbackScreen]: undefined;
+  [ROUTES.HostProfileScreen]: undefined;
+  [ROUTES.ReferralScreen]: undefined;
+  [ROUTES.FollowingScreen]: undefined;
+  [ROUTES.HostEditProfileScreen]: undefined;
+  [ROUTES.HostConnectedAccountsScreen]: undefined;
 };
 
 const Stack = createStackNavigator<ProfileStackParamList>();
@@ -36,64 +37,64 @@ const Stack = createStackNavigator<ProfileStackParamList>();
 export const ProfileStack: React.FC = () => {
   return (
     <Stack.Navigator
-      initialRouteName={'ProfileScreen'}
+      initialRouteName={ROUTES.ProfileScreen}
       screenOptions={({ route, navigation }) => ({
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       })}>
       <Stack.Screen
-        name="ProfileScreen"
+        name={ROUTES.ProfileScreen}
         component={ProfileScreen}
         options={{ headerShown: false }}
       />
 
       <Stack.Screen
-        name="EditProfileScreen"
+        name={ROUTES.EditProfileScreen}
         component={EditProfileScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="ConnectedAccountsScreen"
+        name={ROUTES.ConnectedAccountsScreen}
         component={ConnectedAccountsScreen}
         options={{ headerShown: false }}
       />
 
       <Stack.Screen
-        name="SelectInterestScreen"
+        name={ROUTES.SelectInterestScreen}
         component={SelectInterestScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="NotificationSettingsScreen"
+        name={ROUTES.NotificationSettingsScreen}
         component={NotificationSettingsScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="FeedbackScreen"
+        name={ROUTES.FeedbackScreen}
         component={FeedbackScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="HostProfileScreen"
+        name={ROUTES.HostProfileScreen}
         component={HostProfileScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="ReferralScreen"
+        name={ROUTES.ReferralScreen}
         component={ReferralScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="FollowingScreen"
+        name={ROUTES.FollowingScreen}
         component={FollowingScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="HostEditProfileScreen"
+        name={ROUTES.HostEditProfileScreen}
         component={HostEditProfileScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="HostConnectedAccountsScreen"
+        name={ROUTES.HostConnectedAccountsScreen}
         component={HostConnectedAccountsScreen}
         options={{ headerShown: false }}
       />

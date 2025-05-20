@@ -2,8 +2,8 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
-import React, { useEffect, useCallback, useRef } from 'react';
-import { LogBox, Platform, StyleSheet } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { LogBox, Platform } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Provider, useDispatch, useSelector } from 'react-redux';
@@ -25,11 +25,7 @@ import {
 } from 'src/component/PushNotification';
 import { navigationRef } from 'src/component/NavigationService';
 import ScreenshotDetectedDialog from 'src/component/ScreenshotDetectedDialog';
-import {
-  fetchUserProfile,
-  getDeviceId,
-  getRoleRole,
-} from 'src/utils/functions';
+import { fetchUserProfile, getDeviceId } from 'src/utils/functions';
 import Intercom, { Visibility } from '@intercom/intercom-react-native';
 import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import analytics from '@react-native-firebase/analytics';
@@ -48,6 +44,22 @@ import { useLogout } from 'src/utils/hooks/useLogout';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { useNavigation } from '@react-navigation/native';
 import Orientation from 'react-native-orientation-locker';
+import { useBranchDeepLink } from 'src/hooks/useBranchDeepLink';
+import { ROUTES } from 'src/navigation/Route';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AppStackParamList } from 'src/navigation/AppStack';
+
+interface FocusItem {
+  name: string;
+  [key: string]: any;
+}
+
+interface Role {
+  roleName: string;
+  roleId: string;
+}
+
+type NavigationProp = NativeStackNavigationProp<AppStackParamList>;
 
 const AppContent: React.FC = () => {
   const { isConnected } = useNetInfo();
@@ -55,15 +67,20 @@ const AppContent: React.FC = () => {
   const dispatch = useDispatch();
   const [getUserById] = useGetUserWithRolesByIdMutation();
   const resetApp = useSelector((state: RootState) => state.auth.resetApp);
-  const targetRole = useSelector((state: RootState) => state.auth.targetRole);
+  const targetRole = useSelector(
+    (state: RootState) => state.auth.targetRole,
+  ) as Role;
   const { logOut } = useLogout();
   const hasLoggedOut = useRef(false);
-  const { navigate } = useNavigation();
+  const { navigate } = useNavigation<NavigationProp>();
   const updateAnalyticsStatus = async (status: boolean) => {
     await analytics().setAnalyticsCollectionEnabled(status);
   };
 
   const userId = useSelector((state: RootState) => state.auth.userId);
+
+  // Initialize Branch.io deep linking
+  useBranchDeepLink();
 
   const fetchUserById = async () => {
     try {
@@ -113,7 +130,7 @@ const AppContent: React.FC = () => {
           dispatch(setRoleId(targetRole.roleId));
           dispatch(setAuthToken(response?.data?.token));
           fetchUserProfile();
-          navigate('BottomTabBar');
+          navigate(ROUTES.BottomTabBar);
         }
       } catch (error) {
         console.error('Failed to switch profile:', error);
@@ -165,14 +182,17 @@ const AppContent: React.FC = () => {
 
   const fetch = async () => {
     const focusResponse: any = await apiRequest('get', EndPoint.get_focuses);
-    console.log('focusResponse.data', focusResponse.data);
     if (focusResponse.data) {
-      focusResponse.data.sort((a, b) => a.name.localeCompare(b.name));
+      focusResponse.data.sort((a: FocusItem, b: FocusItem) =>
+        a.name.localeCompare(b.name),
+      );
       dispatch(setCreativeFocus(focusResponse.data));
     }
     const interestResponse: any = await apiRequest('get', EndPoint.interests);
     if (interestResponse.data) {
-      interestResponse.data.sort((a, b) => a.name.localeCompare(b.name));
+      interestResponse.data.sort((a: FocusItem, b: FocusItem) =>
+        a.name.localeCompare(b.name),
+      );
       dispatch(setInterests(interestResponse.data));
     }
   };

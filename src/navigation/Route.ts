@@ -22,8 +22,8 @@ export const ROUTES = {
   HostEditProfileScreen: 'HostEditProfileScreen',
   HostConnectedAccountsScreen: 'HostConnectedAccountsScreen',
   WelcomeScreen: 'WelcomeScreen',
-  AddAnnouncementScreen:"AddAnnouncementScreen",
-  Announcement:"Announcement",
+  AddAnnouncementScreen: 'AddAnnouncementScreen',
+  Announcement: 'Announcement',
   EditEventScreen: 'EditEventScreen',
   EditEventDetails: 'EditEventDetails',
   EditEventSettings: 'EditEventSettings',
@@ -35,5 +35,6 @@ export const ROUTES = {
   InviteGuestScreen: 'InviteGuestScreen',
   InviteGuestsManuallyScreen: 'InviteGuestsManuallyScreen',
   SelectedGuestsToInviteScreen: 'SelectedGuestsToInviteScreen',
-  NotificationsScreen:'NotificationsScreen'
+  NotificationsScreen: 'NotificationsScreen',
+  InviteReferralScreen: 'InviteReferralScreen',
 } as const;

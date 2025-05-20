@@ -30,10 +30,11 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>therumorapp</string>
+			<string>com.therumor.app</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>therumorapp</string>
+				<string>rumor</string>
 			</array>
 		</dict>
 	</array>
@@ -119,5 +120,22 @@
 	<string>Light</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<!-- Branch.io Configuration -->
+	<key>branch_key</key>
+	<dict>
+		<key>live</key>
+		<string>key_live_kwh92jiWkT1yvSVthcIZBebczFl6l4yC</string>
+		<key>test</key>
+		<string>key_test_avmZ2go2pR4utQItpBELPbkouzdXc9qR</string>
+	</dict>
+	<key>branch_universal_link_domains</key>
+	<array>
+		<string>rumor.app.link</string>
+		<string>rumor-alternate.app.link</string>
+		<string>rumor.test-app.link</string>
+		<string>rumor-alternate.test-app.link</string>
+	</array>
+	<key>branch_app_domain</key>
+	<string>rumor.app.link</string>
 </dict>
 </plist>

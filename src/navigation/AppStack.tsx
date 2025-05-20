@@ -14,8 +14,6 @@ import { EventStack } from './EventStack';
 import InviteReferralBottomSheet from 'src/component/InviteReferralBottomSheet/InviteReferralBottomSheet';
 import WelcomeScreen from 'src/screens/AppFlow/WelcomeScreen/WelcomeScreen';
 import EventDetailsScreen from 'src/screens/EventScreen/EventDetailsScreen';
-import EditEventDetails from 'src/screens/EventScreen/EditEventDetails';
-import EditEventSettings from 'src/screens/EventScreen/EditEventSettings';
 import EditEventScreen from 'src/screens/EventScreen/EditEventScreen';
 import NotificationsScreen from 'src/screens/Notifications/NotificationsScreen';
 
@@ -32,6 +30,7 @@ export type AppStackParamList = {
   [ROUTES.ProfileStack]: undefined;
   [ROUTES.EventStack]: undefined;
   [ROUTES.WelcomeScreen]: undefined;
+  [ROUTES.InviteReferralScreen]: undefined;
 };
 
 interface AppStackProps {
@@ -41,7 +40,7 @@ interface AppStackProps {
 const Stack = createStackNavigator<AppStackParamList>();
 
 export const AppStack: React.FC<AppStackProps> = ({
-  initialRouteName = 'BottomTabBar',
+  initialRouteName = ROUTES.BottomTabBar,
 }) => {
   return (
     <Stack.Navigator
@@ -55,7 +54,7 @@ export const AppStack: React.FC<AppStackProps> = ({
         component={BeforeAppStaticScreen}
       />
       <Stack.Screen
-        name="InviteReferralScreen"
+        name={ROUTES.InviteReferralScreen}
         component={InviteReferralBottomSheet}
         options={{ headerShown: false }}
       />
@@ -67,7 +66,7 @@ export const AppStack: React.FC<AppStackProps> = ({
       <Stack.Screen name={ROUTES.UserDetail} component={UserDetails} />
       <Stack.Screen name={ROUTES.ListDetail} component={ListDetails} />
       <Stack.Screen
-        name="EventDetailsScreen"
+        name={ROUTES.EventDetailsScreen}
         component={EventDetailsScreen}
         options={{ headerShown: false }}
       />

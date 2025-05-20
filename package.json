@@ -57,6 +57,7 @@
     "react-native-animatable": "^1.4.0",
     "react-native-blob-util": "^0.21.2",
     "react-native-bootsplash": "^6.3.2",
+    "react-native-branch": "^6.6.0",
     "react-native-calendar-events": "^2.2.0",
     "react-native-config": "^1.5.3",
     "react-native-contacts": "^8.0.4",
