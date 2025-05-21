@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -59,7 +59,6 @@ import { styles } from './styles';
 import { SwipeableGuestList } from './SwipeableGuestList';
 import {
   formatDetailedEventDate,
-  formatEventRSVPDate,
 } from 'src/utils/dateFunctions';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
@@ -720,10 +719,7 @@ const RSVPInvitedUpcoming = () => {
               paddingBottom: 8,
               fontSize: fontScale(14),
             }}>
-            {`Please add your additional guests’ details by ${formatEventRSVPDate(
-              startDate,
-              timeZone,
-            )}, or their passes will be canceled.`}
+            {'Please share your additional guests’ details before the event to ensure a smooth check-in experience.'}
           </CustomText>
         )}
 
@@ -861,10 +857,7 @@ const RSVPInvitedUpcoming = () => {
             paddingTop: 12,
             paddingBottom: 8,
           }}>
-          {`Please add your additional guests’ details by ${formatEventRSVPDate(
-            startDate,
-            timeZone,
-          )}, or their passes will be canceled.`}
+          {'Please share your additional guests’ details before the event to ensure a smooth check-in experience.'}
         </CustomText>
         <Button
           disabled={false}
