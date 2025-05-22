@@ -11,15 +11,6 @@ import {
   View,
 } from 'react-native';
 import { convertUTCToTimeZoneFormat } from 'src/utils/dateFunctions';
-import {
-  fontScale,
-  horizontalMarginScale,
-  horizontalScale,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-  Wp,
-} from 'src/utils/dimensions';
 import { ANNOUNCEMENT, COLORS, LABLE, ROLE } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
 import AvatarInitials from '../AvatarInitials';
@@ -221,7 +212,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
-          paddingBottom: verticalMarginScale(12),
+          paddingBottom: 12,
         }}>
         <CustomText style={styles.heading}>
           {LABLE.EVENT_ANNOUNCEMENTS}
@@ -241,20 +232,18 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
         data={
           viewAllLess ? announcementListData?.slice(0, 3) : announcementListData
         }
-        keyExtractor={item => item?.id}
+        keyExtractor={(item: any) => item?.id}
         renderItem={({ item }) => <EventItem item={item} />}
         style={{}}
         ListEmptyComponent={
-          <CustomText style={{ marginVertical: verticalMarginScale(16) }}>
+          <CustomText style={{ marginVertical: 16 }}>
             {LABLE.NO_EVENT_ANNOUNCEMENTS}
           </CustomText>
         }
       />
       {announcementListData?.length > 0 && (
-        <View style={{ paddingBottom: verticalMarginScale(20) }}>
-          <View
-            style={[styles.divider, { marginBottom: verticalMarginScale(20) }]}
-          />
+        <View style={{ paddingBottom: 20 }}>
+          <View style={[styles.divider, { marginBottom: 20 }]} />
           {role == ROLE.HOST ? (
             <TouchableOpacity
               onPress={handleViewAll}
@@ -299,12 +288,13 @@ const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
     borderColor: COLORS.borderGray,
-    borderRadius: radiusScale(16),
-    paddingTop: verticalMarginScale(12),
-    paddingHorizontal: horizontalMarginScale(16),
+    borderRadius: 16,
+    paddingTop: 12,
+    paddingHorizontal: 16,
+    backgroundColor: COLORS.white,
   },
   heading: {
-    fontSize: fontScale(16),
+    fontSize: 16,
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
   icon: {
@@ -314,21 +304,21 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.borderGray,
   },
   addicon: {
-    width: verticalScale(16),
-    height: verticalScale(16),
-    resizeMode:'contain'
+    width: 16,
+    height: 16,
+    resizeMode: 'contain',
   },
   iconWrapper: {
-    width: verticalScale(32),
-    height: verticalScale(32),
-    borderRadius: radiusScale(32),
+    width: 32,
+    height: 32,
+    borderRadius: 32,
     backgroundColor: COLORS.tabBorderColor,
     justifyContent: 'center',
     alignItems: 'center',
   },
   textContainer: {
     flex: 1,
-    marginStart: horizontalMarginScale(16),
+    marginStart: 16,
   },
   pdfIcon: {
     width: 30,
@@ -337,24 +327,24 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: COLORS.light_gray,
-    fontSize: fontScale(12),
-    marginTop: verticalMarginScale(8),
+    fontSize: 12,
+    marginTop: 8,
   },
   title: {
     color: COLORS.black2,
-    fontSize: fontScale(12),
+    fontSize: 12,
     textAlign: 'center',
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
   divider: {
     height: 1,
-    width: Wp(92),
+    width: '92%',
     alignSelf: 'center',
     backgroundColor: COLORS.borderGray,
   },
   talentItem: {
     flexDirection: 'row',
-    marginVertical: verticalMarginScale(16),
+    marginVertical: 16,
   },
   name: {
     flex: 1,
@@ -376,18 +366,18 @@ const styles = StyleSheet.create({
     height: 12,
     tintColor: COLORS.tabBorderColor,
     marginTop: 5,
-    resizeMode:'contain'
+    resizeMode: 'contain',
   },
   mediaImage: {
-    width: horizontalScale(90),
-    height: verticalScale(128),
+    width: 90,
+    height: 128,
     borderRadius: 8,
     marginRight: 10,
     backgroundColor: '#f0f0f0',
   },
   pdfContainer: {
-    width: horizontalScale(90),
-    height: verticalScale(128),
+    width: 90,
+    height: 128,
     marginRight: 10,
     backgroundColor: '#f0f0f0',
     justifyContent: 'center',

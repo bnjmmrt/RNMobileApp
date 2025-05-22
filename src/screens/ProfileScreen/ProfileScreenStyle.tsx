@@ -1,12 +1,4 @@
 import { Platform, StyleSheet } from 'react-native';
-import {
-  Wp,
-  Hp,
-  fontScale,
-  radiusScale,
-  verticalMarginScale,
-  horizontalMarginScale,
-} from '../../utils/dimensions';
 import { COLORS } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
 import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
@@ -23,24 +15,24 @@ const ProfileScreenStyle = () => {
       flex: 1,
     },
     btnStyle: {
-      width: Wp(85),
-      borderRadius: radiusScale(100),
+      width: '85%',
+      borderRadius: 100,
     },
     logoContainer: {
       alignItems: 'center',
-      marginVertical: verticalMarginScale(10),
+      marginVertical: 10,
     },
     logoImgStyle: {
-      width: horizontalMarginScale(100),
-      height: verticalMarginScale(50),
+      width: 100,
+      height: 50,
       resizeMode: 'center',
     },
     textBelowStyle: {
       color: COLORS.light_gray,
-      fontSize: fontScale(14),
+      fontSize: 14,
       textAlign: 'center',
       fontFamily: fontFamily.ABCDiatype_Regular,
-      marginBottom: verticalMarginScale(100),
+      marginBottom: 100,
     },
   });
 };

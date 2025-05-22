@@ -20,12 +20,6 @@ import {
 import { COLORS, ERROR_MESSAGE } from '../../utils/constants';
 import { useNavigation } from '@react-navigation/native';
 import { CustomText } from '../CustomText';
-import {
-  fontScale,
-  horizontalMarginScale,
-  verticalMarginScale,
-  verticalScale,
-} from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import IMAGES from '@images/index';
@@ -329,12 +323,12 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    marginTop: verticalMarginScale(24),
+    marginTop: 24,
   },
   label: {
-    paddingBottom: horizontalMarginScale(2),
+    paddingBottom: 2,
     color: COLORS.black,
-    fontSize: fontScale(14),
+    fontSize: 14,
     lineHeight: 16,
     marginBottom: 5,
   },
@@ -344,12 +338,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: horizontalMarginScale(10),
-    height: verticalScale(56),
+    paddingHorizontal: 10,
+    height: 56,
   },
   multilineInputContainer: {
-    height: verticalScale(160),
-    paddingTop: verticalMarginScale(10),
+    height: 160,
+    paddingTop: 10,
   },
   leftImage: { width: 16, height: 16 },
   rightImage: {
@@ -360,7 +354,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     left: 10,
-    fontSize: fontScale(14),
+    fontSize: 14,
     color: COLORS.black,
     fontFamily: fontFamily.ABCDiatype_Regular,
   },
@@ -371,11 +365,11 @@ const styles = StyleSheet.create({
   errorInputWrapper: {
     borderColor: COLORS.borderRed,
     backgroundColor: COLORS.bgRed,
-    height: verticalScale(56),
+    height: 56,
   },
   errorText: {
-    fontSize: fontScale(12),
-    marginTop: verticalMarginScale(5),
+    fontSize: 12,
+    marginTop: 5,
     color: COLORS.errorText,
   },
   resizeHandle: {

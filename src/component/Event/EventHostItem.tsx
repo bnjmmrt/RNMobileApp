@@ -13,16 +13,6 @@ import {
   ROLE,
 } from '../../utils/constants';
 import IMAGES from '@images/index';
-import {
-  fontScale,
-  horizontalMarginScale,
-  horizontalScale,
-  Hp,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-  Wp,
-} from 'src/utils/dimensions';
 import ButtonSmall from '../ButtonSmall';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
 import { FlashMessageComponent } from '../FlashMessageComponent/FlashMessageComponent';
@@ -34,6 +24,7 @@ import AvatarInitials from '../AvatarInitials';
 import { ROUTES } from 'src/navigation/Route';
 import { useNavigation } from '@react-navigation/native';
 import { CustomText } from '../CustomText';
+import { isIPad } from 'src/utils/isTabletConfig';
 
 interface EventHostItemProps {
   item: any;
@@ -50,9 +41,11 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item, length }) => {
   const { navigate } = useNavigation();
   const getWidth = () => {
     if (length === 1) return Dimensions.get('screen').width - 30;
-    if (length === 2) return Wp('65%');
-    return Wp('55%');
+    if (length === 2) return Dimensions.get('screen').width * 0.65;
+    return Dimensions.get('screen').width * 0.55;
   };
+
+  console.log(item, 'chekcing checking');
 
   return (
     <View style={[styles.container, { width: getWidth() }]}>
@@ -68,7 +61,7 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item, length }) => {
         size={40}
       />
       <View style={{ paddingHorizontal: 10, marginEnd: 20, flex: 1 }}>
-        <CustomText style={styles.title} textProps={{ numberOfLines: 1 }}>
+        <CustomText style={styles.title} >
           {capitalizeFirstLetter(item?.name)}
         </CustomText>
         <CustomText style={styles.subtitle}>
@@ -76,7 +69,7 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item, length }) => {
         </CustomText>
       </View>
 
-      {role == ROLE.MEMBER && item.role.name == 'host' && (
+      {role === ROLE.MEMBER && item.role.name === 'host' && (
         <FollowButton
           id={item.id}
           isFollowing={item.isFollowedByCurrentGuest}
@@ -90,34 +83,36 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item, length }) => {
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-    padding: verticalMarginScale(8),
+    padding: 8,
     marginRight: 10,
     borderRadius: 99,
+    maxWidth: isIPad ? 260 : 'auto',
     borderColor: COLORS.borderGray,
     flexDirection: 'row',
     alignSelf: 'flex-start',
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: COLORS.white,
   },
   image: {
     resizeMode: 'center',
-    width: horizontalScale(40),
-    height: verticalScale(40),
-    borderRadius: radiusScale(20),
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
   infoContainer: {
     flex: 1,
     justifyContent: 'center',
-    paddingLeft: horizontalMarginScale(8),
-    // marginEnd: 20,
+    paddingLeft: 8,
   },
   title: {
-    width: '80%',
+    width: isIPad ? '100%' : '80%',
     fontFamily: fontFamily.ABCDiatype_Medium,
+    fontSize: 14,
   },
   subtitle: {
     color: COLORS.light_gray,
-    fontSize: fontScale(12),
+    fontSize: 12,
   },
   btnStyle: {
     borderRadius: 100,

@@ -33,17 +33,12 @@ import useApi from '../../../axios/useApi';
 import EmailInput from '../../../component/EmailComponent/EmailInput';
 import PhoneNumberInput from '../../../component/PhonNumberComponent/PhoneNumberInput';
 import { RootState } from '../../../redux/slices';
-import {
-  fontScale,
-  horizontalMarginScale,
-  radiusScale,
-  verticalMarginScale,
-} from '../../../utils/dimensions';
 import BaseCityComponent from './BaseCityComponent';
 import CreativeFocusComponent from './CreativeFocusComponent';
 import DatePickerComponent from './DatePickerComponent';
 import GenderComponent from './GenderComponent';
 import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import { isIPad } from 'src/utils/isTabletConfig';
 import { useGetUserWithRolesByIdMutation } from 'src/redux/actions/inviteGuestsApiAction';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> { }
@@ -302,8 +297,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         {
           paddingBottom: keyboardVisible
             ? Platform.OS === 'ios'
-              ? verticalMarginScale(50)
-              : verticalMarginScale(10)
+              ? 50
+              : 10
             : 0,
         },
       ]}>
@@ -311,6 +306,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         headerTitle={PROFILE.EDIT_PROFILE}
         onPress={handleBackPress}
         showProgressBar={false}
+        showBackButton={!isIPad}
       />
 
       <KeyboardAvoidingView
@@ -411,7 +407,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                     styles.label,
                     {
                       marginTop: !baseCityRef.current?.validateBaseCity()
-                        ? verticalMarginScale(24)
+                        ? 24
                         : 0,
                     },
                   ]}>
@@ -462,23 +458,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    // paddingBottom: 20
   },
   btnStyle: {
-    borderRadius: radiusScale(100),
+    borderRadius: 100,
     bottom: BOTTOM_SAFEAREA_SPACING,
   },
   contentContainer: {
     flex: 1,
-    // paddingVertical: verticalMarginScale(10),
-    paddingHorizontal: horizontalMarginScale(20),
-    paddingBottom: verticalMarginScale(40),
+    paddingHorizontal: 20,
+    paddingBottom: 40,
   },
-  scrollContainer: { paddingBottom: verticalMarginScale(40) },
+  scrollContainer: { paddingBottom: 40 },
   label: {
-    // paddingVertical: horizontalMarginScale(2),
-    fontSize: fontScale(14),
-    paddingTop: verticalMarginScale(20),
+    fontSize: 14,
+    paddingTop: 20,
     color: COLORS.black,
     fontWeight: '500',
     lineHeight: 16,

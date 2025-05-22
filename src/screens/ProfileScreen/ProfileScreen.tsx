@@ -1,9 +1,11 @@
+/* eslint-disable no-catch-shadow */
 import Intercom, { Visibility } from '@intercom/intercom-react-native';
 import { CommonActions, useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Alert,
+  Dimensions,
   InteractionManager,
   Platform,
   ScrollView,
@@ -50,11 +52,20 @@ import ProfileTopView from './ProfileTopView';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 import { TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 import { useMemberLogoutMutation } from 'src/redux/actions/appFlowApiAction';
+import { isIPad } from '../../utils/isTabletConfig';
+import IPadLayoutWrapper from 'src/component/IPadLayoutWrapper/IPadLayoutWrapper';
+import EditProfileScreen from './EditProfile/EditProfileScreen';
+import ConnectedAccountsScreen from './EditProfile/ConnectedAccountsScreen';
+import NotificationsScreen from '../Notifications/NotificationsScreen';
+import FeedbackScreen from './EditProfile/FeedbackScreen';
+import NotificationSettingsScreen from './EditProfile/NotificationSettingsScreen';
 import { useLogout } from 'src/utils/hooks/useLogout';
-const { logOut } = useLogout();
+import FollowingScreen from './FollowingScreen/FollowingScreen'
+import ReferralScreen from './ReferralsScreen/ReferralScreen'
+import SelectInterestScreen from '../AppFlow/SelectInterestScreen/SelectInterestScreen'
 
 // Define the type for navigation props
-interface ProfileScreenProps extends NativeStackScreenProps<any, any> { }
+interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
 
 interface ListItem {
   id: string;
@@ -62,9 +73,16 @@ interface ListItem {
   image: string;
   onPress?: any;
 }
-const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
+
+const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const styles = ProfileScreenStyle();
+  const [selectedScreen, setSelectedScreen] = useState<string | null>(
+    PROFILE.EDIT_PROFILE,
+  );
+
+const { logOut } = useLogout();
+
 
   const editPhotoBottomSheetRef = useRef<any>(null);
   const savePhotoBottomSheetRef = useRef<any>(null);
@@ -127,7 +145,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   };
   const callDeleteAccountAPpi = async () => {
     try {
-      const response = await apiRequest(
+      const response: any = await apiRequest(
         'delete',
         `users/v1/auth/users/${userId}`,
       );
@@ -151,7 +169,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       } else {
         Alert.alert('Error', response?.message || 'Something went wrong');
       }
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert('Error', error?.message || 'Failed to delete account');
     }
   };
@@ -174,7 +192,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         name: `${profileData?.firstName} ${profileData?.lastName}`,
       });
     }
-    Intercom.setBottomPadding(60)
+    Intercom.setBottomPadding(60);
     Intercom.setLauncherVisibility(Visibility.GONE);
 
     return () => {
@@ -470,44 +488,72 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     }, []),
   );
 
-  return (
+  const handleItemPress = (item: ListItem) => {
+    if (item.onPress) {
+      item.onPress();
+    } else {
+      setSelectedScreen(item.title);
+    }
+  };
+
+  const renderRightContent = () => {
+    switch (selectedScreen) {
+      case PROFILE.EDIT_PROFILE:
+        return <EditProfileScreen navigation={navigation} route={route} />;
+      case PROFILE.FOLLOWING:
+        return <FollowingScreen />;
+      case PROFILE.REFERRALS:
+        return <ReferralScreen navigation={navigation} route={route} />;
+      case PROFILE.MY_INTERESTS:
+        return <SelectInterestScreen navigation={navigation} route={route} />;
+      case PROFILE.CONNECTED_ACCOUNTS:
+        return <ConnectedAccountsScreen />;
+      case PROFILE.NOTIFICATION:
+        return <NotificationSettingsScreen />;
+      case PROFILE.FEEDBACK:
+        return <FeedbackScreen />;
+      default:
+        return null;
+    }
+  };
+
+  const renderLeftContent = () => (
     <View
       style={[
         styles.container,
-        { backgroundColor: !isGuest ? COLORS.black2 : COLORS.white },
+        
+        { backgroundColor: !isGuest && !isIPad ? COLORS.black2 : COLORS.white },
       ]}>
       <View
         style={{
+          width: isIPad ? 427 : '100%',
           backgroundColor: COLORS.white,
-          paddingTop: TOP_SAFEAREA_SPACING,
+          height: '100%',
+          paddingTop: isIPad ? 0 : TOP_SAFEAREA_SPACING,
         }}>
-        {/* <HeaderComponent isDarkTheme={false} /> */}
-
         <ScrollView>
-          <View style={{ height: verticalScale(20) }} />
+          {!isIPad && <View style={{ height: 20 }} />}
           <ProfileTopView
             editPhotoClick={editPhotoClick}
             profilePic={
               role?.toLocaleLowerCase() === 'host'
                 ? companyLogo
                 : profilePicture
-                  ? profilePicture
-                  : profileData?.profilePicture
+                ? profilePicture
+                : profileData?.profilePicture
             }
             name={getUserName()}
             loading={loading}
-            // role={loginData?.roles[0].roleName}
             role={roleText(role)}
           />
-          {listItems.map(item => {
-            return (
-              <ProfileListItem
-                key={item.id}
-                item={item}
-                onPress={item.onPress}
-              />
-            );
-          })}
+          {listItems.map(item => (
+            <ProfileListItem
+              key={item.id}
+              item={item}
+              onPress={() => handleItemPress(item)}
+              activeScreen={selectedScreen}
+            />
+          ))}
 
           <TermsAndPolicy setUrl={setWebUrl} type="small" showMessage={false} />
 
@@ -518,7 +564,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           </TouchableOpacity>
         </ScrollView>
 
-        <WebViewBottomSheet url={URL} ref={bottomSheetRef} />
+        <WebViewBottomSheet url={URL as unknown as any} ref={bottomSheetRef} />
 
         <EditPictureBottomSheet
           ref={editPhotoBottomSheetRef}
@@ -551,16 +597,28 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           snapPoints={[Platform.OS === 'android' ? '0.29' : '0.30']}
           image={null}
         />
-        {environment.SERVER != '' &&
-          <Text style={styles.textBelowStyle}>{environment.SERVER + ' '}{Platform.OS == 'android' ? environment.VERSION_ANDROID : environment.VERSION_IOS}</Text>
-        }
+        {environment.SERVER != '' && (
+          <Text style={styles.textBelowStyle}>
+            {environment.SERVER + ' '}
+            {Platform.OS == 'android'
+              ? environment.VERSION_ANDROID
+              : environment.VERSION_IOS}
+          </Text>
+        )}
         <DeleteAccountBottomSheet
           ref={deleteAccountBottomSheetRef}
-          onPress={deleteAccount}
+          // onPress={deleteAccount}
           onDeletePress={callDeleteAccountAPpi}
         />
       </View>
     </View>
+  );
+
+  return (
+    <IPadLayoutWrapper
+      leftContent={renderLeftContent()}
+      rightContent={renderRightContent()}
+    />
   );
 };
 

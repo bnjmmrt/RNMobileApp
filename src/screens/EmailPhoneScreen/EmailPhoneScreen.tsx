@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -95,12 +96,18 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <BackButton onPress={handleBackPress} />
-      <TabBar
-        tab={'01'}
-        onTabChange={handleTabChange}
-        tabOneLabel="Phone"
-        tabTwoLabel="Email"
-      />
+      <View
+        style={{
+          maxWidth: 526,
+          marginHorizontal: 'auto',
+        }}>
+        <TabBar
+          tab={'01'}
+          onTabChange={handleTabChange}
+          tabOneLabel="Phone"
+          tabTwoLabel="Email"
+        />
+      </View>
       <View style={styles.contentContainer}>
         <TitleSubtitle title={title} subTitle={subTitle} />
 
@@ -134,6 +141,7 @@ const EmailPhoneScreen: React.FC<EmailPhoneScreenProps> = ({ navigation }) => {
               disabled={false}
               style={{
                 width: '100%',
+                maxWidth: 393,
                 marginBottom: BOTTOM_SAFEAREA_SPACING,
               }}
               title={BUTTON_LABLE.NEXT}

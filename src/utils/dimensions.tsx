@@ -1,5 +1,6 @@
-import {Dimensions, PixelRatio} from 'react-native';
-import {RFValue} from 'react-native-responsive-fontsize';
+import { Dimensions, PixelRatio } from 'react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { isIPad } from './isTabletConfig';
 
 // Retrieve initial screen's width
 let screenWidth: number = Dimensions.get('window').width;
@@ -57,7 +58,7 @@ const Hp = (heightPercent: string | number): number => {
 const listenOrientationChange = (that: React.Component): void => {
   Dimensions.addEventListener(
     'change',
-    (newDimensions: {window: {width: number; height: number}}) => {
+    (newDimensions: { window: { width: number; height: number } }) => {
       // Retrieve and save new dimensions
       screenWidth = newDimensions.window.width;
       screenHeight = newDimensions.window.height;
@@ -81,28 +82,32 @@ const removeOrientationListener = (): void => {
 };
 
 // Scale width based on screen size
-const horizontalScale = (size: number) =>
-  (screenWidth / guidelineBaseWidth) * size;
+const horizontalScale = (size: number) => {
+  return isIPad ? size : (screenWidth / guidelineBaseWidth) * size;
+};
 
 // Scale height based on screen size
-const verticalScale = (size: number) =>
-  (screenHeight / guidelineBaseHeight) * size;
+const verticalScale = (size: number) => {
+  return isIPad ? size : (screenHeight / guidelineBaseHeight) * size;
+};
 
 // Scale radius with moderate scaling (default factor = 0.5)
-const radiusScale = (size: number, factor: number = 0.5) =>
-  size + (horizontalScale(size) - size) * factor;
+const radiusScale = (size: number, factor: number = 0.5) => {
+  return isIPad ? size : size + (horizontalScale(size) - size) * factor;
+};
 
 // Scale margin and padding (horizontal)
 const horizontalMarginScale = (size: number, factor: number = 0.5) =>
-  size + (horizontalScale(size) - size) * factor;
+  isIPad ? size : size + (horizontalScale(size) - size) * factor;
 
 // Scale margin and padding (vertical)
-const verticalMarginScale = (size: number, factor: number = 0.5) =>
-  size + (verticalScale(size) - size) * factor;
+const verticalMarginScale = (size: number, factor: number = 0.5) => {
+  return isIPad ? size : size + (verticalScale(size) - size) * factor;
+};
 
 // For Font Size
 const fontScale = (percent: number) => {
-  return RFValue(percent, guidelineBaseHeight);
+  return isIPad ? percent : RFValue(percent, guidelineBaseHeight);
 };
 
 export {

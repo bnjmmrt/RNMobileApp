@@ -3,6 +3,7 @@ import {
   CardStyleInterpolators,
   createStackNavigator,
 } from '@react-navigation/stack';
+import { isIPad } from '../utils/isTabletConfig';
 import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
 import EditProfileScreen from '../screens/ProfileScreen/EditProfile/EditProfileScreen';
 import ConnectedAccountsScreen from '../screens/ProfileScreen/EditProfile/ConnectedAccountsScreen';
@@ -85,7 +86,9 @@ export const ProfileStack: React.FC = () => {
       <Stack.Screen
         name="FollowingScreen"
         component={FollowingScreen}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+        }}
       />
       <Stack.Screen
         name="HostEditProfileScreen"

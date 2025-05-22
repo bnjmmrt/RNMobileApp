@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
 import {
   BottomSheetBackdrop,
   BottomSheetFooter,
@@ -21,12 +23,13 @@ import {
   Platform,
   StatusBar,
   StyleSheet,
+  Dimensions,
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { changeTopSafeAreaViewColor } from 'src/redux/slices/safeAreaViewConfigSlice';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { COLORS } from '../../utils/constants';
-import { Wp } from '../../utils/dimensions';
+import { isIPad } from 'src/utils/isTabletConfig';
 
 interface BottomSheetComponentProps {
   children: React.ReactNode;
@@ -71,6 +74,9 @@ const BottomSheetComponent = forwardRef<
     const { dismiss, dismissAll } = useBottomSheetModal();
 
     const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+    const screenWidth = Dimensions.get('window').width;
+    const marginLeftValue = screenWidth / 2 - 416 / 2;
 
     useImperativeHandle(ref, () => ({
       open: () => {
@@ -181,6 +187,12 @@ const BottomSheetComponent = forwardRef<
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
         }}
+        style={{
+          width: isIPad ? 416 : '100%',
+          ...(isIPad && {
+            marginLeft: marginLeftValue,
+          }),
+        }}
         keyboardBehavior={Platform.OS === 'ios' ? 'interactive' : 'fillParent'}
         android_keyboardInputMode="adjustResize"
         keyboardBlurBehavior="restore"
@@ -200,7 +212,7 @@ const styles = StyleSheet.create({
     opacity: 1,
   },
   indicatorStyle: {
-    width: Wp(13),
+    width: 48,
     height: 5,
     borderRadius: 10,
   },

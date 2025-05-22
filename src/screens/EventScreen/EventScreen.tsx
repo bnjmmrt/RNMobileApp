@@ -153,12 +153,18 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
                 marginBottom: verticalMarginScale(8),
               }}
             />
-            <DynamicTabBar
-              onTabChange={handleTabChange}
-              tabs={tabs}
-              activeTabIndex={isGuest ? 1 : 0}
-              currentTab={currentTab}
-            />
+
+            <View style={{
+              maxWidth: 526,
+              marginHorizontal: 'auto',
+            }}>
+              <DynamicTabBar
+                onTabChange={handleTabChange}
+                tabs={tabs}
+                activeTabIndex={isGuest ? 1 : 0}
+                currentTab={currentTab}
+              />
+            </View>
             <View style={styles.contentContainer}>{renderTabContent()}</View>
           </View>
         </View>

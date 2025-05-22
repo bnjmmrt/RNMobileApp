@@ -25,6 +25,7 @@ import ReferralRequestItem from './ReferralRequestItem';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import { isIPad } from 'src/utils/isTabletConfig'
 
 type ReferralScreenProps = NativeStackScreenProps<any, any>;
 type RouteParams = {
@@ -32,7 +33,7 @@ type RouteParams = {
     activeTab?: string;
   };
 };
-const ReferralScreen: React.FC<ReferralScreenProps> = ({ navigation }) => {
+const ReferralScreen: React.FC<ReferralScreenProps> = () => {
   const route = useRoute<RouteProp<RouteParams>>();
   console.log(
     'referrelRequests route.params.activeTabroute.params.activeTab ',
@@ -183,7 +184,7 @@ const ReferralScreen: React.FC<ReferralScreenProps> = ({ navigation }) => {
         tabTwoLabel="Vouch Requests"
         countOne={referrelRequests?.length ? referrelRequests?.length : ''}
         countTwo={vouchRequests?.length ? vouchRequests?.length : ''}
-        width={Wp(88)}
+        width={isIPad ? "90%" : Wp(88)}
       />
       <View style={{ paddingHorizontal: horizontalMarginScale(20), flex: 1 }}>
         {renderContent()}

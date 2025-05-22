@@ -1,26 +1,26 @@
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import React from 'react';
 import {
-  InteractionManager,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+  NavigationProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Image } from 'react-native-animatable';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
-import {
-  fontScale,
-  horizontalMarginScale,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-} from 'src/utils/dimensions';
 import IMAGES from '../../assets/images';
 import { ROUTES } from '../../navigation/Route';
 import { COLORS, PROFILE, ROLE } from '../../utils/constants';
 import { fontFamily } from '../../utils/functions';
+import { isIPad } from '../../utils/isTabletConfig';
+
+type ProfileStackParamList = {
+  ProfileStack: {
+    screen: string;
+    params?: any;
+  };
+};
 
 interface ListItemProps {
   item: {
@@ -30,11 +30,51 @@ interface ListItemProps {
     onPress?: any;
   };
   onPress: () => void;
+  activeScreen?: string | null;
 }
 
-const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
-  const navigation = useNavigation<NavigationProp>();
+const ProfileListItem: React.FC<ListItemProps> = ({
+  item,
+  onPress,
+  activeScreen,
+}) => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
+  const route = useRoute();
   const role = useSelector((state: RootState) => state.auth.role);
+
+  const getScreenNameForItem = (itemTitle: string) => {
+    switch (itemTitle) {
+      case PROFILE.EDIT_PROFILE:
+        return role === ROLE.HOST
+          ? ROUTES.HostEditProfileScreen
+          : ROUTES.EditProfileScreen;
+      case PROFILE.FOLLOWING:
+        return ROUTES.FollowingScreen;
+      case PROFILE.REFERRALS:
+        return ROUTES.ReferralScreen;
+      case PROFILE.CONNECTED_ACCOUNTS:
+        return role === 'host'
+          ? ROUTES.HostConnectedAccountsScreen
+          : ROUTES.ConnectedAccountsScreen;
+      case PROFILE.MY_INTERESTS:
+        return ROUTES.SelectInterestScreen;
+      case PROFILE.NOTIFICATION:
+        return ROUTES.NotificationSettingsScreen;
+      case PROFILE.FEEDBACK:
+        return ROUTES.FeedbackScreen;
+      default:
+        return null;
+    }
+  };
+
+  const isActive = () => {
+    if (isIPad && activeScreen) {
+      return activeScreen === item.title;
+    }
+    const screenName = getScreenNameForItem(item.title);
+    return screenName ? route.name === screenName : false;
+  };
 
   const redirectToProfileStack = (screenName: string, params = {}) => {
     navigation.navigate('ProfileStack', {
@@ -44,6 +84,10 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
   };
 
   const handleItemClick = (item: any) => {
+    if (isIPad) {
+      onPress();
+      return;
+    }
     let screenName;
     switch (item.title) {
       case PROFILE.EDIT_PROFILE:
@@ -51,24 +95,20 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
           role === ROLE.HOST
             ? ROUTES.HostEditProfileScreen
             : ROUTES.EditProfileScreen;
-        console.log('Redirecting to Edit Profile...');
         redirectToProfileStack(screenName);
         break;
 
       case PROFILE.FOLLOWING:
-        console.log('Redirecting to Following...');
         redirectToProfileStack(ROUTES.FollowingScreen);
-        // Example: navigate('/following');
         break;
 
       case PROFILE.REFERRALS:
-        console.log('Redirecting to Referrals...');
-        redirectToProfileStack(ROUTES.ReferralScreen,{activeTab :'referrals'});
-        // Example: navigate('/referrals');
+        redirectToProfileStack(ROUTES.ReferralScreen, {
+          activeTab: 'referrals',
+        });
         break;
 
       case PROFILE.CONNECTED_ACCOUNTS:
-        console.log('Redirecting to Connected Accounts...');
         screenName =
           role === 'host'
             ? ROUTES.HostConnectedAccountsScreen
@@ -77,7 +117,6 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
         break;
 
       case PROFILE.MY_INTERESTS:
-        console.log('Redirecting to My Interests...');
         redirectToProfileStack(ROUTES.SelectInterestScreen, {
           headerTitle: 'My Interests',
           btnTitle: 'Update',
@@ -87,29 +126,18 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
         break;
 
       case PROFILE.NOTIFICATION:
-        console.log('Redirecting to Notifications...');
-        // navigation.navigate('EventStack', {
-        //   screen: 'AddAnnouncementScreen'
-        // });
         redirectToProfileStack(ROUTES.NotificationSettingsScreen, {});
         break;
 
       case PROFILE.FEEDBACK:
-        console.log('Redirecting to Feedback...');
-        // navigation.navigate('EventStack', {
-        //   screen: 'Announcement'
-        // });
         redirectToProfileStack(ROUTES.FeedbackScreen);
         break;
 
       case PROFILE.CONTACT_SUPPORT:
-        console.log('Redirecting to Contact Support...');
         onPress();
         break;
 
       case PROFILE.DELETE_ACCOUNT:
-        console.log('Redirecting to Delete Account...');
-        // Example: navigate('/delete-account');
         onPress();
         break;
 
@@ -117,7 +145,6 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
         navigation.navigate('BeforeAppStaticScreen', { isFromProfile: true });
         break;
       default:
-        console.log('Unknown item clicked');
         break;
     }
   };
@@ -125,14 +152,15 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={[styles.inputWrapper]}
+        style={[styles.inputWrapper, isActive() && styles.activeInputWrapper]}
         onPress={() => handleItemClick(item)}
         activeOpacity={item.title === PROFILE.CONTACT_SUPPORT ? 1 : 0}>
-        {item.image && <Image source={item.image} style={styles.icon} />}
+        {item.image && <Image source={item.image as any} style={styles.icon} />}
         <Text
           style={[
             styles.input,
             { color: item.image ? COLORS.black : COLORS.errorText },
+            isActive() && styles.activeText,
           ]}>
           {item.title}
         </Text>
@@ -147,39 +175,45 @@ const ProfileListItem: React.FC<ListItemProps> = ({ item, onPress }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    paddingHorizontal: horizontalMarginScale(10),
+    paddingHorizontal: 10,
     backgroundColor: COLORS.white,
-    marginBottom: verticalMarginScale(5),
+    marginBottom: 5,
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: verticalMarginScale(55),
-    borderWidth: verticalScale(1),
+    height: 55,
+    borderWidth: 1,
     flex: 1,
     borderColor: COLORS.borderGray,
-    borderRadius: radiusScale(10),
+    borderRadius: 10,
     backgroundColor: COLORS.white,
-    paddingHorizontal: horizontalMarginScale(20),
+    paddingHorizontal: 20,
+  },
+  activeInputWrapper: {
+    backgroundColor: COLORS.borderGray,
   },
   errorInputWrapper: {
     borderColor: COLORS.borderRed,
     backgroundColor: COLORS.bgRed,
   },
   icon: {
-    marginRight: horizontalMarginScale(10),
-    width: horizontalMarginScale(20),
-    height: verticalMarginScale(20),
+    marginRight: 10,
+    width: 20,
+    height: 20,
   },
   input: {
     flex: 1,
-    fontSize: fontScale(14),
+    fontSize: 14,
     color: COLORS.black,
     fontFamily: fontFamily.ABCDiatype_Regular,
   },
+  activeText: {
+    color: COLORS.black,
+  },
   errorText: {
-    fontSize: fontScale(12),
-    marginTop: verticalMarginScale(5),
+    fontSize: 12,
+    marginTop: 5,
     color: COLORS.errorText,
   },
 });

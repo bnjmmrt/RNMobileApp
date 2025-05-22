@@ -12,17 +12,10 @@ import {
   ImageStyle,
   ActivityIndicator,
 } from 'react-native';
-import {
-  fontScale,
-  Hp,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-  Wp,
-} from '../utils/dimensions';
 import { fontFamily } from '../utils/functions';
 import { COLORS } from '../utils/constants';
 import { CustomText } from './CustomText';
+
 interface ButtonProps {
   title: string;
   onPress: () => void;
@@ -116,22 +109,24 @@ const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    height: verticalScale(48),
-    borderRadius: radiusScale(99),
+    height: 48,
+    borderRadius: 99,
     alignItems: 'center',
     justifyContent: 'center',
-    width: Wp(90),
+    width: '90%',
     alignSelf: 'center',
     flexDirection: 'row',
   },
   text: {
     marginHorizontal: 10,
+    textAlign: 'center',
+    flex: 1,
     fontFamily: fontFamily.ABCDiatype_Medium,
-    fontSize: fontScale(14),
+    fontSize: 14,
   },
   image: {
-    width: Hp(3),
-    height: Hp(3),
+    width: 24,
+    height: 24,
     resizeMode: 'contain',
   },
 });
