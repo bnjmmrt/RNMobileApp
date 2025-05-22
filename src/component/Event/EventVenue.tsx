@@ -25,6 +25,7 @@ import GradientSeprator from '../GradientSeprator';
 import MapComponent from '../MapComponent';
 import { Event } from 'src/types';
 import { CustomText } from '../CustomText';
+import { horizontalMarginScale } from 'src/utils/dimensions';
 
 interface EventVenueProps {
   item: Event;
@@ -81,9 +82,10 @@ const EventVenue: React.FC<EventVenueProps> = ({
         }}>
         <View>
           <CustomText style={styles.title}>Further instructions</CustomText>
-          <CustomText style={styles.subtitle}>{item?.furtherInstructions}</CustomText>
+          <CustomText style={styles.subtitle}>
+            {item?.furtherInstructions}
+          </CustomText>
         </View>
-       
       </View>
 
       <GradientSeprator />
