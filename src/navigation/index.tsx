@@ -80,19 +80,14 @@ const MainNavigation: React.FC = () => {
   let initialAppStackScreen = '';
 
   if (role === ROLE.NON_MEMBER) {
-    console.log('initialAppStackScreen', 'non');
     if (token?.length > 0 || isGuest) {
-      console.log('initialAppStackScreen', 'isguest', token, isGuest);
       initialAppStackScreen = ROUTES.BottomTabBar;
     } else {
-      console.log('initialAppStackScreen', 'else');
       initialAppStackScreen = ROUTES.BeforeAppStaticScreen;
     }
   } else {
-    console.log('initialAppStackScreen', 'bada else');
     initialAppStackScreen = ROUTES.BottomTabBar;
   }
-  console.log('initialAppStackScreen');
 
   if (!initialAppStackScreen) {
     return (

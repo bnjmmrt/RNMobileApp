@@ -73,6 +73,21 @@ const EventVenue: React.FC<EventVenueProps> = ({
 
       <GradientSeprator />
 
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          gap: horizontalMarginScale(16),
+        }}>
+        <View>
+          <CustomText style={styles.title}>Further instructions</CustomText>
+          <CustomText style={styles.subtitle}>{item?.furtherInstructions}</CustomText>
+        </View>
+       
+      </View>
+
+      <GradientSeprator />
+
       <View style={styles.locationContainer}>
         <CustomText style={styles.title}>{locationText}</CustomText>
         {!isHideCity && (

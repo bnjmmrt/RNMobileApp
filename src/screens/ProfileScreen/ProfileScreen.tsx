@@ -98,7 +98,6 @@ const { logOut } = useLogout();
   const [image, setImage] = useState<string>('');
   const [imageSize, setImageSize] = useState<number>(0);
   const { uploadFileHook } = useUploadFile();
-  const [memberLogout, { error, isLoading }] = useMemberLogoutMutation();
 
   const {
     userId,
@@ -122,6 +121,7 @@ const { logOut } = useLogout();
     }),
     shallowEqual,
   );
+
 
   const getUserSettings = async () => {
     const response: any = await apiRequest(
@@ -173,6 +173,16 @@ const { logOut } = useLogout();
       Alert.alert('Error', error?.message || 'Failed to delete account');
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      const loadUserProfile = async () => {
+        await fetchUserProfile();
+      };
+      loadUserProfile();
+    }, []),
+  );
+
 
   useEffect(() => {
     if (profileData?.email) {

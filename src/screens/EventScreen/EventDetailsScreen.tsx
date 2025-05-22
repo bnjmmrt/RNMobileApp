@@ -470,11 +470,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
 
     return (
       <View
-        style={[
-          { margin: 10 },
-
-          isIPad && { flexDirection: 'row', gap: 8 },
-        ]}>
+        style={[{ margin: 10 }, isIPad && { flexDirection: 'row', gap: 8 }]}>
         <Button
           disabled={false}
           style={[
@@ -824,7 +820,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                       />
                     )}
                   />
-                  {guestStatus == 'INVITED' && (
+                  {(guestStatus === 'INVITED' || guestStatus === 'CONFIRMED') && (
                     <EventInvitation item={data?.data} />
                   )}
                   {role === ROLE.HOST && (

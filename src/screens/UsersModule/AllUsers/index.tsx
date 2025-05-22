@@ -1,5 +1,5 @@
 import IMAGES from '@images/index';
-import { useScrollToTop } from '@react-navigation/native';
+import { useFocusEffect, useScrollToTop } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -58,7 +58,6 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
     return {
       usersTabAllUsersSkipCount: state?.listSkip?.usersTabAllUsersSkipCount,
       usersTabAllUsersRefresh: state?.listSkip?.usersTabAllUsersRefresh,
-
     };
   }, shallowEqual);
 
@@ -73,6 +72,12 @@ const AllUsers: React.FC<AllUserProps> = ({ }) => {
   const onRefreshPage = () => {
     dispatch(setUsersTabAllUsersRefresh());
   };
+  
+  useFocusEffect(
+    useCallback(() => {
+      refetch()
+    }, []),
+  );
 
   useEffect(() => {
     dispatch(setUsersTabAllUsersSkip(0));

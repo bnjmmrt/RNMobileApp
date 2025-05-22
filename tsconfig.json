@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "jsx": "react",
+    "typeRoots": ["./types"],
     "esModuleInterop": true,
     "paths": {
       "@images/*": ["src/assets/images/*"],

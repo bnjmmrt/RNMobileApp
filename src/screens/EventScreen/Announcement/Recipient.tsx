@@ -13,34 +13,37 @@ import EventEmptyRecord from "src/component/EmptyRecord/EventEmptyRecord";
 interface RecipientProps {
     allRecipients: any[];
     searchInputRef: React.RefObject<any>;
-    handleSearchTextChange:()=>(text: string) => void;
+    handleSearchTextChange: () => (text: string) => void;
     searchText: string;
     totalCount: number;
+    currentPage: number;
     selectedUsers: any[];
+    setCurrentPage: (page: number) => void;
 }
 
-export const Recipient: React.FC<RecipientProps> = ({ allRecipients, handleSearchTextChange,searchInputRef ,searchText,totalCount,selectedUsers}) => {
+export const Recipient: React.FC<RecipientProps> = ({ allRecipients, handleSearchTextChange, searchInputRef, searchText, totalCount, selectedUsers, setCurrentPage, currentPage }) => {
     const styles = AddAnnouncementStyles();
     const onSelectRecipient = (user: guestInterface) => { };
     const renderItem = useCallback(
-      ({ item, index }: { item: guestInterface; index: number }) => {
-        const isSelected = selectedUsers.some(user => user.id === item.id);
-        return (
-          <RecipientListItem
-            index={index}
-            item={item}
-            onSelectUser={onSelectRecipient}
-            isSelected={isSelected}
-          />
-        );
-      },
-      [selectedUsers],
+        ({ item, index }: { item: guestInterface; index: number }) => {
+            const isSelected = selectedUsers.some(user => user.id === item.id);
+            return (
+                <RecipientListItem
+                    index={index}
+                    item={item}
+                    onSelectUser={onSelectRecipient}
+                    isSelected={isSelected}
+                />
+            );
+        },
+        [selectedUsers],
     );
     const loadMore = () => {
-        // if (allRecipients?.currentPage < announcementRecipientsData?.totalPages && !isLoading) {
-        //     setCurrentPage((prev) => prev + 1);
-        // }
-      };
+        if (allRecipients.length < totalCount) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
     return (
         <View style={{ marginTop: verticalMarginScale(10) }}>
             <View style={styles.recipientHeader}>

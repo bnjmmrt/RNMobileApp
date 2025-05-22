@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { axiosController } from './axiosController'; // Import your API controller
 import { AxiosError, AxiosRequestConfig } from 'axios';
+import { switchProfileDueToInactiveRole } from 'src/utils/functions';
 
 type MethodType = 'get' | 'post' | 'put' | 'delete';
 
@@ -46,11 +47,15 @@ const useApi = <T>(): UseApiReturn<T> => {
           method === 'delete' ? config : data,
           config,
         );
-        console.log('useAPI response', response);
         if (response && response.success) {
-          return response;
+          if (response?.statusCode === 206) {
+            switchProfileDueToInactiveRole(response.data)
+          } else {
+            return response;
+          }
         } else {
           setError(response);
+          // response?.statusCode === 302 && switchProfileDueToInactiveRole(response.data)
           throw response;
         }
       } catch (err) {

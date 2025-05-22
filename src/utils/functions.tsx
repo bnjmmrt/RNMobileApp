@@ -9,7 +9,7 @@ import DeviceInfo from 'react-native-device-info';
 import { axiosController } from 'src/axios/axiosController';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
-import { resetAppStack, role, setDeviceId, setLoginData } from 'src/redux/slices/authSlice';
+import { resetAppStack, role, roleType, setDeviceId, setLoginData, switchProfile } from 'src/redux/slices/authSlice';
 import {
   configStatusBar,
   SafeAreaViewConfig,
@@ -72,7 +72,7 @@ export const getNumberOfLines = (str: string) => {
   if (!str) return 0;
 
   const totalChars = str.length;
-  const charsPerLine = 50;
+  const charsPerLine = 40;
 
   return Math.ceil(totalChars / charsPerLine);
 }
@@ -528,6 +528,12 @@ export const fetchUserProfile = async () => {
   try {
     const response = await axiosController[apiMethod](apiUrl, apiPayload, {});
     if (response.success) {
+
+      if (response?.data?.roles && response.data.roles.length == 1 && response.data.roles[0].status === 'DEACTIVATED') {
+        performLogout()
+        return
+      }
+
       dispatch(
         setProfileData({
           ...response.data,
@@ -554,6 +560,10 @@ export const performLogout = async () => {
   dispatch(resetAppStack(true));
 };
 
+export const switchProfileDueToInactiveRole = async (targetRole: role) => {
+  const dispatch = store.store.dispatch;
+  dispatch(switchProfile(targetRole));
+};
 
 export const removeCityFromLocation = (locationText: string, city: string) => {
   if (locationText.includes(city)) {
@@ -608,11 +618,6 @@ export const getDisplayLocation = (
   }
 };
 
-export const switchProfile = () => {
-  // api call
-  // loginUser();
-  // fetchUserProfile;
-};
 
 export const removeSpaceFromStr = (text: string) => {
   if (text) {
