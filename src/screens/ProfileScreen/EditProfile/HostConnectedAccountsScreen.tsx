@@ -21,14 +21,8 @@ import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 import useApi from '../../../axios/useApi';
 import { RootState } from '../../../redux/slices';
-import {
-  fontScale,
-  horizontalMarginScale,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-} from '../../../utils/dimensions';
 import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import { isIPad } from 'src/utils/isTabletConfig';
 
 interface HostConnectedAccountsScreenProps
   extends NativeStackScreenProps<any, any> {}
@@ -95,8 +89,8 @@ const HostConnectedAccountsScreen: React.FC<
         {
           paddingBottom: keyboardVisible
             ? Platform.OS === 'ios'
-              ? verticalMarginScale(50)
-              : verticalMarginScale(10)
+              ? 50
+              : 10
             : 0,
         },
       ]}>
@@ -104,6 +98,7 @@ const HostConnectedAccountsScreen: React.FC<
         headerTitle={PROFILE.CONNECTED_ACCOUNTS}
         onPress={handleBackPress}
         showProgressBar={false}
+        showBackButton={!isIPad}
       />
 
       <KeyboardAvoidingView
@@ -212,24 +207,21 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   btnStyle: {
-    // marginTop: verticalMarginScale(20),
-    // marginBottom: verticalMarginScale(20),
-    borderRadius: radiusScale(100),
+    borderRadius: 100,
     bottom: BOTTOM_SAFEAREA_SPACING,
   },
   contentContainer: {
     flex: 1,
-    // paddingVertical: verticalMarginScale(10),
   },
   scrollContainer: {
     flexGrow: 1,
-    paddingTop: verticalMarginScale(16),
-    paddingHorizontal: horizontalMarginScale(20),
+    paddingTop: 16,
+    paddingHorizontal: 20,
   },
   label: {
-    paddingVertical: horizontalMarginScale(2),
-    fontSize: fontScale(14),
-    paddingTop: verticalMarginScale(20),
+    paddingVertical: 2,
+    fontSize: 14,
+    paddingTop: 20,
     color: COLORS.black,
     fontWeight: '500',
     lineHeight: 16,
@@ -237,17 +229,16 @@ const styles = StyleSheet.create({
   textareaContainer: {
     borderWidth: 1,
     borderColor: COLORS.borderGray,
-    borderRadius: radiusScale(10),
-    padding: verticalMarginScale(10),
+    borderRadius: 10,
+    padding: 10,
     backgroundColor: COLORS.white,
-    // marginVertical: verticalMarginScale(10),
     width: '100%',
   },
   textArea: {
     textAlignVertical: 'top',
-    fontSize: fontScale(16),
+    fontSize: 16,
     color: '#333',
-    height: verticalScale(100),
+    height: 100,
   },
   errorInputWrapper: {
     borderColor: COLORS.borderRed,

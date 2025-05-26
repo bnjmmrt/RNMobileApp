@@ -5,14 +5,6 @@ import IMAGES from '@images/index';
 import { StyleSheet, View, Text, Image } from 'react-native';
 import { COLORS } from 'src/utils/constants';
 import { fontFamily } from 'src/utils/functions';
-import {
-  fontScale,
-  horizontalScale,
-  verticalScale,
-  horizontalMarginScale,
-  verticalMarginScale,
-  radiusScale,
-} from 'src/utils/dimensions';
 
 export type MessageType = 'success' | 'error' | 'info' | 'warning';
 
@@ -92,28 +84,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    paddingHorizontal: horizontalMarginScale(16),
+    paddingHorizontal: 16,
   },
   toastContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: verticalMarginScale(8),
-    paddingHorizontal: horizontalMarginScale(8),
-    borderRadius: radiusScale(6),
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    borderRadius: 6,
     backgroundColor: 'rgba(0, 0, 0, 0.75)',
-    minWidth: horizontalScale(150),
+    minWidth: 150,
     maxWidth: '90%',
   },
   icon: {
-    width: horizontalScale(16),
-    height: verticalScale(16),
+    width: 16,
+    height: 16,
     tintColor: COLORS.white,
-    marginRight: horizontalMarginScale(4),
+    marginRight: 4,
   },
   message: {
     color: COLORS.white,
     fontFamily: fontFamily.ABCDiatype_Medium,
-    fontSize: fontScale(14),
+    fontSize: 14,
   },
 });

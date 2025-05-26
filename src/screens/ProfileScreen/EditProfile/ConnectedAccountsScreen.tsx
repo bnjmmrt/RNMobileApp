@@ -13,13 +13,11 @@ import IMAGES from '../../../assets/images';
 import Header from '../../../component/Header/Header';
 import { setPageProgress } from '../../../redux/slices/appFlowSlice';
 import { COLORS, PROFILE } from '../../../utils/constants';
-import {
-  horizontalMarginScale,
-  verticalMarginScale,
-} from '../../../utils/dimensions';
 import SocialMediaBottomSheet from 'src/component/BottomSheet/SocialMediaBottomSheet';
 import AccountItem from './AccountItem';
 import { CustomText } from 'src/component/CustomText';
+import { isIPad } from 'src/utils/isTabletConfig';
+
 interface ConnectedAccountsScreenProps {}
 
 const items: any = [
@@ -58,7 +56,7 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
   };
 
   const getSubTitle = (mediaType: string) => {
-    return `By clicking on the button below you’ll be redirected to ${mediaType} – log in with your details to authorize this connection`;
+    return `By clicking on the button below you'll be redirected to ${mediaType} – log in with your details to authorize this connection`;
   };
   const getSelectedItem = (item: any) => {
     setSelectedItem(item);
@@ -139,6 +137,7 @@ const ConnectedAccountsScreen: React.FC<ConnectedAccountsScreenProps> = () => {
         headerTitle={PROFILE.CONNECTED_ACCOUNTS}
         onPress={handleBackPress}
         showProgressBar={false}
+        showBackButton={!isIPad}
       />
       <ScrollView style={styles.contentContainer}>
         <CustomText style={styles.subTitle}>
@@ -178,16 +177,16 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingBottom: horizontalMarginScale(10),
-    paddingHorizontal: horizontalMarginScale(20),
+    paddingBottom: 10,
+    paddingHorizontal: 20,
   },
   listContainer: {
-    marginVertical: verticalMarginScale(16),
+    marginVertical: 16,
   },
   subTitle: {
     color: COLORS.light_gray,
     textAlign: 'center',
-    marginBottom: verticalMarginScale(16),
+    marginBottom: 16,
   },
 });
 export default ConnectedAccountsScreen;

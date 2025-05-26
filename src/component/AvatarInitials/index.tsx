@@ -48,9 +48,9 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
       style={[
         styles.avatar,
         {
-          width: radiusScale(size),
-          height: radiusScale(size),
-          borderRadius: radiusScale(size) / 2,
+          width: size,
+          height: size,
+          borderRadius: size / 2,
         },
         containerStyle,
       ]}>
@@ -65,7 +65,7 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
           {
             width: '100%',
             height: '100%',
-            borderRadius: radiusScale(size),
+            borderRadius: size / 2,
             backgroundColor,
           },
         ]}
@@ -77,8 +77,8 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
       style={[
         styles.avatar,
         {
-          width: radiusScale(size),
-          height: radiusScale(size),
+          width: size,
+          height: size,
           borderRadius: radiusScale(size) / 2,
           backgroundColor,
         },
@@ -90,8 +90,8 @@ const AvatarInitials: React.FC<AvatarInitialsProps> = ({
           {
             color: textColor,
             fontSize: listing
-              ? radiusScale(size) / 2.5
-              : radiusScale(size) / 2.0,
+              ? size / 2.5
+              : size / 1.7,
           },
         ]}>
         {initials}

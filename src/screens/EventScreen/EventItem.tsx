@@ -15,14 +15,11 @@ import {
   ROLE,
 } from '../../utils/constants';
 import {
-  fontScale,
-  horizontalMarginScale,
-  horizontalScale,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-} from '../../utils/dimensions';
-import { fontFamily, getDisplayLocation, isCityInLocation, removeSignature } from '../../utils/functions';
+  fontFamily,
+  getDisplayLocation,
+  isCityInLocation,
+  removeSignature,
+} from '../../utils/functions';
 import { formatDetailedEventDate } from 'src/utils/dateFunctions';
 import { Event } from 'src/types';
 import { useSelector } from 'react-redux';
@@ -38,7 +35,11 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
   const role = useSelector((state: RootState) => state.auth.role);
   const userId = useSelector((state: RootState) => state.auth.userId);
 
-  const dates = formatDetailedEventDate(item?.startDate, item?.endDate, item?.timeZone);
+  const dates = formatDetailedEventDate(
+    item?.startDate,
+    item?.endDate,
+    item?.timeZone,
+  );
   const handlEventPress = () => {
     navigation.navigate(ROUTES.EventStack, {
       screen: ROUTES.EventDetailsScreen,
@@ -66,9 +67,13 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
     return ''; // Default return if no match is found
   };
 
-
-  const locationText = getDisplayLocation(item?.location?.location, item?.guest?.guestStatus, item.showLocation, role)
-  const isHideCity = isCityInLocation(locationText, item?.location?.city || '')
+  const locationText = getDisplayLocation(
+    item?.location?.location,
+    item?.guest?.guestStatus,
+    item.showLocation,
+    role,
+  );
+  const isHideCity = isCityInLocation(locationText, item?.location?.city || '');
   // const isShowLocation =
   //   role === ROLE.HOST ||
   //   item?.currentGuestStatus === 'CONFIRMED' ||
@@ -112,15 +117,19 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
           </>
         ) : (
           <View>
-            <CustomText style={styles.subtitle} textProps={{ numberOfLines: 3 }}>
+            <CustomText
+              style={styles.subtitle}
+              textProps={{ numberOfLines: 3 }}>
               {locationText}
             </CustomText>
-            {!isHideCity && <CustomText style={styles.subtitle} textProps={{ numberOfLines: 2 }}>
-              {item?.location?.city}
-            </CustomText>
-            }
+            {!isHideCity && (
+              <CustomText
+                style={styles.subtitle}
+                textProps={{ numberOfLines: 2 }}>
+                {item?.location?.city}
+              </CustomText>
+            )}
           </View>
-
         )}
         <ButtonSmall
           disabled={false}
@@ -137,48 +146,49 @@ const EventItem: React.FC<EventItemProps> = ({ item }) => {
 const styles = StyleSheet.create({
   btnStyle: {
     borderRadius: 100,
-    marginTop: verticalMarginScale(10),
-    paddingVertical: verticalMarginScale(8),
-    paddingHorizontal: horizontalMarginScale(12),
+    marginTop: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     alignSelf: 'flex-start',
   },
+
   container: {
     flexDirection: 'row',
-    paddingHorizontal: horizontalMarginScale(16),
-    paddingVertical: verticalMarginScale(16),
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     borderColor: COLORS.borderGray,
-    borderRadius: radiusScale(16),
+    borderRadius: 16,
     borderWidth: 1,
-    marginBottom: 10,
-    gap: horizontalMarginScale(16),
+    marginBottom: 16,
+    gap: 16,
   },
   contentContainer: {
     flexDirection: 'column',
-    paddingTop: verticalMarginScale(18),
+    paddingTop: 18,
     flex: 1,
     backgroundColor: COLORS.white,
   },
   icon: {
-    borderRadius: radiusScale(8),
-    height: horizontalScale(175),
-    width: verticalScale(120),
+    borderRadius: 8,
+    height: 175,
+    width: 120,
     backgroundColor: COLORS.borderGray,
   },
   titleStyle: {
-    fontSize: fontScale(24),
+    fontSize: 24,
     fontFamily: fontFamily.RomieTrial_Bold,
-    marginBottom: verticalMarginScale(10),
-    color: 'black'
+    marginBottom: 10,
+    color: 'black',
   },
   subtitle: {
     color: COLORS.light_gray,
     fontFamily: fontFamily.ABCDiatype_Medium,
-    fontSize: fontScale(12),
+    fontSize: 12,
   },
   roleContainer: {
-    backgroundColor: COLORS.white, // Ensure background is applied
-    borderRadius: 3, // Apply border radius
-    borderColor: COLORS.black, // Define border color
+    backgroundColor: COLORS.white,
+    borderRadius: 3,
+    borderColor: COLORS.black,
     paddingVertical: 2,
     paddingHorizontal: 5,
     position: 'absolute',
@@ -189,7 +199,7 @@ const styles = StyleSheet.create({
   },
   roleText: {
     color: COLORS.black,
-    fontSize: fontScale(12),
+    fontSize: 12,
     textAlign: 'center',
   },
 });

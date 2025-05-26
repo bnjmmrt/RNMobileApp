@@ -3,33 +3,32 @@ import { Text, StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import { COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '@images/index';
-import {
-  fontScale,
-  horizontalMarginScale,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-} from 'src/utils/dimensions';
 import { Event } from 'src/types';
 import { CustomText } from '../CustomText';
 
 interface EventOverviewProps {
   item: Event; // Extend this type with actual item properties for better type safety.
-  isFurtherInstrection: boolean
+  isFurtherInstrection: boolean;
 }
 
 const MAX_LINES = 4;
 
-const EventOverview: React.FC<EventOverviewProps> = ({ item, isFurtherInstrection }) => {
+const EventOverview: React.FC<EventOverviewProps> = ({
+  item,
+  isFurtherInstrection,
+}) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleToggle = () => setExpanded(prev => !prev);
-  const title = isFurtherInstrection ? LABLE.FURTHER_INSTRICTIONS : LABLE.ABOUT_THE_EVENT;
-  const subTitle = isFurtherInstrection ? item?.furtherInstructions : item?.description;
+  const title = isFurtherInstrection
+    ? LABLE.FURTHER_INSTRICTIONS
+    : LABLE.ABOUT_THE_EVENT;
+  const subTitle = isFurtherInstrection
+    ? item?.furtherInstructions
+    : item?.description;
 
   // Check if "Read More" is needed
-  const shouldShowReadMore =
-    subTitle && subTitle?.split(' ').length > 26;
+  const shouldShowReadMore = subTitle && subTitle?.split(' ').length > 26;
 
   return (
     <View style={styles.container}>
@@ -58,7 +57,7 @@ const EventOverview: React.FC<EventOverviewProps> = ({ item, isFurtherInstrectio
           <Image
             source={expanded ? IMAGES.upArrow : IMAGES.downArrow}
             tintColor={COLORS.light_gray}
-            style={expanded ? styles.toggleupIcon : styles.toggleIcon }
+            style={expanded ? styles.toggleupIcon : styles.toggleIcon}
           />
         </TouchableOpacity>
       )}
@@ -70,44 +69,44 @@ const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
     borderColor: COLORS.borderGray,
-    borderRadius: radiusScale(16),
-    paddingVertical: verticalMarginScale(18),
+    borderRadius: 16,
+    paddingVertical: 18,
     backgroundColor: COLORS.white,
   },
   title: {
-    fontSize: fontScale(16),
+    fontSize: 16,
     fontFamily: fontFamily.ABCDiatype_Medium,
-    paddingHorizontal: horizontalMarginScale(16),
+    paddingHorizontal: 16,
   },
   subtitle: {
     color: COLORS.black,
     fontFamily: fontFamily.ABCDiatype_Medium,
-    paddingHorizontal: verticalMarginScale(16),
+    paddingHorizontal: 16,
   },
   divider: {
     height: 1,
     width: '100%',
     backgroundColor: COLORS.borderGray,
-    marginVertical: verticalMarginScale(16),
+    marginVertical: 16,
   },
   toggleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: verticalMarginScale(16),
+    paddingHorizontal: 16,
   },
   toggleText: {
     textDecorationLine: 'underline',
     marginRight: 5,
   },
   toggleIcon: {
-    width: verticalScale(10),
-    height: verticalScale(10),
+    width: 10,
+    height: 10,
     tintColor: COLORS.light_gray,
     resizeMode: 'contain',
   },
   toggleupIcon: {
-    width: verticalScale(17),
-    height: verticalScale(17),
+    width: 17,
+    height: 17,
     tintColor: COLORS.light_gray,
     resizeMode: 'contain',
   },

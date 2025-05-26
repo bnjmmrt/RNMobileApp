@@ -2,13 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import { BUTTON_LABLE, COLORS, LABLE } from '../../utils/constants';
-import {
-  fontScale,
-  horizontalMarginScale,
-  verticalMarginScale,
-  radiusScale,
-  verticalScale,
-} from 'src/utils/dimensions';
 import { useFetchGuestStatusCountQuery } from 'src/redux/actions/eventApiAction';
 import Button from '../Button';
 import { CustomText } from '../CustomText';
@@ -32,7 +25,7 @@ const EventRequests: React.FC<EventOverviewProps> = ({
 
   useEffect(() => {
     setCheckInCount(checkedinCount || 0);
-  }, [checkedinCount])
+  }, [checkedinCount]);
 
   useEffect(() => {
     setConfirmCount(data?.data?.confirmedCount || 0);
@@ -69,8 +62,8 @@ const EventRequests: React.FC<EventOverviewProps> = ({
 
       <View
         style={{
-          paddingVertical: verticalMarginScale(12),
-          paddingHorizontal: horizontalMarginScale(16),
+          paddingVertical: 12,
+          paddingHorizontal: 16,
         }}>
         <Button
           disabled={false}
@@ -88,7 +81,7 @@ const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
     borderColor: COLORS.borderGray,
-    borderRadius: radiusScale(16),
+    borderRadius: 16,
     backgroundColor: COLORS.white,
   },
   containContainer: {
@@ -96,14 +89,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: verticalMarginScale(16),
+    paddingVertical: 16,
   },
   wrapper: {
-    paddingVertical: verticalMarginScale(18),
-    paddingHorizontal: horizontalMarginScale(16),
+    paddingVertical: 18,
+    paddingHorizontal: 16,
   },
   title: {
-    fontSize: fontScale(16),
+    fontSize: 16,
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
   countContainer: {
@@ -111,7 +104,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   countStyle: {
-    fontSize: fontScale(32),
+    fontSize: 32,
     fontFamily: fontFamily.ABCDiatype_Medium,
   },
   subtitle: {
@@ -123,8 +116,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.borderGray,
   },
   btnStyle: {
-    borderRadius: radiusScale(100),
-    height: verticalScale(48),
+    borderRadius: 100,
+    height: 48,
     width: '100%',
   },
 });

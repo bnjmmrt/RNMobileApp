@@ -38,11 +38,13 @@ const LandingStyles = () => {
         },
         btnStyle: {
             width: Wp(85),
+            maxWidth: 414,
             borderRadius: 100,
         },
         logoImgStyle: {
             width: Wp(20),
             height: Hp(20),
+            maxWidth: 96,
             resizeMode: 'contain',
         }
     });

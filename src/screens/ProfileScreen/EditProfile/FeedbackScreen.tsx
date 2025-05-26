@@ -27,19 +27,12 @@ import {
   LABLE,
   PROFILE,
 } from '../../../utils/constants';
-import {
-  fontScale,
-  horizontalMarginScale,
-  radiusScale,
-  verticalMarginScale,
-  verticalScale,
-  Wp,
-} from '../../../utils/dimensions';
 import { changeSafeAreaViewConfig, fontFamily } from '../../../utils/functions';
 import CreativeFocusComponent from './CreativeFocusComponent';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { CustomText } from 'src/component/CustomText';
 import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import { isIPad } from 'src/utils/isTabletConfig';
 
 interface FeedbackScreenProps { }
 
@@ -131,6 +124,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
         headerTitle={PROFILE.FEEDBACK}
         onPress={handleBackPress}
         showProgressBar={false}
+        showBackButton={!isIPad}
       />
       <ScrollView>
         <KeyboardAvoidingView
@@ -165,7 +159,10 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
             title={PROFILE.FEEDBACK_MESSAGE}
             subTitle={PROFILE.FEEDBACK_CONFIRMATION_MESSAGE}
             btnLabel={BUTTON_LABLE.CLOSE}
-            logoStyle={{ width: verticalScale(96), height: verticalScale(96) }}
+            logoStyle={{
+              width: 96,
+              height: 96,
+            }}
             back={handleBackPress}
           />
         </KeyboardAvoidingView>
@@ -191,24 +188,23 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingHorizontal: horizontalMarginScale(20),
+    paddingHorizontal: 20,
     height: '100%',
     paddingBottom: 100,
   },
   subTitle: {
     color: COLORS.light_gray,
     textAlign: 'center',
-    marginBottom: verticalMarginScale(8),
+    marginBottom: 8,
   },
-
   tagText: {
     fontFamily: fontFamily.RomieTrial_Bold,
-    fontSize: fontScale(20),
-    marginTop: verticalMarginScale(24),
+    fontSize: 20,
+    marginTop: 24,
   },
   btnStyle: {
-    width: Wp(85),
-    borderRadius: radiusScale(100),
+    width: '85%',
+    borderRadius: 100,
     bottom: BOTTOM_SAFEAREA_SPACING,
   },
   errorInputWrapper: {
@@ -216,13 +212,13 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.bgRed,
   },
   errorText: {
-    fontSize: fontScale(12),
-    marginTop: verticalMarginScale(5),
+    fontSize: 12,
+    marginTop: 5,
     color: COLORS.errorText,
   },
   error: {
     color: COLORS.errorText,
-    fontSize: fontScale(12),
+    fontSize: 12,
     fontWeight: '500',
   },
 });
