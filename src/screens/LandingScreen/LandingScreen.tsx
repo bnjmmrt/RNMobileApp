@@ -1,26 +1,15 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  Linking,
-  Image,
-  SafeAreaView,
-  StatusBar,
-  Share,
-} from 'react-native';
+import React, { useCallback } from 'react';
+import { View, StyleSheet, Image, StatusBar } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Hp } from '../../utils/dimensions';
 import { BUTTON_LABLE } from '../../utils/constants';
-import { changeSafeAreaViewConfig, LINKS } from '../..//utils/functions';
+import { changeSafeAreaViewConfig } from '../..//utils/functions';
 import Video from 'react-native-video';
 import IMAGES from '../../assets/images/index';
 import LandingStyles from './LandingStyles';
 import Button from '../../component/Button';
 import { useFocusEffect } from '@react-navigation/native';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
-import { createBranchLink } from '../../config/branch';
-import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 
 // Define the type for navigation props
 interface LandingScreenProps extends NativeStackScreenProps<any, any> {}
@@ -45,34 +34,6 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
     navigation.navigate('EmailPhoneScreen');
   };
 
-  const handleCreateBranchLink = async () => {
-    try {
-      const link = await createBranchLink(
-        {
-          title: 'Join Rumor',
-          description: 'Join me on Rumor - The Social Experience App',
-          screen: 'profile',
-          type: 'user',
-        },
-        {
-          feature: 'invite',
-          channel: 'app',
-        },
-      );
-
-      if (link) {
-        // Share the link
-        await Share.share({
-          message: `Join me on Rumor - The Social Experience App\n${link}`,
-          url: link,
-        });
-      }
-    } catch (error) {
-      console.error('Error creating Branch link:', error);
-      FlashMessageComponent.show('error', 'Failed to create sharing link');
-    }
-  };
-
   return (
     <View style={styles.container}>
       {/* <StatusBar backgroundColor="black" barStyle="light-content" /> */}
@@ -92,16 +53,6 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
         </View>
 
         <View style={styles.buttonWrapper}>
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title="Share App"
-            colorTheme={'dark'}
-            onPress={handleCreateBranchLink}
-          />
-
-          <View style={{ height: Hp(2) }} />
-
           <Button
             disabled={false}
             style={styles.btnStyle}

@@ -4,13 +4,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import branch from 'react-native-branch';
 import { ROUTES } from '../navigation/Route';
 
-interface BranchParams {
-  '+clicked_branch_link'?: boolean;
-  screen?: string;
-  id?: string;
-  type?: string;
-}
-
 type RootStackParamList = {
   [ROUTES.UserDetail]: { user: string };
   [ROUTES.EventDetailsScreen]: { eventId: string };
@@ -21,37 +14,51 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 export const useBranchDeepLink = () => {
   const navigation = useNavigation<NavigationProp>();
 
+  const extractEventIdFromPath = (path: string): string | null => {
+    const queryStart = path.indexOf('?');
+    if (queryStart !== -1) {
+      const queryString = path.substring(queryStart + 1);
+      const params = queryString.split('&');
+      for (const param of params) {
+        const [key, value] = param.split('=');
+        if (key === 'id' && value) {
+          return decodeURIComponent(value);
+        }
+      }
+    }
+    return null;
+  };
+
   useEffect(() => {
-    // Subscribe to Branch.io deep link events
     const unsubscribe = branch.subscribe(({ error, params, uri }) => {
+      console.log('Branch deep link received:', { error, params, uri });
+
       if (error) {
-        console.error('Error from Branch: ' + error);
+        console.log('Error in deep link:', error);
         return;
       }
 
-      // Handle the deep link
-      if (params && params['+clicked_branch_link']) {
-        const { screen, id, type } = params as BranchParams;
-        console.log('params', params);
+      // Handle both clicked and non-clicked branch links
+      if (uri) {
+        let path = '';
+        if (uri.includes('://')) {
+          path = uri.split('://')[1] || '';
+        } else {
+          path = uri;
+        }
+        console.log('Extracted path:', path);
 
-        // Navigate based on the deep link parameters
-        if (screen && id) {
-          switch (screen) {
-            case 'profile':
-              navigation.navigate(ROUTES.UserDetail, { user: id });
-              break;
-            case 'event':
-              navigation.navigate(ROUTES.EventDetailsScreen, { eventId: id });
-              break;
-            // Add more cases as needed
-            default:
-              console.log('Unknown screen:', screen);
+        if (path.includes('events/event-details')) {
+          const eventId = extractEventIdFromPath(path);
+          console.log('Event ID extracted:', eventId);
+          if (eventId) {
+            console.log('Navigating to event details:', eventId);
+            navigation.navigate(ROUTES.EventDetailsScreen, { eventId });
           }
         }
       }
     });
 
-    // Cleanup subscription
     return () => {
       unsubscribe();
     };

@@ -79,7 +79,6 @@ const AppContent: React.FC = () => {
 
   const userId = useSelector((state: RootState) => state.auth.userId);
 
-  // Initialize Branch.io deep linking
   useBranchDeepLink();
 
   const fetchUserById = async () => {
