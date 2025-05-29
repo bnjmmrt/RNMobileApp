@@ -6,7 +6,10 @@ import { ROUTES } from '../navigation/Route';
 
 type RootStackParamList = {
   [ROUTES.UserDetail]: { user: string };
-  [ROUTES.EventDetailsScreen]: { eventId: string };
+  [ROUTES.EventStack]: {
+    screen: typeof ROUTES.EventDetailsScreen;
+    params: { id: string };
+  };
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -30,11 +33,8 @@ export const useBranchDeepLink = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = branch.subscribe(({ error, params, uri }) => {
-      console.log('Branch deep link received:', { error, params, uri });
-
+    const unsubscribe = branch.subscribe(({ error, uri }) => {
       if (error) {
-        console.log('Error in deep link:', error);
         return;
       }
 
@@ -46,14 +46,14 @@ export const useBranchDeepLink = () => {
         } else {
           path = uri;
         }
-        console.log('Extracted path:', path);
 
         if (path.includes('events/event-details')) {
           const eventId = extractEventIdFromPath(path);
-          console.log('Event ID extracted:', eventId);
           if (eventId) {
-            console.log('Navigating to event details:', eventId);
-            navigation.navigate(ROUTES.EventDetailsScreen, { eventId });
+            navigation.navigate(ROUTES.EventStack, {
+              screen: ROUTES.EventDetailsScreen,
+              params: { id: eventId },
+            });
           }
         }
       }
