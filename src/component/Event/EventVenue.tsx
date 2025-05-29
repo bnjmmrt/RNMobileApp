@@ -65,7 +65,7 @@ const EventVenue: React.FC<EventVenueProps> = ({
           <CustomText style={styles.title}>{dates[0]}</CustomText>
           <CustomText style={styles.subtitle}>{dates[1]}</CustomText>
         </View>
-        {item.currentGuestStatus === 'CONFIRMED' && (
+        {item?.currentGuestStatus === 'CONFIRMED' && (
           <TouchableOpacity onPress={handleCalendarPress}>
             <Image resizeMode="contain" source={IMAGES.calendarCircle} />
           </TouchableOpacity>
