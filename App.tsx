@@ -173,7 +173,6 @@ const AppContent: React.FC = () => {
   }, []);
 
   const NotificationSetup = async () => {
-    console.log('NotificationSetup');
     getDeviceId();
     requestUserPermission();
     NotificationsListener();

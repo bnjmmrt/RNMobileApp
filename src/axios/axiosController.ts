@@ -31,7 +31,6 @@ axiosController.interceptors.request.use(
   async (config: CustomAxiosRequestConfig) => {
     const token = store.getState().auth.token;
     const role = store.getState().auth.role;
-    console.log('Api call role:', role);
 
     // Check for `withAuth` flag (default true if not specified)
     const shouldAttachToken = config.withAuth !== false;
