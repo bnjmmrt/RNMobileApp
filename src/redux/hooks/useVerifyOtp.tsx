@@ -18,8 +18,6 @@ export const useVerifyOtp = (
   const [error, setError] = useState('');
   const fcmToken = useSelector((state: RootState) => state.auth.fcmToken);
   const deviceId = useSelector((state: RootState) => state.auth.deviceId);
-  console.log('fcmToken', fcmToken);
-  console.log('deviceId', deviceId);
 
   const verifyOtp = async (code: string, onSuccess: (data: any) => void) => {
     try {

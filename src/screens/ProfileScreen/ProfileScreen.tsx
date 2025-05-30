@@ -60,9 +60,9 @@ import NotificationsScreen from '../Notifications/NotificationsScreen';
 import FeedbackScreen from './EditProfile/FeedbackScreen';
 import NotificationSettingsScreen from './EditProfile/NotificationSettingsScreen';
 import { useLogout } from 'src/utils/hooks/useLogout';
-import FollowingScreen from './FollowingScreen/FollowingScreen'
-import ReferralScreen from './ReferralsScreen/ReferralScreen'
-import SelectInterestScreen from '../AppFlow/SelectInterestScreen/SelectInterestScreen'
+import FollowingScreen from './FollowingScreen/FollowingScreen';
+import ReferralScreen from './ReferralsScreen/ReferralScreen';
+import SelectInterestScreen from '../AppFlow/SelectInterestScreen/SelectInterestScreen';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
@@ -81,8 +81,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
     PROFILE.EDIT_PROFILE,
   );
 
-const { logOut } = useLogout();
-
+  const { logOut } = useLogout();
 
   const editPhotoBottomSheetRef = useRef<any>(null);
   const savePhotoBottomSheetRef = useRef<any>(null);
@@ -121,7 +120,6 @@ const { logOut } = useLogout();
     }),
     shallowEqual,
   );
-
 
   const getUserSettings = async () => {
     const response: any = await apiRequest(
@@ -182,7 +180,6 @@ const { logOut } = useLogout();
       loadUserProfile();
     }, []),
   );
-
 
   useEffect(() => {
     if (profileData?.email) {
@@ -442,7 +439,7 @@ const { logOut } = useLogout();
 
   const onPresslogOut = async () => {
     logoutBottomSheetRef.current?.close();
-    logOut()
+    logOut();
   };
 
   const getUserName = () => {
@@ -521,7 +518,7 @@ const { logOut } = useLogout();
     <View
       style={[
         styles.container,
-        
+
         { backgroundColor: !isGuest && !isIPad ? COLORS.black2 : COLORS.white },
       ]}>
       <View
