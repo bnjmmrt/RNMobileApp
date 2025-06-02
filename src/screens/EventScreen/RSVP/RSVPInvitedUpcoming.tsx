@@ -784,14 +784,10 @@ const RSVPInvitedUpcoming = () => {
               }}
             />
             <View style={{ gap: 6 }}>
-              {guestCount > 0 ? (
+              {Boolean(guestCount > 0) && (
                 <CustomText style={{ color: COLORS.light_gray }}>
                   You have {guestCount} guest{' '}
                   {guestCount > 1 ? 'passes' : 'pass'} available{' '}
-                </CustomText>
-              ) : (
-                <CustomText style={{ color: COLORS.light_gray }}>
-                  You don't have any guest pass.
                 </CustomText>
               )}
               <FlatList
