@@ -823,9 +823,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                       handleCalendarPress={addCalenderEvents}
                     />
                   )}
-
                   <EventOverview item={data?.data} />
-
                   {talents.length > 0 && <EventTalent talents={talents} />}
                   {announcementLoading && (
                     <ActivityIndicator color={COLORS.black} />
