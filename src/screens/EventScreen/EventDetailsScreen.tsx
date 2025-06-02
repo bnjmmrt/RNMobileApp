@@ -411,11 +411,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     );
   };
   const renderRSVPButton = () => {
-    if (
-      isDeclinedByHost ||
-      guestStatus === 'CONFIRMED' ||
-      role === ROLE.HOST
-    ) {
+    if (isDeclinedByHost || guestStatus === 'CONFIRMED' || role === ROLE.HOST) {
       return null;
     }
 
@@ -699,16 +695,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                         handleCalendarPress={addCalenderEvents}
                       />
                     )}
-                    {guestStatus == 'CONFIRMED' && (
-                      <EventOverview
-                        item={data?.data}
-                        isFurtherInstrection={true}
-                      />
-                    )}
-                    <EventOverview
-                      item={data?.data}
-                      isFurtherInstrection={false}
-                    />
+                    <EventOverview item={data?.data} />
                     {talents.length > 0 && <EventTalent talents={talents} />}
                     {announcementLoading && (
                       <ActivityIndicator color={COLORS.black} />
@@ -819,7 +806,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                       />
                     )}
                   />
-                  {(guestStatus === 'INVITED' || guestStatus === 'CONFIRMED') && (
+                  {(guestStatus === 'INVITED' ||
+                    guestStatus === 'CONFIRMED') && (
                     <EventInvitation item={data?.data} />
                   )}
                   {role === ROLE.HOST && (
@@ -835,16 +823,9 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                       handleCalendarPress={addCalenderEvents}
                     />
                   )}
-                  {guestStatus == 'CONFIRMED' && (
-                    <EventOverview
-                      item={data?.data}
-                      isFurtherInstrection={true}
-                    />
-                  )}
-                  <EventOverview
-                    item={data?.data}
-                    isFurtherInstrection={false}
-                  />
+
+                  <EventOverview item={data?.data} />
+
                   {talents.length > 0 && <EventTalent talents={talents} />}
                   {announcementLoading && (
                     <ActivityIndicator color={COLORS.black} />
