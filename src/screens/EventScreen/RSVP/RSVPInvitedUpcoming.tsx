@@ -704,7 +704,7 @@ const RSVPInvitedUpcoming = () => {
             />
           </View>
         )}
-        {rspv.response == 'Yes' && (
+        {rspv.response === 'Yes' && (
           <CustomText
             style={{
               color: COLORS.light_gray,
@@ -846,17 +846,19 @@ const RSVPInvitedUpcoming = () => {
           </View>
         </ScrollView>
 
-        <CustomText
-          style={{
-            color: COLORS.light_gray,
-            textAlign: 'center',
-            paddingTop: 12,
-            paddingBottom: 8,
-          }}>
-          {
-            'Please share your additional guests’ details before the event to ensure a smooth check-in experience.'
-          }
-        </CustomText>
+        {Boolean(guestCount > 0) && (
+          <CustomText
+            style={{
+              color: COLORS.light_gray,
+              textAlign: 'center',
+              paddingTop: 12,
+              paddingBottom: 8,
+            }}>
+            Please share your additional guests’ details before the event to
+            ensure a smooth check-in experience.
+          </CustomText>
+        )}
+
         <Button
           disabled={false}
           loading={guestLoading}
