@@ -8,24 +8,16 @@ import { CustomText } from '../CustomText';
 
 interface EventOverviewProps {
   item: Event; // Extend this type with actual item properties for better type safety.
-  isFurtherInstrection: boolean;
 }
 
 const MAX_LINES = 4;
 
-const EventOverview: React.FC<EventOverviewProps> = ({
-  item,
-  isFurtherInstrection,
-}) => {
+const EventOverview: React.FC<EventOverviewProps> = ({ item }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleToggle = () => setExpanded(prev => !prev);
-  const title = isFurtherInstrection
-    ? LABLE.FURTHER_INSTRICTIONS
-    : LABLE.ABOUT_THE_EVENT;
-  const subTitle = isFurtherInstrection
-    ? item?.furtherInstructions
-    : item?.description;
+  const title = LABLE.ABOUT_THE_EVENT;
+  const subTitle = item?.description;
 
   // Check if "Read More" is needed
   const shouldShowReadMore = subTitle && subTitle?.split(' ').length > 26;
