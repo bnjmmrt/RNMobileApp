@@ -73,6 +73,7 @@ const PhoneNumberInput = forwardRef<
     onChangeText?: (text: string) => void;
     onSelectCountry?: (selectedCountry: any) => void;
     forBottomSheet?: boolean;
+    isSecondary?: boolean;
     // errorMsg?:string | null
   }
 >(
@@ -84,6 +85,7 @@ const PhoneNumberInput = forwardRef<
       onChangeText,
       onSelectCountry,
       forBottomSheet = false,
+      isSecondary = false,
       // errorMsg=null
     },
     ref,
@@ -161,7 +163,9 @@ const PhoneNumberInput = forwardRef<
         navigation.navigate('VerifyOtpScreen', {
           phone: `${callingCode} ${phoneNumber}`,
           isEmail: false,
+          isSecondary: isSecondary,
         });
+
         // Alert.alert("Success!!", `Phone Number: ${callingCode} ${phoneNumber}`);
       }
     };

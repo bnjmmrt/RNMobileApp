@@ -13,9 +13,10 @@ import TitleSubtitle from '../../component/TitleSubTitleComponent/TitleSubtitle'
 import { BUTTON_LABLE, LABLE, COLORS } from '../../utils/constants';
 import { useDispatch } from 'react-redux';
 import { verticalMarginScale, horizontalMarginScale } from 'src/utils/dimensions';
-import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
+import { BOTTOM_SAFEAREA_SPACING, TOP_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 import IMAGES from '@images/index';
 import { fontFamily } from 'src/utils/functions';
+import type { PhoneNumberInputRefMethods } from 'src/component/PhonNumberComponent/PhoneNumberInput';
 
 const InfoBanner = ({ message }: { message: string }) => (
   <View style={styles.infoBannerContainer}>
@@ -56,7 +57,7 @@ interface PhoneNumberInputRef {
 const SecondaryEmailPhoneScreen: React.FC<SecondaryEmailPhoneScreenProps> = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const { keyboardVisible } = useKeyboard();
-  const phoneNumberInputRef = useRef<PhoneNumberInputRef>(null);
+  const phoneNumberInputRef = useRef<PhoneNumberInputRefMethods>(null);
   const emailInputRef = useRef<EmailInputRef>(null);
   const isEmail = route.params?.isEmail;
 
@@ -76,10 +77,11 @@ const SecondaryEmailPhoneScreen: React.FC<SecondaryEmailPhoneScreenProps> = ({ n
     }, []),
   );
 
-  const title = isEmail ? LABLE.ENTER_YOUR_EMAIL : LABLE.ENTER_YOUR_PHONE_NUMBER;
+  const title = 
+     "Let's keep everything in one place"
   const subTitle = isEmail
-    ? LABLE.RUMOR_WILL_SEND_YOU_A_EMAIL_WITH_A_VERIFICATION_CODE
-    : LABLE.RUMOR_WILL_SEND_YOU_A_TEXT_WITH_A_VERIFICATION_CODE;
+   ? "Link your email to your profile to ensure all future invites connect to your main profile. You'll also get important event updates here."
+   : "Link your phone number to your profile to ensure all future invites connect to your main profile. You'll also get important event updates here."
 
   return (
     <View style={styles.container}>
@@ -88,38 +90,45 @@ const SecondaryEmailPhoneScreen: React.FC<SecondaryEmailPhoneScreenProps> = ({ n
         <TitleSubtitle title={title} subTitle={subTitle} />
 
         {isEmail ? (
-          <EmailInput ref={emailInputRef} otherStyle={{ marginTop: 12 } as ViewStyle} />
+          <>
+            <Text style={{
+              fontSize: 16,
+              fontWeight: '500',
+              marginBottom: 8,
+              marginTop: 12,
+              color: COLORS.black,
+              fontFamily: fontFamily.ABCDiatype_Medium,
+            }}>Email Address</Text>
+            <EmailInput 
+              ref={emailInputRef} 
+              otherStyle={{}} 
+              isSecondary={true}
+            />
+          </>
         ) : (
-          <PhoneNumberInput
-            ref={phoneNumberInputRef}
-            otherStyle={{ marginTop: 12 } as ViewStyle}
-          />
+          <>
+            <PhoneNumberInput
+              ref={phoneNumberInputRef}
+              otherStyle={{ marginTop: 12 } as ViewStyle}
+              isSecondary={true}
+            />
+            
+          </>
         )}
 
-        <InfoBanner
-          message={
-            isEmail
-              ? 'If you were invited to an event via text, please log in with your phone number—not your email address.'
-              : 'If you were invited to an event via email, please log in with that email address—not your phone number.'
-          }
-        />
-
         <View style={styles.spacer} />
-
-        {!keyboardVisible ? (
+      </View>
+      {!keyboardVisible && (
+        <View style={styles.fixedButtonContainer}>
           <Button
             disabled={false}
-            style={{
-              width: '100%',
-              maxWidth: 393,
-              marginBottom: BOTTOM_SAFEAREA_SPACING,
-            }}
+            style={styles.fixedButton}
             title={BUTTON_LABLE.NEXT}
             colorTheme="dark"
             onPress={onNextClick}
           />
-        ) : null}
-      </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -128,6 +137,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    paddingTop: TOP_SAFEAREA_SPACING,
   },
   contentContainer: {
     flex: 1,
@@ -162,6 +172,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: horizontalMarginScale(8),
     fontFamily: fontFamily.ABCDiatype_Medium,
+  },
+  fixedButtonContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: COLORS.white,
+    paddingBottom: BOTTOM_SAFEAREA_SPACING,
+    paddingHorizontal: horizontalMarginScale(20),
+    alignItems: 'center',
+    borderTopWidth: 0,
+  },
+  fixedButton: {
+    width: '100%',
+    maxWidth: 393,
   },
 });
 

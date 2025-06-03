@@ -12,28 +12,35 @@ export const useVerifyOtp = (
   email?: string,
   phone?: string,
   isEmail?: boolean,
+  isSecondary?: boolean,
 ) => {
   const [isLoading, setIsLoading] = useState(false);
   const [memberLogin] = useMemberLoginMutation();
   const [error, setError] = useState('');
   const fcmToken = useSelector((state: RootState) => state.auth.fcmToken);
   const deviceId = useSelector((state: RootState) => state.auth.deviceId);
+  const currentUserId = useSelector((state: RootState) => state.auth.userId);
 
   const verifyOtp = async (code: string, onSuccess: (data: any) => void) => {
     try {
       setError('');
       setIsLoading(true);
       const requestParam = {
-        email:normalizeEmail(email),
-        phoneNumber: removeSpaceFromStr(phone),
+        email: email ? normalizeEmail(email) : '',
+        phoneNumber: phone ? removeSpaceFromStr(phone) : '',
         code,
         isExist: isMemberExist,
         isGuest: isGuest,
         fcmToken: fcmToken,
-        deviceId: deviceId
+        deviceId: deviceId,
+        isSecondary: isSecondary || false,
+        ...(isSecondary && currentUserId ? { userId: currentUserId } : {})
       };
       console.log("requestParam choi", requestParam)
+      
       const response = await memberLogin(requestParam).unwrap();
+
+      console.log("response choi", response)
 
       if (response.success) {
         const data = { ...response.data, varifyStatus: isEmail ? 1 : 2 };

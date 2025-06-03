@@ -44,12 +44,17 @@ type RouteParams = {
     isEmail: boolean;
     email?: string;
     phone?: string;
+    isSecondary?: boolean;
   };
 };
 
 const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const styles = VerifyOtpStyles();
-  const otpInputRef = useRef<{ handleNextPress: () => void }>(null);
+  const otpInputRef = useRef<{ 
+    handleNextPress: () => void;
+    setApiError: (error: string) => void;
+    clearOTP: () => void;
+  }>(null);
   const route = useRoute<RouteProp<RouteParams>>();
   const { sendOtp, isMemberExist, isGuest } = useSendOtp(
     route.params.email,
@@ -61,6 +66,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     route.params.email,
     route.params.phone,
     route.params.isEmail,
+    route.params.isSecondary
   );
 
   const dispatch = useDispatch();
@@ -106,6 +112,18 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
 
 
   const redirectToHome = (data: any) => {
+    // For secondary verification, directly navigate to BottomTabBar
+    if (route.params.isSecondary) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'AppStack', params: { screen: 'BottomTabBar' } }],
+        }),
+      );
+      return;
+    }
+
+    // Primary verification flow
     loginUser({
       id: data?.id,
       isGuest: data?.isGuest,
@@ -119,7 +137,11 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     dispatch(setPhone(route.params.phone || ''));
     dispatch(setIsGuest(data?.isGuest));
     fetchUserProfile();
-    fetchUserById(data?.id)
+    
+    if (data?.id) {
+      fetchUserById(data.id);
+    }
+
     let role = getPriorityRole(data?.roles);
     let screenName = '';
 

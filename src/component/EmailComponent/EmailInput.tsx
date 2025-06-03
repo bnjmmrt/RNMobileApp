@@ -4,7 +4,7 @@ import React, {
   useImperativeHandle,
   useRef,
 } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert, ViewStyle } from 'react-native';
 import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
 import { COLORS, LABLE } from '../../utils/constants';
@@ -13,7 +13,12 @@ import { verticalScale } from 'src/utils/dimensions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { fontFamily } from 'src/utils/functions';
 
-const EmailInput = forwardRef(({ otherStyle }, ref) => {
+interface EmailInputProps {
+  otherStyle?: ViewStyle;
+  isSecondary?: boolean;
+}
+
+const EmailInput = forwardRef(({ otherStyle, isSecondary = false }: EmailInputProps, ref) => {
   const inputRef = useRef<TextInput>(null);
   const [emailAddress, setEmailAddress] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -66,6 +71,7 @@ const EmailInput = forwardRef(({ otherStyle }, ref) => {
       navigation.navigate('VerifyOtpScreen', {
         email: emailAddress,
         isEmail: true,
+        isSecondary,
       });
     }
   };
