@@ -123,6 +123,24 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     let role = getPriorityRole(data?.roles);
     let screenName = '';
 
+    // If user is missing either email or phone, redirect to SecondaryEmailPhoneScreen
+    if (!data.user.email || !data.user.phoneNumber) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ 
+            name: 'SecondaryEmailPhoneScreen', 
+            params: { 
+              isEmail: !data.user.email, 
+              email: data.user.email || route.params.email, 
+              phone: data.user.phoneNumber || route.params.phone 
+            } 
+          }],
+        }),
+      )
+      return;
+    }
+
     switch (role.roleName) {
       case ROLE.NON_MEMBER:
         screenName =

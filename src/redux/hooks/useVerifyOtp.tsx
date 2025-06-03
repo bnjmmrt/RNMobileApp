@@ -32,6 +32,7 @@ export const useVerifyOtp = (
         fcmToken: fcmToken,
         deviceId: deviceId
       };
+      console.log("requestParam choi", requestParam)
       const response = await memberLogin(requestParam).unwrap();
 
       if (response.success) {

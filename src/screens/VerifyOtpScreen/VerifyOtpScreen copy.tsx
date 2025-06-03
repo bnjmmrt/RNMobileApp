@@ -101,6 +101,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
 
     const redirectToHome = (data: any) => {
         dispatch(setLoginData(data))
+        console.log("data choi", data)
         navigation.navigate("AppStack")
     };
 
