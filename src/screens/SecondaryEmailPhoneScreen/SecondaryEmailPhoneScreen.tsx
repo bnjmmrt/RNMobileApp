@@ -88,7 +88,7 @@ const SecondaryEmailPhoneScreen: React.FC<SecondaryEmailPhoneScreenProps> = ({ n
       <BackButton onPress={handleBackPress} />
       <View style={styles.contentContainer}>
         <TitleSubtitle title={title} subTitle={subTitle} />
-
+ 
         {isEmail ? (
           <>
             <Text style={{

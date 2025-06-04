@@ -36,11 +36,8 @@ export const useVerifyOtp = (
         isSecondary: isSecondary || false,
         ...(isSecondary && currentUserId ? { userId: currentUserId } : {})
       };
-      console.log("requestParam choi", requestParam)
       
       const response = await memberLogin(requestParam).unwrap();
-
-      console.log("response choi", response)
 
       if (response.success) {
         const data = { ...response.data, varifyStatus: isEmail ? 1 : 2 };
