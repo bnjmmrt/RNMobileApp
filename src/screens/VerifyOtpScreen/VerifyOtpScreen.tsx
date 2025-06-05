@@ -50,7 +50,7 @@ type RouteParams = {
 
 const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const styles = VerifyOtpStyles();
-  const otpInputRef = useRef<{ 
+  const otpInputRef = useRef<{
     handleNextPress: () => void;
     setApiError: (error: string) => void;
     clearOTP: () => void;
@@ -66,7 +66,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     route.params.email,
     route.params.phone,
     route.params.isEmail,
-    route.params.isSecondary
+    route.params.isSecondary,
   );
 
   const dispatch = useDispatch();
@@ -101,7 +101,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         const transformedRoles = roles.map((role: any) => ({
           roleName: role.name,
           roleId: role.id,
-          roleStatus: role.status
+          roleStatus: role.status,
         }));
         dispatch(setRoles(transformedRoles));
       }
@@ -109,7 +109,6 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
       console.error('Error fetching user:', error);
     }
   };
-
 
   const redirectToHome = (data: any) => {
     // For secondary verification, directly navigate to BottomTabBar
@@ -137,7 +136,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     dispatch(setPhone(route.params.phone || ''));
     dispatch(setIsGuest(data?.isGuest));
     fetchUserProfile();
-    
+
     if (data?.id) {
       fetchUserById(data.id);
     }
@@ -147,49 +146,52 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
 
     // If user is missing either email or phone, redirect to SecondaryEmailPhoneScreen
     if (!data.user.email || !data.user.phoneNumber) {
-    if (data.user && (!data.user.email || !data.user.phoneNumber)) {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ 
-            name: 'SecondaryEmailPhoneScreen', 
-            params: { 
-              isEmail: !data.user.email, 
-              email: data.user.email || route.params.email, 
-              phone: data.user.phoneNumber || route.params.phone 
-            } 
-          }],
-        }),
-      )
-      return;
-    }
+      if (data.user && (!data.user.email || !data.user.phoneNumber)) {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'SecondaryEmailPhoneScreen',
+                params: {
+                  isEmail: !data.user.email,
+                  email: data.user.email || route.params.email,
+                  phone: data.user.phoneNumber || route.params.phone,
+                },
+              },
+            ],
+          }),
+        );
+        return;
+      }
 
-    switch (role.roleName) {
-      case ROLE.NON_MEMBER:
-        screenName =
-          data?.token?.length > 0 || data?.isGuest
-            ? 'BottomTabBar'
-            : 'BeforeAppStaticScreen';
-        break;
-      case ROLE.MEMBER:
-        screenName = 'BottomTabBar';
-        break;
-      case ROLE.HOST:
-        screenName = 'BottomTabBar';
-        dispatch(setEmail(data?.user?.email));
-        dispatch(setPhone(data?.user?.phoneNumber));
-        dispatch(setFirstName(data?.user?.firstName));
-        dispatch(setLastName(data?.user?.lastName));
-        break;
-    }
+      switch (role.roleName) {
+        case ROLE.NON_MEMBER:
+          screenName =
+            data?.token?.length > 0 || data?.isGuest
+              ? 'BottomTabBar'
+              : 'BeforeAppStaticScreen';
+          break;
+        case ROLE.MEMBER:
+          screenName = 'BottomTabBar';
+          break;
+        case ROLE.HOST:
+          screenName = 'BottomTabBar';
+          dispatch(setEmail(data?.user?.email));
+          dispatch(setPhone(data?.user?.phoneNumber));
+          dispatch(setFirstName(data?.user?.firstName));
+          dispatch(setLastName(data?.user?.lastName));
+          break;
+      }
 
-    if (screenName) {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'AppStack', params: { screen: screenName } }],
-        }),
-      );
+      if (screenName) {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'AppStack', params: { screen: screenName } }],
+          }),
+        );
+      }
     }
   };
 
@@ -221,8 +223,9 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         <View style={styles.contentContainer}>
           <TitleSubtitle
             title={LABLE.ENTER_YOUR_VERIFICATION_CODE}
-            subTitle={`${LABLE.SEND_TO}${route.params.isEmail ? route.params.email : route.params.phone
-              }`}
+            subTitle={`${LABLE.SEND_TO}${
+              route.params.isEmail ? route.params.email : route.params.phone
+            }`}
           />
           <OTPComponent
             error={errorMsg}
