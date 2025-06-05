@@ -145,7 +145,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     let screenName = '';
 
     // If user is missing either email or phone, redirect to SecondaryEmailPhoneScreen
-    if (!data.user.email || !data.user.phoneNumber) {
+    if (!data.user?.email || !data.user?.phoneNumber) {
       if (data.user && (!data.user.email || !data.user.phoneNumber)) {
         navigation.dispatch(
           CommonActions.reset({
