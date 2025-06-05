@@ -128,7 +128,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   };
 
   const validateName = (name: string) => {
-    const regex = /^[A-Za-z]+$/;
+    const regex = /^[A-Za-z0-9\s\-$!@*&]+$/;
     let isFirstNameValid = false;
     let isLastNameValid = false;
     if (firstNameRef?.current?.validateInputs()) {
