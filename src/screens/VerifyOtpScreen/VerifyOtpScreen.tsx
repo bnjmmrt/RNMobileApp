@@ -72,9 +72,6 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
   const [getUserById] = useGetUserWithRolesByIdMutation();
 
-  const fcmToken = useSelector((state: RootState) => state.auth.fcmToken);
-  const { keyboardVisible } = useKeyboard();
-
   const [errorMsg, setErrorMsg] = useState('');
   useEffect(() => {
     otpInputRef?.current?.setApiError(error);
@@ -164,34 +161,34 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         );
         return;
       }
+    }
 
-      switch (role.roleName) {
-        case ROLE.NON_MEMBER:
-          screenName =
-            data?.token?.length > 0 || data?.isGuest
-              ? 'BottomTabBar'
-              : 'BeforeAppStaticScreen';
-          break;
-        case ROLE.MEMBER:
-          screenName = 'BottomTabBar';
-          break;
-        case ROLE.HOST:
-          screenName = 'BottomTabBar';
-          dispatch(setEmail(data?.user?.email));
-          dispatch(setPhone(data?.user?.phoneNumber));
-          dispatch(setFirstName(data?.user?.firstName));
-          dispatch(setLastName(data?.user?.lastName));
-          break;
-      }
+    switch (role.roleName) {
+      case ROLE.NON_MEMBER:
+        screenName =
+          data?.token?.length > 0 || data?.isGuest
+            ? 'BottomTabBar'
+            : 'BeforeAppStaticScreen';
+        break;
+      case ROLE.MEMBER:
+        screenName = 'BottomTabBar';
+        break;
+      case ROLE.HOST:
+        screenName = 'BottomTabBar';
+        dispatch(setEmail(data?.user?.email));
+        dispatch(setPhone(data?.user?.phoneNumber));
+        dispatch(setFirstName(data?.user?.firstName));
+        dispatch(setLastName(data?.user?.lastName));
+        break;
+    }
 
-      if (screenName) {
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: 'AppStack', params: { screen: screenName } }],
-          }),
-        );
-      }
+    if (screenName) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'AppStack', params: { screen: screenName } }],
+        }),
+      );
     }
   };
 
