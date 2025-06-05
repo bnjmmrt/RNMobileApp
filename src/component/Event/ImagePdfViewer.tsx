@@ -54,7 +54,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
   mediaItems,
   name,
   logo,
-  index
+  index,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(index);
   const [loader, setLoader] = useState(false);
@@ -62,7 +62,6 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
   const folderName = 'TheRumor';
   const folderPath = `${RNFS.DocumentDirectoryPath}/${folderName}`;
   // const folderPath = `${RNFS.ExternalStorageDirectoryPath}/Documents/${folderName}`;
-  console.log("mediaItems[currentIndex]?.mediaType", mediaItems[currentIndex])
   const requestStoragePermission = async () => {
     if (Platform.OS === 'android' && Platform.Version < 33) {
       const granted = await PermissionsAndroid.request(
@@ -73,10 +72,13 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
-        }
+        },
       );
       if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        Alert.alert('Permission Denied', 'Cannot download file without storage permission');
+        Alert.alert(
+          'Permission Denied',
+          'Cannot download file without storage permission',
+        );
         return;
       }
     }
@@ -93,26 +95,29 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
         toFile: localFilePath,
       }).promise;
       if (downloadResult.statusCode === 200) {
-        setLoader(false)
+        setLoader(false);
         console.log('Download complete:', localFilePath);
         await Share.open({
           url: 'file://' + localFilePath,
-          type: mediaItems[currentIndex]?.mediaType === 'pdf' ? 'application/pdf' : 'image/jpeg', // Change based on file type
+          type:
+            mediaItems[currentIndex]?.mediaType === 'pdf'
+              ? 'application/pdf'
+              : 'image/jpeg', // Change based on file type
           saveToFiles: true, // :point_left: this enables the "Save to Files" option in iOS
         });
       } else {
-        setLoader(false)
+        setLoader(false);
         // Alert.alert('Download Failed', `Status code: ${downloadResult.statusCode}`);
       }
     } catch (err) {
-      setLoader(false)
+      setLoader(false);
       console.error('Error downloading or sharing file:', err);
       // Alert.alert('Error', 'Something went wrong while downloading or sharing the file.');
     }
   };
 
   const createFolder = async () => {
-    setLoader(true)
+    setLoader(true);
     const hasPermission = await requestStoragePermission();
     if (!hasPermission) {
       Alert.alert(
@@ -123,12 +128,12 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
     }
     try {
       if (Platform.OS === 'android') {
-        downloadFile()
+        downloadFile();
       } else {
-        downloadAndShareFile()
+        downloadAndShareFile();
       }
     } catch (err) {
-      setLoader(false)
+      setLoader(false);
       console.error('Error creating folder:', err);
     }
   };
@@ -145,15 +150,18 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
 
       const result = await RNFS.downloadFile(options).promise;
       if (result.statusCode === 200) {
-        setLoader(false)
-        console.log("File downloaded successfully:", destPath);
+        setLoader(false);
+        console.log('File downloaded successfully:', destPath);
         Alert.alert('Success', `File downloaded to ${destPath}`);
       } else {
-        setLoader(false)
-        Alert.alert('Error', `Download failed with status ${result.statusCode}`);
+        setLoader(false);
+        Alert.alert(
+          'Error',
+          `Download failed with status ${result.statusCode}`,
+        );
       }
     } catch (err) {
-      setLoader(false)
+      setLoader(false);
       console.error('Download error:', err);
       Alert.alert('Download failed', err.message);
     }
@@ -185,7 +193,11 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
     const currentItem = mediaItems[currentIndex];
     if (currentItem?.mediaType === 'image') {
       return (
-        <FastImage source={{ uri: currentItem?.media }} style={styles.media} />
+        <FastImage
+          source={{ uri: currentItem?.media }}
+          style={styles.media}
+          resizeMode="contain"
+        />
       );
     } else if (currentItem?.mediaType === 'pdf') {
       return (
@@ -216,8 +228,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
             activeOpacity={0.7}
             onPress={onClose}
             style={styles.closeButton}>
-            <Image resizeMode='contain'
-              source={IMAGES.cross} />
+            <Image resizeMode="contain" source={IMAGES.cross} />
           </TouchableOpacity>
           <Text style={styles.mediaInfo}>
             {currentIndex + 1} of {mediaItems.length}
@@ -312,8 +323,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     left: 10,
-    resizeMode: 'contain'
-
+    resizeMode: 'contain',
   },
   icon: {
     width: 10,
@@ -337,6 +347,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '92%',
     borderRadius: 10,
+    objectFit: 'contain',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   pdfContainer: {
     width: width * 0.8,
