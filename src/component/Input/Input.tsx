@@ -120,7 +120,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
   }));
 
   const validateName = (name: string) => {
-    const regex = /^[A-Za-z]+$/;
+    const regex = /^[A-Za-z0-9\s\-$!@*&]+$/;
 
     if (!name) {
       setErrorMessage(initialErrorMessage);

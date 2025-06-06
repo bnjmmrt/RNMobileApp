@@ -115,7 +115,7 @@ const AddNewUserSheet = forwardRef<
   };
 
   const validateName = (name: string) => {
-    const regex = /^[A-Za-z]+$/;
+    const regex = /^[A-Za-z0-9\s\-$!@*&]+$/;
     if (
       name === 'FirstName' &&
       firstNameRef?.current?.inputText &&
