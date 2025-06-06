@@ -45,6 +45,7 @@ interface ImagePdfViewerProps {
   logo: string;
   index: number;
 }
+import Pdf from 'react-native-pdf';
 
 const { width, height } = Dimensions.get('window');
 
@@ -207,12 +208,24 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
           <Pressable
             style={styles.pdfContainer}
             onPress={() => openPdfInBrowser(currentItem?.media)}>
-            <Image
-              source={IMAGES.pdf}
-              style={styles.pdfIcon}
-              resizeMode="contain"
-            />
-            <Text style={styles.pdfText}>{currentItem?.mediaName}</Text>
+            {currentItem.media ? (
+              <Pdf
+                source={{
+                  uri: currentItem.media,
+                }}
+                singlePage
+                style={styles.pdfDisplay}
+              />
+            ) : (
+              <>
+                <Image
+                  source={IMAGES.pdf}
+                  style={styles.pdfIcon}
+                  resizeMode="contain"
+                />
+                <Text style={styles.pdfText}>{currentItem?.mediaName}</Text>
+              </>
+            )}
             {/* <Text style={styles.pdfSize}>{currentItem.size}</Text> */}
           </Pressable>
         </>
@@ -358,6 +371,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
+  },
+  pdfDisplay: {
+    width: '100%',
+    height: '100%',
   },
   pdfIcon: {
     width: 30,
