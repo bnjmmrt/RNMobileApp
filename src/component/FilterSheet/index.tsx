@@ -22,6 +22,8 @@ import AllUsersFilters from './AllUsersFilters';
 import DiscoverEventsFilters from './DiscoverEventsFilters';
 import { FilterOptionTypes } from './FilterOptions';
 import { styles } from './style';
+import { screenHeight } from 'src/utils/dimensions';
+import GetComponentSize from '../GetComponentSize';
 
 export type SelectedSingleFilter = {
   type: FilterOptionTypes;
@@ -80,7 +82,9 @@ export const getFilterQuery = (selectedFilters: SelectedFilters) => {
 const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
   ({ onApplyFilter, onClearFilter, from, selectedFiltersInParent }, ref) => {
     const sheetRef = useRef<BottomSheetMethods>(null);
-
+    const [discoverFilterHeight, setDiscoverFilterHeight] =
+      useState<number>(88);
+    const [snapPointHeight, setSnapPointHeight] = useState<number | null>(null);
     useImperativeHandle(ref, () => ({
       open: () => sheetRef.current?.open(),
       close: () => sheetRef.current?.close(),
@@ -89,7 +93,6 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
     const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
     const [disableApplyCta, setDisableApplyCta] = useState<boolean>(false);
     const [isKeyboardOpen, setIsKeyboardOpen] = useState<boolean>(false);
-
     const onPressApplyFilter = async () => {
       const { queryString, filtersCount } = getFilterQuery(selectedFilters);
       onApplyFilter(queryString, filtersCount, selectedFilters || {});
@@ -138,12 +141,26 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
       };
     }, []);
 
+    const snapToNewPoint = (x: number | null) => {
+      setSnapPointHeight(x);
+    };
+
     return (
       <BottomSheetComponent
         ref={sheetRef}
-        snapPoints={[`${isKeyboardOpen ? 100 : 88}%`]}
+        snapPoints={[
+          `${
+            isKeyboardOpen
+              ? 100
+              : from === 'discoverEvents'
+              ? snapPointHeight ?? discoverFilterHeight
+              : 88
+          }%`,
+        ]}
         enableDynamicSizing={false}
-        onClose={() => {}}>
+        onClose={() => {
+          setSnapPointHeight(null);
+        }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -163,11 +180,23 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
                 />
               ) : null}
               {from === 'discoverEvents' ? (
-                <DiscoverEventsFilters
-                  selectedFilters={selectedFilters}
-                  setSelectedFilters={setSelectedFilters}
-                  setDisableApplyCta={setDisableApplyCta}
-                />
+                <GetComponentSize
+                  onSizeCapture={({ height }) => {
+                    const heightPercentage = (height * 100) / screenHeight + 25;
+
+                    if (heightPercentage > 88) {
+                      setDiscoverFilterHeight(88);
+                    } else {
+                      setDiscoverFilterHeight(heightPercentage);
+                    }
+                  }}>
+                  <DiscoverEventsFilters
+                    selectedFilters={selectedFilters}
+                    setSelectedFilters={setSelectedFilters}
+                    setDisableApplyCta={setDisableApplyCta}
+                    snapToNewPoint={snapToNewPoint}
+                  />
+                </GetComponentSize>
               ) : null}
 
               {!isKeyboardOpen ? (

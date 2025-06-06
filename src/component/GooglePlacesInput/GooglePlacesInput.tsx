@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  Alert,
   Image,
   StyleSheet,
   Text,
@@ -129,14 +128,21 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
             borderRadius: radiusScale(8),
             borderWidth: 1,
             borderColor: COLORS.borderGray,
-            marginTop: 5,
+            marginTop: 12,
+            backgroundColor: COLORS.white,
+            overflow: 'hidden',
           },
           separator: { height: 0 },
           container: { flex: 0 },
+          row: {
+            backgroundColor: 'transparent',
+          },
         }}
         minLength={3}
+        debounce={200}
         enablePoweredByContainer={false}
         placeholder="Search for a Location..."
+        listUnderlayColor={COLORS.lighter_gray}
         onPress={async (
           data: GooglePlaceData,
           detail: GooglePlaceDetail | null,

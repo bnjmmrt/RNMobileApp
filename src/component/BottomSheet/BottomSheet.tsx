@@ -33,7 +33,7 @@ import { isIPad } from 'src/utils/isTabletConfig';
 
 interface BottomSheetComponentProps {
   children: React.ReactNode;
-  snapPoints?: string[]; // Allows customizable snap points
+  snapPoints?: (string | number)[]; // Allows customizable snap points
   onChange?: (index: number) => void;
   onClose?: () => void;
   ref: any;
