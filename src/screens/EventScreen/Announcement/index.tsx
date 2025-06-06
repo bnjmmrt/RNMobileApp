@@ -26,6 +26,7 @@ import { ANNOUNCEMENT, COLORS, LABLE, ROLE } from 'src/utils/constants';
 import { formatViewAnnouncementDate } from 'src/utils/dateFunctions';
 import { Hp, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import AnnouncementStyles from './styles';
+import Pdf from 'react-native-pdf';
 
 interface AnnouncementProps extends NativeStackScreenProps<any, any> {}
 type RouteParams = {
@@ -47,9 +48,29 @@ const MediaItem = ({
   image: any;
   index: number;
   onPress: (media: any, name: string, image: string, index: number) => void;
-}) =>
-  item.mediaType === 'image' ? (
-    <TouchableOpacity onPress={() => onPress(media, name, image, index)}>
+}) => {
+  const [imageWidth, setImageWidth] = useState<number>(95);
+  useEffect(() => {
+    if (item.mediaType === 'image' && imageWidth === 95) {
+      Image.getSize(
+        item.media,
+        (width, height) => {
+          const calculatedWidth = (width / height) * 128; // Maintain aspect ratio
+          setImageWidth(calculatedWidth);
+        },
+        error => {
+          console.error('Error getting image size:', error);
+        },
+      );
+    } else {
+      setImageWidth(90); // Default width for non-image media
+    }
+  }, [item]);
+
+  return item.mediaType === 'image' ? (
+    <TouchableOpacity
+      onPress={() => onPress(media, name, image, index)}
+      style={[AnnouncementStyles().mediaContainer, { width: imageWidth }]}>
       <FastImage
         source={{ uri: item?.media }}
         style={AnnouncementStyles().mediaImage}
@@ -59,16 +80,29 @@ const MediaItem = ({
     <TouchableOpacity
       onPress={() => onPress(media, name, image, index)}
       style={AnnouncementStyles().pdfContainer}>
-      <Image
-        source={IMAGES.pdf}
-        style={AnnouncementStyles().pdfIcon}
-        resizeMode="contain"
-      />
-      <Text style={AnnouncementStyles().title} numberOfLines={2}>
-        {item?.mediaName}
-      </Text>
+      {item.media ? (
+        <Pdf
+          source={{
+            uri: item.media,
+          }}
+          singlePage
+          style={AnnouncementStyles().pdfDisplay}
+        />
+      ) : (
+        <>
+          <Image
+            source={IMAGES.pdf}
+            style={AnnouncementStyles().pdfIcon}
+            resizeMode="contain"
+          />
+          <Text style={AnnouncementStyles().title} numberOfLines={2}>
+            {item?.mediaName}
+          </Text>
+        </>
+      )}
     </TouchableOpacity>
   );
+};
 
 // Move AnnouncementItem component outside of Announcement
 const AnnouncementItem = ({
@@ -259,50 +293,6 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
     }, [data]),
   );
 
-  const MediaItem = ({
-    item,
-    media,
-    name,
-    image,
-    index,
-  }: {
-    item: any;
-    media: any;
-    name: any;
-    image: any;
-    index: number;
-  }) =>
-    item.mediaType === 'image' ? (
-      <TouchableOpacity
-        onPress={() => {
-          setMedia(media);
-          setCompanyName(name);
-          setCompanyLogo(image);
-          setViewerVisible(true);
-          setCurrentIndex(index);
-        }}>
-        <FastImage source={{ uri: item?.media }} style={styles.mediaImage} />
-      </TouchableOpacity>
-    ) : (
-      <TouchableOpacity
-        onPress={() => {
-          setMedia(media);
-          setCompanyName(name);
-          setCompanyLogo(image);
-          setViewerVisible(true);
-          setCurrentIndex(index);
-        }}
-        style={styles.pdfContainer}>
-        <Image
-          source={IMAGES.pdf}
-          style={styles.pdfIcon}
-          resizeMode="contain"
-        />
-        <Text style={styles.title} numberOfLines={2}>
-          {item?.mediaName}
-        </Text>
-      </TouchableOpacity>
-    );
   const AnnouncementItem = ({ item }: { item: any }) => {
     const [expanded, setExpanded] = useState(false);
     const shouldShowReadMore = item?.announcement?.split(' ')?.length > 25;
@@ -316,7 +306,8 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
 
     return (
       <View style={styles.Detailcontainer}>
-        <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
+        <View
+          style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
           <View
             style={{
               flexDirection: 'row',
@@ -363,6 +354,13 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
                 media={item.attachments}
                 name={name}
                 image={imageKeyUrl}
+                onPress={(media, name, image, index) => {
+                  setMedia(media);
+                  setCompanyName(name);
+                  setCompanyLogo(image);
+                  setCurrentIndex(index);
+                  setViewerVisible(true);
+                }}
               />
             ))}
           </ScrollView>
@@ -416,7 +414,10 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
             );
           })}
           {item?.addedBy.map((item: any) => {
-            let selectedName = item?.additionalHostInformation?.companyName == 'NA'? ' -- ': item?.additionalHostInformation?.companyName
+            let selectedName =
+              item?.additionalHostInformation?.companyName == 'NA'
+                ? ' -- '
+                : item?.additionalHostInformation?.companyName;
             return (
               <View
                 style={[

@@ -2,6 +2,7 @@ import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
 import React, { useEffect, useState } from 'react';
 import {
+  Alert,
   FlatList,
   Image,
   ScrollView,
@@ -16,6 +17,7 @@ import { fontFamily } from '../../utils/functions';
 import AvatarInitials from '../AvatarInitials';
 import { CustomText } from '../CustomText';
 import ImagePdfViewer from './ImagePdfViewer';
+import Pdf from 'react-native-pdf';
 
 interface EventAnnouncementProps {
   role?: string;
@@ -69,7 +71,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
   }) => {
     const [imageWidth, setImageWidth] = useState<number>(90);
     useEffect(() => {
-      if (item.mediaType === 'image') {
+      if (item.mediaType === 'image' && imageWidth === 90) {
         Image.getSize(
           item.media,
           (width, height) => {
@@ -84,7 +86,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
         setImageWidth(90); // Default width for non-image media
       }
     }, [item]);
-    
+
     return item.mediaType === 'image' ? (
       <TouchableOpacity
         onPress={() => {
@@ -116,14 +118,27 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
           setCurrentIndex(index);
         }}
         style={styles.pdfContainer}>
-        <Image
-          source={IMAGES.pdf}
-          style={styles.pdfIcon}
-          resizeMode="contain"
-        />
-        <Text style={styles.title} numberOfLines={2}>
-          {item?.mediaName}
-        </Text>
+        {item.media ? (
+          <Pdf
+            source={{
+              uri: item.media,
+            }}
+            singlePage
+            style={styles.pdfDisplay}
+          />
+        ) : (
+          <>
+            <Image
+              source={IMAGES.pdf}
+              style={styles.pdfIcon}
+              resizeMode="contain"
+            />
+            <Text style={styles.title} numberOfLines={2}>
+              {item?.mediaName}
+            </Text>
+          </>
+        )}
+
         {/* <Text style={styles.pdfSize}>{item.size}</Text> */}
       </TouchableOpacity>
     );
@@ -353,6 +368,13 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     marginBottom: 10,
+  },
+  pdfDisplay: {
+    width: 90,
+    height: 128,
+    borderWidth: 1,
+    borderColor: COLORS.lighter_gray,
+    borderRadius: 8,
   },
   subtitle: {
     color: COLORS.light_gray,
