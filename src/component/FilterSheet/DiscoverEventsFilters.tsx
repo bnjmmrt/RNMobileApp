@@ -110,17 +110,40 @@ const DiscoverEventsFilters = ({
             tempExistingValue.push({
               id: value.id,
               name: value.name,
+              lat: value.lat,
+              long: value.long,
             });
           } else {
-            delete tempExistingValue[idIndex];
+            tempExistingValue.splice(idIndex, 1);
           }
         }
       } else {
         tempSelectedFilter[id] = {
           type: optionType,
-          value: [{ id: value.lat, name: value.name }],
+          value: [
+            {
+              id: value.id,
+              name: value.name,
+              lat: value.lat,
+              long: value.long,
+            },
+          ],
         };
       }
+      // if (typeof value === 'object' && !Array.isArray(value) && 'id' in value) {
+      //   if (value.long) {
+      //     tempSelectedFilter['longitude'] = {
+      //       type: optionType,
+      //       value: [{ id: value.long, name: value.name }],
+      //     };
+      //   }
+      //   if (value.lat) {
+      //     tempSelectedFilter['latitude'] = {
+      //       type: optionType,
+      //       value: [{ id: value.lat, name: '' }],
+      //     };
+      //   }
+      // }
     } else if (optionType === 'dateRange') {
       const startDate = value?.date[0];
       const endDate = value?.date[1];

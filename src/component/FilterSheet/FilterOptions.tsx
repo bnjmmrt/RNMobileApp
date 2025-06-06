@@ -304,7 +304,7 @@ const FilterOptions = ({
           <GooglePlacesInput
             submit={() => {}}
             autoFetchCurrentLocation={optionType === 'location'}
-            allowFullAddres={false}
+            allowFullAddres={optionType === 'location'}
             defaultValue={
               selectedFilters[id] && selectedFilters[id].value[0]?.name
             }
