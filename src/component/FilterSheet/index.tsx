@@ -61,6 +61,16 @@ export const getFilterQuery = (selectedFilters: SelectedFilters) => {
   const queryString = Object.entries(selectedFilters)
     .map(([key, filter]) => {
       if (Array.isArray(filter.value) && filter.value.length > 0) {
+        if (key === 'location') {
+          const values = filter.value
+            .map(
+              (item, index) =>
+                `${key}[${index}][lat]=${item.lat}&${key}[${index}][long]=${item.long}`,
+            )
+            .join('&');
+
+          return values;
+        }
         const values = filter.value
           .map((item: any) => encodeURIComponent(item.id))
           .join(',');
@@ -95,6 +105,8 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
     const [isKeyboardOpen, setIsKeyboardOpen] = useState<boolean>(false);
     const onPressApplyFilter = async () => {
       const { queryString, filtersCount } = getFilterQuery(selectedFilters);
+      console.log('FiltersSheet onPressApplyFilter', queryString);
+
       onApplyFilter(queryString, filtersCount, selectedFilters || {});
       sheetRef?.current?.close();
     };
