@@ -393,11 +393,11 @@ export const ERROR_MESSAGE = {
   FIRST_NAME_SIZE_EXCEED: 'First Name cannot exceed 30 characters',
   LAST_NAME_SIZE_EXCEED: 'Last Name cannot exceed 30 characters',
   FIRST_NAME_INVALID_CHARACTERS:
-    'First Name can only contain letters, numbers, spaces, and special characters (-, $, !, @, *, &)',
+    'First Name only supports letters, numbers, space and special characters(-, $, !, @, *, &)',
   LAST_NAME_INVALID_CHARACTERS:
-    'Last Name can only contain letters, numbers, spaces, and special characters (-, $, !, @, *, &)',
+    'Last Name only supports letters, numbers, space and special characters(-, $, !, @, *, &)',
   INVALID_CHARACTERS:
-    'Field should not contain special characters, numbers and space',
+    'Field only supports letters, numbers, space and special characters(-, $, !, @, *, &)',
   FEEDBACK_SIZE_EXCEED: 'Feedback cannot exceed 500 words',
   DESCRIPTION_SIZE_EXCEED: 'Bio cannot exceed 200 words',
   FIRST_NAME_REQUIRED: 'First name is required',
