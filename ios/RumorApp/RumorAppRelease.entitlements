@@ -15,6 +15,15 @@
 		<string>applinks:rumor-alternate.app.link</string>
 		<string>webcredentials:rumor-alternate.app.link</string>
 		<string>activitycontinuation:rumor-alternate.app.link</string>
+
+		<string>applinks:rumor.test-app.link</string>
+		<string>webcredentials:rumor.test-app.link</string>
+		<string>activitycontinuation:rumor.test-app.link</string>
+
+
+		<string>applinks:rumor-alternate.test-app.link</string>
+		<string>webcredentials:rumor-alternate.test-app.link</string>
+		<string>activitycontinuation:rumor-alternate.test-app.link</string>
 	</array>
 </dict>
 </plist>
