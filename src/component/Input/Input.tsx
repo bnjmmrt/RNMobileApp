@@ -24,6 +24,7 @@ import { fontFamily } from 'src/utils/functions';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import IMAGES from '@images/index';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
+import { regexForLettersAndCharacters } from 'src/utils/validationRegex';
 
 interface InputProps {
   label?: string;
@@ -120,7 +121,7 @@ const Input = forwardRef<InputRefMethods, InputProps>((props, ref) => {
   }));
 
   const validateName = (name: string) => {
-    const regex = /^[A-Za-z0-9\s\-$!@*&]+$/;
+    const regex = regexForLettersAndCharacters;
 
     if (!name) {
       setErrorMessage(initialErrorMessage);
