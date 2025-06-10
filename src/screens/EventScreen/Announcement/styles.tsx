@@ -19,12 +19,20 @@ const AnnouncementStyles = () => {
       backgroundColor: COLORS.white,
       // paddingBottom: 20
     },
-    mediaImage: {
+
+    mediaContainer: {
       width: horizontalScale(95),
       height: verticalScale(128),
       borderRadius: 8,
       marginRight: 10,
       backgroundColor: '#f0f0f0',
+    },
+    mediaImage: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 8,
+      backgroundColor: '#f0f0f0',
+      objectFit: 'contain',
     },
     pdfIcon: {
       width: 30,
@@ -38,6 +46,10 @@ const AnnouncementStyles = () => {
       backgroundColor: '#f0f0f0',
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    pdfDisplay: {
+      width: '100%',
+      height: '100%',
       borderRadius: 8,
     },
     pdfSize: {

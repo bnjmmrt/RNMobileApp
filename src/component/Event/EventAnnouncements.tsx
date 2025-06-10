@@ -2,6 +2,7 @@ import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
 import React, { useEffect, useState } from 'react';
 import {
+  Alert,
   FlatList,
   Image,
   ScrollView,
@@ -16,6 +17,7 @@ import { fontFamily } from '../../utils/functions';
 import AvatarInitials from '../AvatarInitials';
 import { CustomText } from '../CustomText';
 import ImagePdfViewer from './ImagePdfViewer';
+import Pdf from 'react-native-pdf';
 
 interface EventAnnouncementProps {
   role?: string;
@@ -66,8 +68,26 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
     name: any;
     image: any;
     index: number;
-  }) =>
-    item.mediaType === 'image' ? (
+  }) => {
+    const [imageWidth, setImageWidth] = useState<number>(90);
+    useEffect(() => {
+      if (item.mediaType === 'image' && imageWidth === 90) {
+        Image.getSize(
+          item.media,
+          (width, height) => {
+            const calculatedWidth = (width / height) * 128; // Maintain aspect ratio
+            setImageWidth(calculatedWidth);
+          },
+          error => {
+            console.error('Error getting image size:', error);
+          },
+        );
+      } else {
+        setImageWidth(90); // Default width for non-image media
+      }
+    }, [item]);
+
+    return item.mediaType === 'image' ? (
       <TouchableOpacity
         onPress={() => {
           setMedia(media);
@@ -75,8 +95,18 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
           setCompanyName(name);
           setCompanyLogo(image);
           setCurrentIndex(index);
-        }}>
-        <FastImage source={{ uri: item?.media }} style={styles.mediaImage} />
+        }}
+        style={[
+          styles.mediaContainer,
+          {
+            minWidth: imageWidth,
+          },
+        ]}>
+        <FastImage
+          source={{ uri: item?.media }}
+          style={styles.mediaImage}
+          resizeMode="cover"
+        />
       </TouchableOpacity>
     ) : (
       <TouchableOpacity
@@ -88,17 +118,31 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
           setCurrentIndex(index);
         }}
         style={styles.pdfContainer}>
-        <Image
-          source={IMAGES.pdf}
-          style={styles.pdfIcon}
-          resizeMode="contain"
-        />
-        <Text style={styles.title} numberOfLines={2}>
-          {item?.mediaName}
-        </Text>
+        {item.media ? (
+          <Pdf
+            source={{
+              uri: item.media,
+            }}
+            singlePage
+            style={styles.pdfDisplay}
+          />
+        ) : (
+          <>
+            <Image
+              source={IMAGES.pdf}
+              style={styles.pdfIcon}
+              resizeMode="contain"
+            />
+            <Text style={styles.title} numberOfLines={2}>
+              {item?.mediaName}
+            </Text>
+          </>
+        )}
+
         {/* <Text style={styles.pdfSize}>{item.size}</Text> */}
       </TouchableOpacity>
     );
+  };
 
   const EventItem = ({ item }: { item: any }) => {
     const [expanded, setExpanded] = useState(false);
@@ -325,6 +369,13 @@ const styles = StyleSheet.create({
     height: 30,
     marginBottom: 10,
   },
+  pdfDisplay: {
+    width: 90,
+    height: 128,
+    borderWidth: 1,
+    borderColor: COLORS.lighter_gray,
+    borderRadius: 8,
+  },
   subtitle: {
     color: COLORS.light_gray,
     fontSize: 12,
@@ -368,12 +419,17 @@ const styles = StyleSheet.create({
     marginTop: 5,
     resizeMode: 'contain',
   },
-  mediaImage: {
-    width: 90,
+  mediaContainer: {
+    minWidth: 90,
     height: 128,
-    borderRadius: 8,
     marginRight: 10,
+  },
+  mediaImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 8,
     backgroundColor: '#f0f0f0',
+    objectFit: 'contain',
   },
   pdfContainer: {
     width: 90,

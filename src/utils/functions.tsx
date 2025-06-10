@@ -477,7 +477,6 @@ export const loginUser = ({
   profilePicture: string | undefined;
   companyLogo: string | undefined;
 }) => {
-  console.log({ id, roles, token, isGuest, varifyStatus });
   const dispatch = store.store.dispatch;
   let priorityRole = getPriorityRole(roles);
   dispatch(
@@ -505,6 +504,10 @@ export const fetchUserProfile = async () => {
   let apiUrl = '';
   let apiMethod: 'get' | 'post' | 'put' | 'delete' = 'get';
   let apiPayload = {};
+
+  if (!userId) {
+    return;
+  }
 
   if (currentRole) {
     if (currentRole === ROLE.HOST) {

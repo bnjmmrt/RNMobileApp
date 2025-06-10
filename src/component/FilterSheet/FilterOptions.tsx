@@ -3,7 +3,11 @@ import IMAGES from '@images/index';
 import dayjs from 'dayjs';
 import React, { useEffect, useRef, useState } from 'react';
 import { Image, TouchableOpacity } from 'react-native';
-import DateTimePicker, { CalendarComponents, DateType, useDefaultStyles } from 'react-native-ui-datepicker';
+import DateTimePicker, {
+  CalendarComponents,
+  DateType,
+  useDefaultStyles,
+} from 'react-native-ui-datepicker';
 import Chip from 'src/component/Chip';
 import GooglePlacesInput from 'src/component/GooglePlacesInput/GooglePlacesInput';
 import Input, { InputRefMethods } from 'src/component/Input/Input';
@@ -14,11 +18,9 @@ import {
   verticalMarginScale,
   verticalScale,
 } from 'src/utils/dimensions';
-import { fontFamily } from 'src/utils/functions';
 import { SelectedFilters } from '.';
 import { CustomText } from '../CustomText';
 import { styles } from './style';
-import moment from 'moment';
 
 export type FilterOptionTypes =
   | 'checkbox'
@@ -70,7 +72,7 @@ const FilterOptions = ({
 
   const [minAge, setMinAge] = useState<string>(
     ((selectedFilters && selectedFilters?.ageFrom?.value[0].id) as string) ||
-    '',
+      '',
   );
   const [maxAge, setMaxAge] = useState<string>(
     ((selectedFilters && selectedFilters?.ageTo?.value[0].id) as string) || '',
@@ -114,11 +116,13 @@ const FilterOptions = ({
 
   const components: CalendarComponents = {
     IconNext: <Image resizeMode="contain" source={IMAGES.arrowRight} />,
-    IconPrev: <Image
-      source={IMAGES.arrowRight}
-      resizeMode="contain"
-      style={{ transform: [{ rotate: '180deg' }] }}
-    />
+    IconPrev: (
+      <Image
+        source={IMAGES.arrowRight}
+        resizeMode="contain"
+        style={{ transform: [{ rotate: '180deg' }] }}
+      />
+    ),
   };
   return (
     <BottomSheetView>
@@ -133,12 +137,13 @@ const FilterOptions = ({
           {options.map((item: FilterOption, index: number) => {
             return (
               <Chip
+                key={item.id}
                 title={item.name}
                 isSelected={
                   selectedFilters
                     ? selectedFilters[id]?.value?.some(
-                      innerItem => innerItem.id === item.id,
-                    )
+                        innerItem => innerItem.id === item.id,
+                      )
                     : false || false
                 }
                 onPress={optionId => {
@@ -187,7 +192,7 @@ const FilterOptions = ({
                 startDate={
                   selectedFilters['minStartDate']?.value[0]
                     ? selectedFilters['minStartDate']?.value[0]?.date ||
-                    undefined
+                      undefined
                     : undefined
                 }
                 endDate={
@@ -204,11 +209,20 @@ const FilterOptions = ({
                 minDate={new Date()}
                 styles={{
                   ...defaultStyles,
-                  today: { backgroundColor: COLORS.disable, borderRadius: 22, width: 44, height: 44 }, // Add a border to today's date
-                  selected: { backgroundColor: COLORS.black, borderRadius: 22, width: 44, height: 44 }, // Highlight the selected day
+                  today: {
+                    backgroundColor: COLORS.disable,
+                    borderRadius: 22,
+                    width: 44,
+                    height: 44,
+                  }, // Add a border to today's date
+                  selected: {
+                    backgroundColor: COLORS.black,
+                    borderRadius: 22,
+                    width: 44,
+                    height: 44,
+                  }, // Highlight the selected day
                   selected_label: { color: 'white' }, // Highlight the selected day label
-                  range_fill: { backgroundColor: 'lightgray' }
-
+                  range_fill: { backgroundColor: 'lightgray' },
                 }}
                 // weekDaysTextStyle={{
                 //   fontFamily: fontFamily.ABCDiatype_Bold,
@@ -288,15 +302,11 @@ const FilterOptions = ({
       {optionType === 'baseCityFilter' || optionType === 'location' ? (
         <BottomSheetView>
           <GooglePlacesInput
-            submit={() => { }}
+            submit={() => {}}
             autoFetchCurrentLocation={optionType === 'location'}
-            allowFullAddres={false}
+            allowFullAddres={optionType === 'location'}
             defaultValue={
-              optionType === 'baseCityFilter'
-                ? selectedFilters &&
-                selectedFilters[id] &&
-                selectedFilters[id].value[0]?.name
-                : selectedFilters['longitude']?.value[0]?.name || ''
+              selectedFilters[id] && selectedFilters[id].value[0]?.name
             }
             setLocation={location => {
               if (location.placeId) {
@@ -310,9 +320,9 @@ const FilterOptions = ({
             }}
           />
           {showSelectedLocationChip &&
-            selectedFilters &&
-            selectedFilters[id] &&
-            selectedFilters[id].value ? (
+          selectedFilters &&
+          selectedFilters[id] &&
+          selectedFilters[id].value ? (
             <BottomSheetScrollView
               contentContainerStyle={{
                 gap: horizontalMarginScale(4),
@@ -333,6 +343,7 @@ const FilterOptions = ({
                 ) => {
                   return (
                     <Chip
+                      key={String(item.id)}
                       title={item.name}
                       isSelected={
                         selectedFilters

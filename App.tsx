@@ -82,6 +82,10 @@ const AppContent: React.FC = () => {
   useBranchDeepLink();
 
   const fetchUserById = async () => {
+    if (!userId) {
+      return;
+    }
+
     try {
       const response = await getUserById({ id: userId }).unwrap();
       if (response.success) {
@@ -99,7 +103,10 @@ const AppContent: React.FC = () => {
   };
 
   useEffect(() => {
-    userId && fetchUserById();
+
+    if (userId) {
+      fetchUserById();
+    }
   }, []);
 
   useEffect(() => {

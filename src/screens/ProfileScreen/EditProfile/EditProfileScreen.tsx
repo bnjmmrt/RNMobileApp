@@ -40,6 +40,7 @@ import GenderComponent from './GenderComponent';
 import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 import { isIPad } from 'src/utils/isTabletConfig';
 import { useGetUserWithRolesByIdMutation } from 'src/redux/actions/inviteGuestsApiAction';
+import { regexForLettersAndCharacters } from 'src/utils/validationRegex';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -128,7 +129,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   };
 
   const validateName = (name: string) => {
-    const regex = /^[A-Za-z]+$/;
+    const regex = regexForLettersAndCharacters;
     let isFirstNameValid = false;
     let isLastNameValid = false;
     if (firstNameRef?.current?.validateInputs()) {
