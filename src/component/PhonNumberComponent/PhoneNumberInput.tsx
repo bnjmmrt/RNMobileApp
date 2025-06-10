@@ -141,7 +141,6 @@ const PhoneNumberInput = forwardRef<
     }));
 
     const validatePhoneNumber = (errorMsg?: string) => {
-      console.log('errorMsg', errorMsg);
 
       if (phoneNumber != '') {
         const mobileNumber = `${callingCode}${phoneNumber}`;
@@ -163,7 +162,7 @@ const PhoneNumberInput = forwardRef<
         navigation.navigate('VerifyOtpScreen', {
           phone: `${callingCode} ${phoneNumber}`,
           isEmail: false,
-          isSecondary: isSecondary,
+          // isSecondary: isSecondary,
         });
 
         // Alert.alert("Success!!", `Phone Number: ${callingCode} ${phoneNumber}`);
@@ -190,11 +189,9 @@ const PhoneNumberInput = forwardRef<
 
       // Combine with country code
       const fullNumber = `${callingCode}${cleanedText}`;
-      console.log('Full Number:', fullNumber);
 
       // Parse the number
       let parsedNumber = parsePhoneNumberFromString(fullNumber);
-      console.log(parsedNumber);
       if (parsedNumber && parsedNumber.isValid()) {
         setPhoneNumber(
           parsedNumber.formatInternational().replace(`${callingCode} `, ''),
