@@ -1,5 +1,7 @@
 import { TabItem } from 'src/component/ActiveTabBar/DynamicTabBar';
 
+export const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB in bytes
+
 export const BUTTON_LABLE = {
   MAIL_SUBJECT: 'Rumor Application Verification',
   MAIL_BODY:

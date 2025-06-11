@@ -45,7 +45,7 @@ import EditPictureBottomSheet from '../../component/BottomSheet/EditPictureBotto
 import TermsAndPolicy from '../../component/TermsAndPlolicy/TermsAndPolicy';
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
 import { RootState } from '../../redux/slices';
-import { BUTTON_LABLE, COLORS, PROFILE, ROLE } from '../../utils/constants';
+import { BUTTON_LABLE, COLORS, PROFILE, ROLE, MAX_IMAGE_SIZE_BYTES } from '../../utils/constants';
 import ProfileListItem from './ProfileListItem';
 import ProfileScreenStyle from './ProfileScreenStyle';
 import ProfileTopView from './ProfileTopView';
@@ -410,11 +410,17 @@ const { logOut } = useLogout();
       cropperCircleOverlay: true,
     })
       .then((image: ImageOrVideo) => {
-        setImage(image.path);
-        setImageSize(image.size);
-
-        // editPhotoBottomSheetRef.current?.close();
-        savePhotoBottomSheetRef.current?.open();
+        if (image.size && image.size <= MAX_IMAGE_SIZE_BYTES) {
+          setImage(image.path);
+          setImageSize(image.size);            
+          savePhotoBottomSheetRef.current?.open();  
+        } else {
+          Alert.alert(
+            'Image Size Error',
+            'Please select an image that is under 5MB in size.',
+            [{ text: 'OK' }]
+          );          
+        }
       })
       .catch(async error => {
         console.log('ImagePicker Error: ', error);
