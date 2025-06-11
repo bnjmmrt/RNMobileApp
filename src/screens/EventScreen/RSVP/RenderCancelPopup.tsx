@@ -1,7 +1,7 @@
-import React = require('react');
+import React from 'react';
 import { styles } from './styles';
 import { CustomText } from 'src/component/CustomText';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, Text, TouchableOpacity, View } from 'react-native';
 import IMAGES from '@images/index';
 import { COLORS } from 'src/utils/constants';
 import { useSelector } from 'react-redux';
@@ -23,6 +23,11 @@ const RenderCancelPopup = ({
   setReasonSelected,
   id,
   onClose,
+}: {
+  reasonSelected: (typeof reasons)[number];
+  setReasonSelected: (item: { id: number; name: string }) => void;
+  id: string;
+  onClose: () => void;
 }) => {
   const userId = useSelector((state: RootState) => state.auth.userId);
   const [
@@ -31,6 +36,10 @@ const RenderCancelPopup = ({
   ] = useDeclineApplicationMutation();
 
   const onCancelRSPV = () => {
+    if (!reasonSelected) {
+      Alert.alert('', 'Please select a reason for cancelling the RSVP');
+      return;
+    }
     handleDecline();
   };
   const handleDecline = async () => {
@@ -77,7 +86,10 @@ const RenderCancelPopup = ({
             ]}
             onPress={() => setReasonSelected(item)}>
             {reasonSelected == item && (
-              <Image source={IMAGES.check} style={{ width: 16, height: 16 ,resizeMode:'contain'}} />
+              <Image
+                source={IMAGES.check}
+                style={{ width: 16, height: 16, resizeMode: 'contain' }}
+              />
             )}
             <Text style={styles.guestButtonText}>{item.name}</Text>
             {reasonSelected == item && <View />}
