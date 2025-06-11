@@ -178,7 +178,7 @@ const RSVPInvitedUpcoming = () => {
   const [activeView, setActiveTab] = React.useState<string>('');
   const bottomSheetRef = React.useRef<any>(null);
   const [selectedReason, setSelectedReason] = React.useState<any>({});
-  const [reasonSelected, setReasonSelected] = React.useState<any>('');
+  const [reasonSelected, setReasonSelected] = React.useState<any>(null);
   const [showInfo, setShowInfo] = React.useState<boolean | null>(false);
   const [isToastShown, setIsToastShown] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
