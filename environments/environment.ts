@@ -1,5 +1,5 @@
 export const environment = {
-  SERVER:'STAGE',
+  SERVER: 'UAT',
   VERSION_ANDROID: '1.0.47',
   VERSION_IOS: '1.0.10(46)',
   BASE_URL: 'https://uatapi.therumor.com/',
