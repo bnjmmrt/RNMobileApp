@@ -31,7 +31,7 @@ import MapComponent from 'src/component/MapComponent';
 import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 import { Address } from 'src/redux/slices/appFlowSlice';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
-import { BUTTON_LABLE, COLORS, EVENT } from 'src/utils/constants';
+import { BUTTON_LABLE, COLORS, EVENT, MAX_IMAGE_SIZE_BYTES } from 'src/utils/constants';
 import {
   fontScale,
   horizontalScale,
@@ -326,7 +326,7 @@ const EditEventDetails: React.FC<EditEventDetailsProps> = ({ item }) => {
     })
       .then((image: ImageOrVideo) => {
         console.log('ImagePicker Response: ', image);
-        if (image.size && image.size <= 5 * 1024 * 1024) {
+        if (image.size && image.size <= MAX_IMAGE_SIZE_BYTES) {
           setImage('');
           savePhoto(image.path);
         } else {

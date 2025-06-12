@@ -27,6 +27,8 @@ import { formatViewAnnouncementDate } from 'src/utils/dateFunctions';
 import { Hp, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import AnnouncementStyles from './styles';
 import Pdf from 'react-native-pdf';
+import { CustomText } from 'src/component/CustomText';
+import FileDetails from 'src/component/FileDetails';
 
 interface AnnouncementProps extends NativeStackScreenProps<any, any> {}
 type RouteParams = {
@@ -85,21 +87,16 @@ const MediaItem = ({
           source={{
             uri: item.media,
           }}
+          renderActivityIndicator={() => <View />}
           singlePage
           style={AnnouncementStyles().pdfDisplay}
         />
-      ) : (
-        <>
-          <Image
-            source={IMAGES.pdf}
-            style={AnnouncementStyles().pdfIcon}
-            resizeMode="contain"
-          />
-          <Text style={AnnouncementStyles().title} numberOfLines={2}>
-            {item?.mediaName}
-          </Text>
-        </>
-      )}
+      ) : null}
+      <FileDetails
+        title={item?.mediaName}
+        type={item?.mediaType}
+        fileUrl={item?.media}
+      />
     </TouchableOpacity>
   );
 };
@@ -364,25 +361,18 @@ const Announcement: React.FC<AnnouncementProps> = ({ navigation }) => {
               />
             ))}
           </ScrollView>
-          {!expanded && shouldShowReadMore ? (
+          {shouldShowReadMore && (
             <TouchableOpacity
               onPress={() => setExpanded(!expanded)}
               style={styles.toggleContainer}>
-              <Text style={styles.toggleText}>{ANNOUNCEMENT.READ_MORE}</Text>
-              <FastImage source={IMAGES.downArrow} style={styles.toggleIcon} />
+              <CustomText style={styles.toggleText}>
+                {!expanded ? ANNOUNCEMENT.READ_MORE : ANNOUNCEMENT.READ_LESS}
+              </CustomText>
+              <Image
+                source={expanded ? IMAGES.upArrow : IMAGES.downArrow}
+                style={expanded ? styles.toggleupIcon : styles.toggleIcon}
+              />
             </TouchableOpacity>
-          ) : (
-            shouldShowReadMore && (
-              <TouchableOpacity
-                onPress={() => setExpanded(!expanded)}
-                style={styles.toggleContainer}>
-                <Text style={styles.toggleText}>{ANNOUNCEMENT.READ_LESS}</Text>
-                <FastImage
-                  source={IMAGES.downArrow}
-                  style={styles.toggleIcon}
-                />
-              </TouchableOpacity>
-            )
           )}
         </View>
         <View style={styles.lineView} />

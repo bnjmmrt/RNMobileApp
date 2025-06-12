@@ -178,6 +178,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
       setCurrentIndex(currentIndex - 1);
     }
   };
+
   const openPdfInBrowser = async (pdfUrl: string) => {
     try {
       const supported = await Linking.canOpenURL(pdfUrl);
@@ -190,8 +191,10 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
       Alert.alert('Error', 'Something went wrong while opening the PDF.');
     }
   };
+  
   const renderMedia = () => {
     const currentItem = mediaItems[currentIndex];
+    console.log('currentItem?.media', currentItem);
     if (currentItem?.mediaType === 'image') {
       return (
         <FastImage
@@ -213,6 +216,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
                 source={{
                   uri: currentItem.media,
                 }}
+                renderActivityIndicator={() => <View />}
                 singlePage
                 style={styles.pdfDisplay}
               />
@@ -272,7 +276,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
           </>
         )}
 
-        <View style={styles.footer}>
+        <View style={[styles.footer]}>
           <View style={[styles.container]}>
             <FastImage
               style={[styles.image]}
@@ -295,7 +299,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
 
           <Button
             disabled={false}
-            style={styles.btnStyle}
+            style={[styles.btnStyle, styles.fullWidth]}
             title={BUTTON_LABLE.SAVE_TO_FILE}
             colorTheme="light"
             loading={loader}
@@ -365,8 +369,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   pdfContainer: {
-    width: width * 0.8,
-    height: height * 0.65,
+    width: '100%',
+    height: '92%',
     backgroundColor: '#222',
     justifyContent: 'center',
     alignItems: 'center',
@@ -416,6 +420,7 @@ const styles = StyleSheet.create({
     bottom: 40,
     gap: 10,
     alignItems: 'center',
+    width: width * 0.9,
   },
   btnStyle: {
     borderRadius: 100,
@@ -427,8 +432,12 @@ const styles = StyleSheet.create({
     borderColor: COLORS.borderGray,
     backgroundColor: COLORS.white,
     flexDirection: 'row',
+    width: '100%',
     alignSelf: 'flex-start',
     alignItems: 'center',
+  },
+  fullWidth: {
+    width: '100%',
   },
   image: {
     resizeMode: 'center',

@@ -30,7 +30,7 @@ import { useUploadFile } from 'src/utils/hooks/useUploadFile';
 import BtnBack from '../../assets/svgs/icons/BtnBack.svg';
 import ImageErrorPlaceHolder from '../../assets/svgs/icons/ImageErrorPlaceHolder.svg';
 import ImagePlaceHolder from '../../assets/svgs/icons/ImagePlaceholder.svg';
-import { COLORS } from '../../utils/constants';
+import { COLORS, MAX_IMAGE_SIZE_BYTES } from '../../utils/constants';
 import { fontFamily, removeSignature } from '../../utils/functions';
 import BottomSheetComponent, {
   BottomSheetMethods,
@@ -86,9 +86,17 @@ const FeatureTalentBottomSheet = forwardRef<
       cropperCircleOverlay: true,
     })
       .then((image: ImageOrVideo) => {
-        setImage('');
-        setImageError(false); // Clear error on selection
-        savePhoto(image.path);
+        if (image.size && image.size <= MAX_IMAGE_SIZE_BYTES) {
+          setImage('');
+          setImageError(false); // Clear error on selection                
+          savePhoto(image.path);  
+        } else {          
+          Alert.alert(
+            'Image Size Error',
+            'Please select an image that is under 5MB in size.',
+            [{ text: 'OK' }]
+          );          
+        }
       })
       .catch(async error => {
         console.log('ImagePicker Error: ', error);
