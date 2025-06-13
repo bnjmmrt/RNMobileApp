@@ -2,7 +2,6 @@ import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
 import React, { useRef, useState } from 'react';
 import {
-  ActivityIndicator,
   Alert,
   Dimensions,
   Image,
@@ -28,7 +27,7 @@ import {
 } from 'src/utils/dimensions';
 import { fontFamily } from 'src/utils/functions';
 import Button from '../Button';
-import Share from 'react-native-share';
+import { Share } from 'react-native';
 
 interface MediaItem {
   mediaType: 'image' | 'pdf';
@@ -46,6 +45,7 @@ interface ImagePdfViewerProps {
   index: number;
 }
 import Pdf from 'react-native-pdf';
+import CustomPDFView from '../CustomPDFView';
 
 const { width, height } = Dimensions.get('window');
 
@@ -95,25 +95,26 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
         fromUrl: fileUrl,
         toFile: localFilePath,
       }).promise;
+
       if (downloadResult.statusCode === 200) {
-        setLoader(false);
-        console.log('Download complete:', localFilePath);
-        await Share.open({
+        console.log('Download complete:', downloadResult);
+
+        await Share.share({
           url: 'file://' + localFilePath,
-          type:
-            mediaItems[currentIndex]?.mediaType === 'pdf'
-              ? 'application/pdf'
-              : 'image/jpeg', // Change based on file type
-          saveToFiles: true, // :point_left: this enables the "Save to Files" option in iOS
         });
       } else {
         setLoader(false);
-        // Alert.alert('Download Failed', `Status code: ${downloadResult.statusCode}`);
+        Alert.alert(
+          'Download Failed',
+          `Status code: ${downloadResult.statusCode}`,
+        );
       }
     } catch (err) {
       setLoader(false);
       console.error('Error downloading or sharing file:', err);
       // Alert.alert('Error', 'Something went wrong while downloading or sharing the file.');
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -161,7 +162,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
           `Download failed with status ${result.statusCode}`,
         );
       }
-    } catch (err) {
+    } catch (err: any) {
       setLoader(false);
       console.error('Download error:', err);
       Alert.alert('Download failed', err.message);
@@ -194,7 +195,6 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
 
   const renderMedia = () => {
     const currentItem = mediaItems[currentIndex];
-    console.log('currentItem?.media', currentItem);
     if (currentItem?.mediaType === 'image') {
       return (
         <FastImage
@@ -213,15 +213,8 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
             // onPress={() => openPdfInBrowser(currentItem?.media)}>
           >
             {currentItem.media ? (
-              <Pdf
-                source={{
-                  uri: currentItem.media,
-                  cache: true,
-                  expiration: 3600 * 24,
-                  cacheFileName: currentItem.media,
-                }}
-         
-                renderActivityIndicator={() => <View />}
+              <CustomPDFView
+                uri={currentItem.media}
                 style={styles.pdfDisplay}
                 page={1}
               />

@@ -2,9 +2,8 @@ import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
 import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
   FlatList,
   Image,
   RefreshControl,
@@ -24,14 +23,14 @@ import { useFetchHostEventsAnnouncementQuery } from 'src/redux/actions/eventApiA
 import { RootState } from 'src/redux/slices';
 import { ANNOUNCEMENT, COLORS, LABLE, ROLE } from 'src/utils/constants';
 import { formatViewAnnouncementDate } from 'src/utils/dateFunctions';
-import { Hp, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
+import { verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import AnnouncementStyles from './styles';
-import Pdf from 'react-native-pdf';
 import { CustomText } from 'src/component/CustomText';
 import FileDetails from 'src/component/FileDetails';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { getCachedFileDetails } from 'src/utils/cache.utils';
 import { FileDetailsCache } from 'types/cache.types';
+import CustomPDFView from 'src/component/CustomPDFView';
 
 interface AnnouncementProps extends NativeStackScreenProps<any, any> {}
 type RouteParams = {
@@ -74,8 +73,6 @@ const MediaItem = ({
         const details = await getCachedFileDetails(item?.media, {
           isPDF: item?.mediaType === 'pdf',
         });
-        console.log('Cached details:', details);
-
         setCachedDetails(details);
       } catch (e) {
         console.log('Error fetching cached details:', e);
@@ -113,14 +110,8 @@ const MediaItem = ({
           onPress={() => onPress(media, name, image, index)}
           style={AnnouncementStyles().pdfContainer}>
           {item.media ? (
-            <Pdf
-              source={{
-                uri: item?.media,
-                cache: true,
-                expiration: 86400000, // Cache for 1 day
-                cacheFileName: item.media,
-              }}
-              renderActivityIndicator={() => <View />}
+            <CustomPDFView
+              uri={item.media}
               singlePage
               style={AnnouncementStyles().pdfDisplay}
             />

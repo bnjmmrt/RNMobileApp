@@ -2,7 +2,6 @@ import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
 import React, { useEffect, useState } from 'react';
 import {
-  Alert,
   FlatList,
   Image,
   ScrollView,
@@ -17,11 +16,11 @@ import { fontFamily } from '../../utils/functions';
 import AvatarInitials from '../AvatarInitials';
 import { CustomText } from '../CustomText';
 import ImagePdfViewer from './ImagePdfViewer';
-import Pdf from 'react-native-pdf';
 import FileDetails from '../FileDetails';
 import { FileDetailsCache } from 'types/cache.types';
 import { getCachedFileDetails } from 'src/utils/cache.utils';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import CustomPDFView from '../CustomPDFView';
 
 interface EventAnnouncementProps {
   role?: string;
@@ -59,14 +58,12 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
   }, [announcementData]);
 
   const MediaItem = ({
-    key,
     item,
     media,
     name,
     image,
     index,
   }: {
-    key: number;
     item: any;
     media: any;
     name: any;
@@ -143,14 +140,8 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
             }}
             style={styles.pdfContainer}>
             {item.media ? (
-              <Pdf
-                source={{
-                  uri: item?.media,
-                  cache: true,
-                  expiration: 86400000, // Cache for 1 day
-                  cacheFileName: item.media,
-                }}
-                renderActivityIndicator={() => <View />}
+              <CustomPDFView
+                uri={item.media}
                 singlePage
                 style={styles.pdfDisplay}
               />
@@ -221,7 +212,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
               // console.log("Index:", index, "MediaItem:", mediaItem);
               return (
                 <MediaItem
-                  key={index}
+                  key={`MediaItem:${index}`}
                   index={index}
                   item={mediaItem}
                   media={item.attachments}
