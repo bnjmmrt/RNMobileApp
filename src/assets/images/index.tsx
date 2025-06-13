@@ -1,6 +1,7 @@
 const IMAGES = {
   backgroundLogin: require('./bg_login.png'),
   monogram: require('./monogram.png'),
+  pencil_button: require('./pencil-01.png'),
   upDownArrow: require('./chevron-selector-vertical.png'),
   plus: require('./plus.png'),
   email: require('./email.png'),
@@ -156,6 +157,7 @@ const IMAGES = {
   heart_hand: require('./heart-hand.png'),
   lock_01: require('./lock-01.png'),
   ticket_01: require('./ticket-01.png'),
+  plane: require('./plane.png'),
 };
 
 export default IMAGES;

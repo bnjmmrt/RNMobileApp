@@ -249,6 +249,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
       image: IMAGES.connectedAccount,
     },
     { id: '5', title: PROFILE.MY_INTERESTS, image: IMAGES.heart },
+    { id: '15', title: PROFILE.TRAVEL_PLANS, image: IMAGES.plane },
     { id: '6', title: PROFILE.NOTIFICATION, image: IMAGES.notification },
     { id: '7', title: PROFILE.FEEDBACK, image: IMAGES.feedback },
     {

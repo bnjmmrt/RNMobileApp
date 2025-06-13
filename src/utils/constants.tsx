@@ -325,6 +325,7 @@ export const EVENT = {
 
 export const PROFILE = {
   EDIT_PROFILE: 'Edit Profile',
+  TRAVEL_PLANS: 'Travel Plans',
   NOTIFICATION: 'Notifications',
   FEEDBACK: 'Feedback',
   CONTACT_SUPPORT: 'Contact Support',

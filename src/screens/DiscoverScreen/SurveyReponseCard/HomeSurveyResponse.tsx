@@ -118,16 +118,12 @@ const HomeSurveyModal: React.FC<HomeSurveyModalProps> = ({
   
   // Handle image source with fallback for expired URLs
   const getImageSource = () => {
-    if (imageError || (!survey.cityImage && !survey.imageUrl)) {
+    if (imageError) {
       // Return placeholder if image failed to load or no image provided
-      return require('src/assets/images/rumorplaceholder.png');
+      return require('src/assets/images/plus.png');
     }
     
-    if (survey.cityImage) {
-      return survey.cityImage;
-    } else if (survey.imageUrl) {
-      return { uri: survey.imageUrl };
-    }
+    return { uri: survey.imageUrl };
   };
   
   // Format dates from ISO string to more readable format
