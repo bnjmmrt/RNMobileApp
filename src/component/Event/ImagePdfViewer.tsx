@@ -191,7 +191,7 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
       Alert.alert('Error', 'Something went wrong while opening the PDF.');
     }
   };
-  
+
   const renderMedia = () => {
     const currentItem = mediaItems[currentIndex];
     console.log('currentItem?.media', currentItem);
@@ -210,15 +210,20 @@ const ImagePdfViewer: React.FC<ImagePdfViewerProps> = ({
 
           <Pressable
             style={styles.pdfContainer}
-            onPress={() => openPdfInBrowser(currentItem?.media)}>
+            // onPress={() => openPdfInBrowser(currentItem?.media)}>
+          >
             {currentItem.media ? (
               <Pdf
                 source={{
                   uri: currentItem.media,
+                  cache: true,
+                  expiration: 3600 * 24,
+                  cacheFileName: currentItem.media,
                 }}
+         
                 renderActivityIndicator={() => <View />}
-                singlePage
                 style={styles.pdfDisplay}
+                page={1}
               />
             ) : (
               <>
@@ -371,7 +376,7 @@ const styles = StyleSheet.create({
   pdfContainer: {
     width: '100%',
     height: '92%',
-    backgroundColor: '#222',
+    backgroundColor: '#f2f2f2',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
