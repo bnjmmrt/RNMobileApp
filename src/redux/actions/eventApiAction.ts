@@ -389,6 +389,12 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         // 'EventGuestList',
       ],
     }),
+    fetchTicketBreakdown: builder.query({
+      query: ({ eventId }: { eventId: string }) => ({
+        url: `/events/v1/ticket-types/${eventId}/ticket-breakdown`,
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -416,4 +422,5 @@ export const {
   useFetchSignupFormsQuery,
   useFetchEventTypesQuery,
   useGuestCheckInMutation,
+  useFetchTicketBreakdownQuery,
 } = eventApiAction;
