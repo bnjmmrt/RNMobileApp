@@ -4,7 +4,6 @@ import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
   FlatList,
   Image,
   RefreshControl,
@@ -24,11 +23,14 @@ import { useFetchHostEventsAnnouncementQuery } from 'src/redux/actions/eventApiA
 import { RootState } from 'src/redux/slices';
 import { ANNOUNCEMENT, COLORS, LABLE, ROLE } from 'src/utils/constants';
 import { formatViewAnnouncementDate } from 'src/utils/dateFunctions';
-import { Hp, verticalMarginScale, verticalScale } from 'src/utils/dimensions';
+import { verticalMarginScale, verticalScale } from 'src/utils/dimensions';
 import AnnouncementStyles from './styles';
-import Pdf from 'react-native-pdf';
 import { CustomText } from 'src/component/CustomText';
 import FileDetails from 'src/component/FileDetails';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import { getCachedFileDetails } from 'src/utils/cache.utils';
+import { FileDetailsCache } from 'types/cache.types';
+import CustomPDFView from 'src/component/CustomPDFView';
 
 interface AnnouncementProps extends NativeStackScreenProps<any, any> {}
 type RouteParams = {
@@ -51,53 +53,77 @@ const MediaItem = ({
   index: number;
   onPress: (media: any, name: string, image: string, index: number) => void;
 }) => {
-  const [imageWidth, setImageWidth] = useState<number>(95);
-  useEffect(() => {
-    if (item.mediaType === 'image' && imageWidth === 95) {
-      Image.getSize(
-        item.media,
-        (width, height) => {
-          const calculatedWidth = (width / height) * 128; // Maintain aspect ratio
-          setImageWidth(calculatedWidth);
-        },
-        error => {
-          console.error('Error getting image size:', error);
-        },
-      );
-    } else {
-      setImageWidth(90); // Default width for non-image media
+  const [loading, setLoading] = useState(false);
+  const [cacheDetails, setCachedDetails] = useState<FileDetailsCache | null>(
+    null,
+  );
+
+  const calcImageWidth = (width?: number, height?: number) => {
+    if (!width || !height) {
+      return 95; // Default width if dimensions are not available
     }
+    const calculatedWidth = (width / height) * 128; // Maintain aspect ratio
+    return calculatedWidth;
+  };
+
+  useEffect(() => {
+    const fetchCachedDetails = async () => {
+      try {
+        setLoading(true);
+        const details = await getCachedFileDetails(item?.media, {
+          isPDF: item?.mediaType === 'pdf',
+        });
+        setCachedDetails(details);
+      } catch (e) {
+        console.log('Error fetching cached details:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCachedDetails();
   }, [item]);
 
-  return item.mediaType === 'image' ? (
-    <TouchableOpacity
-      onPress={() => onPress(media, name, image, index)}
-      style={[AnnouncementStyles().mediaContainer, { width: imageWidth }]}>
-      <FastImage
-        source={{ uri: item?.media }}
-        style={AnnouncementStyles().mediaImage}
-      />
-    </TouchableOpacity>
-  ) : (
-    <TouchableOpacity
-      onPress={() => onPress(media, name, image, index)}
-      style={AnnouncementStyles().pdfContainer}>
-      {item.media ? (
-        <Pdf
-          source={{
-            uri: item.media,
-          }}
-          renderActivityIndicator={() => <View />}
-          singlePage
-          style={AnnouncementStyles().pdfDisplay}
-        />
-      ) : null}
-      <FileDetails
-        title={item?.mediaName}
-        type={item?.mediaType}
-        fileUrl={item?.media}
-      />
-    </TouchableOpacity>
+  return (
+    <SkeletonPlaceholder enabled={loading}>
+      {item.mediaType === 'image' ? (
+        <TouchableOpacity
+          onPress={() => onPress(media, name, image, index)}
+          style={[
+            AnnouncementStyles().mediaContainer,
+            {
+              width: cacheDetails?.dimensions
+                ? calcImageWidth(
+                    cacheDetails?.dimensions?.width,
+                    cacheDetails?.dimensions.height,
+                  )
+                : 95,
+            },
+          ]}>
+          <FastImage
+            source={{ uri: item?.media }}
+            style={AnnouncementStyles().mediaImage}
+          />
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          onPress={() => onPress(media, name, image, index)}
+          style={AnnouncementStyles().pdfContainer}>
+          {item.media ? (
+            <CustomPDFView
+              uri={item.media}
+              singlePage
+              style={AnnouncementStyles().pdfDisplay}
+            />
+          ) : null}
+          <FileDetails
+            title={item?.mediaName}
+            type={item?.mediaType}
+            size={cacheDetails?.size || '0'}
+          />
+        </TouchableOpacity>
+      )}
+    </SkeletonPlaceholder>
   );
 };
 
