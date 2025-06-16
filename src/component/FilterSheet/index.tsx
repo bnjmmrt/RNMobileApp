@@ -105,7 +105,6 @@ const FiltersSheet = forwardRef<BottomSheetMethods, FiltersSheetProps>(
     const [isKeyboardOpen, setIsKeyboardOpen] = useState<boolean>(false);
     const onPressApplyFilter = async () => {
       const { queryString, filtersCount } = getFilterQuery(selectedFilters);
-      console.log('FiltersSheet onPressApplyFilter', queryString);
 
       onApplyFilter(queryString, filtersCount, selectedFilters || {});
       sheetRef?.current?.close();

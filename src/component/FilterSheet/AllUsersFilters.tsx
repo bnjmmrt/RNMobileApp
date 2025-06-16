@@ -207,8 +207,6 @@ const AllUsersFilters = ({
     }
   }, [userId]);
 
-  console.log('filterData', filterData);
-
   return (
     <BottomSheetFlatList
       ref={filtersListRef}

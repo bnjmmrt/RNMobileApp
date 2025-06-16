@@ -87,13 +87,11 @@ const HostEditProfileScreen: React.FC<HostEditProfileScreenProps> = ({
       validateLength() &&
       websiteRef.current.validateInputs()
     ) {
-      console.log('inside');
       const requestObject: any = {
         bio: bioRef?.current.inputText,
         companyName: companyNameRef?.current.inputText,
         website: websiteRef?.current.inputText,
       };
-      console.log('requestobj', requestObject);
       const response: any = await apiRequest(
         'put',
         `${EndPoint.host_ep}`,

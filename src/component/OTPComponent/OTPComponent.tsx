@@ -96,14 +96,6 @@ const OTPComponent = forwardRef<OTPComponentHandle, OTPComponentProps>(
           type="numeric"
           secureTextEntry={false}
           focusStickBlinkingDuration={500}
-          onFocus={() => {
-            // updateKeyboardStatus(true);
-            console.log('Focused');
-          }}
-          onBlur={() => {
-            // updateKeyboardStatus(false);
-            console.log('Blurred');
-          }}
           onTextChange={(text: string) => {
             setCode(text);
             setErrorMessage('');

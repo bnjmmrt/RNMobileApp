@@ -131,10 +131,6 @@ export const capitalizeFirstLetter = (text: string): string => {
     .join('-'); // Join with hyphen
 };
 
-// Example Usage
-console.log(capitalizeFirstLetter('co_host')); // Output: "Co-Host"
-console.log(capitalizeFirstLetter('host')); // Output: "Host"
-console.log(capitalizeFirstLetter('admin_user')); // Output: "Admin-User"
 
 export const objectToQueryString = (
   obj: Record<string, string | number | boolean>,
@@ -328,7 +324,6 @@ export const isIos = (): boolean => platform === 'ios';
 export const isAndroid = (): boolean => platform === 'android';
 
 export const convertDateFormat = (dateString: string): string => {
-  console.log('dateString', dateString);
   const [month, day, year] = dateString.split('/');
   return `${year}-${month}-${day}`;
 };
