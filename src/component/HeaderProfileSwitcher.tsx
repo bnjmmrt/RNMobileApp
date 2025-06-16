@@ -40,6 +40,12 @@ interface HeaderProfileSwitcherProps {
   hasGradient?: boolean;
 }
 
+interface RoleData {
+  roleName: string;
+  roleId: string;
+  roleStatus: string;
+}
+
 const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
   isDarkTheme,
 }) => {
@@ -54,7 +60,9 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
 
   const [isRolesExpanded, setIsRolesExpanded] = useState<boolean>(false);
   const [isSecondRoleShown, setIsSecondRoleShown] = useState<boolean>(false);
-  const [switchingRole, setSwitchingRole] = useState<'first' | 'second' | ''>();
+  const [switchingRole, setSwitchingRole] = useState<
+    'primary' | 'secondary' | ''
+  >();
   const { roles, role, profileData, companyLogo, profilePicture, userId } =
     useSelector(
       (state: RootState) => ({
@@ -67,7 +75,7 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
       }),
       shallowEqual,
     );
-  const [currrentRoles, setCurrentRoles] = useState(roles)
+  const [currentRoles, setCurrentRoles] = useState<RoleData[]>(roles || []);
 
   const { getRoleByID } = useGetRoleByID();
 
@@ -75,35 +83,79 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
     ? `${profileData?.firstName} ${profileData?.lastName}`
     : '';
 
+  // Helper functions to find specific roles
+  const findHostRole = (rolesArray: RoleData[]): RoleData | undefined => {
+    return rolesArray?.find(roleItem => roleItem.roleName === ROLE.HOST);
+  };
+
+  const findMemberRole = (rolesArray: RoleData[]): RoleData | undefined => {
+    const memberRole = rolesArray?.find(
+      roleItem => roleItem.roleName === ROLE.MEMBER,
+    );
+    if (memberRole) return memberRole;
+
+    // Fallback to non_member if no member role exists
+    return rolesArray?.find(roleItem => roleItem.roleName === ROLE.NON_MEMBER);
+  };
+
+  // Get prioritized roles: HOST first, then MEMBER/NON_MEMBER
+  const getPrioritizedRoles = (rolesArray: RoleData[]): RoleData[] => {
+    const prioritizedRoles: RoleData[] = [];
+
+    const hostRole = findHostRole(rolesArray);
+    const memberRole = findMemberRole(rolesArray);
+
+    if (hostRole) prioritizedRoles.push(hostRole);
+    if (memberRole) prioritizedRoles.push(memberRole);
+
+    return prioritizedRoles;
+  };
+
+  const prioritizedRoles = getPrioritizedRoles(currentRoles);
+  const primaryRole = prioritizedRoles[0];
+  const secondaryRole = prioritizedRoles[1];
+
   const profilePhoto =
     role?.toLocaleLowerCase() === 'host' ? companyLogo : profilePicture;
 
-  const isHostActive = (roles) => {
-    const host = roles?.find(member => member.roleName === 'host');
+  const isHostActive = (rolesArray: RoleData[]): boolean => {
+    const host = findHostRole(rolesArray);
     return host?.roleStatus === 'ACTIVE';
-  }
+  };
 
-  const isMemberNonMemberActiveted = (roles) => {
-    const user = roles?.find(member => member.roleName === 'member' || member.roleName === 'non_member');
-    return user?.roleStatus !== 'DEACTIVATED';
-  }
+  const isMemberNonMemberActivated = (rolesArray: RoleData[]): boolean => {
+    const userRole = findMemberRole(rolesArray);
+    return userRole?.roleStatus !== 'DEACTIVATED';
+  };
 
-  const toggleRole = async (newRole: role) => {
-    const currrentRoles = await getRoleByID()
-    setCurrentRoles(currrentRoles || roles)
+  const getAvatarPhoto = (roleData: RoleData): string => {
+    return roleData?.roleName === ROLE.HOST
+      ? companyLogo || ''
+      : profilePicture || '';
+  };
 
-    const isHostHasActiveRole = isHostActive(currrentRoles)
-    const isMemberActive = isMemberNonMemberActiveted(currrentRoles)
+  const toggleRole = async (newRole: RoleData) => {
+    const currentRolesData = await getRoleByID();
+    setCurrentRoles(currentRolesData || roles || []);
+
+    const isHostHasActiveRole = isHostActive(currentRolesData || currentRoles);
+    const isMemberActive = isMemberNonMemberActivated(
+      currentRolesData || currentRoles,
+    );
 
     if (newRole.roleName !== 'host' && !isMemberActive) {
       FlashMessageComponent.show(
         `success`,
-        `Your ${newRole.roleName} account has been deactivited, Please relogin to activate it`,
+        `Your ${newRole.roleName} account has been deactivated, Please relogin to activate it`,
       );
-      return
+      return;
     }
 
-    if (currrentRoles.length > 1 && isHostHasActiveRole) {
+    const updatedPrioritizedRoles = getPrioritizedRoles(
+      currentRolesData || currentRoles,
+    );
+
+    if (updatedPrioritizedRoles.length > 1 && isHostHasActiveRole) {
       setIsRolesExpanded(!isRolesExpanded);
       if (isRolesExpanded) {
         if (newRole.roleName !== role) {
@@ -118,8 +170,8 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
                 newRole?.roleName === 'non_member'
                   ? 'Non-Member'
                   : newRole?.roleName === 'host'
-                    ? 'Host'
-                    : 'Member';
+                  ? 'Host'
+                  : 'Member';
               FlashMessageComponent.show(
                 `success`,
                 `Switched to ${newRoleName} Account`,
@@ -136,7 +188,7 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
             const errorMessage = getErrorMessage(typedError);
             if (errorMessage === 'User does not have the requested role.') {
               if (newRole?.roleName === 'non_member') {
-                toggleRole({ ...newRole, roleName: 'member' })
+                toggleRole({ ...newRole, roleName: 'member' });
               }
             } else {
               FlashMessageComponent.show('error', errorMessage);
@@ -154,25 +206,25 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
   };
 
   const AvatarWithLoading = ({
-    photo,
-    index,
+    roleData,
     position,
     switching,
   }: {
-    photo: string | undefined;
-    index: number;
-    position: 'first' | 'second';
+    roleData: RoleData;
+    position: 'primary' | 'secondary';
     switching: boolean;
   }) => {
+    const photo = getAvatarPhoto(roleData);
+
     return (
       <View>
         <AvatarInitials
           name={name}
           size={48}
-          imgUrl={removeSignature(photo) || ''}
+          imgUrl={removeSignature(photo || '') || ''}
           onPress={() => {
             setSwitchingRole(position);
-            toggleRole(currrentRoles[index]);
+            toggleRole(roleData);
           }}
         />
         {switching ? (
@@ -224,6 +276,11 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
     }
   }, [isRolesExpanded]);
 
+  // Don't render if no primary role
+  if (!primaryRole) {
+    return null;
+  }
+
   return (
     <Animated.View
       style={[
@@ -242,16 +299,9 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
         },
       ]}>
       <AvatarWithLoading
-        index={0}
-        photo={
-          isRolesExpanded
-            ? currrentRoles[0].roleName === ROLE.HOST
-              ? companyLogo
-              : profilePicture
-            : profilePhoto
-        }
-        position="first"
-        switching={loading && switchingRole === 'first'}
+        roleData={primaryRole}
+        position="primary"
+        switching={loading && switchingRole === 'primary'}
       />
 
       <Animated.View
@@ -272,14 +322,11 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
             ],
           },
         ]}>
-        {isSecondRoleShown && (
+        {isSecondRoleShown && secondaryRole && (
           <AvatarWithLoading
-            index={1}
-            photo={
-              currrentRoles[1].roleName === ROLE.HOST ? companyLogo : profilePicture
-            }
-            position="second"
-            switching={loading && switchingRole === 'second'}
+            roleData={secondaryRole}
+            position="secondary"
+            switching={loading && switchingRole === 'secondary'}
           />
         )}
       </Animated.View>
