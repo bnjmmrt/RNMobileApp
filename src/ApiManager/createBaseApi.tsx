@@ -25,10 +25,6 @@ const logMiddleware = async (
     body,
   } = typeof args === 'string' ? { url: args } : args;
 
-  console.log(`[API Request] ${method} ${environment.BASE_URL}${url}`, {
-    body,
-  });
-
   const result = await baseQuery(args, api, extraOptions);
 
   if (result.error) {
@@ -70,7 +66,6 @@ export const customBaseQuery: BaseQueryFn<
       prepareHeaders: (headers, { getState }) => {
         const token = (getState() as any).auth?.token; // Replace with your token logic
         const role = (getState() as any).auth?.role; // Replace with your token logic
-        console.log('Token:', token, 'Api call role:', role);
         if (token) {
           headers.set('Authorization', `Bearer ${token}`);
           headers.set('requester', `${role}`);

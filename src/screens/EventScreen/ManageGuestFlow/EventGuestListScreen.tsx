@@ -225,7 +225,6 @@ const EventGuestList: React.FC<EventGuestListProps> = ({
   };
 
   useEffect(() => {
-    console.log("[API Request] refetch is triggering:", manageGuestRefresh)
     dispatch(setManageGuestSkip(0));
     refetch()
   }, [selectedFilter, selectedSort, searchText, filterQuery, filterNumber, manageGuestRefresh])

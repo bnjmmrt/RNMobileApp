@@ -2,7 +2,6 @@ import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
 import React, { useEffect, useState } from 'react';
 import {
-  Alert,
   FlatList,
   Image,
   ScrollView,
@@ -17,8 +16,11 @@ import { fontFamily } from '../../utils/functions';
 import AvatarInitials from '../AvatarInitials';
 import { CustomText } from '../CustomText';
 import ImagePdfViewer from './ImagePdfViewer';
-import Pdf from 'react-native-pdf';
 import FileDetails from '../FileDetails';
+import { FileDetailsCache } from 'types/cache.types';
+import { getCachedFileDetails } from 'src/utils/cache.utils';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import CustomPDFView from '../CustomPDFView';
 
 interface EventAnnouncementProps {
   role?: string;
@@ -56,97 +58,114 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
   }, [announcementData]);
 
   const MediaItem = ({
-    key,
     item,
     media,
     name,
     image,
     index,
   }: {
-    key: number;
     item: any;
     media: any;
     name: any;
     image: any;
     index: number;
   }) => {
-    const [imageWidth, setImageWidth] = useState<number>(90);
-    useEffect(() => {
-      if (item.mediaType === 'image' && imageWidth === 90) {
-        Image.getSize(
-          item.media,
-          (width, height) => {
-            const calculatedWidth = (width / height) * 128; // Maintain aspect ratio
-            setImageWidth(calculatedWidth);
-          },
-          error => {
-            console.error('Error getting image size:', error);
-          },
-        );
-      } else {
-        setImageWidth(90); // Default width for non-image media
+    const [loading, setLoading] = useState(false);
+    const [cacheDetails, setCachedDetails] = useState<FileDetailsCache | null>(
+      null,
+    );
+
+    const calcImageWidth = (width?: number, height?: number) => {
+      if (!width || !height) {
+        return 90; // Default width if dimensions are not available
       }
+      const calculatedWidth = (width / height) * 128; // Maintain aspect ratio
+      return calculatedWidth;
+    };
+
+    useEffect(() => {
+      const fetchCachedDetails = async () => {
+        try {
+          setLoading(true);
+          const details = await getCachedFileDetails(item?.media, {
+            isPDF: item?.mediaType === 'application/pdf',
+          });
+          console.log('Cached details:', details);
+
+          setCachedDetails(details);
+        } catch (e) {
+          console.log('Error fetching cached details:', e);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchCachedDetails();
     }, [item]);
 
-    return item.mediaType === 'image' ? (
-      <TouchableOpacity
-        onPress={() => {
-          setMedia(media);
-          setViewerVisible(true);
-          setCompanyName(name);
-          setCompanyLogo(image);
-          setCurrentIndex(index);
-        }}
-        style={[
-          styles.mediaContainer,
-          {
-            minWidth: imageWidth,
-          },
-        ]}>
-        <FastImage
-          source={{ uri: item?.media }}
-          style={styles.mediaImage}
-          resizeMode="cover"
-        />
-      </TouchableOpacity>
-    ) : (
-      <TouchableOpacity
-        onPress={() => {
-          setMedia(media);
-          setViewerVisible(true);
-          setCompanyName(name);
-          setCompanyLogo(image);
-          setCurrentIndex(index);
-        }}
-        style={styles.pdfContainer}>
-        {item.media ? (
-          <Pdf
-            source={{
-              uri: item.media,
+    return (
+      <SkeletonPlaceholder enabled={loading}>
+        {item.mediaType === 'image' ? (
+          <TouchableOpacity
+            onPress={() => {
+              setMedia(media);
+              setViewerVisible(true);
+              setCompanyName(name);
+              setCompanyLogo(image);
+              setCurrentIndex(index);
             }}
-            renderActivityIndicator={() => <View />}
-            singlePage
-            style={styles.pdfDisplay}
-          />
-        ) : (
-          <>
-            <Image
-              source={IMAGES.pdf}
-              style={styles.pdfIcon}
-              resizeMode="contain"
+            style={[
+              styles.mediaContainer,
+              {
+                minWidth: calcImageWidth(
+                  cacheDetails?.dimensions?.width,
+                  cacheDetails?.dimensions?.height,
+                ),
+              },
+            ]}>
+            <FastImage
+              source={{ uri: item?.media }}
+              style={styles.mediaImage}
+              resizeMode="cover"
             />
-            <Text style={styles.title} numberOfLines={2}>
-              {item?.mediaName}
-            </Text>
-          </>
-        )}
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              setMedia(media);
+              setViewerVisible(true);
+              setCompanyName(name);
+              setCompanyLogo(image);
+              setCurrentIndex(index);
+            }}
+            style={styles.pdfContainer}>
+            {item.media ? (
+              <CustomPDFView
+                uri={item.media}
+                singlePage
+                style={styles.pdfDisplay}
+              />
+            ) : (
+              <>
+                <Image
+                  source={IMAGES.pdf}
+                  style={styles.pdfIcon}
+                  resizeMode="contain"
+                />
+                <Text style={styles.title} numberOfLines={2}>
+                  {item?.mediaName}
+                </Text>
+              </>
+            )}
 
-        <FileDetails
-          title={item?.mediaName}
-          type={item?.mediaType}
-          fileUrl={item?.media}
-        />
-      </TouchableOpacity>
+            <FileDetails
+              title={item?.mediaName}
+              type={item?.mediaType}
+              size={cacheDetails?.size || '0'}
+            />
+          </TouchableOpacity>
+        )}
+      </SkeletonPlaceholder>
     );
   };
 
@@ -193,7 +212,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
               // console.log("Index:", index, "MediaItem:", mediaItem);
               return (
                 <MediaItem
-                  key={index}
+                  key={`MediaItem:${index}`}
                   index={index}
                   item={mediaItem}
                   media={item.attachments}

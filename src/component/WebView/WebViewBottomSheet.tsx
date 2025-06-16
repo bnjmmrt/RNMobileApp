@@ -21,7 +21,6 @@ const WebViewBottomSheet = forwardRef<
 >((props, ref) => {
   // const bottomSheetRef = useRef(null);
   const onClose = () => {
-    console.log('onclose', props.isFromLanding);
 
     if (props.isFromLanding) {
       changeSafeAreaViewConfig({
@@ -34,8 +33,6 @@ const WebViewBottomSheet = forwardRef<
       });
     }
   };
-
-  console.log('url', props.url);
 
   return (
     <BottomSheetComponent

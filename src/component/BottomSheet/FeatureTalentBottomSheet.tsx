@@ -145,7 +145,6 @@ const FeatureTalentBottomSheet = forwardRef<
         console.log('savePhoto else', response);
       }
       setLoader(false);
-      console.log('savePhoto', response);
     } catch (error) {
       setLoader(false);
       console.error('Error uploading image:', error);

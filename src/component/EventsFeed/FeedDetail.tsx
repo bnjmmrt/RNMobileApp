@@ -30,7 +30,6 @@ const FeedDetail: React.FC<FeedDetailProps> = ({
   handleNotify,
 }) => {
   const formatDate = (dateString: string) => {
-    console.log(dateString);
     return format(
       new Date(
         `${dateString.slice(6, 10)}-${dateString.slice(

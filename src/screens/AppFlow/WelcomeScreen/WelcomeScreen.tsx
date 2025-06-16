@@ -6,7 +6,11 @@ import { COLORS, BUTTON_LABLE, LABLE } from '../../../utils/constants';
 import IMAGES from '../../../assets/images';
 import Button from '../../../component/Button';
 import { useSelector } from 'react-redux';
-import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import { apiPost, apiPut } from '../../../ApiManager/MainApi';
 import { changeSafeAreaViewConfig } from 'src/utils/functions';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
@@ -26,14 +30,10 @@ const WelcomeScreen: React.FC = () => {
     }, []),
   );
 
-
-  const openCommunityGuidelines = () => {
-    console.log('openCommunityGuidelines');
-  };
+  const openCommunityGuidelines = () => {};
 
   const updateUserStatus = async () => {
     try {
-
       await apiPut(`/auth/user/${userId}/set-login-status`, {
         id: userId,
       });
@@ -43,7 +43,7 @@ const WelcomeScreen: React.FC = () => {
   };
 
   const onEnterClick = () => {
-    updateUserStatus()
+    updateUserStatus();
     navigation.navigate('CommunityGuidelinesScreen');
   };
 
