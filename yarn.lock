@@ -8014,6 +8014,11 @@ react-native-maps@^1.20.1:
   dependencies:
     "@types/geojson" "^7946.0.13"
 
+react-native-mmkv@^2.12.2:
+  version "2.12.2"
+  resolved "https://registry.npmjs.org/react-native-mmkv/-/react-native-mmkv-2.12.2.tgz"
+  integrity sha512-6058Aq0p57chPrUutLGe9fYoiDVDNMU2PKV+lLFUJ3GhoHvUrLdsS1PDSCLr00yqzL4WJQ7TTzH+V8cpyrNcfg==
+
 react-native-modal-dropdown@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/react-native-modal-dropdown/-/react-native-modal-dropdown-1.0.2.tgz"
@@ -8184,7 +8189,7 @@ react-native-webview@*, react-native-webview@^13.12.5:
     escape-string-regexp "^4.0.0"
     invariant "2.2.4"
 
-react-native@*, "react-native@^0.0.0-0 || >=0.60 <1.0", "react-native@>= 0.59", "react-native@>= 0.60", "react-native@>= 0.61.5", "react-native@>= 0.64.3", react-native@>=0.40.0, react-native@>=0.42.0, react-native@>=0.50.1, react-native@>=0.56, react-native@>=0.57, react-native@>=0.57.0, react-native@>=0.59, react-native@>=0.59.0, react-native@>=0.60.0, react-native@>=0.63.2, react-native@>=0.70.0, react-native@>=0.70.3, react-native@>=0.73.0, react-native@0.75.2:
+react-native@*, "react-native@^0.0.0-0 || >=0.60 <1.0", "react-native@>= 0.59", "react-native@>= 0.60", "react-native@>= 0.61.5", "react-native@>= 0.64.3", react-native@>=0.40.0, react-native@>=0.42.0, react-native@>=0.50.1, react-native@>=0.56, react-native@>=0.57, react-native@>=0.57.0, react-native@>=0.59, react-native@>=0.59.0, react-native@>=0.60.0, react-native@>=0.63.2, react-native@>=0.70.0, react-native@>=0.70.3, react-native@>=0.71.0, react-native@>=0.73.0, react-native@0.75.2:
   version "0.75.2"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.75.2.tgz"
   integrity sha512-pP+Yswd/EurzAlKizytRrid9LJaPJzuNldc+o5t01md2VLHym8V7FWH2z9omFKtFTer8ERg0fAhG1fpd0Qq6bQ==

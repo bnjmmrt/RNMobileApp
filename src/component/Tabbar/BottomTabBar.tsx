@@ -60,7 +60,6 @@ const hostTabs = [
 ];
 
 const BottomTabBar = () => {
-
   const { role, isGuest } = useSelector(
     (state: RootState) => ({
       role: state.auth.role,
@@ -69,15 +68,18 @@ const BottomTabBar = () => {
     shallowEqual,
   );
 
-
   // const role =
   //   (loginData?.roles &&
   //     loginData?.roles.length > 0 &&
   //     loginData?.roles[0]?.roleName) ||
   //   'non_member';
   const bottomTabsData = role === 'host' ? hostTabs : memberTabs;
-  const initialRouteName = role === 'host' ? 'EventScreen' : isGuest ? 'EventScreen' : 'DiscoverScreen';
-  console.log('BottomTabBar role', role, 'isGuest', isGuest, 'initialRouteName', initialRouteName)
+  const initialRouteName =
+    role === 'host'
+      ? 'EventScreen'
+      : isGuest
+      ? 'EventScreen'
+      : 'DiscoverScreen';
 
   return (
     <Tab.Navigator
@@ -85,13 +87,13 @@ const BottomTabBar = () => {
       screenOptions={{ headerShown: false }}
       backBehavior="history"
       initialRouteName={initialRouteName}
-    //   initialRouteName
-    // role === 'host' ? 'EventScreen' : 'DiscoverScreen'
-    // loginData?.isInvited ? 'EventScreen' : 'DiscoverScreen'
-    // ROUTES.UsersScreen
-    // 'DiscoverScreen'
-    //'EventScreen'
-    // }
+      //   initialRouteName
+      // role === 'host' ? 'EventScreen' : 'DiscoverScreen'
+      // loginData?.isInvited ? 'EventScreen' : 'DiscoverScreen'
+      // ROUTES.UsersScreen
+      // 'DiscoverScreen'
+      //'EventScreen'
+      // }
     >
       {bottomTabsData.map((item, index) => {
         return (

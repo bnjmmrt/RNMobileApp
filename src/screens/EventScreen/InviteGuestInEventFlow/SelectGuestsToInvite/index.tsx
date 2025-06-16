@@ -99,7 +99,6 @@ const SelectGuestsToInviteScreen: React.FC<
   };
 
   const loadMore = () => {
-    console.log('end');
 
     if (
       !isLoading &&

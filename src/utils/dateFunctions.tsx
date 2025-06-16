@@ -30,10 +30,6 @@ export const formatDetailedEventDate = (
   endDate: string = '',
   timeZoneId: string = Intl.DateTimeFormat().resolvedOptions().timeZone
 ): string => {
-  console.log("Parsing startDate: ", startDate);
-  console.log("Parsing endDate: ", endDate);
-  console.log("Parsing TimeZone: ", timeZoneId);
-
   const parseDate = (dateString: string): moment.Moment | null => {
     if (!dateString) return null;
     if (!dateString.includes('T')) {
@@ -72,8 +68,6 @@ export const formatDetailedEventDate = (
     // ✅ Case 5: Start and end dates are different
     date = `${startFormat}, ${startTime} – ${endFormat}, ${endTime}`;
   }
-
-  console.log("Final Formatted Date: ", date);
 
   return date;
 };

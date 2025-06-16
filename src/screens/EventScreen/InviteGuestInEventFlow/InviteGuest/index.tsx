@@ -7,11 +7,14 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { CountryCode } from 'libphonenumber-js';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
   Dimensions,
   InteractionManager,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -61,6 +64,11 @@ import {
   setInviteGuestAllUsersRefresh,
   setManageGuestRefresh,
 } from 'src/redux/slices/listSkipSlice';
+import useErrorBadge from 'src/hooks/useErrorBadge';
+import { set } from 'lodash';
+import { eventApiAction } from 'src/redux/actions/eventApiAction';
+import { store } from 'src/redux/store';
+import { ROUTES } from 'src/navigation/Route';
 
 export interface existingUserType {
   email: string;
@@ -72,10 +80,18 @@ export interface existingUserType {
   lastName: string;
 }
 interface InviteGuestProps
-  extends NativeStackScreenProps<EventStackParamList, 'InviteGuestScreen'> { }
+  extends NativeStackScreenProps<EventStackParamList, 'InviteGuestScreen'> {}
 
 const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
   const styles = createStyles();
+  const {
+    ErrorBadge,
+    setErrorMessage: setErrorBadgeMessage,
+    clearError: clearBadgeError,
+  } = useErrorBadge();
+  const [isLoadingManageGuest, setIsLoadingManageGuest] =
+    useState<boolean>(false);
+
   const navigation = useNavigation<NavigationProp<EventStackParamList>>();
   const dispatch = useDispatch();
   const { getPhoneNumber } = useContacts();
@@ -142,7 +158,7 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
     inviteNewGuests,
     { error: inviteNewGuestsError, isLoading: inviteNewGuestsLoading },
   ] = useInviteNewGuestsMutation();
-  const [fetchAllUsers, { }] = useLazyFetchAllUsersQuery();
+  const [fetchAllUsers, {}] = useLazyFetchAllUsersQuery();
 
   const onFocusInput = (type: 'inviteMessage' | 'guestNote') => {
     if (scrollRef?.current) {
@@ -182,8 +198,8 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
             guestStatus: directlySendToConfirm
               ? 'CONFIRMED'
               : sendInvite
-                ? 'INVITED'
-                : 'DRAFT',
+              ? 'INVITED'
+              : 'DRAFT',
             maxAdditionalGuests: additionalGuests || 0,
             ticketTypeId: selectedTicketType?.id || '',
             users: selectedUsers.map((item, index) => item.id),
@@ -196,17 +212,19 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
           if (directlySendToConfirm) {
             FlashMessageComponent.show(
               'success',
-              `${selectedUsers.length > 1
-                ? `${selectedUsers.length} Guests`
-                : selectedUsers[0].name
+              `${
+                selectedUsers.length > 1
+                  ? `${selectedUsers.length} Guests`
+                  : selectedUsers[0].name
               } ${'added to Confirmed'}`,
             );
           } else {
             FlashMessageComponent.show(
               'success',
-              `${selectedUsers.length} ${sendInvite
-                ? 'Guests have been invited to this event'
-                : 'Guests have been saved as drafts'
+              `${selectedUsers.length} ${
+                sendInvite
+                  ? 'Guests have been invited to this event'
+                  : 'Guests have been saved as drafts'
               }`,
             );
           }
@@ -299,8 +317,8 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
         guestStatus: directlySendToConfirm
           ? 'CONFIRMED'
           : sendInvite
-            ? 'INVITED'
-            : 'DRAFT',
+          ? 'INVITED'
+          : 'DRAFT',
         // guestStatus: directlySendToConfirm ? 'CONFIRMED' : 'INVITED',
         maxAdditionalGuests: additionalGuests || 0,
         sendInvite: true,
@@ -352,7 +370,20 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
       }
     } catch (error) {
       const typedError = error as ApiErrorInterface;
-      FlashMessageComponent.show('error', getErrorMessage(typedError));
+      if (
+        (typedError?.data as { message: string })?.message ===
+        'Guest already exists'
+      ) {
+        setErrorBadgeMessage(
+          "Unable to take action on this user. The user already has a status on the guest list. Click 'Manage Guest' to update their invite.",
+        );
+        scrollRef?.current?.scrollTo({
+          animated: true,
+          y: 0,
+        });
+      } else {
+        FlashMessageComponent.show('error', getErrorMessage(typedError));
+      }
     }
   };
 
@@ -391,14 +422,53 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
       changeSafeAreaViewConfig(SAFEWAREAVIEW_CONFIG.DEFAULT_TRANSLUCENT_SCHEME);
     }, []),
   );
+
+  const onManageGuestPress = async () => {
+    setIsLoadingManageGuest(true);
+
+    try {
+      let guestId = '';
+      const result = await store.dispatch(
+        eventApiAction.endpoints.getGuests.initiate({
+          take: 1,
+          skip: 0,
+          eventId: selectedEvent?.id || '',
+          queryString: `userId=${selectedUsers[0]?.id || ''}`,
+        }),
+      );
+
+      if (result.data?.data?.result?.length > 0) {
+        const quest = result.data.data.result[0];
+        guestId = quest.id;
+      } else {
+        FlashMessageComponent.show(
+          'error',
+          'Error: Guest not found for this user',
+        );
+        return;
+      }
+
+      clearBadgeError();
+      navigation.navigate(ROUTES.GuestDetailScreen, {
+        guestId: guestId,
+        eventId: selectedEvent?.id || '',
+        isPastEvent: false,
+      });
+    } catch (error) {
+      FlashMessageComponent.show('error', 'Something went wrong');
+    } finally {
+      setIsLoadingManageGuest(false);
+    }
+  };
+
   return (
     <View
       style={[
         styles.container,
         isManual === true &&
-        type === 'email' && {
-          marginTop: verticalMarginScale(16),
-        },
+          type === 'email' && {
+            marginTop: verticalMarginScale(16),
+          },
       ]}>
       {isManual === true && type === 'email' ? null : (
         <Header
@@ -439,7 +509,29 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
               type={type}
             />
           ) : (
-            <ExistingUserView />
+            <>
+              <View
+                style={{
+                  paddingHorizontal: horizontalMarginScale(16),
+                  marginBottom: verticalMarginScale(16),
+                }}>
+                <ErrorBadge>
+                  <TouchableOpacity
+                    onPress={onManageGuestPress}
+                    style={styles.mg_button}
+                    activeOpacity={0.8}
+                    disabled={isLoadingManageGuest}>
+                    {isLoadingManageGuest && (
+                      <View style={styles.mg_loadingOverlay}>
+                        <ActivityIndicator size="small" color="white" />
+                      </View>
+                    )}
+                    <Text style={styles.mg_buttonText}>Manage Guest</Text>
+                  </TouchableOpacity>
+                </ErrorBadge>
+              </View>
+              <ExistingUserView />
+            </>
           )}
 
           <View style={{ marginHorizontal: horizontalMarginScale(16) }}>
@@ -492,8 +584,9 @@ const InviteGuest: React.FC<InviteGuestProps> = ({ route }) => {
             directlySendToConfirm
               ? 'Add to Confirmed'
               : isManual
-                ? 'Send Invite'
-                : `Send ${selectedUsers.length} ${selectedUsers.length > 1 ? 'Invites' : 'Invite'
+              ? 'Send Invite'
+              : `Send ${selectedUsers.length} ${
+                  selectedUsers.length > 1 ? 'Invites' : 'Invite'
                 }`
           }
           onPress={() => {

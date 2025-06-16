@@ -56,7 +56,6 @@ const FollowButton: React.FC<FollowButtonProps> = ({
         `${EndPoint.host}/${hostId}/follow`,
         { userId },
       );
-      console.log('responseresponse', response);
 
       setFollowing(!following);
       return response?.status;
@@ -72,7 +71,6 @@ const FollowButton: React.FC<FollowButtonProps> = ({
         `${EndPoint.host}/${hostId}/follow`,
         { userId, hostId, follow: true },
       );
-      console.log('responseresponse', response);
       setFollowing(!following);
       return response?.status;
     } catch (error) {
