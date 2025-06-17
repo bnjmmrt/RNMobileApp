@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
@@ -14,12 +15,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { ProfileStackParamList } from 'src/navigation/ProfileStack';
 import { ROUTES } from 'src/navigation/Route';
 import { RootState } from 'src/redux/slices';
-import {
-  role,
-  setAuthToken,
-  setRole,
-  setRoleId,
-} from 'src/redux/slices/authSlice';
+import { setAuthToken, setRole, setRoleId } from 'src/redux/slices/authSlice';
 import {
   ApiErrorInterface,
   fetchUserProfile,
@@ -98,15 +94,27 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
     return rolesArray?.find(roleItem => roleItem.roleName === ROLE.NON_MEMBER);
   };
 
-  // Get prioritized roles: HOST first, then MEMBER/NON_MEMBER
+  // Get prioritized roles: Current active role first, then other role
   const getPrioritizedRoles = (rolesArray: RoleData[]): RoleData[] => {
     const prioritizedRoles: RoleData[] = [];
 
     const hostRole = findHostRole(rolesArray);
     const memberRole = findMemberRole(rolesArray);
 
-    if (hostRole) prioritizedRoles.push(hostRole);
-    if (memberRole) prioritizedRoles.push(memberRole);
+    // Get the current active role from Redux state
+    const currentActiveRole = role?.toLowerCase();
+
+    // Prioritize based on current active role
+    if (currentActiveRole === 'host' && hostRole) {
+      prioritizedRoles.push(hostRole);
+      if (memberRole) prioritizedRoles.push(memberRole);
+    } else if (
+      (currentActiveRole === 'member' || currentActiveRole === 'non_member') &&
+      memberRole
+    ) {
+      prioritizedRoles.push(memberRole);
+      if (hostRole) prioritizedRoles.push(hostRole);
+    }
 
     return prioritizedRoles;
   };
@@ -114,9 +122,6 @@ const HeaderProfileSwitcher: React.FC<HeaderProfileSwitcherProps> = ({
   const prioritizedRoles = getPrioritizedRoles(currentRoles);
   const primaryRole = prioritizedRoles[0];
   const secondaryRole = prioritizedRoles[1];
-
-  const profilePhoto =
-    role?.toLocaleLowerCase() === 'host' ? companyLogo : profilePicture;
 
   const isHostActive = (rolesArray: RoleData[]): boolean => {
     const host = findHostRole(rolesArray);

@@ -255,7 +255,6 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
   };
 
   const onClickViewAll = () => {
-    console.log('role', role);
     if (role == ROLE.HOST) {
       handleViewAll;
     } else {
