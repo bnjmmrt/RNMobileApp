@@ -488,6 +488,21 @@ export const EVENT_STATUS = {
   GOING: 'You are going',
 };
 
+export enum EventStatusEnum {
+  NO_EVENT = 'NO_EVENT_STATUS',
+  APPROVED = 'APPROVED_STATUS',
+  DRAFT = 'DRAFT_STATUS',
+  PENDING = 'PENDING_STATUS',
+  DECLINED = 'DECLINED_STATUS',
+  SCHEDULED = 'SCHEDULED_STATUS',
+  UPCOMING = 'UPCOMING_STATUS',
+  PAST = 'PAST_STATUS',
+  ARCHIVED = 'ARCHIVED_STATUS',
+  CANCELLED = 'CANCELLED_STATUS',
+  UNRECOGNIZED = 'UNRECOGNIZED',
+}
+
+
 export const memberTabData: TabItem[] = [
   {
     id: '1',
