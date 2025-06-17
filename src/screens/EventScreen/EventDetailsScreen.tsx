@@ -56,6 +56,7 @@ import {
   useFetchHostEventDetailsQuery,
   useFetchHostEventsAnnouncementQuery,
   useFetchSignupFormsQuery,
+  usePublishEventMutation,
 } from 'src/redux/actions/eventApiAction';
 import { RootState } from 'src/redux/slices';
 import { setEventId } from 'src/redux/slices/eventSlice';
@@ -65,11 +66,21 @@ import {
   fontFamily,
   removeSignature,
   changeSafeAreaViewConfig,
+  getErrorMessage,
 } from 'src/utils/functions';
 import useCalender from 'src/utils/hooks/useCalender';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
-import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
+import {
+  BUTTON_LABLE,
+  COLORS,
+  EventStatusEnum,
+  LABLE,
+  ROLE,
+} from '../../utils/constants';
 import { isIPad } from '../../utils/isTabletConfig';
+import AlertBadge from 'src/component/AlertBadge';
+import { format } from 'date-fns';
+import { formatToIsoDate } from 'src/utils/formatToDeviceTimeZone';
 
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -97,6 +108,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const eventId = route?.params?.id;
   const { reset } = useNavigation();
 
+  const [publishEvent] = usePublishEventMutation();
   const { data: eventCount, refetch: refetchGuestStatusCount } =
     useFetchGuestStatusCountQuery({ eventId }, { skip: role !== ROLE.HOST });
   const annqueryArgs = {
@@ -589,6 +601,28 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     },
   );
 
+  const handlePublishEvent = async () => {
+    try {
+      const response = await publishEvent({
+        eventId: data?.data?.id,
+      }).unwrap();
+      if (response.success) {
+        FlashMessageComponent.show('success', 'Event published');
+        refetch();
+      } else {
+        FlashMessageComponent.show('error', response.message ?? '');
+      }
+    } catch (error) {
+      FlashMessageComponent.show('error', 'Failed to publish event');
+    }
+  };
+
+  const showPublishNowAlert =
+    data?.data?.status === EventStatusEnum.SCHEDULED &&
+    !data?.data?.isPublished &&
+    !data?.data?.isPrivate &&
+    data?.data?.publishDate;
+
   return (
     <>
       {isLoading ? (
@@ -880,6 +914,28 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                       </Text>
                     </View>
                   )}
+                  {role === ROLE.HOST && showPublishNowAlert && (
+                    <AlertBadge>
+                      <Text style={styles.baseAlertText}>
+                        Your event is scheduled to publish on{' '}
+                        {data?.data?.publishDate
+                          ? format(
+                              new Date(
+                                formatToIsoDate(data?.data?.publishDate),
+                              ),
+                              'MMMM do, yyyy — h:mm a',
+                            )
+                          : '-'}{' '}
+                        and will go live on the Discovery Feed.{' '}
+                        <Text
+                          style={styles.pressableAlertText}
+                          onPress={handlePublishEvent}>
+                          Tap Here
+                        </Text>{' '}
+                        to Publish Now.
+                      </Text>
+                    </AlertBadge>
+                  )}
                 </View>
               </ScrollView>
             )}
@@ -1058,6 +1114,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  baseAlertText: {
+    fontSize: 14,
+    color: COLORS.black,
+    lineHeight: 16,
+    fontWeight: 500,
+    flex: 1,
+  },
+  pressableAlertText: {
+    textDecorationLine: 'underline',
   },
 });
 
