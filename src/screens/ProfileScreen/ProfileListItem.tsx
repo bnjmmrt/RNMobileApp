@@ -108,6 +108,10 @@ const ProfileListItem: React.FC<ListItemProps> = ({
         });
         break;
 
+      case PROFILE.TRAVEL_PLANS:
+        redirectToProfileStack(ROUTES.TravelPlansScreen);
+        break;
+
       case PROFILE.CONNECTED_ACCOUNTS:
         screenName =
           role === 'host'

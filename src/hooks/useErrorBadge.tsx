@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import XCircleIcon from 'src/component/SVG/XCircleIcon';
@@ -15,7 +13,7 @@ export default function useErrorBadge(clearTimer?: number) {
   };
 
   const ErrorBadge = ({ children }: { children?: React.ReactNode }) => {
-    if (!Boolean(error)) return null;
+    if (!error) return null;
 
     return (
       <View style={styles.container}>

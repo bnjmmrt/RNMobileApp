@@ -15,6 +15,8 @@ import ReferralScreen from 'src/screens/ProfileScreen/ReferralsScreen/ReferralSc
 import FollowingScreen from 'src/screens/ProfileScreen/FollowingScreen/FollowingScreen';
 import HostEditProfileScreen from 'src/screens/ProfileScreen/EditProfile/HostEditProfileScreen';
 import HostConnectedAccountsScreen from 'src/screens/ProfileScreen/EditProfile/HostConnectedAccountsScreen';
+import SurveysScreen from 'src/screens/TravelPlanScreen/TravelPlanScreen'
+
 import { ROUTES } from './Route';
 
 // Define the param list for the stack navigator
@@ -25,6 +27,7 @@ export type ProfileStackParamList = {
   [ROUTES.SelectInterestScreen]: undefined;
   [ROUTES.NotificationSettingsScreen]: undefined;
   [ROUTES.FeedbackScreen]: undefined;
+  [ROUTES.TravelPlansScreen]: undefined;
   [ROUTES.HostProfileScreen]: undefined;
   [ROUTES.ReferralScreen]: undefined;
   [ROUTES.FollowingScreen]: undefined;
@@ -99,6 +102,11 @@ export const ProfileStack: React.FC = () => {
       <Stack.Screen
         name={ROUTES.HostConnectedAccountsScreen}
         component={HostConnectedAccountsScreen}
+        options={{ headerShown: false }}
+      />
+       <Stack.Screen
+        name={ROUTES.TravelPlansScreen}
+        component={SurveysScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
