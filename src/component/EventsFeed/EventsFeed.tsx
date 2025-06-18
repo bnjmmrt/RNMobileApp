@@ -13,6 +13,8 @@ import {
 import { shallowEqual, useSelector } from 'react-redux';
 import { useFetchAllEventsQuery } from 'src/redux/actions/eventApiAction';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
+import useApi from 'src/axios/useApi';
+import { EndPoint } from 'src/ApiManager/config';
 import BeforeAppStaticComponent from '../../component/BeforeAppStaticComponent/BeforeAppStaticComponent';
 import HeaderComponent from '../../component/HeaderComponent';
 import { RootState } from '../../redux/slices';
@@ -30,6 +32,7 @@ import {
 import { changeSafeAreaViewConfig, fontFamily } from '../../utils/functions';
 import { BottomSheetMethods } from '../BottomSheet/BottomSheet';
 import FiltersSheet, { getFilterQuery, SelectedFilters } from '../FilterSheet';
+import HomeSurveyModal from '../../screens/DiscoverScreen/SurveyReponseCard/HomeSurveyResponse';
 import { InputRefMethods } from '../Input/Input';
 import SearchInput from '../SearchInput';
 import EventList from './EventList';
@@ -190,6 +193,17 @@ export interface Pagination {
   skip: number;
 }
 
+export interface Survey {
+  id: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  cityImage?: any;
+  imageUrl?: string;
+  message?: string;
+  response?: 'yes' | 'no' | null;
+}
+
 const EventsFeed = () => {
   const filtersSheetRef = useRef<BottomSheetMethods>(null);
   const searchInputRef = useRef<InputRefMethods>(null);
@@ -205,6 +219,9 @@ const EventsFeed = () => {
   const [filterQuery, setFilterQuery] = useState<string>('');
   const [filterNumber, setFilterNumber] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const { apiRequest } = useApi();
+  const [showSurveyModal, setShowSurveyModal] = useState<boolean>(false);
+  const [currentSurvey, setCurrentSurvey] = useState<Survey | null>(null);
 
   const isGuest = useSelector(
     (state: RootState) => state.auth.isGuest,
@@ -273,6 +290,52 @@ const EventsFeed = () => {
     setSelectedFilters({});
   };
 
+  const checkForMostRecentSurvey = useCallback(async () => {
+    if (!userId) return;
+
+    try {
+      const response = await apiRequest(
+        'get',
+        `${EndPoint.travel_plans}/mostRecent/${userId}`
+      );
+
+      if (response?.data && Object.keys(response.data).length > 0) {
+        // Map the response to our Survey interface
+        const surveyData: Survey = {
+          id: response.data.id,
+          title: response.data.title,
+          startDate: response.data.eventStartDate,
+          endDate: response.data.eventEndDate,
+          imageUrl: response.data.imageUrl,
+          message: response.data.message
+        };
+
+        setCurrentSurvey(surveyData);
+        setShowSurveyModal(true);
+      }
+    } catch (error) {
+      console.error('Error fetching most recent survey:', error);
+    }
+  }, [userId, apiRequest]);
+
+  // Call survey check on component mount and when userId changes
+  useEffect(() => {
+    if (userId) {
+      console.log('userId choi', userId);
+      checkForMostRecentSurvey();
+    }
+  }, [userId, checkForMostRecentSurvey]);
+
+  const handleCloseSurvey = () => {
+    setShowSurveyModal(false);
+    setCurrentSurvey(null);
+  };
+
+  // Handle when a survey response is updated
+  const handleSurveyResponseUpdated = () => {
+    // You could refresh some data here if needed after a response
+  };
+
   useEffect(() => {
     if (data?.data?.result) {
       // const featuredEventsRes = data?.data?.data?.filter(
@@ -327,7 +390,11 @@ const EventsFeed = () => {
           statusBarStyle: 'dark-content',
         });
       }
-    }, []),
+
+      if (userId && !isGuest) {
+        checkForMostRecentSurvey();
+      }
+    }, [userId, isGuest, checkForMostRecentSurvey]),
   );
 
   const renderFilters = useCallback(() => {
@@ -475,6 +542,14 @@ const EventsFeed = () => {
           ) : undefined
         }
       /> */}
+
+      {currentSurvey && (
+        <HomeSurveyModal
+          survey={currentSurvey}
+          onClose={handleCloseSurvey}
+          onResponseUpdated={handleSurveyResponseUpdated}
+        />
+      )}
 
       {responseSubmitted && (
         <View style={styles.responseSubmitted}>
