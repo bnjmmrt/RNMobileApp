@@ -591,6 +591,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     );
   };
 
+  const onPressTicketBreakdown = () => {
+    navigation.navigate(ROUTES.TicketBreakdownScreen, {
+      eventId: route?.params?.id,
+    });
+  };
+
   const signupFormsBottomSheetRef = useRef<any>(null);
   const { data: signupFormsData } = useFetchSignupFormsQuery(
     {
@@ -720,7 +726,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                       <EventRequests
                         eventId={data?.data?.id}
                         checkedinCount={data?.data?.totalCheckedInGuests}
-                        onTicketBreakdownPress={onPressManageInvite}
+                        onManageGuestListPress={onPressManageInvite}
+                        onTicketBreakdownPress={onPressTicketBreakdown}
                       />
                     )}
                     {!isLoading && (
