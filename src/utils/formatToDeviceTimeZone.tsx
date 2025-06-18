@@ -47,3 +47,8 @@ const formatToTimeZone = (
 };
 
 export default formatToTimeZone;
+
+export const formatToIsoDate = (date: string): string => {
+  const iso = date.replace(' ', 'T').replace('+00', 'Z');
+  return iso;
+};

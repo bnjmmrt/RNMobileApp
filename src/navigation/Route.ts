@@ -5,6 +5,7 @@ export const ROUTES = {
   SelectInterestScreen: 'SelectInterestScreen',
   NotificationSettingsScreen: 'NotificationSettingsScreen',
   FeedbackScreen: 'FeedbackScreen',
+  TravelPlansScreen: 'TravelPlansScreen',
   FollowingScreen: 'FollowingScreen',
   ReferralScreen: 'ReferralScreen',
   HostProfileScreen: 'HostProfileScreen',

@@ -126,6 +126,33 @@ const createStyles = () => {
       color: COLORS.light_gray,
       marginTop: verticalMarginScale(4),
     },
+
+    mg_button: {
+      position: 'relative',
+      minWidth: 'auto',
+      overflow: 'hidden',
+      borderRadius: 9999, // rounded-full equivalent
+      backgroundColor: COLORS.black,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    mg_loadingOverlay: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      top: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // bg-black/50
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    mg_buttonText: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: '#FFFFFF',
+    },
   });
 };
 

@@ -110,6 +110,8 @@ export const EndPoint = {
   events_events: 'events/v1/events',
   generate_ticket: 'events/v1/guest/ticket/',
   edit_event: 'events/v1/event/',
+  travel_plans: 'events/v1/surveys',
+  travel_plans_page: 'events/v1/surveys/page',
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

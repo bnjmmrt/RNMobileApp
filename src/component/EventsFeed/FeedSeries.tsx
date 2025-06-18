@@ -20,7 +20,6 @@ interface FeedSeriesProps {
 }
 
 const FeedSeries: React.FC<FeedSeriesProps> = ({ item, setSeries }) => {
-  console.log(item);
   return (
     <TouchableOpacity style={styles.container} onPress={() => setSeries(item)}>
       <View style={[styles.imageContainer]}>
