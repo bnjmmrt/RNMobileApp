@@ -291,7 +291,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     if (isEventExist) {
       const targetDate = new Date(calendarDetails.startDate); // Your desired date
       if (Platform.OS === 'ios') {
-        let eventDateInMilisecond = Math.floor(targetDate / 1000);
+        let eventDateInMilisecond = Math.floor(targetDate.getTime() / 1000);
         const seconds = eventDateInMilisecond - 978307200;
         Linking.openURL(`calshow:${seconds}`);
       } else if (Platform.OS === 'android') {
@@ -855,7 +855,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                     <EventRequests
                       eventId={data?.data?.id}
                       checkedinCount={data?.data?.totalCheckedInGuests}
-                      onTicketBreakdownPress={onPressManageInvite}
+                      onManageGuestListPress={onPressManageInvite}
+                      onTicketBreakdownPress={onPressTicketBreakdown}
                     />
                   )}
                   {!isLoading && (
