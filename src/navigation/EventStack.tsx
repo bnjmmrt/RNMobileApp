@@ -21,6 +21,7 @@ import { UserItemInterface } from 'src/screens/UsersModule/UsersListItem';
 import { ROUTES } from './Route';
 import AddAnnouncementScreen from 'src/screens/EventScreen/Announcement/AddAnnouncement/AddAnnouncementScreen';
 import Announcement from 'src/screens/EventScreen/Announcement';
+import TicketBreakdownScreen from 'src/screens/EventScreen/TicketBreakdown/TicketBreakdownScreen';
 // Define the param list for the stack navigator
 export type EventStackParamList = {
   EventScreen: undefined;
@@ -41,6 +42,7 @@ export type EventStackParamList = {
     isPastEvent: boolean;
     applyRequestFilter: boolean;
   };
+  TicketBreakdownScreen: undefined;
   GuestCheckInScreen: undefined;
   QRCodeScanner: undefined;
   GuestDetailScreen: { guestId: string; eventId: string, isPastEvent: boolean };
@@ -81,6 +83,11 @@ export const EventStack: React.FC = () => {
       <Stack.Screen
         name={ROUTES.EventGuestList}
         component={EventGuestList}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={ROUTES.TicketBreakdownScreen}
+        component={TicketBreakdownScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

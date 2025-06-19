@@ -38,4 +38,5 @@ export const ROUTES = {
   SelectedGuestsToInviteScreen: 'SelectedGuestsToInviteScreen',
   NotificationsScreen: 'NotificationsScreen',
   InviteReferralScreen: 'InviteReferralScreen',
+  TicketBreakdownScreen: 'TicketBreakdownScreen',
 } as const;
