@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { fontFamily } from '../../utils/functions';
@@ -73,14 +74,14 @@ const EventRequests: React.FC<EventOverviewProps> = ({
           title={BUTTON_LABLE.MANAGE_GUEST_LIST}
           colorTheme="dark"
           onPress={onManageGuestListPress}
-          />
-          <Button
-            disabled={false}
-            style={styles.btnStyle}
-            title={BUTTON_LABLE.SHOW_TICKET_BREAKDOWN}
-            colorTheme="light"
-            onPress={onTicketBreakdownPress}
-          />
+        />
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.SHOW_TICKET_BREAKDOWN}
+          colorTheme="light"
+          onPress={onTicketBreakdownPress}
+        />
       </View>
     </View>
   );
