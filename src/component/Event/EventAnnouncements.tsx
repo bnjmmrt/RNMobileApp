@@ -105,66 +105,71 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
 
     return (
       <SkeletonPlaceholder enabled={loading}>
-        {item.mediaType === 'image' ? (
-          <TouchableOpacity
-            onPress={() => {
-              setMedia(media);
-              setViewerVisible(true);
-              setCompanyName(name);
-              setCompanyLogo(image);
-              setCurrentIndex(index);
-            }}
-            style={[
-              styles.mediaContainer,
-              {
-                minWidth: calcImageWidth(
-                  cacheDetails?.dimensions?.width,
-                  cacheDetails?.dimensions?.height,
-                ),
-              },
-            ]}>
-            <FastImage
-              source={{ uri: item?.media }}
-              style={styles.mediaImage}
-              resizeMode="cover"
-            />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            onPress={() => {
-              setMedia(media);
-              setViewerVisible(true);
-              setCompanyName(name);
-              setCompanyLogo(image);
-              setCurrentIndex(index);
-            }}
-            style={styles.pdfContainer}>
-            {item.media ? (
-              <CustomPDFView
-                uri={item.media}
-                singlePage
-                style={styles.pdfDisplay}
+        <View
+          style={{
+            maxHeight: 128,
+          }}>
+          {item.mediaType === 'image' ? (
+            <TouchableOpacity
+              onPress={() => {
+                setMedia(media);
+                setViewerVisible(true);
+                setCompanyName(name);
+                setCompanyLogo(image);
+                setCurrentIndex(index);
+              }}
+              style={[
+                styles.mediaContainer,
+                {
+                  minWidth: calcImageWidth(
+                    cacheDetails?.dimensions?.width,
+                    cacheDetails?.dimensions?.height,
+                  ),
+                },
+              ]}>
+              <FastImage
+                source={{ uri: item?.media }}
+                style={styles.mediaImage}
+                resizeMode="cover"
               />
-            ) : (
-              <>
-                <Image
-                  source={IMAGES.pdf}
-                  style={styles.pdfIcon}
-                  resizeMode="contain"
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={() => {
+                setMedia(media);
+                setViewerVisible(true);
+                setCompanyName(name);
+                setCompanyLogo(image);
+                setCurrentIndex(index);
+              }}
+              style={styles.pdfContainer}>
+              {item.media ? (
+                <CustomPDFView
+                  uri={item.media}
+                  singlePage
+                  style={styles.pdfDisplay}
                 />
-                <Text style={styles.title} numberOfLines={2}>
-                  {item?.mediaName}
-                </Text>
-              </>
-            )}
+              ) : (
+                <>
+                  <Image
+                    source={IMAGES.pdf}
+                    style={styles.pdfIcon}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.title} numberOfLines={2}>
+                    {item?.mediaName}
+                  </Text>
+                </>
+              )}
 
-            <FileDetails
-              title={item?.mediaName}
-              type={item?.mediaType}
-              size={cacheDetails?.size || '0'}
-            />
-          </TouchableOpacity>
-        )}
+              <FileDetails
+                title={item?.mediaName}
+                type={item?.mediaType}
+                size={cacheDetails?.size || '0'}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
       </SkeletonPlaceholder>
     );
   };
