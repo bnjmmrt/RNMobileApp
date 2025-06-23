@@ -35,7 +35,6 @@ import MiddleStaticComponent from '../TitleSubTitleComponent/MiddleStaticCompone
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
 import { useGetUserWithRolesByIdMutation } from 'src/redux/actions/inviteGuestsApiAction';
 import { navigate } from '../NavigationService';
-import useApi from 'src/axios/useApi';
 
 const AfterAppStaticComponent: React.FC<{}> = () => {
   const navigation = useNavigation();
@@ -47,23 +46,6 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
 
   const onAccessContactClick = async () => {
     (navigation as any).navigate('InviteReferralScreen');
-  };
-
-  const { apiRequest } = useApi<any>();
-
-  const checkCommunityGuidelinesStatus = async () => {
-    try {
-      const response: any = await apiRequest(
-        'get',
-        `/auth/user/${userId}/community-guidelines-status`,
-      );
-      const agreed = (response as any).data.agreed;
-
-      return agreed;
-    } catch (error) {
-      console.error('Error checking community guidelines status:', error);
-      return false;
-    }
   };
 
   const fetchUserById = async () => {
@@ -82,14 +64,16 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
         const isMember = transformedRoles.some(
           (role: role) => role.roleName === ROLE.MEMBER,
         );
+        const isHost = transformedRoles.some(
+          (role: role) => role.roleName === ROLE.HOST,
+        );
+
         if (isMember) {
-          const hasAgreed = await checkCommunityGuidelinesStatus();
-          if (hasAgreed) {
-            navigate('AppStack', { screen: 'BottomTabBar' });
-          } else {
-            navigate('CommunityGuidelinesScreen', { userName: name });
-          }
+          navigate('AppStack', { screen: 'BottomTabBar' });
           dispatch(setRole(ROLE.MEMBER));
+        } else if (isHost) {
+          navigate('AppStack', { screen: 'BottomTabBar' });
+          dispatch(setRole(ROLE.HOST));
         } else {
           dispatch(setIsGuest(isGuest || false));
         }
