@@ -86,43 +86,48 @@ const MediaItem = ({
 
   return (
     <SkeletonPlaceholder enabled={loading}>
-      {item.mediaType === 'image' ? (
-        <TouchableOpacity
-          onPress={() => onPress(media, name, image, index)}
-          style={[
-            AnnouncementStyles().mediaContainer,
-            {
-              width: cacheDetails?.dimensions
-                ? calcImageWidth(
-                    cacheDetails?.dimensions?.width,
-                    cacheDetails?.dimensions.height,
-                  )
-                : 95,
-            },
-          ]}>
-          <FastImage
-            source={{ uri: item?.media }}
-            style={AnnouncementStyles().mediaImage}
-          />
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          onPress={() => onPress(media, name, image, index)}
-          style={AnnouncementStyles().pdfContainer}>
-          {item.media ? (
-            <CustomPDFView
-              uri={item.media}
-              singlePage
-              style={AnnouncementStyles().pdfDisplay}
+      <View
+        style={{
+          maxHeight: verticalScale(128),
+        }}>
+        {item.mediaType === 'image' ? (
+          <TouchableOpacity
+            onPress={() => onPress(media, name, image, index)}
+            style={[
+              AnnouncementStyles().mediaContainer,
+              {
+                width: cacheDetails?.dimensions
+                  ? calcImageWidth(
+                      cacheDetails?.dimensions?.width,
+                      cacheDetails?.dimensions.height,
+                    )
+                  : 95,
+              },
+            ]}>
+            <FastImage
+              source={{ uri: item?.media }}
+              style={AnnouncementStyles().mediaImage}
             />
-          ) : null}
-          <FileDetails
-            title={item?.mediaName}
-            type={item?.mediaType}
-            size={cacheDetails?.size || '0'}
-          />
-        </TouchableOpacity>
-      )}
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => onPress(media, name, image, index)}
+            style={AnnouncementStyles().pdfContainer}>
+            {item.media ? (
+              <CustomPDFView
+                uri={item.media}
+                singlePage
+                style={AnnouncementStyles().pdfDisplay}
+              />
+            ) : null}
+            <FileDetails
+              title={item?.mediaName}
+              type={item?.mediaType}
+              size={cacheDetails?.size || '0'}
+            />
+          </TouchableOpacity>
+        )}
+      </View>
     </SkeletonPlaceholder>
   );
 };

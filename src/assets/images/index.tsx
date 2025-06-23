@@ -157,6 +157,7 @@ const IMAGES = {
   heart_hand: require('./heart-hand.png'),
   lock_01: require('./lock-01.png'),
   ticket_01: require('./ticket-01.png'),
+  clipboard: require('./clipboard.png'),
   plane: require('./plane.png'),
 };
 
