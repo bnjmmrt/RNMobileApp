@@ -157,7 +157,7 @@ const CommunityGuideLinesScreen: React.FC<CommunityGuidelinesScreenProps> = ({
 
         <Button
           style={styles.agreeButton}
-          title="I Agree"
+          title={isHost ? 'Enter' : 'I Accept'}
           colorTheme="light"
           onPress={onAgreeClick}
         />
