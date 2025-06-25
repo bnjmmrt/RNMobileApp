@@ -293,23 +293,17 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const addAnouncement = () => {
-    const date1 = moment.utc(data?.data?.endDate);
-    const date2 = moment();
     let eventData = data?.data;
-    if (date1.isBefore(date2)) {
-      FlashMessageComponent.show('error', LABLE.PAST_EVENT_ANNOUNCEMENTS_ERROR);
+    if (eventCount?.data?.confirmedCount === 0) {
+      setshowError(true);
+      setTimeout(() => {
+        scrollViewRef?.current?.scrollToEnd({ animated: true });
+      }, 1000);
     } else {
-      if (eventCount?.data?.confirmedCount === 0) {
-        setshowError(true);
-        setTimeout(() => {
-          scrollViewRef?.current?.scrollToEnd({ animated: true });
-        }, 1000);
-      } else {
-        navigation.navigate(ROUTES.EventStack, {
-          screen: ROUTES.AddAnnouncementScreen,
-          params: { eventData, announcementId: null },
-        });
-      }
+      navigation.navigate(ROUTES.EventStack, {
+        screen: ROUTES.AddAnnouncementScreen,
+        params: { eventData, announcementId: null },
+      });
     }
   };
 
