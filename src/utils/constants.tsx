@@ -144,7 +144,7 @@ export const LABLE = {
   CHAT_WITH_GUEST: 'Chat \nwith guests.',
   SEARCH_FOR_EVENT: 'Search for an event...',
   ACCESS_THE_MOST_VALUABLE_CALENDAR:
-    'Access culture\'s most \n coveted moments.',
+    "Access culture's most \n coveted moments.",
   TWO_MINUTES_TO_COMPLETE: '~2 min to Complete',
   STREAMLINE_YOUR_LIFESTYLE: 'Never miss\na moment.',
   MANAGE_YOUR_EVENTS: 'All your invites, events, and passes—in one place.\n',
@@ -264,6 +264,9 @@ export const LABLE = {
   NO_CALENDAR_FOUND: 'No calendar found on this device.',
   ACCESS_CALENDAR: 'Calendar access is required to add events.',
   PERMISSION_DENIED: 'Permission Denied',
+  INVITED: 'Invited',
+  CHECK_IN: 'Check-In',
+  DISCOVER_MORE_EVENTS: 'Discover More Events',
   VIP_TOOLTIP_CONTENT:
     'Exclusive VIP access including VIP parking, expedited entry, backstage access, and premium viewing areas.',
   EVENT_SETTING_INFO:
