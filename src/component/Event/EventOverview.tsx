@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, StyleSheet, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 import { fontFamily } from '../../utils/functions';
 import { COLORS, LABLE } from '../../utils/constants';
 import IMAGES from '@images/index';
@@ -14,16 +14,48 @@ const MAX_LINES = 4;
 
 const EventOverview: React.FC<EventOverviewProps> = ({ item }) => {
   const [expanded, setExpanded] = useState(false);
+  const [shouldShowReadMore, setShouldShowReadMore] = useState(false);
+  const [fullTextHeight, setFullTextHeight] = useState(0);
+  const [truncatedTextHeight, setTruncatedTextHeight] = useState(0);
 
   const handleToggle = () => setExpanded(prev => !prev);
   const title = LABLE.ABOUT_THE_EVENT;
   const subTitle = item?.description;
 
-  // Check if "Read More" is needed
-  const shouldShowReadMore = subTitle && subTitle?.split(' ').length > 26;
+  const onFullTextLayout = (event: any) => {
+    const { height } = event.nativeEvent.layout;
+    setFullTextHeight(height);
+  };
+
+  const onTruncatedTextLayout = (event: any) => {
+    const { height } = event.nativeEvent.layout;
+    setTruncatedTextHeight(height);
+  };
+
+  React.useEffect(() => {
+    if (fullTextHeight > 0 && truncatedTextHeight > 0) {
+      setShouldShowReadMore(fullTextHeight > truncatedTextHeight);
+    }
+  }, [fullTextHeight, truncatedTextHeight]);
 
   return (
     <View style={styles.container}>
+      <View style={styles.hiddenContainer}>
+        <CustomText
+          style={[styles.subtitle, styles.hiddenText]}
+          textProps={{ onLayout: onFullTextLayout }}>
+          {subTitle}
+        </CustomText>
+        <CustomText
+          style={[styles.subtitle, styles.hiddenText]}
+          textProps={{
+            numberOfLines: MAX_LINES,
+            onLayout: onTruncatedTextLayout,
+          }}>
+          {subTitle}
+        </CustomText>
+      </View>
+
       <CustomText style={styles.title}>{title}</CustomText>
 
       <View style={styles.divider} />
@@ -64,6 +96,16 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingVertical: 18,
     backgroundColor: COLORS.white,
+  },
+  hiddenContainer: {
+    position: 'absolute',
+    opacity: 0,
+    top: -1000,
+    left: 0,
+    right: 0,
+  },
+  hiddenText: {
+    paddingHorizontal: 16,
   },
   title: {
     fontSize: 16,
