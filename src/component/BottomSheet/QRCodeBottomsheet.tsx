@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import IMAGES from '@images/index';
 import React, {
@@ -31,13 +32,11 @@ import {
   verticalScale,
   Wp,
 } from 'src/utils/dimensions';
-import TicketBottom from '../../assets/svgs/icons/ticketBottom.svg';
 import { base64RumorLogo, COLORS, LABLE } from '../../utils/constants';
 import { fontFamily, getNumberOfLines } from '../../utils/functions';
 import AvatarInitials from '../AvatarInitials';
 import { CustomText } from '../CustomText';
 import BottomSheetComponent, { BottomSheetMethods } from './BottomSheet';
-import Svg, { Path } from 'react-native-svg';
 
 interface QRCodeBottomsheetProps {
   data: any;
@@ -108,42 +107,55 @@ const TicketWrapper = ({
 };
 
 const RenderQrCode = React.memo(({ imageURL }: { imageURL: string }) => {
-  return (
-    <QRGenerator
-      width={Wp(70)}
-      height={Wp(70)}
-      type={'svg'}
-      value={imageURL}
-      margin={0}
-      qrOptions={{
-        typeNumber: '16',
-        mode: 'Byte',
-        errorCorrectionLevel: 'Q',
-      }}
-      dotOptions={{
-        type: 'dots',
-        color: COLORS.black,
-      }}
-      cornerSquareOptions={{
-        type: 'extra-rounded',
-      }}
-      cornerDotOptions={{
-        type: 'extra-rounded',
-        color: COLORS.black,
-      }}
-      backgroundOptions={{
-        round: 0,
-        color: '#ffffff',
-      }}
-      image={base64RumorLogo}
-      imageOptions={{
-        saveAsBlob: true,
-        hideBackgroundDots: true,
-        imageSize: 0.3,
-        margin: 0,
-      }}
-    />
-  );
+  try {
+    return (
+      <QRGenerator
+        width={Wp(70)}
+        height={Wp(70)}
+        type={'svg'}
+        value={imageURL}
+        // margin={0}
+        qrOptions={{
+          typeNumber: 16,
+          mode: 'Byte',
+          errorCorrectionLevel: 'Q',
+        }}
+        dotOptions={{
+          type: 'dots',
+          color: COLORS.black,
+        }}
+        cornerSquareOptions={{
+          type: 'extra-rounded',
+        }}
+        cornerDotOptions={{
+          type: 'dots',
+          color: COLORS.black,
+        }}
+        backgroundOptions={{
+          color: '#ffffff',
+        }}
+        image={base64RumorLogo}
+        imageOptions={{
+          hideBackgroundDots: true,
+          imageSize: 0.3,
+          margin: 0,
+        }}
+      />
+    );
+  } catch (error) {
+    return (
+      <View
+        style={{
+          width: Wp(70),
+          height: Wp(70),
+          backgroundColor: '#ffebee',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Text style={{ color: 'red' }}>QR Error</Text>
+      </View>
+    );
+  }
 });
 
 const RenderToolTip = React.memo(
@@ -152,7 +164,6 @@ const RenderToolTip = React.memo(
     setIsVisible,
     contentText,
     placement,
-    arrowStyle,
     isFromBottom,
   }: {
     isVisible: boolean;
@@ -162,20 +173,24 @@ const RenderToolTip = React.memo(
     placement: Placement | undefined;
     arrowStyle: ViewStyle;
   }) => {
-    let myHeight = getNumberOfLines(contentText)
-    console.log('myHeight', myHeight);
+    let myHeight = getNumberOfLines(contentText);
     return (
       <Tooltip
         contentStyle={[
           styles.toolTipStyle,
           {
             width: myHeight > 2 ? '77%' : '100%',
-            height: verticalScale(myHeight > 2 ? Platform.OS === 'android' ? myHeight * 21 : myHeight * 20 : myHeight * 30),
+            height: verticalScale(
+              myHeight > 2
+                ? Platform.OS === 'android'
+                  ? myHeight * 21
+                  : myHeight * 20
+                : myHeight * 30,
+            ),
           },
         ]}
         isVisible={isVisible}
         displayInsets={{ left: 0, right: 0, top: 0, bottom: 0 }}
-        arrowStyle={arrowStyle}
         backgroundColor="transparent"
         showChildInTooltip={false}
         topAdjustment={verticalScale(0)}
@@ -205,7 +220,7 @@ const RenderToolTip = React.memo(
   },
 );
 
-const RenderDashedLine = React.memo(({ }: {}) => {
+const RenderDashedLine = React.memo(({}: {}) => {
   return (
     <View
       style={{
@@ -240,12 +255,13 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
   const [numLines, setNumLines] = useState(0);
 
   const name = `${userDetails?.firstName} ${userDetails?.lastName}`;
-  const snap = numLines > 0 ? `${numLines * 8 + 70}%` : `75%`;
+  const snap = numLines > 0 ? `${numLines * 8 + 70}%` : '75%';
+
   return (
     <BottomSheetComponent
       ref={sheetRef}
       snapPoints={[props.isQRShown ? snap : '65%']}
-      onClose={() => { }}>
+      onClose={() => {}}>
       <ScrollView>
         <View style={styles.container}>
           <CustomText
@@ -273,10 +289,12 @@ const QRCodeBottomsheet = forwardRef((props: QRCodeBottomsheetProps, ref) => {
             <RenderToolTip
               isVisible={showProfileToolitip}
               setIsVisible={setShowProfileToolitip}
-              contentText={`This QR code is valid for ${userDetails?.name || name
-                } only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`}
+              contentText={`This QR code is valid for ${
+                userDetails?.name || name
+              } only. If you have additional guests in your party, they will receive a link to download Rumor and view their ticket.`}
               placement={Placement.BOTTOM}
               arrowStyle={{ top: -9 }}
+              isFromBottom={false}
             />
           </View>
 
@@ -479,5 +497,3 @@ const styles = StyleSheet.create({
 });
 
 export default QRCodeBottomsheet;
-
-
