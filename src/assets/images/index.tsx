@@ -159,6 +159,7 @@ const IMAGES = {
   ticket_01: require('./ticket-01.png'),
   clipboard: require('./clipboard.png'),
   plane: require('./plane.png'),
+  briefcase_tan: require('./briefcase_tan.png'),
 };
 
 export default IMAGES;

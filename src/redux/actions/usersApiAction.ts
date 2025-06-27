@@ -260,6 +260,11 @@ export interface UserDetailResponse {
     }[];
     status: string;
     upcomingEvents: any[]; // Define specific type if available
+    company?: {
+      name?: string
+      logo?:string
+      website:string
+    }    
   };
   status: number;
 }

@@ -135,6 +135,11 @@ const UserOverview: React.FC<UserOverviewProps> = ({ user }) => {
           icon={IMAGES.calender}
         />
       ) : null}
+
+      {userDetails?.company?.name ? (
+        <InfoRow title={userDetails?.company?.name} icon={IMAGES.briefcase_tan} />
+      ) : null}
+
       {userDetails?.phoneNumber ? (
         <InfoRow title={userDetails?.phoneNumber} icon={IMAGES.phone} />
       ) : null}
