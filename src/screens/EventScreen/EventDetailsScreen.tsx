@@ -1126,6 +1126,7 @@ const styles = StyleSheet.create({
   baseAlertText: {
     fontSize: 14,
     color: COLORS.black,
+    fontFamily: fontFamily.ABCDiatype_Medium,
     lineHeight: 16,
     fontWeight: 500,
     flex: 1,
