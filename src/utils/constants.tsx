@@ -110,10 +110,11 @@ export const LABLE = {
   WHERE_DO_YOU_CALL_HOME: 'Where do you call home?',
   WE_WILL_RECOMMEND_EVENTS_AND_EXPERIENCES_NEAR_YOU:
     "We'll recommend events and experiences near you.",
-  WHAT_IS_YOUR_CREATIVE_OR_PROFESSIONAL_FOCUS:
-    "What's your creative or professional focus?",
+  WHAT_IS_YOUR_PROFESSIONAL_FOCUS:
+    "What's your professional focus?",
   YOU_CAN_CHOOSE_UP_TO_3_CATEGORIES: 'You can choose up to 3 categories',
   SEARCH_FOR_A_LOCATION: 'Search for a Location…',
+  SEARCH_PROFESSION: 'Search professions…',
   DATE_PLACEHOLDER: 'MM/DD/YYYY',
   MY_DETAILS: 'My Details',
   EMAIL: 'Email',
@@ -123,7 +124,7 @@ export const LABLE = {
   GENDER: 'Gender',
   BIRTHDAY: 'Birthday',
   BASE_CITY: 'Base City',
-  CREATIVE_FOCUS: 'Creative Focus',
+  PROFESSION: 'Profession',
   INTERESTS: 'Interests',
   PROFILE_PHOTO: 'Profile Photo',
   EMAIL_VERIFICATION: 'Email Verification',
@@ -135,7 +136,7 @@ export const LABLE = {
   IDENTITY_VERIFICATION_SUBTITLE: 'This helps us verify your online identity.',
   CHOOSE_YOUR_INTERESTS: 'Choose your interests',
   CHOOSE_YOUR_INTERESTS_SUBTITLE:
-    "Select topics of interests so we can curate experiences\nyou'll want to attend.",
+    "Select topics you're passionate about or specialize in. This helps us connect you with relevant opportunities.",
   ADD_A_PHOTO: 'Add a photo',
   ADD_A_PHOTO_SUBTITLE: 'Upload a profile photo to complete your profile.',
   CHAT_WITH_HOST: 'Connect directly\nwith hosts.',

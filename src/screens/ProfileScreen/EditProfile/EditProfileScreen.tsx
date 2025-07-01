@@ -411,7 +411,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                         : 0,
                     },
                   ]}>
-                  {LABLE.CREATIVE_FOCUS}
+                  {LABLE.PROFESSION}
                 </Text>
                 <Text style={styles.subTitle}>{LABLE.SELECT_UPTO_3}</Text>
                 <CreativeFocusComponent

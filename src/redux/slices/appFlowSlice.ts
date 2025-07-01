@@ -20,6 +20,7 @@ export interface UserDetailsState {
   email: string;
   phone: string;
   creativeFocus: string[];
+  company: string;
   interest: string[];
   profilePic: any;
   pageProgress: number;
@@ -38,6 +39,7 @@ const initialState: UserDetailsState = {
   email: '',
   phone: '',
   creativeFocus: [],
+  company: '',
   interest: [],
   profilePic: '',
   pageProgress: 1,
@@ -85,6 +87,9 @@ const appFlowSlice = createSlice({
     setCreativeFocus(state, action: PayloadAction<string[]>) {
       state.creativeFocus = action.payload;
     },
+    setCompany(state, action: PayloadAction<string>) {
+      state.company = action.payload;
+    },
     setInterest(state, action: PayloadAction<string[]>) {
       state.interest = action.payload;
     },
@@ -123,6 +128,7 @@ export const {
   setCountryCallingCode,
   setCountryCodeFlag,
   setCreativeFocus,
+  setCompany,
   setInterest,
   setPageProgress,
   setProfilePic,
