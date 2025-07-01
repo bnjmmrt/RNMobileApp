@@ -255,8 +255,7 @@ const HomeSurveyModal: React.FC<HomeSurveyModalProps> = ({
             
             {survey.message && (
               <View style={styles.messageContainer}>
-                <Text style={styles.messageLabel}>Message</Text>
-                <Text style={styles.messageText}>{survey.message}</Text>
+                <Text style={styles.messageLabel}>{survey.message}</Text>
               </View>
             )}
             
