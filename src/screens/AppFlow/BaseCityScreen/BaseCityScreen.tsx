@@ -57,7 +57,6 @@ const BaseCityScreen: React.FC<BaseCityScreenProps> = ({ navigation }) => {
   };
 
   const onChangeLocationValue = (location: any) => {
-    console.log('setSelectedFiltered', location);
     setSelectedCity(location);
   };
 

@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { fontFamily } from '../../utils/functions';
@@ -10,12 +11,14 @@ interface EventOverviewProps {
   eventId: string; // Extend this type with actual item properties for better type safety.
   checkedinCount?: number;
   onTicketBreakdownPress: () => void;
+  onManageGuestListPress: () => void;
 }
 
 const EventRequests: React.FC<EventOverviewProps> = ({
   eventId,
   checkedinCount,
   onTicketBreakdownPress,
+  onManageGuestListPress,
 }) => {
   const [confirmCount, setConfirmCount] = useState(0);
   const [inviteCount, setInviteCount] = useState(0);
@@ -70,6 +73,13 @@ const EventRequests: React.FC<EventOverviewProps> = ({
           style={styles.btnStyle}
           title={BUTTON_LABLE.MANAGE_GUEST_LIST}
           colorTheme="dark"
+          onPress={onManageGuestListPress}
+        />
+        <Button
+          disabled={false}
+          style={styles.btnStyle}
+          title={BUTTON_LABLE.SHOW_TICKET_BREAKDOWN}
+          colorTheme="light"
           onPress={onTicketBreakdownPress}
         />
       </View>

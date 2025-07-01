@@ -3,7 +3,6 @@ import { COLORS } from 'src/utils/constants';
 import {
   fontScale,
   horizontalMarginScale,
-  horizontalScale,
   radiusScale,
   verticalMarginScale,
   verticalScale,
@@ -74,8 +73,9 @@ export const styles = StyleSheet.create({
         }),
   },
   clearAllCta: {
-    // flex: 0.3
-    width: undefined,
+    flex: 0.3,
+    minWidth: 'auto',
+    maxWidth: "auto",
     paddingHorizontal: horizontalMarginScale(12),
     borderWidth: verticalScale(2),
     borderColor: COLORS.black,

@@ -19,12 +19,20 @@ const AnnouncementStyles = () => {
       backgroundColor: COLORS.white,
       // paddingBottom: 20
     },
-    mediaImage: {
+
+    mediaContainer: {
       width: horizontalScale(95),
       height: verticalScale(128),
       borderRadius: 8,
       marginRight: 10,
       backgroundColor: '#f0f0f0',
+    },
+    mediaImage: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 8,
+      backgroundColor: '#f0f0f0',
+      objectFit: 'contain',
     },
     pdfIcon: {
       width: 30,
@@ -32,12 +40,22 @@ const AnnouncementStyles = () => {
       marginBottom: 10,
     },
     pdfContainer: {
-      width: horizontalScale(95),
+      width: horizontalScale(90.5),
       height: verticalScale(128),
       marginRight: 10,
+      borderWidth: 1,
+      borderColor: COLORS.lighter_gray,
       backgroundColor: '#f0f0f0',
       justifyContent: 'center',
       alignItems: 'center',
+      borderRadius: 8,
+      overflow: 'hidden',
+    },
+    pdfDisplay: {
+      width: '100%',
+      height: '100%',
+      borderWidth: 0,
+      elevation: 0,
       borderRadius: 8,
     },
     pdfSize: {
@@ -61,21 +79,25 @@ const AnnouncementStyles = () => {
       fontFamily: fontFamily.ABCDiatype_Medium,
       marginVertical: verticalMarginScale(10),
     },
+
     toggleContainer: {
       flexDirection: 'row',
       alignItems: 'center',
       marginVertical: verticalMarginScale(5),
     },
     toggleText: {
-      color: COLORS.black2,
       textDecorationLine: 'underline',
-      fontFamily: fontFamily.ABCDiatype_Regular,
       marginRight: 5,
+      fontFamily: fontFamily.ABCDiatype_Regular,
     },
     toggleIcon: {
-      width: 8,
-      height: 8,
-      tintColor: COLORS.borderGray,
+      width: 10,
+      tintColor: COLORS.light_gray,
+      resizeMode: 'contain',
+    },
+    toggleupIcon: {
+      width: 16,
+      tintColor: COLORS.light_gray,
       resizeMode: 'contain',
     },
     subtitle: {

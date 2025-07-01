@@ -37,7 +37,7 @@ import {
   useFetchSelectedRecipientsQuery,
 } from 'src/redux/actions/eventApiAction';
 import { setRsvpStatus } from 'src/redux/slices/rspvSlice';
-import { ANNOUNCEMENT, BUTTON_LABLE, COLORS, ERROR_MESSAGE, PERMISSION } from 'src/utils/constants';
+import { ANNOUNCEMENT, BUTTON_LABLE, COLORS, ERROR_MESSAGE, PERMISSION, MAX_IMAGE_SIZE_BYTES } from 'src/utils/constants';
 import { verticalMarginScale } from 'src/utils/dimensions';
 import { ApiErrorInterface, getErrorMessage } from 'src/utils/functions';
 import { useUploadFile } from 'src/utils/hooks/useUploadFile';
@@ -475,8 +475,16 @@ const AddAnnouncementScreen: React.FC<AddAnnouncementScreenProps> = ({
       cropperCircleOverlay: false,
     })
       .then((image: ImageOrVideo) => {
-        editPhotoBottomSheetRef.current?.close();
-        savePhoto(image?.path, 'image', image?.filename, image?.size);
+        if (image.size && image.size <= MAX_IMAGE_SIZE_BYTES) {
+          editPhotoBottomSheetRef.current?.close();
+          savePhoto(image?.path, 'image', image?.filename, image?.size);  
+        } else {
+          Alert.alert(
+            'Image Size Error',
+            'Please select an image that is under 5MB in size.',
+            [{ text: 'OK' }]
+          );          
+        }
       })
       .catch(async error => {
         console.log('ImagePicker Error: ', error);

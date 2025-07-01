@@ -5,6 +5,7 @@ export const ROUTES = {
   SelectInterestScreen: 'SelectInterestScreen',
   NotificationSettingsScreen: 'NotificationSettingsScreen',
   FeedbackScreen: 'FeedbackScreen',
+  TravelPlansScreen: 'TravelPlansScreen',
   FollowingScreen: 'FollowingScreen',
   ReferralScreen: 'ReferralScreen',
   HostProfileScreen: 'HostProfileScreen',
@@ -22,8 +23,8 @@ export const ROUTES = {
   HostEditProfileScreen: 'HostEditProfileScreen',
   HostConnectedAccountsScreen: 'HostConnectedAccountsScreen',
   WelcomeScreen: 'WelcomeScreen',
-  AddAnnouncementScreen:"AddAnnouncementScreen",
-  Announcement:"Announcement",
+  AddAnnouncementScreen: 'AddAnnouncementScreen',
+  Announcement: 'Announcement',
   EditEventScreen: 'EditEventScreen',
   EditEventDetails: 'EditEventDetails',
   EditEventSettings: 'EditEventSettings',
@@ -35,5 +36,7 @@ export const ROUTES = {
   InviteGuestScreen: 'InviteGuestScreen',
   InviteGuestsManuallyScreen: 'InviteGuestsManuallyScreen',
   SelectedGuestsToInviteScreen: 'SelectedGuestsToInviteScreen',
-  NotificationsScreen:'NotificationsScreen'
+  NotificationsScreen: 'NotificationsScreen',
+  InviteReferralScreen: 'InviteReferralScreen',
+  TicketBreakdownScreen: 'TicketBreakdownScreen',
 } as const;

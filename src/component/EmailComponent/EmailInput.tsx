@@ -4,7 +4,14 @@ import React, {
   useImperativeHandle,
   useRef,
 } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Alert,
+  ViewStyle,
+} from 'react-native';
 import { Image } from 'react-native-animatable';
 import IMAGES from '../../assets/images';
 import { COLORS, LABLE } from '../../utils/constants';
@@ -13,7 +20,12 @@ import { verticalScale } from 'src/utils/dimensions';
 import useKeyboard from 'src/utils/hooks/useKeyboard';
 import { fontFamily } from 'src/utils/functions';
 
-const EmailInput = forwardRef(({ otherStyle }, ref) => {
+interface EmailInputProps {
+  otherStyle?: ViewStyle;
+  isSecondary?: boolean;
+}
+
+const EmailInput = forwardRef(({ otherStyle }: EmailInputProps, ref) => {
   const inputRef = useRef<TextInput>(null);
   const [emailAddress, setEmailAddress] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -37,7 +49,6 @@ const EmailInput = forwardRef(({ otherStyle }, ref) => {
     const emailRegex =
       /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-    console.log(emailRegex.test(emailAddress));
     if (!emailRegex.test(emailAddress)) {
       setErrorMessage(LABLE.EROOR_ENTER_EMAIL);
       return false;
@@ -52,7 +63,6 @@ const EmailInput = forwardRef(({ otherStyle }, ref) => {
     const emailRegex =
       /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-    console.log(emailRegex.test(email));
     if (!emailRegex.test(email)) {
       setErrorMessage(LABLE.EROOR_ENTER_EMAIL);
     } else {
@@ -66,6 +76,7 @@ const EmailInput = forwardRef(({ otherStyle }, ref) => {
       navigation.navigate('VerifyOtpScreen', {
         email: emailAddress,
         isEmail: true,
+        // isSecondary,
       });
     }
   };
@@ -83,7 +94,8 @@ const EmailInput = forwardRef(({ otherStyle }, ref) => {
           style={[
             styles.icon,
             {
-              tintColor: errorMessage ? COLORS.errorText : COLORS.light_gray,resizeMode:'contain'
+              tintColor: errorMessage ? COLORS.errorText : COLORS.light_gray,
+              resizeMode: 'contain',
             },
           ]}
         />

@@ -1,6 +1,10 @@
 import React, { useCallback } from 'react';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { COLORS, BUTTON_LABLE, COMMUNITY_GUIDELINE } from '../../../utils/constants';
+import {
+  COLORS,
+  COMMUNITY_GUIDELINE,
+  HOST_COMMUNITY_GUIDELINE,
+} from '../../../utils/constants';
 import IMAGES from '../../../assets/images';
 import Button from '../../../component/Button';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -15,7 +19,7 @@ import {
 } from '../../../utils/dimensions';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
-import { apiPut } from 'src/ApiManager/MainApi';
+import useApi from 'src/axios/useApi';
 
 interface PrincipleItemProps {
   icon: any;
@@ -39,35 +43,76 @@ const PrincipleItem: React.FC<PrincipleItemProps> = ({
   </View>
 );
 
-const PRINCIPLES: PrincipleItemProps[] = [
-  {
-    icon: IMAGES.lock_01,
-    title: 'Privacy',
-    description: COMMUNITY_GUIDELINE.description_1
-  },
-  {
-    icon: IMAGES.heart_hand,
-    title: 'Respect',
-    description: COMMUNITY_GUIDELINE.description_2
-  },
-  {
-    icon: IMAGES.ticket_01,
-    title: 'Responsible Engagement',
-    description: COMMUNITY_GUIDELINE.description_3
-  },
-];
+interface CommunityGuidelinesScreenProps {
+  route?: {
+    params?: {
+      isHost?: boolean;
+    };
+  };
+}
 
-const CommunityGuideLinesScreen: React.FC = () => {
+const CommunityGuideLinesScreen: React.FC<CommunityGuidelinesScreenProps> = ({
+  route,
+}) => {
   const navigation = useNavigation<any>();
   const userId = useSelector((state: RootState) => state.auth.userId);
+  const { apiRequest } = useApi<any>();
 
-  const updateUserStatus = async () => {
+  const isHost = route?.params?.isHost || false;
+
+  const PRINCIPLES: PrincipleItemProps[] = isHost
+    ? [
+        {
+          icon: IMAGES.lock_01,
+          title: 'Privacy',
+          description: HOST_COMMUNITY_GUIDELINE.description_1,
+        },
+        {
+          icon: IMAGES.heart_hand,
+          title: 'Respect',
+          description: HOST_COMMUNITY_GUIDELINE.description_2,
+        },
+        {
+          icon: IMAGES.clipboard,
+          title: 'Event Guidelines',
+          description: HOST_COMMUNITY_GUIDELINE.description_3,
+        },
+      ]
+    : [
+        {
+          icon: IMAGES.lock_01,
+          title: 'Privacy',
+          description: COMMUNITY_GUIDELINE.description_1,
+        },
+        {
+          icon: IMAGES.heart_hand,
+          title: 'Respect',
+          description: COMMUNITY_GUIDELINE.description_2,
+        },
+        {
+          icon: IMAGES.ticket_01,
+          title: 'Responsible Engagement',
+          description: COMMUNITY_GUIDELINE.description_3,
+        },
+      ];
+
+  const agreeToCommunityGuidelines = async () => {
     try {
-      await apiPut(`/auth/user/${userId}/set-login-status`, {
-        id: userId,
-      });
+      if (isHost) {
+        await apiRequest(
+          'put',
+          `users/v1/auth/user/${userId}/agree-host-community-guidelines`,
+          {},
+        );
+      } else {
+        await apiRequest(
+          'put',
+          `users/v1/auth/user/${userId}/agree-community-guidelines`,
+          {},
+        );
+      }
     } catch (error) {
-      console.error('Error fetching user data:', error);
+      console.error('Error agreeing to community guidelines:', error);
     }
   };
 
@@ -80,8 +125,8 @@ const CommunityGuideLinesScreen: React.FC = () => {
     }, []),
   );
 
-  const onAgreeClick = () => {
-    updateUserStatus()
+  const onAgreeClick = async () => {
+    await agreeToCommunityGuidelines();
     navigation.navigate('AppStack', { screen: ROUTES.BottomTabBar });
   };
 
@@ -98,7 +143,11 @@ const CommunityGuideLinesScreen: React.FC = () => {
 
         <Text style={styles.title}>Welcome{'\n'}to Rumor!</Text>
 
-        <Text style={styles.description}>{COMMUNITY_GUIDELINE.description}</Text>
+        <Text style={styles.description}>
+          {isHost
+            ? HOST_COMMUNITY_GUIDELINE.description
+            : COMMUNITY_GUIDELINE.description}
+        </Text>
 
         <View style={styles.principlesContainer}>
           {PRINCIPLES.map((principle, index) => (
@@ -108,7 +157,7 @@ const CommunityGuideLinesScreen: React.FC = () => {
 
         <Button
           style={styles.agreeButton}
-          title="I Agree"
+          title={isHost ? 'Enter' : 'I Accept'}
           colorTheme="light"
           onPress={onAgreeClick}
         />

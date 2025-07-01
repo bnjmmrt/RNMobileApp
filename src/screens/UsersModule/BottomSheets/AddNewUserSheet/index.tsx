@@ -33,6 +33,7 @@ import {
   removeSpaceFromStr,
 } from 'src/utils/functions';
 import { styles } from './style';
+import { regexForLettersAndCharacters } from 'src/utils/validationRegex';
 
 type existingUserType = {
   hasEmail: boolean;
@@ -115,7 +116,7 @@ const AddNewUserSheet = forwardRef<
   };
 
   const validateName = (name: string) => {
-    const regex = /^[A-Za-z]+$/;
+    const regex = regexForLettersAndCharacters;
     if (
       name === 'FirstName' &&
       firstNameRef?.current?.inputText &&

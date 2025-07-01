@@ -76,7 +76,6 @@ const EventScreen: React.FC<EventScreenProps> = ({ navigation }) => {
   };
   useFocusEffect(
     useCallback(() => {
-      console.log('EventScreen mounted', role);
       if (role == ROLE.HOST) {
         handleTabChange(tabs[0])
       } else {

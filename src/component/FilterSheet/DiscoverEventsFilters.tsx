@@ -1,20 +1,26 @@
 import {
   BottomSheetFlatList,
   BottomSheetFlatListMethods,
+  BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import moment from 'moment';
 import React, { useCallback, useRef } from 'react';
-import { InteractionManager } from 'react-native';
+import { InteractionManager, View } from 'react-native';
 import { DateType } from 'react-native-ui-datepicker';
 import GradientSeprator from 'src/component/GradientSeprator';
 import { useFetchEventTypesQuery } from 'src/redux/actions/eventApiAction';
-import { horizontalMarginScale } from 'src/utils/dimensions';
+import {
+  horizontalMarginScale,
+  verticalMarginScale,
+} from 'src/utils/dimensions';
 import { SelectedFilters } from '.';
 import FilterAccordian from './FilterAccordian';
 import FilterOptions, {
   FilterOption,
   FilterOptionTypes,
 } from './FilterOptions';
+import { CustomText } from '../CustomText';
+import { styles } from './style';
 
 type FilterType = {
   id: string;
@@ -27,10 +33,12 @@ const DiscoverEventsFilters = ({
   selectedFilters,
   setSelectedFilters,
   setDisableApplyCta,
+  snapToNewPoint,
 }: {
   selectedFilters: SelectedFilters;
   setSelectedFilters: React.Dispatch<React.SetStateAction<SelectedFilters>>;
   setDisableApplyCta: React.Dispatch<React.SetStateAction<boolean>>;
+  snapToNewPoint?: (x: number | null) => void;
 }) => {
   const filtersListRef = useRef<BottomSheetFlatListMethods>(null);
 
@@ -47,7 +55,7 @@ const DiscoverEventsFilters = ({
     value: {
       id: string;
       name: string;
-      date?: DateType[];
+      date?: DateType | DateType[];
       lat?: string;
       long?: string;
     },
@@ -88,20 +96,54 @@ const DiscoverEventsFilters = ({
         }
       }
     } else if (optionType === 'location') {
-      if (typeof value === 'object' && !Array.isArray(value) && 'id' in value) {
-        if (value.long) {
-          tempSelectedFilter['longitude'] = {
-            type: optionType,
-            value: [{ id: value.long, name: value.name }],
-          };
+      if (tempSelectedFilter[id]) {
+        if (
+          typeof value === 'object' &&
+          !Array.isArray(value) &&
+          'id' in value
+        ) {
+          const tempExistingValue = tempSelectedFilter[id].value;
+          const idIndex = tempExistingValue.findIndex(
+            existinVal => existinVal?.id === value.id,
+          );
+          if (idIndex < 0) {
+            tempExistingValue.push({
+              id: value.id,
+              name: value.name,
+              lat: value.lat,
+              long: value.long,
+            });
+          } else {
+            tempExistingValue.splice(idIndex, 1);
+          }
         }
-        if (value.lat) {
-          tempSelectedFilter['latitude'] = {
-            type: optionType,
-            value: [{ id: value.lat, name: '' }],
-          };
-        }
+      } else {
+        tempSelectedFilter[id] = {
+          type: optionType,
+          value: [
+            {
+              id: value.id,
+              name: value.name,
+              lat: value.lat,
+              long: value.long,
+            },
+          ],
+        };
       }
+      // if (typeof value === 'object' && !Array.isArray(value) && 'id' in value) {
+      //   if (value.long) {
+      //     tempSelectedFilter['longitude'] = {
+      //       type: optionType,
+      //       value: [{ id: value.long, name: value.name }],
+      //     };
+      //   }
+      //   if (value.lat) {
+      //     tempSelectedFilter['latitude'] = {
+      //       type: optionType,
+      //       value: [{ id: value.lat, name: '' }],
+      //     };
+      //   }
+      // }
     } else if (optionType === 'dateRange') {
       const startDate = value?.date[0];
       const endDate = value?.date[1];
@@ -166,11 +208,39 @@ const DiscoverEventsFilters = ({
       };
 
       if (item.type === 'checkbox' && item.options.length === 0) return null;
-      return (
-        <FilterAccordian
-          title={item?.label}
-          onOpen={() => scrollToOpenedAccordian(index)}
-          defaultOpen={index === 0}>
+      return item.type === 'checkbox' ? (
+        <>
+          <FilterAccordian
+            title={item?.label}
+            onOpen={() => {
+              scrollToOpenedAccordian(index);
+              snapToNewPoint?.(88);
+            }}
+            onClose={() => {
+              snapToNewPoint?.(null);
+            }}>
+            <FilterOptions
+              id={item.id}
+              optionType={item.type}
+              options={item.options}
+              selectedFilters={selectedFilters}
+              onChangeOptionValue={onChangeFilterOptionValue}
+              setDisableApplyCta={setDisableApplyCta}
+              showSelectedLocationChip={false}
+              onOpenNestedAccordian={() => scrollToOpenedAccordian(index)}
+            />
+          </FilterAccordian>
+          <GradientSeprator />
+        </>
+      ) : (
+        <BottomSheetView
+          style={[
+            styles.accordianContainer,
+            { paddingBottom: verticalMarginScale(16) },
+          ]}>
+          <View style={styles.accordianTitleContainer}>
+            <CustomText style={styles.accordianTitle}>{item.label}</CustomText>
+          </View>
           <FilterOptions
             id={item.id}
             optionType={item.type}
@@ -178,18 +248,14 @@ const DiscoverEventsFilters = ({
             selectedFilters={selectedFilters}
             onChangeOptionValue={onChangeFilterOptionValue}
             setDisableApplyCta={setDisableApplyCta}
-            showSelectedLocationChip={false}
+            showSelectedLocationChip={item.type === 'location'}
             onOpenNestedAccordian={() => scrollToOpenedAccordian(index)}
           />
-        </FilterAccordian>
+        </BottomSheetView>
       );
     },
     [selectedFilters, setDisableApplyCta],
   );
-
-  const itemSeparatorComponent = useCallback(() => {
-    return <GradientSeprator />;
-  }, []);
 
   const eventTpeData = eventTypes?.data?.items || [];
   const categories: FilterOption[] = eventTpeData?.map(
@@ -234,7 +300,6 @@ const DiscoverEventsFilters = ({
       renderItem={renderItem}
       keyExtractor={(item, index) => `filters_header_${index.toString()}`}
       showsVerticalScrollIndicator={false}
-      ItemSeparatorComponent={itemSeparatorComponent}
       contentContainerStyle={{ marginHorizontal: horizontalMarginScale(12) }}
       keyboardShouldPersistTaps="always"
     />

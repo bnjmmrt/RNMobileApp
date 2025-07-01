@@ -204,9 +204,7 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
   const hasResults = Object.values(categorizedItems).some(items => items.length > 0);
 
   const handleCategorySelect = (category: any) => {
-    console.log(selectedCategories.length);
     if (selectedCategories.find(item => item.id === category.id)) {
-      console.log(category);
       if (selectedCategories.length === 1) {
         setToastMessage(ERROR_MESSAGE.CREATIVE_FOCUS);
         setIsToastShown(true);
@@ -217,7 +215,6 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
       );
     } else if (selectedCategories.length < 3) {
       // Add category if less than 3 are selected
-      console.log(category);
       setIsToastShown(false);
       setSelectedCategories([...selectedCategories, category]);
     } else {
@@ -296,7 +293,6 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
   const onNextClick = () => {
     if (selectedCategories.length > 0 && selectedCategories.length <= 3) {
       setIsToastShown(false);
-      console.log('Selected Categories:', selectedCategories);
       dispatch(setCreativeFocus(selectedCategories));
       dispatch(setPageProgress(7));
       navigation.navigate('SelectInterestScreen');

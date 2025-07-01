@@ -28,9 +28,7 @@ export const apiPost = async (url: any, apiData = {}) => {
     instance
       .post(`${getApiBaseUrl()}${url}`, apiData, await getHeaders())
       .then(result => {
-        console.log("result signup api", result)
         const { data, status } = result;
-        console.log("Api Call Response ", data)
         return res({ data, status });
       })
       .catch(error => {
@@ -78,7 +76,6 @@ export const apiPut = async (url: any, apiData: {}) => {
       .put(`${getApiBaseUrl()}${url}`, apiData, await getHeaders())
       .then(result => {
         const { data, status } = result;
-        console.log("Api Call Response ", url, data)
         return res({ data, status });
       })
       .catch(error => {
@@ -115,13 +112,11 @@ export const apiPut = async (url: any, apiData: {}) => {
 };
 
 export const apiGet = async (url: any) => {
-  console.log()
   return new Promise(async (res, rej) => {
 
     axios.get(getApiBaseUrl() + url, await getHeaders())
       .then(result => {
         const { data } = result;
-        console.log("Get Api Call Response ", url, data)
         return res(data);
       })
       .catch(error => {

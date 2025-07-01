@@ -45,7 +45,7 @@ import EditPictureBottomSheet from '../../component/BottomSheet/EditPictureBotto
 import TermsAndPolicy from '../../component/TermsAndPlolicy/TermsAndPolicy';
 import WebViewBottomSheet from '../../component/WebView/WebViewBottomSheet';
 import { RootState } from '../../redux/slices';
-import { BUTTON_LABLE, COLORS, PROFILE, ROLE } from '../../utils/constants';
+import { BUTTON_LABLE, COLORS, PROFILE, ROLE, MAX_IMAGE_SIZE_BYTES } from '../../utils/constants';
 import ProfileListItem from './ProfileListItem';
 import ProfileScreenStyle from './ProfileScreenStyle';
 import ProfileTopView from './ProfileTopView';
@@ -60,9 +60,9 @@ import NotificationsScreen from '../Notifications/NotificationsScreen';
 import FeedbackScreen from './EditProfile/FeedbackScreen';
 import NotificationSettingsScreen from './EditProfile/NotificationSettingsScreen';
 import { useLogout } from 'src/utils/hooks/useLogout';
-import FollowingScreen from './FollowingScreen/FollowingScreen'
-import ReferralScreen from './ReferralsScreen/ReferralScreen'
-import SelectInterestScreen from '../AppFlow/SelectInterestScreen/SelectInterestScreen'
+import FollowingScreen from './FollowingScreen/FollowingScreen';
+import ReferralScreen from './ReferralsScreen/ReferralScreen';
+import SelectInterestScreen from '../AppFlow/SelectInterestScreen/SelectInterestScreen';
 
 // Define the type for navigation props
 interface ProfileScreenProps extends NativeStackScreenProps<any, any> {}
@@ -81,8 +81,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
     PROFILE.EDIT_PROFILE,
   );
 
-const { logOut } = useLogout();
-
+  const { logOut } = useLogout();
 
   const editPhotoBottomSheetRef = useRef<any>(null);
   const savePhotoBottomSheetRef = useRef<any>(null);
@@ -121,7 +120,6 @@ const { logOut } = useLogout();
     }),
     shallowEqual,
   );
-
 
   const getUserSettings = async () => {
     const response: any = await apiRequest(
@@ -182,7 +180,6 @@ const { logOut } = useLogout();
       loadUserProfile();
     }, []),
   );
-
 
   useEffect(() => {
     if (profileData?.email) {
@@ -252,6 +249,7 @@ const { logOut } = useLogout();
       image: IMAGES.connectedAccount,
     },
     { id: '5', title: PROFILE.MY_INTERESTS, image: IMAGES.heart },
+    { id: '15', title: PROFILE.TRAVEL_PLANS, image: IMAGES.plane },
     { id: '6', title: PROFILE.NOTIFICATION, image: IMAGES.notification },
     { id: '7', title: PROFILE.FEEDBACK, image: IMAGES.feedback },
     {
@@ -410,11 +408,17 @@ const { logOut } = useLogout();
       cropperCircleOverlay: true,
     })
       .then((image: ImageOrVideo) => {
-        setImage(image.path);
-        setImageSize(image.size);
-
-        // editPhotoBottomSheetRef.current?.close();
-        savePhotoBottomSheetRef.current?.open();
+        if (image.size && image.size <= MAX_IMAGE_SIZE_BYTES) {
+          setImage(image.path);
+          setImageSize(image.size);            
+          savePhotoBottomSheetRef.current?.open();  
+        } else {
+          Alert.alert(
+            'Image Size Error',
+            'Please select an image that is under 5MB in size.',
+            [{ text: 'OK' }]
+          );          
+        }
       })
       .catch(async error => {
         console.log('ImagePicker Error: ', error);
@@ -442,7 +446,7 @@ const { logOut } = useLogout();
 
   const onPresslogOut = async () => {
     logoutBottomSheetRef.current?.close();
-    logOut()
+    logOut();
   };
 
   const getUserName = () => {
@@ -521,7 +525,7 @@ const { logOut } = useLogout();
     <View
       style={[
         styles.container,
-        
+
         { backgroundColor: !isGuest && !isIPad ? COLORS.black2 : COLORS.white },
       ]}>
       <View

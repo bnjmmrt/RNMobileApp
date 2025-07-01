@@ -62,7 +62,7 @@ const EventHostItem: React.FC<EventHostItemProps> = ({ item, length }) => {
       />
       <View style={{ paddingHorizontal: 10, marginEnd: 20, flex: 1 }}>
         <CustomText style={styles.title} >
-          {capitalizeFirstLetter(item?.name)}
+          {item?.name}
         </CustomText>
         <CustomText style={styles.subtitle}>
           {capitalizeFirstLetter(item?.role?.name)}

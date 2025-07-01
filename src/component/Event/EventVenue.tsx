@@ -65,7 +65,7 @@ const EventVenue: React.FC<EventVenueProps> = ({
           <CustomText style={styles.title}>{dates[0]}</CustomText>
           <CustomText style={styles.subtitle}>{dates[1]}</CustomText>
         </View>
-        {item.currentGuestStatus === 'CONFIRMED' && (
+        {item?.currentGuestStatus === 'CONFIRMED' && (
           <TouchableOpacity onPress={handleCalendarPress}>
             <Image resizeMode="contain" source={IMAGES.calendarCircle} />
           </TouchableOpacity>
@@ -74,21 +74,25 @@ const EventVenue: React.FC<EventVenueProps> = ({
 
       <GradientSeprator />
 
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          gap: horizontalMarginScale(16),
-        }}>
-        <View>
-          <CustomText style={styles.title}>Further instructions</CustomText>
-          <CustomText style={styles.subtitle}>
-            {item?.furtherInstructions}
-          </CustomText>
-        </View>
-      </View>
+      {item?.furtherInstructions && (
+        <>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              gap: horizontalMarginScale(16),
+            }}>
+            <View>
+              <CustomText style={styles.title}>Further instructions</CustomText>
+              <CustomText style={styles.subtitle}>
+                {item?.furtherInstructions}
+              </CustomText>
+            </View>
+          </View>
 
-      <GradientSeprator />
+          <GradientSeprator />
+        </>
+      )}
 
       <View style={styles.locationContainer}>
         <CustomText style={styles.title}>{locationText}</CustomText>

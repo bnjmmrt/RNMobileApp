@@ -16,7 +16,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take,
         skip,
         sortBy,
-        order
+        order,
       }: {
         userId: string;
         guestEventStatus: string;
@@ -39,7 +39,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take,
         skip,
         sortBy,
-        order
+        order,
       }: {
         status: string;
         searchText: string;
@@ -156,12 +156,12 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         searchValue?: string;
         sortBy?: 'name' | 'partySize';
         guestStatus?:
-        | 'INVITED'
-        | 'APPLIED'
-        | 'CONFIRMED'
-        | 'DECLINED'
-        | 'DRAFT'
-        | '';
+          | 'INVITED'
+          | 'APPLIED'
+          | 'CONFIRMED'
+          | 'DECLINED'
+          | 'DRAFT'
+          | '';
         sortDirection?: 'ASC' | 'DESC';
         take?: number;
         skip?: number;
@@ -190,7 +190,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
       providesTags: ['EventGuestList'],
       serializeQueryArgs: ({ endpointName }) => endpointName,
       merge: (currentCache, newItems, otherArgs) => {
-        currentCache.data.totalCount = newItems.data.totalCount
+        currentCache.data.totalCount = newItems.data.totalCount;
         currentCache.data.result =
           otherArgs?.arg?.skip === 0
             ? newItems?.data?.result
@@ -256,7 +256,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         take,
         skip,
         id,
-        role
+        role,
       }: {
         eventId: any;
         take: number;
@@ -369,7 +369,7 @@ export const eventApiAction = createBaseApi.injectEndpoints({
     }),
 
     fetchEventTypes: builder.query({
-      query: ({ }: {}) => ({
+      query: ({}: {}) => ({
         url: `/events/v1/event-types`,
         method: 'GET',
       }),
@@ -387,6 +387,25 @@ export const eventApiAction = createBaseApi.injectEndpoints({
         'GuestStatusCount',
         'EventDetails',
         // 'EventGuestList',
+      ],
+    }),
+    fetchTicketBreakdown: builder.query({
+      query: ({ eventId }: { eventId: string }) => ({
+        url: `/events/v1/ticket-types/${eventId}/ticket-breakdown`,
+        method: 'GET',
+      }),
+    }),
+
+    publishEvent: builder.mutation({
+      query: ({ eventId }: { eventId: string }) => ({
+        url: `events/v1/event/${eventId}/publish`,
+        method: 'PUT',
+      }),
+      invalidatesTags: [
+        'EventDetails',
+        'HostEvents',
+        'Events',
+        'DashboardUpcomingEvents',
       ],
     }),
   }),
@@ -416,4 +435,6 @@ export const {
   useFetchSignupFormsQuery,
   useFetchEventTypesQuery,
   useGuestCheckInMutation,
+  useFetchTicketBreakdownQuery,
+  usePublishEventMutation,
 } = eventApiAction;

@@ -10,7 +10,7 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
-import { LABLE, BUTTON_LABLE, ERROR_MESSAGE, PERMISSION } from '../../../utils/constants';
+import { LABLE, BUTTON_LABLE, ERROR_MESSAGE, PERMISSION, MAX_IMAGE_SIZE_BYTES } from '../../../utils/constants';
 import ProfilePhotoScreenStyles from './ProfilePhotoScreenStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
@@ -160,11 +160,20 @@ const ProfilePhotoScreen: React.FC<ProfilePhotoScreenProps> = ({
       cropperCircleOverlay: true,
     })
       .then((image: ImageOrVideo) => {
-        setImage(image.path);
-        setImageSize(image.size);
-        setIsToastShown(false);
-        setIsUploadProfile(true);
-        savePhotoBottomSheetRef.current?.open();
+
+        if (image.size && image.size <= MAX_IMAGE_SIZE_BYTES) {
+          setImage(image.path);
+          setImageSize(image.size);
+          setIsToastShown(false);
+          setIsUploadProfile(true);
+          savePhotoBottomSheetRef.current?.open();  
+        } else {
+          Alert.alert(
+            'Image Size Error',
+            'Please select an image that is under 5MB in size.',
+            [{ text: 'OK' }]
+          );          
+        }
       })
       .catch(async error => {
         console.log('ImagePicker Error: ', error);

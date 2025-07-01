@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { ROUTES } from '../../navigation/Route';
 import { RootState } from '../../redux/slices';
@@ -10,6 +10,9 @@ import DiscoverScreen from '../../screens/DiscoverScreen/DiscoverScreen';
 import EventScreen from '../../screens/EventScreen/EventScreen';
 import ProfileScreen from '../../screens/ProfileScreen/ProfileScreen';
 import BottomTabBrComponent from './BottomTabBarComponent';
+import { ROLE } from '../../utils/constants';
+import useApi from 'src/axios/useApi';
+import { useNavigation } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
@@ -59,8 +62,77 @@ const hostTabs = [
   },
 ];
 
-const BottomTabBar = () => {
+const CommunityGuidelinesChecker = () => {
+  const navigation = useNavigation<any>();
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  const { role } = useSelector(
+    (state: RootState) => ({
+      role: state.auth.role,
+    }),
+    shallowEqual,
+  );
+  const { apiRequest } = useApi<any>();
 
+  const checkCommunityGuidelinesStatus = async () => {
+    try {
+      const response: any = await apiRequest(
+        'get',
+        `users/v1/auth/user/${userId}/community-guidelines-status`,
+      );
+      return (response as any).data.agreed;
+    } catch (error) {
+      console.error('Error checking community guidelines status:', error);
+      return false;
+    }
+  };
+
+  const checkHostCommunityGuidelinesStatus = async () => {
+    try {
+      const response: any = await apiRequest(
+        'get',
+        `users/v1/auth/user/${userId}/host-community-guidelines-status`,
+      );
+      return (response as any).data.agreed;
+    } catch (error) {
+      console.error('Error checking host community guidelines status:', error);
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    const checkGuidelines = async () => {
+      if (!userId || role === ROLE.NON_MEMBER) {
+        return;
+      }
+
+      try {
+        let hasAgreed = false;
+
+        if (role === ROLE.MEMBER) {
+          hasAgreed = await checkCommunityGuidelinesStatus();
+          if (!hasAgreed) {
+            navigation.replace('CommunityGuidelinesScreen', { isHost: false });
+            return;
+          }
+        } else if (role === ROLE.HOST) {
+          hasAgreed = await checkHostCommunityGuidelinesStatus();
+          if (!hasAgreed) {
+            navigation.replace('CommunityGuidelinesScreen', { isHost: true });
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('Error checking community guidelines:', error);
+      }
+    };
+
+    checkGuidelines();
+  }, [userId, role]);
+
+  return <BottomTabBar />;
+};
+
+const BottomTabBar = () => {
   const { role, isGuest } = useSelector(
     (state: RootState) => ({
       role: state.auth.role,
@@ -69,15 +141,13 @@ const BottomTabBar = () => {
     shallowEqual,
   );
 
-
-  // const role =
-  //   (loginData?.roles &&
-  //     loginData?.roles.length > 0 &&
-  //     loginData?.roles[0]?.roleName) ||
-  //   'non_member';
   const bottomTabsData = role === 'host' ? hostTabs : memberTabs;
-  const initialRouteName = role === 'host' ? 'EventScreen' : isGuest ? 'EventScreen' : 'DiscoverScreen';
-  console.log('BottomTabBar role', role, 'isGuest', isGuest, 'initialRouteName', initialRouteName)
+  const initialRouteName =
+    role === 'host'
+      ? 'EventScreen'
+      : isGuest
+      ? 'EventScreen'
+      : 'DiscoverScreen';
 
   return (
     <Tab.Navigator
@@ -85,13 +155,13 @@ const BottomTabBar = () => {
       screenOptions={{ headerShown: false }}
       backBehavior="history"
       initialRouteName={initialRouteName}
-    //   initialRouteName
-    // role === 'host' ? 'EventScreen' : 'DiscoverScreen'
-    // loginData?.isInvited ? 'EventScreen' : 'DiscoverScreen'
-    // ROUTES.UsersScreen
-    // 'DiscoverScreen'
-    //'EventScreen'
-    // }
+      //   initialRouteName
+      // role === 'host' ? 'EventScreen' : 'DiscoverScreen'
+      // loginData?.isInvited ? 'EventScreen' : 'DiscoverScreen'
+      // ROUTES.UsersScreen
+      // 'DiscoverScreen'
+      //'EventScreen'
+      // }
     >
       {bottomTabsData.map((item, index) => {
         return (
@@ -107,4 +177,4 @@ const BottomTabBar = () => {
   );
 };
 
-export default BottomTabBar;
+export default CommunityGuidelinesChecker;

@@ -56,6 +56,7 @@ import {
   useFetchHostEventDetailsQuery,
   useFetchHostEventsAnnouncementQuery,
   useFetchSignupFormsQuery,
+  usePublishEventMutation,
 } from 'src/redux/actions/eventApiAction';
 import { RootState } from 'src/redux/slices';
 import { setEventId } from 'src/redux/slices/eventSlice';
@@ -65,11 +66,21 @@ import {
   fontFamily,
   removeSignature,
   changeSafeAreaViewConfig,
+  getErrorMessage,
 } from 'src/utils/functions';
 import useCalender from 'src/utils/hooks/useCalender';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
-import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
+import {
+  BUTTON_LABLE,
+  COLORS,
+  EventStatusEnum,
+  LABLE,
+  ROLE,
+} from '../../utils/constants';
 import { isIPad } from '../../utils/isTabletConfig';
+import AlertBadge from 'src/component/AlertBadge';
+import { format } from 'date-fns';
+import { formatToIsoDate } from 'src/utils/formatToDeviceTimeZone';
 
 interface EventDetailsScreenProps extends NativeStackScreenProps<any, any> {}
 
@@ -97,6 +108,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   const eventId = route?.params?.id;
   const { reset } = useNavigation();
 
+  const [publishEvent] = usePublishEventMutation();
   const { data: eventCount, refetch: refetchGuestStatusCount } =
     useFetchGuestStatusCountQuery({ eventId }, { skip: role !== ROLE.HOST });
   const annqueryArgs = {
@@ -279,7 +291,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     if (isEventExist) {
       const targetDate = new Date(calendarDetails.startDate); // Your desired date
       if (Platform.OS === 'ios') {
-        let eventDateInMilisecond = Math.floor(targetDate / 1000);
+        let eventDateInMilisecond = Math.floor(targetDate.getTime() / 1000);
         const seconds = eventDateInMilisecond - 978307200;
         Linking.openURL(`calshow:${seconds}`);
       } else if (Platform.OS === 'android') {
@@ -293,23 +305,17 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
   };
 
   const addAnouncement = () => {
-    const date1 = moment.utc(data?.data?.endDate);
-    const date2 = moment();
     let eventData = data?.data;
-    if (date1.isBefore(date2)) {
-      FlashMessageComponent.show('error', LABLE.PAST_EVENT_ANNOUNCEMENTS_ERROR);
+    if (eventCount?.data?.confirmedCount === 0) {
+      setshowError(true);
+      setTimeout(() => {
+        scrollViewRef?.current?.scrollToEnd({ animated: true });
+      }, 1000);
     } else {
-      if (eventCount?.data?.confirmedCount === 0) {
-        setshowError(true);
-        setTimeout(() => {
-          scrollViewRef?.current?.scrollToEnd({ animated: true });
-        }, 1000);
-      } else {
-        navigation.navigate(ROUTES.EventStack, {
-          screen: ROUTES.AddAnnouncementScreen,
-          params: { eventData, announcementId: null },
-        });
-      }
+      navigation.navigate(ROUTES.EventStack, {
+        screen: ROUTES.AddAnnouncementScreen,
+        params: { eventData, announcementId: null },
+      });
     }
   };
 
@@ -411,11 +417,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     );
   };
   const renderRSVPButton = () => {
-    if (
-      isDeclinedByHost ||
-      guestStatus === 'CONFIRMED' ||
-      role === ROLE.HOST
-    ) {
+    if (isDeclinedByHost || guestStatus === 'CONFIRMED' || role === ROLE.HOST) {
       return null;
     }
 
@@ -583,6 +585,12 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
     );
   };
 
+  const onPressTicketBreakdown = () => {
+    navigation.navigate(ROUTES.TicketBreakdownScreen, {
+      eventId: route?.params?.id,
+    });
+  };
+
   const signupFormsBottomSheetRef = useRef<any>(null);
   const { data: signupFormsData } = useFetchSignupFormsQuery(
     {
@@ -592,6 +600,28 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
       skip: role !== ROLE.HOST,
     },
   );
+
+  const handlePublishEvent = async () => {
+    try {
+      const response = await publishEvent({
+        eventId: data?.data?.id,
+      }).unwrap();
+      if (response.success) {
+        FlashMessageComponent.show('success', 'Event published');
+        refetch();
+      } else {
+        FlashMessageComponent.show('error', response.message ?? '');
+      }
+    } catch (error) {
+      FlashMessageComponent.show('error', 'Failed to publish event');
+    }
+  };
+
+  const showPublishNowAlert =
+    data?.data?.status === EventStatusEnum.SCHEDULED &&
+    !data?.data?.isPublished &&
+    !data?.data?.isPrivate &&
+    data?.data?.publishDate;
 
   return (
     <>
@@ -690,7 +720,8 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                       <EventRequests
                         eventId={data?.data?.id}
                         checkedinCount={data?.data?.totalCheckedInGuests}
-                        onTicketBreakdownPress={onPressManageInvite}
+                        onManageGuestListPress={onPressManageInvite}
+                        onTicketBreakdownPress={onPressTicketBreakdown}
                       />
                     )}
                     {!isLoading && (
@@ -699,16 +730,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                         handleCalendarPress={addCalenderEvents}
                       />
                     )}
-                    {guestStatus == 'CONFIRMED' && (
-                      <EventOverview
-                        item={data?.data}
-                        isFurtherInstrection={true}
-                      />
-                    )}
-                    <EventOverview
-                      item={data?.data}
-                      isFurtherInstrection={false}
-                    />
+                    <EventOverview item={data?.data} />
                     {talents.length > 0 && <EventTalent talents={talents} />}
                     {announcementLoading && (
                       <ActivityIndicator color={COLORS.black} />
@@ -819,14 +841,16 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                       />
                     )}
                   />
-                  {(guestStatus === 'INVITED' || guestStatus === 'CONFIRMED') && (
+                  {(guestStatus === 'INVITED' ||
+                    guestStatus === 'CONFIRMED') && (
                     <EventInvitation item={data?.data} />
                   )}
                   {role === ROLE.HOST && (
                     <EventRequests
                       eventId={data?.data?.id}
                       checkedinCount={data?.data?.totalCheckedInGuests}
-                      onTicketBreakdownPress={onPressManageInvite}
+                      onManageGuestListPress={onPressManageInvite}
+                      onTicketBreakdownPress={onPressTicketBreakdown}
                     />
                   )}
                   {!isLoading && (
@@ -835,16 +859,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                       handleCalendarPress={addCalenderEvents}
                     />
                   )}
-                  {guestStatus == 'CONFIRMED' && (
-                    <EventOverview
-                      item={data?.data}
-                      isFurtherInstrection={true}
-                    />
-                  )}
-                  <EventOverview
-                    item={data?.data}
-                    isFurtherInstrection={false}
-                  />
+                  <EventOverview item={data?.data} />
                   {talents.length > 0 && <EventTalent talents={talents} />}
                   {announcementLoading && (
                     <ActivityIndicator color={COLORS.black} />
@@ -900,6 +915,28 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({
                         {LABLE.ADD_EVENT_ANNOUNCEMENTS_ERROR}
                       </Text>
                     </View>
+                  )}
+                  {role === ROLE.HOST && showPublishNowAlert && (
+                    <AlertBadge>
+                      <Text style={styles.baseAlertText}>
+                        Your event is scheduled to publish on{' '}
+                        {data?.data?.publishDate
+                          ? format(
+                              new Date(
+                                formatToIsoDate(data?.data?.publishDate),
+                              ),
+                              'MMMM do, yyyy — h:mm a',
+                            )
+                          : '-'}{' '}
+                        and will go live on the Discovery Feed.{' '}
+                        <Text
+                          style={styles.pressableAlertText}
+                          onPress={handlePublishEvent}>
+                          Tap Here
+                        </Text>{' '}
+                        to Publish Now.
+                      </Text>
+                    </AlertBadge>
                   )}
                 </View>
               </ScrollView>
@@ -1079,6 +1116,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  baseAlertText: {
+    fontSize: 14,
+    color: COLORS.black,
+    fontFamily: fontFamily.ABCDiatype_Medium,
+    lineHeight: 16,
+    fontWeight: 500,
+    flex: 1,
+  },
+  pressableAlertText: {
+    textDecorationLine: 'underline',
   },
 });
 

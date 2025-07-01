@@ -66,7 +66,6 @@ const SignupFormsBottomSheet = forwardRef<
   const { signupForms } = props;
   const activeForm = signupForms[activeFormIndex];
 
-  console.log('activeFormIndex', activeForm);
 
   useImperativeHandle(ref, () => ({
     open: () => bottomSheetRef.current?.open(),

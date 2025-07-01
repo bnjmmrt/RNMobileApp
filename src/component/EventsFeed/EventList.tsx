@@ -58,7 +58,6 @@ const EventList = ({
 
 
   const getEmptyStateMessage = () => {
-    console.log('getEmptyStateMessage', selectedFilters);
     if (Object.entries(selectedFilters) && searchTerm) {
       return 'Please refine your search.';
     } else if (Object.entries(selectedFilters)) {

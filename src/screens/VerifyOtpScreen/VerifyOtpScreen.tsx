@@ -44,12 +44,17 @@ type RouteParams = {
     isEmail: boolean;
     email?: string;
     phone?: string;
+    // isSecondary?: boolean;
   };
 };
 
 const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const styles = VerifyOtpStyles();
-  const otpInputRef = useRef<{ handleNextPress: () => void }>(null);
+  const otpInputRef = useRef<{
+    handleNextPress: () => void;
+    setApiError: (error: string) => void;
+    clearOTP: () => void;
+  }>(null);
   const route = useRoute<RouteProp<RouteParams>>();
   const { sendOtp, isMemberExist, isGuest } = useSendOtp(
     route.params.email,
@@ -61,13 +66,11 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     route.params.email,
     route.params.phone,
     route.params.isEmail,
+    // route.params.isSecondary,
   );
 
   const dispatch = useDispatch();
   const [getUserById] = useGetUserWithRolesByIdMutation();
-
-  const fcmToken = useSelector((state: RootState) => state.auth.fcmToken);
-  const { keyboardVisible } = useKeyboard();
 
   const [errorMsg, setErrorMsg] = useState('');
   useEffect(() => {
@@ -95,7 +98,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         const transformedRoles = roles.map((role: any) => ({
           roleName: role.name,
           roleId: role.id,
-          roleStatus: role.status
+          roleStatus: role.status,
         }));
         dispatch(setRoles(transformedRoles));
       }
@@ -104,8 +107,19 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     }
   };
 
-
   const redirectToHome = (data: any) => {
+    // For secondary verification, directly navigate to BottomTabBar
+    // if (route.params.isSecondary) {
+    //   navigation.dispatch(
+    //     CommonActions.reset({
+    //       index: 0,
+    //       routes: [{ name: 'AppStack', params: { screen: 'BottomTabBar' } }],
+    //     }),
+    //   );
+    //   return;
+    // }
+
+    // Primary verification flow
     loginUser({
       id: data?.id,
       isGuest: data?.isGuest,
@@ -119,9 +133,35 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
     dispatch(setPhone(route.params.phone || ''));
     dispatch(setIsGuest(data?.isGuest));
     fetchUserProfile();
-    fetchUserById(data?.id)
+
+    if (data?.id) {
+      fetchUserById(data.id);
+    }
+
     let role = getPriorityRole(data?.roles);
     let screenName = '';
+
+    // // If user is missing either email or phone, redirect to SecondaryEmailPhoneScreen
+    // if (!data.user?.email || !data.user?.phoneNumber) {
+    //   if (data.user && (!data.user.email || !data.user.phoneNumber)) {
+    //     navigation.dispatch(
+    //       CommonActions.reset({
+    //         index: 0,
+    //         routes: [
+    //           {
+    //             name: 'SecondaryEmailPhoneScreen',
+    //             params: {
+    //               isEmail: !data.user.email,
+    //               email: data.user.email || route.params.email,
+    //               phone: data.user.phoneNumber || route.params.phone,
+    //             },
+    //           },
+    //         ],
+    //       }),
+    //     );
+    //     return;
+    //   }
+    // }
 
     switch (role.roleName) {
       case ROLE.NON_MEMBER:
@@ -180,8 +220,9 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         <View style={styles.contentContainer}>
           <TitleSubtitle
             title={LABLE.ENTER_YOUR_VERIFICATION_CODE}
-            subTitle={`${LABLE.SEND_TO}${route.params.isEmail ? route.params.email : route.params.phone
-              }`}
+            subTitle={`${LABLE.SEND_TO}${
+              route.params.isEmail ? route.params.email : route.params.phone
+            }`}
           />
           <OTPComponent
             error={errorMsg}

@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useState } from 'react';
 import FastImage from '@d11/react-native-fast-image';
 import IMAGES from '@images/index';
@@ -36,12 +37,7 @@ import {
   setRsvpStatus,
   setSelectedGuest,
 } from 'src/redux/slices/rspvSlice';
-import {
-  BUTTON_LABLE,
-  COLORS,
-  EVENT_STATUS,
-  LABLE,
-} from 'src/utils/constants';
+import { BUTTON_LABLE, COLORS, EVENT_STATUS, LABLE } from 'src/utils/constants';
 import {
   fontScale,
   verticalMarginScale,
@@ -57,9 +53,7 @@ import SelectReason from './BottomSheetView/SelectReason';
 import RenderCancelPopup from './RenderCancelPopup';
 import { styles } from './styles';
 import { SwipeableGuestList } from './SwipeableGuestList';
-import {
-  formatDetailedEventDate,
-} from 'src/utils/dateFunctions';
+import { formatDetailedEventDate } from 'src/utils/dateFunctions';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 const reasons = [
@@ -98,12 +92,12 @@ interface EventLocation {
   city: string;
 }
 interface EventCardProps {
-  name: string,
-  location: EventLocation,
-  showLocation: boolean,
-  imageCover: string,
-  dates: string,
-  currentGuestStatus: string,
+  name: string;
+  location: EventLocation;
+  showLocation: boolean;
+  imageCover: string;
+  dates: string;
+  currentGuestStatus: string;
 }
 interface StatusBannerProps {
   isGoing: boolean;
@@ -184,7 +178,7 @@ const RSVPInvitedUpcoming = () => {
   const [activeView, setActiveTab] = React.useState<string>('');
   const bottomSheetRef = React.useRef<any>(null);
   const [selectedReason, setSelectedReason] = React.useState<any>({});
-  const [reasonSelected, setReasonSelected] = React.useState<any>('');
+  const [reasonSelected, setReasonSelected] = React.useState<any>(null);
   const [showInfo, setShowInfo] = React.useState<boolean | null>(false);
   const [isToastShown, setIsToastShown] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
@@ -200,7 +194,8 @@ const RSVPInvitedUpcoming = () => {
   const rspv = useSelector((state: RootState) => state.rspv);
 
   const [inviteGuests, { isLoading: guestLoading }] = useInviteGuestsMutation();
-  const [deleteConfirmedGuest,
+  const [
+    deleteConfirmedGuest,
     {
       isLoading: deleteGuestLoading,
       isError: deleteGuestError,
@@ -211,8 +206,8 @@ const RSVPInvitedUpcoming = () => {
   React.useEffect(() => {
     getInvitees();
     return () => {
-      handleResponse(null)
-    }
+      handleResponse(null);
+    };
   }, []);
   React.useEffect(() => {
     setTimeout(() => {
@@ -276,7 +271,12 @@ const RSVPInvitedUpcoming = () => {
   };
 
   const getSnapPoints = (): string => {
-    const guestSnapPoint = maxAdditionalGuests == 0 ? '10%' : maxAdditionalGuests > 10 ? '80%' : `${maxAdditionalGuests * 7 + (15 - maxAdditionalGuests)}`;
+    const guestSnapPoint =
+      maxAdditionalGuests == 0
+        ? '10%'
+        : maxAdditionalGuests > 10
+        ? '80%'
+        : `${maxAdditionalGuests * 7 + (15 - maxAdditionalGuests)}`;
     switch (activeView) {
       case 'submit':
         return '60%';
@@ -301,12 +301,8 @@ const RSVPInvitedUpcoming = () => {
     }
   };
 
-
-
   const renderBottomSheetContent = () => {
-
     switch (activeView) {
-
       case 'leave':
         return renderLeaveWithoutSubmitting();
       case 'remove':
@@ -327,9 +323,7 @@ const RSVPInvitedUpcoming = () => {
       default:
         return null;
     }
-
   };
-
 
   const renderCancelPopup = () => (
     <RenderCancelPopup
@@ -344,7 +338,7 @@ const RSVPInvitedUpcoming = () => {
       setReasonSelected={setReasonSelected}
       reasonSelected={reasonSelected}
     />
-  )
+  );
 
   const renderReasons = () => (
     <SelectReason
@@ -367,7 +361,7 @@ const RSVPInvitedUpcoming = () => {
         }}
       />
     </BottomSheetScrollView>
-  )
+  );
 
   const renderFailedBox = () => (
     <MessageBox
@@ -385,7 +379,7 @@ const RSVPInvitedUpcoming = () => {
         { height: verticalScale(48) },
       ]}
     />
-  )
+  );
 
   const renderSuccessBox = () => (
     <MessageBox
@@ -404,7 +398,7 @@ const RSVPInvitedUpcoming = () => {
         { height: verticalScale(48) },
       ]}
     />
-  )
+  );
 
   const renderLeaveWithoutSubmitting = () => (
     <View style={styles.leaveContainer}>
@@ -510,7 +504,7 @@ const RSVPInvitedUpcoming = () => {
         const accept_response = await acceptInvite({
           id: userId,
           eventId: id,
-          limitOnePlus: rspv?.selectedGuest?.id
+          limitOnePlus: rspv?.selectedGuest?.id,
         });
         const response = await inviteGuests({
           userId: userId,
@@ -677,7 +671,7 @@ const RSVPInvitedUpcoming = () => {
                                   }),
                                 )
                               }
-                              onInfoClick={() => { }}
+                              onInfoClick={() => {}}
                             />
                           </GestureHandlerRootView>
                         );
@@ -710,7 +704,7 @@ const RSVPInvitedUpcoming = () => {
             />
           </View>
         )}
-        {rspv.response == 'Yes' && (
+        {rspv.response === 'Yes' && (
           <CustomText
             style={{
               color: COLORS.light_gray,
@@ -719,7 +713,9 @@ const RSVPInvitedUpcoming = () => {
               paddingBottom: 8,
               fontSize: fontScale(14),
             }}>
-            {'Please share your additional guests’ details before the event to ensure a smooth check-in experience.'}
+            {
+              'Please share your additional guests’ details before the event to ensure a smooth check-in experience.'
+            }
           </CustomText>
         )}
 
@@ -767,7 +763,7 @@ const RSVPInvitedUpcoming = () => {
     let guestCount = calculateAvailableGuestPasses(
       combinedGuests,
       maxAdditionalGuests,
-    )
+    );
     return (
       <>
         <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
@@ -788,15 +784,12 @@ const RSVPInvitedUpcoming = () => {
               }}
             />
             <View style={{ gap: 6 }}>
-              {guestCount > 0 ?
+              {Boolean(guestCount > 0) && (
                 <CustomText style={{ color: COLORS.light_gray }}>
-                  You have{' '}
-                  {guestCount}{' '}
-                  guest {guestCount > 1 ? 'passes' : 'pass'} available{' '}
-                </CustomText> :
-                <CustomText style={{ color: COLORS.light_gray }}>
-                  You don't have any guest pass.
-                </CustomText>}
+                  You have {guestCount} guest{' '}
+                  {guestCount > 1 ? 'passes' : 'pass'} available{' '}
+                </CustomText>
+              )}
               <FlatList
                 data={combinedGuests}
                 renderItem={renderItem}
@@ -820,17 +813,20 @@ const RSVPInvitedUpcoming = () => {
                   </CustomText>
                 </>
               )}
-              <Button
-                disabled={false}
-                style={[
-                  styles.clearButton,
-                  styles.btnBorder,
-                  { height: verticalScale(48) },
-                ]}
-                title={BUTTON_LABLE.ADD_GUEST_DETAILS}
-                colorTheme="white"
-                onPress={onAddGuest}
-              />
+              {guestCount > 0 && (
+                <Button
+                  disabled={false}
+                  style={[
+                    styles.clearButton,
+                    styles.btnBorder,
+                    { height: verticalScale(48) },
+                  ]}
+                  title={BUTTON_LABLE.ADD_GUEST_DETAILS}
+                  colorTheme="white"
+                  onPress={onAddGuest}
+                />
+              )}
+
               {isToastShown &&
                 calculateAvailableGuestPasses(
                   combinedGuests,
@@ -850,15 +846,19 @@ const RSVPInvitedUpcoming = () => {
           </View>
         </ScrollView>
 
-        <CustomText
-          style={{
-            color: COLORS.light_gray,
-            textAlign: 'center',
-            paddingTop: 12,
-            paddingBottom: 8,
-          }}>
-          {'Please share your additional guests’ details before the event to ensure a smooth check-in experience.'}
-        </CustomText>
+        {Boolean(guestCount > 0) && (
+          <CustomText
+            style={{
+              color: COLORS.light_gray,
+              textAlign: 'center',
+              paddingTop: 12,
+              paddingBottom: 8,
+            }}>
+            Please share your additional guests’ details before the event to
+            ensure a smooth check-in experience.
+          </CustomText>
+        )}
+
         <Button
           disabled={false}
           loading={guestLoading}

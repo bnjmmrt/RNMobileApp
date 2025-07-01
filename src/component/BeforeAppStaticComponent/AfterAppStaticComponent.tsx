@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useRef } from 'react';
 import {
@@ -9,7 +10,12 @@ import {
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/slices';
-import { role, setIsGuest, setRole, setRoles } from 'src/redux/slices/authSlice';
+import {
+  role,
+  setIsGuest,
+  setRole,
+  setRoles,
+} from 'src/redux/slices/authSlice';
 import GradientOverlay from 'src/screens/BeforeApplicationFlow/GradientOverlay';
 import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BUTTON_LABLE, COLORS, LABLE, ROLE } from '../../utils/constants';
@@ -28,9 +34,10 @@ import ReferralCodeBottomSheet from '../ReferralCodeBottomSheet/ReferralCodeBott
 import MiddleStaticComponent from '../TitleSubTitleComponent/MiddleStaticComponent';
 import TitleSubtitle from '../TitleSubTitleComponent/TitleSubtitle';
 import { useGetUserWithRolesByIdMutation } from 'src/redux/actions/inviteGuestsApiAction';
+import { navigate } from '../NavigationService';
 
 const AfterAppStaticComponent: React.FC<{}> = () => {
-  const { navigate } = useNavigation();
+  const navigation = useNavigation();
   const userId = useSelector((state: RootState) => state.auth.userId);
   const role = useSelector((state: RootState) => state.auth.role);
   const [getUserById] = useGetUserWithRolesByIdMutation();
@@ -38,7 +45,7 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
   const dispatch = useDispatch();
 
   const onAccessContactClick = async () => {
-    navigate('InviteReferralScreen');
+    (navigation as any).navigate('InviteReferralScreen');
   };
 
   const fetchUserById = async () => {
@@ -50,19 +57,25 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
         const transformedRoles = roles.map((role: any) => ({
           roleName: role.name,
           roleId: role.id,
-          roleStatus: role.status
+          roleStatus: role.status,
         }));
         dispatch(setRoles(transformedRoles));
 
         const isMember = transformedRoles.some(
           (role: role) => role.roleName === ROLE.MEMBER,
         );
+        const isHost = transformedRoles.some(
+          (role: role) => role.roleName === ROLE.HOST,
+        );
+
         if (isMember) {
-          navigate('CommunityGuidelinesScreen', { userName: name });
-          // navigate(ROUTES.WelcomeScreen, { userName: name });
+          navigate('AppStack', { screen: 'BottomTabBar' });
           dispatch(setRole(ROLE.MEMBER));
+        } else if (isHost) {
+          navigate('AppStack', { screen: 'BottomTabBar' });
+          dispatch(setRole(ROLE.HOST));
         } else {
-          dispatch(setIsGuest(isGuest || false))
+          dispatch(setIsGuest(isGuest || false));
         }
       }
     } catch (error) {
@@ -72,7 +85,9 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
 
   useFocusEffect(
     useCallback(() => {
-      if (role === ROLE.NON_MEMBER) { fetchUserById() }
+      if (role === ROLE.NON_MEMBER) {
+        fetchUserById();
+      }
     }, [role]),
   );
 
@@ -122,7 +137,6 @@ const AfterAppStaticComponent: React.FC<{}> = () => {
             />
 
             <MiddleStaticComponent
-              hasGradient={true}
               style={{ marginTop: verticalMarginScale(16) }}
             />
 

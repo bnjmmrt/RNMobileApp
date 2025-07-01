@@ -9,7 +9,14 @@ import DeviceInfo from 'react-native-device-info';
 import { axiosController } from 'src/axios/axiosController';
 import { FlashMessageComponent } from 'src/component/FlashMessageComponent/FlashMessageComponent';
 import { setProfileData } from 'src/redux/slices/appGlobalDataSlice';
-import { resetAppStack, role, roleType, setDeviceId, setLoginData, switchProfile } from 'src/redux/slices/authSlice';
+import {
+  resetAppStack,
+  role,
+  roleType,
+  setDeviceId,
+  setLoginData,
+  switchProfile,
+} from 'src/redux/slices/authSlice';
 import {
   configStatusBar,
   SafeAreaViewConfig,
@@ -17,7 +24,13 @@ import {
 import store from 'src/redux/store';
 import settings, { EndPoint } from '../ApiManager/config';
 import { ROLE } from './constants';
-import { setEmail, setFirstName, setIsEmailPhoneBothVerified, setLastName, setPhone } from 'src/redux/slices/appFlowSlice';
+import {
+  setEmail,
+  setFirstName,
+  setIsEmailPhoneBothVerified,
+  setLastName,
+  setPhone,
+} from 'src/redux/slices/appFlowSlice';
 
 // ErrorText component with TypeScript props
 interface ErrorTextProps {
@@ -75,7 +88,7 @@ export const getNumberOfLines = (str: string) => {
   const charsPerLine = 40;
 
   return Math.ceil(totalChars / charsPerLine);
-}
+};
 
 export const ErrorText: React.FC<ErrorTextProps> = ({ msg }) => {
   return (
@@ -130,11 +143,6 @@ export const capitalizeFirstLetter = (text: string): string => {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
     .join('-'); // Join with hyphen
 };
-
-// Example Usage
-console.log(capitalizeFirstLetter('co_host')); // Output: "Co-Host"
-console.log(capitalizeFirstLetter('host')); // Output: "Host"
-console.log(capitalizeFirstLetter('admin_user')); // Output: "Admin-User"
 
 export const objectToQueryString = (
   obj: Record<string, string | number | boolean>,
@@ -328,7 +336,6 @@ export const isIos = (): boolean => platform === 'ios';
 export const isAndroid = (): boolean => platform === 'android';
 
 export const convertDateFormat = (dateString: string): string => {
-  console.log('dateString', dateString);
   const [month, day, year] = dateString.split('/');
   return `${year}-${month}-${day}`;
 };
@@ -419,10 +426,10 @@ export const extractCountryCode = (phoneNumber: string) => {
 export const getCountryFlag = (countryCode: string) => {
   return countryCode
     ? countryCode
-      .toUpperCase()
-      .split('')
-      .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
-      .join('')
+        .toUpperCase()
+        .split('')
+        .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
+        .join('')
     : '';
 };
 export interface ApiErrorInterface {
@@ -452,12 +459,15 @@ export const getRoleRole = (role: string) => {
 };
 
 export const getPriorityRole = (roles: role[]) => {
-  let priorityRole = roles[0];
   const hostRole = roles.find(role => role.roleName === 'host');
-  if (roles.length > 1 && hostRole) {
-    priorityRole = hostRole;
-  }
-  return priorityRole;
+  const memberRole = roles.find(role => role.roleName === 'member');
+  const nonMemberRole = roles.find(role => role.roleName === 'non_member');
+
+  if (hostRole) return hostRole;
+  if (memberRole) return memberRole;
+  if (nonMemberRole) return nonMemberRole;
+
+  return roles[0]; // fallback to first role
 };
 
 export const loginUser = ({
@@ -477,7 +487,6 @@ export const loginUser = ({
   profilePicture: string | undefined;
   companyLogo: string | undefined;
 }) => {
-  console.log({ id, roles, token, isGuest, varifyStatus });
   const dispatch = store.store.dispatch;
   let priorityRole = getPriorityRole(roles);
   dispatch(
@@ -506,6 +515,10 @@ export const fetchUserProfile = async () => {
   let apiMethod: 'get' | 'post' | 'put' | 'delete' = 'get';
   let apiPayload = {};
 
+  if (!userId) {
+    return;
+  }
+
   if (currentRole) {
     if (currentRole === ROLE.HOST) {
       // apiUrl = `${EndPoint.host}/${userId}/profile`;
@@ -528,10 +541,13 @@ export const fetchUserProfile = async () => {
   try {
     const response = await axiosController[apiMethod](apiUrl, apiPayload, {});
     if (response.success) {
-
-      if (response?.data?.roles && response.data.roles.length == 1 && response.data.roles[0].status === 'DEACTIVATED') {
-        performLogout()
-        return
+      if (
+        response?.data?.roles &&
+        response.data.roles.length == 1 &&
+        response.data.roles[0].status === 'DEACTIVATED'
+      ) {
+        performLogout();
+        return;
       }
 
       dispatch(
@@ -541,12 +557,15 @@ export const fetchUserProfile = async () => {
         }),
       );
       response?.data?.email && dispatch(setEmail(response?.data?.email));
-      response?.data?.phoneNumber && dispatch(setPhone(response?.data?.phoneNumber));
+      response?.data?.phoneNumber &&
+        dispatch(setPhone(response?.data?.phoneNumber));
       if (response?.data?.email && response?.data?.phoneNumber) {
         dispatch(setIsEmailPhoneBothVerified(true));
       }
-      response?.data?.firstName && dispatch(setFirstName(response?.data?.firstName));
-      response?.data?.lastName && dispatch(setLastName(response?.data?.lastName));
+      response?.data?.firstName &&
+        dispatch(setFirstName(response?.data?.firstName));
+      response?.data?.lastName &&
+        dispatch(setLastName(response?.data?.lastName));
     }
   } catch (err) {
     const typedError = err as ApiErrorInterface;
@@ -617,7 +636,6 @@ export const getDisplayLocation = (
     return 'RSVP to See Location';
   }
 };
-
 
 export const removeSpaceFromStr = (text: string) => {
   if (text) {

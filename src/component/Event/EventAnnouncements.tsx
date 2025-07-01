@@ -16,6 +16,11 @@ import { fontFamily } from '../../utils/functions';
 import AvatarInitials from '../AvatarInitials';
 import { CustomText } from '../CustomText';
 import ImagePdfViewer from './ImagePdfViewer';
+import FileDetails from '../FileDetails';
+import { FileDetailsCache } from 'types/cache.types';
+import { getCachedFileDetails } from 'src/utils/cache.utils';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import CustomPDFView from '../CustomPDFView';
 
 interface EventAnnouncementProps {
   role?: string;
@@ -53,52 +58,121 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
   }, [announcementData]);
 
   const MediaItem = ({
-    key,
     item,
     media,
     name,
     image,
     index,
   }: {
-    key: number;
     item: any;
     media: any;
     name: any;
     image: any;
     index: number;
-  }) =>
-    item.mediaType === 'image' ? (
-      <TouchableOpacity
-        onPress={() => {
-          setMedia(media);
-          setViewerVisible(true);
-          setCompanyName(name);
-          setCompanyLogo(image);
-          setCurrentIndex(index);
-        }}>
-        <FastImage source={{ uri: item?.media }} style={styles.mediaImage} />
-      </TouchableOpacity>
-    ) : (
-      <TouchableOpacity
-        onPress={() => {
-          setMedia(media);
-          setViewerVisible(true);
-          setCompanyName(name);
-          setCompanyLogo(image);
-          setCurrentIndex(index);
-        }}
-        style={styles.pdfContainer}>
-        <Image
-          source={IMAGES.pdf}
-          style={styles.pdfIcon}
-          resizeMode="contain"
-        />
-        <Text style={styles.title} numberOfLines={2}>
-          {item?.mediaName}
-        </Text>
-        {/* <Text style={styles.pdfSize}>{item.size}</Text> */}
-      </TouchableOpacity>
+  }) => {
+    const [loading, setLoading] = useState(false);
+    const [cacheDetails, setCachedDetails] = useState<FileDetailsCache | null>(
+      null,
     );
+
+    const calcImageWidth = (width?: number, height?: number) => {
+      if (!width || !height) {
+        return 90; // Default width if dimensions are not available
+      }
+      const calculatedWidth = (width / height) * 128; // Maintain aspect ratio
+      return calculatedWidth;
+    };
+
+    useEffect(() => {
+      const fetchCachedDetails = async () => {
+        try {
+          setLoading(true);
+          const details = await getCachedFileDetails(item?.media, {
+            isPDF: item?.mediaType === 'application/pdf',
+          });
+          console.log('Cached details:', details);
+
+          setCachedDetails(details);
+        } catch (e) {
+          console.log('Error fetching cached details:', e);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchCachedDetails();
+    }, [item]);
+
+    return (
+      <SkeletonPlaceholder enabled={loading}>
+        <View
+          style={{
+            maxHeight: 128,
+          }}>
+          {item.mediaType === 'image' ? (
+            <TouchableOpacity
+              onPress={() => {
+                setMedia(media);
+                setViewerVisible(true);
+                setCompanyName(name);
+                setCompanyLogo(image);
+                setCurrentIndex(index);
+              }}
+              style={[
+                styles.mediaContainer,
+                {
+                  minWidth: calcImageWidth(
+                    cacheDetails?.dimensions?.width,
+                    cacheDetails?.dimensions?.height,
+                  ),
+                },
+              ]}>
+              <FastImage
+                source={{ uri: item?.media }}
+                style={styles.mediaImage}
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={() => {
+                setMedia(media);
+                setViewerVisible(true);
+                setCompanyName(name);
+                setCompanyLogo(image);
+                setCurrentIndex(index);
+              }}
+              style={styles.pdfContainer}>
+              {item.media ? (
+                <CustomPDFView
+                  uri={item.media}
+                  singlePage
+                  style={styles.pdfDisplay}
+                />
+              ) : (
+                <>
+                  <Image
+                    source={IMAGES.pdf}
+                    style={styles.pdfIcon}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.title} numberOfLines={2}>
+                    {item?.mediaName}
+                  </Text>
+                </>
+              )}
+
+              <FileDetails
+                title={item?.mediaName}
+                type={item?.mediaType}
+                size={cacheDetails?.size || '0'}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+      </SkeletonPlaceholder>
+    );
+  };
 
   const EventItem = ({ item }: { item: any }) => {
     const [expanded, setExpanded] = useState(false);
@@ -143,7 +217,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
               // console.log("Index:", index, "MediaItem:", mediaItem);
               return (
                 <MediaItem
-                  key={index}
+                  key={`MediaItem:${index}`}
                   index={index}
                   item={mediaItem}
                   media={item.attachments}
@@ -159,35 +233,23 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
               <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
             </TouchableOpacity>
           )} */}
-          {!expanded && shouldShowReadMore ? (
+          {shouldShowReadMore && (
             <TouchableOpacity
               onPress={() => setExpanded(!expanded)}
-              style={styles.toggleContainer}>
+              style={[
+                styles.toggleContainer,
+                {
+                  marginTop: 10,
+                },
+              ]}>
               <CustomText style={styles.toggleText}>
-                {ANNOUNCEMENT.READ_MORE}
+                {!expanded ? ANNOUNCEMENT.READ_MORE : ANNOUNCEMENT.READ_LESS}
               </CustomText>
-              <FastImage
-                source={IMAGES.downArrow}
-                style={[styles.toggleIcon]}
+              <Image
+                source={expanded ? IMAGES.upArrow : IMAGES.downArrow}
+                style={expanded ? styles.toggleupIcon : styles.toggleIcon}
               />
             </TouchableOpacity>
-          ) : (
-            shouldShowReadMore && (
-              <TouchableOpacity
-                onPress={() => setExpanded(!expanded)}
-                style={styles.toggleContainer}>
-                <CustomText style={styles.toggleText}>
-                  {ANNOUNCEMENT.READ_LESS}
-                </CustomText>
-                <FastImage
-                  source={IMAGES.downArrow}
-                  style={[
-                    styles.toggleIcon,
-                    { transform: [{ rotate: '180deg' }] },
-                  ]}
-                />
-              </TouchableOpacity>
-            )
           )}
         </View>
       </View>
@@ -198,7 +260,6 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
   };
 
   const onClickViewAll = () => {
-    console.log('role', role);
     if (role == ROLE.HOST) {
       handleViewAll;
     } else {
@@ -213,6 +274,7 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
           justifyContent: 'space-between',
           alignItems: 'center',
           paddingBottom: 12,
+          paddingHorizontal: 16,
         }}>
         <CustomText style={styles.heading}>
           {LABLE.EVENT_ANNOUNCEMENTS}
@@ -234,7 +296,9 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
         }
         keyExtractor={(item: any) => item?.id}
         renderItem={({ item }) => <EventItem item={item} />}
-        style={{}}
+        style={{
+          paddingHorizontal: 16,
+        }}
         ListEmptyComponent={
           <CustomText style={{ marginVertical: 16 }}>
             {LABLE.NO_EVENT_ANNOUNCEMENTS}
@@ -242,32 +306,37 @@ const EventAnnouncements: React.FC<EventAnnouncementProps> = ({
         }
       />
       {announcementListData?.length > 0 && (
-        <View style={{ paddingBottom: 20 }}>
+        <>
           <View style={[styles.divider, { marginBottom: 20 }]} />
-          {role == ROLE.HOST ? (
-            <TouchableOpacity
-              onPress={handleViewAll}
-              style={[styles.toggleContainer]}>
-              <CustomText style={styles.toggleText}>
-                {LABLE.VIEW_ALL}
-              </CustomText>
-              <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
-            </TouchableOpacity>
-          ) : (
-            <>
-              {announcementListData?.length > 3 && (
-                <TouchableOpacity
-                  onPress={() => setviewAllLess(!viewAllLess)}
-                  style={[styles.toggleContainer]}>
-                  <CustomText style={styles.toggleText}>
-                    {viewAllLess ? LABLE.VIEW_ALL : LABLE.VIEW_LESS}
-                  </CustomText>
-                  <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
-                </TouchableOpacity>
-              )}
-            </>
-          )}
-        </View>
+          <View style={{ paddingBottom: 20, paddingHorizontal: 16 }}>
+            {role == ROLE.HOST ? (
+              <TouchableOpacity
+                onPress={handleViewAll}
+                style={[styles.toggleContainer]}>
+                <CustomText style={styles.toggleText}>
+                  {LABLE.VIEW_ALL}
+                </CustomText>
+                <Image source={IMAGES.downArrow} style={styles.toggleIcon} />
+              </TouchableOpacity>
+            ) : (
+              <>
+                {announcementListData?.length > 3 && (
+                  <TouchableOpacity
+                    onPress={() => setviewAllLess(!viewAllLess)}
+                    style={[styles.toggleContainer]}>
+                    <CustomText style={styles.toggleText}>
+                      {viewAllLess ? LABLE.VIEW_ALL : LABLE.VIEW_LESS}
+                    </CustomText>
+                    <Image
+                      source={IMAGES.downArrow}
+                      style={styles.toggleIcon}
+                    />
+                  </TouchableOpacity>
+                )}
+              </>
+            )}
+          </View>
+        </>
       )}
 
       {viewerVisible && (
@@ -290,7 +359,6 @@ const styles = StyleSheet.create({
     borderColor: COLORS.borderGray,
     borderRadius: 16,
     paddingTop: 12,
-    paddingHorizontal: 16,
     backgroundColor: COLORS.white,
   },
   heading: {
@@ -325,6 +393,11 @@ const styles = StyleSheet.create({
     height: 30,
     marginBottom: 10,
   },
+  pdfDisplay: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 8,
+  },
   subtitle: {
     color: COLORS.light_gray,
     fontSize: 12,
@@ -338,7 +411,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    width: '92%',
+    width: '100%',
     alignSelf: 'center',
     backgroundColor: COLORS.borderGray,
   },
@@ -355,34 +428,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   toggleText: {
-    color: COLORS.black2,
     textDecorationLine: 'underline',
-    fontFamily: fontFamily.ABCDiatype_Regular,
     marginRight: 5,
-    marginTop: 5,
   },
   toggleIcon: {
-    width: 12,
-    height: 12,
-    tintColor: COLORS.tabBorderColor,
-    marginTop: 5,
+    width: 10,
+    tintColor: COLORS.light_gray,
     resizeMode: 'contain',
   },
-  mediaImage: {
-    width: 90,
+  toggleupIcon: {
+    width: 17,
+    tintColor: COLORS.light_gray,
+    resizeMode: 'contain',
+  },
+  mediaContainer: {
+    minWidth: 90,
     height: 128,
-    borderRadius: 8,
     marginRight: 10,
+  },
+  mediaImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 8,
     backgroundColor: '#f0f0f0',
+    objectFit: 'contain',
   },
   pdfContainer: {
-    width: 90,
+    width: 90.5,
     height: 128,
     marginRight: 10,
     backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 8,
+    borderColor: COLORS.lighter_gray,
   },
   pdfSize: {
     fontSize: 12,

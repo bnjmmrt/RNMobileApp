@@ -3,14 +3,30 @@
 <plist version="1.0">
 <dict>
 	<key>aps-environment</key>
-	<string>development</string>
+	<string>production</string>
 	<key>com.apple.developer.aps-environment</key>
-	<string>development</string>
+	<string>production</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
+		<string>applinks:app.therumor.com</string>
+		<string>webcredentials:app.therumor.com</string>
+		<string>activitycontinuation:app.therumor.com</string>
+
 		<string>applinks:rumor.app.link</string>
 		<string>webcredentials:rumor.app.link</string>
 		<string>activitycontinuation:rumor.app.link</string>
+
+		<string>applinks:rumor-alternate.app.link</string>
+		<string>webcredentials:rumor-alternate.app.link</string>
+		<string>activitycontinuation:rumor-alternate.app.link</string>
+
+		<string>applinks:rumor.test-app.link</string>
+		<string>webcredentials:rumor.test-app.link</string>
+		<string>activitycontinuation:rumor.test-app.link</string>
+
+		<string>applinks:rumor-alternate.test-app.link</string>
+		<string>webcredentials:rumor-alternate.test-app.link</string>
+		<string>activitycontinuation:rumor-alternate.test-app.link</string>
 	</array>
 </dict>
 </plist>
