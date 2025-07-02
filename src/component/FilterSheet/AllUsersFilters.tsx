@@ -29,6 +29,7 @@ type FilterType = {
 
 const basicUserAllowedFilters = [
   'pastEvents',
+  'professions',
   'category',
   'basecity',
   'gender',
