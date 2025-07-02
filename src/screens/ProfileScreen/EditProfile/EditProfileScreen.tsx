@@ -70,6 +70,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   const baseCityRef = useRef<any>(null);
   const birthDayRef = useRef<any>(null);
   const scrollViewRef = useRef<ScrollView>(null);
+  const companyNameRef = useRef<any>(null);
 
   const getGender = (gender: string) => {
     return genderList.find(item => item.id === gender);
@@ -252,6 +253,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
             gender: gender?.id,
             lastName: lastNameRef?.current?.inputText,
             // mobilePhone: profileData?.phoneNumber,
+            company: companyNameRef?.current?.inputText,
             focusIds: selectedCreativeFocus.length
               ? selectedCreativeFocus.map((item: any) => item.id)
               : profileData?.creativeFocus.map((item: any) => item.id),
@@ -401,6 +403,22 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                       setSelectedCity(city);
                     }
                   }}
+                />
+
+                <Text style={[styles.label]}>{LABLE.COMPANY}</Text>
+                <Input
+                  ref={companyNameRef}
+                  label={LABLE.COMPANY}
+                  errorMessage={LABLE.COMPANY}
+                  defaultValue={profileData?.company}
+                  maxLength={30}
+                />
+
+                <Text style={[styles.label]}>{LABLE.PROFESSIONAL_FOCUS}</Text>
+                <Text style={styles.subTitle}>{LABLE.SELECT_UPTO_3}</Text>
+                <CreativeFocusComponent
+                  setIsToastShown={setIsToastShown}
+                  getSelectedData={getSelectedCreativeFocus}
                 />
 
                 <Text

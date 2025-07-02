@@ -102,6 +102,8 @@ export const LABLE = {
     "We'll contact you for membership and event updates.",
   WHATS_YOUR_EMAIL_SUBTITLE:
     "We'll contact you for membership and event updates.",
+  COMPANY: 'Company',
+  PROFESSIONAL_FOCUS: 'Professional Focus',
   EMAIL_ADDRESS: 'Email Address',
   WHATS_YOUR_GENDER: "What's your gender?",
   SELECT_THE_OPTION_THAT_BEST_DESCRIBES_YOU:
