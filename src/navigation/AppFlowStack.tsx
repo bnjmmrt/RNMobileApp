@@ -10,6 +10,7 @@ import GenderScreen from '../screens/AppFlow/GenderScreen/GenderScreen';
 import BirthdayScreen from '../screens/AppFlow/BirthdayScreen/BirthdayScreen';
 import BaseCityScreen from '../screens/AppFlow/BaseCityScreen/BaseCityScreen';
 import CreativeFocusScreen from '../screens/AppFlow/CreativeFocusScreen/CreativeFocusScreen';
+import CompanyScreen from '../screens/AppFlow/CompanyScreen/CompanyScreen';
 import SelectInterestScreen from '../screens/AppFlow/SelectInterestScreen/SelectInterestScreen';
 import ProfilePhotoScreen from '../screens/AppFlow/ProfilePhotoScreen/ProfilePhotoScreen';
 import IdentityVerification from '../screens/AppFlow/IdentityVerification/IdentityVerification';
@@ -92,6 +93,11 @@ export const AppFlowStack: React.FC = () => {
       <Stack.Screen
         name="CreativeFocusScreen"
         component={CreativeFocusScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CompanyScreen"
+        component={CompanyScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

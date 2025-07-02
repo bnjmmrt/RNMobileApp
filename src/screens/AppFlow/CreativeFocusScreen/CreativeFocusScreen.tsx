@@ -295,7 +295,7 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
       setIsToastShown(false);
       dispatch(setCreativeFocus(selectedCategories));
       dispatch(setPageProgress(7));
-      navigation.navigate('SelectInterestScreen');
+      navigation.navigate('CompanyScreen');
     } else {
       setToastMessage(ERROR_MESSAGE.CREATIVE_FOCUS);
       setIsToastShown(true);
