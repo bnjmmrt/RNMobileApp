@@ -376,6 +376,7 @@ export const PROFILE = {
 export const ERROR_MESSAGE = {
   FIRST_NAME: 'Please enter your first name',
   LAST_NAME: 'Please enter your last name',
+  PLEASE_ENTER_YOUR_COMPANY_NAME: 'Please enter your company name',
   PLEASE_ENTER_YOUR_BASE_CITY: 'Please enter your base city',
   PLEASE_ENTER_YOUR_BIRTHDAY: 'Please enter your birthday',
   PLEASE_ENTER_EVENT_DATE: 'Please enter event date',

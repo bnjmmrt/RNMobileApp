@@ -20,8 +20,10 @@ import { SAFEWAREAVIEW_CONFIG } from 'src/utils/safeAreaViewConfig';
 import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrapper';
 import { InputRefMethods } from '../../../component/Input/Input';
 import IMAGES from '../../../assets/images';
+import { useGetIndustryCategoriesQuery } from 'src/redux/actions/appFlowApiAction';
+import Svg, { Path } from 'react-native-svg';
 
-interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> {}
+interface CreativeFocusScreenProps extends NativeStackScreenProps<any, any> { }
 
 // Custom CollapsibleView component with controlled state
 interface CustomCollapsibleViewProps {
@@ -60,6 +62,19 @@ const NoResults: React.FC<NoResultsProps> = ({ styles }) => {
   );
 };
 
+// Arrow SVG components
+const ArrowUpIcon = () => (
+  <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
+    <Path fillRule="evenodd" clipRule="evenodd" d="M7.52851 5.52925C7.78886 5.2689 8.21097 5.2689 8.47132 5.52925L12.4713 9.52925C12.7317 9.7896 12.7317 10.2117 12.4713 10.4721C12.211 10.7324 11.7889 10.7324 11.5285 10.4721L7.99992 6.94346L4.47132 10.4721C4.21097 10.7324 3.78886 10.7324 3.52851 10.4721C3.26816 10.2117 3.26816 9.7896 3.52851 9.52925L7.52851 5.52925Z" fill="#1F1F1F" />
+  </Svg>
+);
+
+const ArrowDownIcon = () => (
+  <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
+    <Path fillRule="evenodd" clipRule="evenodd" d="M3.52851 5.52925C3.78886 5.2689 4.21097 5.2689 4.47132 5.52925L7.99992 9.05784L11.5285 5.52925C11.7889 5.2689 12.211 5.2689 12.4713 5.52925C12.7317 5.7896 12.7317 6.21171 12.4713 6.47206L8.47132 10.4721C8.21097 10.7324 7.78886 10.7324 7.52851 10.4721L3.52851 6.47206C3.26816 6.21171 3.26816 5.7896 3.52851 5.52925Z" fill="#1F1F1F" />
+  </Svg>
+);
+
 const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
   navigation,
 }) => {
@@ -89,119 +104,24 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
   const [isToastShown, setIsToastShown] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
-  // Define categories and their mapping
-  const categories = {
-    Business: [
-      'business',
-      'entrepreneur',
-      'finance',
-      'marketing',
-      'consulting',
-      'sales',
-      'management',
-      'startup',
-      'corporate',
-      'strategy',
-    ],
-    Entertainment: [
-      'entertainment',
-      'music',
-      'film',
-      'tv',
-      'theater',
-      'comedy',
-      'acting',
-      'production',
-      'media',
-      'broadcasting',
-      'streaming',
-    ],
-    'Fashion & Design': [
-      'fashion',
-      'design',
-      'styling',
-      'textile',
-      'apparel',
-      'jewelry',
-      'accessories',
-      'graphic',
-      'interior',
-      'product design',
-      'ux',
-      'ui',
-    ],
-    Hospitality: [
-      'hospitality',
-      'hotel',
-      'restaurant',
-      'culinary',
-      'chef',
-      'food',
-      'beverage',
-      'tourism',
-      'travel',
-      'catering',
-      'service',
-    ],
-    'Sports & Wellness': [
-      'sports',
-      'fitness',
-      'wellness',
-      'health',
-      'nutrition',
-      'training',
-      'coaching',
-      'athletic',
-      'gym',
-      'yoga',
-      'therapy',
-      'medical',
-    ],
+  const { data: industryCategoriesData, isSuccess: isIndustryCategoriesSuccess } = useGetIndustryCategoriesQuery();
+  // industryCategoriesData is an array of { id, name, targetIndustries: [{id, name}] }
+
+  // Filter and categorize items from backend
+  const getFilteredCategories = () => {
+    if (!industryCategoriesData) return [];
+    return industryCategoriesData.map(category => ({
+      ...category,
+      targetIndustries: category.targetIndustries.filter((item: any) =>
+        item.name.toLowerCase().includes(searchText.toLowerCase())
+      ),
+    })).filter(category => category.targetIndustries.length > 0);
   };
 
-  // Function to categorize items
-  const categorizeItems = (items: any[]) => {
-    const categorized: { [key: string]: any[] } = {
-      Business: [],
-      Entertainment: [],
-      'Fashion & Design': [],
-      Hospitality: [],
-      'Sports & Wellness': [],
-    };
-
-    // Filter items based on search text
-    const filteredItems = items.filter(item =>
-      item.name.toLowerCase().includes(searchText.toLowerCase()),
-    );
-
-    filteredItems.forEach(item => {
-      const itemName = item.name.toLowerCase();
-      let categorized_item = false;
-
-      // Check which category this item belongs to
-      Object.entries(categories).forEach(([categoryName, keywords]) => {
-        if (
-          !categorized_item &&
-          keywords.some(keyword => itemName.includes(keyword))
-        ) {
-          categorized[categoryName].push(item);
-          categorized_item = true;
-        }
-      });
-
-      // If no category found, add to Business as default
-      if (!categorized_item) {
-        categorized.Business.push(item);
-      }
-    });
-
-    return categorized;
-  };
-
-  const categorizedItems = categorizeItems(creativeFocus || []);
+  const filteredCategories = getFilteredCategories();
 
   // Check if there are any results
-  const hasResults = Object.values(categorizedItems).some(items => items.length > 0);
+  const hasResults = filteredCategories.length > 0;
 
   const handleCategorySelect = (category: any) => {
     if (selectedCategories.find(item => item.id === category.id)) {
@@ -243,8 +163,7 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
     }));
   };
 
-  const renderCollapsibleHeader = (categoryName: string, itemCount: number) => {
-    const isExpanded = expandedSections[categoryName];
+  const renderCollapsibleHeader = (categoryName: string, itemCount: number, isExpanded: boolean) => {
     return (
       <TouchableOpacity
         style={styles.categoryHeaderContainer}
@@ -256,7 +175,7 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
             <Text style={styles.categoryHeaderCountText}>{itemCount}</Text>
           </View>
           <View style={styles.arrowContainer}>
-            <Text style={styles.arrowIcon}>{isExpanded ? '▲' : '▼'}</Text>
+            {isExpanded ? <ArrowUpIcon /> : <ArrowDownIcon />}
           </View>
         </View>
       </TouchableOpacity>
@@ -273,14 +192,14 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
             style={[
               styles.categoryButton,
               selectedCategories.some(selected => selected.id === item.id) &&
-                styles.selectedCategoryButton,
+              styles.selectedCategoryButton,
             ]}
             onPress={() => handleCategorySelect(item)}>
             <Text
               style={[
                 styles.categoryText,
                 selectedCategories.some(selected => selected.id === item.id) &&
-                  styles.selectedCategoryText,
+                styles.selectedCategoryText,
               ]}>
               {item.name}
             </Text>
@@ -330,7 +249,7 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
           leftImage={IMAGES.search}
           rightImage={searchText.length > 0 ? IMAGES.clear : null}
           onPressImage={searchText.length > 0 ? handleClearSearch : undefined}
-          // style={styles.searchInput}
+        // style={styles.searchInput}
         />
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -339,22 +258,16 @@ const CreativeFocusScreen: React.FC<CreativeFocusScreenProps> = ({
           {!hasResults ? (
             <NoResults styles={styles} />
           ) : (
-            Object.entries(categorizedItems).map(([categoryName, items]) => {
-              // Only show categories that have items
-              if (items.length === 0) {
-                return null;
-              }
-
-              return (
-                <CustomCollapsibleView
-                  key={categoryName}
-                  title={renderCollapsibleHeader(categoryName, items.length)}
-                  isExpanded={expandedSections[categoryName]}
-                  styles={styles}>
-                  {renderCategoryItems(items)}
-                </CustomCollapsibleView>
-              );
-            })
+            filteredCategories.map(category => (
+              <CustomCollapsibleView
+                key={category.id}
+                title={renderCollapsibleHeader(category.name, category.targetIndustries.length, expandedSections[category.name])}
+                isExpanded={expandedSections[category.name]}
+                styles={styles}>
+                {expandedSections[category.name] &&
+                  renderCategoryItems(category.targetIndustries)}
+              </CustomCollapsibleView>
+            ))
           )}
         </ScrollView>
 

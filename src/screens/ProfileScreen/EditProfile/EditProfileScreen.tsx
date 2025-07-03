@@ -41,6 +41,8 @@ import { BOTTOM_SAFEAREA_SPACING } from 'src/component/Wrappers/SafeAreaViewWrap
 import { isIPad } from 'src/utils/isTabletConfig';
 import { useGetUserWithRolesByIdMutation } from 'src/redux/actions/inviteGuestsApiAction';
 import { regexForLettersAndCharacters } from 'src/utils/validationRegex';
+import { useGetIndustryCategoriesQuery } from 'src/redux/actions/appFlowApiAction';
+import { setCreativeFocus } from 'src/redux/slices/appGlobalDataSlice';
 
 interface EditProfileScreenProps extends NativeStackScreenProps<any, any> { }
 
@@ -51,6 +53,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   const dispatch = useDispatch();
   const { keyboardVisible } = useKeyboard();
   const [getUserById] = useGetUserWithRolesByIdMutation();
+  const { data: industryCategoriesData, isSuccess: isIndustryCategoriesSuccess } = useGetIndustryCategoriesQuery();
 
   const { userId, isGuest, profileData, role, token } = useSelector(
     (state: RootState) => ({
@@ -94,13 +97,19 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
       emailInputRef?.current.setEmailAddress(profileData?.email);
     }
     if (profileData?.phoneNumber && profileData?.phoneNumber !== '') {
-      const phoneNumberDetails = extractCountryCode(profileData?.phoneNumber);
+      const phoneNumberDetails = extractCountryCode(profileData?.phoneNumber ?? '0000000000');
       phoneNumberInputRef?.current.setDisabled(true);
       phoneNumberInputRef?.current.setPhoneNumber(profileData?.phoneNumber);
       phoneNumberInputRef?.current.setFlag(phoneNumberDetails?.flag);
       phoneNumberInputRef?.current.setCallingCode(null);
     }
   }, []);
+
+  useEffect(() => {
+    if (isIndustryCategoriesSuccess && industryCategoriesData) {
+      dispatch(setCreativeFocus(industryCategoriesData));
+    }
+  }, [isIndustryCategoriesSuccess, industryCategoriesData, dispatch]);
 
   const fetchUserById = async () => {
     try {
@@ -193,15 +202,28 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
     return isFirstNameValid && isLastNameValid;
   };
 
+  useEffect(() => {
+    if (profileData?.focuses) {
+      getSelectedCreativeFocus(profileData?.focuses);
+    }
+  }, [profileData?.focuses]);
+
   const onConfirmClick = async () => {
+    // Get latest company name
+    const companyName = companyNameRef.current?.inputText || profileData?.company || '';
+    // Get selected focuses (array of objects)
+    const focuses = selectedCreativeFocus && selectedCreativeFocus.length
+      ? selectedCreativeFocus
+      : profileData?.focuses || [];
+
     if (isGuest && role === ROLE.NON_MEMBER) {
       if (validateName('FirstName') && validateName('LastName')) {
         const requestObject: any = {
-          // email: profileData?.email,
           firstName: firstNameRef?.current?.inputText,
           lastName: lastNameRef?.current?.inputText,
+          company: companyName,
+          focusIds: focuses.map((item: any) => item.id),
         };
-
         const response: any = await apiRequest(
           'put',
           EndPoint.user_profile + userId,
@@ -226,7 +248,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
       // if (!birthDayRef.current.validateBirthDate()) {
       //   scrollViewRef?.current?.scrollToEnd({ animated: true });
       // }
-      if (selectedCreativeFocus?.length === 0) {
+      if (focuses.length === 0) {
         setIsToastShown(true);
         scrollViewRef?.current?.scrollToEnd({ animated: true });
       }
@@ -236,7 +258,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         // birthDayRef.current.validateBirthDate() &&
         baseCityRef.current.validateBaseCity()
       ) {
-        if (selectedCreativeFocus && selectedCreativeFocus.length) {
+        if (focuses && focuses.length) {
           setIsToastShown(false);
           const requestObject: any = {
             address: {
@@ -247,16 +269,12 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
               placeId: baseCityRef.current.selectedCity.placeId,
               regionCode: '',
             },
-            birthDate: birthDayRef.current.selectedDate, //convertDateFormat(birthDayRef.current.selectedDate),
-            // email: profileData?.email,
+            birthDate: birthDayRef.current.selectedDate,
             firstName: firstNameRef?.current?.inputText,
             gender: gender?.id,
             lastName: lastNameRef?.current?.inputText,
-            // mobilePhone: profileData?.phoneNumber,
-            company: companyNameRef?.current?.inputText,
-            focusIds: selectedCreativeFocus.length
-              ? selectedCreativeFocus.map((item: any) => item.id)
-              : profileData?.creativeFocus.map((item: any) => item.id),
+            company: companyName,
+            focusIds: focuses.map((item: any) => item.id),
           };
           const response: any = await apiRequest(
             'put',
@@ -292,6 +310,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   const handleBackPress = () => {
     navigation.goBack();
   };
+
+  console.log('profileData', profileData);
 
   return (
     <View
@@ -373,7 +393,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
           )} */}
 
             {token && (
-              <View>
+              <ScrollView>
                 <Text style={[styles.label]}>{LABLE.GENDER}</Text>
                 <GenderComponent
                   setGender={setGender}
@@ -405,20 +425,12 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                   }}
                 />
 
-                <Text style={[styles.label]}>{LABLE.COMPANY}</Text>
                 <Input
                   ref={companyNameRef}
                   label={LABLE.COMPANY}
                   errorMessage={LABLE.COMPANY}
                   defaultValue={profileData?.company}
                   maxLength={30}
-                />
-
-                <Text style={[styles.label]}>{LABLE.PROFESSIONAL_FOCUS}</Text>
-                <Text style={styles.subTitle}>{LABLE.SELECT_UPTO_3}</Text>
-                <CreativeFocusComponent
-                  setIsToastShown={setIsToastShown}
-                  getSelectedData={getSelectedCreativeFocus}
                 />
 
                 <Text
@@ -430,14 +442,16 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                         : 0,
                     },
                   ]}>
-                  {LABLE.PROFESSION}
+                  {LABLE.PROFESSIONAL_FOCUS}
                 </Text>
                 <Text style={styles.subTitle}>{LABLE.SELECT_UPTO_3}</Text>
                 <CreativeFocusComponent
+                  list={industryCategoriesData}
                   setIsToastShown={setIsToastShown}
                   getSelectedData={getSelectedCreativeFocus}
+                  defaultSelected={profileData?.focuses || []}
                 />
-              </View>
+              </ScrollView>
             )}
           </View>
           {/* </KeyboardAvoidingView> */}

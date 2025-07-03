@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { LABLE, BUTTON_LABLE } from '../../../utils/constants';
+import { BUTTON_LABLE, ERROR_MESSAGE } from '../../../utils/constants';
 import CompanyScreenStyles from './CompanyScreenStyles';
 import Button from '../../../component/Button';
 import Title from '../../../component/Title/Title';
@@ -49,16 +49,16 @@ const CompanyScreen: React.FC<CompanyScreenProps> = ({ navigation }) => {
       
       <View style={styles.contentContainer}>
         <Title
-          title="What company do you work for?"
-          subTitle="Tell us about your workplace (optional)"
+          title="Tell us about your work"
+          subTitle="Your professional details help us connect you with relevant experiences."
         />
 
         <Input
-          placeholder="Enter company name"
-          value={companyName}
+          placeholder="Company"
+          defaultValue={companyName}
           onChangeText={handleCompanyChange}
-          errorMessage=""
-          style={styles.inputStyle}
+          label="Company"
+          errorMessage={ERROR_MESSAGE.PLEASE_ENTER_YOUR_COMPANY_NAME}
         />
       </View>
 

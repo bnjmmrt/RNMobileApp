@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AppFlowApiDataState {
-  creativeFocus: any[];
+  creativeFocus: any[]; // Now array of categories, each with targetIndustries
   interests: any[];
   profileData: any;
   notiCount:number

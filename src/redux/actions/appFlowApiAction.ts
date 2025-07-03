@@ -36,6 +36,13 @@ export const appFlowApiAction = createBaseApi.injectEndpoints({
         body: requestParam,
       }),
     }),
+
+    getIndustryCategories: builder.query({
+      query: () => ({
+        url: EndPoint.get_industry_categories,
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -44,4 +51,5 @@ export const {
   useGetInterestsQuery,
   useMemberSignUpMutation,
   useMemberLogoutMutation,
+  useGetIndustryCategoriesQuery,
 } = appFlowApiAction;

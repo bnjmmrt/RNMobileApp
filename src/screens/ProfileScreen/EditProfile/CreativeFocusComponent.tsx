@@ -1,103 +1,94 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { COLORS } from '../../../utils/constants';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/slices';
 
+interface Category {
+  id: string;
+  name: string;
+  targetIndustries: { id: string; name: string }[];
+}
+
 interface CreativeFocusComponentProps {
-  list?: any[];
+  list?: Category[];
   setIsToastShown: (isShown: boolean) => void;
   getSelectedData: (data: any[]) => void;
+  defaultSelected?: { id: string; name: string }[];
 }
 
 const CreativeFocusComponent: React.FC<CreativeFocusComponentProps> = ({
   list,
   setIsToastShown,
   getSelectedData,
+  defaultSelected = [],
 }) => {
-  //update this when get data from API
-  // [{"id": "2b8101ae-0fb0-4804-af05-c90563e9e6a9", "name": "Actor"},{"id": "aca29d03-7272-4661-9af4-2e90be2aedab", "name": "Entertainment"}, {"id": "21874710-2027-4458-a346-afe67d486a2f", "name": "Hospitality"}]
-  const selectedCreativeFocus = useSelector(
-    (state: RootState) => state.appFlowApiData.profileData?.focuses, // need to update from api
-  );
   const creativeFocus = useSelector(
     (state: RootState) => state.appFlowApiData.creativeFocus,
   );
+  const [selectedCategories, setSelectedCategories] = useState<{ id: string; name: string }[]>(defaultSelected);
+  const itemList = list || creativeFocus;
 
-  const [selectedCategories, setSelectedCategories] = useState<any[]>(
-    list ? [] : selectedCreativeFocus ?? [],
-  );
+  useEffect(() => {
+    setSelectedCategories(defaultSelected);
+  }, [JSON.stringify(defaultSelected)]);
 
-  const [itemList, _setItemLiist] = useState(list ? list : creativeFocus);
-
-  const getFilteredData = (list: any[] | undefined, categoryId: string) => {
-    if (!Array.isArray(list)) return [];
-    return list.filter((item: any) => item.id !== categoryId);
-  };
-  const handleCategorySelect = (category: any) => {
-    if (list?.length) {
-      // When list data is available, allow only one selection
-      if (selectedCategories.some(item => item.id === category.id)) {
-        // Deselect if already selected
-        setSelectedCategories([]);
-        getSelectedData([]);
-        setIsToastShown(true);
-      } else {
-        // Select the current category
-        setSelectedCategories([category]);
-        getSelectedData([category]);
-        setIsToastShown(false);
-      }
+  const handleCategorySelect = (profession: { id: string; name: string }) => {
+    const alreadySelected = selectedCategories.some(item => item.id === profession.id);
+    let updated;
+    if (alreadySelected) {
+      updated = selectedCategories.filter(item => item.id !== profession.id);
+    } else if (selectedCategories.length < 3) {
+      updated = [...selectedCategories, profession];
     } else {
-      // Original logic for multiple selection
-      const filteredList = getFilteredData(
-        selectedCategories ?? [],
-        category.id,
-      );
-      if (selectedCategories.find(item => item.id === category.id)) {
-        // Remove category if already selected
-        setSelectedCategories(filteredList);
-
-        getSelectedData(filteredList);
-        if (filteredList.length === 0) {
-          setIsToastShown(true);
-        }
-      } else if (selectedCategories.length < 3) {
-        setIsToastShown(false);
-        setSelectedCategories([...selectedCategories, category]);
-        getSelectedData([...selectedCategories, category]);
-      }
+      setIsToastShown(true);
+      return;
     }
+    setSelectedCategories(updated);
+    getSelectedData(updated);
+    setIsToastShown(updated.length === 0);
   };
 
   return (
     <>
-      <View style={styles.categoryContainer}>
-        {itemList?.map(item => (
-          <TouchableOpacity
-            key={item.id}
-            style={[
-              styles.categoryButton,
-              selectedCategories?.some(selected => selected.id === item.id) &&
-                styles.selectedCategoryButton,
-            ]}
-            onPress={() => handleCategorySelect(item)}>
-            <Text
-              style={[
-                styles.categoryText,
-                selectedCategories?.some(selected => selected.id === item.id) &&
-                  styles.selectedCategoryText,
-              ]}>
-              {item.name}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      {itemList?.map(category => (
+        <View key={category.id} style={{ marginBottom: 16 }}>
+          <Text style={styles.sectionTitle}>{category.name}</Text>
+          <View style={styles.categoryContainer}>
+            {category.targetIndustries?.map(profession => (
+              <TouchableOpacity
+                key={profession.id}
+                style={[
+                  styles.categoryButton,
+                  selectedCategories.some(selected => selected.id === profession.id) &&
+                    styles.selectedCategoryButton,
+                ]}
+                onPress={() => handleCategorySelect(profession)}>
+                <Text
+                  style={[
+                    styles.categoryText,
+                    selectedCategories.some(selected => selected.id === profession.id) &&
+                      styles.selectedCategoryText,
+                  ]}>
+                  {profession.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      ))}
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.black,
+    marginBottom: 6,
+    marginTop: 12,
+  },
   contentContainer: {
     flex: 1,
     paddingHorizontal: 20,

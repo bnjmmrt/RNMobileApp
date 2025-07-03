@@ -112,6 +112,7 @@ export const EndPoint = {
   edit_event: 'events/v1/event/',
   travel_plans: 'events/v1/surveys',
   travel_plans_page: 'events/v1/surveys/page',
+  get_industry_categories: '/users/v1/industries/categories',
 } as const;
 
 export type EndPointKey = keyof typeof EndPoint;

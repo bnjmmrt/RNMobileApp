@@ -12,6 +12,7 @@ import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
 import io.intercom.android.sdk.Intercom
 import com.therumor.BuildConfig
+import io.branch.referral.Branch
 
 class MainApplication : Application(), ReactApplication {
 
@@ -37,6 +38,8 @@ class MainApplication : Application(), ReactApplication {
   override fun onCreate() {
     super.onCreate()
 
+    Branch.enableLogging() // Optional: for debugging, remove in production
+    Branch.getAutoInstance(this)
     Intercom.initialize(this, "android_sdk-0bc77d78f8b9f7fe0aa96daa3bef19ffd655f938", "ucnhg0me")
     Intercom.client().loginUnidentifiedUser() // If you have identifying information for your user you can use loginIdentifiedUser() instead
     Intercom.client().setLauncherVisibility(Intercom.Visibility.VISIBLE)
